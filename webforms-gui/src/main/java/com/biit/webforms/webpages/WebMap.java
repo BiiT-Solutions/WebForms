@@ -1,0 +1,29 @@
+package com.biit.webforms.webpages;
+
+@SuppressWarnings("rawtypes")
+public enum WebMap {
+	LOGIN_PAGE(Login.class);
+
+	private static WebMap loginPage = WebMap.LOGIN_PAGE;
+
+	private static WebMap defaultPage = WebMap.LOGIN_PAGE;
+
+	private Class redirectTo;
+
+	WebMap(Class redirectTo) {
+		this.redirectTo = redirectTo;
+	}
+
+	public Class getWebPageJavaClass() {
+		return redirectTo;
+	}
+
+	public static WebMap getLoginPage() {
+		return loginPage;
+	}
+
+	public static WebMap getMainPage() {
+		return defaultPage;
+	}
+
+}

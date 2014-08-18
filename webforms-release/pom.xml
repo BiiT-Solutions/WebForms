@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>webforms-release</artifactId>
+	<packaging>jar</packaging>
+	<name>Den Haag SZW - Pilot Agile Testing for WebForms (Release)</name>
+
+	<parent>
+		<groupId>com.biit</groupId>
+		<artifactId>webforms</artifactId>
+		<version>2.0.0</version>
+	</parent>
+	
+	<properties>
+		<webforms.root>${basedir}/..</webforms.root>
+		<destination-file>${project.parent.artifactId}</destination-file>
+		<temporal-folder>tmp</temporal-folder>
+		<war-file.source>../webforms-gui/target/</war-file.source>
+		<documentation.source>./documentation</documentation.source>
+		<documentation.destination>./${temporal-folder}/documentation</documentation.destination>
+	</properties>
+	
+	<!-- 'mvn install -Prelease' generates a ZIP file ready to distribute to 
+		the client. -->
+	<profiles>
+		<profile>
+			<id>release</id>
+			<activation>
+				<property>
+					<name>release</name>
+				</property>
+			</activation>
+			<build>
+				<finalName>Agile Business sCenario Designer Tool</finalName>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>${maven-antrun-plugin.version}</version>
+						<executions>
+							<execution>
+								<phase>install</phase>
+								<configuration>
+									<target>
+										<!-- delete old tmp folder -->
+										<delete dir="${temporal-folder}" failonerror="false"
+											includeemptydirs="true" />
+
+										<!-- create tmp folder -->
+										<mkdir dir="${temporal-folder}" />
+										
+										<!-- ZIP project -->
+										<copy
+											file="${war-file.source}/${project.parent.artifactId}-${project.parent.version}.war"
+											tofile="${temporal-folder}/${project.parent.artifactId}-${project.parent.version}.war"
+											overwrite="true" />
+										<!-- copy database scripts -->
+										<copy todir="${temporal-folder}/database/"overwrite="true">
+											<fileset dir="./database" includes="**/*" />
+										</copy>
+										<!-- create the final file -->
+										<zip basedir="${temporal-folder}/"
+											destfile="../${destination-file}-${project.version}.zip" />
+											
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>	
+</project>
