@@ -10,7 +10,7 @@ import com.biit.form.exceptions.FieldTooLongException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 
 @Entity
-@Table(name = "TREE_QUESTIONS")
+@Table(name = "questions")
 public class Question extends BaseQuestion {
 	@Enumerated(EnumType.STRING)
 	private AnswerType answerType;

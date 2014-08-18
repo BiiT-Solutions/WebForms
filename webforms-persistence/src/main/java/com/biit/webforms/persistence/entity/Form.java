@@ -10,7 +10,7 @@ import com.biit.form.BaseForm;
 import com.biit.form.exceptions.FieldTooLongException;
 
 @Entity
-@Table(name = "TREE_FORMS")
+@Table(name = "forms")
 public class Form extends BaseForm {
 
 	@Column(nullable = false)
