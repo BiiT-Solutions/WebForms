@@ -4,7 +4,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.util.StopWatch;
 
 @Aspect
@@ -17,7 +16,7 @@ public class BasicLogging extends AbstractLogging {
 		log(joinPoint);
 	}
 
-	@Around("execution(* com.biit.abcd..*.*(..))")
+	@Around("execution(* com.biit.webforms..*.*(..))")
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 		StopWatch stopWatch = new StopWatch();
 		Object returnValue = null;
@@ -28,9 +27,4 @@ public class BasicLogging extends AbstractLogging {
 		return returnValue;
 	}
 
-	@Before("execution(@com.biit.abcd.annotation.AutoLogger * *(..))")
-	public void logAnnotation(JoinPoint joinPoint) throws Throwable {
-		System.out.println("-------- *** ---------");
-		log(joinPoint);
-	}
 }

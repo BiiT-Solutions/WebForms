@@ -4,12 +4,12 @@ import com.biit.webforms.persistence.entity.AnswerType;
 
 public enum AnswerTypeUi {
 
-	RADIO(AnswerType.RADIO, LanguageCodes.ANSWER_TYPE_RADIO),
+	RADIO(AnswerType.RADIO, LanguageCodes.CAPTION_ANSWER_TYPE_RADIO_BUTTON),
 
-	MULTI_CHECKBOX(AnswerType.MULTI_CHECKBOX, LanguageCodes.MULTI_CHECKBOX),
+	MULTI_CHECKBOX(AnswerType.MULTI_CHECKBOX, LanguageCodes.CAPTION_ANSWER_TYPE_MULTI_CHECKBOX),
 
 	// Uses AnswerFormat.
-	INPUT(AnswerType.INPUT, LanguageCodes.ANSWER_TYPE_INPUT);
+	INPUT(AnswerType.INPUT, LanguageCodes.CAPTION_ANSWER_TYPE_INPUT_FIELD);
 
 	private AnswerType answerType;
 	private LanguageCodes languageCode;

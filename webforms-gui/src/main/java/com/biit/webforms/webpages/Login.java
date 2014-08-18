@@ -122,15 +122,15 @@ public class Login extends WebPageComponent {
 		try {
 			user = AuthenticationService.getInstance().authenticate(userMail, password);
 		} catch (InvalidCredentialsException | AuthenticationRequired e) {
-			passwordField.setComponentError(new UserError(ServerTranslate.translate(LanguageCodes.LOGIN_ERROR_USER,
+			passwordField.setComponentError(new UserError(ServerTranslate.translate(LanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER,
 					new Object[] { userMail })));
-			MessageManager.showError(LanguageCodes.ERROR_BADUSERPSWD, LanguageCodes.ERROR_TRYAGAIN);
+			MessageManager.showError(LanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD, LanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE);
 		} catch (IOException | WebServiceAccessError | NotConnectedToWebServiceException e) {
 			e.printStackTrace();
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			MessageManager.showError(LanguageCodes.ERROR_USER_SERVICE, LanguageCodes.ERROR_CONTACT);
+			MessageManager.showError(LanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE, LanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
 		} catch (PBKDF2EncryptorException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ENCRYPTINGPASSWORD, LanguageCodes.ERROR_CONTACT);
+			MessageManager.showError(LanguageCodes.LOGIN_ERROR_MESSAGE_ENCRYPTINGPASSWORD, LanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
 		}
 
 		if (user != null) {

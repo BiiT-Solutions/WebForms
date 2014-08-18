@@ -4,13 +4,13 @@ import com.biit.webforms.persistence.entity.AnswerFormat;
 
 public enum AnswerFormatUi {
 
-	TEXT(AnswerFormat.TEXT, LanguageCodes.ANSWER_FORMAT_TEXT),
+	TEXT(AnswerFormat.TEXT, LanguageCodes.CAPTION_ANSWER_FORMAT_TEXT),
 
-	NUMBER(AnswerFormat.NUMBER, LanguageCodes.ANSWER_FORMAT_NUMBER),
+	NUMBER(AnswerFormat.NUMBER, LanguageCodes.CAPTION_ANSWER_FORMAT_NUMBER),
 
-	DATE(AnswerFormat.DATE, LanguageCodes.ANSWER_FORMAT_DATE),
+	DATE(AnswerFormat.DATE, LanguageCodes.CAPTION_ANSWER_FORMAT_DATE),
 
-	POSTAL_CODE(AnswerFormat.POSTAL_CODE, LanguageCodes.ANSWER_FORMAT_POSTAL_CODE);
+	POSTAL_CODE(AnswerFormat.POSTAL_CODE, LanguageCodes.CAPTION_ANSWER_FORMAT_POSTAL_CODE);
 
 	private AnswerFormat answerFormat;
 	private LanguageCodes languageCode;

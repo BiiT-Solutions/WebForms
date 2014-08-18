@@ -4,8 +4,10 @@ import java.util.Locale;
 
 import org.springframework.util.StringUtils;
 
+import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.MessageManager;
 import com.biit.webforms.gui.SpringContextHelper;
+import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 
@@ -59,7 +61,7 @@ public class ServerTranslate {
 		try {
 			return translationException(code, args);
 		} catch (RuntimeException e) {
-			AbcdLogger.errorMessage(ServerTranslate.class.getName(), e);
+			WebformsLogger.errorMessage(ServerTranslate.class.getName(), e);
 			try {
 				MessageManager.showError(ServerTranslate.translationException("error.fatal", null));
 			} catch (RuntimeException e2) {

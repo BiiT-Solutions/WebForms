@@ -10,7 +10,7 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
-@Theme("abcd")
+@Theme("webforms")
 public class ApplicationFrame extends UI {
 	private static final long serialVersionUID = -704009283476930001L;
 	private Navigator navigator;
