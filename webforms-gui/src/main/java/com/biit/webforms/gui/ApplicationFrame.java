@@ -1,8 +1,8 @@
 package com.biit.webforms.gui;
 
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.webpages.WebMap;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;

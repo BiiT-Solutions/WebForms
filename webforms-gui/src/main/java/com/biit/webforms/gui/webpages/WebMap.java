@@ -1,4 +1,4 @@
-package com.biit.webforms.webpages;
+package com.biit.webforms.gui.webpages;
 
 @SuppressWarnings("rawtypes")
 public enum WebMap {
