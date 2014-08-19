@@ -12,7 +12,11 @@ public enum CommonLanguageCodes implements ILanguageCode {
 	LOGIN_ERROR_MESSAGE_USER_SERVICE("login.errorMessage.userService"),
 	LOGIN_ERROR_MESSAGE_CONTACT("login.errorMessage.contact"),
 	LOGIN_ERROR_MESSAGE_ENCRYPTINGPASSWORD("login.errorMessage.password"),
-	ERROR_UNEXPECTED_ERROR("securedWebPageComponent.errorMessage.unexpectedError")
+	ERROR_UNEXPECTED_ERROR("securedWebPageComponent.errorMessage.unexpectedError"),
+	ACCEPT_CANCEL_WINDOW_CAPTION_ACCEPT("accept.cancel.windo.caption.accept"),
+	ACCEPT_CANCEL_WINDOW_CAPTION_CANCEL("accept.cancel.windo.caption.cancel"),
+	ACCEPT_CANCEL_WINDOW_TOOLTIP_ACCEPT("accept.cancel.windo.tooltip.accept"),
+	ACCEPT_CANCEL_WINDOW_TOOLTIP_CANCEL("accept.cancel.windo.tooltip.cancel"),
 	;
 	
 	private String value;

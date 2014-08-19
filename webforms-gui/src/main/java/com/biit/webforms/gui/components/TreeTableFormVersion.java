@@ -8,8 +8,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.common.language.ServerTranslate;
@@ -26,7 +24,7 @@ import com.vaadin.ui.TreeTable;
 
 public class TreeTableFormVersion extends TreeTable {
 	private static final long serialVersionUID = -7776688515497328826L;
-	
+
 	private IFormDao formDao;
 	private HashMap<String, List<Form>> formMap;
 

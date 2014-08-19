@@ -8,6 +8,7 @@ import com.vaadin.ui.VerticalLayout;
 public abstract class WebPage extends WebPageComponent {
 	private static final long serialVersionUID = 5807470662051568616L;
 	private AbstractOrderedLayout workingArea;
+	private UpperMenu upperMenu;
 
 	public WebPage() {
 		setRootLayout(new VerticalLayout());
@@ -17,7 +18,7 @@ public abstract class WebPage extends WebPageComponent {
 		setSizeFull();
 	}
 
-	public void addCentralPanel() {
+	public void setAsCentralPanel() {
 		Panel mainPanel = new Panel();
 		getRootLayout().addComponent(mainPanel);
 		getRootLayout().setComponentAlignment(mainPanel, Alignment.MIDDLE_CENTER);
@@ -31,6 +32,15 @@ public abstract class WebPage extends WebPageComponent {
 
 		mainPanel.setContent(workingArea);
 		mainPanel.setSizeFull();
+	}
+
+	public void setUpperMenu(UpperMenu upperMenu) {
+		if (this.upperMenu != null) {
+			this.getRootLayout().removeComponent(this.upperMenu);
+		}
+		this.upperMenu = upperMenu;
+		this.getRootLayout().addComponent(upperMenu, 0);
+		getRootLayout().setComponentAlignment(upperMenu, Alignment.BOTTOM_CENTER);
 	}
 
 	/**

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
+import com.biit.webforms.gui.common.components.UpperMenu;
 import com.biit.webforms.gui.components.TreeTableFormVersion;
 
 public class ProjectManager extends SecuredWebPage {
@@ -14,7 +15,8 @@ public class ProjectManager extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
-		addCentralPanel();
+		setAsCentralPanel();
+		setUpperMenu(new UpperMenu());
 
 		treeTableFormVersion = new TreeTableFormVersion();
 		treeTableFormVersion.setSizeFull();
