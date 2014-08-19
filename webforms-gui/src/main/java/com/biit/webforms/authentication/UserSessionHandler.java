@@ -6,11 +6,13 @@ import com.vaadin.ui.UI;
 public class UserSessionHandler {
 	private static final String DEFAULT_SUFIX = "-sessionhandler";
 	private User user = null;
+	private ApplicationController controller = null;
 
 	// Store the user object of the currently inlogged user
 
 	/**
-	 * Initializes the {@link UserSessionHandler} for the given {@link Application}
+	 * Initializes the {@link UserSessionHandler} for the given
+	 * {@link Application}
 	 * 
 	 * @param ui
 	 */
@@ -29,6 +31,7 @@ public class UserSessionHandler {
 	 */
 	public UserSessionHandler(UI ui) {
 		ui.getSession().setAttribute(ui.getId() + DEFAULT_SUFIX, this);
+		controller = new ApplicationController();
 	}
 
 	private static UserSessionHandler getCurrent() {
@@ -45,7 +48,8 @@ public class UserSessionHandler {
 	}
 
 	/**
-	 * Set the User object for the currently inlogged user for this application instance
+	 * Set the User object for the currently inlogged user for this application
+	 * instance
 	 * 
 	 * @param user
 	 */
@@ -55,7 +59,8 @@ public class UserSessionHandler {
 	}
 
 	/**
-	 * Get the User object of the currently inlogged user for this application instance.
+	 * Get the User object of the currently inlogged user for this application
+	 * instance.
 	 * 
 	 * @return The currently inlogged user
 	 */
@@ -65,7 +70,8 @@ public class UserSessionHandler {
 	}
 
 	/**
-	 * Set the User object for the currently inlogged user for this application instance
+	 * Set the User object for the currently inlogged user for this application
+	 * instance
 	 * 
 	 * @param user
 	 */
@@ -78,6 +84,10 @@ public class UserSessionHandler {
 	 */
 	public static void logout() {
 		setUser(null);
+	}
+
+	public static ApplicationController getController() {
+		return getCurrent().controller;
 	}
 
 }

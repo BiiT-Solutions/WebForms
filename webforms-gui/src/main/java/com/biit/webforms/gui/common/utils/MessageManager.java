@@ -1,8 +1,9 @@
-package com.biit.webforms.gui;
+package com.biit.webforms.gui.common.utils;
 
 import com.biit.webforms.authentication.UserSessionHandler;
-import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.language.ServerTranslate;
+import com.biit.webforms.gui.ApplicationFrame;
+import com.biit.webforms.gui.common.language.ILanguageCode;
+import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.Notification;
@@ -15,7 +16,7 @@ public class MessageManager {
 		showMessage(caption, description, Notification.Type.WARNING_MESSAGE);
 	}
 
-	public static void showWarning(LanguageCodes caption, LanguageCodes description) {
+	public static void showWarning(ILanguageCode caption, ILanguageCode description) {
 		showWarning(ServerTranslate.translate(caption), ServerTranslate.translate(description));
 	}
 
@@ -23,7 +24,7 @@ public class MessageManager {
 		showMessage(caption, description, Notification.Type.ERROR_MESSAGE, Position.TOP_CENTER);
 	}
 
-	public static void showError(LanguageCodes caption, LanguageCodes description) {
+	public static void showError(ILanguageCode caption, ILanguageCode description) {
 		showError(ServerTranslate.translate(caption), ServerTranslate.translate(description));
 	}
 
@@ -31,7 +32,7 @@ public class MessageManager {
 		showMessage(caption, "", Notification.Type.ERROR_MESSAGE, Position.TOP_CENTER);
 	}
 
-	public static void showError(LanguageCodes caption) {
+	public static void showError(ILanguageCode caption) {
 		showError(ServerTranslate.translate(caption));
 	}
 
@@ -39,7 +40,7 @@ public class MessageManager {
 		showMessage(caption, description, Notification.Type.HUMANIZED_MESSAGE);
 	}
 
-	public static void showInfo(LanguageCodes caption, LanguageCodes description) {
+	public static void showInfo(ILanguageCode caption, ILanguageCode description) {
 		showInfo(ServerTranslate.translate(caption), ServerTranslate.translate(description));
 	}
 
@@ -47,7 +48,7 @@ public class MessageManager {
 		showMessage(caption, "", Notification.Type.HUMANIZED_MESSAGE);
 	}
 
-	public static void showInfo(LanguageCodes caption) {
+	public static void showInfo(ILanguageCode caption) {
 		showInfo(ServerTranslate.translate(caption));
 	}
 
@@ -64,8 +65,8 @@ public class MessageManager {
 			} else {
 				user = "none";
 			}
-			WebformsLogger.info(MessageManager.class.getName(), "Message '" + caption + " " + description + "' (" + type
-					+ ") displayed to user '" + user + "'.");
+			WebformsLogger.info(MessageManager.class.getName(), "Message '" + caption + " " + description + "' ("
+					+ type + ") displayed to user '" + user + "'.");
 		} catch (Exception e) {
 			WebformsLogger.errorMessage(MessageManager.class.getName(), e);
 		}

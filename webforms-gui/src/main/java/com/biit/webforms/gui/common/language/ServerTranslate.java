@@ -1,12 +1,12 @@
-package com.biit.webforms.language;
+package com.biit.webforms.gui.common.language;
 
 import java.util.Locale;
 
 import org.springframework.util.StringUtils;
 
 import com.biit.webforms.authentication.UserSessionHandler;
-import com.biit.webforms.gui.MessageManager;
-import com.biit.webforms.gui.SpringContextHelper;
+import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
@@ -39,11 +39,11 @@ public class ServerTranslate {
 		}
 	}
 
-	public static String translate(LanguageCodes code) {
+	public static String translate(ILanguageCode code) {
 		if (code == null) {
 			return null;
 		}
-		return translate(code.toString(), null);
+		return translate(code.getCode(), null);
 	}
 
 	public static String translate(String code) {
@@ -53,8 +53,8 @@ public class ServerTranslate {
 		return translate(code, null);
 	}
 
-	public static String translate(LanguageCodes code, Object[] args) {
-		return translate(code.toString(), args);
+	public static String translate(ILanguageCode code, Object[] args) {
+		return translate(code.getCode(), args);
 	}
 
 	protected static String translate(String code, Object[] args) {

@@ -65,8 +65,6 @@
 		<property name="packagesToScan">
 			<list>
 				<value>com.biit.webforms.**.*</value>
-				<value>com.biit.persistence.**.*</value>
-				<value>com.biit.forms.**.*</value>
 			</list>
 		</property>
 	</bean>
@@ -95,8 +93,7 @@
 	</bean>
 	
 	<!-- DAOS -->
-	<!--<bean name="formDao" class="com.biit.abcd.persistence.dao.hibernate.FormDao"/>
-	<bean name="diagramDao" class="com.biit.abcd.persistence.dao.hibernate.DiagramDao"/>-->
+	<bean name="formDao" class="com.biit.webforms.persistence.dao.hibernate.FormDao"/>
 	
 	<!-- Liferay Services -->
 	<bean id="userService" class="com.biit.liferay.access.UserService" />

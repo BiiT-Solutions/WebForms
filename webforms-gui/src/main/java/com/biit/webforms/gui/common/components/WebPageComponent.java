@@ -1,4 +1,4 @@
-package com.biit.webforms.webpages.components;
+package com.biit.webforms.gui.common.components;
 
 import com.vaadin.navigator.View;
 import com.vaadin.ui.AbstractOrderedLayout;

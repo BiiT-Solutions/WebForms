@@ -1,4 +1,4 @@
-package com.biit.webforms.gui;
+package com.biit.webforms.gui.common.utils;
 
 import javax.servlet.ServletContext;
 
