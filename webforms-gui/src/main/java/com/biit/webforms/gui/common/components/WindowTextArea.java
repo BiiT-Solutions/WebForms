@@ -1,0 +1,47 @@
+package com.biit.webforms.gui.common.components;
+
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.VerticalLayout;
+
+public class WindowTextArea extends WindowAcceptCancel{
+	private static final long serialVersionUID = 4740162877392137594L;
+
+	private static final String width = "300px";
+	private static final String height = "300px";
+
+	private TextArea textArea;
+
+	public WindowTextArea(String inputFieldCaption) {
+		super();
+		setContent(generateContent(inputFieldCaption));
+		setResizable(false);
+		setDraggable(false);
+		setClosable(false);
+		setModal(true);
+		setWidth(width);
+		setHeight(height);
+	}
+	
+	public String getValue() {
+		return textArea.getValue();
+	}
+
+	private Component generateContent(String inputFieldCaption) {
+		textArea = new TextArea(inputFieldCaption);
+		textArea.focus();
+		textArea.setSizeFull();
+
+		VerticalLayout rootLayout = new VerticalLayout();
+		rootLayout.setSizeFull();
+
+		rootLayout.addComponent(textArea);
+		rootLayout.setComponentAlignment(textArea, Alignment.MIDDLE_CENTER);
+		return rootLayout;
+	}
+
+	public void setValue(String value) {
+		textArea.setValue(value);
+	}
+}

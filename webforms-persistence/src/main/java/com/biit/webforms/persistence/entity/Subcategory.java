@@ -11,6 +11,7 @@ import com.biit.form.BaseCategory;
 import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
 import com.biit.form.BaseRepeatableGroup;
+import com.biit.form.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
 
 @Entity
@@ -40,6 +41,11 @@ public class Subcategory extends BaseGroup {
 	@Override
 	protected String getTechnicalName() {
 		return DEFAULT_SUBCATEGORY_NAME;
+	}
+
+	@Override
+	public void copyData(TreeObject object) {
+		//Nothing to copy
 	}
 
 }

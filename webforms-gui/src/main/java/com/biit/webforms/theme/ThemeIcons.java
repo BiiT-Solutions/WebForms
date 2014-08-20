@@ -1,0 +1,27 @@
+package com.biit.webforms.theme;
+
+import com.biit.webforms.gui.common.theme.IThemeIcon;
+import com.vaadin.server.ThemeResource;
+
+public enum ThemeIcons implements IThemeIcon{
+	
+	EDIT("appbar.edit.svg"),
+	FORM_MANAGER_PAGE("appbar.cabinet.files.svg");	
+	
+	private String value;
+
+	ThemeIcons(String value) {
+		this.value = value;
+	}
+
+	@Override
+	public ThemeResource getThemeResource() {
+		return new ThemeResource(value);
+	}
+
+	@Override
+	public String getFile() {
+		return value;
+	}
+
+}

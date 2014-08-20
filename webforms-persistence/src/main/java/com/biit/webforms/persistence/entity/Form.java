@@ -1,28 +1,30 @@
 package com.biit.webforms.persistence.entity;
 
-import java.sql.Timestamp;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import com.biit.form.BaseForm;
+import com.biit.form.TreeObject;
 import com.biit.form.exceptions.FieldTooLongException;
+import com.liferay.portal.model.User;
 
 @Entity
 @Table(name = "forms")
 public class Form extends BaseForm {
-
-	@Column(nullable = false)
-	private Timestamp availableFrom;
-	private Timestamp availableTo;
+	public static final int MAX_DESCRIPTION_LENGTH = 30000;
+	
+	@Column(length = MAX_DESCRIPTION_LENGTH)
+	private String description;
 
 	public Form() {
 		super();
 	}
 
-	public Form(String name) throws FieldTooLongException {
+	public Form(String name, User user) throws FieldTooLongException {
 		super(name);
+		setCreatedBy(user);
+		setUpdatedBy(user);
 	}
 
 	@Override
@@ -31,26 +33,32 @@ public class Form extends BaseForm {
 	}
 
 	@Override
-	public void setCreationTime(Timestamp dateCreated) {
-		if (this.availableFrom == null) {
-			this.availableFrom = dateCreated;
+	public void copyData(TreeObject object) {
+		Form form = (Form) object;
+		try {
+			setDescription(form.getDescription());
+		} catch (FieldTooLongException e) {
+			e.printStackTrace();
 		}
-		super.setCreationTime(dateCreated);
 	}
-
-	public Timestamp getAvailableFrom() {
-		return this.availableFrom;
+	
+	public Form createNewVersion(User user){
+		Form newVersion = (Form) generateCopy(false, true);
+		newVersion.setVersion(newVersion.getVersion()+1);
+		newVersion.resetIds();
+		newVersion.setCreatedBy(user);
+		newVersion.setUpdatedBy(user);
+		return newVersion;
 	}
-
-	public void setAvailableFrom(Timestamp availableFrom) {
-		this.availableFrom = availableFrom;
+	
+	public void setDescription(String description) throws FieldTooLongException{
+		if(description.length()>MAX_DESCRIPTION_LENGTH){
+			throw new FieldTooLongException("Description is longer than maximum: "+MAX_DESCRIPTION_LENGTH);
+		}
+		this.description = new String(description);
 	}
-
-	public Timestamp getAvailableTo() {
-		return this.availableTo;
-	}
-
-	public void setAvailableTo(Timestamp availableTo) {
-		this.availableTo = availableTo;
+	
+	public String getDescription(){
+		return description;
 	}
 }

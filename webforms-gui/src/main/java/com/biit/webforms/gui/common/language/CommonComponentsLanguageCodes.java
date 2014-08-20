@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.common.language;
 
-public enum CommonLanguageCodes implements ILanguageCode {
+public enum CommonComponentsLanguageCodes implements ILanguageCode {
 	LOGIN_CAPTION_EMAIL("login.caption.email"),
 	LOGIN_ERROR_EMAIL("login.error.email"),
 	LOGIN_CAPTION_PASSWORD("login.caption.password"),
@@ -21,13 +21,18 @@ public enum CommonLanguageCodes implements ILanguageCode {
 	
 	private String value;
 	
-	CommonLanguageCodes(String value){
+	CommonComponentsLanguageCodes(String value){
 		this.value = value;
 	}
 
 	@Override
 	public String getCode() {
 		return value;
+	}
+
+	@Override
+	public String translation() {
+		return ServerTranslate.translate(value);
 	}
 	
 }

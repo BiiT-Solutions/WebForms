@@ -6,6 +6,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 import com.biit.form.BaseQuestion;
+import com.biit.form.TreeObject;
 import com.biit.form.exceptions.FieldTooLongException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 
@@ -47,5 +48,19 @@ public class Question extends BaseQuestion {
 			}
 		}
 		this.answerFormat = answerFormat;
+	}
+
+	@Override
+	public void copyData(TreeObject object) {
+		Question question = (Question) object;
+
+		setAnswerType(question.getAnswerType());
+		try {
+			setAnswerFormat(question.getAnswerFormat());
+		} catch (InvalidAnswerFormatException e) {
+			// Its a copy, it should never happen.
+			e.printStackTrace();
+		}
+
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationFrame;
-import com.biit.webforms.gui.common.language.CommonLanguageCodes;
+import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.WebpageAuthorizationService;
 import com.biit.webforms.gui.webpages.WebMap;
@@ -50,6 +50,7 @@ public abstract class SecuredWebPage extends WebPage {
 					}
 				}
 				securedEnter(event);
+				WebformsLogger.debug(this.getClass().getName(),"Initialized correctly for user: "+UserSessionHandler.getUser().getEmailAddress());
 			}
 		} catch (Exception e) {
 			// This is not a good practice, but Vaadin will mask any exception
@@ -57,7 +58,7 @@ public abstract class SecuredWebPage extends WebPage {
 			// unrelated and unintelligible, so we catch the exception, log it
 			// and go to the login page.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			MessageManager.showError(CommonLanguageCodes.ERROR_UNEXPECTED_ERROR);
+			MessageManager.showError(CommonComponentsLanguageCodes.ERROR_UNEXPECTED_ERROR);
 			ApplicationFrame.navigateTo(WebMap.getLoginPage());
 		}
 	}

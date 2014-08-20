@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import com.biit.form.BaseCategory;
 import com.biit.form.BaseQuestion;
 import com.biit.form.BaseRepeatableGroup;
+import com.biit.form.TreeObject;
 import com.biit.form.exceptions.FieldTooLongException;
 
 @Entity
@@ -29,5 +30,10 @@ public class Category extends BaseCategory {
 	@Override
 	protected List<Class<?>> getAllowedChildren() {
 		return ALLOWED_CHILDS;
+	}
+
+	@Override
+	public void copyData(TreeObject object) {
+		//Nothing to copy
 	}
 }

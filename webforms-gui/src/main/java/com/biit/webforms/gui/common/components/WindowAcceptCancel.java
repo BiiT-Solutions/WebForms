@@ -3,7 +3,7 @@ package com.biit.webforms.gui.common.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.webforms.gui.common.language.CommonLanguageCodes;
+import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
@@ -16,7 +16,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-public class AcceptCancelWindow extends Window {
+public class WindowAcceptCancel extends Window {
 
 	private static final long serialVersionUID = 8796193085149771811L;
 	private List<AcceptActionListener> acceptListeners;
@@ -26,24 +26,24 @@ public class AcceptCancelWindow extends Window {
 	private Component contentComponent;
 
 	public interface AcceptActionListener {
-		public void acceptAction(AcceptCancelWindow window);
+		public void acceptAction(WindowAcceptCancel window);
 	}
 
 	public interface CancelActionListener {
-		public void cancelAction(AcceptCancelWindow window);
+		public void cancelAction(WindowAcceptCancel window);
 	}
 
-	public AcceptCancelWindow() {
+	public WindowAcceptCancel() {
 		super();
 		setModal(true);
-		acceptListeners = new ArrayList<AcceptCancelWindow.AcceptActionListener>();
-		cancelListeners = new ArrayList<AcceptCancelWindow.CancelActionListener>();
+		acceptListeners = new ArrayList<WindowAcceptCancel.AcceptActionListener>();
+		cancelListeners = new ArrayList<WindowAcceptCancel.CancelActionListener>();
 	}
 
-	public AcceptCancelWindow(Component content) {
+	public WindowAcceptCancel(Component content) {
 		super("", content);
-		acceptListeners = new ArrayList<AcceptCancelWindow.AcceptActionListener>();
-		cancelListeners = new ArrayList<AcceptCancelWindow.CancelActionListener>();
+		acceptListeners = new ArrayList<WindowAcceptCancel.AcceptActionListener>();
+		cancelListeners = new ArrayList<WindowAcceptCancel.CancelActionListener>();
 	}
 
 	@Override
@@ -60,8 +60,8 @@ public class AcceptCancelWindow extends Window {
 	}
 
 	protected void generateAcceptCancelButton() {
-		acceptButton = new IconButton(CommonLanguageCodes.ACCEPT_CANCEL_WINDOW_CAPTION_ACCEPT, CommonThemeIcon.ACCEPT,
-				CommonLanguageCodes.ACCEPT_CANCEL_WINDOW_TOOLTIP_ACCEPT, IconSize.SMALL, new ClickListener() {
+		acceptButton = new IconButton(CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_CAPTION_ACCEPT, CommonThemeIcon.ACCEPT,
+				CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_TOOLTIP_ACCEPT, IconSize.SMALL, new ClickListener() {
 					private static final long serialVersionUID = 6785334478985006998L;
 
 					@Override
@@ -69,8 +69,8 @@ public class AcceptCancelWindow extends Window {
 						fireAcceptActionListeners();
 					}
 				});
-		cancelButton = new IconButton(CommonLanguageCodes.ACCEPT_CANCEL_WINDOW_CAPTION_CANCEL, CommonThemeIcon.CANCEL,
-				CommonLanguageCodes.ACCEPT_CANCEL_WINDOW_TOOLTIP_CANCEL, IconSize.SMALL, new ClickListener() {
+		cancelButton = new IconButton(CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_CAPTION_CANCEL, CommonThemeIcon.CANCEL,
+				CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_TOOLTIP_CANCEL, IconSize.SMALL, new ClickListener() {
 					private static final long serialVersionUID = -6302237054661116415L;
 
 					@Override
@@ -135,6 +135,7 @@ public class AcceptCancelWindow extends Window {
 			@Override
 			public void handleAction(Object sender, Object target) {
 				fireCancelActionListeners();
+				close();
 			}
 		});
 	}

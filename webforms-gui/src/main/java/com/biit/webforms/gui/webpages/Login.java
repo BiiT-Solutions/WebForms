@@ -11,7 +11,7 @@ import com.biit.security.exceptions.PBKDF2EncryptorException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationFrame;
 import com.biit.webforms.gui.common.components.WebPageComponent;
-import com.biit.webforms.gui.common.language.CommonLanguageCodes;
+import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.logger.WebformsLogger;
@@ -61,16 +61,16 @@ public class Login extends WebPageComponent {
 		panel.setSizeUndefined();
 
 		// Create input fields for user name and password
-		usernameField = new TextField(ServerTranslate.translate(CommonLanguageCodes.LOGIN_CAPTION_EMAIL));
+		usernameField = new TextField(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_EMAIL));
 		usernameField.setRequired(true);
-		usernameField.setRequiredError(ServerTranslate.translate(CommonLanguageCodes.LOGIN_ERROR_EMAIL));
+		usernameField.setRequiredError(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_ERROR_EMAIL));
 		usernameField.setWidth(FIELD_SIZE);
 		usernameField.focus();
 
-		passwordField = new PasswordField(ServerTranslate.translate(CommonLanguageCodes.LOGIN_CAPTION_PASSWORD));
+		passwordField = new PasswordField(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_PASSWORD));
 		passwordField.setRequired(true);
 		passwordField.setWidth(FIELD_SIZE);
-		passwordField.setRequiredError(ServerTranslate.translate(CommonLanguageCodes.LOGIN_ERROR_PASSWORD));
+		passwordField.setRequiredError(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_ERROR_PASSWORD));
 
 		// If you press enter. Login operation.
 		passwordField.addShortcutListener(new ShortcutListener("Shortcut Name", ShortcutAction.KeyCode.ENTER, null) {
@@ -91,7 +91,7 @@ public class Login extends WebPageComponent {
 		});
 
 		// Add the login button
-		Button loginButton = new Button(ServerTranslate.translate(CommonLanguageCodes.LOGIN_CAPTION_SIGN_IN),
+		Button loginButton = new Button(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_SIGN_IN),
 				new ClickListener() {
 					private static final long serialVersionUID = 1239035599265918788L;
 
@@ -123,17 +123,17 @@ public class Login extends WebPageComponent {
 			user = AuthenticationService.getInstance().authenticate(userMail, password);
 		} catch (InvalidCredentialsException | AuthenticationRequired e) {
 			passwordField.setComponentError(new UserError(ServerTranslate.translate(
-					CommonLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER, new Object[] { userMail })));
-			MessageManager.showError(CommonLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
-					CommonLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE);
+					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER, new Object[] { userMail })));
+			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
+					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE);
 		} catch (IOException | WebServiceAccessError | NotConnectedToWebServiceException e) {
 			e.printStackTrace();
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			MessageManager.showError(CommonLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
-					CommonLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
+			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
+					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
 		} catch (PBKDF2EncryptorException e) {
-			MessageManager.showError(CommonLanguageCodes.LOGIN_ERROR_MESSAGE_ENCRYPTINGPASSWORD,
-					CommonLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
+			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_ENCRYPTINGPASSWORD,
+					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
 		}
 
 		if (user != null) {

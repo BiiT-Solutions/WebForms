@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.gui.common.components.IconOnlyButton;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.DateManager;
 import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
@@ -18,8 +19,11 @@ import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.theme.ThemeIcons;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.TreeTable;
 
 public class TreeTableFormVersion extends TreeTable {
@@ -27,15 +31,18 @@ public class TreeTableFormVersion extends TreeTable {
 
 	private IFormDao formDao;
 	private HashMap<String, List<Form>> formMap;
+	private List<EditInfoListener> editInfoListeners;
 
 	enum TreeTableFormVersionProperties {
-		FORM_NAME, VERSION, ACCESS, AVAILABLE_FROM, AVAILABLE_TO, USED_BY, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
+		FORM_NAME, VERSION, INFO, ACCESS, USED_BY, STATUS, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
 	};
 
 	public TreeTableFormVersion() {
 		// Add Vaadin conext to Spring, and get beans for DAOs.
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		formDao = (IFormDao) helper.getBean("formDao");
+		
+		editInfoListeners = new ArrayList<EditInfoListener>();
 
 		initContainerProperties();
 		initializeFormTable();
@@ -54,6 +61,9 @@ public class TreeTableFormVersion extends TreeTable {
 		addContainerProperty(TreeTableFormVersionProperties.VERSION, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_VERSION), null, Align.CENTER);
 
+		addContainerProperty(TreeTableFormVersionProperties.INFO, IconOnlyButton.class, "",
+				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_INFO), null, Align.CENTER);
+		
 		addContainerProperty(TreeTableFormVersionProperties.ACCESS, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ACCESS), null, Align.CENTER);
 
@@ -76,8 +86,6 @@ public class TreeTableFormVersion extends TreeTable {
 		setColumnCollapsible(TreeTableFormVersionProperties.FORM_NAME, false);
 		setColumnCollapsible(TreeTableFormVersionProperties.VERSION, false);
 		setColumnCollapsible(TreeTableFormVersionProperties.ACCESS, true);
-		setColumnCollapsible(TreeTableFormVersionProperties.AVAILABLE_FROM, true);
-		setColumnCollapsible(TreeTableFormVersionProperties.AVAILABLE_TO, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.USED_BY, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.CREATED_BY, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.CREATION_DATE, true);
@@ -89,8 +97,6 @@ public class TreeTableFormVersion extends TreeTable {
 		setColumnExpandRatio(TreeTableFormVersionProperties.FORM_NAME, 3);
 		setColumnExpandRatio(TreeTableFormVersionProperties.VERSION, 0.5f);
 		setColumnExpandRatio(TreeTableFormVersionProperties.ACCESS, 1);
-		setColumnExpandRatio(TreeTableFormVersionProperties.AVAILABLE_FROM, 1);
-		setColumnExpandRatio(TreeTableFormVersionProperties.AVAILABLE_TO, 1);
 		setColumnExpandRatio(TreeTableFormVersionProperties.USED_BY, 1);
 		setColumnExpandRatio(TreeTableFormVersionProperties.CREATED_BY, 1.2f);
 		setColumnExpandRatio(TreeTableFormVersionProperties.CREATION_DATE, 1);
@@ -110,15 +116,8 @@ public class TreeTableFormVersion extends TreeTable {
 			Item item = addItem(form);
 			item.getItemProperty(TreeTableFormVersionProperties.FORM_NAME).setValue(form.getName());
 			item.getItemProperty(TreeTableFormVersionProperties.VERSION).setValue(form.getVersion() + "");
+			item.getItemProperty(TreeTableFormVersionProperties.INFO).setValue(createInfoButton());
 			item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag(form));
-			item.getItemProperty(TreeTableFormVersionProperties.AVAILABLE_FROM).setValue(
-					(DateManager.convertDateToString(form.getAvailableFrom())));
-			if (form.getAvailableTo() != null) {
-				item.getItemProperty(TreeTableFormVersionProperties.AVAILABLE_TO).setValue(
-						(DateManager.convertDateToString(form.getAvailableTo())));
-			} else {
-				item.getItemProperty(TreeTableFormVersionProperties.AVAILABLE_TO).setValue("");
-			}
 			item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue("");
 			try {
 				item.getItemProperty(TreeTableFormVersionProperties.CREATED_BY).setValue(
@@ -136,6 +135,25 @@ public class TreeTableFormVersion extends TreeTable {
 			}
 			item.getItemProperty(TreeTableFormVersionProperties.MODIFICATION_DATE).setValue(
 					(DateManager.convertDateToString(form.getUpdateTime())));
+		}
+	}
+	
+	private IconOnlyButton createInfoButton(){
+		IconOnlyButton icon = new IconOnlyButton(ThemeIcons.EDIT.getThemeResource());
+		icon.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 896514404248078435L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				fireEditInfo(getValue());
+			}
+		});
+		return icon;
+	}
+
+	protected void fireEditInfo(Form value) {
+		for(EditInfoListener listener: editInfoListeners){
+			listener.editInfo(value);
 		}
 	}
 
@@ -311,4 +329,11 @@ public class TreeTableFormVersion extends TreeTable {
 		return new ArrayList<>(Arrays.asList(TreeTableFormVersionProperties.FORM_NAME));
 	}
 
+	public void addEditInfoListener(EditInfoListener listener){
+		editInfoListeners.add(listener);
+	}
+	
+	public void removeEditInfoListener(EditInfoListener listener){
+		editInfoListeners.remove(listener);
+	}
 }

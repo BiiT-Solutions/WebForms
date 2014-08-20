@@ -1,24 +1,52 @@
 package com.biit.webforms.language;
 
 import com.biit.webforms.gui.common.language.ILanguageCode;
+import com.biit.webforms.gui.common.language.ServerTranslate;
 
 public enum LanguageCodes implements ILanguageCode{
+	//Common
+	COMMON_CAPTION_NAME("caption.name"),
+	COMMON_CAPTION_DESCRIPTION("caption.description"),
+	COMMON_CAPTION_EDIT_DESCRIPTION("caption.edit.description"),
 	CAPTION_ANSWER_FORMAT_TEXT("caption.answerFormat.text"),
 	CAPTION_ANSWER_FORMAT_NUMBER("caption.answerFormat.number"),
 	CAPTION_ANSWER_FORMAT_DATE("caption.answerFormat.date"),
 	CAPTION_ANSWER_FORMAT_POSTAL_CODE("caption.answerFormat.postalCode"),
 	CAPTION_ANSWER_TYPE_INPUT_FIELD("caption.answerType.inputField"),
 	CAPTION_ANSWER_TYPE_RADIO_BUTTON("caption.answerType.radioButton"),
-	CAPTION_ANSWER_TYPE_MULTI_CHECKBOX("caption.answerType.multiCheckbox"), 
+	CAPTION_ANSWER_TYPE_MULTI_CHECKBOX("caption.answerType.multiCheckbox"),
+	
+	COMMON_WARNING_TITLE_FORM_NOT_CREATED("common.warning.title.form.not.created"),
+	COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME("common.warning.description.form.needs.name"),
+	
+	COMMON_ERROR_FIELD_TOO_LONG("common.error.field.too.long"),
+	COMMON_ERROR_NAME_IS_IN_USE("common.error.name.is.in.use"),
+	
+	//Manager
+	CAPTION_NEW_FORM("caption.new.form"),
+	CAPTION_NEW_FORM_VERSION("caption.new.form.version"),
+	CAPTION_DESIGN("caption.design"),
+	CAPTION_FLOW("caption.flow"),
+	
+	TOOLTIP_NEW_FORM("tooltip.new.form"),
+	TOOLTIP_NEW_FORM_VERSION("tooltip.new.form.version"),
+	TOOLTIP_DESIGN("tooltip.design"),
+	TOOLTIP_FLOW("tooltip.flow"),
+	NULL_VALUE_NEW_FORM("null.value.new.form"),
+	
 	
 	FORM_TABLE_COLUMN_NAME("caption.form.table.name"),
 	FORM_TABLE_COLUMN_VERSION("caption.form.table.version"),
+	FORM_TABLE_COLUMN_INFO("caption.form.table.info"),
 	FORM_TABLE_COLUMN_ACCESS("caption.form.table.access"),
 	FORM_TABLE_COLUMN_USEDBY("caption.form.table.usedBy"),
+	FORM_TABLE_COLUMN_STATUS("caption.form.table.status"),
 	FORM_TABLE_COLUMN_CREATEDBY("caption.form.table.createdBy"),
 	FORM_TABLE_COLUMN_CREATIONDATE("caption.form.table.creationDate"),
 	FORM_TABLE_COLUMN_MODIFIEDBY("caption.form.table.modifiedBy"),
-	FORM_TABLE_COLUMN_MODIFICATIONDATE("caption.form.table.modificationDate")
+	FORM_TABLE_COLUMN_MODIFICATIONDATE("caption.form.table.modificationDate");
+	
+	
 	;
 
 	private String value;
@@ -35,5 +63,10 @@ public enum LanguageCodes implements ILanguageCode{
 	@Override
 	public String getCode() {
 		return value;
+	}
+
+	@Override
+	public String translation() {
+		return ServerTranslate.translate(value);
 	}
 }
