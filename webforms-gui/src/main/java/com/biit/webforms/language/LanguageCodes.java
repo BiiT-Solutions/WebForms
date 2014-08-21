@@ -13,6 +13,9 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_CAPTION_BUILDING_BLOCK_MANAGER("caption.buildingBlock.manager"),
 	COMMON_CAPTION_DESIGN("caption.design"),
 	COMMON_CAPTION_FLOW("caption.flow"),
+	COMMON_CAPTION_SAVE("caption.save"),
+	COMMON_CAPTION_VALIDATE("caption.validate"),
+	COMMON_CAPTION_FINISH("caption.finish"),
 	
 	CAPTION_ANSWER_FORMAT_TEXT("caption.answerFormat.text"),
 	CAPTION_ANSWER_FORMAT_NUMBER("caption.answerFormat.number"),
@@ -27,6 +30,9 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER("tooltip.buildingBlock.manager"),
 	COMMON_TOOLTIP_DESIGN("tooltip.design"),
 	COMMON_TOOLTIP_FLOW("tooltip.flow"),
+	COMMON_TOOLTIP_SAVE("tooltip.save"),
+	COMMON_TOOLTIP_VALIDATE("tooltip.validate"),
+	COMMON_TOOLTIP_FINISH("tooltip.finish"),
 	
 	COMMON_WARNING_TITLE_FORM_NOT_CREATED("common.warning.title.form.not.created"),
 	COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME("common.warning.description.form.needs.name"),

@@ -7,7 +7,12 @@ public enum ThemeIcons implements IThemeIcon{
 	
 	EDIT("appbar.edit.svg"),
 	SETTINGS("appbar.lines.horizontal.4.svg"),
-	FORM_MANAGER_PAGE("appbar.cabinet.files.svg");	
+	FORM_MANAGER_PAGE("appbar.cabinet.files.svg"),
+	
+	EDIT_FLOW("appbar.cabinet.files.svg"), 
+	SAVE("appbar.save.svg"), 
+	VALIDATE("appbar.cabinet.files.svg"),
+	FINISH("appbar.cabinet.files.svg");	
 	
 	private String value;
 
