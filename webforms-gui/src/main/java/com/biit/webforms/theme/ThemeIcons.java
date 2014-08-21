@@ -8,6 +8,7 @@ public enum ThemeIcons implements IThemeIcon{
 	EDIT("appbar.edit.svg"),
 	SETTINGS("appbar.lines.horizontal.4.svg"),
 	FORM_MANAGER_PAGE("appbar.cabinet.files.svg"),
+	DELETE("appbar.delete.svg"),
 	
 	FLOW_EDITOR("appbar.cabinet.files.svg"), 
 	SAVE("appbar.save.svg"), 
@@ -20,7 +21,17 @@ public enum ThemeIcons implements IThemeIcon{
 	DESIGNER_QUESTION_DATE("appbar.calendar.31.svg"),
 	DESIGNER_QUESTION_NUMBER("appbar.interface.textbox.number.svg"),
 	DESIGNER_QUESTION_POSTALCODE("appbar.email.hardedge.svg"),
-	DESIGNER_QUESTION_TEXT("appbar.interface.textbox.squared.svg");	
+	DESIGNER_QUESTION_TEXT("appbar.interface.textbox.squared.svg"), 
+	
+	DESIGNER_NEW_CATEGORY("appbar.interface.textbox.squared.svg"),
+	DESIGNER_NEW_SUBCATEGORY("appbar.interface.textbox.squared.svg"),
+	DESIGNER_NEW_GROUP("appbar.interface.textbox.squared.svg"),
+	DESIGNER_NEW_QUESTION("appbar.interface.textbox.squared.svg"),
+	DESIGNER_NEW_TEXT("appbar.interface.textbox.squared.svg"),
+	DESIGNER_NEW_ANSWER("appbar.interface.textbox.squared.svg"),
+	DESIGNER_MOVE("appbar.interface.textbox.squared.svg"),
+		
+	;
 	
 	private String value;
 

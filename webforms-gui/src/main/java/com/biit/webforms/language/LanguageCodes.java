@@ -16,6 +16,8 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_CAPTION_SAVE("caption.save"),
 	COMMON_CAPTION_VALIDATE("caption.validate"),
 	COMMON_CAPTION_FINISH("caption.finish"),
+	COMMON_CAPTION_MOVE("caption.move"),
+	COMMON_CAPTION_DELETE("caption.delete"),
 	
 	CAPTION_ANSWER_FORMAT_TEXT("caption.answerFormat.text"),
 	CAPTION_ANSWER_FORMAT_NUMBER("caption.answerFormat.number"),
@@ -33,6 +35,8 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_TOOLTIP_SAVE("tooltip.save"),
 	COMMON_TOOLTIP_VALIDATE("tooltip.validate"),
 	COMMON_TOOLTIP_FINISH("tooltip.finish"),
+	COMMON_TOOLTIP_MOVE("tooltip.move"),
+	COMMON_TOOLTIP_DELETE("tooltip.delete"),
 	
 	COMMON_WARNING_TITLE_FORM_NOT_CREATED("common.warning.title.form.not.created"),
 	COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME("common.warning.description.form.needs.name"),
@@ -63,6 +67,21 @@ public enum LanguageCodes implements ILanguageCode{
 	//BlockManager
 	CAPTION_NEW_BLOCK("caption.new.block"),
 	TOOLTIP_NEW_BLOCK("caption.new.block"),
+	
+	//Designer
+	CAPTION_NEW_CATEGORY("caption.new.category"),
+	CAPTION_NEW_SUBCATEGORY("caption.new.subcategory"),
+	CAPTION_NEW_GROUP("caption.new.group"),
+	CAPTION_NEW_QUESTION("caption.new.question"),
+	CAPTION_NEW_TEXT("caption.new.text"),
+	CAPTION_NEW_ANSWER("caption.new.answer"),
+	
+	TOOLTIP_NEW_CATEGORY("tooltip.new.category"),
+	TOOLTIP_NEW_SUBCATEGORY("tooltip.new.subcategory"),
+	TOOLTIP_NEW_GROUP("tooltip.new.group"),
+	TOOLTIP_NEW_QUESTION("tooltip.new.question"),
+	TOOLTIP_NEW_TEXT("tooltip.new.text"),
+	TOOLTIP_NEW_ANSWER("tooltip.new.answer"), 
 	
 	;
 

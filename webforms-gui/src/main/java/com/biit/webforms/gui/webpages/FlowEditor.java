@@ -3,7 +3,6 @@ package com.biit.webforms.gui.webpages;
 import java.util.List;
 
 import com.biit.liferay.security.IActivity;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.UpperMenu;
