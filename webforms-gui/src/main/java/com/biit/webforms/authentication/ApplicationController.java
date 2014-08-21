@@ -12,22 +12,17 @@ import com.vaadin.server.VaadinServlet;
 
 public class ApplicationController {
 
+	private User user;
+	
 	private IFormDao formDao;
 
-	private Form form;
+	private Form lastEditedForm;
+	private Form formInUse;
 
 	public ApplicationController() {
 		super();
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		formDao = (IFormDao) helper.getBean("formDao");
-	}
-
-	public void setForm(Form form) {
-		this.form = form;
-	}
-
-	public Form getForm() {
-		return form;
 	}
 
 	/**
@@ -108,8 +103,11 @@ public class ApplicationController {
 				+ " changeFormDescription " + form + " " + text + " END");
 	}
 
+	public void setUser(User user){
+		this.user = user;
+	}
+	
 	public User getUser() {
-		User user = UserSessionHandler.getUser();
 		if (user != null) {
 			return user;
 		} else {
@@ -117,5 +115,26 @@ public class ApplicationController {
 					"Application controller method accessed without user.");
 			return null;
 		}
+	}
+
+	public void setFormInUse(Form form) {
+		this.formInUse = form;
+		setLastEditedForm(form);
+	}
+	
+	public Form getFormInUse(){
+		return formInUse;
+	}
+
+	public Form getLastEditedForm() {
+		return lastEditedForm;
+	}
+
+	private void setLastEditedForm(Form form) {
+		this.lastEditedForm = form;
+	}
+
+	public void clearFormInUse() {
+		formInUse = null;
 	}
 }

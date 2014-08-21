@@ -11,7 +11,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
 @Theme("webforms")
-public class ApplicationFrame extends UI {
+public class ApplicationUi extends UI {
 	private static final long serialVersionUID = -704009283476930001L;
 	private Navigator navigator;
 	private View currentView;
@@ -20,7 +20,18 @@ public class ApplicationFrame extends UI {
 	protected void init(VaadinRequest request) {
 		getPage().setTitle("");
 		defineWebPages();
+		System.out.println("***************************************");
+		System.out.println("Ui init id: "+this.getId());	
+		UiAccesser.register(UserSessionHandler.getController());
 	}
+	
+	@Override
+    public void detach() {
+		System.out.println("***************************************");
+		System.out.println("Detach Ui");	
+		UiAccesser.unregister(UserSessionHandler.getController());
+        super.detach();
+    }
 
 	private void setChangeViewEvents() {
 		navigator.addViewChangeListener(new ViewChangeListener() {

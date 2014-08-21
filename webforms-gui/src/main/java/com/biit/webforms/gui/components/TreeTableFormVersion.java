@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.components.IconOnlyButton;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.DateManager;
@@ -20,6 +21,7 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.theme.ThemeIcons;
+import com.liferay.portal.model.User;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
@@ -41,7 +43,7 @@ public class TreeTableFormVersion extends TreeTable {
 		// Add Vaadin conext to Spring, and get beans for DAOs.
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		formDao = (IFormDao) helper.getBean("formDao");
-		
+
 		editInfoListeners = new ArrayList<EditInfoListener>();
 
 		initContainerProperties();
@@ -63,7 +65,7 @@ public class TreeTableFormVersion extends TreeTable {
 
 		addContainerProperty(TreeTableFormVersionProperties.INFO, IconOnlyButton.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_INFO), null, Align.CENTER);
-		
+
 		addContainerProperty(TreeTableFormVersionProperties.ACCESS, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ACCESS), null, Align.CENTER);
 
@@ -118,7 +120,14 @@ public class TreeTableFormVersion extends TreeTable {
 			item.getItemProperty(TreeTableFormVersionProperties.VERSION).setValue(form.getVersion() + "");
 			item.getItemProperty(TreeTableFormVersionProperties.INFO).setValue(createInfoButton());
 			item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag(form));
-			item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue("");
+
+			User userOfForm = UiAccesser.getUserIfFormIsInUse(form);
+			if (userOfForm != null) {
+				item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue(userOfForm.getEmailAddress());
+			} else {
+				item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue("");
+			}
+
 			try {
 				item.getItemProperty(TreeTableFormVersionProperties.CREATED_BY).setValue(
 						LiferayServiceAccess.getInstance().getUserById(form.getCreatedBy()).getEmailAddress());
@@ -137,8 +146,8 @@ public class TreeTableFormVersion extends TreeTable {
 					(DateManager.convertDateToString(form.getUpdateTime())));
 		}
 	}
-	
-	private IconOnlyButton createInfoButton(){
+
+	private IconOnlyButton createInfoButton() {
 		IconOnlyButton icon = new IconOnlyButton(ThemeIcons.EDIT.getThemeResource());
 		icon.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 896514404248078435L;
@@ -152,7 +161,7 @@ public class TreeTableFormVersion extends TreeTable {
 	}
 
 	protected void fireEditInfo(Form value) {
-		for(EditInfoListener listener: editInfoListeners){
+		for (EditInfoListener listener : editInfoListeners) {
 			listener.editInfo(value);
 		}
 	}
@@ -260,9 +269,9 @@ public class TreeTableFormVersion extends TreeTable {
 	 */
 	public void selectLastUsedForm() {
 		try {
-			if (UserSessionHandler.getController().getForm() != null) {
+			if (UserSessionHandler.getController().getLastEditedForm() != null) {
 				// Update form with new object if the form has change.
-				selectForm(UserSessionHandler.getController().getForm());
+				selectForm(UserSessionHandler.getController().getLastEditedForm());
 			} else {
 				// Select default one.
 				selectFirstRow();
@@ -329,11 +338,11 @@ public class TreeTableFormVersion extends TreeTable {
 		return new ArrayList<>(Arrays.asList(TreeTableFormVersionProperties.FORM_NAME));
 	}
 
-	public void addEditInfoListener(EditInfoListener listener){
+	public void addEditInfoListener(EditInfoListener listener) {
 		editInfoListeners.add(listener);
 	}
-	
-	public void removeEditInfoListener(EditInfoListener listener){
+
+	public void removeEditInfoListener(EditInfoListener listener) {
 		editInfoListeners.remove(listener);
 	}
 }

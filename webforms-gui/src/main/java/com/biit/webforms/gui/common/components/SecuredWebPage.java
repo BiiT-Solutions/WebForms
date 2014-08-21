@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.UserSessionHandler;
-import com.biit.webforms.gui.ApplicationFrame;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.WebpageAuthorizationService;
@@ -40,12 +40,12 @@ public abstract class SecuredWebPage extends WebPage {
 		try {
 			User user = UserSessionHandler.getUser();
 			if (user == null) {
-				ApplicationFrame.navigateTo(WebMap.getLoginPage());
+				ApplicationUi.navigateTo(WebMap.getLoginPage());
 			} else {
 				if (accessAuthorizationsRequired() != null && !accessAuthorizationsRequired().isEmpty()) {
 					for (IActivity activity : accessAuthorizationsRequired()) {
 						if (!WebpageAuthorizationService.getInstance().isAuthorizedActivity(user, activity)) {
-							ApplicationFrame.navigateTo(WebMap.getLoginPage());
+							ApplicationUi.navigateTo(WebMap.getLoginPage());
 						}
 					}
 				}
@@ -59,7 +59,7 @@ public abstract class SecuredWebPage extends WebPage {
 			// and go to the login page.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			MessageManager.showError(CommonComponentsLanguageCodes.ERROR_UNEXPECTED_ERROR);
-			ApplicationFrame.navigateTo(WebMap.getLoginPage());
+			ApplicationUi.navigateTo(WebMap.getLoginPage());
 		}
 	}
 

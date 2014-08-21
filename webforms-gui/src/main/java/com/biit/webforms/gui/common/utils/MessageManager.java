@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.common.utils;
 
 import com.biit.webforms.authentication.UserSessionHandler;
-import com.biit.webforms.gui.ApplicationFrame;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.logger.WebformsLogger;
@@ -85,7 +85,7 @@ public class MessageManager {
 			}
 
 			// Show it in the main window.
-			notif.show(ApplicationFrame.getCurrent().getPage());
+			notif.show(ApplicationUi.getCurrent().getPage());
 		}
 	}
 }

@@ -1,18 +1,19 @@
-package com.biit.webforms.gui.webpages.projectmanager;
+package com.biit.webforms.gui.webpages.formmanager;
 
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
-import com.biit.webforms.gui.common.components.UpperMenu;
+import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.theme.ThemeIcons;
 import com.vaadin.ui.Button.ClickListener;
 
 /**
  * Upper menu for project manager web.
+ * 
  * @author joriz_000
- *
+ * 
  */
-public class UpperMenuProjectManager extends UpperMenu {
+public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
 	private IconButton newForm, newFormVersion, editDesign, editFlow;
@@ -26,8 +27,8 @@ public class UpperMenuProjectManager extends UpperMenu {
 				LanguageCodes.TOOLTIP_NEW_FORM_VERSION, IconSize.BIG);
 		editDesign = new IconButton(LanguageCodes.CAPTION_DESIGN, ThemeIcons.FORM_MANAGER_PAGE,
 				LanguageCodes.TOOLTIP_DESIGN, IconSize.BIG);
-		editFlow = new IconButton(LanguageCodes.CAPTION_FLOW, ThemeIcons.FORM_MANAGER_PAGE,
-				LanguageCodes.TOOLTIP_FLOW, IconSize.BIG);
+		editFlow = new IconButton(LanguageCodes.CAPTION_FLOW, ThemeIcons.FORM_MANAGER_PAGE, LanguageCodes.TOOLTIP_FLOW,
+				IconSize.BIG);
 
 		addIconButton(newForm);
 		addIconButton(newFormVersion);
@@ -38,15 +39,15 @@ public class UpperMenuProjectManager extends UpperMenu {
 	public void addNewFormListener(ClickListener listener) {
 		newForm.addClickListener(listener);
 	}
-	
+
 	public void addNewFormVersionListener(ClickListener listener) {
 		newFormVersion.addClickListener(listener);
 	}
-	
+
 	public void addEditDesignListener(ClickListener listener) {
 		editDesign.addClickListener(listener);
 	}
-	
+
 	public void addEditFlowListener(ClickListener listener) {
 		editFlow.addClickListener(listener);
 	}

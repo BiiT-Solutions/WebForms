@@ -9,7 +9,7 @@ import com.biit.liferay.security.AuthenticationService;
 import com.biit.liferay.security.exceptions.InvalidCredentialsException;
 import com.biit.security.exceptions.PBKDF2EncryptorException;
 import com.biit.webforms.authentication.UserSessionHandler;
-import com.biit.webforms.gui.ApplicationFrame;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.WebPageComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
@@ -156,7 +156,7 @@ public class Login extends WebPageComponent {
 			// The user's password was correct, so set the user as the
 			// current user (inlogged)
 			UserSessionHandler.setUser(user);
-			ApplicationFrame.navigateTo(WebMap.getMainPage());
+			ApplicationUi.navigateTo(WebMap.getMainPage());
 		}
 	}
 }

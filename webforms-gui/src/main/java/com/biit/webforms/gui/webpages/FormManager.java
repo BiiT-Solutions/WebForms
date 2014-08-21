@@ -6,6 +6,7 @@ import com.biit.form.exceptions.FieldTooLongException;
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.UpperMenu;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -15,13 +16,13 @@ import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.EditInfoListener;
 import com.biit.webforms.gui.components.TreeTableFormVersion;
-import com.biit.webforms.gui.webpages.projectmanager.UpperMenuProjectManager;
+import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Form;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
-public class ProjectManager extends SecuredWebPage {
+public class FormManager extends SecuredWebPage {
 
 	private static final long serialVersionUID = 4853622392162188013L;
 
@@ -30,6 +31,8 @@ public class ProjectManager extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
+		UserSessionHandler.getController().clearFormInUse();
+
 		setAsCentralPanel();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
@@ -37,12 +40,12 @@ public class ProjectManager extends SecuredWebPage {
 		formTable = new TreeTableFormVersion();
 		formTable.setSizeFull();
 		formTable.addEditInfoListener(new EditInfoListener() {
-
 			@Override
 			public void editInfo(Form form) {
 				openEditInfoWindow(form);
 			}
 		});
+		formTable.selectLastUsedForm();
 
 		getWorkingArea().addComponent(formTable);
 	}
@@ -70,15 +73,17 @@ public class ProjectManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				// TODO Auto-generated method stub
+				UserSessionHandler.getController().setFormInUse(getSelectedForm());
+				ApplicationUi.navigateTo(WebMap.DESIGNER_EDITOR);
 			}
 		});
-		upperMenu.addEditDesignListener(new ClickListener() {
+		upperMenu.addEditFlowListener(new ClickListener() {
 			private static final long serialVersionUID = -9206268545659478851L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				// TODO Auto-generated method stub
+				UserSessionHandler.getController().setFormInUse(getSelectedForm());
+				ApplicationUi.navigateTo(WebMap.FLOW_EDITOR);
 			}
 		});
 		return upperMenu;
@@ -143,5 +148,11 @@ public class ProjectManager extends SecuredWebPage {
 	public List<IActivity> accessAuthorizationsRequired() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public Form getSelectedForm() {
+		Form form = formTable.getValue();
+
+		return form;
 	}
 }

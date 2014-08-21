@@ -8,6 +8,10 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_CAPTION_NAME("caption.name"),
 	COMMON_CAPTION_DESCRIPTION("caption.description"),
 	COMMON_CAPTION_EDIT_DESCRIPTION("caption.edit.description"),
+	COMMON_CAPTION_SETTINGS("caption.settings"),
+	COMMON_CAPTION_FORM_MANAGER("caption.form.manager"),
+	COMMON_CAPTION_BUILDING_BLOCK_MANAGER("caption.buildingBlock.manager"),
+	
 	CAPTION_ANSWER_FORMAT_TEXT("caption.answerFormat.text"),
 	CAPTION_ANSWER_FORMAT_NUMBER("caption.answerFormat.number"),
 	CAPTION_ANSWER_FORMAT_DATE("caption.answerFormat.date"),
@@ -15,6 +19,10 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_ANSWER_TYPE_INPUT_FIELD("caption.answerType.inputField"),
 	CAPTION_ANSWER_TYPE_RADIO_BUTTON("caption.answerType.radioButton"),
 	CAPTION_ANSWER_TYPE_MULTI_CHECKBOX("caption.answerType.multiCheckbox"),
+	
+	COMMON_TOOLTIP_SETTINGS("tooltip.settings"),
+	COMMON_TOOLTIP_FORM_MANAGER("tooltip.form.manager"),
+	COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER("tooltip.buildingBlock.manager"),
 	
 	COMMON_WARNING_TITLE_FORM_NOT_CREATED("common.warning.title.form.not.created"),
 	COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME("common.warning.description.form.needs.name"),
@@ -44,7 +52,7 @@ public enum LanguageCodes implements ILanguageCode{
 	FORM_TABLE_COLUMN_CREATEDBY("caption.form.table.createdBy"),
 	FORM_TABLE_COLUMN_CREATIONDATE("caption.form.table.creationDate"),
 	FORM_TABLE_COLUMN_MODIFIEDBY("caption.form.table.modifiedBy"),
-	FORM_TABLE_COLUMN_MODIFICATIONDATE("caption.form.table.modificationDate");
+	FORM_TABLE_COLUMN_MODIFICATIONDATE("caption.form.table.modificationDate") ;
 	
 	
 	;

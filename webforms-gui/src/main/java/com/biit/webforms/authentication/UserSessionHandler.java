@@ -56,6 +56,7 @@ public class UserSessionHandler {
 	public static void setUser(User user) {
 		UserSessionHandler session = getCurrent();
 		session.user = user;
+		session.controller.setUser(user);
 	}
 
 	/**
