@@ -8,7 +8,7 @@ public enum WebMap {
 	
 	BLOCK_MANAGER(BlockManager.class),
 	
-	DESIGNER_EDITOR(DesignerEditor.class),
+	DESIGNER_EDITOR(DesignEditor.class),
 	
 	FLOW_EDITOR(FlowEditor.class);
 	

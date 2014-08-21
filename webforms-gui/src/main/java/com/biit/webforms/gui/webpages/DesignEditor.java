@@ -7,11 +7,11 @@ import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.UpperMenu;
-import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
+import com.biit.webforms.gui.webpages.designeditor.UpperMenuDesigner;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
-public class DesignerEditor extends SecuredWebPage {
+public class DesignEditor extends SecuredWebPage {
 	private static final long serialVersionUID = 9161313025929535348L;
 
 	private UpperMenu upperMenu;

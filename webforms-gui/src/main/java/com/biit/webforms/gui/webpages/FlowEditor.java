@@ -7,7 +7,6 @@ import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.UpperMenu;
-import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.floweditor.UpperMenuFlowEditor;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -73,6 +72,5 @@ public class FlowEditor extends SecuredWebPage {
 
 		return upperMenu;
 	}
-
 
 }

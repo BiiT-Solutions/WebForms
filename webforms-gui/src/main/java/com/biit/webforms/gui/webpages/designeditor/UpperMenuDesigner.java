@@ -1,4 +1,4 @@
-package com.biit.webforms.gui.webpages.designer;
+package com.biit.webforms.gui.webpages.designeditor;
 
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
