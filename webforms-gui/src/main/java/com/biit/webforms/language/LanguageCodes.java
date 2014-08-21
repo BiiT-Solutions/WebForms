@@ -11,6 +11,8 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_CAPTION_SETTINGS("caption.settings"),
 	COMMON_CAPTION_FORM_MANAGER("caption.form.manager"),
 	COMMON_CAPTION_BUILDING_BLOCK_MANAGER("caption.buildingBlock.manager"),
+	COMMON_CAPTION_DESIGN("caption.design"),
+	COMMON_CAPTION_FLOW("caption.flow"),
 	
 	CAPTION_ANSWER_FORMAT_TEXT("caption.answerFormat.text"),
 	CAPTION_ANSWER_FORMAT_NUMBER("caption.answerFormat.number"),
@@ -23,6 +25,8 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_TOOLTIP_SETTINGS("tooltip.settings"),
 	COMMON_TOOLTIP_FORM_MANAGER("tooltip.form.manager"),
 	COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER("tooltip.buildingBlock.manager"),
+	COMMON_TOOLTIP_DESIGN("tooltip.design"),
+	COMMON_TOOLTIP_FLOW("tooltip.flow"),
 	
 	COMMON_WARNING_TITLE_FORM_NOT_CREATED("common.warning.title.form.not.created"),
 	COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME("common.warning.description.form.needs.name"),
@@ -33,16 +37,12 @@ public enum LanguageCodes implements ILanguageCode{
 	//Manager
 	CAPTION_NEW_FORM("caption.new.form"),
 	CAPTION_NEW_FORM_VERSION("caption.new.form.version"),
-	CAPTION_DESIGN("caption.design"),
-	CAPTION_FLOW("caption.flow"),
 	
 	TOOLTIP_NEW_FORM("tooltip.new.form"),
 	TOOLTIP_NEW_FORM_VERSION("tooltip.new.form.version"),
-	TOOLTIP_DESIGN("tooltip.design"),
-	TOOLTIP_FLOW("tooltip.flow"),
+	
 	NULL_VALUE_NEW_FORM("null.value.new.form"),
-	
-	
+		
 	FORM_TABLE_COLUMN_NAME("caption.form.table.name"),
 	FORM_TABLE_COLUMN_VERSION("caption.form.table.version"),
 	FORM_TABLE_COLUMN_INFO("caption.form.table.info"),
@@ -52,8 +52,11 @@ public enum LanguageCodes implements ILanguageCode{
 	FORM_TABLE_COLUMN_CREATEDBY("caption.form.table.createdBy"),
 	FORM_TABLE_COLUMN_CREATIONDATE("caption.form.table.creationDate"),
 	FORM_TABLE_COLUMN_MODIFIEDBY("caption.form.table.modifiedBy"),
-	FORM_TABLE_COLUMN_MODIFICATIONDATE("caption.form.table.modificationDate") ;
-	
+	FORM_TABLE_COLUMN_MODIFICATIONDATE("caption.form.table.modificationDate"),
+
+	//BlockManager
+	CAPTION_NEW_BLOCK("caption.new.block"),
+	TOOLTIP_NEW_BLOCK("caption.new.block"),
 	
 	;
 

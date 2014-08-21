@@ -25,9 +25,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_NEW_FORM, IconSize.BIG);
 		newFormVersion = new IconButton(LanguageCodes.CAPTION_NEW_FORM_VERSION, ThemeIcons.FORM_MANAGER_PAGE,
 				LanguageCodes.TOOLTIP_NEW_FORM_VERSION, IconSize.BIG);
-		editDesign = new IconButton(LanguageCodes.CAPTION_DESIGN, ThemeIcons.FORM_MANAGER_PAGE,
-				LanguageCodes.TOOLTIP_DESIGN, IconSize.BIG);
-		editFlow = new IconButton(LanguageCodes.CAPTION_FLOW, ThemeIcons.FORM_MANAGER_PAGE, LanguageCodes.TOOLTIP_FLOW,
+		editDesign = new IconButton(LanguageCodes.COMMON_CAPTION_DESIGN, ThemeIcons.FORM_MANAGER_PAGE,
+				LanguageCodes.COMMON_TOOLTIP_DESIGN, IconSize.BIG);
+		editFlow = new IconButton(LanguageCodes.COMMON_CAPTION_FLOW, ThemeIcons.FORM_MANAGER_PAGE, LanguageCodes.COMMON_TOOLTIP_FLOW,
 				IconSize.BIG);
 
 		addIconButton(newForm);
