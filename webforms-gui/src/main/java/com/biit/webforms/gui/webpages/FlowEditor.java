@@ -18,8 +18,6 @@ public class FlowEditor extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
-		UserSessionHandler.getController().clearFormInUse();
-
 		setAsCentralPanel();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);

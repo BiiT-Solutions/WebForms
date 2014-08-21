@@ -17,6 +17,7 @@ public enum CommonComponentsLanguageCodes implements ILanguageCode {
 	ACCEPT_CANCEL_WINDOW_CAPTION_CANCEL("accept.cancel.windo.caption.cancel"),
 	ACCEPT_CANCEL_WINDOW_TOOLTIP_ACCEPT("accept.cancel.windo.tooltip.accept"),
 	ACCEPT_CANCEL_WINDOW_TOOLTIP_CANCEL("accept.cancel.windo.tooltip.cancel"),
+	FORM_TREE_PROPERTY_NAME("form.tree.property.name"),
 	;
 	
 	private String value;

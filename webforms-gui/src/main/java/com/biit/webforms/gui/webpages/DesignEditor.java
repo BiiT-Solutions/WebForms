@@ -6,8 +6,10 @@ import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
+import com.biit.webforms.gui.common.components.TreeObjectTable;
 import com.biit.webforms.gui.common.components.UpperMenu;
 import com.biit.webforms.gui.webpages.designeditor.UpperMenuDesigner;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -15,14 +17,27 @@ public class DesignEditor extends SecuredWebPage {
 	private static final long serialVersionUID = 9161313025929535348L;
 
 	private UpperMenu upperMenu;
+	private TreeObjectTable table;
 
 	@Override
 	protected void initContent() {
-		UserSessionHandler.getController().clearFormInUse();
-
 		setAsCentralPanel();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
+		
+		table = new TreeObjectTable();
+		table.addRow(UserSessionHandler.getController().getFormInUse(), null);
+		table.setSizeFull();
+		
+		HorizontalLayout rootLayout = new HorizontalLayout();
+		rootLayout.setSizeFull();
+		rootLayout.setSpacing(true);
+		rootLayout.setMargin(true);
+
+		rootLayout.addComponent(table);
+		rootLayout.setExpandRatio(table, 0.75f);
+
+		getWorkingArea().addComponent(rootLayout);
 		// TODO terminar
 	}
 

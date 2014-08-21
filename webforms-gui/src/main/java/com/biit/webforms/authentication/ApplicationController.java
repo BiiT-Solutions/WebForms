@@ -118,6 +118,8 @@ public class ApplicationController {
 	}
 
 	public void setFormInUse(Form form) {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " setFormInUse " + form);
 		this.formInUse = form;
 		setLastEditedForm(form);
 	}
@@ -135,6 +137,8 @@ public class ApplicationController {
 	}
 
 	public void clearFormInUse() {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " clearFormInUse");
 		formInUse = null;
 	}
 }
