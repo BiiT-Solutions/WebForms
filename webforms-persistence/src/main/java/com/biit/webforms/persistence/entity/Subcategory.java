@@ -13,6 +13,7 @@ import com.biit.form.BaseQuestion;
 import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.FieldTooLongException;
 
 @Entity
 @Table(name = "subcategories")
@@ -22,6 +23,15 @@ public class Subcategory extends BaseGroup {
 			BaseRepeatableGroup.class));
 	private static final List<Class<?>> ALLOWED_PARENTS = new ArrayList<Class<?>>(Arrays.asList(BaseCategory.class));
 
+	public Subcategory(){
+		super();
+	}
+	
+	public Subcategory(String name) throws FieldTooLongException {
+		super();
+		setName(name);
+	}
+	
 	@Override
 	public void checkDependencies() throws DependencyExistException {
 		// TODO Auto-generated method stub

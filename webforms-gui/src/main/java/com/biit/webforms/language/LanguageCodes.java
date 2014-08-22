@@ -82,7 +82,12 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_NEW_GROUP("tooltip.new.group"),
 	TOOLTIP_NEW_QUESTION("tooltip.new.question"),
 	TOOLTIP_NEW_TEXT("tooltip.new.text"),
-	TOOLTIP_NEW_ANSWER("tooltip.new.answer"), 
+	TOOLTIP_NEW_ANSWER("tooltip.new.answer"),
+	
+	ERROR_SUBCATEGORY_NOT_INSERTED("error.subcategory.not.inserted"),
+	ERROR_QUESTION_NOT_INSERTED("error.question.not.inserted"),
+	ERROR_ANSWER_NOT_INSERTED("error.answer.not.inserted"),
+	
 	
 	;
 

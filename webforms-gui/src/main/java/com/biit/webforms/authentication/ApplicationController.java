@@ -11,15 +11,19 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.Subcategory;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
 
 public class ApplicationController {
 
 	private User user;
-	
+
 	private IFormDao formDao;
 
 	private Form lastEditedForm;
@@ -109,10 +113,10 @@ public class ApplicationController {
 				+ " changeFormDescription " + form + " " + text + " END");
 	}
 
-	public void setUser(User user){
+	public void setUser(User user) {
 		this.user = user;
 	}
-	
+
 	public User getUser() {
 		if (user != null) {
 			return user;
@@ -129,8 +133,8 @@ public class ApplicationController {
 		this.formInUse = form;
 		setLastEditedForm(form);
 	}
-	
-	public Form getFormInUse(){
+
+	public Form getFormInUse() {
 		return formInUse;
 	}
 
@@ -148,62 +152,140 @@ public class ApplicationController {
 		formInUse = null;
 	}
 
+	/**
+	 * Adds new category to current form
+	 * 
+	 * @return
+	 * @throws NotValidChildException
+	 */
 	public Category addNewCategory() {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " addNewCategory to "+ getFormInUse()+" START");
-		
-		Category category = null;
 		try {
-			category = new Category(getNewStringNumber(getFormInUse(),"new-category"));
-			getFormInUse().addChild(category);
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-					+ " new category '"+category+"'");
-		} catch (FieldTooLongException | NotValidChildException e) {
-			//Impossible
+			return (Category) insertTreeObject(Category.class, getFormInUse(), "new-category");
+		} catch (NotValidChildException e) {
+			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}		
-		
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " addNewCategory to "+ getFormInUse()+" END");
-		return category;
+		}
+		return null;
 	}
-	
-	public String getNewStringNumber(TreeObject parent, String newString){
+
+	/**
+	 * Adds new subcategory to parent
+	 * @param parent
+	 * @return
+	 * @throws NotValidChildException
+	 */
+	public Subcategory addNewSubcategory(TreeObject parent) throws NotValidChildException {
+		return (Subcategory) insertTreeObject(Subcategory.class, parent, "new-subcategory");
+	}
+
+	/**
+	 * Adds new group to parent
+	 * @param parent
+	 * @return
+	 * @throws NotValidChildException
+	 */
+	public Group addNewGroup(TreeObject parent) throws NotValidChildException {
+		return (Group) insertTreeObject(Group.class, parent, "new-group");
+	}
+
+	/**
+	 * Adds new question to parent
+	 * @param parent
+	 * @return
+	 * @throws NotValidChildException
+	 */
+	public Question addNewQuestion(TreeObject parent) throws NotValidChildException {
+		return (Question) insertTreeObject(Question.class, parent, "new-question");
+	}
+
+	/**
+	 * Adds new answer to parent
+	 * @param parent
+	 * @return
+	 * @throws NotValidChildException
+	 */
+	public Answer addNewAnswer(TreeObject parent) throws NotValidChildException {
+		return (Answer) insertTreeObject(Answer.class, parent, "new-answer");
+	}
+
+	/**
+	 * Creates any kind of TreeObject descendant with @name and inserts into
+	 * parent if possible.
+	 * 
+	 * @param classType
+	 * @param parent
+	 * @param name
+	 * @return
+	 * @throws NotValidChildException
+	 */
+	public TreeObject insertTreeObject(Class<? extends TreeObject> classType, TreeObject parent, String name)
+			throws NotValidChildException {
+
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " insertTreeObject of type '" + classType.getName() + "' to '" + parent + "' with name '" + name
+				+ "' START");
+
+		TreeObject treeObject = null;
+		try {
+			treeObject = classType.newInstance();
+			treeObject.setName(getNewStringNumber(parent, name));
+			parent.addChild(treeObject);
+			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+					+ " inserted '" + treeObject + "' into '" + parent + "'");
+		} catch (FieldTooLongException | InstantiationException | IllegalAccessException e) {
+			// Impossible
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		} catch (NotValidChildException e) {
+			WebformsLogger.severe(this.getClass().getName(), "Element of type '" + classType.getName()
+					+ "' could not be inserted in '" + parent + "'");
+			throw e;
+		}
+
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " insertTreeObject of type '" + classType.getName() + "' to '" + parent + "' with name '" + name
+				+ "' END");
+
+		return treeObject;
+	}
+
+	public String getNewStringNumber(TreeObject parent, String newString) {
 		int maxNewString = 0;
-		
+
 		List<TreeObject> children = parent.getChildren();
-		for(TreeObject child: children){
-			if(child.getName().startsWith(newString)){
-				if(child.getName().length()==newString.length()){
-					//First one (newString)
+		for (TreeObject child : children) {
+			if (child.getName().startsWith(newString)) {
+				if (child.getName().length() == newString.length()) {
+					// First one (newString)
 					maxNewString = Math.max(maxNewString, 1);
-				}else{
-					//Other, extract number (newString-int)
-					String value = child.getName().substring(newString.length()+1);
+				} else {
+					// Other, extract number (newString-int)
+					String value = child.getName().substring(newString.length() + 1);
 					maxNewString = Math.max(maxNewString, Integer.parseInt(value));
 				}
 			}
 		}
-		
-		if(maxNewString==0){
+
+		if (maxNewString == 0) {
 			return newString;
-		}else{
-			return newString+"-"+(maxNewString+1);
+		} else {
+			return newString + "-" + (maxNewString + 1);
 		}
 	}
 
 	/**
 	 * Removes a element of a tree.
+	 * 
 	 * @param row
-	 * @throws DependencyExistException 
+	 * @throws DependencyExistException
 	 */
 	public void removeTreeObject(TreeObject row) throws DependencyExistException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " removeTreeObject "+ row +" of " + row.getForm()+" START");
-		
+				+ " removeTreeObject " + row + " of " + row.getForm() + " START");
+
 		row.remove();
-		
+
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " removeTreeObject "+ row +" of " + row.getForm()+" END");
+				+ " removeTreeObject " + row + " of " + row.getForm() + " END");
 	}
+
 }
