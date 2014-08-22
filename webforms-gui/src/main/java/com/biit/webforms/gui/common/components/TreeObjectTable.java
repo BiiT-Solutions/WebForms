@@ -206,4 +206,8 @@ public class TreeObjectTable extends TreeTable {
 		}
 	}
 
+	public TreeObject getSelectedRow() {
+		return (TreeObject)getValue();
+	}
+
 }

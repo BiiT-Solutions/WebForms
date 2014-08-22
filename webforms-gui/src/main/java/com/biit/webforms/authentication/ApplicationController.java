@@ -1,11 +1,16 @@
 package com.biit.webforms.authentication;
 
+import java.util.List;
+
 import org.hibernate.exception.ConstraintViolationException;
 
+import com.biit.form.TreeObject;
 import com.biit.form.exceptions.FieldTooLongException;
+import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
@@ -140,5 +145,49 @@ public class ApplicationController {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " clearFormInUse");
 		formInUse = null;
+	}
+
+	public Category addNewCategory() {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " addNewCategory to "+ getFormInUse()+" START");
+		
+		Category category = null;
+		try {
+			category = new Category(getNewStringNumber(getFormInUse(),"new-category"));
+			getFormInUse().addChild(category);
+			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+					+ " new category '"+category+"'");
+		} catch (FieldTooLongException | NotValidChildException e) {
+			//Impossible
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}		
+		
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " addNewCategory to "+ getFormInUse()+" END");
+		return category;
+	}
+	
+	public String getNewStringNumber(TreeObject parent, String newString){
+		int maxNewString = 0;
+		
+		List<TreeObject> children = parent.getChildren();
+		for(TreeObject child: children){
+			if(child.getName().startsWith(newString)){
+				if(child.getName().length()==newString.length()){
+					//First one (newString)
+					maxNewString = Math.max(maxNewString, 1);
+				}else{
+					//Other, extract number (newString-int)
+					String value = child.getName().substring(newString.length()+1);
+					maxNewString = Math.max(maxNewString, Integer.parseInt(value));
+				}
+			}
+		}
+		
+		if(maxNewString==0){
+			return newString;
+		}else{
+			return newString+"-"+(maxNewString+1);
+		}
 	}
 }
