@@ -33,7 +33,8 @@ public class Form extends BaseForm {
 	}
 
 	@Override
-	public void copyData(TreeObject object) {
+	protected void copyData(TreeObject object) {
+		super.copyData(object);
 		Form form = (Form) object;
 		try {
 			setDescription(form.getDescription());

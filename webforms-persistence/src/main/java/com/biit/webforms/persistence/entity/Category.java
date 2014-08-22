@@ -33,7 +33,7 @@ public class Category extends BaseCategory {
 	}
 
 	@Override
-	public void copyData(TreeObject object) {
+	protected void copyData(TreeObject object) {
 		//Nothing to copy
 	}
 }

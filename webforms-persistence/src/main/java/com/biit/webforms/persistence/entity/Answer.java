@@ -19,7 +19,7 @@ public class Answer extends BaseAnswer {
 	}
 
 	@Override
-	public void copyData(TreeObject object) {
+	protected void copyData(TreeObject object) {
 		//Nothing to copy
 	}
 

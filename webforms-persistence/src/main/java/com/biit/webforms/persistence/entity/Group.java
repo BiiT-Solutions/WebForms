@@ -20,7 +20,7 @@ public class Group extends BaseRepeatableGroup {
 	}
 
 	@Override
-	public void copyData(TreeObject object) {
+	protected void copyData(TreeObject object) {
 		//Nothing to copy
 	}
 }

@@ -51,7 +51,7 @@ public class Question extends BaseQuestion {
 	}
 
 	@Override
-	public void copyData(TreeObject object) {
+	protected void copyData(TreeObject object) {
 		Question question = (Question) object;
 
 		setAnswerType(question.getAnswerType());
