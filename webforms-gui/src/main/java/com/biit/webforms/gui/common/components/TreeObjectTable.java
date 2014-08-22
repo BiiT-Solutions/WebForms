@@ -7,8 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.biit.form.BaseForm;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
@@ -53,7 +56,7 @@ public class TreeObjectTable extends TreeTable {
 	}
 
 	public void addRow(TreeObject element, TreeObject parent) {
-		System.out.println("AddRow: "+element);
+		System.out.println("AddRow: " + element);
 		if (element != null) {
 			Item item = addItem(element);
 			if (parent != null) {
@@ -74,10 +77,14 @@ public class TreeObjectTable extends TreeTable {
 			// Remove children of table if they are no longer related.
 			List<Object> children = new ArrayList<Object>();
 			children.addAll(getChildren(element));
-			if (element.getChildren().isEmpty()) {
-				for (Object child : children) {
+			for(Object child : children){
+				if(!element.getChildren().contains(child)){
 					removeRow((TreeObject) child);
 				}
+			}
+			
+			if(element.getChildren().isEmpty()){
+				setChildrenAllowed(element, false);
 			}
 
 			// Update
@@ -207,7 +214,26 @@ public class TreeObjectTable extends TreeTable {
 	}
 
 	public TreeObject getSelectedRow() {
-		return (TreeObject)getValue();
+		return (TreeObject) getValue();
+	}
+
+	public void selectPreviousRow() {
+		TreeObject currentRow = getSelectedRow();
+		if(currentRow instanceof BaseForm){
+			//Do nothing, this is the form and the first row.
+			return;
+		}
+		int index = currentRow.getParent().getChildren().indexOf(currentRow);
+		if(index==0){
+			setValue(currentRow.getParent());
+		}else{
+			try {
+				setValue(currentRow.getParent().getChild(index-1));
+			} catch (ChildrenNotFoundException e) {
+				//Impossible
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+		}
 	}
 
 }

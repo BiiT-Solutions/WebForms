@@ -3,13 +3,16 @@ package com.biit.webforms.gui.webpages;
 import java.util.List;
 
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.DependencyExistException;
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.TreeObjectTable;
 import com.biit.webforms.gui.common.components.UpperMenu;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.designeditor.UpperMenuDesigner;
+import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Category;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -30,6 +33,7 @@ public class DesignEditor extends SecuredWebPage {
 		table = new TreeObjectTable();
 		table.addRow(UserSessionHandler.getController().getFormInUse(), null);
 		table.setSizeFull();
+		table.setSelectable(true);
 
 		HorizontalLayout rootLayout = new HorizontalLayout();
 		rootLayout.setSizeFull();
@@ -102,7 +106,14 @@ public class DesignEditor extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
-				
+				TreeObject parent = row.getParent();
+				table.selectPreviousRow();
+				try {
+					UserSessionHandler.getController().removeTreeObject(row);
+				} catch (DependencyExistException e) {
+					MessageManager.showError(LanguageCodes.CAPTION_ANSWER_FORMAT_DATE);
+				}
+				table.updateRow(parent);
 			}
 		});
 

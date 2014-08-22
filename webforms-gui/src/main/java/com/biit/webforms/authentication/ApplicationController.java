@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.exception.ConstraintViolationException;
 
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.FieldTooLongException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
@@ -189,5 +190,20 @@ public class ApplicationController {
 		}else{
 			return newString+"-"+(maxNewString+1);
 		}
+	}
+
+	/**
+	 * Removes a element of a tree.
+	 * @param row
+	 * @throws DependencyExistException 
+	 */
+	public void removeTreeObject(TreeObject row) throws DependencyExistException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " removeTreeObject "+ row +" of " + row.getForm()+" START");
+		
+		row.remove();
+		
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " removeTreeObject "+ row +" of " + row.getForm()+" END");
 	}
 }
