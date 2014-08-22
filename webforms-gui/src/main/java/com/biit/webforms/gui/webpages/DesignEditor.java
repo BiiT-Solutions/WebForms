@@ -16,6 +16,7 @@ import com.biit.webforms.gui.webpages.designeditor.UpperMenuDesigner;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Subcategory;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -126,6 +127,25 @@ public class DesignEditor extends SecuredWebPage {
 					table.addRow(newGroup, newGroup.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_GROUP_NOT_INSERTED);
+				}
+			}
+		});
+		upperMenu.addNewQuestionButtonListener(new ClickListener() {
+			private static final long serialVersionUID = 9107418811326944058L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				try {
+					TreeObject selectedRow = table.getSelectedRow();
+					Question newQuestion;
+					if(selectedRow instanceof Question){
+						newQuestion = UserSessionHandler.getController().addNewQuestion(selectedRow.getParent());
+					}else{
+						newQuestion = UserSessionHandler.getController().addNewQuestion(selectedRow);
+					}
+					table.addRow(newQuestion, newQuestion.getParent());
+				} catch (NotValidChildException e) {
+					MessageManager.showError(LanguageCodes.ERROR_QUESTION_NOT_INSERTED);
 				}
 			}
 		});
