@@ -87,8 +87,8 @@ public enum LanguageCodes implements ILanguageCode{
 	ERROR_SUBCATEGORY_NOT_INSERTED("error.subcategory.not.inserted"),
 	ERROR_GROUP_NOT_INSERTED("error.group.not.inserted"),
 	ERROR_QUESTION_NOT_INSERTED("error.question.not.inserted"),
-	ERROR_ANSWER_NOT_INSERTED("error.answer.not.inserted"),
-	
+	ERROR_TEXT_NOT_INSERTED("error.text.not.inserted"),
+	ERROR_ANSWER_NOT_INSERTED("error.answer.not.inserted"),	
 	
 	;
 

@@ -2,6 +2,7 @@ package com.biit.webforms.gui.webpages;
 
 import java.util.List;
 
+import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
@@ -18,6 +19,7 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Subcategory;
+import com.biit.webforms.persistence.entity.Text;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
@@ -138,7 +140,7 @@ public class DesignEditor extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					Question newQuestion;
-					if(selectedRow instanceof Question){
+					if(selectedRow instanceof BaseQuestion){
 						newQuestion = UserSessionHandler.getController().addNewQuestion(selectedRow.getParent());
 					}else{
 						newQuestion = UserSessionHandler.getController().addNewQuestion(selectedRow);
@@ -149,6 +151,27 @@ public class DesignEditor extends SecuredWebPage {
 				}
 			}
 		});
+		upperMenu.addNewTextButtonListener(new ClickListener() {
+			private static final long serialVersionUID = 7251023427405784803L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				try {
+					TreeObject selectedRow = table.getSelectedRow();
+					Text newText;
+					if(selectedRow instanceof BaseQuestion){
+						newText = UserSessionHandler.getController().addNewText(selectedRow.getParent());
+					}else{
+						newText = UserSessionHandler.getController().addNewText(selectedRow);
+					}
+					table.addRow(newText, newText.getParent());
+				} catch (NotValidChildException e) {
+					MessageManager.showError(LanguageCodes.ERROR_TEXT_NOT_INSERTED);
+				}
+			}
+		});
+		
+		
 
 		upperMenu.addDeleteButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 9107418811326944058L;

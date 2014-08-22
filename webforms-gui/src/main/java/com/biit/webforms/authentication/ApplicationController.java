@@ -17,6 +17,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Subcategory;
+import com.biit.webforms.persistence.entity.Text;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
 
@@ -196,6 +197,16 @@ public class ApplicationController {
 	 */
 	public Question addNewQuestion(TreeObject parent) throws NotValidChildException {
 		return (Question) insertTreeObject(Question.class, parent, "new-question");
+	}
+	
+	/**
+	 * Adds new Text to parent
+	 * @param parent
+	 * @return
+	 * @throws NotValidChildException
+	 */
+	public Text addNewText(TreeObject parent) throws NotValidChildException {
+		return (Text) insertTreeObject(Text.class, parent, "new-text");
 	}
 
 	/**
