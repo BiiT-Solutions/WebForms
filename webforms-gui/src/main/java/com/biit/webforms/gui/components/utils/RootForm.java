@@ -6,12 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.biit.form.TreeObject;
-import com.biit.form.exceptions.NotValidParentException;
 import com.biit.webforms.persistence.entity.Form;
 import com.liferay.portal.model.UserGroup;
 
 public class RootForm extends Form {
-	private static final List<Class<?>> ALLOWED_CHILDS = new ArrayList<Class<?>>(Arrays.asList(Form.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
+			Arrays.asList(Form.class));
 
 	private String name;
 
@@ -20,18 +20,8 @@ public class RootForm extends Form {
 	}
 
 	@Override
-	protected List<Class<?>> getAllowedChildren() {
+	protected List<Class<? extends TreeObject>> getAllowedChildren() {
 		return ALLOWED_CHILDS;
-	}
-
-	@Override
-	protected List<Class<?>> getAllowedParents() {
-		return null;
-	}
-
-	@Override
-	public void setParent(TreeObject parent) throws NotValidParentException {
-		throw new NotValidParentException("FormsRoot cannot have a parent.");
 	}
 
 	@Override

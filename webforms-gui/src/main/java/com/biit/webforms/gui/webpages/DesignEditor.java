@@ -15,6 +15,7 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.designeditor.UpperMenuDesigner;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Subcategory;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -107,11 +108,25 @@ public class DesignEditor extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
-					Subcategory newSubcategory = UserSessionHandler.getController().addNewSubcategory(table.getSelectedRow());
+					Subcategory newSubcategory = UserSessionHandler.getController().addNewSubcategory(
+							table.getSelectedRow());
 					table.addRow(newSubcategory, newSubcategory.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_SUBCATEGORY_NOT_INSERTED);
-				}				
+				}
+			}
+		});
+		upperMenu.addNewGroupButtonListener(new ClickListener() {
+			private static final long serialVersionUID = 9107418811326944058L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				try {
+					Group newGroup = UserSessionHandler.getController().addNewGroup(table.getSelectedRow());
+					table.addRow(newGroup, newGroup.getParent());
+				} catch (NotValidChildException e) {
+					MessageManager.showError(LanguageCodes.ERROR_GROUP_NOT_INSERTED);
+				}
 			}
 		});
 

@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.biit.form.BaseCategory;
 import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
 import com.biit.form.BaseRepeatableGroup;
@@ -19,19 +18,18 @@ import com.biit.form.exceptions.FieldTooLongException;
 @Table(name = "subcategories")
 public class Subcategory extends BaseGroup {
 	private static final String DEFAULT_SUBCATEGORY_NAME = "Subcategory";
-	private static final List<Class<?>> ALLOWED_CHILDS = new ArrayList<Class<?>>(Arrays.asList(BaseQuestion.class,
-			BaseRepeatableGroup.class));
-	private static final List<Class<?>> ALLOWED_PARENTS = new ArrayList<Class<?>>(Arrays.asList(BaseCategory.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
+			Arrays.asList(BaseQuestion.class, BaseRepeatableGroup.class));
 
-	public Subcategory(){
+	public Subcategory() {
 		super();
 	}
-	
+
 	public Subcategory(String name) throws FieldTooLongException {
 		super();
 		setName(name);
 	}
-	
+
 	@Override
 	public void checkDependencies() throws DependencyExistException {
 		// TODO Auto-generated method stub
@@ -39,13 +37,8 @@ public class Subcategory extends BaseGroup {
 	}
 
 	@Override
-	protected List<Class<?>> getAllowedChildren() {
+	protected List<Class<? extends TreeObject>> getAllowedChildren() {
 		return ALLOWED_CHILDS;
-	}
-
-	@Override
-	protected List<Class<?>> getAllowedParents() {
-		return ALLOWED_PARENTS;
 	}
 
 	@Override

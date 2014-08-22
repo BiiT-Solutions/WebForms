@@ -16,8 +16,8 @@ import com.biit.form.exceptions.FieldTooLongException;
 @Entity
 @Table(name = "categories")
 public class Category extends BaseCategory {
-	private static final List<Class<?>> ALLOWED_CHILDS = new ArrayList<Class<?>>(Arrays.asList(BaseQuestion.class, Subcategory.class,
-			BaseRepeatableGroup.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(BaseQuestion.class,
+			Subcategory.class, BaseRepeatableGroup.class));
 
 	public Category() {
 		super();
@@ -26,14 +26,14 @@ public class Category extends BaseCategory {
 	public Category(String name) throws FieldTooLongException {
 		super(name);
 	}
-	
+
 	@Override
-	protected List<Class<?>> getAllowedChildren() {
+	protected List<Class<? extends TreeObject>> getAllowedChildren() {
 		return ALLOWED_CHILDS;
 	}
 
 	@Override
 	protected void copyData(TreeObject object) {
-		//Nothing to copy
+		// Nothing to copy
 	}
 }
