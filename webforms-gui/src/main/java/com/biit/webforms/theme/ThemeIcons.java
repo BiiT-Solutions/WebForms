@@ -9,6 +9,8 @@ public enum ThemeIcons implements IThemeIcon{
 	SETTINGS("appbar.lines.horizontal.4.svg"),
 	FORM_MANAGER_PAGE("appbar.cabinet.files.svg"),
 	DELETE("appbar.delete.svg"),
+	UP("appbar.chevron.up.svg"),
+	DOWN("appbar.chevron.down.svg"),
 	
 	FLOW_EDITOR("appbar.cabinet.files.svg"), 
 	SAVE("appbar.save.svg"), 
@@ -29,7 +31,7 @@ public enum ThemeIcons implements IThemeIcon{
 	DESIGNER_NEW_QUESTION("appbar.interface.textbox.squared.svg"),
 	DESIGNER_NEW_TEXT("appbar.interface.textbox.squared.svg"),
 	DESIGNER_NEW_ANSWER("appbar.interface.textbox.squared.svg"),
-	DESIGNER_MOVE("appbar.interface.textbox.squared.svg"),
+	DESIGNER_MOVE("appbar.interface.textbox.squared.svg"), 
 		
 	;
 	

@@ -171,6 +171,7 @@ public class ApplicationController {
 
 	/**
 	 * Adds new subcategory to parent
+	 * 
 	 * @param parent
 	 * @return
 	 * @throws NotValidChildException
@@ -181,6 +182,7 @@ public class ApplicationController {
 
 	/**
 	 * Adds new group to parent
+	 * 
 	 * @param parent
 	 * @return
 	 * @throws NotValidChildException
@@ -191,6 +193,7 @@ public class ApplicationController {
 
 	/**
 	 * Adds new question to parent
+	 * 
 	 * @param parent
 	 * @return
 	 * @throws NotValidChildException
@@ -198,9 +201,10 @@ public class ApplicationController {
 	public Question addNewQuestion(TreeObject parent) throws NotValidChildException {
 		return (Question) insertTreeObject(Question.class, parent, "new-question");
 	}
-	
+
 	/**
 	 * Adds new Text to parent
+	 * 
 	 * @param parent
 	 * @return
 	 * @throws NotValidChildException
@@ -211,6 +215,7 @@ public class ApplicationController {
 
 	/**
 	 * Adds new answer to parent
+	 * 
 	 * @param parent
 	 * @return
 	 * @throws NotValidChildException
@@ -297,6 +302,46 @@ public class ApplicationController {
 
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " removeTreeObject " + row + " of " + row.getForm() + " END");
+	}
+
+	/**
+	 * Moves a element of a tree object up.
+	 * 
+	 * @param row
+	 */
+	public void moveUp(TreeObject row) {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " moveUp "
+				+ row + " START");
+		if (row.getParent() != null) {
+			TreeObject parent = row.getParent();
+			int index = parent.getChildren().indexOf(row);
+			if (index > 0) {
+				parent.getChildren().remove(index);
+				parent.getChildren().add(index - 1, row);
+			}
+		}
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " moveUp "
+				+ row + " END");
+	}
+	
+	/**
+	 * Moves a element of a tree object down.
+	 * 
+	 * @param row
+	 */
+	public void moveDown(TreeObject row) {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " moveDown "
+				+ row + " START");
+		if (row.getParent() != null) {
+			TreeObject parent = row.getParent();
+			int index = parent.getChildren().indexOf(row);
+			if (index < parent.getChildren().size()-1) {
+				parent.getChildren().remove(index);
+				parent.getChildren().add(index + 1, row);
+			}
+		}
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " moveUp "
+				+ row + " END");
 	}
 
 }

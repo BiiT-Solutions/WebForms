@@ -12,7 +12,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	private static final long serialVersionUID = -368255188051163986L;
 
 	private IconButton saveButton, flowButton, validateButton, finishButton, newCategoryButton, newSubCategoryButton,
-			newGroupButton, newQuestionButton, newTextButton, newAnswerButton, moveButton, deleteButton;
+			newGroupButton, newQuestionButton, newTextButton, newAnswerButton, moveButton, deleteButton, upButton, downButton;
 
 	public UpperMenuDesigner() {
 
@@ -44,6 +44,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				LanguageCodes.COMMON_TOOLTIP_MOVE);
 		deleteButton = new IconButton(LanguageCodes.COMMON_CAPTION_DELETE, ThemeIcons.DELETE,
 				LanguageCodes.COMMON_TOOLTIP_DELETE);
+		upButton = new IconButton(LanguageCodes.COMMON_CAPTION_UP, ThemeIcons.UP,
+				LanguageCodes.COMMON_TOOLTIP_UP);
+		downButton = new IconButton(LanguageCodes.COMMON_CAPTION_DOWN, ThemeIcons.DOWN,
+				LanguageCodes.COMMON_TOOLTIP_DOWN);
 
 		addIconButton(saveButton);
 		addIconButton(flowButton);
@@ -55,6 +59,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(newAnswerButton);
 		addIconButton(moveButton);
 		addIconButton(deleteButton);
+		addIconButton(upButton);
+		addIconButton(downButton);
 		addIconButton(validateButton);
 		addIconButton(finishButton);
 	}
@@ -106,5 +112,12 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public void addDeleteButtonListener(ClickListener listener){
 		deleteButton.addClickListener(listener);
 	}
+	
+	public void addUpButtonListener(ClickListener listener){
+		upButton.addClickListener(listener);
+	}
 
+	public void addDownButtonListener(ClickListener listener){
+		downButton.addClickListener(listener);
+	}
 }

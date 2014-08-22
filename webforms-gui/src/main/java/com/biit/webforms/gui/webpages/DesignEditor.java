@@ -214,6 +214,30 @@ public class DesignEditor extends SecuredWebPage {
 				table.updateRow(parent);
 			}
 		});
+		
+		upperMenu.addUpButtonListener(new ClickListener() {
+			private static final long serialVersionUID = -5060918501257565052L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				TreeObject row = table.getSelectedRow();
+				UserSessionHandler.getController().moveUp(row);
+				table.redrawRow(table.getSelectedRow().getParent());
+				table.setValue(row);
+			}
+		});
+		
+		upperMenu.addDownButtonListener(new ClickListener() {
+			private static final long serialVersionUID = 1343167938156284153L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				TreeObject row = table.getSelectedRow();
+				UserSessionHandler.getController().moveDown(row);
+				table.redrawRow(table.getSelectedRow().getParent());
+				table.setValue(row);
+			}
+		});
 
 		return upperMenu;
 	}

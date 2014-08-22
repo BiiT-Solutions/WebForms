@@ -77,13 +77,13 @@ public class TreeObjectTable extends TreeTable {
 			// Remove children of table if they are no longer related.
 			List<Object> children = new ArrayList<Object>();
 			children.addAll(getChildren(element));
-			for(Object child : children){
-				if(!element.getChildren().contains(child)){
+			for (Object child : children) {
+				if (!element.getChildren().contains(child)) {
 					removeRow((TreeObject) child);
 				}
 			}
-			
-			if(element.getChildren().isEmpty()){
+
+			if (element.getChildren().isEmpty()) {
 				setChildrenAllowed(element, false);
 			}
 
@@ -219,20 +219,27 @@ public class TreeObjectTable extends TreeTable {
 
 	public void selectPreviousRow() {
 		TreeObject currentRow = getSelectedRow();
-		if(currentRow instanceof BaseForm){
-			//Do nothing, this is the form and the first row.
+		if (currentRow instanceof BaseForm) {
+			// Do nothing, this is the form and the first row.
 			return;
 		}
 		int index = currentRow.getParent().getChildren().indexOf(currentRow);
-		if(index==0){
+		if (index == 0) {
 			setValue(currentRow.getParent());
-		}else{
+		} else {
 			try {
-				setValue(currentRow.getParent().getChild(index-1));
+				setValue(currentRow.getParent().getChild(index - 1));
 			} catch (ChildrenNotFoundException e) {
-				//Impossible
+				// Impossible
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
+		}
+	}
+
+	public void redrawRow(TreeObject row) {
+		if (row != null) {
+			removeRow(row);
+			loadTreeObject(row, row.getParent());
 		}
 	}
 

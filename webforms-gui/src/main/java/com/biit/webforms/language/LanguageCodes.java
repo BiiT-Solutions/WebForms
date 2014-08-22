@@ -18,6 +18,8 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_CAPTION_FINISH("caption.finish"),
 	COMMON_CAPTION_MOVE("caption.move"),
 	COMMON_CAPTION_DELETE("caption.delete"),
+	COMMON_CAPTION_UP("caption.up"),
+	COMMON_CAPTION_DOWN("caption.down"),
 	
 	CAPTION_ANSWER_FORMAT_TEXT("caption.answerFormat.text"),
 	CAPTION_ANSWER_FORMAT_NUMBER("caption.answerFormat.number"),
@@ -37,6 +39,8 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_TOOLTIP_FINISH("tooltip.finish"),
 	COMMON_TOOLTIP_MOVE("tooltip.move"),
 	COMMON_TOOLTIP_DELETE("tooltip.delete"),
+	COMMON_TOOLTIP_UP("tooltip.up"),
+	COMMON_TOOLTIP_DOWN("tooltip.down"),
 	
 	COMMON_WARNING_TITLE_FORM_NOT_CREATED("common.warning.title.form.not.created"),
 	COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME("common.warning.description.form.needs.name"),
