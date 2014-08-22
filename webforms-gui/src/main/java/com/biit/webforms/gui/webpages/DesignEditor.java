@@ -2,6 +2,7 @@ package com.biit.webforms.gui.webpages;
 
 import java.util.List;
 
+import com.biit.form.BaseAnswer;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
@@ -15,6 +16,7 @@ import com.biit.webforms.gui.common.components.UpperMenu;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.designeditor.UpperMenuDesigner;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
@@ -111,8 +113,14 @@ public class DesignEditor extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
-					Subcategory newSubcategory = UserSessionHandler.getController().addNewSubcategory(
-							table.getSelectedRow());
+					
+					TreeObject selectedRow = table.getSelectedRow();
+					Subcategory newSubcategory;
+					if(selectedRow instanceof Subcategory){
+						newSubcategory = UserSessionHandler.getController().addNewSubcategory(selectedRow.getParent());
+					}else{
+						newSubcategory = UserSessionHandler.getController().addNewSubcategory(selectedRow);
+					}
 					table.addRow(newSubcategory, newSubcategory.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_SUBCATEGORY_NOT_INSERTED);
@@ -170,8 +178,25 @@ public class DesignEditor extends SecuredWebPage {
 				}
 			}
 		});
-		
-		
+		upperMenu.addNewAnswerButtonListener(new ClickListener() {
+			private static final long serialVersionUID = 2104161068489369224L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				try {
+					TreeObject selectedRow = table.getSelectedRow();
+					Answer newAnswer;
+					if(selectedRow instanceof BaseAnswer){
+						newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow.getParent());
+					}else{
+						newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow);
+					}					
+					table.addRow(newAnswer, newAnswer.getParent());
+				} catch (NotValidChildException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
+				}
+			}
+		});		
 
 		upperMenu.addDeleteButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 9107418811326944058L;
