@@ -44,8 +44,8 @@ public class Subcategory extends BaseGroup {
 	}
 
 	@Override
-	public void copyData(TreeObject object) {
-		//Nothing to copy
+	protected void copyData(TreeObject object) {
+		// Nothing to copy
 	}
 
 }
