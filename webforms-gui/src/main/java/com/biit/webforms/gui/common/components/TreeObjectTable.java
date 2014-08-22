@@ -56,7 +56,6 @@ public class TreeObjectTable extends TreeTable {
 	}
 
 	public void addRow(TreeObject element, TreeObject parent) {
-		System.out.println("AddRow: " + element);
 		if (element != null) {
 			Item item = addItem(element);
 			if (parent != null) {
