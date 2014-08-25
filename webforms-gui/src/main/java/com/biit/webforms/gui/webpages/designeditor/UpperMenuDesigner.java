@@ -11,7 +11,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	private static final long serialVersionUID = -368255188051163986L;
 
-	private IconButton saveButton, flowButton, validateButton, finishButton, newCategoryButton, newSubCategoryButton,
+	private IconButton saveButton, flowButton, validateButton, finishButton, newCategoryButton, newSubcategoryButton,
 			newGroupButton, newQuestionButton, newTextButton, newAnswerButton, moveButton, deleteButton, upButton, downButton;
 
 	public UpperMenuDesigner() {
@@ -30,7 +30,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 		newCategoryButton = new IconButton(LanguageCodes.CAPTION_NEW_CATEGORY, ThemeIcons.DESIGNER_NEW_CATEGORY,
 				LanguageCodes.TOOLTIP_NEW_CATEGORY);
-		newSubCategoryButton = new IconButton(LanguageCodes.CAPTION_NEW_SUBCATEGORY,
+		newSubcategoryButton = new IconButton(LanguageCodes.CAPTION_NEW_SUBCATEGORY,
 				ThemeIcons.DESIGNER_NEW_SUBCATEGORY, LanguageCodes.TOOLTIP_NEW_SUBCATEGORY);
 		newGroupButton = new IconButton(LanguageCodes.CAPTION_NEW_GROUP, ThemeIcons.DESIGNER_NEW_GROUP,
 				LanguageCodes.TOOLTIP_NEW_GROUP);
@@ -52,7 +52,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(saveButton);
 		addIconButton(flowButton);
 		addIconButton(newCategoryButton);
-		addIconButton(newSubCategoryButton);
+		addIconButton(newSubcategoryButton);
 		addIconButton(newGroupButton);
 		addIconButton(newQuestionButton);
 		addIconButton(newTextButton);
@@ -86,7 +86,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	}
 	
 	public void addNewSubCategoryButtonListener(ClickListener listener){
-		newSubCategoryButton.addClickListener(listener);
+		newSubcategoryButton.addClickListener(listener);
 	}
 	
 	public void addNewGroupButtonListener(ClickListener listener){
@@ -119,5 +119,61 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public void addDownButtonListener(ClickListener listener){
 		downButton.addClickListener(listener);
+	}
+
+	public IconButton getSaveButton() {
+		return saveButton;
+	}
+
+	public IconButton getFlowButton() {
+		return flowButton;
+	}
+
+	public IconButton getValidateButton() {
+		return validateButton;
+	}
+
+	public IconButton getFinishButton() {
+		return finishButton;
+	}
+
+	public IconButton getNewCategoryButton() {
+		return newCategoryButton;
+	}
+
+	public IconButton getNewSubcategoryButton() {
+		return newSubcategoryButton;
+	}
+
+	public IconButton getNewGroupButton() {
+		return newGroupButton;
+	}
+
+	public IconButton getNewQuestionButton() {
+		return newQuestionButton;
+	}
+
+	public IconButton getNewTextButton() {
+		return newTextButton;
+	}
+
+	public IconButton getNewAnswerButton() {
+		return newAnswerButton;
+	}
+
+	public IconButton getMoveButton() {
+		return moveButton;
+	}
+
+	public IconButton getDeleteButton() {
+		return deleteButton;
+	}
+
+	public IconButton getUpButton() {
+		return upButton;
+	}
+
+	public IconButton getDownButton() {
+		return downButton;
 	}
 }

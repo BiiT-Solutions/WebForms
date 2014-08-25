@@ -12,16 +12,18 @@ import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.TreeObjectTable;
-import com.biit.webforms.gui.common.components.UpperMenu;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.designeditor.UpperMenuDesigner;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Subcategory;
 import com.biit.webforms.persistence.entity.Text;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
@@ -29,7 +31,7 @@ import com.vaadin.ui.HorizontalLayout;
 public class DesignEditor extends SecuredWebPage {
 	private static final long serialVersionUID = 9161313025929535348L;
 
-	private UpperMenu upperMenu;
+	private UpperMenuDesigner upperMenu;
 	private TreeObjectTable table;
 
 	@Override
@@ -42,6 +44,16 @@ public class DesignEditor extends SecuredWebPage {
 		table.addRow(UserSessionHandler.getController().getFormInUse(), null);
 		table.setSizeFull();
 		table.setSelectable(true);
+		table.setValue(null);
+		table.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = -1169897738297107301L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				updateUpperMenu();
+			}
+		});
+		table.setValue(UserSessionHandler.getController().getFormInUse());
 
 		HorizontalLayout rootLayout = new HorizontalLayout();
 		rootLayout.setSizeFull();
@@ -61,7 +73,7 @@ public class DesignEditor extends SecuredWebPage {
 		return null;
 	}
 
-	private UpperMenu createUpperMenu() {
+	private UpperMenuDesigner createUpperMenu() {
 		UpperMenuDesigner upperMenu = new UpperMenuDesigner();
 		upperMenu.addSaveButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 1679355377155929573L;
@@ -113,12 +125,12 @@ public class DesignEditor extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
-					
+
 					TreeObject selectedRow = table.getSelectedRow();
 					Subcategory newSubcategory;
-					if(selectedRow instanceof Subcategory){
+					if (selectedRow instanceof Subcategory) {
 						newSubcategory = UserSessionHandler.getController().addNewSubcategory(selectedRow.getParent());
-					}else{
+					} else {
 						newSubcategory = UserSessionHandler.getController().addNewSubcategory(selectedRow);
 					}
 					table.addRow(newSubcategory, newSubcategory.getParent());
@@ -148,9 +160,9 @@ public class DesignEditor extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					Question newQuestion;
-					if(selectedRow instanceof BaseQuestion){
+					if (selectedRow instanceof BaseQuestion) {
 						newQuestion = UserSessionHandler.getController().addNewQuestion(selectedRow.getParent());
-					}else{
+					} else {
 						newQuestion = UserSessionHandler.getController().addNewQuestion(selectedRow);
 					}
 					table.addRow(newQuestion, newQuestion.getParent());
@@ -167,9 +179,9 @@ public class DesignEditor extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					Text newText;
-					if(selectedRow instanceof BaseQuestion){
+					if (selectedRow instanceof BaseQuestion) {
 						newText = UserSessionHandler.getController().addNewText(selectedRow.getParent());
-					}else{
+					} else {
 						newText = UserSessionHandler.getController().addNewText(selectedRow);
 					}
 					table.addRow(newText, newText.getParent());
@@ -186,17 +198,17 @@ public class DesignEditor extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					Answer newAnswer;
-					if(selectedRow instanceof BaseAnswer){
+					if (selectedRow instanceof BaseAnswer) {
 						newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow.getParent());
-					}else{
+					} else {
 						newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow);
-					}					
+					}
 					table.addRow(newAnswer, newAnswer.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
 				}
 			}
-		});		
+		});
 
 		upperMenu.addDeleteButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 9107418811326944058L;
@@ -214,7 +226,7 @@ public class DesignEditor extends SecuredWebPage {
 				table.updateRow(parent);
 			}
 		});
-		
+
 		upperMenu.addUpButtonListener(new ClickListener() {
 			private static final long serialVersionUID = -5060918501257565052L;
 
@@ -226,7 +238,7 @@ public class DesignEditor extends SecuredWebPage {
 				table.setValue(row);
 			}
 		});
-		
+
 		upperMenu.addDownButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 1343167938156284153L;
 
@@ -242,4 +254,44 @@ public class DesignEditor extends SecuredWebPage {
 		return upperMenu;
 	}
 
+	private void updateUpperMenu() {
+		TreeObject selectedRow = table.getSelectedRow();
+		System.out.println("UpdateUpperMenu "+selectedRow);
+		if (selectedRow == null) {
+			upperMenu.getNewCategoryButton().setEnabled(false);
+			upperMenu.getNewSubcategoryButton().setEnabled(false);
+			upperMenu.getNewGroupButton().setEnabled(false);
+			upperMenu.getNewQuestionButton().setEnabled(false);
+			upperMenu.getNewTextButton().setEnabled(false);
+			upperMenu.getNewAnswerButton().setEnabled(false);
+			upperMenu.getMoveButton().setEnabled(false);
+			upperMenu.getDeleteButton().setEnabled(false);
+			upperMenu.getUpButton().setEnabled(false);
+			upperMenu.getDownButton().setEnabled(false);
+		} else {
+			if(selectedRow instanceof Form){
+				upperMenu.getNewCategoryButton().setEnabled(selectedRow.isAllowedChildren(Category.class));
+				upperMenu.getNewSubcategoryButton().setEnabled(selectedRow.isAllowedChildren(Subcategory.class));
+				upperMenu.getNewGroupButton().setEnabled(selectedRow.isAllowedChildren(Group.class));
+				upperMenu.getNewQuestionButton().setEnabled(selectedRow.isAllowedChildren(Question.class));
+				upperMenu.getNewTextButton().setEnabled(selectedRow.isAllowedChildren(Text.class));
+				upperMenu.getNewAnswerButton().setEnabled(selectedRow.isAllowedChildren(Answer.class));
+				upperMenu.getDeleteButton().setEnabled(false);
+				upperMenu.getUpButton().setEnabled(false);
+				upperMenu.getDownButton().setEnabled(false);
+			}else{
+				upperMenu.getNewCategoryButton().setEnabled(selectedRow.isAllowedChildren(Category.class)||selectedRow.getParent().isAllowedChildren(Category.class));
+				upperMenu.getNewSubcategoryButton().setEnabled(selectedRow.isAllowedChildren(Subcategory.class)||selectedRow.getParent().isAllowedChildren(Subcategory.class));
+				upperMenu.getNewGroupButton().setEnabled(selectedRow.isAllowedChildren(Group.class));
+				upperMenu.getNewQuestionButton().setEnabled(selectedRow.isAllowedChildren(Question.class)||selectedRow.getParent().isAllowedChildren(Question.class));
+				upperMenu.getNewTextButton().setEnabled(selectedRow.isAllowedChildren(Text.class)||selectedRow.getParent().isAllowedChildren(Text.class));
+				upperMenu.getNewAnswerButton().setEnabled(selectedRow.isAllowedChildren(Answer.class)||selectedRow.getParent().isAllowedChildren(Answer.class));
+				upperMenu.getDeleteButton().setEnabled(true);
+				upperMenu.getUpButton().setEnabled(true);
+				upperMenu.getDownButton().setEnabled(true);
+			}
+			upperMenu.getMoveButton().setEnabled(true);
+						
+		}
+	}
 }
