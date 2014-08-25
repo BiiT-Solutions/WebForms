@@ -20,7 +20,7 @@ public class Subcategory extends BaseGroup {
 	private static final String DEFAULT_SUBCATEGORY_NAME = "Subcategory";
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
 			Arrays.asList(BaseQuestion.class, BaseRepeatableGroup.class));
-
+	
 	public Subcategory() {
 		super();
 	}

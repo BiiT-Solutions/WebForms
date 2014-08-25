@@ -40,7 +40,7 @@ public class TreeObjectTable extends TreeTable {
 		setCellStyleGenerator(new TreeObjectTableCellStyleGenerator());
 	}
 
-	private void loadTreeObject(TreeObject element, TreeObject parent) {
+	public void loadTreeObject(TreeObject element, TreeObject parent) {
 		addRow(element, parent);
 
 		List<TreeObject> children = element.getChildren();

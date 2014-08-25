@@ -64,6 +64,7 @@
 
 		<property name="packagesToScan">
 			<list>
+			    <value>com.biit.form.**.*</value>
 				<value>com.biit.webforms.**.*</value>
 			</list>
 		</property>

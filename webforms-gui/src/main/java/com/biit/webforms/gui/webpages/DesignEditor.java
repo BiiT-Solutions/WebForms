@@ -43,7 +43,7 @@ public class DesignEditor extends SecuredWebPage {
 		setUpperMenu(upperMenu);
 
 		table = new TreeObjectTable();
-		table.addRow(UserSessionHandler.getController().getFormInUse(), null);
+		table.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);
 		table.setSizeFull();
 		table.setSelectable(true);
 		table.setValue(null);
@@ -93,8 +93,8 @@ public class DesignEditor extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-
+				UserSessionHandler.getController().saveForm();
+				MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION, LanguageCodes.INFO_MESSAGE_DESCRIPTION);
 			}
 		});
 		upperMenu.addFlowButtonListener(new ClickListener() {

@@ -325,25 +325,37 @@ public class ApplicationController {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " moveUp "
 				+ row + " END");
 	}
-	
+
 	/**
 	 * Moves a element of a tree object down.
 	 * 
 	 * @param row
 	 */
 	public void moveDown(TreeObject row) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " moveDown "
-				+ row + " START");
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " moveDown " + row + " START");
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
 			int index = parent.getChildren().indexOf(row);
-			if (index < parent.getChildren().size()-1) {
+			if (index < parent.getChildren().size() - 1) {
 				parent.getChildren().remove(index);
 				parent.getChildren().add(index + 1, row);
 			}
 		}
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " moveUp "
 				+ row + " END");
+	}
+
+	public void saveForm() {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " saveForm " + formInUse + " START");
+
+		formInUse.setUpdatedBy(getUser());
+		formInUse.setUpdateTime();
+		formDao.makePersistent(formInUse);
+
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " saveForm " + formInUse + " END");
 	}
 
 }
