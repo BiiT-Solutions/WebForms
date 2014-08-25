@@ -13,11 +13,19 @@ public enum CommonComponentsLanguageCodes implements ILanguageCode {
 	LOGIN_ERROR_MESSAGE_CONTACT("login.errorMessage.contact"),
 	LOGIN_ERROR_MESSAGE_ENCRYPTINGPASSWORD("login.errorMessage.password"),
 	ERROR_UNEXPECTED_ERROR("securedWebPageComponent.errorMessage.unexpectedError"),
+	ERROR_CONTACT("commonComponent.errorMessage.errorContact"),
 	ACCEPT_CANCEL_WINDOW_CAPTION_ACCEPT("accept.cancel.windo.caption.accept"),
 	ACCEPT_CANCEL_WINDOW_CAPTION_CANCEL("accept.cancel.windo.caption.cancel"),
 	ACCEPT_CANCEL_WINDOW_TOOLTIP_ACCEPT("accept.cancel.windo.tooltip.accept"),
 	ACCEPT_CANCEL_WINDOW_TOOLTIP_CANCEL("accept.cancel.windo.tooltip.cancel"),
-	FORM_TREE_PROPERTY_NAME("form.tree.property.name"),
+	FORM_TREE_PROPERTY_NAME("form.tree.property.name"), 
+	
+	TREE_OBJECT_PROPERTIES_CREATED_BY("storable.object.properties.caption.createdBy"),
+	TREE_OBJECT_PROPERTIES_CREATION_TIME("storable.object.properties.caption.createDate"), 
+	TREE_OBJECT_PROPERTIES_UPDATED_BY("storable.object.properties.caption.updatedBy"), 
+	TREE_OBJECT_PROPERTIES_UPDATE_TIME("storable.object.properties.caption.updateDate"), 
+	TREE_OBJECT_PROPERTIES_COMMON_FORM_CAPTION("storable.object.properties.caption.treeObjectProperties"), 
+	
 	;
 	
 	private String value;

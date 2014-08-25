@@ -245,6 +245,8 @@ public class ApplicationController {
 		try {
 			treeObject = classType.newInstance();
 			treeObject.setName(getNewStringNumber(parent, name));
+			treeObject.setCreatedBy(UserSessionHandler.getUser());
+			treeObject.setUpdatedBy(UserSessionHandler.getUser());
 			parent.addChild(treeObject);
 			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " inserted '" + treeObject + "' into '" + parent + "'");

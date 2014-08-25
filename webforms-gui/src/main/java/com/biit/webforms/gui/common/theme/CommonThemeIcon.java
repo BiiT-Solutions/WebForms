@@ -9,7 +9,11 @@ public enum CommonThemeIcon implements IThemeIcon{
 
 	CANCEL("appbar.close.svg"), 
 	
-	TREE_OBJECT_GROUP_LOOP("appbar.loop.svg");
+	TREE_OBJECT_GROUP_LOOP("appbar.loop.svg"), 
+	
+	EXPAND("appbar.section.expand.svg"), 
+	
+	COLLAPSE("appbar.section.collapse.svg");
 	
 	private String value;
 

@@ -13,6 +13,7 @@ import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.TreeObjectTable;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.webpages.designeditor.DesignerPropertiesComponent;
 import com.biit.webforms.gui.webpages.designeditor.UpperMenuDesigner;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
@@ -33,6 +34,7 @@ public class DesignEditor extends SecuredWebPage {
 
 	private UpperMenuDesigner upperMenu;
 	private TreeObjectTable table;
+	private DesignerPropertiesComponent properties;
 
 	@Override
 	protected void initContent() {
@@ -51,10 +53,13 @@ public class DesignEditor extends SecuredWebPage {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				updateUpperMenu();
+				updateProperties();				
 			}
 		});
-		table.setValue(UserSessionHandler.getController().getFormInUse());
-
+				
+		properties = new DesignerPropertiesComponent();
+		properties.setSizeFull();
+		
 		HorizontalLayout rootLayout = new HorizontalLayout();
 		rootLayout.setSizeFull();
 		rootLayout.setSpacing(true);
@@ -62,15 +67,23 @@ public class DesignEditor extends SecuredWebPage {
 
 		rootLayout.addComponent(table);
 		rootLayout.setExpandRatio(table, 0.75f);
+		rootLayout.addComponent(properties);
+		rootLayout.setExpandRatio(properties, 0.25f);
 
 		getWorkingArea().addComponent(rootLayout);
-		// TODO terminar
+
+		//Init
+		table.setValue(UserSessionHandler.getController().getFormInUse());
 	}
 
 	@Override
 	public List<IActivity> accessAuthorizationsRequired() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private void updateProperties(){
+		properties.updatePropertiesComponent(table.getSelectedRow());
 	}
 
 	private UpperMenuDesigner createUpperMenu() {
