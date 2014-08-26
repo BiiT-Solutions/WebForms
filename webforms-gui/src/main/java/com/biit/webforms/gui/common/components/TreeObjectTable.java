@@ -24,6 +24,7 @@ import com.vaadin.ui.TreeTable;
  */
 public class TreeObjectTable extends TreeTable {
 	private static final long serialVersionUID = -6949123334668973540L;
+	private IconProvider<TreeObject> iconProvider = new IconProviderTreeObjectDefault();
 
 	protected enum TreeObjectTableProperties {
 		ELEMENT_NAME
@@ -74,11 +75,14 @@ public class TreeObjectTable extends TreeTable {
 		Item item = getItem(element);
 		if (item != null) {
 			// Remove children of table if they are no longer related.
-			List<Object> children = new ArrayList<Object>();
-			children.addAll(getChildren(element));
-			for (Object child : children) {
-				if (!element.getChildren().contains(child)) {
-					removeRow((TreeObject) child);
+			Collection<?> immutableList = getChildren(element);
+			if (immutableList != null && (!immutableList.isEmpty())) {
+				List<Object> children = new ArrayList<Object>();
+				children.addAll(immutableList);
+				for (Object child : children) {
+					if (!element.getChildren().contains(child)) {
+						removeRow((TreeObject) child);
+					}
 				}
 			}
 
@@ -87,8 +91,7 @@ public class TreeObjectTable extends TreeTable {
 			}
 
 			// Update
-			// ComponentCellTreeObject cell = (ComponentCellTreeObject)
-			// item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).getValue();cell.update(element);
+			setValuesToItem(item, element);
 		}
 	}
 
@@ -187,7 +190,7 @@ public class TreeObjectTable extends TreeTable {
 	}
 
 	protected Object createElementWithIcon(final TreeObject element) {
-		ComponentCellTreeObject cell = new ComponentCellTreeObject();
+		ComponentCellTreeObject cell = new ComponentCellTreeObject(getIconProvider());
 		cell.update(element);
 		cell.registerTouchCallBack(this, element);
 
@@ -240,6 +243,14 @@ public class TreeObjectTable extends TreeTable {
 			removeRow(row);
 			loadTreeObject(row, row.getParent());
 		}
+	}
+
+	public IconProvider<TreeObject> getIconProvider() {
+		return iconProvider;
+	}
+
+	public void setIconProvider(IconProvider<TreeObject> iconProvider) {
+		this.iconProvider = iconProvider;
 	}
 
 }

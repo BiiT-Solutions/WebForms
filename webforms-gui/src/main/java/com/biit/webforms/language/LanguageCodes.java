@@ -80,6 +80,24 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_NEW_QUESTION("caption.new.question"),
 	CAPTION_NEW_TEXT("caption.new.text"),
 	CAPTION_NEW_ANSWER("caption.new.answer"),
+	CAPTION_NAME("caption.name"),
+	CAPTION_VALUE("caption.value"),
+	CAPTION_LABEL("caption.label"),
+	CAPTION_DESCRIPTION("caption.description"),
+	CAPTION_MANDATORY("caption.mandatory"),
+	CAPTION_ANSWER_TYPE("caption.answer.type"),
+	CAPTION_ANSWER_FORMAT("caption.answer.format"),
+	CAPTION_HORIZONTAL("caption.horizontal"),
+	CAPTION_REPETABLE("caption.repetable"),
+	CAPTION_TEXT("caption.text"),
+	CAPTION_VERSION("caption.version"),
+	CAPTION_PROPERTIES_TEXT("caption.properties.text"),
+	CAPTION_PROPERTIES_ANSWER("caption.properties.answer"),
+	CAPTION_PROPERTIES_QUESTION("caption.properties.question"),
+	CAPTION_PROPERTIES_GROUP("caption.properties.group"),
+	CAPTION_PROPERTIES_SUBCATEGORY("caption.properties.subcategory"),
+	CAPTION_PROPERTIES_CATEGORY("caption.properties.category"),
+	CAPTION_PROPERTIES_FORM("caption.properties.form"),
 	
 	TOOLTIP_NEW_CATEGORY("tooltip.new.category"),
 	TOOLTIP_NEW_SUBCATEGORY("tooltip.new.subcategory"),
@@ -95,7 +113,7 @@ public enum LanguageCodes implements ILanguageCode{
 	ERROR_ANSWER_NOT_INSERTED("error.answer.not.inserted"), 
 	
 	INFO_MESSAGE_CAPTION("info.message.caption"),
-	INFO_MESSAGE_DESCRIPTION("info.message.description"),
+	INFO_MESSAGE_DESCRIPTION("info.message.description"),   
 	
 	;
 

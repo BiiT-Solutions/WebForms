@@ -19,6 +19,7 @@ public class Form extends BaseForm {
 
 	public Form() {
 		super();
+		description = new String();
 	}
 
 	public Form(String name, User user) throws FieldTooLongException {

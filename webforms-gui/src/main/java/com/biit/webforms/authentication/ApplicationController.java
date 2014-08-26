@@ -278,7 +278,14 @@ public class ApplicationController {
 				} else {
 					// Other, extract number (newString-int)
 					String value = child.getName().substring(newString.length() + 1);
-					maxNewString = Math.max(maxNewString, Integer.parseInt(value));
+					try {
+						maxNewString = Math.max(maxNewString, Integer.parseInt(value));
+					} catch (NumberFormatException nfe) {
+						// This is not an error, it won't be logged because it's
+						// just for controlling when new-element tag is used
+						// with something else than a number.
+						// In this case, we simply ignore and continue the function.
+					}
 				}
 			}
 		}
@@ -356,6 +363,11 @@ public class ApplicationController {
 
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " saveForm " + formInUse + " END");
+	}
+
+	public void notifyTreeObjectUpdated(Object element) {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " updated element " + element);
 	}
 
 }

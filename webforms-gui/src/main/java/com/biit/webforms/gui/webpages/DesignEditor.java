@@ -10,10 +10,12 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
-import com.biit.webforms.gui.common.components.TreeObjectTable;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.designeditor.DesignerPropertiesComponent;
+import com.biit.webforms.gui.webpages.designeditor.IconProviderTreeObjectWebforms;
+import com.biit.webforms.gui.webpages.designeditor.TreeObjectTableDesigner;
 import com.biit.webforms.gui.webpages.designeditor.UpperMenuDesigner;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
@@ -33,7 +35,7 @@ public class DesignEditor extends SecuredWebPage {
 	private static final long serialVersionUID = 9161313025929535348L;
 
 	private UpperMenuDesigner upperMenu;
-	private TreeObjectTable table;
+	private TreeObjectTableDesigner table;
 	private DesignerPropertiesComponent properties;
 
 	@Override
@@ -42,11 +44,12 @@ public class DesignEditor extends SecuredWebPage {
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
 
-		table = new TreeObjectTable();
-		table.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);
+		table = new TreeObjectTableDesigner();
+		table.setIconProvider(new IconProviderTreeObjectWebforms());
 		table.setSizeFull();
 		table.setSelectable(true);
 		table.setValue(null);
+		table.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);		
 		table.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -1169897738297107301L;
 
@@ -59,6 +62,14 @@ public class DesignEditor extends SecuredWebPage {
 				
 		properties = new DesignerPropertiesComponent();
 		properties.setSizeFull();
+		properties.addPropertyUpdateListener(new PropertieUpdateListener() {
+			
+			@Override
+			public void propertyUpdate(Object element) {
+				UserSessionHandler.getController().notifyTreeObjectUpdated(element);
+				table.updateRow((TreeObject) element);
+			}
+		});
 		
 		HorizontalLayout rootLayout = new HorizontalLayout();
 		rootLayout.setSizeFull();
@@ -269,7 +280,6 @@ public class DesignEditor extends SecuredWebPage {
 
 	private void updateUpperMenu() {
 		TreeObject selectedRow = table.getSelectedRow();
-		System.out.println("UpdateUpperMenu "+selectedRow);
 		if (selectedRow == null) {
 			upperMenu.getNewCategoryButton().setEnabled(false);
 			upperMenu.getNewSubcategoryButton().setEnabled(false);

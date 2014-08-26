@@ -1,20 +1,20 @@
-package com.biit.webforms.gui.components;
+package com.biit.webforms.gui.webpages.designeditor;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.gui.common.components.ComponentCellTreeObject;
+import com.biit.webforms.gui.common.components.IconProvider;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.common.theme.IThemeIcon;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.theme.ThemeIcons;
 
-public class ComponentCellTreeObjectWebforms extends ComponentCellTreeObject{
-	private static final long serialVersionUID = -2764788075561682119L;
+
+public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject>{
 
 	@Override
-	protected IThemeIcon getIcon(TreeObject element) {
-		if (element instanceof Question) {
-			Question question = (Question) element;
+	public IThemeIcon getIcon(TreeObject object) {
+		if (object instanceof Question) {
+			Question question = (Question) object;
 			switch (question.getAnswerType()) {
 			case MULTI_CHECKBOX:
 				return ThemeIcons.DESIGNER_QUESTION_CHECKLIST;
@@ -34,12 +34,13 @@ public class ComponentCellTreeObjectWebforms extends ComponentCellTreeObject{
 					}
 				}
 			}
-		} else if (element instanceof Group) {
-			Group group = (Group) element;
+		} else if (object instanceof Group) {
+			Group group = (Group) object;
 			if (group.isRepetable()) {
 				return CommonThemeIcon.TREE_OBJECT_GROUP_LOOP;
 			}
 		}
 		return null;
-	}	
-}
+	}
+	
+}	

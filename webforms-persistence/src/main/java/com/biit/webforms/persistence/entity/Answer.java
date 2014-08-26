@@ -31,6 +31,8 @@ public class Answer extends BaseAnswer {
 	private String description;
 
 	public Answer() {
+		super();
+		description = new String();
 	}
 
 	public Answer(String name) throws FieldTooLongException {

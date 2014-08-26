@@ -16,13 +16,13 @@ import com.biit.webforms.logger.WebformsLogger;
 @Table(name = "questions")
 public class Question extends BaseQuestion {
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
-	
+
 	private boolean mandatory;
 	private boolean horizontal;
-	
+
 	@Column(length = MAX_DESCRIPTION_LENGTH)
 	private String description;
-	
+
 	@Enumerated(EnumType.STRING)
 	private AnswerType answerType;
 	@Enumerated(EnumType.STRING)
@@ -30,10 +30,12 @@ public class Question extends BaseQuestion {
 
 	public Question() {
 		super();
-		
+
 		mandatory = true;
-		horizontal = true;
+		horizontal = false;
 		description = new String();
+		answerType = AnswerType.INPUT;
+		answerFormat = AnswerFormat.TEXT;
 	}
 
 	public Question(String name) throws FieldTooLongException {
@@ -44,8 +46,24 @@ public class Question extends BaseQuestion {
 		return this.answerType;
 	}
 
+	/**
+	 * This setter sets AnswerType to specified format and resets the answer
+	 * format to Text or null.
+	 * 
+	 * @param answerType
+	 */
 	public void setAnswerType(AnswerType answerType) {
 		this.answerType = answerType;
+		try {
+			if (answerType.isInputField()) {
+				setAnswerFormat(AnswerFormat.TEXT);
+				getChildren().clear();
+			} else {
+				setAnswerFormat(null);
+			}
+		} catch (InvalidAnswerFormatException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
 	}
 
 	public AnswerFormat getAnswerFormat() {
@@ -68,7 +86,7 @@ public class Question extends BaseQuestion {
 	@Override
 	protected void copyData(TreeObject object) {
 		Question question = (Question) object;
-
+		
 		setDescription(new String(question.getDescription()));
 		setHorizontal(question.isHorizontal());
 		setMandatory(question.isMandatory());
