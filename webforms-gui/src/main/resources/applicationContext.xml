@@ -64,8 +64,8 @@
 
 		<property name="packagesToScan">
 			<list>
-			    <value>com.biit.form.**.*</value>
-				<value>com.biit.webforms.**.*</value>
+			    <!-- <value>com.biit.form.**.*</value> -->
+				<value>com.biit.webforms.persistence**.*</value>
 			</list>
 		</property>
 	</bean>

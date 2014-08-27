@@ -1,0 +1,22 @@
+package com.biit.webforms.pdfconversor;
+
+import com.biit.form.TreeObject;
+import com.biit.webforms.persistence.entity.Form;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.PdfPTable;
+
+public class AnnexGenerator {
+
+	public static void generateAndAdd(Document document, TreeObject treeObject) throws DocumentException {
+
+		ParagraphGenerator.generateAndAddTitle(document, "Appendix", PdfAlign.ALIGN_CENTER);
+		ParagraphGenerator.generateAndAddAnnexTitle(document, "Element List", PdfAlign.ALIGN_CENTER);
+
+		// Generate table
+		PdfPTable annexTable = PdfTableGenerator.generateAnnexFormTable((Form) treeObject);
+
+		document.add(annexTable);
+	}
+
+}

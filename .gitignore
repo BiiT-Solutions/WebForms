@@ -11,3 +11,4 @@ widgetsets/
 tmp
 *.zip
 styles.css
+/webforms-gui/*.pdf

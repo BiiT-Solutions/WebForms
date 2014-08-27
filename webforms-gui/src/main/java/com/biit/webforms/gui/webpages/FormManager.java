@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.webpages;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.biit.form.exceptions.FieldTooLongException;
@@ -16,9 +17,14 @@ import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.EditInfoListener;
 import com.biit.webforms.gui.components.TreeTableFormVersion;
+import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.pdfconversor.FormPdfGenerator;
+import com.biit.webforms.pdfconversor.NeoFormGeneratorPDF;
 import com.biit.webforms.persistence.entity.Form;
+import com.lowagie.text.DocumentException;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -84,6 +90,21 @@ public class FormManager extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				UserSessionHandler.getController().setFormInUse(getSelectedForm());
 				ApplicationUi.navigateTo(WebMap.FLOW_EDITOR);
+			}
+		});
+		upperMenu.addExportPdf(new ClickListener() {
+			private static final long serialVersionUID = 2864457152577148777L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				Form selectedForm = formTable.getValue();
+				if (selectedForm != null && !(selectedForm instanceof RootForm)) {
+					try {
+						NeoFormGeneratorPDF.generatePDF("kiwi.pdf", new FormPdfGenerator(formTable.getValue()));
+					} catch (IOException | DocumentException e) {
+						WebformsLogger.errorMessage(FormManager.class.getName(), e);
+					}
+				}
 			}
 		});
 		return upperMenu;

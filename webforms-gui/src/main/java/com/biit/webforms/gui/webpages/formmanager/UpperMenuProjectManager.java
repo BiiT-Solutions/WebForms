@@ -16,7 +16,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private IconButton newForm, newFormVersion, editDesign, editFlow;
+	private IconButton newForm, newFormVersion, editDesign, editFlow, exportPdf;
 
 	public UpperMenuProjectManager() {
 		super();
@@ -29,11 +29,14 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.COMMON_TOOLTIP_DESIGN, IconSize.BIG);
 		editFlow = new IconButton(LanguageCodes.COMMON_CAPTION_FLOW, ThemeIcons.FLOW_EDITOR,
 				LanguageCodes.COMMON_TOOLTIP_FLOW, IconSize.BIG);
+		exportPdf = new IconButton(LanguageCodes.COMMON_CAPTION_EXPORT_TO_PDF, ThemeIcons.EXPORT_FORM_TO_PDF,
+				LanguageCodes.COMMON_TOOLTIP_EXPORT_TO_PDF, IconSize.BIG);
 
 		addIconButton(newForm);
 		addIconButton(newFormVersion);
 		addIconButton(editDesign);
 		addIconButton(editFlow);
+		addIconButton(exportPdf);
 	}
 
 	public void addNewFormListener(ClickListener listener) {
@@ -50,5 +53,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public void addEditFlowListener(ClickListener listener) {
 		editFlow.addClickListener(listener);
+	}
+
+	public void addExportPdf(ClickListener listener) {
+		exportPdf.addClickListener(listener);
 	}
 }
