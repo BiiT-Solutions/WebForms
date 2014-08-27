@@ -3,7 +3,7 @@ package com.biit.webforms.pdfgenerator;
 import java.util.List;
 
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.pdfconversor.exceptions.BadBlockException;
+import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.biit.webforms.persistence.entity.Form;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;

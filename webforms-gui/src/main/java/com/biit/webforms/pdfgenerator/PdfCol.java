@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.pdfconversor.exceptions.BadBlockException;
+import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.lowagie.text.pdf.PdfPCell;
 
 public class PdfCol implements IPdfTableBlock{

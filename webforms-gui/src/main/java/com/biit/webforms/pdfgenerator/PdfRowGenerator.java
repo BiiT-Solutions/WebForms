@@ -1,7 +1,7 @@
 package com.biit.webforms.pdfgenerator;
 
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.pdfconversor.exceptions.BadBlockException;
+import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.AnswerType;
 import com.biit.webforms.persistence.entity.Question;

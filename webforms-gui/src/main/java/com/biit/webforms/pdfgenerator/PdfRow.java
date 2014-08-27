@@ -3,7 +3,7 @@ package com.biit.webforms.pdfgenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.webforms.pdfconversor.exceptions.BadBlockException;
+import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.lowagie.text.pdf.PdfPCell;
 
 public class PdfRow implements IPdfTableBlock{
