@@ -1,4 +1,4 @@
-package com.biit.webforms.pdfconversor;
+package com.biit.webforms.pdfgenerator;
 
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfconversor.exceptions.BadBlockException;

@@ -1,4 +1,4 @@
-package com.biit.webforms.pdfconversor;
+package com.biit.webforms.pdfgenerator;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
