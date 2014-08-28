@@ -77,7 +77,7 @@ public class ParagraphGenerator {
 	}
 
 	public static Paragraph generateFieldName(Question question) {
-		String label = question.isMandatory() && question.getAnswerType() != AnswerType.MULTI_CHECKBOX ? question
+		String label = question.isMandatory() && question.getAnswerType() != AnswerType.MULTIPLE_SELECTION ? question
 				.getLabel() + "*" : question.getLabel();
 		return new Paragraph(label, PdfFont.NORMAL_FONT.getFont());
 	}

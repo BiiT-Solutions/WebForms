@@ -102,9 +102,9 @@ public class PdfBlockGenerator {
 	public static PdfTableBlock generateFormQuestionElement(PdfWriter writer, Question question)
 			throws BadBlockException {
 		switch (question.getAnswerType()) {
-		case MULTI_CHECKBOX:
+		case MULTIPLE_SELECTION:
 			return generateMultipleSelectionBlock(writer, question);
-		case RADIO:
+		case SINGLE_SELECTION:
 			return generateSingleSelectionBlock(writer, question);
 		case INPUT:
 			return generateInputFieldBlock(writer, question);

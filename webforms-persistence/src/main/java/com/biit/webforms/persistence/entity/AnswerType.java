@@ -1,9 +1,9 @@
 package com.biit.webforms.persistence.entity;
 
 public enum AnswerType {
-	RADIO,
+	SINGLE_SELECTION,
 
-	MULTI_CHECKBOX,
+	MULTIPLE_SELECTION,
 
 	// Uses answer format.
 	INPUT;

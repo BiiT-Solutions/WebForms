@@ -136,7 +136,7 @@ public class Question extends BaseQuestion {
 	@Override
 	public boolean isAllowedChildren(Class<? extends TreeObject> childClass){
 		if(super.isAllowedChildren(childClass)){
-			if(answerType == AnswerType.MULTI_CHECKBOX || answerType == AnswerType.RADIO){
+			if(answerType == AnswerType.MULTIPLE_SELECTION || answerType == AnswerType.SINGLE_SELECTION){
 				return true;
 			}
 		}

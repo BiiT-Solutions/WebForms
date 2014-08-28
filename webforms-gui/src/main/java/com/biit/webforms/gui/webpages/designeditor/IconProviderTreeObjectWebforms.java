@@ -16,9 +16,9 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject>{
 		if (object instanceof Question) {
 			Question question = (Question) object;
 			switch (question.getAnswerType()) {
-			case MULTI_CHECKBOX:
+			case MULTIPLE_SELECTION:
 				return ThemeIcons.DESIGNER_QUESTION_CHECKLIST;
-			case RADIO:
+			case SINGLE_SELECTION:
 				return ThemeIcons.DESIGNER_QUESTION_RADIOBUTTON;
 			case INPUT:
 				if (question.getAnswerFormat() != null) {
