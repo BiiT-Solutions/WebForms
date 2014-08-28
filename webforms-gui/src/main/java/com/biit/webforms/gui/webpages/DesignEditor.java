@@ -48,8 +48,8 @@ public class DesignEditor extends SecuredWebPage {
 		table.setIconProvider(new IconProviderTreeObjectWebforms());
 		table.setSizeFull();
 		table.setSelectable(true);
+		table.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);
 		table.setValue(null);
-		table.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);		
 		table.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -1169897738297107301L;
 
@@ -68,6 +68,7 @@ public class DesignEditor extends SecuredWebPage {
 			public void propertyUpdate(Object element) {
 				UserSessionHandler.getController().notifyTreeObjectUpdated(element);
 				table.updateRow((TreeObject) element);
+				updateUpperMenu();
 			}
 		});
 		
@@ -149,14 +150,8 @@ public class DesignEditor extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
-
-					TreeObject selectedRow = table.getSelectedRow();
-					Subcategory newSubcategory;
-					if (selectedRow instanceof Subcategory) {
-						newSubcategory = UserSessionHandler.getController().addNewSubcategory(selectedRow.getParent());
-					} else {
-						newSubcategory = UserSessionHandler.getController().addNewSubcategory(selectedRow);
-					}
+					TreeObject selectedRow = table.getSelectedRow();					
+					Subcategory newSubcategory = UserSessionHandler.getController().addNewSubcategory(selectedRow.getCategory());
 					table.addRow(newSubcategory, newSubcategory.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_SUBCATEGORY_NOT_INSERTED);
@@ -280,8 +275,8 @@ public class DesignEditor extends SecuredWebPage {
 
 	private void updateUpperMenu() {
 		TreeObject selectedRow = table.getSelectedRow();
+		upperMenu.getNewCategoryButton().setEnabled(true);
 		if (selectedRow == null) {
-			upperMenu.getNewCategoryButton().setEnabled(false);
 			upperMenu.getNewSubcategoryButton().setEnabled(false);
 			upperMenu.getNewGroupButton().setEnabled(false);
 			upperMenu.getNewQuestionButton().setEnabled(false);
@@ -293,8 +288,7 @@ public class DesignEditor extends SecuredWebPage {
 			upperMenu.getDownButton().setEnabled(false);
 		} else {
 			if(selectedRow instanceof Form){
-				upperMenu.getNewCategoryButton().setEnabled(selectedRow.isAllowedChildren(Category.class));
-				upperMenu.getNewSubcategoryButton().setEnabled(selectedRow.isAllowedChildren(Subcategory.class));
+				upperMenu.getNewSubcategoryButton().setEnabled(false);
 				upperMenu.getNewGroupButton().setEnabled(selectedRow.isAllowedChildren(Group.class));
 				upperMenu.getNewQuestionButton().setEnabled(selectedRow.isAllowedChildren(Question.class));
 				upperMenu.getNewTextButton().setEnabled(selectedRow.isAllowedChildren(Text.class));
@@ -303,8 +297,7 @@ public class DesignEditor extends SecuredWebPage {
 				upperMenu.getUpButton().setEnabled(false);
 				upperMenu.getDownButton().setEnabled(false);
 			}else{
-				upperMenu.getNewCategoryButton().setEnabled(selectedRow.isAllowedChildren(Category.class)||selectedRow.getParent().isAllowedChildren(Category.class));
-				upperMenu.getNewSubcategoryButton().setEnabled(selectedRow.isAllowedChildren(Subcategory.class)||selectedRow.getParent().isAllowedChildren(Subcategory.class));
+				upperMenu.getNewSubcategoryButton().setEnabled(true);
 				upperMenu.getNewGroupButton().setEnabled(selectedRow.isAllowedChildren(Group.class));
 				upperMenu.getNewQuestionButton().setEnabled(selectedRow.isAllowedChildren(Question.class)||selectedRow.getParent().isAllowedChildren(Question.class));
 				upperMenu.getNewTextButton().setEnabled(selectedRow.isAllowedChildren(Text.class)||selectedRow.getParent().isAllowedChildren(Text.class));

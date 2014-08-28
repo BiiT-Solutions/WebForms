@@ -25,6 +25,7 @@ public class Form extends BaseForm {
 
 	public Form(String name, User user) throws FieldTooLongException {
 		super(name);
+		description = new String();
 		setCreatedBy(user);
 		setUpdatedBy(user);
 	}

@@ -16,6 +16,8 @@ import com.biit.webforms.logger.WebformsLogger;
 @Table(name = "questions")
 public class Question extends BaseQuestion {
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
+	public static final boolean DEFAULT_HORIZONTAL = false;
+	public static final boolean DEFAULT_MANDATORY = true;
 
 	private boolean mandatory;
 	private boolean horizontal;
@@ -31,8 +33,8 @@ public class Question extends BaseQuestion {
 	public Question() {
 		super();
 
-		mandatory = true;
-		horizontal = false;
+		mandatory = DEFAULT_MANDATORY;
+		horizontal = DEFAULT_HORIZONTAL;
 		description = new String();
 		answerType = AnswerType.INPUT;
 		answerFormat = AnswerFormat.TEXT;
@@ -56,9 +58,12 @@ public class Question extends BaseQuestion {
 		this.answerType = answerType;
 		try {
 			if (answerType.isInputField()) {
+				//If user sets type as TEXT then extra configuration values return to default
 				setAnswerFormat(AnswerFormat.TEXT);
+				horizontal = DEFAULT_HORIZONTAL;
 				getChildren().clear();
 			} else {
+				//If user sets type as NOT TEXT then answer format becomes null
 				setAnswerFormat(null);
 			}
 		} catch (InvalidAnswerFormatException e) {
@@ -122,5 +127,15 @@ public class Question extends BaseQuestion {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	@Override
+	public boolean isAllowedChildren(Class<? extends TreeObject> childClass){
+		if(super.isAllowedChildren(childClass)){
+			if(answerType == AnswerType.MULTI_CHECKBOX || answerType == AnswerType.RADIO){
+				return true;
+			}
+		}
+		return false;
 	}
 }

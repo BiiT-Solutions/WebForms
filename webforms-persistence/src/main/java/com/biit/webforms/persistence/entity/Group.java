@@ -10,13 +10,16 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 @Entity
 @Table(name = "groups")
 public class Group extends BaseRepeatableGroup {
+	private static final boolean DEFAULT_REPEATABLE = false;
 
 	public Group() {
 		super();
+		setRepeatable(DEFAULT_REPEATABLE);
 	}
 
 	public Group(String name) throws FieldTooLongException {
 		super(name);
+		setRepeatable(DEFAULT_REPEATABLE);
 	}
 
 	@Override

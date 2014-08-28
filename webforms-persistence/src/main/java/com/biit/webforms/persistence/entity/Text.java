@@ -17,6 +17,11 @@ public class Text extends BaseQuestion {
 	
 	@Column(length = MAX_DESCRIPTION_LENGTH)
 	private String description;
+	
+	public Text() {
+		super();
+		description= new String();
+	}
 
 	@Override
 	protected List<Class<? extends TreeObject>> getAllowedChildren() {

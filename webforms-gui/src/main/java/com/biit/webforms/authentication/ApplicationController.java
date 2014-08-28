@@ -252,7 +252,9 @@ public class ApplicationController {
 		TreeObject treeObject = null;
 		try {
 			treeObject = classType.newInstance();
-			treeObject.setName(getNewStringNumber(parent, name));
+			String nameNumber = getNewStringNumber(parent, name);
+			treeObject.setName(nameNumber);
+			treeObject.setLabel(nameNumber+"_label");
 			treeObject.setCreatedBy(UserSessionHandler.getUser());
 			treeObject.setUpdatedBy(UserSessionHandler.getUser());
 			parent.addChild(treeObject);
