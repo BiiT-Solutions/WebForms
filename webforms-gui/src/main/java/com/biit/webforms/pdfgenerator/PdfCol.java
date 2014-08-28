@@ -21,7 +21,6 @@ public class PdfCol implements IPdfTableBlock{
 	}
 
 	public void setCell(PdfPCell cell) throws BadBlockException {
-		System.out.println(cell.getRowspan()+" "+numberRows+" "+cell.getColspan()+" "+numberCols);
 		if(cell.getRowspan()!=numberRows || cell.getColspan() !=numberCols){
 			throw new BadBlockException();
 		}else{

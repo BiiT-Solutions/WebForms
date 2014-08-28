@@ -2,9 +2,14 @@ package com.biit.webforms.pdfgenerator;
 
 import com.biit.form.TreeObject;
 import com.biit.webforms.persistence.entity.Question;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfWriter;
 
 public class PdfPCellGenerator {
+
+	private final static int BORDER = Rectangle.NO_BORDER;
 
 	public static PdfPCell generateLabelCell(TreeObject object) {
 		return new PdfPCell(ParagraphGenerator.generateLabelParagraph(object));
@@ -16,6 +21,33 @@ public class PdfPCellGenerator {
 
 	public static PdfPCell generateAnswerFormatParagraph(Question question) {
 		return new PdfPCell(ParagraphGenerator.generateAnswerFormatParagraph(question));
+	}
+
+	public static PdfPCell generateInputFieldCell(PdfWriter writer, Question question) {
+		PdfPCell cell = new PdfPCell();
+		cell.setBorder(BORDER);
+		cell.setCellEvent(new FormTextField(writer, question.getName()));
+		return cell;
+	}
+
+	public static PdfPCell generateFormQuestionNameCell(Question question) {
+		PdfPCell nameCell = new PdfPCell(ParagraphGenerator.generateFieldName(question));
+		nameCell.setBorder(BORDER);
+		return nameCell;
+	}
+
+	public static PdfPCell generateText(String text,int span) {
+		PdfPCell labelCell = new PdfPCell(new Phrase(text));
+		labelCell.setBorder(BORDER);
+		return labelCell;
+	}
+
+	public static PdfPCell generateDescription(String description, int span) {
+		PdfPCell cell = new PdfPCell(ParagraphGenerator.generateDescription(description));
+		cell.setColspan(span);
+		cell.setBorder(BORDER);
+		cell.setVerticalAlignment(com.lowagie.text.Element.ALIGN_TOP);
+		return cell;
 	}
 
 }

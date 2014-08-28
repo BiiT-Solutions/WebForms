@@ -49,7 +49,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 
 		name.setValue(instance.getName());
 		label.setValue(instance.getLabel());
-		repetable.setValue(instance.isRepetable());
+		repetable.setValue(instance.isRepeatable());
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		try {
 			instance.setName(name.getValue());
 			instance.setLabel(label.getValue());
-			instance.setRepetable(repetable.getValue());
+			instance.setRepeatable(repetable.getValue());
 
 		} catch (FieldTooLongException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

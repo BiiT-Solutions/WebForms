@@ -20,6 +20,7 @@ public abstract class DocumentGenerator {
 	private final static String DOCUMENT_CREATOR = "BiiT";
 	
 	private PdfPageEvent pageEvent;
+	private PdfWriter writer;
 
 	protected static void addMetaData(Document document) {
 		document.addTitle(DEFAULT_DOCUMENT_NAME);
@@ -41,7 +42,7 @@ public abstract class DocumentGenerator {
 	public final byte[] generate() throws DocumentException{
 		Document document = generateDocument();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		PdfWriter writer = PdfWriter.getInstance(document, baos);
+		writer = PdfWriter.getInstance(document, baos);
 
 		if (writer == null) {
 			return null;
@@ -59,5 +60,9 @@ public abstract class DocumentGenerator {
 		document.close();
 		writer = null;
 		return baos.toByteArray();
+	}
+	
+	public PdfWriter getWriter(){
+		return writer;
 	}
 }

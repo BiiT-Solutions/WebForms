@@ -5,11 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Rectangle;
 
 public class NeoFormGeneratorPDF {
-
-	private final static int BORDER = Rectangle.NO_BORDER;
 
 	public static void generatePDF(String filename, DocumentGenerator generator) throws IOException,
 			FileNotFoundException, DocumentException {

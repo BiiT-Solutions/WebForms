@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.biit.form.TreeObject;
+import com.biit.webforms.persistence.entity.AnswerType;
 import com.biit.webforms.persistence.entity.Question;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 
 public class ParagraphGenerator {
 
@@ -47,6 +49,10 @@ public class ParagraphGenerator {
 		return new Paragraph(object.getLabel(), PdfFont.NORMAL_FONT.getFont());
 	}
 
+	public static Paragraph generateRepeatableParagraph() {
+		return new Paragraph("<Repeatable>", PdfFont.SMALL_FONT.getFont());
+	}
+
 	public static Paragraph generateNameParagraph(TreeObject object) {
 		return new Paragraph("<" + object.getName() + ">", PdfFont.SMALL_FONT.getFont());
 	}
@@ -56,7 +62,7 @@ public class ParagraphGenerator {
 		return new Paragraph("(" + object.getAnswerFormat().toString() + ")", PdfFont.SMALL_FONT.getFont());
 	}
 
-	public static Paragraph generateTextParagraph(String textParagraph){
+	public static Paragraph generateTextParagraph(String textParagraph) {
 		Paragraph paragraph = new Paragraph(textParagraph, PdfFont.NORMAL_FONT.getFont());
 		paragraph.setAlignment(PdfAlign.ALIGN_JUSTIFIED.getAlignment());
 		return paragraph;
@@ -64,9 +70,19 @@ public class ParagraphGenerator {
 
 	public static List<Paragraph> generateTextParagraphs(List<String> textParagraphs) {
 		List<Paragraph> paragraphs = new ArrayList<Paragraph>();
-		for(String text : textParagraphs){
+		for (String text : textParagraphs) {
 			paragraphs.add(generateTextParagraph(text));
 		}
 		return paragraphs;
+	}
+
+	public static Paragraph generateFieldName(Question question) {
+		String label = question.isMandatory() && question.getAnswerType() != AnswerType.MULTI_CHECKBOX ? question
+				.getLabel() + "*" : question.getLabel();
+		return new Paragraph(label, PdfFont.NORMAL_FONT.getFont());
+	}
+
+	public static Phrase generateDescription(String description) {
+		return new Paragraph("Hint: " + description, PdfFont.DESCRIPTION_FONT.getFont());
 	}
 }

@@ -36,7 +36,7 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject>{
 			}
 		} else if (object instanceof Group) {
 			Group group = (Group) object;
-			if (group.isRepetable()) {
+			if (group.isRepeatable()) {
 				return CommonThemeIcon.TREE_OBJECT_GROUP_LOOP;
 			}
 		}

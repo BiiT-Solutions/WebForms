@@ -9,21 +9,33 @@ import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.Text;
+import com.lowagie.text.pdf.PdfWriter;
 
 public class PdfBlockGenerator {
 
-	public static PdfTableBlock generateAnnexQuestionTableBlock(Question question){
+	private static final int DESCRIPTION_BLOC_ROW = 1;
+	private static final int DESCRIPTION_BLOC_COL = 2;
+	private static final int IS_HORIZONTAL_BLOC_ROW = 1;
+	private static final int IS_HORIZONTAL_BLOC_COL = 2;
+	private static final int TEXT_BLOCK_ROW = 1;
+	private static final int TEXT_BLOCK_COL = 1;
+
+	private static int FORM_SINGLE_SELECTION_ROW = 1;
+	private static int FORM_QUESTION_COL = 2;
+
+	public static PdfTableBlock generateAnnexQuestionTableBlock(Question question) {
 		PdfTableBlock block = null;
 		try {
-			block = new PdfTableBlock(1 + question.getChildren().size(),4);
-			
+			block = new PdfTableBlock(1 + question.getChildren().size(), 4);
+
 			block.insertRow(PdfRowGenerator.generateAnnexQuestion(question));
 
 			if (!question.getChildren().isEmpty()) {
 				block.insertCol(PdfCol.generateWhiteCol(question.getChildren().size(), 1));
 				for (TreeObject child : question.getChildren()) {
 					// They are all answers
-					//TODO change for nested answers.
+					// TODO change for nested answers.
 					block.insertRow(PdfRowGenerator.generateAnnexAnswer((Answer) child));
 				}
 			}
@@ -31,7 +43,7 @@ public class PdfBlockGenerator {
 			WebformsLogger.errorMessage(PdfRowGenerator.class.getName(), e);
 		}
 		return block;
-		//TODO clean when finished.
+		// TODO clean when finished.
 		// if (!element.getChildren().isEmpty()) {
 		// PdfPCell cellWhite = new PdfPCell();
 		// cellWhite.setRowspan(element.getChildren().size());
@@ -69,8 +81,8 @@ public class PdfBlockGenerator {
 		// }
 		// }
 	}
-	
-	public static List<PdfTableBlock>  generateAnnexFormTableBlocks(Form form){
+
+	public static List<PdfTableBlock> generateAnnexFormTableBlocks(Form form) {
 		List<PdfTableBlock> blocks = new ArrayList<PdfTableBlock>();
 
 		List<TreeObject> treeObjects = new ArrayList<>(form.getAll(Question.class));
@@ -81,5 +93,114 @@ public class PdfBlockGenerator {
 
 		return blocks;
 	}
-	
+
+	// case SELECT:
+	// addComboBoxToTable(table, element.getName(), name,
+	// element.getChildren());
+	// break;
+
+	public static PdfTableBlock generateFormQuestionElement(PdfWriter writer, Question question)
+			throws BadBlockException {
+		switch (question.getAnswerType()) {
+		case MULTI_CHECKBOX:
+			return generateMultipleSelectionBlock(writer, question);
+		case RADIO:
+			return generateSingleSelectionBlock(writer, question);
+		case INPUT:
+			return generateInputFieldBlock(writer, question);
+		}
+		return null;
+	}
+
+	private static PdfTableBlock generateInputFieldBlock(PdfWriter writer, Question question) throws BadBlockException {
+		PdfTableBlock block = new PdfTableBlock(FORM_SINGLE_SELECTION_ROW, FORM_QUESTION_COL);
+		block.insertRow(PdfRowGenerator.generateTextFieldRow(writer, question));
+		return block;
+	}
+
+	private static PdfTableBlock generateSingleSelectionBlock(PdfWriter writer, Question question)
+			throws BadBlockException {
+
+		List<PdfRow> rows = PdfRowGenerator.generateRadioFieldRows(writer, question);
+
+		int numberRows = getRowSizeOfRows(rows);
+		PdfTableBlock block = new PdfTableBlock(getRowSizeOfRows(rows), FORM_QUESTION_COL);
+
+		// C|r
+		// --
+		// |r
+		// Insert name column
+		block.insertCol(PdfColGenerator.generateMultiFieldNameCol(question,numberRows));
+		// Insert option rows
+		for (PdfRow row : rows) {
+			block.insertRow(row);
+		}
+		return block;
+	}
+
+	private static PdfTableBlock generateMultipleSelectionBlock(PdfWriter writer, Question question)
+			throws BadBlockException {
+		List<PdfRow> rows = PdfRowGenerator.generateCheckFieldRows(writer, question);
+
+		int numberRows = getRowSizeOfRows(rows);
+		PdfTableBlock block = new PdfTableBlock(numberRows, FORM_QUESTION_COL);
+
+		// C|r
+		// --
+		// |r
+		// Insert name column
+		block.insertCol(PdfColGenerator.generateMultiFieldNameCol(question,numberRows));
+		// Insert option rows
+		for (PdfRow row : rows) {
+			block.insertRow(row);
+		}
+		return block;
+	}
+
+	public static List<PdfTableBlock> generateFormQuestionTableBlocks(PdfWriter writer, Question question)
+			throws BadBlockException {
+		List<PdfTableBlock> tableBlocks = new ArrayList<PdfTableBlock>();
+
+		tableBlocks.add(generateFormQuestionElement(writer, question));
+
+		// Add description to document.
+		if (question.getDescription() != null && !question.getDescription().isEmpty()) {
+			tableBlocks.add(generateQuestionDescriptionBlock(question));
+		}
+
+		// Add visibility cell.
+		if (question.isHorizontal()){
+			tableBlocks.add(generateIsHorizontalBlock());
+		}
+
+		return tableBlocks;
+	}
+
+	private static PdfTableBlock generateIsHorizontalBlock() throws BadBlockException {
+		PdfTableBlock block = new PdfTableBlock(IS_HORIZONTAL_BLOC_ROW, IS_HORIZONTAL_BLOC_COL);
+		block.insertRow(PdfRowGenerator.generateIsHorizontalBlock(IS_HORIZONTAL_BLOC_ROW, IS_HORIZONTAL_BLOC_COL));
+		return block;
+		
+		
+	}
+
+	private static PdfTableBlock generateQuestionDescriptionBlock(Question question) throws BadBlockException {
+		PdfTableBlock block = new PdfTableBlock(DESCRIPTION_BLOC_ROW, DESCRIPTION_BLOC_COL);
+		block.insertRow(PdfRowGenerator.generateQuestionDescription(question));
+		return block;
+	}
+
+	private static int getRowSizeOfRows(List<PdfRow> rows) {
+		int size = 0;
+		for (PdfRow row : rows) {
+			size += row.getNumberRows();
+		}
+		return size;
+	}
+
+	public static PdfTableBlock generateTextBlocks(Text text) throws BadBlockException {
+		PdfTableBlock block = new PdfTableBlock(TEXT_BLOCK_ROW, TEXT_BLOCK_COL);
+		block.insertRow(PdfRowGenerator.createTextRow(text.getDescription(),TEXT_BLOCK_ROW,TEXT_BLOCK_COL));
+		return block;
+	}
 }

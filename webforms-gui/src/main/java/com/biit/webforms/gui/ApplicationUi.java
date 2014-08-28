@@ -20,18 +20,19 @@ public class ApplicationUi extends UI {
 	protected void init(VaadinRequest request) {
 		getPage().setTitle("");
 		defineWebPages();
-		System.out.println("***************************************");
-		System.out.println("Ui init id: "+this.getId());	
 		UiAccesser.register(UserSessionHandler.getController());
 	}
-	
+
 	@Override
-    public void detach() {
-		System.out.println("***************************************");
-		System.out.println("Detach Ui");	
+	public void detach() {
+		if (UserSessionHandler.getUser() != null) {
+			//Log user ui expired.
+			WebformsLogger.info(this.getClass().getName(), UserSessionHandler.getUser().getEmailAddress()
+					+ " Ui has expired.");
+		}
 		UiAccesser.unregister(UserSessionHandler.getController());
-        super.detach();
-    }
+		super.detach();
+	}
 
 	private void setChangeViewEvents() {
 		navigator.addViewChangeListener(new ViewChangeListener() {

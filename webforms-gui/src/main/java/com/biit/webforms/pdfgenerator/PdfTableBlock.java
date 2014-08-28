@@ -20,7 +20,6 @@ public class PdfTableBlock implements IPdfTableBlock {
 	}
 
 	public void insertRow(PdfRow row) throws BadBlockException {
-		System.out.println(row.isWellFormatted()+" "+row.getNumberCols()+" "+getRemainingCols()+" "+numberCols+" "+row.getNumberRows()+" "+getRemainingRows()+" "+numberRows);
 		if (!row.isWellFormatted() || (row.getNumberCols() != getRemainingCols()) || (row.getNumberRows()>getRemainingRows())) {
 			throw new BadBlockException();
 		}
@@ -28,7 +27,6 @@ public class PdfTableBlock implements IPdfTableBlock {
 	}
 
 	public void insertCol(PdfCol col) throws BadBlockException {
-		
 		if (!col.isWellFormatted() || (col.getNumberRows() != getRemainingRows()) || (col.getNumberCols()>getRemainingCols())) {
 			throw new BadBlockException();
 		}
