@@ -3,8 +3,9 @@ package com.biit.webforms.gui.webpages;
 import java.io.IOException;
 import java.util.List;
 
-import com.biit.form.exceptions.FieldTooLongException;
+import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
@@ -111,8 +112,13 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	protected void newFormVersion() {
-		Form newForm = UserSessionHandler.getController().createNewFormVersion(formTable.getValue());
-		addFormToTable(newForm);
+		Form newForm;
+		try {
+			newForm = UserSessionHandler.getController().createNewFormVersion(formTable.getValue());
+			addFormToTable(newForm);
+		} catch (NotValidTreeObjectException e) {
+			MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
+		}		
 	}
 
 	private void openNewFormWindow() {

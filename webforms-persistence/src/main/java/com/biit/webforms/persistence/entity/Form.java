@@ -6,7 +6,8 @@ import javax.persistence.Table;
 
 import com.biit.form.BaseForm;
 import com.biit.form.TreeObject;
-import com.biit.form.exceptions.FieldTooLongException;
+import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.liferay.portal.model.User;
 
 @Entity
@@ -44,7 +45,7 @@ public class Form extends BaseForm {
 		}
 	}
 	
-	public Form createNewVersion(User user){
+	public Form createNewVersion(User user) throws NotValidTreeObjectException{
 		Form newVersion = (Form) generateCopy(false, true);
 		newVersion.setVersion(newVersion.getVersion()+1);
 		newVersion.resetIds();

@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.designeditor;
 
-import com.biit.form.exceptions.FieldTooLongException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -29,7 +29,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 
 		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
-		
+
 		repetable = new CheckBox(LanguageCodes.CAPTION_REPETABLE.translation());
 
 		FormLayout commonProperties = new FormLayout();

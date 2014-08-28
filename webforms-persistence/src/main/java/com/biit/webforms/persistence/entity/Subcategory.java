@@ -12,7 +12,7 @@ import com.biit.form.BaseQuestion;
 import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
-import com.biit.form.exceptions.FieldTooLongException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 @Entity
 @Table(name = "subcategories")

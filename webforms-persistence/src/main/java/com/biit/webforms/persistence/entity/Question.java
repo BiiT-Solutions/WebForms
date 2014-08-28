@@ -8,8 +8,8 @@ import javax.persistence.Table;
 
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
-import com.biit.form.exceptions.FieldTooLongException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.logger.WebformsLogger;
 
 @Entity

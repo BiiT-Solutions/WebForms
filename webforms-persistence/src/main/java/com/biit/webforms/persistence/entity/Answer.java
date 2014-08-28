@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 import com.biit.form.BaseAnswer;
 import com.biit.form.TreeObject;
-import com.biit.form.exceptions.FieldTooLongException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 /**
  * Answer is a class that contains the information of a defined and possible

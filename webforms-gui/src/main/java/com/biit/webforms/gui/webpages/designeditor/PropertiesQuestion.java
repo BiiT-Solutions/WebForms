@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.webpages.designeditor;
 
-import com.biit.form.exceptions.FieldTooLongException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerTypeUi;

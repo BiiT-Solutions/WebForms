@@ -5,7 +5,7 @@ import javax.persistence.Table;
 
 import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
-import com.biit.form.exceptions.FieldTooLongException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 @Entity
 @Table(name = "groups")

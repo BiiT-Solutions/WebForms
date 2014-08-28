@@ -6,8 +6,9 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
-import com.biit.form.exceptions.FieldTooLongException;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
@@ -81,10 +82,17 @@ public class ApplicationController {
 		return newform;
 	}
 
-	public Form createNewFormVersion(Form form) {
+	public Form createNewFormVersion(Form form) throws NotValidTreeObjectException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createNewFormVersion " + form + " START");
-		Form newFormVersion = form.createNewVersion(getUser());
+		Form newFormVersion;
+		try {
+			newFormVersion = form.createNewVersion(getUser());
+		} catch (NotValidTreeObjectException ex) {
+			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+					+ " createForm " + ex.getMessage());
+			throw ex;
+		}
 
 		try {
 			formDao.makePersistent(newFormVersion);
