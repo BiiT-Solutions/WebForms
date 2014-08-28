@@ -42,4 +42,16 @@ public class UpperMenuBlockManager extends UpperMenuWebforms{
 	public void addEditFlowListener(ClickListener listener){
 		editFlow.addClickListener(listener);
 	}
+
+	public IconButton getNewBlock() {
+		return newBlock;
+	}
+
+	public IconButton getEditDesign() {
+		return editDesign;
+	}
+
+	public IconButton getEditFlow() {
+		return editFlow;
+	}
 }

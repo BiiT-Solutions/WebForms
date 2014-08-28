@@ -11,8 +11,10 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
@@ -27,6 +29,7 @@ public class ApplicationController {
 	private User user;
 
 	private IFormDao formDao;
+	private IBlockDao blockDao;
 
 	private Form lastEditedForm;
 	private Form formInUse;
@@ -35,6 +38,7 @@ public class ApplicationController {
 		super();
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		formDao = (IFormDao) helper.getBean("formDao");
+		blockDao = (IBlockDao) helper.getBean("blockDao");
 	}
 
 	/**
@@ -80,6 +84,42 @@ public class ApplicationController {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createForm " + formName + " END");
 		return newform;
+	}
+	
+	public Block createBlock(String blockName) throws FieldTooLongException, FormWithSameNameException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " createBlock " + blockName + " START");
+
+		// Create new block
+		Block newBlock = null;
+		try {
+			newBlock = new Block(blockName, getUser());
+		} catch (FieldTooLongException ex) {
+			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+					+ " createBlock " + ex.getMessage());
+			throw ex;
+		}
+
+		// Check if database contains a form with the same name.
+		if (blockDao.getBlock(blockName) != null) {
+			FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + blockName
+					+ " already exists");
+			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+					+ " createBlock " + ex.getMessage());
+			throw ex;
+		}
+
+		// Persist form.
+		try {
+			blockDao.makePersistent(newBlock);
+		} catch (ConstraintViolationException cve) {
+			WebformsLogger.errorMessage(ApplicationController.class.getName(), cve);
+			throw cve;
+		}
+
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " createBlock " + blockName + " END");
+		return newBlock;
 	}
 
 	public Form createNewFormVersion(Form form) throws NotValidTreeObjectException {
@@ -137,8 +177,14 @@ public class ApplicationController {
 	}
 
 	public void setFormInUse(Form form) {
+		if(form instanceof Block){
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " setFormInUse " + form);
+				+ " setFormInUse Block:" + form);
+		}else{
+			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+					+ " setFormInUse Form: " + form);
+		}
+		
 		this.formInUse = form;
 		setLastEditedForm(form);
 	}

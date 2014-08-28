@@ -94,6 +94,7 @@
 	</bean>
 	
 	<!-- DAOS -->
+	<bean name="blockDao" class="com.biit.webforms.persistence.dao.hibernate.BlockDao"/>
 	<bean name="formDao" class="com.biit.webforms.persistence.dao.hibernate.FormDao"/>
 	
 	<!-- Liferay Services -->

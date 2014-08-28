@@ -1,4 +1,4 @@
-package com.biit.webforms.gui.components;
+package com.biit.webforms.gui.webpages.formmanager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +16,7 @@ import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.DateManager;
 import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
+import com.biit.webforms.gui.components.EditInfoListener;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.IFormDao;

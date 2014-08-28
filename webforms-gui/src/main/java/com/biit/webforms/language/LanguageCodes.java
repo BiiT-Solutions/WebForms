@@ -46,6 +46,8 @@ public enum LanguageCodes implements ILanguageCode{
 	
 	COMMON_WARNING_TITLE_FORM_NOT_CREATED("common.warning.title.form.not.created"),
 	COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME("common.warning.description.form.needs.name"),
+	COMMON_WARNING_TITLE_BLOCK_NOT_CREATED("common.warning.title.block.not.created"),
+	COMMON_WARNING_DESCRIPTION_BLOCK_NEEDS_NAME("common.warning.description.block.needs.name"),
 	
 	COMMON_ERROR_FIELD_TOO_LONG("common.error.field.too.long"),
 	COMMON_ERROR_NAME_IS_IN_USE("common.error.name.is.in.use"),
@@ -59,6 +61,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_NEW_FORM_VERSION("tooltip.new.form.version"),
 	
 	NULL_VALUE_NEW_FORM("null.value.new.form"),
+	NULL_VALUE_NEW_BLOCK("null.value.new.block"),
 		
 	FORM_TABLE_COLUMN_NAME("caption.form.table.name"),
 	FORM_TABLE_COLUMN_VERSION("caption.form.table.version"),

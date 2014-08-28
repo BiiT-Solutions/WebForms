@@ -16,8 +16,8 @@ import com.biit.webforms.gui.common.components.WindowStringInput;
 import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.EditInfoListener;
-import com.biit.webforms.gui.components.TreeTableFormVersion;
 import com.biit.webforms.gui.components.utils.RootForm;
+import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -63,6 +63,8 @@ public class FormManager extends SecuredWebPage {
 			}
 		});
 		formTable.selectLastUsedForm();
+		//If it was already null
+		updateUpperMenu();
 
 		getWorkingArea().addComponent(formTable);
 	}
