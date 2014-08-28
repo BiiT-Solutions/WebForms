@@ -6,6 +6,7 @@ import javax.persistence.Table;
 
 import com.biit.form.BaseAnswer;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 /**
@@ -37,11 +38,18 @@ public class Answer extends BaseAnswer {
 
 	public Answer(String name) throws FieldTooLongException {
 		super(name);
+		description = new String();
 	}
 
 	@Override
-	protected void copyData(TreeObject object) {
-		// Nothing to copy
+	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
+		if (object instanceof Answer) {
+			if(((Answer) object).getDescription()!=null){
+				description = new String(((Answer) object).getDescription());
+			}
+		} else {
+			throw new NotValidTreeObjectException("Copy data for Answer only supports the same type copy");
+		}
 	}
 
 	/**

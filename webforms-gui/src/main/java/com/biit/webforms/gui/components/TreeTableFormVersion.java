@@ -118,7 +118,7 @@ public class TreeTableFormVersion extends TreeTable {
 			Item item = addItem(form);
 			item.getItemProperty(TreeTableFormVersionProperties.FORM_NAME).setValue(form.getName());
 			item.getItemProperty(TreeTableFormVersionProperties.VERSION).setValue(form.getVersion() + "");
-			item.getItemProperty(TreeTableFormVersionProperties.INFO).setValue(createInfoButton());
+			item.getItemProperty(TreeTableFormVersionProperties.INFO).setValue(createInfoButton(form));
 			item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag(form));
 
 			User userOfForm = UiAccesser.getUserIfFormIsInUse(form);
@@ -147,14 +147,14 @@ public class TreeTableFormVersion extends TreeTable {
 		}
 	}
 
-	private IconOnlyButton createInfoButton() {
+	private IconOnlyButton createInfoButton(final Form form) {
 		IconOnlyButton icon = new IconOnlyButton(ThemeIcons.EDIT.getThemeResource());
 		icon.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 896514404248078435L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				fireEditInfo(getValue());
+				fireEditInfo(form);
 			}
 		});
 		return icon;
@@ -181,6 +181,8 @@ public class TreeTableFormVersion extends TreeTable {
 			addRow(parent);
 		}
 		if (form != null) {
+			parent.addChildForm(form);
+
 			addRow(form);
 			setChildrenAllowed(parent, true);
 			setParent(form, parent);
@@ -307,14 +309,6 @@ public class TreeTableFormVersion extends TreeTable {
 		setValue(firstItemId());
 	}
 
-	@Override
-	public Form getValue() {
-		if (super.getValue() instanceof Form) {
-			return (Form) super.getValue();
-		}
-		return null;
-	}
-
 	/**
 	 * This function returns an string with read only if the form can't be
 	 * edited by the user
@@ -344,5 +338,13 @@ public class TreeTableFormVersion extends TreeTable {
 
 	public void removeEditInfoListener(EditInfoListener listener) {
 		editInfoListeners.remove(listener);
+	}
+	
+	public RootForm getSelectedRootForm(){
+		if(getValue()instanceof RootForm){
+			return (RootForm) getValue();
+		}else{
+			return (RootForm) getParent(getValue());
+		}
 	}
 }

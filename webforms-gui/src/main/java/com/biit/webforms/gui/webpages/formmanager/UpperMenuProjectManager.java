@@ -58,4 +58,24 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	public void addExportPdf(ClickListener listener) {
 		exportPdf.addClickListener(listener);
 	}
+
+	public IconButton getNewForm() {
+		return newForm;
+	}
+
+	public IconButton getNewFormVersion() {
+		return newFormVersion;
+	}
+
+	public IconButton getEditDesign() {
+		return editDesign;
+	}
+
+	public IconButton getEditFlow() {
+		return editFlow;
+	}
+
+	public IconButton getExportPdf() {
+		return exportPdf;
+	}
 }

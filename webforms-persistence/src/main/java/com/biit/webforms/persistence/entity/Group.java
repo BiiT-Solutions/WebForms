@@ -5,6 +5,7 @@ import javax.persistence.Table;
 
 import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 @Entity
@@ -23,7 +24,11 @@ public class Group extends BaseRepeatableGroup {
 	}
 
 	@Override
-	protected void copyData(TreeObject object) {
-		//Nothing to copy
+	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
+		if (object instanceof Group) {			
+			setRepeatable(((Group) object).isRepeatable());
+		} else {
+			throw new NotValidTreeObjectException("Copy data for Group only supports the same type copy");
+		}
 	}
 }

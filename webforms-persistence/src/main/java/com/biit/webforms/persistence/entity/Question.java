@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
+import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.logger.WebformsLogger;
 
@@ -89,20 +90,23 @@ public class Question extends BaseQuestion {
 	}
 
 	@Override
-	protected void copyData(TreeObject object) {
-		Question question = (Question) object;
-		
-		setDescription(new String(question.getDescription()));
-		setHorizontal(question.isHorizontal());
-		setMandatory(question.isMandatory());
-		setAnswerType(question.getAnswerType());
-		try {
-			setAnswerFormat(question.getAnswerFormat());
-		} catch (InvalidAnswerFormatException e) {
-			// Its a copy, it should never happen.
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}
+	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
+		if (object instanceof Question) {			
+			Question question = (Question) object;
 
+			setDescription(new String(question.getDescription()));
+			setHorizontal(question.isHorizontal());
+			setMandatory(question.isMandatory());
+			setAnswerType(question.getAnswerType());
+			try {
+				setAnswerFormat(question.getAnswerFormat());
+			} catch (InvalidAnswerFormatException e) {
+				// Its a copy, it should never happen.
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+		} else {
+			throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy");
+		}
 	}
 
 	public boolean isMandatory() {

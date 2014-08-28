@@ -14,7 +14,7 @@ import com.liferay.portal.model.User;
 @Table(name = "forms")
 public class Form extends BaseForm {
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
-	
+
 	@Column(length = MAX_DESCRIPTION_LENGTH)
 	private String description;
 
@@ -36,33 +36,32 @@ public class Form extends BaseForm {
 	}
 
 	@Override
-	protected void copyData(TreeObject object) {
+	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
 		super.copyData(object);
-		Form form = (Form) object;
-		try {
-			setDescription(form.getDescription());
-		} catch (FieldTooLongException e) {
-			e.printStackTrace();
+		if (object instanceof Form) {
+			description = new String(((Form) object).getDescription());
+		} else {
+			throw new NotValidTreeObjectException("Copy data for Form only supports the same type copy");
 		}
 	}
-	
-	public Form createNewVersion(User user) throws NotValidTreeObjectException{
+
+	public Form createNewVersion(User user) throws NotValidTreeObjectException {
 		Form newVersion = (Form) generateCopy(false, true);
-		newVersion.setVersion(newVersion.getVersion()+1);
+		newVersion.setVersion(newVersion.getVersion() + 1);
 		newVersion.resetIds();
 		newVersion.setCreatedBy(user);
 		newVersion.setUpdatedBy(user);
 		return newVersion;
 	}
-	
-	public void setDescription(String description) throws FieldTooLongException{
-		if(description.length()>MAX_DESCRIPTION_LENGTH){
-			throw new FieldTooLongException("Description is longer than maximum: "+MAX_DESCRIPTION_LENGTH);
+
+	public void setDescription(String description) throws FieldTooLongException {
+		if (description.length() > MAX_DESCRIPTION_LENGTH) {
+			throw new FieldTooLongException("Description is longer than maximum: " + MAX_DESCRIPTION_LENGTH);
 		}
 		this.description = new String(description);
 	}
-	
-	public String getDescription(){
+
+	public String getDescription() {
 		return description;
 	}
 }

@@ -10,7 +10,6 @@ import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
-import com.biit.webforms.gui.common.components.UpperMenu;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.components.WindowStringInput;
@@ -26,6 +25,8 @@ import com.biit.webforms.pdfgenerator.FormPdfGenerator;
 import com.biit.webforms.pdfgenerator.NeoFormGeneratorPDF;
 import com.biit.webforms.persistence.entity.Form;
 import com.lowagie.text.DocumentException;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -34,7 +35,7 @@ public class FormManager extends SecuredWebPage {
 	private static final long serialVersionUID = 4853622392162188013L;
 
 	private TreeTableFormVersion formTable;
-	private UpperMenu upperMenu;
+	private UpperMenuProjectManager upperMenu;
 
 	@Override
 	protected void initContent() {
@@ -52,12 +53,21 @@ public class FormManager extends SecuredWebPage {
 				openEditInfoWindow(form);
 			}
 		});
+		formTable.setValue(null);
+		formTable.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = -8544416078101328528L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				updateUpperMenu();
+			}
+		});
 		formTable.selectLastUsedForm();
 
 		getWorkingArea().addComponent(formTable);
 	}
 
-	private UpperMenu createUpperMenu() {
+	private UpperMenuProjectManager createUpperMenu() {
 		UpperMenuProjectManager upperMenu = new UpperMenuProjectManager();
 		upperMenu.addNewFormListener(new ClickListener() {
 			private static final long serialVersionUID = 8958665495299558548L;
@@ -98,10 +108,10 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				Form selectedForm = formTable.getValue();
-				if (selectedForm != null && !(selectedForm instanceof RootForm)) {
+				Form selectedForm = (Form) formTable.getValue();
+				if (selectedForm != null) {
 					try {
-						NeoFormGeneratorPDF.generatePDF("kiwi.pdf", new FormPdfGenerator(formTable.getValue()));
+						NeoFormGeneratorPDF.generatePDF("kiwi.pdf", new FormPdfGenerator(selectedForm));
 					} catch (IOException | DocumentException e) {
 						WebformsLogger.errorMessage(FormManager.class.getName(), e);
 					}
@@ -114,11 +124,14 @@ public class FormManager extends SecuredWebPage {
 	protected void newFormVersion() {
 		Form newForm;
 		try {
-			newForm = UserSessionHandler.getController().createNewFormVersion(formTable.getValue());
+			RootForm rootForm = formTable.getSelectedRootForm();
+			Form currentForm = rootForm.getLastFormVersion();
+
+			newForm = UserSessionHandler.getController().createNewFormVersion(currentForm);
 			addFormToTable(newForm);
 		} catch (NotValidTreeObjectException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
-		}		
+		}
 	}
 
 	private void openNewFormWindow() {
@@ -178,8 +191,29 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	public Form getSelectedForm() {
-		Form form = formTable.getValue();
-
+		Form form = (Form) formTable.getValue();
 		return form;
+	}
+
+	private void updateUpperMenu() {
+		upperMenu.getNewForm().setEnabled(true);
+
+		Object row = formTable.getValue();
+		if (row == null) {
+			upperMenu.getNewFormVersion().setEnabled(false);
+			upperMenu.getEditDesign().setEnabled(false);
+			upperMenu.getEditFlow().setEnabled(false);
+		} else {
+			upperMenu.getNewFormVersion().setEnabled(true);
+			if (row instanceof RootForm) {
+				upperMenu.getEditDesign().setEnabled(false);
+				upperMenu.getEditFlow().setEnabled(false);
+				upperMenu.getExportPdf().setEnabled(false);
+			} else {
+				upperMenu.getEditDesign().setEnabled(true);
+				upperMenu.getEditFlow().setEnabled(true);
+				upperMenu.getExportPdf().setEnabled(true);
+			}
+		}
 	}
 }

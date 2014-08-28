@@ -12,6 +12,7 @@ import com.biit.form.BaseQuestion;
 import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 @Entity
@@ -47,8 +48,12 @@ public class Subcategory extends BaseGroup {
 	}
 
 	@Override
-	protected void copyData(TreeObject object) {
-		// Nothing to copy
+	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
+		if (object instanceof Subcategory) {
+			//Nothing to copy
+		} else {
+			throw new NotValidTreeObjectException("Copy data for Subcategory only supports the same type copy");
+		}
 	}
 
 }

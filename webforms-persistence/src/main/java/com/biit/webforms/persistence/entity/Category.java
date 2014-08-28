@@ -11,6 +11,7 @@ import com.biit.form.BaseCategory;
 import com.biit.form.BaseQuestion;
 import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 @Entity
@@ -33,7 +34,11 @@ public class Category extends BaseCategory {
 	}
 
 	@Override
-	protected void copyData(TreeObject object) {
-		// Nothing to copy
+	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
+		if (object instanceof Category) {
+			//Nothing to copy
+		} else {
+			throw new NotValidTreeObjectException("Copy data for Category only supports the same type copy");
+		}
 	}
 }
