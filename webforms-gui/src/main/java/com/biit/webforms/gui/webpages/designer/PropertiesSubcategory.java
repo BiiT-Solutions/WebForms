@@ -1,46 +1,39 @@
-package com.biit.webforms.gui.webpages.designeditor;
+package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.Subcategory;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-public class PropertiesAnswer extends StorableObjectProperties<Answer> {
-	private static final long serialVersionUID = 8035711998129559199L;
+public class PropertiesSubcategory extends StorableObjectProperties<Subcategory> {
+	private static final long serialVersionUID = -859153918941072265L;
 	private static final String WIDTH = "200px";
 
-	private TextField value, label;
+	private TextField name, label;
 
-	private TextArea description;
-
-	public PropertiesAnswer() {
-		super(Answer.class);
+	public PropertiesSubcategory() {
+		super(Subcategory.class);
 	}
-	
+
 	@Override
 	protected void initElement() {
 
-		value = new TextField(LanguageCodes.CAPTION_VALUE.translation());
-		value.setWidth(WIDTH);
+		name = new TextField(LanguageCodes.CAPTION_NAME.translation());
+		name.setWidth(WIDTH);
 
 		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
-		
-		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
-		description.setWidth(WIDTH);
 
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
 		commonProperties.setHeight(null);
-		commonProperties.addComponent(value);
+		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
-		commonProperties.addComponent(description);
 
-		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_ANSWER.translation(), true);
+		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_SUBCATEGORY.translation(), true);
 
 		super.initElement();
 	}
@@ -49,19 +42,15 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 	protected void initValues() {
 		super.initValues();
 
-		value.setValue(instance.getValue());
-		//TODO dynamic label
+		name.setValue(instance.getName());
 		label.setValue(instance.getLabel());
-		description.setValue(instance.getDescription());
 	}
 
 	@Override
 	public void updateElement() {
 		try {
-			instance.setValue(value.getValue());
-			//TODO dynamic label 
+			instance.setName(name.getValue());
 			instance.setLabel(label.getValue());
-			instance.setDescription(description.getValue());
 		} catch (FieldTooLongException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

@@ -1,21 +1,24 @@
-package com.biit.webforms.gui.webpages.designeditor;
+package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.Subcategory;
+import com.biit.webforms.persistence.entity.Group;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
-public class PropertiesSubcategory extends StorableObjectProperties<Subcategory> {
-	private static final long serialVersionUID = -859153918941072265L;
+public class PropertiesGroup extends StorableObjectProperties<Group> {
+	private static final long serialVersionUID = 2409507883007287631L;
 	private static final String WIDTH = "200px";
 
 	private TextField name, label;
 
-	public PropertiesSubcategory() {
-		super(Subcategory.class);
+	private CheckBox repetable;
+
+	public PropertiesGroup() {
+		super(Group.class);
 	}
 
 	@Override
@@ -27,13 +30,15 @@ public class PropertiesSubcategory extends StorableObjectProperties<Subcategory>
 		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
 
+		repetable = new CheckBox(LanguageCodes.CAPTION_REPETABLE.translation());
+
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
 		commonProperties.setHeight(null);
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
 
-		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_SUBCATEGORY.translation(), true);
+		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_GROUP.translation(), true);
 
 		super.initElement();
 	}
@@ -44,6 +49,7 @@ public class PropertiesSubcategory extends StorableObjectProperties<Subcategory>
 
 		name.setValue(instance.getName());
 		label.setValue(instance.getLabel());
+		repetable.setValue(instance.isRepeatable());
 	}
 
 	@Override
@@ -51,6 +57,8 @@ public class PropertiesSubcategory extends StorableObjectProperties<Subcategory>
 		try {
 			instance.setName(name.getValue());
 			instance.setLabel(label.getValue());
+			instance.setRepeatable(repetable.getValue());
+
 		} catch (FieldTooLongException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

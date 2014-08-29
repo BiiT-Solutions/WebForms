@@ -1,4 +1,4 @@
-package com.biit.webforms.gui.webpages.designeditor;
+package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.gui.components.StorableObjectProperties;

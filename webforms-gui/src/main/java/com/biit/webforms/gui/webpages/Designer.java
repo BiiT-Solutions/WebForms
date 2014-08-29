@@ -13,10 +13,10 @@ import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.utils.MessageManager;
-import com.biit.webforms.gui.webpages.designeditor.DesignerPropertiesComponent;
-import com.biit.webforms.gui.webpages.designeditor.IconProviderTreeObjectWebforms;
-import com.biit.webforms.gui.webpages.designeditor.TreeObjectTableDesigner;
-import com.biit.webforms.gui.webpages.designeditor.UpperMenuDesigner;
+import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
+import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
+import com.biit.webforms.gui.webpages.designer.TreeObjectTableDesigner;
+import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
@@ -31,7 +31,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 
-public class DesignEditor extends SecuredWebPage {
+public class Designer extends SecuredWebPage {
 	private static final long serialVersionUID = 9161313025929535348L;
 
 	private UpperMenuDesigner upperMenu;
