@@ -56,7 +56,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
-			Criteria criteria = session.createCriteria(Form.class);
+			Criteria criteria = session.createCriteria(Block.class);
 			criteria.add(Restrictions.eq("name", name));
 			@SuppressWarnings("unchecked")
 			List<Block> results = criteria.list();

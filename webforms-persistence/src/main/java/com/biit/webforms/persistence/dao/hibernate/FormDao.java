@@ -1,6 +1,9 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.TypeConstraintException;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
@@ -64,5 +67,27 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			throw e;
 		}
 		return null;
+	}
+
+	/**
+	 * Filtered version of get All. Takes a Class argument and returns a list
+	 * with all the elements that match the class argument.
+	 * 
+	 * @param cls
+	 * @return
+	 */
+	@Override
+	public List<Form> getAll(Class<?> cls) {
+		if (!Form.class.isAssignableFrom(cls)) {
+			throw new TypeConstraintException("FormDao can only filter subclasses of " + Form.class.getName());
+		}
+		List<Form> forms = super.getAll();
+		List<Form> filteredForms = new ArrayList<Form>();
+		for (Form form : forms) {
+			if (form.getClass().isAssignableFrom(cls)) {
+				filteredForms.add(form);
+			}
+		}
+		return filteredForms;
 	}
 }

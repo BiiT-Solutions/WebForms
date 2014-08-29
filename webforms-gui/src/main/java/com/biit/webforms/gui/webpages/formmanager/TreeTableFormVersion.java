@@ -235,7 +235,7 @@ public class TreeTableFormVersion extends TreeTable {
 		HashMap<String, List<Form>> formData = new HashMap<>();
 		List<Form> forms = new ArrayList<>();
 
-		forms = formDao.getAll();
+		forms = formDao.getAll(Form.class);
 		for (Form form : forms) {
 			if (!formData.containsKey(form.getName())) {
 				// First form with this name
