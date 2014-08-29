@@ -21,6 +21,7 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_CAPTION_UP("caption.up"),
 	COMMON_CAPTION_DOWN("caption.down"),
 	COMMON_CAPTION_EXPORT_TO_PDF("caption.exportToPdf"),
+	COMMON_CAPTION_INSERT_BLOCK("caption.insert.block"), 
 	
 	CAPTION_ANSWER_FORMAT_TEXT("caption.answerFormat.text"),
 	CAPTION_ANSWER_FORMAT_NUMBER("caption.answerFormat.number"),
@@ -43,6 +44,7 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_TOOLTIP_UP("tooltip.up"),
 	COMMON_TOOLTIP_DOWN("tooltip.down"),
 	COMMON_TOOLTIP_EXPORT_TO_PDF("tooltip.exportToPdf"),
+	COMMON_TOOLTIP_INSERT_BLOCK("tooltip.insert.block"),
 	
 	COMMON_WARNING_TITLE_FORM_NOT_CREATED("common.warning.title.form.not.created"),
 	COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME("common.warning.description.form.needs.name"),
@@ -103,6 +105,8 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_PROPERTIES_SUBCATEGORY("caption.properties.subcategory"),
 	CAPTION_PROPERTIES_CATEGORY("caption.properties.category"),
 	CAPTION_PROPERTIES_FORM("caption.properties.form"),
+	CAPTION_SAVE_AS_BLOCK("caption.save.as.block"),
+	CAPTION_INSERT_NEW_BLOCK("caption.insert.new.block"),
 	
 	TOOLTIP_NEW_CATEGORY("tooltip.new.category"),
 	TOOLTIP_NEW_SUBCATEGORY("tooltip.new.subcategory"),
@@ -110,6 +114,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_NEW_QUESTION("tooltip.new.question"),
 	TOOLTIP_NEW_TEXT("tooltip.new.text"),
 	TOOLTIP_NEW_ANSWER("tooltip.new.answer"),
+	TOOLTIP_SAVE_AS_BLOCK("tooltip.save.as.block"),
 	
 	ERROR_SUBCATEGORY_NOT_INSERTED("error.subcategory.not.inserted"),
 	ERROR_GROUP_NOT_INSERTED("error.group.not.inserted"),

@@ -95,16 +95,16 @@ public class ApplicationController {
 		try {
 			newBlock = new Block(blockName, getUser());
 		} catch (FieldTooLongException ex) {
-			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " createBlock " + ex.getMessage());
 			throw ex;
 		}
 
 		// Check if database contains a form with the same name.
 		if (blockDao.getBlock(blockName) != null) {
-			FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + blockName
+			FormWithSameNameException ex = new FormWithSameNameException("Block with name: " + blockName
 					+ " already exists");
-			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " createBlock " + ex.getMessage());
 			throw ex;
 		}
@@ -361,12 +361,12 @@ public class ApplicationController {
 	 */
 	public void removeTreeObject(TreeObject row) throws DependencyExistException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " removeTreeObject " + row + " of " + row.getForm() + " START");
+				+ " removeTreeObject " + row + " of " + row.getAncestor(Form.class) + " START");
 
 		row.remove();
 
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " removeTreeObject " + row + " of " + row.getForm() + " END");
+				+ " removeTreeObject " + row + " of " + row.getAncestor(Form.class) + " END");
 	}
 
 	/**
@@ -419,6 +419,32 @@ public class ApplicationController {
 
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " saveForm " + formInUse + " END");
+	}
+	
+	public void saveAsBlock(TreeObject element, String blockName) throws FieldTooLongException, FormWithSameNameException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " saveAsBlock " + formInUse +" "+element+" "+blockName+" START");
+		
+		//First we create the new block
+		Block block = createBlock(blockName);
+
+		try {
+			TreeObject copy = element.generateCopy(true, true);
+			Form formOfCopy = (Form) copy.getAncestor(Form.class);
+			formOfCopy.resetIds();
+			block.setChildren(formOfCopy.getChildren());
+		
+			block.setUpdatedBy(getUser());
+			block.setUpdateTime();
+			blockDao.makePersistent(block);			
+		} catch (NotValidTreeObjectException | NotValidChildException e) {
+			// Impossible, still, if fails remove block.
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			blockDao.makeTransient(block);
+		}
+
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " saveAsBlock " + formInUse +" "+element+" "+blockName+ " END");
 	}
 
 	public void notifyTreeObjectUpdated(Object element) {

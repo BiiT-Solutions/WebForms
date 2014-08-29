@@ -8,15 +8,21 @@ import com.biit.form.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
+import com.biit.webforms.gui.common.components.WindowStringInput;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
 import com.biit.webforms.gui.webpages.designer.TreeObjectTableDesigner;
 import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
+import com.biit.webforms.gui.webpages.designer.WindowBlocks;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
@@ -56,14 +62,14 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				updateUpperMenu();
-				updateProperties();				
+				updateProperties();
 			}
 		});
-				
+
 		properties = new DesignerPropertiesComponent();
 		properties.setSizeFull();
 		properties.addPropertyUpdateListener(new PropertieUpdateListener() {
-			
+
 			@Override
 			public void propertyUpdate(Object element) {
 				UserSessionHandler.getController().notifyTreeObjectUpdated(element);
@@ -71,7 +77,7 @@ public class Designer extends SecuredWebPage {
 				updateUpperMenu();
 			}
 		});
-		
+
 		HorizontalLayout rootLayout = new HorizontalLayout();
 		rootLayout.setSizeFull();
 		rootLayout.setSpacing(true);
@@ -84,7 +90,7 @@ public class Designer extends SecuredWebPage {
 
 		getWorkingArea().addComponent(rootLayout);
 
-		//Init
+		// Init
 		table.setValue(UserSessionHandler.getController().getFormInUse());
 	}
 
@@ -93,8 +99,8 @@ public class Designer extends SecuredWebPage {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	private void updateProperties(){
+
+	private void updateProperties() {
 		properties.updatePropertiesComponent(table.getSelectedRow());
 	}
 
@@ -107,6 +113,22 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				UserSessionHandler.getController().saveForm();
 				MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION, LanguageCodes.INFO_MESSAGE_DESCRIPTION);
+			}
+		});
+		upperMenu.addSaveAsBlockButtonListener(new ClickListener() {
+			private static final long serialVersionUID = -352984475178007L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				openNewBlockWindow();
+			}
+		});
+		upperMenu.addInsertBlockButtonListener(new ClickListener() {
+			private static final long serialVersionUID = 3375617501902829858L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				openInsertBlock();
 			}
 		});
 		upperMenu.addFlowButtonListener(new ClickListener() {
@@ -150,8 +172,9 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
-					TreeObject selectedRow = table.getSelectedRow();					
-					Subcategory newSubcategory = UserSessionHandler.getController().addNewSubcategory(selectedRow.getCategory());
+					TreeObject selectedRow = table.getSelectedRow();
+					Subcategory newSubcategory = UserSessionHandler.getController().addNewSubcategory(
+							selectedRow.getAncestor(Category.class));
 					table.addRow(newSubcategory, newSubcategory.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_SUBCATEGORY_NOT_INSERTED);
@@ -287,7 +310,7 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getUpButton().setEnabled(false);
 			upperMenu.getDownButton().setEnabled(false);
 		} else {
-			if(selectedRow instanceof Form){
+			if (selectedRow instanceof Form) {
 				upperMenu.getNewSubcategoryButton().setEnabled(false);
 				upperMenu.getNewGroupButton().setEnabled(selectedRow.isAllowedChildren(Group.class));
 				upperMenu.getNewQuestionButton().setEnabled(selectedRow.isAllowedChildren(Question.class));
@@ -296,18 +319,66 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getDeleteButton().setEnabled(false);
 				upperMenu.getUpButton().setEnabled(false);
 				upperMenu.getDownButton().setEnabled(false);
-			}else{
+			} else {
 				upperMenu.getNewSubcategoryButton().setEnabled(true);
 				upperMenu.getNewGroupButton().setEnabled(selectedRow.isAllowedChildren(Group.class));
-				upperMenu.getNewQuestionButton().setEnabled(selectedRow.isAllowedChildren(Question.class)||selectedRow.getParent().isAllowedChildren(Question.class));
-				upperMenu.getNewTextButton().setEnabled(selectedRow.isAllowedChildren(Text.class)||selectedRow.getParent().isAllowedChildren(Text.class));
-				upperMenu.getNewAnswerButton().setEnabled(selectedRow.isAllowedChildren(Answer.class)||selectedRow.getParent().isAllowedChildren(Answer.class));
+				upperMenu.getNewQuestionButton().setEnabled(
+						selectedRow.isAllowedChildren(Question.class)
+								|| selectedRow.getParent().isAllowedChildren(Question.class));
+				upperMenu.getNewTextButton().setEnabled(
+						selectedRow.isAllowedChildren(Text.class)
+								|| selectedRow.getParent().isAllowedChildren(Text.class));
+				upperMenu.getNewAnswerButton().setEnabled(
+						selectedRow.isAllowedChildren(Answer.class)
+								|| selectedRow.getParent().isAllowedChildren(Answer.class));
 				upperMenu.getDeleteButton().setEnabled(true);
 				upperMenu.getUpButton().setEnabled(true);
 				upperMenu.getDownButton().setEnabled(true);
 			}
 			upperMenu.getMoveButton().setEnabled(true);
-						
+
 		}
+	}
+
+	protected void openNewBlockWindow() {
+		final WindowStringInput stringWindow = new WindowStringInput(LanguageCodes.COMMON_CAPTION_NAME.translation());
+		stringWindow.setCaption(LanguageCodes.CAPTION_NEW_BLOCK.translation());
+		stringWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_BLOCK.translation());
+		stringWindow.showCentered();
+		stringWindow.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				if (stringWindow.getValue() == null || stringWindow.getValue().isEmpty()) {
+					MessageManager.showWarning(LanguageCodes.COMMON_WARNING_TITLE_BLOCK_NOT_CREATED,
+							LanguageCodes.COMMON_WARNING_DESCRIPTION_BLOCK_NEEDS_NAME);
+					return;
+				}
+				try {
+					UserSessionHandler.getController().saveAsBlock(table.getSelectedRow(), stringWindow.getValue());
+					stringWindow.close();
+
+					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION, LanguageCodes.INFO_MESSAGE_DESCRIPTION);
+
+				} catch (FieldTooLongException e) {
+					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
+				} catch (FormWithSameNameException e) {
+					MessageManager.showError(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
+				}
+			}
+		});
+	}
+
+	protected void openInsertBlock() {
+		final WindowBlocks windowBlocks = new WindowBlocks(LanguageCodes.CAPTION_INSERT_NEW_BLOCK);
+		windowBlocks.showCentered();
+		windowBlocks.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 	}
 }

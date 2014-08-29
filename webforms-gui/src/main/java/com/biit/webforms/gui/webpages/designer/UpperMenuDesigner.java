@@ -11,13 +11,19 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	private static final long serialVersionUID = -368255188051163986L;
 
-	private IconButton saveButton, flowButton, validateButton, finishButton, newCategoryButton, newSubcategoryButton,
+	private IconButton saveButton, saveAsBlockButton, insertBlockButton, flowButton, validateButton, finishButton, newCategoryButton, newSubcategoryButton,
 			newGroupButton, newQuestionButton, newTextButton, newAnswerButton, moveButton, deleteButton, upButton, downButton;
 
 	public UpperMenuDesigner() {
 
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.SAVE,
 				LanguageCodes.COMMON_TOOLTIP_SAVE, IconSize.BIG);
+		
+		saveAsBlockButton = new IconButton(LanguageCodes.CAPTION_SAVE_AS_BLOCK, ThemeIcons.SAVE,
+				LanguageCodes.TOOLTIP_SAVE_AS_BLOCK, IconSize.BIG);
+		
+		insertBlockButton = new IconButton(LanguageCodes.COMMON_CAPTION_INSERT_BLOCK, ThemeIcons.FLOW_EDITOR,
+				LanguageCodes.COMMON_TOOLTIP_INSERT_BLOCK, IconSize.BIG);
 
 		flowButton = new IconButton(LanguageCodes.COMMON_CAPTION_FLOW, ThemeIcons.FLOW_EDITOR,
 				LanguageCodes.COMMON_TOOLTIP_FLOW, IconSize.BIG);
@@ -50,6 +56,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				LanguageCodes.COMMON_TOOLTIP_DOWN);
 
 		addIconButton(saveButton);
+		addIconButton(saveAsBlockButton);
+		addIconButton(insertBlockButton);
 		addIconButton(flowButton);
 		addIconButton(newCategoryButton);
 		addIconButton(newSubcategoryButton);
@@ -67,6 +75,14 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public void addSaveButtonListener(ClickListener listener) {
 		saveButton.addClickListener(listener);
+	}
+	
+	public void addSaveAsBlockButtonListener(ClickListener listener) {
+		saveAsBlockButton.addClickListener(listener);
+	}
+	
+	public void addInsertBlockButtonListener(ClickListener listener) {
+		insertBlockButton.addClickListener(listener);
 	}
 
 	public void addFlowButtonListener(ClickListener listener) {
@@ -123,6 +139,14 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public IconButton getSaveButton() {
 		return saveButton;
+	}
+	
+	public IconButton getSaveAsBlockButton() {
+		return saveAsBlockButton;
+	}
+	
+	public IconButton getInsertBlockButton(){
+		return insertBlockButton;
 	}
 
 	public IconButton getFlowButton() {
