@@ -85,7 +85,7 @@ public class ApplicationController {
 				+ " createForm " + formName + " END");
 		return newform;
 	}
-	
+
 	public Block createBlock(String blockName) throws FieldTooLongException, FormWithSameNameException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createBlock " + blockName + " START");
@@ -177,14 +177,14 @@ public class ApplicationController {
 	}
 
 	public void setFormInUse(Form form) {
-		if(form instanceof Block){
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " setFormInUse Block:" + form);
-		}else{
+		if (form instanceof Block) {
+			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+					+ " setFormInUse Block:" + form);
+		} else {
 			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " setFormInUse Form: " + form);
 		}
-		
+
 		this.formInUse = form;
 		setLastEditedForm(form);
 	}
@@ -300,7 +300,7 @@ public class ApplicationController {
 			treeObject = classType.newInstance();
 			String nameNumber = getNewStringNumber(parent, name);
 			treeObject.setName(nameNumber);
-			treeObject.setLabel(nameNumber+"_label");
+			treeObject.setLabel(nameNumber + "_label");
 			treeObject.setCreatedBy(UserSessionHandler.getUser());
 			treeObject.setUpdatedBy(UserSessionHandler.getUser());
 			parent.addChild(treeObject);
@@ -340,7 +340,8 @@ public class ApplicationController {
 						// This is not an error, it won't be logged because it's
 						// just for controlling when new-element tag is used
 						// with something else than a number.
-						// In this case, we simply ignore and continue the function.
+						// In this case, we simply ignore and continue the
+						// function.
 					}
 				}
 			}
@@ -420,12 +421,13 @@ public class ApplicationController {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " saveForm " + formInUse + " END");
 	}
-	
-	public void saveAsBlock(TreeObject element, String blockName) throws FieldTooLongException, FormWithSameNameException {
+
+	public void saveAsBlock(TreeObject element, String blockName) throws FieldTooLongException,
+			FormWithSameNameException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " saveAsBlock " + formInUse +" "+element+" "+blockName+" START");
-		
-		//First we create the new block
+				+ " saveAsBlock " + formInUse + " " + element + " " + blockName + " START");
+
+		// First we create the new block
 		Block block = createBlock(blockName);
 
 		try {
@@ -433,10 +435,10 @@ public class ApplicationController {
 			Form formOfCopy = (Form) copy.getAncestor(Form.class);
 			formOfCopy.resetIds();
 			block.setChildren(formOfCopy.getChildren());
-		
+
 			block.setUpdatedBy(getUser());
 			block.setUpdateTime();
-			blockDao.makePersistent(block);			
+			blockDao.makePersistent(block);
 		} catch (NotValidTreeObjectException | NotValidChildException e) {
 			// Impossible, still, if fails remove block.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -444,12 +446,38 @@ public class ApplicationController {
 		}
 
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " saveAsBlock " + formInUse +" "+element+" "+blockName+ " END");
+				+ " saveAsBlock " + formInUse + " " + element + " " + blockName + " END");
 	}
 
 	public void notifyTreeObjectUpdated(Object element) {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " updated element " + element);
+	}
+
+	/**
+	 * Inserts element belonging group to current form. This generates a clone
+	 * of the block using the element as hierarchy seed and introduces to
+	 * current form as a new category.
+	 * 
+	 * @param selectedRow
+	 */
+	public void insertBlock(TreeObject element) {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " insertBlock " + formInUse + " " + element + " START");
+
+		try {
+			TreeObject copy = element.generateCopy(true, true);
+			Block blockOfCopy = (Block) copy.getAncestor(Block.class);
+			blockOfCopy.resetIds();
+			
+			formInUse.addChildren(blockOfCopy.getChildren());
+		} catch (NotValidTreeObjectException | NotValidChildException e) {
+			// Impossible.
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}	
+		
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " insertBlock " + formInUse + " " + element + " END");
 	}
 
 }

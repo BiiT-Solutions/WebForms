@@ -25,6 +25,7 @@ import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.designer.WindowBlocks;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
@@ -298,7 +299,14 @@ public class Designer extends SecuredWebPage {
 
 	private void updateUpperMenu() {
 		TreeObject selectedRow = table.getSelectedRow();
-		upperMenu.getNewCategoryButton().setEnabled(true);
+		if(getCurrentForm() instanceof Block){
+			upperMenu.getNewCategoryButton().setEnabled(getCurrentForm().getChildren().isEmpty());
+			upperMenu.getInsertBlockButton().setVisible(false);
+		}else{
+			upperMenu.getNewCategoryButton().setEnabled(true);
+			upperMenu.getInsertBlockButton().setEnabled(true);
+		}
+		
 		if (selectedRow == null) {
 			upperMenu.getNewSubcategoryButton().setEnabled(false);
 			upperMenu.getNewGroupButton().setEnabled(false);
@@ -309,6 +317,7 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getDeleteButton().setEnabled(false);
 			upperMenu.getUpButton().setEnabled(false);
 			upperMenu.getDownButton().setEnabled(false);
+			upperMenu.getSaveAsBlockButton().setEnabled(false);
 		} else {
 			if (selectedRow instanceof Form) {
 				upperMenu.getNewSubcategoryButton().setEnabled(false);
@@ -319,6 +328,7 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getDeleteButton().setEnabled(false);
 				upperMenu.getUpButton().setEnabled(false);
 				upperMenu.getDownButton().setEnabled(false);
+				upperMenu.getSaveAsBlockButton().setEnabled(false);
 			} else {
 				upperMenu.getNewSubcategoryButton().setEnabled(true);
 				upperMenu.getNewGroupButton().setEnabled(selectedRow.isAllowedChildren(Group.class));
@@ -334,12 +344,16 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getDeleteButton().setEnabled(true);
 				upperMenu.getUpButton().setEnabled(true);
 				upperMenu.getDownButton().setEnabled(true);
+				upperMenu.getSaveAsBlockButton().setEnabled(true);
 			}
 			upperMenu.getMoveButton().setEnabled(true);
 
 		}
 	}
 
+	/**
+	 * Opens Save as New block window (String field)
+	 */
 	protected void openNewBlockWindow() {
 		final WindowStringInput stringWindow = new WindowStringInput(LanguageCodes.COMMON_CAPTION_NAME.translation());
 		stringWindow.setCaption(LanguageCodes.CAPTION_NEW_BLOCK.translation());
@@ -369,6 +383,9 @@ public class Designer extends SecuredWebPage {
 		});
 	}
 
+	/**
+	 * Opens Insert Block window
+	 */
 	protected void openInsertBlock() {
 		final WindowBlocks windowBlocks = new WindowBlocks(LanguageCodes.CAPTION_INSERT_NEW_BLOCK);
 		windowBlocks.showCentered();
@@ -376,9 +393,25 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
-				// TODO Auto-generated method stub
-
+				//Insert block in form
+				UserSessionHandler.getController().insertBlock(windowBlocks.getSelectedBlock());
+				
+				clearAndUpdateFormTable();				
+				window.close();
 			}
 		});
+	}
+
+	protected void clearAndUpdateFormTable() {
+		//Clear and update form
+		TreeObject currentSelection = table.getSelectedRow();
+		table.setValue(null);
+		table.removeAllItems();
+		table.loadTreeObject(getCurrentForm(), null);
+		table.select(currentSelection);
+	}
+	
+	protected Form getCurrentForm(){
+		return UserSessionHandler.getController().getFormInUse();
 	}
 }
