@@ -12,6 +12,8 @@ import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.enumerations.AnswerFormat;
+import com.biit.webforms.persistence.entity.enumerations.AnswerType;
 
 @Entity
 @Table(name = "questions")
@@ -58,15 +60,12 @@ public class Question extends BaseQuestion {
 	public void setAnswerType(AnswerType answerType) {
 		this.answerType = answerType;
 		try {
-			if (answerType.isInputField()) {
-				//If user sets type as TEXT then extra configuration values return to default
-				setAnswerFormat(AnswerFormat.TEXT);
-				horizontal = DEFAULT_HORIZONTAL;
+			setAnswerFormat(answerType.getDefaultAnswerFormat());
+			if(!answerType.isChildrenAllowed()){
 				getChildren().clear();
-			} else {
-				//If user sets type as NOT TEXT then answer format becomes null
-				setAnswerFormat(null);
 			}
+			horizontal = answerType.getDefaultHorizontal();
+			mandatory = answerType.getDefaultMandatory();
 		} catch (InvalidAnswerFormatException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -95,15 +94,17 @@ public class Question extends BaseQuestion {
 			Question question = (Question) object;
 
 			setDescription(new String(question.getDescription()));
-			setHorizontal(question.isHorizontal());
 			setMandatory(question.isMandatory());
+			//This need to be set on order or otherwise the assignment process will fail
 			setAnswerType(question.getAnswerType());
 			try {
 				setAnswerFormat(question.getAnswerFormat());
 			} catch (InvalidAnswerFormatException e) {
 				// Its a copy, it should never happen.
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			}
+			}			
+			setHorizontal(question.isHorizontal());
+			
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy");
 		}
@@ -136,7 +137,7 @@ public class Question extends BaseQuestion {
 	@Override
 	public boolean isAllowedChildren(Class<? extends TreeObject> childClass){
 		if(super.isAllowedChildren(childClass)){
-			if(answerType == AnswerType.MULTIPLE_SELECTION || answerType == AnswerType.SINGLE_SELECTION){
+			if(answerType.isChildrenAllowed()){
 				return true;
 			}
 		}

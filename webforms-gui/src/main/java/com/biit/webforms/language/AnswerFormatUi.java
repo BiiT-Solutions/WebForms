@@ -1,6 +1,6 @@
 package com.biit.webforms.language;
 
-import com.biit.webforms.persistence.entity.AnswerFormat;
+import com.biit.webforms.persistence.entity.enumerations.AnswerFormat;
 
 public enum AnswerFormatUi {
 

@@ -7,9 +7,9 @@ import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerTypeUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.AnswerFormat;
-import com.biit.webforms.persistence.entity.AnswerType;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.enumerations.AnswerFormat;
+import com.biit.webforms.persistence.entity.enumerations.AnswerType;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.CheckBox;
@@ -50,8 +50,6 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
 		description.setWidth(WIDTH);
 
-		mandatory = new CheckBox(LanguageCodes.CAPTION_MANDATORY.translation());
-
 		answerType = new ComboBox(LanguageCodes.CAPTION_ANSWER_TYPE.translation());
 		answerType.setWidth(WIDTH);
 		for (AnswerTypeUi type : AnswerTypeUi.values()) {
@@ -64,15 +62,13 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				if(answerType.getValue().equals(AnswerType.INPUT)){
-					answerFormat.setValue(AnswerFormat.TEXT);
-					answerFormat.setEnabled(true);
-					horizontal.setEnabled(false);
-				}else{
-					answerFormat.setValue(null);
-					answerFormat.setEnabled(false);
-					horizontal.setEnabled(true);
-				}
+				AnswerType selectedType = (AnswerType) answerType.getValue();
+				answerFormat.setValue(selectedType.getDefaultAnswerFormat());
+				answerFormat.setEnabled(selectedType.isAnswerFormatEnabled());
+				horizontal.setValue(selectedType.getDefaultHorizontal());
+				horizontal.setEnabled(selectedType.isHorizontalEnabled());
+				mandatory.setValue(selectedType.getDefaultMandatory());
+				mandatory.setEnabled(selectedType.isMandatoryEnabled());
 			}
 		});
 
@@ -85,6 +81,8 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		answerFormat.setNullSelectionAllowed(false);
 
 		horizontal = new CheckBox(LanguageCodes.CAPTION_HORIZONTAL.translation());
+		
+		mandatory = new CheckBox(LanguageCodes.CAPTION_MANDATORY.translation());
 
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
@@ -92,10 +90,10 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
 		commonProperties.addComponent(description);
-		commonProperties.addComponent(mandatory);
 		commonProperties.addComponent(answerType);
 		commonProperties.addComponent(answerFormat);
 		commonProperties.addComponent(horizontal);
+		commonProperties.addComponent(mandatory);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_QUESTION.translation(), true);
 

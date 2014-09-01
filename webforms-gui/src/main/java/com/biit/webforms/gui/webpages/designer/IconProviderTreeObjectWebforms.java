@@ -8,8 +8,7 @@ import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.theme.ThemeIcons;
 
-
-public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject>{
+public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject> {
 
 	@Override
 	public IThemeIcon getIcon(TreeObject object) {
@@ -18,7 +17,8 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject>{
 			switch (question.getAnswerType()) {
 			case MULTIPLE_SELECTION:
 				return ThemeIcons.DESIGNER_QUESTION_CHECKLIST;
-			case SINGLE_SELECTION:
+			case SINGLE_SELECTION_LIST:
+			case SINGLE_SELECTION_RADIO:
 				return ThemeIcons.DESIGNER_QUESTION_RADIOBUTTON;
 			case INPUT:
 				if (question.getAnswerFormat() != null) {
@@ -33,6 +33,8 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject>{
 						return ThemeIcons.DESIGNER_QUESTION_TEXT;
 					}
 				}
+			case TEXT_AREA:
+				return ThemeIcons.DESIGNER_QUESTION_TEXT;
 			}
 		} else if (object instanceof Group) {
 			Group group = (Group) object;
@@ -42,5 +44,5 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject>{
 		}
 		return null;
 	}
-	
-}	
+
+}

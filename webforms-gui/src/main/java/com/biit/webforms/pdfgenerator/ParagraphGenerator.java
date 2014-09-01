@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.persistence.entity.AnswerType;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.enumerations.AnswerType;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;

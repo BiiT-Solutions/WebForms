@@ -20,6 +20,8 @@ public class PdfBlockGenerator {
 	private static final int IS_HORIZONTAL_BLOC_COL = 2;
 	private static final int TEXT_BLOCK_ROW = 1;
 	private static final int TEXT_BLOCK_COL = 1;
+	private static final int FORM_LIST_ROW = 1;
+	private static final int FORM_LIST_COL = 2;
 
 	private static int FORM_SINGLE_SELECTION_ROW = 1;
 	private static int FORM_QUESTION_COL = 2;
@@ -94,19 +96,19 @@ public class PdfBlockGenerator {
 		return blocks;
 	}
 
-	// case SELECT:
-	// addComboBoxToTable(table, element.getName(), name,
-	// element.getChildren());
-	// break;
+
 
 	public static PdfTableBlock generateFormQuestionElement(PdfWriter writer, Question question)
 			throws BadBlockException {
 		switch (question.getAnswerType()) {
 		case MULTIPLE_SELECTION:
 			return generateMultipleSelectionBlock(writer, question);
-		case SINGLE_SELECTION:
+		case SINGLE_SELECTION_RADIO:
 			return generateSingleSelectionBlock(writer, question);
+		case SINGLE_SELECTION_LIST:
+			return generateSingleSelectionListBlock(writer, question);
 		case INPUT:
+		case TEXT_AREA:
 			return generateInputFieldBlock(writer, question);
 		}
 		return null;
@@ -135,6 +137,16 @@ public class PdfBlockGenerator {
 		for (PdfRow row : rows) {
 			block.insertRow(row);
 		}
+		return block;
+	}
+	
+	private static PdfTableBlock generateSingleSelectionListBlock(PdfWriter writer, Question question) throws BadBlockException {
+		List<PdfRow> rows = new ArrayList<PdfRow>();
+		rows.add(PdfRowGenerator.generateSelectionListRow(writer, question, FORM_LIST_ROW,FORM_LIST_COL));
+		
+		int numberRows = getRowSizeOfRows(rows);
+		PdfTableBlock block = new PdfTableBlock(numberRows, FORM_QUESTION_COL);
+
 		return block;
 	}
 

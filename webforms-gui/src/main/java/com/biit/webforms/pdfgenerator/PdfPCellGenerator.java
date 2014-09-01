@@ -2,6 +2,7 @@ package com.biit.webforms.pdfgenerator;
 
 import com.biit.form.TreeObject;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.enumerations.AnswerType;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
@@ -26,7 +27,13 @@ public class PdfPCellGenerator {
 	public static PdfPCell generateInputFieldCell(PdfWriter writer, Question question) {
 		PdfPCell cell = new PdfPCell();
 		cell.setBorder(BORDER);
-		cell.setCellEvent(new FormTextField(writer, question.getName()));
+		if(question.getAnswerType() == AnswerType.INPUT){
+			cell.setCellEvent(new FormTextField(writer, question.getName()));
+		}else{
+			FormTextArea textArea = new FormTextArea(writer, question.getName());
+			cell.setCellEvent(textArea);
+			cell.setFixedHeight(textArea.getHeight());
+		}
 		return cell;
 	}
 
@@ -47,6 +54,13 @@ public class PdfPCellGenerator {
 		cell.setColspan(span);
 		cell.setBorder(BORDER);
 		cell.setVerticalAlignment(com.lowagie.text.Element.ALIGN_TOP);
+		return cell;
+	}
+
+	public static PdfPCell generateComboBoxQuestion(PdfWriter writer, Question question) {
+		PdfPCell cell = new PdfPCell();
+		cell.setBorder(BORDER);
+		cell.setCellEvent(new FormComboBox(writer, question.getName(), question.getChildren()));
 		return cell;
 	}
 

@@ -1,15 +1,19 @@
 package com.biit.webforms.language;
 
-import com.biit.webforms.persistence.entity.AnswerType;
+import com.biit.webforms.persistence.entity.enumerations.AnswerType;
 
 public enum AnswerTypeUi {
 
-	RADIO(AnswerType.SINGLE_SELECTION, LanguageCodes.CAPTION_ANSWER_TYPE_RADIO_BUTTON),
+	SINGLE_SELECTION_RADIO(AnswerType.SINGLE_SELECTION_RADIO, LanguageCodes.CAPTION_ANSWER_TYPE_SINGLE_SELECT_RADIO),
+	
+	SINGLE_SELECTION_LIST(AnswerType.SINGLE_SELECTION_LIST, LanguageCodes.CAPTION_ANSWER_TYPE_SINGLE_SELECT_LIST),
 
-	MULTI_CHECKBOX(AnswerType.MULTIPLE_SELECTION, LanguageCodes.CAPTION_ANSWER_TYPE_MULTI_CHECKBOX),
+	MULTIPLE_SELECTION(AnswerType.MULTIPLE_SELECTION, LanguageCodes.CAPTION_ANSWER_TYPE_MULTI_SELECT),
 
 	// Uses AnswerFormat.
-	INPUT(AnswerType.INPUT, LanguageCodes.CAPTION_ANSWER_TYPE_INPUT_FIELD);
+	INPUT(AnswerType.INPUT, LanguageCodes.CAPTION_ANSWER_TYPE_INPUT_FIELD),
+	
+	TEXT_AREA(AnswerType.TEXT_AREA, LanguageCodes.CAPTION_ANSWER_TYPE_TEXT_AREA);
 
 	private AnswerType answerType;
 	private LanguageCodes languageCode;
@@ -34,5 +38,9 @@ public enum AnswerTypeUi {
 			}
 		}
 		return null;
+	}
+	
+	public boolean isUsesAnswerFormat(){
+		return answerType.isAnswerFormatEnabled();
 	}
 }

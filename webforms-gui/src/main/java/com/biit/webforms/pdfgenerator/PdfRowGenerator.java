@@ -8,8 +8,8 @@ import com.biit.form.TreeObject;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.biit.webforms.persistence.entity.Answer;
-import com.biit.webforms.persistence.entity.AnswerType;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.enumerations.AnswerType;
 import com.lowagie.text.pdf.BaseField;
 import com.lowagie.text.pdf.PdfBorderDictionary;
 import com.lowagie.text.pdf.PdfFormField;
@@ -216,6 +216,13 @@ public class PdfRowGenerator {
 	public static PdfRow createTextRow(String description, int textBlockRow, int textBlockCol) throws BadBlockException {
 		PdfRow row = new PdfRow(textBlockRow, textBlockCol);
 		row.addCell(PdfPCellGenerator.generateText(description,textBlockCol));
+		return row;
+	}
+
+	public static PdfRow generateSelectionListRow(PdfWriter writer, Question question, int selectionListBlockRow, int selectionListBlockCol) throws BadBlockException {
+		PdfRow row = new PdfRow(selectionListBlockRow, selectionListBlockCol);
+		row.addCell(PdfPCellGenerator.generateFormQuestionNameCell(question));
+		row.addCell(PdfPCellGenerator.generateComboBoxQuestion(writer, question));		
 		return row;
 	}
 }

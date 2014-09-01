@@ -27,9 +27,12 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_ANSWER_FORMAT_NUMBER("caption.answerFormat.number"),
 	CAPTION_ANSWER_FORMAT_DATE("caption.answerFormat.date"),
 	CAPTION_ANSWER_FORMAT_POSTAL_CODE("caption.answerFormat.postalCode"),
+	
 	CAPTION_ANSWER_TYPE_INPUT_FIELD("caption.answerType.inputField"),
-	CAPTION_ANSWER_TYPE_RADIO_BUTTON("caption.answerType.radioButton"),
-	CAPTION_ANSWER_TYPE_MULTI_CHECKBOX("caption.answerType.multiCheckbox"),
+	CAPTION_ANSWER_TYPE_SINGLE_SELECT_LIST("caption.answerType.singleSelectList"),
+	CAPTION_ANSWER_TYPE_SINGLE_SELECT_RADIO("caption.answerType.singleSelectRadio"),
+	CAPTION_ANSWER_TYPE_MULTI_SELECT("caption.answerType.multiSelect"),
+	CAPTION_ANSWER_TYPE_TEXT_AREA("caption.answer.type.text.area"),
 	
 	COMMON_TOOLTIP_SETTINGS("tooltip.settings"),
 	COMMON_TOOLTIP_FORM_MANAGER("tooltip.form.manager"),
