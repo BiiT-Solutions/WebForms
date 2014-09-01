@@ -1,5 +1,9 @@
 package com.biit.webforms.persistence.entity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -26,6 +30,7 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 @Entity
 @Table(name = "answers")
 public class Answer extends BaseAnswer {
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(Answer.class));
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 
 	@Column(length = MAX_DESCRIPTION_LENGTH)
@@ -39,6 +44,11 @@ public class Answer extends BaseAnswer {
 	public Answer(String name) throws FieldTooLongException {
 		super(name);
 		description = new String();
+	}
+	
+	@Override
+	protected List<Class<? extends TreeObject>> getAllowedChildren() {
+		return ALLOWED_CHILDREN;
 	}
 
 	@Override

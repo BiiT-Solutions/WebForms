@@ -264,8 +264,18 @@ public class Designer extends SecuredWebPage {
 					TreeObject selectedRow = table.getSelectedRow();
 					Answer newAnswer;
 					if (selectedRow instanceof BaseAnswer) {
-						newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow.getParent());
+						Question parentQuestion = (Question) selectedRow.getAncestor(Question.class);
+						if (parentQuestion.getAnswerType().isNestedAnswerAllowed()) {
+							// If nested answers is allowed, then we nest the
+							// answer.
+							newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow);
+						} else {
+							// If not, we add as a new child to parent
+							newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow.getParent());
+						}
 					} else {
+						// If Parent is selected then we just add it as a new
+						// child
 						newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow);
 					}
 					table.addRow(newAnswer, newAnswer.getParent());

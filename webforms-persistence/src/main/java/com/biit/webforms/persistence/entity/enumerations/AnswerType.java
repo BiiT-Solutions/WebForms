@@ -1,27 +1,29 @@
 package com.biit.webforms.persistence.entity.enumerations;
 
 public enum AnswerType {
-	SINGLE_SELECTION_RADIO(null, true, false, true),
+	SINGLE_SELECTION_RADIO(null, true, false, true, true),
 
-	SINGLE_SELECTION_LIST(null, true, false, true),
+	SINGLE_SELECTION_LIST(null, true, false, true, false),
 
-	MULTIPLE_SELECTION(null, true, null, null),
+	MULTIPLE_SELECTION(null, true, null, null, true),
 
 	// Uses answer format.
-	INPUT(AnswerFormat.TEXT, false, null, true),
+	INPUT(AnswerFormat.TEXT, false, null, true, false),
 
-	TEXT_AREA(null, false, null, false);
+	TEXT_AREA(null, false, null, false, false);
 
 	private AnswerFormat defaultAnswerFormat;
 	private boolean childrenAllowed;
 	private Boolean defaultHorizontal;
 	private Boolean defaultMandatory;
+	private boolean nestedAnswerAllowed;
 
-	AnswerType(AnswerFormat defaultAnswerType, boolean childrenAllowed, Boolean defaultHorizontal, Boolean defaultMandatory) {
+	AnswerType(AnswerFormat defaultAnswerType, boolean childrenAllowed, Boolean defaultHorizontal, Boolean defaultMandatory, boolean nestedAnswerAllowed) {
 		this.defaultAnswerFormat = defaultAnswerType;
 		this.childrenAllowed = childrenAllowed;
 		this.defaultHorizontal = defaultHorizontal;
 		this.defaultMandatory = defaultMandatory;
+		this.nestedAnswerAllowed = nestedAnswerAllowed;
 	}
 
 	public boolean isAnswerFormatEnabled() {
@@ -60,5 +62,9 @@ public enum AnswerType {
 
 	public boolean isInputField() {
 		return this.equals(AnswerType.INPUT);
+	}
+
+	public boolean isNestedAnswerAllowed() {
+		return nestedAnswerAllowed;
 	}
 }
