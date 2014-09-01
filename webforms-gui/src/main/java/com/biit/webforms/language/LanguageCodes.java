@@ -57,6 +57,7 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_ERROR_FIELD_TOO_LONG("common.error.field.too.long"),
 	COMMON_ERROR_NAME_IS_IN_USE("common.error.name.is.in.use"),
 	COMMON_ERROR_ELEMENT_NOT_DELETED("common.error.element.not.deleted"),
+	COMMON_ERROR_UNEXPECTED_ERROR("common.error.unexpected.error"),
 	
 	//Manager
 	CAPTION_NEW_FORM("caption.new.form"),

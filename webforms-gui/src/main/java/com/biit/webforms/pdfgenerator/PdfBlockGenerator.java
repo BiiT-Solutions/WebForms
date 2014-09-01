@@ -141,11 +141,11 @@ public class PdfBlockGenerator {
 	}
 	
 	private static PdfTableBlock generateSingleSelectionListBlock(PdfWriter writer, Question question) throws BadBlockException {
-		List<PdfRow> rows = new ArrayList<PdfRow>();
-		rows.add(PdfRowGenerator.generateSelectionListRow(writer, question, FORM_LIST_ROW,FORM_LIST_COL));
+		PdfRow row = PdfRowGenerator.generateSelectionListRow(writer, question, FORM_LIST_ROW,FORM_LIST_COL);
 		
-		int numberRows = getRowSizeOfRows(rows);
-		PdfTableBlock block = new PdfTableBlock(numberRows, FORM_QUESTION_COL);
+		int numberRows = row.getNumberRows();
+		PdfTableBlock block = new PdfTableBlock(numberRows, FORM_LIST_COL);
+		block.insertRow(row);
 
 		return block;
 	}

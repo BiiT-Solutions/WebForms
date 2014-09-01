@@ -5,6 +5,9 @@ import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.theme.ThemeIcons;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
+import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Button.ClickListener;
 
 /**
@@ -17,8 +20,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
 	private IconButton newForm, newFormVersion, editDesign, editFlow, exportPdf;
+	private FileDownloader formPdfdownloader;
+	private StreamResource formPdfstreamResource;
 
-	public UpperMenuProjectManager() {
+	public UpperMenuProjectManager(StreamSource pdfStreamSource, String defaultPdfName) {
 		super();
 
 		newForm = new IconButton(LanguageCodes.CAPTION_NEW_FORM, ThemeIcons.FORM_MANAGER_PAGE,
@@ -37,6 +42,11 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		addIconButton(editDesign);
 		addIconButton(editFlow);
 		addIconButton(exportPdf);
+
+		// Add download functionality to button
+		formPdfstreamResource = new StreamResource(pdfStreamSource, defaultPdfName);
+		formPdfdownloader = new FileDownloader(formPdfstreamResource);
+		formPdfdownloader.extend(exportPdf);
 	}
 
 	public void addNewFormListener(ClickListener listener) {
@@ -77,5 +87,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public IconButton getExportPdf() {
 		return exportPdf;
+	}
+
+	public void setExportFormPdfDefaultName(String name) {
+		formPdfstreamResource.setFilename(name);
 	}
 }

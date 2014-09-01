@@ -1,6 +1,7 @@
 package com.biit.webforms.gui.webpages;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -21,12 +22,13 @@ import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
-import com.biit.webforms.pdfgenerator.NeoFormGeneratorPDF;
 import com.biit.webforms.persistence.entity.Form;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -63,14 +65,27 @@ public class FormManager extends SecuredWebPage {
 			}
 		});
 		formTable.selectLastUsedForm();
-		//If it was already null
+		// If it was already null
 		updateUpperMenu();
 
 		getWorkingArea().addComponent(formTable);
 	}
 
 	private UpperMenuProjectManager createUpperMenu() {
-		UpperMenuProjectManager upperMenu = new UpperMenuProjectManager();
+		UpperMenuProjectManager upperMenu = new UpperMenuProjectManager(new StreamSource() {
+			private static final long serialVersionUID = -5165661957366294565L;
+
+			@Override
+			public InputStream getStream() {
+				try {
+					return FormGeneratorPdf.generatePdf(new FormPdfGenerator((Form) formTable.getValue()));
+				} catch (IOException | DocumentException e) {
+					WebformsLogger.errorMessage(FormManager.class.getName(), e);
+					MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+				}
+				return null;
+			}
+		}, "default.pdf");
 		upperMenu.addNewFormListener(new ClickListener() {
 			private static final long serialVersionUID = 8958665495299558548L;
 
@@ -103,21 +118,6 @@ public class FormManager extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				UserSessionHandler.getController().setFormInUse(getSelectedForm());
 				ApplicationUi.navigateTo(WebMap.FLOW_EDITOR);
-			}
-		});
-		upperMenu.addExportPdf(new ClickListener() {
-			private static final long serialVersionUID = 2864457152577148777L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				Form selectedForm = (Form) formTable.getValue();
-				if (selectedForm != null) {
-					try {
-						NeoFormGeneratorPDF.generatePDF("kiwi.pdf", new FormPdfGenerator(selectedForm));
-					} catch (IOException | DocumentException e) {
-						WebformsLogger.errorMessage(FormManager.class.getName(), e);
-					}
-				}
 			}
 		});
 		return upperMenu;
@@ -214,6 +214,7 @@ public class FormManager extends SecuredWebPage {
 			} else {
 				upperMenu.getEditDesign().setEnabled(true);
 				upperMenu.getEditFlow().setEnabled(true);
+				upperMenu.setExportFormPdfDefaultName(((Form)row).getName()+".pdf");
 				upperMenu.getExportPdf().setEnabled(true);
 			}
 		}
