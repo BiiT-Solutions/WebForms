@@ -113,6 +113,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_PROPERTIES_SYSTEM_FIELD("caption.properties.system.field"),
 	CAPTION_SAVE_AS_BLOCK("caption.save.as.block"),
 	CAPTION_INSERT_NEW_BLOCK("caption.insert.new.block"),
+	CAPTION_WINDOW_MOVE("caption.window.move"),
 	
 	TOOLTIP_NEW_CATEGORY("tooltip.new.category"),
 	TOOLTIP_NEW_SUBCATEGORY("tooltip.new.subcategory"),
@@ -131,7 +132,13 @@ public enum LanguageCodes implements ILanguageCode{
 	ERROR_SYSTEM_FIELD_NOT_INSERTED("error.system.field.not.inserted"),
 	
 	INFO_MESSAGE_CAPTION("info.message.caption"),
-	INFO_MESSAGE_DESCRIPTION("info.message.description"),   
+	INFO_MESSAGE_DESCRIPTION("info.message.description"), 
+	
+	WARNING_CAPTION_NOT_VALID("warning.caption.not.valid"), 
+	WARNING_DESCRIPTION_NOT_VALID("warning.description.not.valid"),
+	WARNING_CAPTION_SAME_ORIGIN("warning.caption.same.origin"), 
+	WARNING_DESCRIPTION_SAME_ORIGIN("warning.description.same.origin"),
+	
 	
 	;
 

@@ -9,6 +9,7 @@ import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
@@ -256,7 +257,7 @@ public class ApplicationController {
 	public Question addNewQuestion(TreeObject parent) throws NotValidChildException {
 		return (Question) insertTreeObject(Question.class, parent, "new-question");
 	}
-	
+
 	/**
 	 * Adds new System field
 	 * 
@@ -481,15 +482,41 @@ public class ApplicationController {
 			TreeObject copy = element.generateCopy(true, true);
 			Block blockOfCopy = (Block) copy.getAncestor(Block.class);
 			blockOfCopy.resetIds();
-			
+
 			formInUse.addChildren(blockOfCopy.getChildren());
 		} catch (NotValidTreeObjectException | NotValidChildException e) {
 			// Impossible.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}	
-		
+		}
+
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " insertBlock " + formInUse + " " + element + " END");
+	}
+
+	/**
+	 * Moves a TreeObject origin to a new child possition on destiny.
+	 * @param origin
+	 * @param destiny
+	 * @throws NotValidChildException
+	 * @throws SameOriginAndDestinationException
+	 */
+	public void moveTo(TreeObject origin, TreeObject destiny) throws NotValidChildException,
+			SameOriginAndDestinationException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " move "
+				+ origin + " to " + destiny + " START");
+		if (origin.equals(destiny)) {
+			throw new SameOriginAndDestinationException("Origin and destination are the same element");
+		}
+		try {
+			destiny.addChild(origin);
+		} catch (NotValidChildException e) {
+			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+					+ " move " + origin + " to " + destiny + " could not be done.");
+			throw e;
+		}
+
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " move "
+				+ origin + " to " + destiny + " END");
 	}
 
 }

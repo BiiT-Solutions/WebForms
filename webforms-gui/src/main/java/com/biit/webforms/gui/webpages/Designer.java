@@ -11,6 +11,7 @@ import com.biit.liferay.security.IActivity;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
@@ -23,6 +24,7 @@ import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
 import com.biit.webforms.gui.webpages.designer.TreeObjectTableDesigner;
 import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.designer.WindowBlocks;
+import com.biit.webforms.gui.webpages.designer.WindowMoveTreeObject;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
@@ -314,6 +316,15 @@ public class Designer extends SecuredWebPage {
 			}
 		});
 
+		upperMenu.addMoveButtonListener(new ClickListener() {
+			private static final long serialVersionUID = 808060310562321887L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				openMoveWindow();
+			}
+		});
+
 		return upperMenu;
 	}
 
@@ -351,6 +362,8 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getUpButton().setEnabled(false);
 				upperMenu.getDownButton().setEnabled(false);
 				upperMenu.getSaveAsBlockButton().setEnabled(false);
+				// Form root can't be moved
+				upperMenu.getMoveButton().setEnabled(false);
 			} else {
 				upperMenu.getNewSubcategoryButton().setEnabled(true);
 				upperMenu.getNewGroupButton().setEnabled(selectedRow.isAllowedChildren(Group.class));
@@ -370,9 +383,9 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getUpButton().setEnabled(true);
 				upperMenu.getDownButton().setEnabled(true);
 				upperMenu.getSaveAsBlockButton().setEnabled(true);
+				// Only children of form can be moved
+				upperMenu.getMoveButton().setEnabled(true);
 			}
-			upperMenu.getMoveButton().setEnabled(true);
-
 		}
 	}
 
@@ -423,6 +436,35 @@ public class Designer extends SecuredWebPage {
 
 				clearAndUpdateFormTable();
 				window.close();
+			}
+		});
+	}
+
+	/**
+	 * Opens move element window.
+	 */
+	protected void openMoveWindow() {
+		final WindowMoveTreeObject moveWindow = new WindowMoveTreeObject(LanguageCodes.CAPTION_WINDOW_MOVE,
+				getCurrentForm());
+		moveWindow.showCentered();
+		moveWindow.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				try {
+					TreeObject whatToMove = table.getSelectedRow();
+					TreeObject whereToMove = moveWindow.getSelectedTreeObject();
+					UserSessionHandler.getController().moveTo(whatToMove, whereToMove);
+					window.close();
+					clearAndUpdateFormTable();
+					table.setValue(whatToMove);
+				} catch (NotValidChildException e) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_VALID,
+							LanguageCodes.WARNING_DESCRIPTION_NOT_VALID);
+				} catch (SameOriginAndDestinationException e) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
+							LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN);
+				}
 			}
 		});
 	}

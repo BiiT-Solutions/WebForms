@@ -25,7 +25,7 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 		name = new TextField(LanguageCodes.CAPTION_NAME.translation());
 		name.setWidth(WIDTH);
 
-		field = new TextField(LanguageCodes.CAPTION_LABEL.translation());
+		field = new TextField(LanguageCodes.CAPTION_FIELD.translation());
 		field.setWidth(WIDTH);
 
 		FormLayout commonProperties = new FormLayout();
