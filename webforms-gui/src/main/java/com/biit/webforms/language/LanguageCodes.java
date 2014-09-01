@@ -89,10 +89,12 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_NEW_GROUP("caption.new.group"),
 	CAPTION_NEW_QUESTION("caption.new.question"),
 	CAPTION_NEW_TEXT("caption.new.text"),
+	CAPTION_NEW_SYSTEM_FIELD("caption.new.systemField"),
 	CAPTION_NEW_ANSWER("caption.new.answer"),
 	CAPTION_NAME("caption.name"),
 	CAPTION_VALUE("caption.value"),
 	CAPTION_LABEL("caption.label"),
+	CAPTION_FIELD("caption.field"),
 	CAPTION_DESCRIPTION("caption.description"),
 	CAPTION_MANDATORY("caption.mandatory"),
 	CAPTION_ANSWER_TYPE("caption.answer.type"),
@@ -108,6 +110,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_PROPERTIES_SUBCATEGORY("caption.properties.subcategory"),
 	CAPTION_PROPERTIES_CATEGORY("caption.properties.category"),
 	CAPTION_PROPERTIES_FORM("caption.properties.form"),
+	CAPTION_PROPERTIES_SYSTEM_FIELD("caption.properties.system.field"),
 	CAPTION_SAVE_AS_BLOCK("caption.save.as.block"),
 	CAPTION_INSERT_NEW_BLOCK("caption.insert.new.block"),
 	
@@ -116,6 +119,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_NEW_GROUP("tooltip.new.group"),
 	TOOLTIP_NEW_QUESTION("tooltip.new.question"),
 	TOOLTIP_NEW_TEXT("tooltip.new.text"),
+	TOOLTIP_NEW_SYSTEM_FIELD("tooltip.new.systemField"),
 	TOOLTIP_NEW_ANSWER("tooltip.new.answer"),
 	TOOLTIP_SAVE_AS_BLOCK("tooltip.save.as.block"),
 	
@@ -123,7 +127,8 @@ public enum LanguageCodes implements ILanguageCode{
 	ERROR_GROUP_NOT_INSERTED("error.group.not.inserted"),
 	ERROR_QUESTION_NOT_INSERTED("error.question.not.inserted"),
 	ERROR_TEXT_NOT_INSERTED("error.text.not.inserted"),
-	ERROR_ANSWER_NOT_INSERTED("error.answer.not.inserted"), 
+	ERROR_ANSWER_NOT_INSERTED("error.answer.not.inserted"),
+	ERROR_SYSTEM_FIELD_NOT_INSERTED("error.system.field.not.inserted"),
 	
 	INFO_MESSAGE_CAPTION("info.message.caption"),
 	INFO_MESSAGE_DESCRIPTION("info.message.description"),   

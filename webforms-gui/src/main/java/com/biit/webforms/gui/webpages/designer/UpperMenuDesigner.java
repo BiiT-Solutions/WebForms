@@ -12,7 +12,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	private static final long serialVersionUID = -368255188051163986L;
 
 	private IconButton saveButton, saveAsBlockButton, insertBlockButton, flowButton, validateButton, finishButton, newCategoryButton, newSubcategoryButton,
-			newGroupButton, newQuestionButton, newTextButton, newAnswerButton, moveButton, deleteButton, upButton, downButton;
+			newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, moveButton, deleteButton, upButton, downButton;
 
 	public UpperMenuDesigner() {
 
@@ -44,6 +44,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_NEW_QUESTION);
 		newTextButton = new IconButton(LanguageCodes.CAPTION_NEW_TEXT, ThemeIcons.DESIGNER_NEW_TEXT,
 				LanguageCodes.TOOLTIP_NEW_TEXT);
+		newSystemFieldButton = new IconButton(LanguageCodes.CAPTION_NEW_SYSTEM_FIELD, ThemeIcons.DESIGNER_NEW_SYSTEM_FIELD,
+				LanguageCodes.TOOLTIP_NEW_SYSTEM_FIELD);		
 		newAnswerButton = new IconButton(LanguageCodes.CAPTION_NEW_ANSWER, ThemeIcons.DESIGNER_NEW_ANSWER,
 				LanguageCodes.TOOLTIP_NEW_ANSWER);
 		moveButton = new IconButton(LanguageCodes.COMMON_CAPTION_MOVE, ThemeIcons.DESIGNER_MOVE,
@@ -63,6 +65,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(newSubcategoryButton);
 		addIconButton(newGroupButton);
 		addIconButton(newQuestionButton);
+		addIconButton(newSystemFieldButton);
 		addIconButton(newTextButton);
 		addIconButton(newAnswerButton);
 		addIconButton(moveButton);
@@ -111,6 +114,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	
 	public void addNewQuestionButtonListener(ClickListener listener){
 		newQuestionButton.addClickListener(listener);
+	}
+	
+	public void addnewSystemFieldButtonListener(ClickListener listener){
+		newSystemFieldButton.addClickListener(listener);
 	}
 	
 	public void addNewTextButtonListener(ClickListener listener){
@@ -175,6 +182,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public IconButton getNewQuestionButton() {
 		return newQuestionButton;
+	}
+	
+	public IconButton getNewSystemFieldButton() {
+		return newSystemFieldButton;
 	}
 
 	public IconButton getNewTextButton() {

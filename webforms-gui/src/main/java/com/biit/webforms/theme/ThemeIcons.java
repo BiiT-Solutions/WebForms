@@ -29,6 +29,7 @@ public enum ThemeIcons implements IThemeIcon{
 	DESIGNER_NEW_SUBCATEGORY("appbar.interface.textbox.squared.svg"),
 	DESIGNER_NEW_GROUP("appbar.interface.textbox.squared.svg"),
 	DESIGNER_NEW_QUESTION("appbar.interface.textbox.squared.svg"),
+	DESIGNER_NEW_SYSTEM_FIELD("appbar.interface.textbox.squared.svg"),
 	DESIGNER_NEW_TEXT("appbar.interface.textbox.squared.svg"),
 	DESIGNER_NEW_ANSWER("appbar.interface.textbox.squared.svg"),
 	DESIGNER_MOVE("appbar.interface.textbox.squared.svg"),

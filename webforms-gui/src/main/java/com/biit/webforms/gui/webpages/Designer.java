@@ -31,6 +31,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Subcategory;
+import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -214,6 +215,25 @@ public class Designer extends SecuredWebPage {
 				}
 			}
 		});
+		upperMenu.addnewSystemFieldButtonListener(new ClickListener() {
+			private static final long serialVersionUID = -6530079827949983018L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				try {
+					TreeObject selectedRow = table.getSelectedRow();
+					SystemField newField;
+					if (selectedRow instanceof BaseQuestion) {
+						newField = UserSessionHandler.getController().addNewSystemField(selectedRow.getParent());
+					} else {
+						newField = UserSessionHandler.getController().addNewSystemField(selectedRow);
+					}
+					table.addRow(newField, newField.getParent());
+				} catch (NotValidChildException e) {
+					MessageManager.showError(LanguageCodes.ERROR_SYSTEM_FIELD_NOT_INSERTED);
+				}
+			}
+		});
 		upperMenu.addNewTextButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 7251023427405784803L;
 
@@ -299,19 +319,20 @@ public class Designer extends SecuredWebPage {
 
 	private void updateUpperMenu() {
 		TreeObject selectedRow = table.getSelectedRow();
-		if(getCurrentForm() instanceof Block){
+		if (getCurrentForm() instanceof Block) {
 			upperMenu.getNewCategoryButton().setEnabled(getCurrentForm().getChildren().isEmpty());
 			upperMenu.getInsertBlockButton().setVisible(false);
-		}else{
+		} else {
 			upperMenu.getNewCategoryButton().setEnabled(true);
 			upperMenu.getInsertBlockButton().setEnabled(true);
 		}
-		
+
 		if (selectedRow == null) {
 			upperMenu.getNewSubcategoryButton().setEnabled(false);
 			upperMenu.getNewGroupButton().setEnabled(false);
 			upperMenu.getNewQuestionButton().setEnabled(false);
 			upperMenu.getNewTextButton().setEnabled(false);
+			upperMenu.getNewSystemFieldButton().setEnabled(false);
 			upperMenu.getNewAnswerButton().setEnabled(false);
 			upperMenu.getMoveButton().setEnabled(false);
 			upperMenu.getDeleteButton().setEnabled(false);
@@ -323,6 +344,7 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getNewSubcategoryButton().setEnabled(false);
 				upperMenu.getNewGroupButton().setEnabled(selectedRow.isAllowedChildren(Group.class));
 				upperMenu.getNewQuestionButton().setEnabled(selectedRow.isAllowedChildren(Question.class));
+				upperMenu.getNewSystemFieldButton().setEnabled(selectedRow.isAllowedChildren(SystemField.class));
 				upperMenu.getNewTextButton().setEnabled(selectedRow.isAllowedChildren(Text.class));
 				upperMenu.getNewAnswerButton().setEnabled(selectedRow.isAllowedChildren(Answer.class));
 				upperMenu.getDeleteButton().setEnabled(false);
@@ -335,6 +357,9 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getNewQuestionButton().setEnabled(
 						selectedRow.isAllowedChildren(Question.class)
 								|| selectedRow.getParent().isAllowedChildren(Question.class));
+				upperMenu.getNewSystemFieldButton().setEnabled(
+						selectedRow.isAllowedChildren(SystemField.class)
+								|| selectedRow.getParent().isAllowedChildren(SystemField.class));
 				upperMenu.getNewTextButton().setEnabled(
 						selectedRow.isAllowedChildren(Text.class)
 								|| selectedRow.getParent().isAllowedChildren(Text.class));
@@ -393,25 +418,25 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
-				//Insert block in form
+				// Insert block in form
 				UserSessionHandler.getController().insertBlock(windowBlocks.getSelectedBlock());
-				
-				clearAndUpdateFormTable();				
+
+				clearAndUpdateFormTable();
 				window.close();
 			}
 		});
 	}
 
 	protected void clearAndUpdateFormTable() {
-		//Clear and update form
+		// Clear and update form
 		TreeObject currentSelection = table.getSelectedRow();
 		table.setValue(null);
 		table.removeAllItems();
 		table.loadTreeObject(getCurrentForm(), null);
 		table.select(currentSelection);
 	}
-	
-	protected Form getCurrentForm(){
+
+	protected Form getCurrentForm() {
 		return UserSessionHandler.getController().getFormInUse();
 	}
 }

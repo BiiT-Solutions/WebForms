@@ -13,6 +13,7 @@ public class DesignerPropertiesComponent extends PropertiesComponent{
 		registerPropertiesComponent(new PropertiesGroup());
 		registerPropertiesComponent(new PropertiesQuestion());
 		registerPropertiesComponent(new PropertiesText());
+		registerPropertiesComponent(new PropertiesSystemField());
 		registerPropertiesComponent(new PropertiesAnswer());		
 	}
 }
