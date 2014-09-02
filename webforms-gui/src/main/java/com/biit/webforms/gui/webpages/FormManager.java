@@ -214,7 +214,7 @@ public class FormManager extends SecuredWebPage {
 			} else {
 				upperMenu.getEditDesign().setEnabled(true);
 				upperMenu.getEditFlow().setEnabled(true);
-				upperMenu.setExportFormPdfDefaultName(((Form)row).getName()+".pdf");
+				upperMenu.setExportFormPdfDefaultName(((Form) row).getName() + ".pdf");
 				upperMenu.getExportPdf().setEnabled(true);
 			}
 		}

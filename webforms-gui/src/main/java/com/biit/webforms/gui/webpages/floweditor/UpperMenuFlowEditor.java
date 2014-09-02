@@ -14,16 +14,16 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 
 	public UpperMenuFlowEditor() {
 
-		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.SAVE,
+		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
 				LanguageCodes.COMMON_TOOLTIP_SAVE, IconSize.BIG);
 
-		designButton = new IconButton(LanguageCodes.COMMON_CAPTION_DESIGN, ThemeIcons.DESIGNER_EDITOR,
+		designButton = new IconButton(LanguageCodes.COMMON_CAPTION_DESIGN, ThemeIcons.PAGE_FORM_EDITOR,
 				LanguageCodes.COMMON_TOOLTIP_DESIGN, IconSize.BIG);
 
-		validateButton = new IconButton(LanguageCodes.COMMON_CAPTION_VALIDATE, ThemeIcons.VALIDATE,
+		validateButton = new IconButton(LanguageCodes.COMMON_CAPTION_VALIDATE, ThemeIcons.FORM_VALIDATE,
 				LanguageCodes.COMMON_TOOLTIP_VALIDATE, IconSize.BIG);
 
-		finishButton = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.VALIDATE,
+		finishButton = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_VALIDATE,
 				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 
 		addIconButton(saveButton);

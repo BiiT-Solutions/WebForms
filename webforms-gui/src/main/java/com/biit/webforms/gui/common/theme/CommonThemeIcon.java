@@ -2,25 +2,23 @@ package com.biit.webforms.gui.common.theme;
 
 import com.vaadin.server.ThemeResource;
 
+public enum CommonThemeIcon implements IThemeIcon {
 
-public enum CommonThemeIcon implements IThemeIcon{
-	
-	ACCEPT("appbar.check.svg"),
+	ACCEPT("button.accept.svg"),
 
-	CANCEL("appbar.close.svg"), 
-	
-	TREE_OBJECT_GROUP_LOOP("appbar.loop.svg"), 
-	
-	EXPAND("appbar.section.expand.svg"), 
-	
-	COLLAPSE("appbar.section.collapse.svg");
-	
+	CANCEL("button.cancel.svg"),
+
+	TREE_OBJECT_GROUP_LOOP("group.loop.svg"),
+
+	ELEMENT_EXPAND("element.expand.svg"),
+
+	ELEMENT_COLLAPSE("element.collapse.svg");
+
 	private String value;
 
 	CommonThemeIcon(String value) {
 		this.value = value;
 	}
-
 
 	@Override
 	public ThemeResource getThemeResource() {

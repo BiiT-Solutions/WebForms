@@ -26,13 +26,13 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	public UpperMenuProjectManager(StreamSource pdfStreamSource, String defaultPdfName) {
 		super();
 
-		newForm = new IconButton(LanguageCodes.CAPTION_NEW_FORM, ThemeIcons.FORM_MANAGER_PAGE,
+		newForm = new IconButton(LanguageCodes.CAPTION_NEW_FORM, ThemeIcons.FORM_MANAGER_ADD_FORM,
 				LanguageCodes.TOOLTIP_NEW_FORM, IconSize.BIG);
-		newFormVersion = new IconButton(LanguageCodes.CAPTION_NEW_FORM_VERSION, ThemeIcons.FORM_MANAGER_PAGE,
+		newFormVersion = new IconButton(LanguageCodes.CAPTION_NEW_FORM_VERSION, ThemeIcons.FORM_MANAGER_NEW_VERSION,
 				LanguageCodes.TOOLTIP_NEW_FORM_VERSION, IconSize.BIG);
-		editDesign = new IconButton(LanguageCodes.COMMON_CAPTION_DESIGN, ThemeIcons.DESIGNER_EDITOR,
+		editDesign = new IconButton(LanguageCodes.COMMON_CAPTION_DESIGN, ThemeIcons.PAGE_FORM_EDITOR,
 				LanguageCodes.COMMON_TOOLTIP_DESIGN, IconSize.BIG);
-		editFlow = new IconButton(LanguageCodes.COMMON_CAPTION_FLOW, ThemeIcons.FLOW_EDITOR,
+		editFlow = new IconButton(LanguageCodes.COMMON_CAPTION_FLOW, ThemeIcons.PAGE_FORM_FLOW_EDITOR,
 				LanguageCodes.COMMON_TOOLTIP_FLOW, IconSize.BIG);
 		exportPdf = new IconButton(LanguageCodes.COMMON_CAPTION_EXPORT_TO_PDF, ThemeIcons.EXPORT_FORM_TO_PDF,
 				LanguageCodes.COMMON_TOOLTIP_EXPORT_TO_PDF, IconSize.BIG);
