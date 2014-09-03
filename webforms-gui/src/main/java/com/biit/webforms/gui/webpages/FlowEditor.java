@@ -1,8 +1,11 @@
 package com.biit.webforms.gui.webpages;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.biit.liferay.security.IActivity;
+import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.UpperMenu;
@@ -12,6 +15,7 @@ import com.vaadin.ui.Button.ClickListener;
 
 public class FlowEditor extends SecuredWebPage {
 	private static final long serialVersionUID = -6257723403353946354L;
+	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(Arrays.asList(WebformsActivity.READ));
 
 	private UpperMenu upperMenu;
 
@@ -25,8 +29,7 @@ public class FlowEditor extends SecuredWebPage {
 
 	@Override
 	public List<IActivity> accessAuthorizationsRequired() {
-		// TODO Auto-generated method stub
-		return null;
+		return activityPermissions;
 	}
 
 	private UpperMenu createUpperMenu() {

@@ -3,31 +3,36 @@ package com.biit.webforms.persistence.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.biit.form.BaseForm;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 
 @Entity
-@Table(name = "forms")
+@Table(name = "forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "name", "version", "organizationId" }) })
 public class Form extends BaseForm {
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
 	@Column(length = MAX_DESCRIPTION_LENGTH)
 	private String description;
 
+	private Long organizationId;
+
 	public Form() {
 		super();
 		description = new String();
 	}
 
-	public Form(String name, User user) throws FieldTooLongException {
+	public Form(String name, User user, Organization organization) throws FieldTooLongException {
 		super(name);
 		description = new String();
 		setCreatedBy(user);
 		setUpdatedBy(user);
+		setOrganizationId(organization);
 	}
 
 	@Override
@@ -63,5 +68,17 @@ public class Form extends BaseForm {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public Long getOrganizationId() {
+		return organizationId;
+	}
+
+	public void setOrganizationId(Organization organization) {
+		this.organizationId = organization.getOrganizationId();
+	}
+
+	public void setOrganizationId(Long organizationId) {
+		this.organizationId = organizationId;
 	}
 }

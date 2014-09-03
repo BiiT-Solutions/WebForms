@@ -21,7 +21,8 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_CAPTION_UP("caption.up"),
 	COMMON_CAPTION_DOWN("caption.down"),
 	COMMON_CAPTION_EXPORT_TO_PDF("caption.exportToPdf"),
-	COMMON_CAPTION_INSERT_BLOCK("caption.insert.block"), 
+	COMMON_CAPTION_INSERT_BLOCK("caption.insert.block"),
+	COMMON_CAPTION_GROUP("common.caption.group"),
 	
 	CAPTION_ANSWER_FORMAT_TEXT("caption.answerFormat.text"),
 	CAPTION_ANSWER_FORMAT_NUMBER("caption.answerFormat.number"),
@@ -79,6 +80,7 @@ public enum LanguageCodes implements ILanguageCode{
 	FORM_TABLE_COLUMN_CREATIONDATE("caption.form.table.creationDate"),
 	FORM_TABLE_COLUMN_MODIFIEDBY("caption.form.table.modifiedBy"),
 	FORM_TABLE_COLUMN_MODIFICATIONDATE("caption.form.table.modificationDate"),
+	FORM_TABLE_COLUMN_ORGANIZATION("caption.form.table.organization"),
 
 	//BlockManager
 	CAPTION_NEW_BLOCK("caption.new.block"),
@@ -115,6 +117,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_SAVE_AS_BLOCK("caption.save.as.block"),
 	CAPTION_INSERT_NEW_BLOCK("caption.insert.new.block"),
 	CAPTION_WINDOW_MOVE("caption.window.move"),
+	CAPTION_ORGANIZATION("caption.organization"),
 	
 	TOOLTIP_NEW_CATEGORY("tooltip.new.category"),
 	TOOLTIP_NEW_SUBCATEGORY("tooltip.new.subcategory"),

@@ -546,6 +546,24 @@ $open-sans-pathPrefix: "./fonts/";
 		background-color: #f5f5f5;
 	}
 	
+	/* Normal opacity when disabling a formlayout */
+	.v-layout.v-formlayout.v-disabled.v-widget{
+		opacity: 1.0;
+	}
+	
+	/* When disabled text area needs the back-color of disabled */
+	.v-textarea.v-disabled {
+		background-color: #f5f5f5;
+	}
+	
+	.v-filterselect-input, .v-window .v-filterselect-input, .v-popupview-popup .v-filterselect-input {
+		background-image: url(./transparent_center.png) !important;
+	}
+	
+	.v-disabled .v-filterselect-input {
+		background-color: #f5f5f5 !important;
+	}
+	
 	/* Collapsible menu */
 	.v-horizontal-collapsible-panel-opened{
 		border-color: #c2c3c4;

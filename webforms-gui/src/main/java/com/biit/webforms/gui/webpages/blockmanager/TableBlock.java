@@ -1,9 +1,13 @@
 package com.biit.webforms.gui.webpages.blockmanager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
+import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.authentication.WebformsActivity;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.DateManager;
@@ -12,21 +16,22 @@ import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
+import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Table;
 
-public class TableBlock extends Table{
+public class TableBlock extends Table {
 
 	private static final long serialVersionUID = 2995535101037124681L;
 
 	private IBlockDao blockDao;
-	
+
 	enum TreeTableBlockProperties {
-		BLOCK_NAME, USED_BY, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
+		BLOCK_NAME, ORGANIZATION, USED_BY, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
 	};
-	
+
 	public TableBlock() {
 		// Add Vaadin conext to Spring, and get beans for DAOs.
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
@@ -35,21 +40,34 @@ public class TableBlock extends Table{
 		initContainerProperties();
 		initializeBlockTable();
 	}
-	
+
 	private void initializeBlockTable() {
-		List<Block> blocks = blockDao.getAll();
+		List<Block> blocks = new ArrayList<>();
+
+		List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
+				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
+		for (Organization organization : userOrganizations) {
+			blocks.addAll(blockDao.getAll(organization));
+		}
+
 		Collections.sort(blocks, new TreeObjectUpdateDateComparator());
-		
-		for(Block block: blocks){
+
+		for (Block block : blocks) {
 			addRow(block);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public void addRow(Block block) {
-		if(block!=null){
+		if (block != null) {
 			Item item = addItem(block);
 			item.getItemProperty(TreeTableBlockProperties.BLOCK_NAME).setValue(block.getName());
+
+			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+					UserSessionHandler.getUser(), block.getOrganizationId());
+			if (organization != null) {
+				item.getItemProperty(TreeTableBlockProperties.ORGANIZATION).setValue(organization.getName());
+			}
 
 			User userOfForm = UiAccesser.getUserIfFormIsInUse(block);
 			if (userOfForm != null) {
@@ -87,6 +105,9 @@ public class TableBlock extends Table{
 		addContainerProperty(TreeTableBlockProperties.BLOCK_NAME, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_NAME), null, Align.LEFT);
 
+		addContainerProperty(TreeTableBlockProperties.ORGANIZATION, String.class, "",
+				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ORGANIZATION), null, Align.LEFT);
+
 		addContainerProperty(TreeTableBlockProperties.USED_BY, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_USEDBY), null, Align.CENTER);
 
@@ -101,7 +122,6 @@ public class TableBlock extends Table{
 
 		addContainerProperty(TreeTableBlockProperties.MODIFICATION_DATE, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_MODIFICATIONDATE), null, Align.CENTER);
-
 
 		setColumnExpandRatio(TreeTableBlockProperties.BLOCK_NAME, 3);
 		setColumnExpandRatio(TreeTableBlockProperties.USED_BY, 1);

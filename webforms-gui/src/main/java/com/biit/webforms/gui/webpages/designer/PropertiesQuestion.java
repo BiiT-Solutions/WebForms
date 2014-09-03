@@ -2,6 +2,8 @@ package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerTypeUi;
@@ -94,6 +96,10 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		commonProperties.addComponent(answerFormat);
 		commonProperties.addComponent(horizontal);
 		commonProperties.addComponent(mandatory);
+		
+		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_QUESTION.translation(), true);
 

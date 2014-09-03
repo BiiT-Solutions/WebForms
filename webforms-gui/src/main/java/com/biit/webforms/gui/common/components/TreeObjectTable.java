@@ -56,7 +56,7 @@ public class TreeObjectTable extends TreeTable {
 		item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).setValue(treeObjectIcon);
 	}
 
-	public void addRow(TreeObject element, TreeObject parent) {
+	public Item addRow(TreeObject element, TreeObject parent) {
 		if (element != null) {
 			Item item = addItem(element);
 			if (parent != null) {
@@ -68,7 +68,9 @@ public class TreeObjectTable extends TreeTable {
 			setValuesToItem(item, element);
 			setValue(element);
 			setChildrenAllowed(element, false);
+			return item;
 		}
+		return null;
 	}
 
 	public void updateRow(TreeObject element) {
