@@ -23,6 +23,7 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Subcategory;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
 
@@ -52,14 +53,15 @@ public class ApplicationController {
 	 * @throws FieldTooLongException
 	 * @throws FormWithSameNameException
 	 */
-	public Form createForm(String formName) throws FieldTooLongException, FormWithSameNameException {
+	public Form createForm(String formName, Organization organization) throws FieldTooLongException,
+			FormWithSameNameException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createForm " + formName + " START");
 
 		// Create new form
 		Form newform = null;
 		try {
-			newform = new Form(formName, getUser());
+			newform = new Form(formName, getUser(), organization);
 		} catch (FieldTooLongException ex) {
 			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " createForm " + ex.getMessage());
@@ -67,7 +69,7 @@ public class ApplicationController {
 		}
 
 		// Check if database contains a form with the same name.
-		if (formDao.getForm(formName) != null) {
+		if (formDao.getForm(formName,organization) != null) {
 			FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formName
 					+ " already exists");
 			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
@@ -88,14 +90,15 @@ public class ApplicationController {
 		return newform;
 	}
 
-	public Block createBlock(String blockName) throws FieldTooLongException, FormWithSameNameException {
+	public Block createBlock(String blockName, Organization organization) throws FieldTooLongException,
+			FormWithSameNameException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createBlock " + blockName + " START");
 
 		// Create new block
 		Block newBlock = null;
 		try {
-			newBlock = new Block(blockName, getUser());
+			newBlock = new Block(blockName, getUser(), organization);
 		} catch (FieldTooLongException ex) {
 			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " createBlock " + ex.getMessage());
@@ -103,7 +106,7 @@ public class ApplicationController {
 		}
 
 		// Check if database contains a form with the same name.
-		if (blockDao.getBlock(blockName) != null) {
+		if (blockDao.getBlock(blockName,organization) != null) {
 			FormWithSameNameException ex = new FormWithSameNameException("Block with name: " + blockName
 					+ " already exists");
 			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
@@ -435,13 +438,13 @@ public class ApplicationController {
 				+ " saveForm " + formInUse + " END");
 	}
 
-	public void saveAsBlock(TreeObject element, String blockName) throws FieldTooLongException,
-			FormWithSameNameException {
+	public void saveAsBlock(TreeObject element, String blockName, Organization organization)
+			throws FieldTooLongException, FormWithSameNameException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " saveAsBlock " + formInUse + " " + element + " " + blockName + " START");
 
 		// First we create the new block
-		Block block = createBlock(blockName);
+		Block block = createBlock(blockName, organization);
 
 		try {
 			TreeObject copy = element.generateCopy(true, true);
@@ -495,6 +498,7 @@ public class ApplicationController {
 
 	/**
 	 * Moves a TreeObject origin to a new child possition on destiny.
+	 * 
 	 * @param origin
 	 * @param destiny
 	 * @throws NotValidChildException

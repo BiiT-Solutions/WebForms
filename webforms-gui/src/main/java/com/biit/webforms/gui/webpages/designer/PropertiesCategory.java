@@ -1,6 +1,8 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -32,6 +34,10 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 		commonProperties.setHeight(null);
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
+		
+		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_CATEGORY.translation(), true);
 

@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.utils.MessageManager;
-import com.biit.webforms.gui.common.utils.WebpageAuthorizationService;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.logger.WebformsLogger;
 import com.liferay.portal.model.User;
@@ -43,14 +43,20 @@ public abstract class SecuredWebPage extends WebPage {
 				ApplicationUi.navigateTo(WebMap.getLoginPage());
 			} else {
 				if (accessAuthorizationsRequired() != null && !accessAuthorizationsRequired().isEmpty()) {
-					for (IActivity activity : accessAuthorizationsRequired()) {
-						if (!WebpageAuthorizationService.getInstance().isAuthorizedActivity(user, activity)) {
+					for (IActivity activity : accessAuthorizationsRequired()) {					
+						if (!WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(user, activity)) {
+							WebformsLogger.debug(this.getClass().getName(), "User: "
+									+ UserSessionHandler.getUser().getEmailAddress()
+									+ " tried to access application without appropiate roles.");
+							MessageManager.showError(CommonComponentsLanguageCodes.ERROR_CONTACT);
 							ApplicationUi.navigateTo(WebMap.getLoginPage());
+							return;
 						}
 					}
 				}
 				securedEnter(event);
-				WebformsLogger.debug(this.getClass().getName(),"Initialized correctly for user: "+UserSessionHandler.getUser().getEmailAddress());
+				WebformsLogger.debug(this.getClass().getName(), "Initialized correctly for user: "
+						+ UserSessionHandler.getUser().getEmailAddress());
 			}
 		} catch (Exception e) {
 			// This is not a good practice, but Vaadin will mask any exception

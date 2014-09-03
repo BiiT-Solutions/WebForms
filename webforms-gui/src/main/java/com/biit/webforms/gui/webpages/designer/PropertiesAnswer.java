@@ -1,6 +1,8 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -20,7 +22,7 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 	public PropertiesAnswer() {
 		super(Answer.class);
 	}
-	
+
 	@Override
 	protected void initElement() {
 
@@ -29,7 +31,7 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 
 		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
-		
+
 		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
 		description.setWidth(WIDTH);
 
@@ -39,6 +41,10 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 		commonProperties.addComponent(value);
 		commonProperties.addComponent(label);
 		commonProperties.addComponent(description);
+
+		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_ANSWER.translation(), true);
 
@@ -50,7 +56,7 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 		super.initValues();
 
 		value.setValue(instance.getValue());
-		//TODO dynamic label
+		// TODO dynamic label
 		label.setValue(instance.getLabel());
 		description.setValue(instance.getDescription());
 	}
@@ -59,7 +65,7 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 	public void updateElement() {
 		try {
 			instance.setValue(value.getValue());
-			//TODO dynamic label 
+			// TODO dynamic label
 			instance.setLabel(label.getValue());
 			instance.setDescription(description.getValue());
 		} catch (FieldTooLongException e) {

@@ -5,14 +5,15 @@ import java.util.List;
 
 import com.biit.webforms.persistence.entity.Form;
 
-public class RootForm {
+public class RootForm extends Form{
 
 	private String name;
 	private List<Form> childForms;
 
-	public RootForm(String name) {
+	public RootForm(String name, Long organizationId) {
 		this.name = name;
 		childForms = new ArrayList<Form>();
+		setOrganizationId(organizationId);
 	}
 
 	public String getName() {

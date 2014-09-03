@@ -10,6 +10,8 @@ import java.util.List;
 
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.authentication.WebformsActivity;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.components.IconOnlyButton;
 import com.biit.webforms.gui.common.language.ServerTranslate;
@@ -22,6 +24,7 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.theme.ThemeIcons;
+import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
@@ -37,7 +40,7 @@ public class TreeTableFormVersion extends TreeTable {
 	private List<EditInfoListener> editInfoListeners;
 
 	enum TreeTableFormVersionProperties {
-		FORM_NAME, VERSION, INFO, ACCESS, USED_BY, STATUS, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
+		FORM_NAME, VERSION, INFO, ACCESS, ORGANIZATION, USED_BY, STATUS, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
 	};
 
 	public TreeTableFormVersion() {
@@ -67,6 +70,9 @@ public class TreeTableFormVersion extends TreeTable {
 		addContainerProperty(TreeTableFormVersionProperties.INFO, IconOnlyButton.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_INFO), null, Align.CENTER);
 
+		addContainerProperty(TreeTableFormVersionProperties.ORGANIZATION, String.class, "",
+				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ORGANIZATION), null, Align.CENTER);
+
 		addContainerProperty(TreeTableFormVersionProperties.ACCESS, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ACCESS), null, Align.CENTER);
 
@@ -88,6 +94,7 @@ public class TreeTableFormVersion extends TreeTable {
 		setColumnCollapsingAllowed(true);
 		setColumnCollapsible(TreeTableFormVersionProperties.FORM_NAME, false);
 		setColumnCollapsible(TreeTableFormVersionProperties.VERSION, false);
+		setColumnCollapsible(TreeTableFormVersionProperties.ORGANIZATION, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.ACCESS, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.USED_BY, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.CREATED_BY, true);
@@ -99,6 +106,7 @@ public class TreeTableFormVersion extends TreeTable {
 
 		setColumnExpandRatio(TreeTableFormVersionProperties.FORM_NAME, 3);
 		setColumnExpandRatio(TreeTableFormVersionProperties.VERSION, 0.5f);
+		setColumnExpandRatio(TreeTableFormVersionProperties.ORGANIZATION, 1f);
 		setColumnExpandRatio(TreeTableFormVersionProperties.ACCESS, 1);
 		setColumnExpandRatio(TreeTableFormVersionProperties.USED_BY, 1);
 		setColumnExpandRatio(TreeTableFormVersionProperties.CREATED_BY, 1.2f);
@@ -120,6 +128,13 @@ public class TreeTableFormVersion extends TreeTable {
 			item.getItemProperty(TreeTableFormVersionProperties.FORM_NAME).setValue(form.getName());
 			item.getItemProperty(TreeTableFormVersionProperties.VERSION).setValue(form.getVersion() + "");
 			item.getItemProperty(TreeTableFormVersionProperties.INFO).setValue(createInfoButton(form));
+
+			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+					UserSessionHandler.getUser(), form.getOrganizationId());
+			if (organization != null) {
+				item.getItemProperty(TreeTableFormVersionProperties.ORGANIZATION).setValue(organization.getName());
+			}
+
 			item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag(form));
 
 			User userOfForm = UiAccesser.getUserIfFormIsInUse(form);
@@ -178,7 +193,7 @@ public class TreeTableFormVersion extends TreeTable {
 	public void addForm(Form form) {
 		RootForm parent = getFormRoot(form);
 		if (parent == null) {
-			parent = new RootForm(form.getName());
+			parent = new RootForm(form.getName(), form.getOrganizationId());
 			addRow(parent);
 		}
 		if (form != null) {
@@ -203,7 +218,8 @@ public class TreeTableFormVersion extends TreeTable {
 	private RootForm getFormRoot(Form form) {
 		for (Object item : getItemIds()) {
 			if (item instanceof RootForm) {
-				if (((RootForm) item).getName().equals(form.getName())) {
+				if (((RootForm) item).getName().equals(form.getName())
+						&& ((RootForm) item).getOrganizationId().equals(form.getOrganizationId())) {
 					return (RootForm) item;
 				}
 			}
@@ -235,7 +251,11 @@ public class TreeTableFormVersion extends TreeTable {
 		HashMap<String, List<Form>> formData = new HashMap<>();
 		List<Form> forms = new ArrayList<>();
 
-		forms = formDao.getAll(Form.class);
+		List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
+				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
+		for (Organization organization : userOrganizations) {
+			forms.addAll(formDao.getAll(Form.class, organization));
+		}
 		for (Form form : forms) {
 			if (!formData.containsKey(form.getName())) {
 				// First form with this name
@@ -250,7 +270,7 @@ public class TreeTableFormVersion extends TreeTable {
 		for (List<Form> formList : formData.values()) {
 			Collections.sort(formList, new FormVersionComparator());
 		}
-
+		
 		return formData;
 	}
 
@@ -340,11 +360,11 @@ public class TreeTableFormVersion extends TreeTable {
 	public void removeEditInfoListener(EditInfoListener listener) {
 		editInfoListeners.remove(listener);
 	}
-	
-	public RootForm getSelectedRootForm(){
-		if(getValue()instanceof RootForm){
+
+	public RootForm getSelectedRootForm() {
+		if (getValue() instanceof RootForm) {
 			return (RootForm) getValue();
-		}else{
+		} else {
 			return (RootForm) getParent(getValue());
 		}
 	}

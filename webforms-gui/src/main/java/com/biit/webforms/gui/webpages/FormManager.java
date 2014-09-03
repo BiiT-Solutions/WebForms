@@ -2,21 +2,26 @@ package com.biit.webforms.gui.webpages;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.authentication.WebformsActivity;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
-import com.biit.webforms.gui.common.components.WindowStringInput;
 import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.EditInfoListener;
+import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
@@ -35,6 +40,8 @@ import com.vaadin.ui.Button.ClickListener;
 public class FormManager extends SecuredWebPage {
 
 	private static final long serialVersionUID = 4853622392162188013L;
+	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
+			Arrays.asList(WebformsActivity.READ));
 
 	private TreeTableFormVersion formTable;
 	private UpperMenuProjectManager upperMenu;
@@ -137,23 +144,25 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void openNewFormWindow() {
-		final WindowStringInput stringWindow = new WindowStringInput(LanguageCodes.COMMON_CAPTION_NAME.translation());
-		stringWindow.setCaption(LanguageCodes.CAPTION_NEW_FORM.translation());
-		stringWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_FORM.translation());
-		stringWindow.showCentered();
-		stringWindow.addAcceptActionListener(new AcceptActionListener() {
+		final WindowNameGroup newFormWindow = new WindowNameGroup(LanguageCodes.COMMON_CAPTION_NAME.translation(),
+				LanguageCodes.COMMON_CAPTION_GROUP.translation(),new IActivity[]{WebformsActivity.FORM_EDITING});
+		newFormWindow.setCaption(LanguageCodes.CAPTION_NEW_FORM.translation());
+		newFormWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_FORM.translation());
+		newFormWindow.showCentered();
+		newFormWindow.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
-				if (stringWindow.getValue() == null || stringWindow.getValue().isEmpty()) {
+				if (newFormWindow.getValue() == null || newFormWindow.getValue().isEmpty()) {
 					MessageManager.showWarning(LanguageCodes.COMMON_WARNING_TITLE_FORM_NOT_CREATED,
 							LanguageCodes.COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME);
 					return;
 				}
 				try {
-					Form newForm = UserSessionHandler.getController().createForm(stringWindow.getValue());
+					Form newForm = UserSessionHandler.getController().createForm(newFormWindow.getValue(),
+							newFormWindow.getOrganization());
 					addFormToTable(newForm);
-					stringWindow.close();
+					newFormWindow.close();
 				} catch (FieldTooLongException e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 				} catch (FormWithSameNameException e) {
@@ -188,8 +197,7 @@ public class FormManager extends SecuredWebPage {
 
 	@Override
 	public List<IActivity> accessAuthorizationsRequired() {
-		// TODO Auto-generated method stub
-		return null;
+		return activityPermissions;
 	}
 
 	public Form getSelectedForm() {
@@ -201,22 +209,34 @@ public class FormManager extends SecuredWebPage {
 		upperMenu.getNewForm().setEnabled(true);
 
 		Object row = formTable.getValue();
-		if (row == null) {
+
+		try {
+			boolean rowNotNull = row != null;
+			Form selectedForm = (Form) formTable.getValue();
+			boolean rowInstanceOfRootForm = row instanceof RootForm;
+			boolean rowNotNullAndForm = rowNotNull && !rowInstanceOfRootForm;
+			boolean canCreateForms = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+					UserSessionHandler.getUser(), WebformsActivity.FORM_EDITING);
+			boolean canCreateNewVersion = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+					UserSessionHandler.getUser(), selectedForm, WebformsActivity.FORM_NEW_VERSION);
+
+			upperMenu.getNewForm().setEnabled(canCreateForms);
+			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion);
+			upperMenu.getEditDesign().setEnabled(rowNotNullAndForm);
+			upperMenu.getEditFlow().setEnabled(rowNotNullAndForm);
+			upperMenu.getExportPdf().setEnabled(rowNotNullAndForm);
+			if (rowNotNull) {
+				upperMenu.setExportFormPdfDefaultName(((Form) row).getName() + ".pdf");
+			}
+
+		} catch (IOException | AuthenticationRequired e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+			// failsafe, disable everything.
 			upperMenu.getNewFormVersion().setEnabled(false);
 			upperMenu.getEditDesign().setEnabled(false);
 			upperMenu.getEditFlow().setEnabled(false);
-		} else {
-			upperMenu.getNewFormVersion().setEnabled(true);
-			if (row instanceof RootForm) {
-				upperMenu.getEditDesign().setEnabled(false);
-				upperMenu.getEditFlow().setEnabled(false);
-				upperMenu.getExportPdf().setEnabled(false);
-			} else {
-				upperMenu.getEditDesign().setEnabled(true);
-				upperMenu.getEditFlow().setEnabled(true);
-				upperMenu.setExportFormPdfDefaultName(((Form) row).getName() + ".pdf");
-				upperMenu.getExportPdf().setEnabled(true);
-			}
+			upperMenu.getExportPdf().setEnabled(false);
 		}
 	}
 }

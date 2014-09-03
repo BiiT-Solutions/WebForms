@@ -1,24 +1,29 @@
 package com.biit.webforms.gui.webpages;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.biit.form.BaseAnswer;
-import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.authentication.WebformsActivity;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
-import com.biit.webforms.gui.common.components.WindowStringInput;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
 import com.biit.webforms.gui.webpages.designer.TreeObjectTableDesigner;
@@ -26,6 +31,7 @@ import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.designer.WindowBlocks;
 import com.biit.webforms.gui.webpages.designer.WindowMoveTreeObject;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Category;
@@ -43,6 +49,8 @@ import com.vaadin.ui.HorizontalLayout;
 
 public class Designer extends SecuredWebPage {
 	private static final long serialVersionUID = 9161313025929535348L;
+	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
+			Arrays.asList(WebformsActivity.READ));
 
 	private UpperMenuDesigner upperMenu;
 	private TreeObjectTableDesigner table;
@@ -100,8 +108,7 @@ public class Designer extends SecuredWebPage {
 
 	@Override
 	public List<IActivity> accessAuthorizationsRequired() {
-		// TODO Auto-generated method stub
-		return null;
+		return activityPermissions;
 	}
 
 	private void updateProperties() {
@@ -178,7 +185,7 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					Subcategory newSubcategory = UserSessionHandler.getController().addNewSubcategory(
-							selectedRow.getAncestor(Category.class));
+							selectedRow.getAncestorThatAccepts(Subcategory.class));
 					table.addRow(newSubcategory, newSubcategory.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_SUBCATEGORY_NOT_INSERTED);
@@ -191,7 +198,9 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
-					Group newGroup = UserSessionHandler.getController().addNewGroup(table.getSelectedRow());
+					TreeObject selectedRow = table.getSelectedRow();
+					Group newGroup = UserSessionHandler.getController().addNewGroup(
+							selectedRow.getAncestorThatAccepts(Group.class));
 					table.addRow(newGroup, newGroup.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_GROUP_NOT_INSERTED);
@@ -206,11 +215,8 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					Question newQuestion;
-					if (selectedRow instanceof BaseQuestion) {
-						newQuestion = UserSessionHandler.getController().addNewQuestion(selectedRow.getParent());
-					} else {
-						newQuestion = UserSessionHandler.getController().addNewQuestion(selectedRow);
-					}
+					newQuestion = UserSessionHandler.getController().addNewQuestion(
+							selectedRow.getAncestorThatAccepts(Question.class));
 					table.addRow(newQuestion, newQuestion.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_QUESTION_NOT_INSERTED);
@@ -225,11 +231,8 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					SystemField newField;
-					if (selectedRow instanceof BaseQuestion) {
-						newField = UserSessionHandler.getController().addNewSystemField(selectedRow.getParent());
-					} else {
-						newField = UserSessionHandler.getController().addNewSystemField(selectedRow);
-					}
+					newField = UserSessionHandler.getController().addNewSystemField(
+							selectedRow.getAncestorThatAccepts(SystemField.class));
 					table.addRow(newField, newField.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_SYSTEM_FIELD_NOT_INSERTED);
@@ -244,11 +247,8 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					Text newText;
-					if (selectedRow instanceof BaseQuestion) {
-						newText = UserSessionHandler.getController().addNewText(selectedRow.getParent());
-					} else {
-						newText = UserSessionHandler.getController().addNewText(selectedRow);
-					}
+					newText = UserSessionHandler.getController().addNewText(
+							selectedRow.getAncestorThatAccepts(Text.class));
 					table.addRow(newText, newText.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_TEXT_NOT_INSERTED);
@@ -338,87 +338,92 @@ public class Designer extends SecuredWebPage {
 		return upperMenu;
 	}
 
+	/**
+	 * Function to update active/Visible state of upper menu buttons.
+	 */
 	private void updateUpperMenu() {
 		TreeObject selectedRow = table.getSelectedRow();
-		if (getCurrentForm() instanceof Block) {
-			upperMenu.getNewCategoryButton().setEnabled(getCurrentForm().getChildren().isEmpty());
-			upperMenu.getInsertBlockButton().setVisible(false);
-		} else {
-			upperMenu.getNewCategoryButton().setEnabled(true);
-			upperMenu.getInsertBlockButton().setEnabled(true);
-		}
 
-		if (selectedRow == null) {
+		try {
+			boolean formIsBlock = getCurrentForm() instanceof Block;
+			boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
+			boolean rowIsNull = selectedRow == null;
+			boolean rowIsForm = selectedRow instanceof Form;
+			boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+					UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+			boolean canInsertBlock = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
+
+			upperMenu.getSaveButton().setEnabled(canEdit);
+			upperMenu.getSaveAsBlockButton().setEnabled(canInsertBlock);
+			upperMenu.getInsertBlockButton().setEnabled(canEdit);
+			upperMenu.getInsertBlockButton().setVisible(!formIsBlock);
+			upperMenu.getNewCategoryButton().setEnabled(canEdit && (formIsBlockAndNoCategories || (!formIsBlock)));
+			upperMenu.getNewSubcategoryButton().setEnabled(canEdit && selectedRowHierarchyAllows(Subcategory.class));
+			upperMenu.getNewGroupButton().setEnabled(canEdit && selectedRowHierarchyAllows(Group.class));
+			upperMenu.getNewQuestionButton().setEnabled(canEdit && selectedRowHierarchyAllows(Question.class));
+			upperMenu.getNewSystemFieldButton().setEnabled(canEdit && selectedRowHierarchyAllows(SystemField.class));
+			upperMenu.getNewTextButton().setEnabled(canEdit && selectedRowHierarchyAllows(Text.class));
+			upperMenu.getNewAnswerButton().setEnabled(canEdit && selectedRowHierarchyAllows(Answer.class));
+			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull);
+			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
+			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
+			upperMenu.getDownButton().setEnabled(canEdit && !rowIsForm);
+			upperMenu.getValidateButton().setEnabled(false);
+			upperMenu.getValidateButton().setVisible(!formIsBlock);
+			upperMenu.getFinishButton().setEnabled(false);
+			upperMenu.getFinishButton().setVisible(!formIsBlock);
+		} catch (IOException | AuthenticationRequired e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			// Disable everthing as a security measure.
+			upperMenu.getSaveButton().setEnabled(false);
+			upperMenu.getSaveAsBlockButton().setEnabled(false);
+			upperMenu.getInsertBlockButton().setEnabled(false);
+			upperMenu.getNewCategoryButton().setEnabled(false);
 			upperMenu.getNewSubcategoryButton().setEnabled(false);
 			upperMenu.getNewGroupButton().setEnabled(false);
 			upperMenu.getNewQuestionButton().setEnabled(false);
-			upperMenu.getNewTextButton().setEnabled(false);
 			upperMenu.getNewSystemFieldButton().setEnabled(false);
+			upperMenu.getNewTextButton().setEnabled(false);
 			upperMenu.getNewAnswerButton().setEnabled(false);
 			upperMenu.getMoveButton().setEnabled(false);
 			upperMenu.getDeleteButton().setEnabled(false);
 			upperMenu.getUpButton().setEnabled(false);
 			upperMenu.getDownButton().setEnabled(false);
-			upperMenu.getSaveAsBlockButton().setEnabled(false);
-		} else {
-			if (selectedRow instanceof Form) {
-				upperMenu.getNewSubcategoryButton().setEnabled(false);
-				upperMenu.getNewGroupButton().setEnabled(selectedRow.isAllowedChildren(Group.class));
-				upperMenu.getNewQuestionButton().setEnabled(selectedRow.isAllowedChildren(Question.class));
-				upperMenu.getNewSystemFieldButton().setEnabled(selectedRow.isAllowedChildren(SystemField.class));
-				upperMenu.getNewTextButton().setEnabled(selectedRow.isAllowedChildren(Text.class));
-				upperMenu.getNewAnswerButton().setEnabled(selectedRow.isAllowedChildren(Answer.class));
-				upperMenu.getDeleteButton().setEnabled(false);
-				upperMenu.getUpButton().setEnabled(false);
-				upperMenu.getDownButton().setEnabled(false);
-				upperMenu.getSaveAsBlockButton().setEnabled(false);
-				// Form root can't be moved
-				upperMenu.getMoveButton().setEnabled(false);
-			} else {
-				upperMenu.getNewSubcategoryButton().setEnabled(true);
-				upperMenu.getNewGroupButton().setEnabled(selectedRow.isAllowedChildren(Group.class));
-				upperMenu.getNewQuestionButton().setEnabled(
-						selectedRow.isAllowedChildren(Question.class)
-								|| selectedRow.getParent().isAllowedChildren(Question.class));
-				upperMenu.getNewSystemFieldButton().setEnabled(
-						selectedRow.isAllowedChildren(SystemField.class)
-								|| selectedRow.getParent().isAllowedChildren(SystemField.class));
-				upperMenu.getNewTextButton().setEnabled(
-						selectedRow.isAllowedChildren(Text.class)
-								|| selectedRow.getParent().isAllowedChildren(Text.class));
-				upperMenu.getNewAnswerButton().setEnabled(
-						selectedRow.isAllowedChildren(Answer.class)
-								|| selectedRow.getParent().isAllowedChildren(Answer.class));
-				upperMenu.getDeleteButton().setEnabled(true);
-				upperMenu.getUpButton().setEnabled(true);
-				upperMenu.getDownButton().setEnabled(true);
-				upperMenu.getSaveAsBlockButton().setEnabled(true);
-				// Only children of form can be moved
-				upperMenu.getMoveButton().setEnabled(true);
-			}
+			upperMenu.getValidateButton().setEnabled(false);
+			upperMenu.getFinishButton().setEnabled(false);
+			upperMenu.getFinishButton().setVisible(false);
 		}
+	}
+
+	protected boolean selectedRowHierarchyAllows(Class<? extends TreeObject> cls) {
+		TreeObject selectedRow = table.getSelectedRow();
+		return selectedRow != null && (selectedRow.getAncestorThatAccepts(cls) != null);
 	}
 
 	/**
 	 * Opens Save as New block window (String field)
 	 */
 	protected void openNewBlockWindow() {
-		final WindowStringInput stringWindow = new WindowStringInput(LanguageCodes.COMMON_CAPTION_NAME.translation());
-		stringWindow.setCaption(LanguageCodes.CAPTION_NEW_BLOCK.translation());
-		stringWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_BLOCK.translation());
-		stringWindow.showCentered();
-		stringWindow.addAcceptActionListener(new AcceptActionListener() {
+		final WindowNameGroup newBlockWindow = new WindowNameGroup(LanguageCodes.COMMON_CAPTION_NAME.translation(),
+				LanguageCodes.COMMON_CAPTION_GROUP.translation(),
+				new IActivity[] { WebformsActivity.BUILDING_BLOCK_EDITING });
+		newBlockWindow.setCaption(LanguageCodes.CAPTION_NEW_BLOCK.translation());
+		newBlockWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_BLOCK.translation());
+		newBlockWindow.showCentered();
+		newBlockWindow.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
-				if (stringWindow.getValue() == null || stringWindow.getValue().isEmpty()) {
+				if (newBlockWindow.getValue() == null || newBlockWindow.getValue().isEmpty()) {
 					MessageManager.showWarning(LanguageCodes.COMMON_WARNING_TITLE_BLOCK_NOT_CREATED,
 							LanguageCodes.COMMON_WARNING_DESCRIPTION_BLOCK_NEEDS_NAME);
 					return;
 				}
 				try {
-					UserSessionHandler.getController().saveAsBlock(table.getSelectedRow(), stringWindow.getValue());
-					stringWindow.close();
+					UserSessionHandler.getController().saveAsBlock(table.getSelectedRow(), newBlockWindow.getValue(),
+							newBlockWindow.getOrganization());
+					newBlockWindow.close();
 
 					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION, LanguageCodes.INFO_MESSAGE_DESCRIPTION);
 
