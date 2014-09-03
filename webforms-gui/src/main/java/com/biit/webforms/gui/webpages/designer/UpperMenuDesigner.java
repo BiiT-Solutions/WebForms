@@ -16,22 +16,22 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public UpperMenuDesigner() {
 
-		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.SAVE,
+		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
 				LanguageCodes.COMMON_TOOLTIP_SAVE, IconSize.BIG);
 		
-		saveAsBlockButton = new IconButton(LanguageCodes.CAPTION_SAVE_AS_BLOCK, ThemeIcons.SAVE,
+		saveAsBlockButton = new IconButton(LanguageCodes.CAPTION_SAVE_AS_BLOCK, ThemeIcons.BUILDING_BLOCK_SAVE,
 				LanguageCodes.TOOLTIP_SAVE_AS_BLOCK, IconSize.BIG);
 		
-		insertBlockButton = new IconButton(LanguageCodes.COMMON_CAPTION_INSERT_BLOCK, ThemeIcons.FLOW_EDITOR,
+		insertBlockButton = new IconButton(LanguageCodes.COMMON_CAPTION_INSERT_BLOCK, ThemeIcons.BUILDING_BLOCK_ADD,
 				LanguageCodes.COMMON_TOOLTIP_INSERT_BLOCK, IconSize.BIG);
 
-		flowButton = new IconButton(LanguageCodes.COMMON_CAPTION_FLOW, ThemeIcons.FLOW_EDITOR,
+		flowButton = new IconButton(LanguageCodes.COMMON_CAPTION_FLOW, ThemeIcons.PAGE_FORM_FLOW_EDITOR,
 				LanguageCodes.COMMON_TOOLTIP_FLOW, IconSize.BIG);
 
-		validateButton = new IconButton(LanguageCodes.COMMON_CAPTION_VALIDATE, ThemeIcons.VALIDATE,
+		validateButton = new IconButton(LanguageCodes.COMMON_CAPTION_VALIDATE, ThemeIcons.FORM_VALIDATE,
 				LanguageCodes.COMMON_TOOLTIP_VALIDATE, IconSize.BIG);
 
-		finishButton = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.VALIDATE,
+		finishButton = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
 				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 
 		newCategoryButton = new IconButton(LanguageCodes.CAPTION_NEW_CATEGORY, ThemeIcons.DESIGNER_NEW_CATEGORY,
@@ -42,20 +42,20 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_NEW_GROUP);
 		newQuestionButton = new IconButton(LanguageCodes.CAPTION_NEW_QUESTION, ThemeIcons.DESIGNER_NEW_QUESTION,
 				LanguageCodes.TOOLTIP_NEW_QUESTION);
-		newTextButton = new IconButton(LanguageCodes.CAPTION_NEW_TEXT, ThemeIcons.DESIGNER_NEW_TEXT,
+		newAnswerButton = new IconButton(LanguageCodes.CAPTION_NEW_ANSWER, ThemeIcons.DESIGNER_NEW_ANSWER,
+				LanguageCodes.TOOLTIP_NEW_ANSWER);
+		newTextButton = new IconButton(LanguageCodes.CAPTION_NEW_TEXT, ThemeIcons.DESIGNER_NEW_INFOTEXT,
 				LanguageCodes.TOOLTIP_NEW_TEXT);
 		newSystemFieldButton = new IconButton(LanguageCodes.CAPTION_NEW_SYSTEM_FIELD, ThemeIcons.DESIGNER_NEW_SYSTEM_FIELD,
 				LanguageCodes.TOOLTIP_NEW_SYSTEM_FIELD);		
-		newAnswerButton = new IconButton(LanguageCodes.CAPTION_NEW_ANSWER, ThemeIcons.DESIGNER_NEW_ANSWER,
-				LanguageCodes.TOOLTIP_NEW_ANSWER);
 		moveButton = new IconButton(LanguageCodes.COMMON_CAPTION_MOVE, ThemeIcons.DESIGNER_MOVE,
 				LanguageCodes.COMMON_TOOLTIP_MOVE);
-		deleteButton = new IconButton(LanguageCodes.COMMON_CAPTION_DELETE, ThemeIcons.DELETE,
-				LanguageCodes.COMMON_TOOLTIP_DELETE);
-		upButton = new IconButton(LanguageCodes.COMMON_CAPTION_UP, ThemeIcons.UP,
+		upButton = new IconButton(LanguageCodes.COMMON_CAPTION_UP, ThemeIcons.ELEMENT_MOVE_UP,
 				LanguageCodes.COMMON_TOOLTIP_UP);
-		downButton = new IconButton(LanguageCodes.COMMON_CAPTION_DOWN, ThemeIcons.DOWN,
+		downButton = new IconButton(LanguageCodes.COMMON_CAPTION_DOWN, ThemeIcons.ELEMENT_MOVE_DOWN,
 				LanguageCodes.COMMON_TOOLTIP_DOWN);
+		deleteButton = new IconButton(LanguageCodes.COMMON_CAPTION_DELETE, ThemeIcons.ELEMENT_DELETE,
+				LanguageCodes.COMMON_TOOLTIP_DELETE);
 
 		addIconButton(saveButton);
 		addIconButton(saveAsBlockButton);
@@ -65,13 +65,13 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(newSubcategoryButton);
 		addIconButton(newGroupButton);
 		addIconButton(newQuestionButton);
-		addIconButton(newSystemFieldButton);
-		addIconButton(newTextButton);
 		addIconButton(newAnswerButton);
+		addIconButton(newTextButton);
+		addIconButton(newSystemFieldButton);
 		addIconButton(moveButton);
-		addIconButton(deleteButton);
 		addIconButton(upButton);
 		addIconButton(downButton);
+		addIconButton(deleteButton);
 		addIconButton(validateButton);
 		addIconButton(finishButton);
 	}

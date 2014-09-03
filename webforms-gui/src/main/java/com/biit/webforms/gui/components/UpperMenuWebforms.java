@@ -24,7 +24,7 @@ public class UpperMenuWebforms extends UpperMenu {
 	}
 
 	private void addRightIcons() {
-		formManagerButton = new IconButton(LanguageCodes.COMMON_CAPTION_FORM_MANAGER, ThemeIcons.SETTINGS,
+		formManagerButton = new IconButton(LanguageCodes.COMMON_CAPTION_FORM_MANAGER, ThemeIcons.PAGE_FORM_MANAGER,
 				LanguageCodes.COMMON_TOOLTIP_FORM_MANAGER, IconSize.BIG, new ClickListener() {
 					private static final long serialVersionUID = 8754692681745450679L;
 
@@ -36,7 +36,7 @@ public class UpperMenuWebforms extends UpperMenu {
 		formManagerButton.setHeight("100%");
 		formManagerButton.setWidth(BUTTON_WIDTH);
 		
-		blockManagerButton = new IconButton(LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER, ThemeIcons.SETTINGS,
+		blockManagerButton = new IconButton(LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER, ThemeIcons.PAGE_BUILDING_BLOCK_MANAGER,
 				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, IconSize.BIG, new ClickListener() {
 					private static final long serialVersionUID = 8754692681745450679L;
 

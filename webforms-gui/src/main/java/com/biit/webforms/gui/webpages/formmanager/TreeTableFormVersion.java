@@ -164,7 +164,7 @@ public class TreeTableFormVersion extends TreeTable {
 	}
 
 	private IconOnlyButton createInfoButton(final Form form) {
-		IconOnlyButton icon = new IconOnlyButton(ThemeIcons.EDIT.getThemeResource());
+		IconOnlyButton icon = new IconOnlyButton(ThemeIcons.ELEMENT_EDIT.getThemeResource());
 		icon.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 896514404248078435L;
 

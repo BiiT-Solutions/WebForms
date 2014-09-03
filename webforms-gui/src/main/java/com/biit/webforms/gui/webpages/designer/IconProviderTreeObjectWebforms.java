@@ -16,25 +16,25 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject> {
 			Question question = (Question) object;
 			switch (question.getAnswerType()) {
 			case MULTIPLE_SELECTION:
-				return ThemeIcons.DESIGNER_QUESTION_CHECKLIST;
+				return ThemeIcons.DESIGNER_QUESTION_TYPE_CHECKLIST;
 			case SINGLE_SELECTION_LIST:
 			case SINGLE_SELECTION_RADIO:
-				return ThemeIcons.DESIGNER_QUESTION_RADIOBUTTON;
+				return ThemeIcons.DESIGNER_QUESTION_TYPE_RADIOBUTTON;
 			case INPUT:
 				if (question.getAnswerFormat() != null) {
 					switch (question.getAnswerFormat()) {
 					case DATE:
-						return ThemeIcons.DESIGNER_QUESTION_DATE;
+						return ThemeIcons.DESIGNER_QUESTION_TYPE_DATE;
 					case NUMBER:
-						return ThemeIcons.DESIGNER_QUESTION_NUMBER;
+						return ThemeIcons.DESIGNER_QUESTION_TYPE_NUMBER;
 					case POSTAL_CODE:
-						return ThemeIcons.DESIGNER_QUESTION_POSTALCODE;
+						return ThemeIcons.DESIGNER_QUESTION_TYPE_POSTALCODE;
 					case TEXT:
-						return ThemeIcons.DESIGNER_QUESTION_TEXT;
+						return ThemeIcons.DESIGNER_QUESTION_TYPE_TEXT;
 					}
 				}
 			case TEXT_AREA:
-				return ThemeIcons.DESIGNER_QUESTION_TEXT;
+				return ThemeIcons.DESIGNER_QUESTION_TYPE_TEXT;
 			}
 		} else if (object instanceof Group) {
 			Group group = (Group) object;

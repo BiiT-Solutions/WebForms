@@ -19,11 +19,11 @@ public class UpperMenuBlockManager extends UpperMenuWebforms{
 	}
 
 	private void addButtons() {
-		newBlock = new IconButton(LanguageCodes.CAPTION_NEW_BLOCK, ThemeIcons.FORM_MANAGER_PAGE,
+		newBlock = new IconButton(LanguageCodes.CAPTION_NEW_BLOCK, ThemeIcons.BUILDING_BLOCK_ADD,
 				LanguageCodes.TOOLTIP_NEW_BLOCK, IconSize.BIG);
-		editDesign = new IconButton(LanguageCodes.COMMON_CAPTION_DESIGN, ThemeIcons.DESIGNER_EDITOR,
+		editDesign = new IconButton(LanguageCodes.COMMON_CAPTION_DESIGN, ThemeIcons.PAGE_BUILDING_BLOCK_EDITOR,
 				LanguageCodes.COMMON_TOOLTIP_DESIGN, IconSize.BIG);
-		editFlow = new IconButton(LanguageCodes.COMMON_CAPTION_FLOW, ThemeIcons.FLOW_EDITOR,
+		editFlow = new IconButton(LanguageCodes.COMMON_CAPTION_FLOW, ThemeIcons.PAGE_BUILDING_BLOCK_FLOW_EDITOR,
 				LanguageCodes.COMMON_TOOLTIP_FLOW, IconSize.BIG);
 		
 		addIconButton(newBlock);
