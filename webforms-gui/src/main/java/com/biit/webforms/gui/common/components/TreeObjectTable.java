@@ -41,12 +41,21 @@ public class TreeObjectTable extends TreeTable {
 		setCellStyleGenerator(new TreeObjectTableCellStyleGenerator());
 	}
 
+	/**
+	 * Loads a tree object structure recursively. Only selects the first element.
+	 * @param element
+	 * @param parent
+	 */
 	public void loadTreeObject(TreeObject element, TreeObject parent) {
-		addRow(element, parent);
+		loadTreeObject(element, parent, true);
+	}
+	
+	public void loadTreeObject(TreeObject element, TreeObject parent, boolean select) {
+		addRow(element, parent,select);
 
 		List<TreeObject> children = element.getChildren();
 		for (TreeObject child : children) {
-			loadTreeObject(child, element);
+			loadTreeObject(child, element,false);
 		}
 	}
 
@@ -56,7 +65,19 @@ public class TreeObjectTable extends TreeTable {
 		item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).setValue(treeObjectIcon);
 	}
 
+	/**
+	 * Adds a new row to the table. Default configuration makes that adding a
+	 * new row also selects.
+	 * 
+	 * @param element
+	 * @param parent
+	 * @return
+	 */
 	public Item addRow(TreeObject element, TreeObject parent) {
+		return addRow(element, parent, true);
+	}
+
+	public Item addRow(TreeObject element, TreeObject parent, boolean selectRow) {
 		if (element != null) {
 			Item item = addItem(element);
 			if (parent != null) {
@@ -66,7 +87,9 @@ public class TreeObjectTable extends TreeTable {
 				setCollapsed(parent, false);
 			}
 			setValuesToItem(item, element);
-			setValue(element);
+			if (selectRow) {
+				setValue(element);
+			}
 			setChildrenAllowed(element, false);
 			return item;
 		}
@@ -243,7 +266,7 @@ public class TreeObjectTable extends TreeTable {
 	public void redrawRow(TreeObject row) {
 		if (row != null) {
 			updateRow(row);
-			for(TreeObject childRow: row.getChildren()){
+			for (TreeObject childRow : row.getChildren()) {
 				removeRow(childRow);
 				loadTreeObject(childRow, row);
 			}
