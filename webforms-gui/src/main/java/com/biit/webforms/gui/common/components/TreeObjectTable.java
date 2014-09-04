@@ -242,8 +242,11 @@ public class TreeObjectTable extends TreeTable {
 
 	public void redrawRow(TreeObject row) {
 		if (row != null) {
-			removeRow(row);
-			loadTreeObject(row, row.getParent());
+			updateRow(row);
+			for(TreeObject childRow: row.getChildren()){
+				removeRow(childRow);
+				loadTreeObject(childRow, row);
+			}
 		}
 	}
 
