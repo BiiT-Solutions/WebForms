@@ -155,9 +155,8 @@ public enum LanguageCodes implements ILanguageCode{
 	WARNING_DESCRIPTION_NOT_VALID("warning.description.not.valid"),
 	WARNING_CAPTION_SAME_ORIGIN("warning.caption.same.origin"), 
 	WARNING_DESCRIPTION_SAME_ORIGIN("warning.description.same.origin"), 
-	WARNING_DESCRIPTION_NEW_VERSION_WHEN_DESIGN("warning.description.new.version.when.design"), 
-	
-	
+	WARNING_DESCRIPTION_NEW_VERSION_WHEN_DESIGN("warning.description.new.version.when.design"),
+	WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY("warning.description.origin.included.in.destiny"),	
 	
 	;
 

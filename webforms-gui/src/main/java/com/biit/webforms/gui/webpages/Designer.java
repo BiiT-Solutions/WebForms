@@ -16,6 +16,7 @@ import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.PropertieUpdateListener;
@@ -490,6 +491,9 @@ public class Designer extends SecuredWebPage {
 				} catch (SameOriginAndDestinationException e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
 							LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN);
+				} catch (DestinyIsContainedAtOrigin e) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
+							LanguageCodes.WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY);
 				}
 			}
 		});

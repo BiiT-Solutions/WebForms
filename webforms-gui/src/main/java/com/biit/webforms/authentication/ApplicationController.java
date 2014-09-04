@@ -9,6 +9,7 @@ import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.gui.UiAccesser;
@@ -542,19 +543,23 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Moves a TreeObject origin to a new child possition on destiny.
+	 * Moves a TreeObject origin to a new child position on destiny.
 	 * 
 	 * @param origin
 	 * @param destiny
 	 * @throws NotValidChildException
 	 * @throws SameOriginAndDestinationException
+	 * @throws DestinyIsContainedAtOrigin 
 	 */
 	public void moveTo(TreeObject origin, TreeObject destiny) throws NotValidChildException,
-			SameOriginAndDestinationException {
+			SameOriginAndDestinationException, DestinyIsContainedAtOrigin {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " move "
 				+ origin + " to " + destiny + " START");
 		if (origin.equals(destiny)) {
 			throw new SameOriginAndDestinationException("Origin and destination are the same element");
+		}
+		if( origin.contains(destiny)){
+			throw new DestinyIsContainedAtOrigin("Origin is contained inside destination element.");
 		}
 		try {
 			destiny.addChild(origin);
