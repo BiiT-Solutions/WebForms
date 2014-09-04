@@ -17,7 +17,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 
 	private TextField name, label;
 
-	private CheckBox repetable;
+	private CheckBox repeatable;
 
 	public PropertiesGroup() {
 		super(Group.class);
@@ -32,13 +32,14 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
 
-		repetable = new CheckBox(LanguageCodes.CAPTION_REPETABLE.translation());
+		repeatable = new CheckBox(LanguageCodes.CAPTION_REPETABLE.translation());
 
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
 		commonProperties.setHeight(null);
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
+		commonProperties.addComponent(repeatable);
 		
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
@@ -55,7 +56,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 
 		name.setValue(instance.getName());
 		label.setValue(instance.getLabel());
-		repetable.setValue(instance.isRepeatable());
+		repeatable.setValue(instance.isRepeatable());
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		try {
 			instance.setName(name.getValue());
 			instance.setLabel(label.getValue());
-			instance.setRepeatable(repetable.getValue());
+			instance.setRepeatable(repeatable.getValue());
 
 		} catch (FieldTooLongException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

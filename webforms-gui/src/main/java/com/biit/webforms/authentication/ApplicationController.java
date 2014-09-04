@@ -225,9 +225,13 @@ public class ApplicationController {
 		this.lastEditedForm = form;
 	}
 
+	private String getUserEmailAddress() {
+		return getUser() != null ? getUser().getEmailAddress() : "NO_USER";
+	}
+
 	public void clearFormInUse() {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " clearFormInUse");
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " clearFormInUse");
+
 		UiAccesser.releaseForm(formInUse, user);
 		formInUse = null;
 	}
