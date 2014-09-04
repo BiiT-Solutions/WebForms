@@ -16,6 +16,7 @@ import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
+import com.biit.webforms.persistence.entity.Form;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.data.Item;
@@ -29,7 +30,7 @@ public class TableBlock extends Table {
 	private IBlockDao blockDao;
 
 	enum TreeTableBlockProperties {
-		BLOCK_NAME, ORGANIZATION, USED_BY, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
+		BLOCK_NAME, ORGANIZATION, ACCESS, USED_BY, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
 	};
 
 	public TableBlock() {
@@ -69,7 +70,9 @@ public class TableBlock extends Table {
 				item.getItemProperty(TreeTableBlockProperties.ORGANIZATION).setValue(organization.getName());
 			}
 
-			User userOfForm = UiAccesser.getUserIfFormIsInUse(block);
+			item.getItemProperty(TreeTableBlockProperties.ACCESS).setValue(getFormPermissionsTag(block));
+
+			User userOfForm = UiAccesser.getUserUsingForm(block);
 			if (userOfForm != null) {
 				item.getItemProperty(TreeTableBlockProperties.USED_BY).setValue(userOfForm.getEmailAddress());
 			} else {
@@ -95,6 +98,22 @@ public class TableBlock extends Table {
 		}
 	}
 
+	/**
+	 * This function returns an string with read only if the form can't be
+	 * edited by the user
+	 * 
+	 * @param form
+	 * @return
+	 */
+	private String getFormPermissionsTag(Form form) {
+		String permissions = "";
+
+		if (WebformsAuthorizationService.getInstance().isFormReadOnly(form, UserSessionHandler.getUser())) {
+			permissions = LanguageCodes.CAPTION_READ_ONLY.translation();
+		}
+		return permissions;
+	}
+
 	private void initContainerProperties() {
 		setSelectable(true);
 		setImmediate(true);
@@ -107,6 +126,9 @@ public class TableBlock extends Table {
 
 		addContainerProperty(TreeTableBlockProperties.ORGANIZATION, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ORGANIZATION), null, Align.LEFT);
+
+		addContainerProperty(TreeTableBlockProperties.ACCESS, String.class, "",
+				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ACCESS), null, Align.CENTER);
 
 		addContainerProperty(TreeTableBlockProperties.USED_BY, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_USEDBY), null, Align.CENTER);

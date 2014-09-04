@@ -22,6 +22,7 @@ import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
+import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
@@ -58,6 +59,10 @@ public class Designer extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
+		if(!WebformsAuthorizationService.getInstance().isFormEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())){
+			MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
+		}
+		
 		setAsCentralPanel();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
@@ -164,8 +169,14 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				// TODO Auto-generated method stub
+				new WindowProceedAction(LanguageCodes.TEXT_PROCEED_FORM_CLOSE, new AcceptActionListener() {
 
+					@Override
+					public void acceptAction(WindowAcceptCancel window) {
+						UserSessionHandler.getController().finishForm();
+						ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
+					}
+				});
 			}
 		});
 		upperMenu.addNewCategoryButtonListener(new ClickListener() {
@@ -371,7 +382,7 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getDownButton().setEnabled(canEdit && !rowIsForm);
 			upperMenu.getValidateButton().setEnabled(false);
 			upperMenu.getValidateButton().setVisible(!formIsBlock);
-			upperMenu.getFinishButton().setEnabled(false);
+			upperMenu.getFinishButton().setEnabled(canEdit);
 			upperMenu.getFinishButton().setVisible(!formIsBlock);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

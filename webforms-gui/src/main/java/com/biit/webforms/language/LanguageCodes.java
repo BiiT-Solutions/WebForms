@@ -35,6 +35,12 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_ANSWER_TYPE_MULTI_SELECT("caption.answerType.multiSelect"),
 	CAPTION_ANSWER_TYPE_TEXT_AREA("caption.answer.type.text.area"),
 	
+	CAPTION_FORM_WORK_STATUS_DESIGN("caption.form.work.status.design"),
+	CAPTION_FORM_WORK_STATUS_FINAL_DESIGN("caption.form.work.status.final.design"),
+	CAPTION_FORM_WORK_STATUS_DEVELOPMENT("caption.form.work.status.development"),
+	CAPTION_FORM_WORK_STATUS_TEST("caption.form.work.status.test"),
+	CAPTION_FORM_WORK_STATUS_PRODUCTION("caption.form.work.status.production"),
+	
 	COMMON_TOOLTIP_SETTINGS("tooltip.settings"),
 	COMMON_TOOLTIP_FORM_MANAGER("tooltip.form.manager"),
 	COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER("tooltip.buildingBlock.manager"),
@@ -63,6 +69,7 @@ public enum LanguageCodes implements ILanguageCode{
 	//Manager
 	CAPTION_NEW_FORM("caption.new.form"),
 	CAPTION_NEW_FORM_VERSION("caption.new.form.version"),
+	CAPTION_READ_ONLY("caption.read.only"),
 	
 	TOOLTIP_NEW_FORM("tooltip.new.form"),
 	TOOLTIP_NEW_FORM_VERSION("tooltip.new.form.version"),
@@ -81,6 +88,9 @@ public enum LanguageCodes implements ILanguageCode{
 	FORM_TABLE_COLUMN_MODIFIEDBY("caption.form.table.modifiedBy"),
 	FORM_TABLE_COLUMN_MODIFICATIONDATE("caption.form.table.modificationDate"),
 	FORM_TABLE_COLUMN_ORGANIZATION("caption.form.table.organization"),
+	
+	WARNING_CAPTION_NOT_ALLOWED("warning.caption.not.allowed"),
+	WARNING_DESCRIPTION_NOT_ENOUGH_RIGHTS("warning.description.not.enough.rights"),
 
 	//BlockManager
 	CAPTION_NEW_BLOCK("caption.new.block"),
@@ -136,12 +146,17 @@ public enum LanguageCodes implements ILanguageCode{
 	ERROR_SYSTEM_FIELD_NOT_INSERTED("error.system.field.not.inserted"),
 	
 	INFO_MESSAGE_CAPTION("info.message.caption"),
-	INFO_MESSAGE_DESCRIPTION("info.message.description"), 
+	INFO_MESSAGE_DESCRIPTION("info.message.description"),
+	INFO_MESSAGE_FORM_IS_READ_ONLY("info.message.form.is.read.only"),
+	
+	TEXT_PROCEED_FORM_CLOSE("text.proceed.form.close"),
 	
 	WARNING_CAPTION_NOT_VALID("warning.caption.not.valid"), 
 	WARNING_DESCRIPTION_NOT_VALID("warning.description.not.valid"),
 	WARNING_CAPTION_SAME_ORIGIN("warning.caption.same.origin"), 
-	WARNING_DESCRIPTION_SAME_ORIGIN("warning.description.same.origin"),
+	WARNING_DESCRIPTION_SAME_ORIGIN("warning.description.same.origin"), 
+	WARNING_DESCRIPTION_NEW_VERSION_WHEN_DESIGN("warning.description.new.version.when.design"), 
+	
 	
 	
 	;

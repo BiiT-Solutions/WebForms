@@ -9,7 +9,9 @@ import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
+import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
@@ -23,6 +25,7 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Subcategory;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.enumerations.FormWorkStatus;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
@@ -69,7 +72,7 @@ public class ApplicationController {
 		}
 
 		// Check if database contains a form with the same name.
-		if (formDao.getForm(formName,organization) != null) {
+		if (formDao.getForm(formName, organization) != null) {
 			FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formName
 					+ " already exists");
 			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
@@ -106,7 +109,7 @@ public class ApplicationController {
 		}
 
 		// Check if database contains a form with the same name.
-		if (blockDao.getBlock(blockName,organization) != null) {
+		if (blockDao.getBlock(blockName, organization) != null) {
 			FormWithSameNameException ex = new FormWithSameNameException("Block with name: " + blockName
 					+ " already exists");
 			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
@@ -127,9 +130,17 @@ public class ApplicationController {
 		return newBlock;
 	}
 
-	public Form createNewFormVersion(Form form) throws NotValidTreeObjectException {
+	public Form createNewFormVersion(Form form) throws NotValidTreeObjectException,
+			NewVersionWithoutFinalDesignException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createNewFormVersion " + form + " START");
+
+		if (form.getStatus() == FormWorkStatus.DESIGN) {
+			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+					+ " createNewFormVersion " + form + " tried to create a new form version that is still in design");
+			throw new NewVersionWithoutFinalDesignException();
+		}
+
 		Form newFormVersion;
 		try {
 			newFormVersion = form.createNewVersion(getUser());
@@ -182,6 +193,14 @@ public class ApplicationController {
 	}
 
 	public void setFormInUse(Form form) {
+
+		if (formInUse != null) {
+			// Release current form if any.
+			UiAccesser.releaseForm(formInUse, user);
+		}
+		// Lock new form
+		UiAccesser.lockForm(form, user);
+
 		if (form instanceof Block) {
 			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " setFormInUse Block:" + form);
@@ -209,6 +228,7 @@ public class ApplicationController {
 	public void clearFormInUse() {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " clearFormInUse");
+		UiAccesser.releaseForm(formInUse, user);
 		formInUse = null;
 	}
 
@@ -438,6 +458,27 @@ public class ApplicationController {
 				+ " saveForm " + formInUse + " END");
 	}
 
+	public void saveForm(Form form) {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " saveForm " + form + " START");
+
+		form.setUpdatedBy(getUser());
+		form.setUpdateTime();
+		formDao.makePersistent(form);
+
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " saveForm " + form + " END");
+	}
+
+	public void finishForm() {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " finishForm " + formInUse + " START");
+		formInUse.setStatus(FormWorkStatus.FINAL_DESIGN);
+		saveForm(formInUse);
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " finishForm " + formInUse + " END");
+	}
+
 	public void saveAsBlock(TreeObject element, String blockName, Organization organization)
 			throws FieldTooLongException, FormWithSameNameException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
@@ -521,6 +562,14 @@ public class ApplicationController {
 
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " move "
 				+ origin + " to " + destiny + " END");
+	}
+
+	/**
+	 * This function is called when the ui has expired. The implementation needs
+	 * to free any "locked" resources
+	 */
+	public void freeLockedResources() {
+		clearFormInUse();
 	}
 
 }

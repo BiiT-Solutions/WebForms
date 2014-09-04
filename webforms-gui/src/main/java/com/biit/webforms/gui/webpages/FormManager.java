@@ -14,6 +14,7 @@ import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -140,6 +141,8 @@ public class FormManager extends SecuredWebPage {
 			addFormToTable(newForm);
 		} catch (NotValidTreeObjectException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
+		} catch (NewVersionWithoutFinalDesignException e) {
+			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED, LanguageCodes.WARNING_DESCRIPTION_NEW_VERSION_WHEN_DESIGN);
 		}
 	}
 

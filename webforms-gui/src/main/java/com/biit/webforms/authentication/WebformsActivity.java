@@ -34,6 +34,8 @@ public enum WebformsActivity implements IActivity {
 	XML_VALIDATOR_AGAINST_FORM("XmlValidatorAgainstForm"),
 
 	FORM_ANALYSIS("FormAnalysis"),
+	
+	ADMIN_RIGHTS("AdminRights"),
 	;
 
 	private String tag;

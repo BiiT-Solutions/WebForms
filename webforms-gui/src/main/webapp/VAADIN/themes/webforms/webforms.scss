@@ -556,10 +556,12 @@ $open-sans-pathPrefix: "./fonts/";
 		background-color: #f5f5f5;
 	}
 	
+	/* combobox enabled */
 	.v-filterselect-input, .v-window .v-filterselect-input, .v-popupview-popup .v-filterselect-input {
 		background-image: url(./transparent_center.png) !important;
+		background-color: white !important;
 	}
-	
+	/* combobox disabled*/
 	.v-disabled .v-filterselect-input {
 		background-color: #f5f5f5 !important;
 	}

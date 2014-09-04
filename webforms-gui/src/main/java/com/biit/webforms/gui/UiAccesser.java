@@ -2,12 +2,14 @@ package com.biit.webforms.gui;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.biit.webforms.authentication.ApplicationController;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.liferay.portal.model.User;
 
@@ -17,6 +19,8 @@ public class UiAccesser {
 	public interface BroadcastListener {
 		void receiveBroadcast(String message);
 	}
+	
+	private static HashMap<Form, User> formsInUse = new HashMap<Form, User>(); 
 
 	private static LinkedList<BroadcastListener> listeners = new LinkedList<BroadcastListener>();
 	private static List<ApplicationController> controllers = new ArrayList<ApplicationController>();
@@ -27,6 +31,7 @@ public class UiAccesser {
 
 	public static synchronized void unregister(ApplicationController controller) {
 		controllers.remove(controller);
+		controller.freeLockedResources();
 	}
 
 	public static synchronized void register(BroadcastListener listener) {
@@ -59,15 +64,30 @@ public class UiAccesser {
 		return formsInUseData;
 	}
 	
-	public static synchronized User getUserIfFormIsInUse(Form form) {
-		for (ApplicationController controller : controllers) {
-			User user = controller.getUser();
-			Form formInUse = controller.getFormInUse();
-			if (user != null && formInUse!=null && formInUse.equals(form)) {
-				return user;
-			}
-		}
-		return null;
+	public static synchronized boolean isUserUserUsingForm(User user, Form form){
+		return formsInUse.get(form)!=null && formsInUse.get(form).equals(user);
 	}
-
+	
+	public static synchronized User getUserUsingForm(Form form){
+		return formsInUse.get(form);
+	}
+	
+	public static synchronized void lockForm(Form form, User user){
+		if(form == null || user == null){
+			return;
+		}
+		
+		if(!formsInUse.containsKey(form)){
+			WebformsLogger.info(UiAccesser.class.getName(), "User '"+user.getEmailAddress()+"' has locked '"+form+"'");
+			formsInUse.put(form,user);
+		}
+	}
+	
+	public static synchronized void releaseForm(Form form, User user){
+		WebformsLogger.info(UiAccesser.class.getName(), "User '"+user.getEmailAddress()+"' has released '"+form+"'");
+		//If form is still locked and the user is who lock the form.
+		if(formsInUse.containsKey(form) && formsInUse.get(form).equals(user)){
+			formsInUse.remove(form);
+		}
+	}
 }

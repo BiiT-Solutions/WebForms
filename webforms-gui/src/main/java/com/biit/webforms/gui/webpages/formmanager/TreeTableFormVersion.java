@@ -17,12 +17,15 @@ import com.biit.webforms.gui.common.components.IconOnlyButton;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.DateManager;
 import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.EditInfoListener;
 import com.biit.webforms.gui.components.utils.RootForm;
+import com.biit.webforms.language.FormWorkStatusUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.enumerations.FormWorkStatus;
 import com.biit.webforms.theme.ThemeIcons;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
@@ -30,6 +33,8 @@ import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
 
 public class TreeTableFormVersion extends TreeTable {
@@ -79,6 +84,9 @@ public class TreeTableFormVersion extends TreeTable {
 		addContainerProperty(TreeTableFormVersionProperties.USED_BY, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_USEDBY), null, Align.CENTER);
 
+		addContainerProperty(TreeTableFormVersionProperties.STATUS, ComboBox.class, "",
+				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_STATUS), null, Align.CENTER);
+
 		addContainerProperty(TreeTableFormVersionProperties.CREATED_BY, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_CREATEDBY), null, Align.CENTER);
 
@@ -97,6 +105,7 @@ public class TreeTableFormVersion extends TreeTable {
 		setColumnCollapsible(TreeTableFormVersionProperties.ORGANIZATION, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.ACCESS, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.USED_BY, true);
+		setColumnCollapsible(TreeTableFormVersionProperties.STATUS, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.CREATED_BY, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.CREATION_DATE, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.MODIFIED_BY, true);
@@ -109,6 +118,7 @@ public class TreeTableFormVersion extends TreeTable {
 		setColumnExpandRatio(TreeTableFormVersionProperties.ORGANIZATION, 1f);
 		setColumnExpandRatio(TreeTableFormVersionProperties.ACCESS, 1);
 		setColumnExpandRatio(TreeTableFormVersionProperties.USED_BY, 1);
+		setColumnExpandRatio(TreeTableFormVersionProperties.STATUS, 1.2f);
 		setColumnExpandRatio(TreeTableFormVersionProperties.CREATED_BY, 1.2f);
 		setColumnExpandRatio(TreeTableFormVersionProperties.CREATION_DATE, 1);
 		setColumnExpandRatio(TreeTableFormVersionProperties.MODIFIED_BY, 1.2f);
@@ -137,12 +147,15 @@ public class TreeTableFormVersion extends TreeTable {
 
 			item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag(form));
 
-			User userOfForm = UiAccesser.getUserIfFormIsInUse(form);
+			User userOfForm = UiAccesser.getUserUsingForm(form);
 			if (userOfForm != null) {
 				item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue(userOfForm.getEmailAddress());
 			} else {
 				item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue("");
 			}
+
+			// Status
+			item.getItemProperty(TreeTableFormVersionProperties.STATUS).setValue(generateStatusComboBox(form));
 
 			try {
 				item.getItemProperty(TreeTableFormVersionProperties.CREATED_BY).setValue(
@@ -161,6 +174,55 @@ public class TreeTableFormVersion extends TreeTable {
 			item.getItemProperty(TreeTableFormVersionProperties.MODIFICATION_DATE).setValue(
 					(DateManager.convertDateToString(form.getUpdateTime())));
 		}
+	}
+
+	private Component generateStatusComboBox(final Form form) {
+		final ComboBox statusComboBox = new ComboBox();
+		statusComboBox.setNullSelectionAllowed(false);
+		for (FormWorkStatusUi formStatus : FormWorkStatusUi.values()) {
+			statusComboBox.addItem(formStatus.getFormWorkStatus());
+			statusComboBox.setItemCaption(formStatus.getFormWorkStatus(), formStatus.getLanguageCode().translation());
+		}
+		statusComboBox.setValue(form.getStatus());
+		statusComboBox.setWidth("100%");
+
+		// Status can change if you are not in DESIGN phase and can advance form
+		// status
+		boolean formIsNotDesign = form.getStatus() != FormWorkStatus.DESIGN;
+		boolean userCanUpgradeStatus = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+				UserSessionHandler.getUser(), form, WebformsActivity.FORM_STATUS_UPGRADE);
+		final boolean userCanDowngradeStatus = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+				UserSessionHandler.getUser(), form, WebformsActivity.FORM_STATUS_DOWNGRADE);
+		// Or if you have admin rights.
+		final boolean userIsAdmin = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+				UserSessionHandler.getUser(), form, WebformsActivity.ADMIN_RIGHTS);
+
+		statusComboBox.setEnabled((formIsNotDesign && userCanUpgradeStatus) || userIsAdmin);
+		statusComboBox.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = 6270860285995563296L;
+
+			@Override
+			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+				if (form.getStatus().equals(statusComboBox.getValue())) {
+					// Its the same status. Don't do anything.
+					return;
+				}
+				if (!form.getStatus().isMovingForward((FormWorkStatus) statusComboBox.getValue())) {
+					if (!(userCanDowngradeStatus || userIsAdmin)) {
+						// If you can't downgrade nor user is admin then, reset
+						// comboBox to previous value, throw a warning and exit.
+						statusComboBox.setValue(form.getStatus());
+						MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED,
+								LanguageCodes.WARNING_DESCRIPTION_NOT_ENOUGH_RIGHTS);
+						return;
+					}
+				}
+				form.setStatus((FormWorkStatus) statusComboBox.getValue());
+				UserSessionHandler.getController().saveForm(form);
+			}
+		});
+
+		return statusComboBox;
 	}
 
 	private IconOnlyButton createInfoButton(final Form form) {
@@ -270,7 +332,7 @@ public class TreeTableFormVersion extends TreeTable {
 		for (List<Form> formList : formData.values()) {
 			Collections.sort(formList, new FormVersionComparator());
 		}
-		
+
 		return formData;
 	}
 
@@ -339,12 +401,10 @@ public class TreeTableFormVersion extends TreeTable {
 	 */
 	private String getFormPermissionsTag(Form form) {
 		String permissions = "";
-		// TODO
-		// if (!AbcdAuthorizationService.getInstance().canEditForm(form,
-		// UserSessionHandler.getUser(),
-		// DActivity.FORM_EDITING)) {
-		// permissions = "read only";
-		// }
+
+		if (WebformsAuthorizationService.getInstance().isFormReadOnly(form, UserSessionHandler.getUser())) {
+			permissions = LanguageCodes.CAPTION_READ_ONLY.translation();
+		}
 		return permissions;
 	}
 
