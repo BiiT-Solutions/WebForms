@@ -220,7 +220,6 @@ public class FormManager extends SecuredWebPage {
 			boolean rowNotNullAndForm = rowNotNull && !rowInstanceOfRootForm;
 			boolean canCreateForms = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
 					UserSessionHandler.getUser(), WebformsActivity.FORM_EDITING);
-			System.out.println(canCreateForms);
 			boolean canCreateNewVersion = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
 					UserSessionHandler.getUser(), selectedForm, WebformsActivity.FORM_NEW_VERSION);
 

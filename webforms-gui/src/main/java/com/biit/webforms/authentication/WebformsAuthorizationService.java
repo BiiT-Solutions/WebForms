@@ -247,7 +247,6 @@ public class WebformsAuthorizationService extends AuthorizationService {
 
 	public boolean isFormReadOnly(Form form, User user) {
 		boolean formIsInUse = UiAccesser.getUserUsingForm(form)!=null;
-		System.out.println(!formIsInUse +" "+ !isAuthorizedToForm(form, user) +" "+ (formIsInUse && UiAccesser.getUserUsingForm(form)!=user));
 		return (!formIsInUse && !isAuthorizedToForm(form, user)) || (formIsInUse && UiAccesser.getUserUsingForm(form)!=user);
 	}
 
