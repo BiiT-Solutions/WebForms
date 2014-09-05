@@ -99,15 +99,30 @@ public class WebformsAuthorizationService extends AuthorizationService {
 	@Override
 	public List<IActivity> getRoleActivities(Role role) {
 		List<IActivity> activities = new ArrayList<IActivity>();
-		if (role.getName().toLowerCase().equals("webforms_manage-building_blocks")) {
-			return buildingBlockManagerPermissions;
-		} else if (role.getName().toLowerCase().equals("webforms_manage-forms")) {
-			return formManagerPermissions;
-		} else if (role.getName().toLowerCase().equals("webforms_read-only")) {
-			return readOnlyPermissions;
-		} else if (role.getName().toLowerCase().equals("webforms_manage-forms_administration")) {
-			return formAdministratorPermissions;
+		System.out.println(role.getName());
+		WebformsRoles webFormRole = WebformsRoles.parseTag(role.getName());
+		switch (webFormRole) {
+		case ADMIN:
+			activities.addAll(formAdministratorPermissions);
+			activities.addAll(buildingBlockManagerPermissions);
+			activities.addAll(formManagerPermissions);
+			activities.addAll(readOnlyPermissions);
+			break;
+		case BLOCK_EDIT:
+			activities.addAll(buildingBlockManagerPermissions);
+			activities.addAll(readOnlyPermissions);
+			break;
+		case FORM_EDIT:
+			activities.addAll(formManagerPermissions);
+			activities.addAll(readOnlyPermissions);
+			break;
+		case READ:
+			activities.addAll(readOnlyPermissions);
+			break;
+		case NULL:
+			break;
 		}
+		System.out.println(activities);
 		return activities;
 	}
 

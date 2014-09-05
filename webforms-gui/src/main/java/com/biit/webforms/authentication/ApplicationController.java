@@ -231,10 +231,11 @@ public class ApplicationController {
 	}
 
 	public void clearFormInUse() {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " clearFormInUse");
-
-		UiAccesser.releaseForm(formInUse, user);
-		formInUse = null;
+		if(formInUse != null){
+			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " clearFormInUse");
+			UiAccesser.releaseForm(formInUse, user);
+			formInUse = null;
+		}
 	}
 
 	/**

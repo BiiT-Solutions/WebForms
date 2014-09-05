@@ -127,7 +127,6 @@ public class Login extends WebPageComponent {
 			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
 					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE);
 		} catch (IOException | WebServiceAccessError | NotConnectedToWebServiceException e) {
-			e.printStackTrace();
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
 					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
