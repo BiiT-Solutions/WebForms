@@ -99,7 +99,6 @@ public class WebformsAuthorizationService extends AuthorizationService {
 	@Override
 	public List<IActivity> getRoleActivities(Role role) {
 		List<IActivity> activities = new ArrayList<IActivity>();
-		System.out.println(role.getName());
 		WebformsRoles webFormRole = WebformsRoles.parseTag(role.getName());
 		switch (webFormRole) {
 		case ADMIN:
@@ -122,7 +121,6 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		case NULL:
 			break;
 		}
-		System.out.println(activities);
 		return activities;
 	}
 

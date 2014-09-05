@@ -3,6 +3,7 @@ package com.biit.webforms.gui;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.logger.WebformsLogger;
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -10,7 +11,15 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
+/**
+ * Main Ui class of application. Ui has been configured to preserve the Ui when
+ * a Refresh action has occurred. This way, a UI is only discarded when the user
+ * is no longer active in a long time, instead of every time there is a refresh
+ * event.
+ * 
+ */
 @Theme("webforms")
+@PreserveOnRefresh
 public class ApplicationUi extends UI {
 	private static final long serialVersionUID = -704009283476930001L;
 	private Navigator navigator;
@@ -26,7 +35,7 @@ public class ApplicationUi extends UI {
 	@Override
 	public void detach() {
 		if (UserSessionHandler.getUser() != null) {
-			//Log user ui expired.
+			// Log user ui expired.
 			WebformsLogger.info(this.getClass().getName(), UserSessionHandler.getUser().getEmailAddress()
 					+ " Ui has expired.");
 		}

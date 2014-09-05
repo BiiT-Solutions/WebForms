@@ -42,20 +42,24 @@ public class TreeObjectTable extends TreeTable {
 	}
 
 	/**
-	 * Loads a tree object structure recursively. Only selects the first element.
+	 * Loads a tree object structure recursively. Only selects the first
+	 * element.
+	 * 
 	 * @param element
 	 * @param parent
 	 */
 	public void loadTreeObject(TreeObject element, TreeObject parent) {
 		loadTreeObject(element, parent, true);
 	}
-	
-	public void loadTreeObject(TreeObject element, TreeObject parent, boolean select) {
-		addRow(element, parent,select);
 
-		List<TreeObject> children = element.getChildren();
-		for (TreeObject child : children) {
-			loadTreeObject(child, element,false);
+	public void loadTreeObject(TreeObject element, TreeObject parent, boolean select) {
+		if (element != null) {
+			addRow(element, parent, select);
+
+			List<TreeObject> children = element.getChildren();
+			for (TreeObject child : children) {
+				loadTreeObject(child, element, false);
+			}
 		}
 	}
 
