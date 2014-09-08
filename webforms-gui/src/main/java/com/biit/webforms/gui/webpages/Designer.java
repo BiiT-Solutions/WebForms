@@ -64,7 +64,7 @@ public class Designer extends SecuredWebPage {
 			MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 		
-		setAsCentralPanel();
+		setCentralPanelAsWorkingArea();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
 

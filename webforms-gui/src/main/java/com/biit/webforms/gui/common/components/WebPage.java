@@ -7,8 +7,16 @@ import com.vaadin.ui.VerticalLayout;
 
 public abstract class WebPage extends WebPageComponent {
 	private static final long serialVersionUID = 5807470662051568616L;
+
 	private AbstractOrderedLayout workingArea;
+
 	private UpperMenu upperMenu;
+	private Panel centralPanel;
+	private BottomMenu bottomMenu;
+
+	private enum WebPageElements {
+		UPPER_MENU, CENTRAL_AREA, BOTTOM_MENU
+	};
 
 	public WebPage() {
 		setRootLayout(new VerticalLayout());
@@ -18,29 +26,80 @@ public abstract class WebPage extends WebPageComponent {
 		setSizeFull();
 	}
 
-	public void setAsCentralPanel() {
-		Panel mainPanel = new Panel();
-		getRootLayout().addComponent(mainPanel);
-		getRootLayout().setComponentAlignment(mainPanel, Alignment.MIDDLE_CENTER);
-		getRootLayout().setExpandRatio(mainPanel, 1.0f);
-		mainPanel.setSizeFull();
+	public void setCentralPanelAsWorkingArea() {
+		centralPanel = new Panel();
+		getRootLayout().addComponent(centralPanel, calculateElementPosition(WebPageElements.CENTRAL_AREA));
+		getRootLayout().setComponentAlignment(centralPanel, Alignment.MIDDLE_CENTER);
+		getRootLayout().setExpandRatio(centralPanel, 1.0f);
+		centralPanel.setSizeFull();
 
 		workingArea = new VerticalLayout();
 		workingArea.setMargin(false);
 		workingArea.setSpacing(false);
 		workingArea.setSizeFull();
 
-		mainPanel.setContent(workingArea);
-		mainPanel.setSizeFull();
+		centralPanel.setContent(workingArea);
+		centralPanel.setSizeFull();
 	}
 
 	public void setUpperMenu(UpperMenu upperMenu) {
-		if (this.upperMenu != null) {
-			this.getRootLayout().removeComponent(this.upperMenu);
+		clearUpperMenu();
+		if (upperMenu != null) {
+			this.upperMenu = upperMenu;
+			this.getRootLayout().addComponent(upperMenu, 0);
+			getRootLayout().setComponentAlignment(upperMenu, Alignment.TOP_CENTER);
 		}
-		this.upperMenu = upperMenu;
-		this.getRootLayout().addComponent(upperMenu, 0);
-		getRootLayout().setComponentAlignment(upperMenu, Alignment.BOTTOM_CENTER);
+	}
+
+	public void setBottomMenu(BottomMenu bottonMenu) {
+		clearBottomMenu();
+		if (bottonMenu != null) {
+			this.bottomMenu = bottonMenu;
+			this.getRootLayout().addComponent(bottomMenu);
+			getRootLayout().setComponentAlignment(bottomMenu, Alignment.BOTTOM_CENTER);
+		}
+	}
+	
+	protected int calculateElementPosition(WebPageElements element){
+		int position =0;
+		switch (element) {
+		case UPPER_MENU:
+			return 0;
+		case CENTRAL_AREA:
+			if(upperMenu!=null){
+				position++;
+			}
+			return position;
+		case BOTTOM_MENU:
+			if(upperMenu!=null){
+				position++;
+			}
+			if(centralPanel!=null){
+				position++;
+			}
+			return position;
+		}
+		return position;
+	}
+
+	/**
+	 * Removes upper menu from visualization and data.
+	 */
+	public void clearUpperMenu() {
+		if (upperMenu != null) {
+			this.getRootLayout().removeComponent(upperMenu);
+			upperMenu = null;
+		}
+	}
+
+	/**
+	 * Removes bottom menu from visualization and data.
+	 */
+	public void clearBottomMenu() {
+		if (bottomMenu != null) {
+			this.getRootLayout().removeComponent(bottomMenu);
+			bottomMenu = null;
+		}
 	}
 
 	/**

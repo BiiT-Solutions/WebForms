@@ -21,7 +21,7 @@ public class FlowEditor extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
-		setAsCentralPanel();
+		setCentralPanelAsWorkingArea();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
 		// TODO terminar

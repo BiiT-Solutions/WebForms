@@ -40,7 +40,7 @@ public class BlockManager extends SecuredWebPage {
 	protected void initContent() {
 		UserSessionHandler.getController().clearFormInUse();
 
-		setAsCentralPanel();
+		setCentralPanelAsWorkingArea();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
 
