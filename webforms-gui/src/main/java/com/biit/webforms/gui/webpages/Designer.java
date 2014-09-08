@@ -27,12 +27,12 @@ import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.WindowNameGroup;
+import com.biit.webforms.gui.components.WindowTreeObject;
 import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
 import com.biit.webforms.gui.webpages.designer.TreeObjectTableDesigner;
 import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.designer.WindowBlocks;
-import com.biit.webforms.gui.webpages.designer.WindowMoveTreeObject;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
@@ -448,7 +448,7 @@ public class Designer extends SecuredWebPage {
 	 * Opens move element window.
 	 */
 	protected void openMoveWindow() {
-		final WindowMoveTreeObject moveWindow = new WindowMoveTreeObject(LanguageCodes.CAPTION_WINDOW_MOVE,
+		final WindowTreeObject moveWindow = new WindowTreeObject(LanguageCodes.CAPTION_WINDOW_MOVE,
 				getCurrentForm());
 		moveWindow.showCentered();
 		moveWindow.addAcceptActionListener(new AcceptActionListener() {

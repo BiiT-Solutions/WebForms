@@ -168,7 +168,23 @@ public enum LanguageCodes implements ILanguageCode{
 	WARNING_CAPTION_SAME_ORIGIN("warning.caption.same.origin"), 
 	WARNING_DESCRIPTION_SAME_ORIGIN("warning.description.same.origin"), 
 	WARNING_DESCRIPTION_NEW_VERSION_WHEN_DESIGN("warning.description.new.version.when.design"),
-	WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY("warning.description.origin.included.in.destiny"),	
+	WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY("warning.description.origin.included.in.destiny"), 
+	
+	//Flow
+	TABLE_RULE_TITLE_ORIGIN("table.rule.title.origin"),
+	TABLE_RULE_TITLE_DESTINY("table.rule.title.destiny"),
+	TABLE_RULE_TITLE_CONDITION("table.rule.title.condition"), 
+	
+	CAPTION_NEW_RULE("caption.new.rule"), 
+	CAPTION_SEARCH_ORIGIN("caption.search.origin"),
+	CAPTION_WINDOW_SELECT_FORM_ELEMENT("caption.window.select.form.element"),
+	
+	TOOLTIP_NEW_RULE("tooltip.new.rule"), 
+	TOOLTIP_SEARCH_ORIGIN("tooltip.search.origin"), 
+	
+	
+	WARNING_CAPTION_RULE_ORIGIN_INVALID("warning.caption.rule.origin.invalid"),
+	WARNING_DESCRIPTION_RULE_ORIGIN_CAN_ONLY_BE_QUESTIONS("warning.description.rule.origin.can.only.be.questions"), 	
 	
 	;
 

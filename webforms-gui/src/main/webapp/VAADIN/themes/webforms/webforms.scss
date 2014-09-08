@@ -773,5 +773,12 @@ $open-sans-pathPrefix: "./fonts/";
 		padding: 0px;
 		display: inline-flex;
 	}
-	
+
+	/* RichTextArea */
+	.richTextArea-noControls .gwt-RichTextToolbar {
+		display: none;
+	}
+	.richTextArea-noControls .gwt-RichTextArea {
+		height: 100% !important;
+	}
 }

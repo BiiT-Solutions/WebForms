@@ -10,12 +10,15 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuFlowEditor extends UpperMenuWebforms {
 	private static final long serialVersionUID = 4521719649478606926L;
 	
-	private IconButton saveButton, validateButton, finishButton;
+	private IconButton saveButton, newRuleButton, validateButton, finishButton;
 
 	public UpperMenuFlowEditor() {
 
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
 				LanguageCodes.COMMON_TOOLTIP_SAVE, IconSize.BIG);
+		
+		newRuleButton = new IconButton(LanguageCodes.CAPTION_NEW_RULE, ThemeIcons.NEW_RULE,
+				LanguageCodes.TOOLTIP_NEW_RULE, IconSize.BIG);
 
 		validateButton = new IconButton(LanguageCodes.COMMON_CAPTION_VALIDATE, ThemeIcons.FORM_VALIDATE,
 				LanguageCodes.COMMON_TOOLTIP_VALIDATE, IconSize.BIG);
@@ -24,6 +27,7 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 
 		addIconButton(saveButton);
+		addIconButton(newRuleButton);
 		addIconButton(validateButton);
 		addIconButton(finishButton);
 	}
@@ -38,5 +42,9 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 
 	public void addFinishButtonListener(ClickListener listener) {
 		finishButton.addClickListener(listener);
+	}
+	
+	public void addNewRuleButtonListener(ClickListener listener){
+		newRuleButton.addClickListener(listener);
 	}
 }

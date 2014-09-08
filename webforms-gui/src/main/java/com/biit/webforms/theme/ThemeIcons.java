@@ -49,8 +49,15 @@ public enum ThemeIcons implements IThemeIcon{
 	
 	EDIT_FORM_DESIGN("page.form.edit.svg"),
 	EDIT_FORM_FLOW("page.flow.editor.svg"),
-	VALIDATE_FORM("alert.svg"),
-	IMPACT_ANALISYS("alert.svg"),
+	VALIDATE_FORM("alert.svg"), //TODO
+	IMPACT_ANALISYS("alert.svg"),//TODO
+	
+	ALERT("alert.svg"), 
+	
+	NEW_RULE("alert.svg"),//TODO 
+	
+	SEARCH("search.svg"),
+	
 		
 	;
 	
