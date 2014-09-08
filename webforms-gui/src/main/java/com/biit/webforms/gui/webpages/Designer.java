@@ -41,7 +41,6 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.Subcategory;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -61,10 +60,11 @@ public class Designer extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
-		if(!WebformsAuthorizationService.getInstance().isFormEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())){
+		if (!WebformsAuthorizationService.getInstance().isFormEditable(
+				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
 			MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
-		
+
 		setCentralPanelAsWorkingArea();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
@@ -181,21 +181,6 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				Category newCategory = UserSessionHandler.getController().addNewCategory();
 				table.addRow(newCategory, newCategory.getParent());
-			}
-		});
-		upperMenu.addNewSubCategoryButtonListener(new ClickListener() {
-			private static final long serialVersionUID = 9107418811326944058L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				try {
-					TreeObject selectedRow = table.getSelectedRow();
-					Subcategory newSubcategory = UserSessionHandler.getController().addNewSubcategory(
-							selectedRow.getAncestorThatAccepts(Subcategory.class));
-					table.addRow(newSubcategory, newSubcategory.getParent());
-				} catch (NotValidChildException e) {
-					MessageManager.showError(LanguageCodes.ERROR_SUBCATEGORY_NOT_INSERTED);
-				}
 			}
 		});
 		upperMenu.addNewGroupButtonListener(new ClickListener() {
@@ -365,7 +350,6 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getInsertBlockButton().setEnabled(canEdit);
 			upperMenu.getInsertBlockButton().setVisible(!formIsBlock);
 			upperMenu.getNewCategoryButton().setEnabled(canEdit && (formIsBlockAndNoCategories || (!formIsBlock)));
-			upperMenu.getNewSubcategoryButton().setEnabled(canEdit && selectedRowHierarchyAllows(Subcategory.class));
 			upperMenu.getNewGroupButton().setEnabled(canEdit && selectedRowHierarchyAllows(Group.class));
 			upperMenu.getNewQuestionButton().setEnabled(canEdit && selectedRowHierarchyAllows(Question.class));
 			upperMenu.getNewSystemFieldButton().setEnabled(canEdit && selectedRowHierarchyAllows(SystemField.class));
@@ -386,7 +370,6 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getSaveAsBlockButton().setEnabled(false);
 			upperMenu.getInsertBlockButton().setEnabled(false);
 			upperMenu.getNewCategoryButton().setEnabled(false);
-			upperMenu.getNewSubcategoryButton().setEnabled(false);
 			upperMenu.getNewGroupButton().setEnabled(false);
 			upperMenu.getNewQuestionButton().setEnabled(false);
 			upperMenu.getNewSystemFieldButton().setEnabled(false);

@@ -5,7 +5,6 @@ import com.biit.form.BaseCategory;
 import com.biit.form.BaseForm;
 import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
-import com.biit.form.BaseRepeatableGroup;
 import com.biit.webforms.gui.common.components.TreeObjectTable.TreeObjectTableProperties;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
@@ -26,9 +25,6 @@ public class TreeObjectTableCellStyleGenerator implements CellStyleGenerator {
 			}
 			if (itemId instanceof BaseCategory) {
 				return "tree-cell-category";
-			}
-			if (itemId instanceof BaseRepeatableGroup) {
-				return "tree-cell-group-repeatable";
 			}
 			if (itemId instanceof BaseGroup) {
 				return "tree-cell-group";

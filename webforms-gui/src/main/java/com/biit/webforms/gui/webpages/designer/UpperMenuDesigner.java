@@ -11,7 +11,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	private static final long serialVersionUID = -368255188051163986L;
 
-	private IconButton saveButton, saveAsBlockButton, insertBlockButton, validateButton, finishButton, newCategoryButton, newSubcategoryButton,
+	private IconButton saveButton, saveAsBlockButton, insertBlockButton, validateButton, finishButton, newCategoryButton,
 			newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, moveButton, deleteButton, upButton, downButton;
 
 	public UpperMenuDesigner() {
@@ -33,8 +33,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 		newCategoryButton = new IconButton(LanguageCodes.CAPTION_NEW_CATEGORY, ThemeIcons.DESIGNER_NEW_CATEGORY,
 				LanguageCodes.TOOLTIP_NEW_CATEGORY);
-		newSubcategoryButton = new IconButton(LanguageCodes.CAPTION_NEW_SUBCATEGORY,
-				ThemeIcons.DESIGNER_NEW_SUBCATEGORY, LanguageCodes.TOOLTIP_NEW_SUBCATEGORY);
 		newGroupButton = new IconButton(LanguageCodes.CAPTION_NEW_GROUP, ThemeIcons.DESIGNER_NEW_GROUP,
 				LanguageCodes.TOOLTIP_NEW_GROUP);
 		newQuestionButton = new IconButton(LanguageCodes.CAPTION_NEW_QUESTION, ThemeIcons.DESIGNER_NEW_QUESTION,
@@ -58,7 +56,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(saveAsBlockButton);
 		addIconButton(insertBlockButton);
 		addIconButton(newCategoryButton);
-		addIconButton(newSubcategoryButton);
 		addIconButton(newGroupButton);
 		addIconButton(newQuestionButton);
 		addIconButton(newAnswerButton);
@@ -94,10 +91,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	
 	public void addNewCategoryButtonListener(ClickListener listener){
 		newCategoryButton.addClickListener(listener);
-	}
-	
-	public void addNewSubCategoryButtonListener(ClickListener listener){
-		newSubcategoryButton.addClickListener(listener);
 	}
 	
 	public void addNewGroupButtonListener(ClickListener listener){
@@ -158,10 +151,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public IconButton getNewCategoryButton() {
 		return newCategoryButton;
-	}
-
-	public IconButton getNewSubcategoryButton() {
-		return newSubcategoryButton;
 	}
 
 	public IconButton getNewGroupButton() {
