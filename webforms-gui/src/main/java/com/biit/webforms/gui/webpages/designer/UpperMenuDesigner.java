@@ -11,7 +11,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	private static final long serialVersionUID = -368255188051163986L;
 
-	private IconButton saveButton, saveAsBlockButton, insertBlockButton, flowButton, validateButton, finishButton, newCategoryButton, newSubcategoryButton,
+	private IconButton saveButton, saveAsBlockButton, insertBlockButton, validateButton, finishButton, newCategoryButton, newSubcategoryButton,
 			newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, moveButton, deleteButton, upButton, downButton;
 
 	public UpperMenuDesigner() {
@@ -24,9 +24,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		
 		insertBlockButton = new IconButton(LanguageCodes.COMMON_CAPTION_INSERT_BLOCK, ThemeIcons.BUILDING_BLOCK_ADD,
 				LanguageCodes.COMMON_TOOLTIP_INSERT_BLOCK, IconSize.BIG);
-
-		flowButton = new IconButton(LanguageCodes.COMMON_CAPTION_FLOW, ThemeIcons.PAGE_FORM_FLOW_EDITOR,
-				LanguageCodes.COMMON_TOOLTIP_FLOW, IconSize.BIG);
 
 		validateButton = new IconButton(LanguageCodes.COMMON_CAPTION_VALIDATE, ThemeIcons.FORM_VALIDATE,
 				LanguageCodes.COMMON_TOOLTIP_VALIDATE, IconSize.BIG);
@@ -60,7 +57,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(saveButton);
 		addIconButton(saveAsBlockButton);
 		addIconButton(insertBlockButton);
-		addIconButton(flowButton);
 		addIconButton(newCategoryButton);
 		addIconButton(newSubcategoryButton);
 		addIconButton(newGroupButton);
@@ -86,10 +82,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	
 	public void addInsertBlockButtonListener(ClickListener listener) {
 		insertBlockButton.addClickListener(listener);
-	}
-
-	public void addFlowButtonListener(ClickListener listener) {
-		flowButton.addClickListener(listener);
 	}
 
 	public void addValidateButtonListener(ClickListener listener) {
@@ -154,10 +146,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	
 	public IconButton getInsertBlockButton(){
 		return insertBlockButton;
-	}
-
-	public IconButton getFlowButton() {
-		return flowButton;
 	}
 
 	public IconButton getValidateButton() {

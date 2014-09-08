@@ -215,9 +215,13 @@ $open-sans-pathPrefix: "./fonts/";
   	.v-horizontal-button-group {
 		background-color: white;
 	}
+	
+	.v-horizontal-button-group .v-disabled.v-button .v-button-wrap{
+		height: initial;
+	}
   
   	.v-horizontal-button-group .v-button-wrap {
-		height: inherit;
+		height: initial;
 	}
   	.v-horizontal-button-group .v-icon {
 		margin-left: auto;

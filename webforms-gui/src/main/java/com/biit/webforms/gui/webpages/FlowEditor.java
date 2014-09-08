@@ -6,16 +6,17 @@ import java.util.List;
 
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.WebformsActivity;
-import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.UpperMenu;
+import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.webpages.floweditor.UpperMenuFlowEditor;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 public class FlowEditor extends SecuredWebPage {
 	private static final long serialVersionUID = -6257723403353946354L;
-	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(Arrays.asList(WebformsActivity.READ));
+	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
+			Arrays.asList(WebformsActivity.READ));
 
 	private UpperMenu upperMenu;
 
@@ -24,6 +25,7 @@ public class FlowEditor extends SecuredWebPage {
 		setCentralPanelAsWorkingArea();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
+		setBottomMenu(new FormEditBottomMenu());
 		// TODO terminar
 	}
 
@@ -41,14 +43,6 @@ public class FlowEditor extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 
-			}
-		});
-		upperMenu.addDesignButtonListener(new ClickListener() {
-			private static final long serialVersionUID = -3161251470765214230L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				ApplicationUi.navigateTo(WebMap.DESIGNER_EDITOR);
 			}
 		});
 		upperMenu.addValidateButtonListener(new ClickListener() {

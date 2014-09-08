@@ -45,7 +45,12 @@ public enum ThemeIcons implements IThemeIcon{
 	DESIGNER_NEW_ANSWER("form.answer.add.svg"),
 	DESIGNER_MOVE("element.move.svg"),
 	
-	EXPORT_FORM_TO_PDF("file.pdf.svg"),
+	EXPORT_FORM_TO_PDF("file.pdf.svg"), 
+	
+	EDIT_FORM_DESIGN("page.form.edit.svg"),
+	EDIT_FORM_FLOW("page.flow.editor.svg"),
+	VALIDATE_FORM("alert.svg"),
+	IMPACT_ANALISYS("alert.svg"),
 		
 	;
 	

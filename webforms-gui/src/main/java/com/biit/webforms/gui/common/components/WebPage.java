@@ -51,10 +51,10 @@ public abstract class WebPage extends WebPageComponent {
 		}
 	}
 
-	public void setBottomMenu(BottomMenu bottonMenu) {
+	public void setBottomMenu(BottomMenu bottomMenu) {
 		clearBottomMenu();
-		if (bottonMenu != null) {
-			this.bottomMenu = bottonMenu;
+		if (bottomMenu != null) {
+			this.bottomMenu = bottomMenu;
 			this.getRootLayout().addComponent(bottomMenu);
 			getRootLayout().setComponentAlignment(bottomMenu, Alignment.BOTTOM_CENTER);
 		}

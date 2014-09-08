@@ -12,11 +12,12 @@ import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
-import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.components.FormEditBottomMenu;
+import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.webpages.blockmanager.TableBlock;
 import com.biit.webforms.gui.webpages.blockmanager.UpperMenuBlockManager;
@@ -34,6 +35,7 @@ public class BlockManager extends SecuredWebPage {
 			Arrays.asList(WebformsActivity.READ));
 
 	private UpperMenuBlockManager upperMenu;
+	private FormEditBottomMenu bottomMenu;
 	private TableBlock blockTable;
 
 	@Override
@@ -42,7 +44,10 @@ public class BlockManager extends SecuredWebPage {
 
 		setCentralPanelAsWorkingArea();
 		upperMenu = createUpperMenu();
+		bottomMenu = createBottomMenu();
+		
 		setUpperMenu(upperMenu);
+		setBottomMenu(bottomMenu);
 
 		blockTable = new TableBlock();
 		blockTable.setSizeFull();
@@ -51,16 +56,16 @@ public class BlockManager extends SecuredWebPage {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				updateUpperMenu();
+				updateMenus();
 			}
 		});
 		// If it was already null
-		updateUpperMenu();
+		updateMenus();
 
 		getWorkingArea().addComponent(blockTable);
 	}
 
-	protected void updateUpperMenu() {
+	protected void updateMenus() {
 		try {
 			Block block = getSelectedBlock();
 
@@ -69,17 +74,33 @@ public class BlockManager extends SecuredWebPage {
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_EDITING);
 
 			upperMenu.getNewBlock().setEnabled(canCreateBlocks);
-			upperMenu.getEditDesign().setEnabled(blockNotNull);
-			upperMenu.getEditFlow().setEnabled(blockNotNull);
+
+			// Bottom menu
+			bottomMenu.getEditFormButton().setEnabled(blockNotNull);
+			bottomMenu.getEditFlowButton().setEnabled(blockNotNull);
 
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			// failsafe, disable everything.
 			upperMenu.getNewBlock().setEnabled(false);
-			upperMenu.getEditDesign().setEnabled(false);
-			upperMenu.getEditFlow().setEnabled(false);
+
+			// Bottom menu
+			bottomMenu.getEditFormButton().setEnabled(false);
+			bottomMenu.getEditFlowButton().setEnabled(false);
 		}
+	}
+
+	private FormEditBottomMenu createBottomMenu() {
+		FormEditBottomMenu bottomMenu = new FormEditBottomMenu();
+		bottomMenu.addLockFormListener(new LockFormListener() {
+
+			@Override
+			public void lockForm() {
+				UserSessionHandler.getController().setFormInUse(getSelectedBlock());
+			}
+		});
+		return bottomMenu;
 	}
 
 	@Override
@@ -97,25 +118,6 @@ public class BlockManager extends SecuredWebPage {
 				openNewBlockWindow();
 			}
 		});
-		upperMenu.addEditDesignListener(new ClickListener() {
-			private static final long serialVersionUID = -3282383387800296295L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				UserSessionHandler.getController().setFormInUse(getSelectedBlock());
-				ApplicationUi.navigateTo(WebMap.DESIGNER_EDITOR);
-			}
-		});
-		upperMenu.addEditFlowListener(new ClickListener() {
-			private static final long serialVersionUID = -7568233796456454868L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				UserSessionHandler.getController().setFormInUse(getSelectedBlock());
-				ApplicationUi.navigateTo(WebMap.FLOW_EDITOR);
-			}
-		});
-
 		return upperMenu;
 	}
 

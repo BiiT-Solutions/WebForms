@@ -19,7 +19,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private IconButton newForm, newFormVersion, editDesign, editFlow, exportPdf;
+	private IconButton newForm, newFormVersion, exportPdf;
 	private FileDownloader formPdfdownloader;
 	private StreamResource formPdfstreamResource;
 
@@ -30,17 +30,11 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_NEW_FORM, IconSize.BIG);
 		newFormVersion = new IconButton(LanguageCodes.CAPTION_NEW_FORM_VERSION, ThemeIcons.FORM_MANAGER_NEW_VERSION,
 				LanguageCodes.TOOLTIP_NEW_FORM_VERSION, IconSize.BIG);
-		editDesign = new IconButton(LanguageCodes.COMMON_CAPTION_DESIGN, ThemeIcons.PAGE_FORM_EDITOR,
-				LanguageCodes.COMMON_TOOLTIP_DESIGN, IconSize.BIG);
-		editFlow = new IconButton(LanguageCodes.COMMON_CAPTION_FLOW, ThemeIcons.PAGE_FORM_FLOW_EDITOR,
-				LanguageCodes.COMMON_TOOLTIP_FLOW, IconSize.BIG);
 		exportPdf = new IconButton(LanguageCodes.COMMON_CAPTION_EXPORT_TO_PDF, ThemeIcons.EXPORT_FORM_TO_PDF,
 				LanguageCodes.COMMON_TOOLTIP_EXPORT_TO_PDF, IconSize.BIG);
 
 		addIconButton(newForm);
 		addIconButton(newFormVersion);
-		addIconButton(editDesign);
-		addIconButton(editFlow);
 		addIconButton(exportPdf);
 
 		// Add download functionality to button
@@ -57,14 +51,6 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		newFormVersion.addClickListener(listener);
 	}
 
-	public void addEditDesignListener(ClickListener listener) {
-		editDesign.addClickListener(listener);
-	}
-
-	public void addEditFlowListener(ClickListener listener) {
-		editFlow.addClickListener(listener);
-	}
-
 	public void addExportPdf(ClickListener listener) {
 		exportPdf.addClickListener(listener);
 	}
@@ -75,14 +61,6 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public IconButton getNewFormVersion() {
 		return newFormVersion;
-	}
-
-	public IconButton getEditDesign() {
-		return editDesign;
-	}
-
-	public IconButton getEditFlow() {
-		return editFlow;
 	}
 
 	public IconButton getExportPdf() {

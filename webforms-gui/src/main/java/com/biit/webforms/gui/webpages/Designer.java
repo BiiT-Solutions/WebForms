@@ -25,6 +25,7 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
@@ -67,6 +68,7 @@ public class Designer extends SecuredWebPage {
 		setCentralPanelAsWorkingArea();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
+		setBottomMenu(new FormEditBottomMenu());
 
 		table = new TreeObjectTableDesigner();
 		table.setIconProvider(new IconProviderTreeObjectWebforms());
@@ -146,14 +148,6 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				openInsertBlock();
-			}
-		});
-		upperMenu.addFlowButtonListener(new ClickListener() {
-			private static final long serialVersionUID = -3161251470765214230L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				ApplicationUi.navigateTo(WebMap.FLOW_EDITOR);
 			}
 		});
 		upperMenu.addValidateButtonListener(new ClickListener() {

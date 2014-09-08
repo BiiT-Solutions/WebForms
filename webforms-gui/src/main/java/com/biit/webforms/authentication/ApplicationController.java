@@ -194,7 +194,6 @@ public class ApplicationController {
 	}
 
 	public void setFormInUse(Form form) {
-
 		if (formInUse != null) {
 			// Release current form if any.
 			UiAccesser.releaseForm(formInUse, user);
