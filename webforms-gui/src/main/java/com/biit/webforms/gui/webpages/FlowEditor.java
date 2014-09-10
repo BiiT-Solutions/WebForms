@@ -5,14 +5,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.biit.liferay.security.IActivity;
+import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.UpperMenu;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
+import com.biit.webforms.gui.webpages.floweditor.EditItemAction;
 import com.biit.webforms.gui.webpages.floweditor.TableRules;
-import com.biit.webforms.gui.webpages.floweditor.WindowNewRule;
 import com.biit.webforms.gui.webpages.floweditor.TableRules.NewItemAction;
 import com.biit.webforms.gui.webpages.floweditor.UpperMenuFlowEditor;
+import com.biit.webforms.gui.webpages.floweditor.WindowNewRule;
+import com.biit.webforms.persistence.entity.Rule;
 import com.biit.webforms.theme.ThemeIcons;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -26,6 +31,7 @@ public class FlowEditor extends SecuredWebPage {
 			Arrays.asList(WebformsActivity.READ));
 
 	private UpperMenu upperMenu;
+	private TableRules tableRules;
 
 	@Override
 	protected void initContent() {
@@ -48,13 +54,20 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private Component createLeftComponent() {
-		TableRules tableRules = new TableRules();
+		tableRules = new TableRules();
 		tableRules.setSizeFull();
 		tableRules.addNewItemActionListener(new NewItemAction() {
 
 			@Override
 			public void newItemAction() {
 				addNewRuleAction();
+			}
+		});
+		tableRules.addEditItemActionListener(new EditItemAction() {
+
+			@Override
+			public void editItemAction(Rule rule) {
+				editRuleAction(rule);
 			}
 		});
 		return tableRules;
@@ -118,7 +131,47 @@ public class FlowEditor extends SecuredWebPage {
 	 */
 	protected void addNewRuleAction() {
 		WindowNewRule window = new WindowNewRule();
+		window.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				Rule newRule = ((WindowNewRule) window).getRule();
+				UserSessionHandler.getController().addRule(newRule);
+				addOrUpdateRuleInTableAction(newRule);
+				window.close();
+			}
+		});
 		window.showCentered();
+	}
+
+	/**
+	 * This method takes a existing rule and opens rule window with the
+	 * parameters assigned in the rule to edit.
+	 * 
+	 * @param rule
+	 */
+	protected void editRuleAction(Rule rule) {
+		WindowNewRule window = new WindowNewRule();
+		window.setRule(rule);
+		window.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				Rule newRule = ((WindowNewRule) window).getRule();
+				UserSessionHandler.getController().addRule(newRule);
+				addOrUpdateRuleInTableAction(newRule);
+				window.close();
+			}
+		});
+		window.showCentered();
+	}
+
+	protected void addOrUpdateRuleInTableAction(Rule newRule) {
+		if(tableRules.containsId(newRule)){
+			tableRules.updateRow(newRule);
+		}else{
+			tableRules.addRow(newRule);
+		}
 	}
 
 }

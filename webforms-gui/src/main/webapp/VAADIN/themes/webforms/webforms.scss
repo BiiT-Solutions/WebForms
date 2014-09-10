@@ -698,7 +698,8 @@ $open-sans-pathPrefix: "./fonts/";
 
 	.v-button-IconOnlyButton img.v-icon {
 		height: 20px;
-	}	
+		width: 20px;
+	}
 	
 	.v-label.expression-valid{
 		background-color:#77b55a;
@@ -780,5 +781,10 @@ $open-sans-pathPrefix: "./fonts/";
 	}
 	.richTextArea-noControls .gwt-RichTextArea {
 		height: 100% !important;
+	}
+	
+	/* SearchButtonField */
+	.v-search-button-field.v-customcomponent-v-search-button-field>.v-csslayout.v-layout.v-widget {
+		padding: 0px 0px 0px 0px;
 	}
 }

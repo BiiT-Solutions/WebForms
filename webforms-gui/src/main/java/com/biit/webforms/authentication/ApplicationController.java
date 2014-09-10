@@ -23,6 +23,7 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.Rule;
 import com.biit.webforms.persistence.entity.Subcategory;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
@@ -579,6 +580,20 @@ public class ApplicationController {
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
+	}
+
+	/**
+	 * Adds rule to form
+	 * @param newRule
+	 */
+	public void addRule(Rule newRule) {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " addRule "
+				+ newRule + " to " + getFormInUse() + "START");
+		
+		//TODO
+		
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " addRule "
+				+ newRule + " to " + getFormInUse() + "END");
 	}
 
 }

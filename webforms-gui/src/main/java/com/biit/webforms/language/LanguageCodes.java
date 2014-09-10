@@ -172,20 +172,38 @@ public enum LanguageCodes implements ILanguageCode{
 	
 	//Flow
 	TABLE_RULE_TITLE_ORIGIN("table.rule.title.origin"),
+	TABLE_RULE_TITLE_TYPE("table.rule.title.type"),
 	TABLE_RULE_TITLE_DESTINY("table.rule.title.destiny"),
 	TABLE_RULE_TITLE_CONDITION("table.rule.title.condition"), 
 	
 	CAPTION_NEW_RULE("caption.new.rule"), 
 	CAPTION_SEARCH_ORIGIN("caption.search.origin"),
 	CAPTION_WINDOW_SELECT_FORM_ELEMENT("caption.window.select.form.element"),
+	CAPTION_FROM("caption.from"),
+	CAPTION_TO("caption.to"),
+	CAPTION_RULE_TYPE_NORMAL("caption.rule.type.normal"), 
+	CAPTION_RULE_TYPE_OTHERS("caption.rule.type.others"),
+	CAPTION_RULE_TYPE_LOOP("caption.rule.type.loop"), 
+	CAPTION_RULE_TYPE_END_LOOP("caption.rule.type.end.loop"), 
+	CAPTION_RULE_TYPE_END_FORM("caption.rule.type.end.form"),
+	CAPTION_RULE_TYPE("caption.rule.type"),
 	
 	TOOLTIP_NEW_RULE("tooltip.new.rule"), 
 	TOOLTIP_SEARCH_ORIGIN("tooltip.search.origin"), 
 	
 	
 	WARNING_CAPTION_RULE_ORIGIN_INVALID("warning.caption.rule.origin.invalid"),
-	WARNING_DESCRIPTION_RULE_ORIGIN_CAN_ONLY_BE_QUESTIONS("warning.description.rule.origin.can.only.be.questions"), 	
+	WARNING_CAPTION_RULE_NOT_CORRECT("warning.caption.rule.not.correct"),
 	
+	WARNING_DESCRIPTION_CAN_ONLY_SELECT_QUESTIONS("warning.description.can.only.select.questions"),
+	WARNING_DESCRIPTION_DESTINY_IS_NULL("warning.description.destiny.is.null"), 
+	WARNING_DESCRIPTION_ORIGIN_IS_NULL("warning.description.origin.is.null"),
+	WARNING_DESCRIPTION_SAME_ORIGIN_AND_DESTINY("warning.description.same.origin.and.destiny"),
+	WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN("warning.description.destiny.is.before.origin"),
+	
+	NULL_VALUE_SEARCH_ORIGIN("null.value.search.origin"),
+	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),   
+		
 	;
 
 	private String value;

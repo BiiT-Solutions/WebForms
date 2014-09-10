@@ -12,7 +12,11 @@ public enum CommonThemeIcon implements IThemeIcon {
 
 	ELEMENT_EXPAND("element.expand.svg"),
 
-	ELEMENT_COLLAPSE("element.collapse.svg");
+	ELEMENT_COLLAPSE("element.collapse.svg"), 
+	
+	SEARCH("search.svg"),
+	
+	REMOVE("remove.svg");
 
 	private String value;
 

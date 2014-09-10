@@ -60,17 +60,21 @@ public class WindowAcceptCancel extends Window {
 	}
 
 	protected void generateAcceptCancelButton() {
-		acceptButton = new IconButton(CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_CAPTION_ACCEPT, CommonThemeIcon.ACCEPT,
-				CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_TOOLTIP_ACCEPT, IconSize.SMALL, new ClickListener() {
+		acceptButton = new IconButton(CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_CAPTION_ACCEPT,
+				CommonThemeIcon.ACCEPT, CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_TOOLTIP_ACCEPT,
+				IconSize.SMALL, new ClickListener() {
 					private static final long serialVersionUID = 6785334478985006998L;
 
 					@Override
 					public void buttonClick(ClickEvent event) {
-						fireAcceptActionListeners();
+						if (acceptAction()) {
+							fireAcceptActionListeners();
+						}
 					}
 				});
-		cancelButton = new IconButton(CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_CAPTION_CANCEL, CommonThemeIcon.CANCEL,
-				CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_TOOLTIP_CANCEL, IconSize.SMALL, new ClickListener() {
+		cancelButton = new IconButton(CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_CAPTION_CANCEL,
+				CommonThemeIcon.CANCEL, CommonComponentsLanguageCodes.ACCEPT_CANCEL_WINDOW_TOOLTIP_CANCEL,
+				IconSize.SMALL, new ClickListener() {
 					private static final long serialVersionUID = -6302237054661116415L;
 
 					@Override
@@ -171,5 +175,16 @@ public class WindowAcceptCancel extends Window {
 	public void showCentered() {
 		center();
 		UI.getCurrent().addWindow(this);
+	}
+
+	/**
+	 * This function will be called before firing the accept listeners and can
+	 * be overriden by child classes. By default we accept the accept action and
+	 * fire listener. This can be changed to reject the action if the user has
+	 * generated incorrect data returning false.
+	 */
+	protected boolean acceptAction() {
+		// DO nothing
+		return true;
 	}
 }

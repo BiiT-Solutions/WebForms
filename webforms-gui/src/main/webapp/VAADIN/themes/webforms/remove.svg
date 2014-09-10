@@ -15,7 +15,7 @@
    xml:space="preserve"
    id="svg2"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="appbar.magnify.svg"><metadata
+   sodipodi:docname="appbar.close.svg"><metadata
    id="metadata10"><rdf:RDF><cc:Work
        rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
          rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
@@ -28,19 +28,19 @@
    guidetolerance="10"
    inkscape:pageopacity="0"
    inkscape:pageshadow="2"
-   inkscape:window-width="640"
-   inkscape:window-height="480"
+   inkscape:window-width="1920"
+   inkscape:window-height="1017"
    id="namedview6"
    showgrid="false"
    inkscape:zoom="3.1052632"
    inkscape:cx="38"
    inkscape:cy="38"
-   inkscape:window-x="0"
-   inkscape:window-y="0"
-   inkscape:window-maximized="0"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
    inkscape:current-layer="svg2" />
 	<path
-   d="m 47.280194,0.10169492 c 15.824161,0 28.652009,12.82784808 28.652009,28.65200908 0,15.82416 -12.827848,28.652009 -28.652009,28.652009 -5.419584,0 -10.487782,-1.504803 -14.899044,-4.028244 L 11.69417,74.064678 c -2.6854955,2.685267 -7.0394549,2.685267 -9.7249504,0 -2.68526626,-2.685495 -2.68526626,-7.039454 0,-9.72495 L 22.747428,43.563355 c -2.614439,-4.321869 -4.119243,-9.390067 -4.119243,-14.809651 0,-15.824161 12.827849,-28.65200908 28.652009,-28.65200908 z m 0,9.16864288 c -10.760319,0 -19.483366,8.7230472 -19.483366,19.4833662 0,10.760319 8.723047,19.483367 19.483366,19.483367 10.760319,0 19.483367,-8.723048 19.483367,-19.483367 0,-10.760319 -8.723048,-19.4833662 -19.483367,-19.4833662 z"
+   d="M 11.636084,0.26839492 38.160847,26.793158 64.68561,0.26863424 76.0534,11.636424 49.528637,38.160947 76.0534,64.685949 64.685849,76.053739 38.160847,49.528737 11.636084,76.053739 0.26829492,64.68571 26.793297,38.160947 0.26853424,11.636184 11.636084,0.26839492 z"
    id="path4"
    inkscape:connector-curvature="0"
    style="fill:#000000;fill-opacity:1;stroke-width:0.2;stroke-linejoin:round" />

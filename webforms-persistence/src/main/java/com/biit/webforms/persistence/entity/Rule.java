@@ -13,7 +13,10 @@ import javax.persistence.UniqueConstraint;
 import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.webforms.persistence.entity.enumerations.RuleType;
-import com.biit.webforms.persistence.entity.exceptions.RuleBadDestinyParameterException;
+import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
+import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
 
 @Entity
 @Table(name = "rules", uniqueConstraints = { @UniqueConstraint(columnNames = { "origin_id", "destiny_id" }) })
@@ -21,7 +24,7 @@ public class Rule extends StorableObject {
 
 	/*
 	 * Hibernate changes name of column when you use a many-to-one relationship.
-	 * If you want to add a constraint attachet to that column, you have to
+	 * If you want to add a constraint attached to that column, you have to
 	 * state the name.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -29,34 +32,37 @@ public class Rule extends StorableObject {
 	private TreeObject origin;
 
 	@Enumerated(EnumType.STRING)
-	private RuleType sourceType;
+	private RuleType ruleType;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "destiny_id")
 	private TreeObject destiny;
 
-	private String ruleString;
+	private String conditionString;
 
 	@Transient
 	private Object interpretedRule;
 
 	public Rule() {
+		super();
+		ruleType = RuleType.NORMAL;
+		conditionString = new String();
 	}
 
 	public TreeObject getOrigin() {
 		return origin;
 	}
 
-	public void setOrigin(TreeObject origin) {
+	protected void setOrigin(TreeObject origin) {
 		this.origin = origin;
 	}
 
-	public RuleType getSourceType() {
-		return sourceType;
+	public RuleType getRuleType() {
+		return ruleType;
 	}
 
-	protected void setSourceType(RuleType sourceType) {
-		this.sourceType = sourceType;
+	protected void setRuleType(RuleType ruleType) {
+		this.ruleType = ruleType;
 	}
 
 	public TreeObject getDestiny() {
@@ -67,13 +73,32 @@ public class Rule extends StorableObject {
 		this.destiny = destiny;
 	}
 
-	public void setDestiny(RuleType sourceType, TreeObject destiny) throws RuleBadDestinyParameterException {
-		if ((sourceType.isDestinyNull() && destiny != null) || (!sourceType.isDestinyNull() && destiny == null)) {
-			throw new RuleBadDestinyParameterException();
-		} else {
-			this.sourceType = sourceType;
-			this.destiny = destiny;
+	public void setRuleContent(TreeObject origin, RuleType ruleType, TreeObject destiny, String conditionString)
+			throws BadRuleContentException, RuleWithoutSource, RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin {
+		checkRuleRestrictions(origin,ruleType,destiny,conditionString);
+		
+		this.origin = origin;
+		this.ruleType = ruleType;
+		this.destiny = destiny;
+		this.conditionString = conditionString;
+	}
+	
+	public static void checkRuleRestrictions(TreeObject origin, RuleType ruleType, TreeObject destiny, String conditionString) throws RuleWithoutSource, BadRuleContentException, RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin{
+		if (origin == null) {
+			throw new RuleWithoutSource();
 		}
+		if ((ruleType.isDestinyNull() && destiny != null) || (!ruleType.isDestinyNull() && destiny == null)
+				|| (ruleType.isOthers() && conditionString != null && !conditionString.isEmpty()) || (!ruleType.isOthers() && conditionString == null)) {
+			throw new BadRuleContentException();
+		}
+		if(origin.equals(destiny)){
+			throw new RuleSameOriginAndDestinyException();
+		}
+		if(!ruleType.isDestinyNull()){
+			if(!(origin.compareTo(destiny)==-1)){
+				throw new RuleDestinyIsBeforeOrigin();
+			}
+		}		
 	}
 
 	/**
@@ -84,16 +109,16 @@ public class Rule extends StorableObject {
 	 * 
 	 * @return
 	 */
-	public String getRuleString() {
+	public String getConditionString() {
 		if (getInterpretedRule() == null) {
 			// TODO get the new ruleString interpretation
 		}
 		// If not gets the original setted ruleString
-		return ruleString;
+		return conditionString;
 	}
 
-	protected void setRuleString(String ruleString) {
-		this.ruleString = ruleString;
+	protected void setConditionString(String conditionString) {
+		this.conditionString = conditionString;
 	}
 
 	/**
