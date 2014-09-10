@@ -2,6 +2,7 @@ package com.biit.webforms.gui.webpages.floweditor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.language.RuleTypeUi;
@@ -96,6 +97,13 @@ public class TableRules extends Table {
 		setColumnExpandRatio(TableRuleProperties.DESTINY, 1.0f);
 		setColumnExpandRatio(TableRuleProperties.CONDITION, 2.0f);
 	}
+	
+	public void addRows(Set<Rule> rules) {
+		for(Rule rule:rules){
+			addRow(rule, false, false);
+		}
+		addCleanRow();
+	}
 
 	/**
 	 * Adds a new row, moves the 'insert new rule' to the end and selects as
@@ -104,13 +112,23 @@ public class TableRules extends Table {
 	 * @param newRule
 	 */
 	public void addRow(Rule newRule) {
+		addRow(newRule,true,true);
+	}
+	
+	public void addRow(Rule newRule, boolean addCleanRow, boolean select) {
 		Item item = addItem(newRule);
 		if (item != null) {
 			setItemProperties(newRule, item);
-			addCleanRow();
-			setValue(newRule);
+			if(addCleanRow){
+				addCleanRow();
+			}
+			if(select){
+				setValue(newRule);
+			}
 		}
 	}
+	
+	
 
 	/**
 	 * Sets item properties values from the given rule.
@@ -152,5 +170,4 @@ public class TableRules extends Table {
 			setItemProperties(rule, item);
 		}
 	}
-
 }

@@ -54,7 +54,8 @@ public enum ThemeIcons implements IThemeIcon{
 	
 	ALERT("alert.svg"), 
 	
-	NEW_RULE("alert.svg"),//TODO 
+	NEW_RULE("alert.svg"),//TODO
+	EDIT_RULE("alert.svg"), //TODO
 	
 	SEARCH("search.svg"),
 	

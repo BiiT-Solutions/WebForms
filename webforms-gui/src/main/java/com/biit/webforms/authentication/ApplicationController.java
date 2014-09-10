@@ -14,6 +14,7 @@ import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignEx
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
+import com.biit.webforms.gui.webpages.floweditor.WindowRule;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
@@ -28,6 +29,11 @@ import com.biit.webforms.persistence.entity.Subcategory;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.enumerations.FormWorkStatus;
+import com.biit.webforms.persistence.entity.enumerations.RuleType;
+import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
+import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
@@ -583,17 +589,84 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Adds rule to form
+	 * Adds rule to a explicit form.
+	 * @param newRule
+	 * @param form
+	 */
+	public void addRuleToForm(Rule newRule,Form form) {
+		logInfoStart("addRuleToForm",newRule,form);
+		form.addRule(newRule);
+		logInfoEnd("addRuleToForm",newRule,form);
+	}
+	
+	/**
+	 * Update rule content. This function currently is a direct call to the structure function.
+	 * If the rule is not on the form, it gets added.
+	 * @param rule
+	 * @param origin
+	 * @param ruleType
+	 * @param destiny
+	 * @param conditionString
+	 * @throws BadRuleContentException
+	 * @throws RuleWithoutSource
+	 * @throws RuleSameOriginAndDestinyException
+	 * @throws RuleDestinyIsBeforeOrigin
+	 */
+	public void updateRuleContent(Rule rule, TreeObject origin, RuleType ruleType, TreeObject destiny, String conditionString) throws BadRuleContentException, RuleWithoutSource, RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin{
+		logInfoStart("updateRuleContent",rule,origin,ruleType,destiny,conditionString);
+		if(!getFormInUse().containsRule(rule)){
+			addRuleToForm(rule,getFormInUse());
+		}		
+		rule.setRuleContent(origin, ruleType, destiny, conditionString);
+		rule.setUpdateTime();
+		rule.setUpdatedBy(getUser());
+		logInfoEnd("updateRuleContent",rule,origin,ruleType,destiny,conditionString);
+	}
+	
+	
+	/**
+	 * Updates rule update time and updated by in rule. The content of the rule was already modified by {@link WindowRule} 
 	 * @param newRule
 	 */
-	public void addRule(Rule newRule) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " addRule "
-				+ newRule + " to " + getFormInUse() + "START");
-		
-		//TODO
-		
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " addRule "
-				+ newRule + " to " + getFormInUse() + "END");
+	public void updateRule(Rule newRule) {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " updateRule "
+				+ newRule + " in " + getFormInUse() + "START");
+		newRule.setUpdateTime();
+		newRule.setUpdatedBy(getUser());
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " updateRule "
+				+ newRule + " in " + getFormInUse() + "END");
+	}
+	
+	protected void logInfoStart(String functionName, Object ... parameters){
+		WebformsLogger.info(ApplicationController.class.getName(),getUserInfo()+" "+getFunctionInfo(functionName, parameters)+ " START");
+	}
+	
+	protected void logInfoEnd(String functionName, Object ... parameters){
+		WebformsLogger.info(ApplicationController.class.getName(),getUserInfo()+" "+getFunctionInfo(functionName, parameters)+ " END");
+	}
+	
+	protected String getUserInfo(){
+		String userInfo = new String("User: ");
+		if(getUser()==null){
+			return userInfo + "NO USER";
+		}else{
+			return userInfo + getUser().getEmailAddress();
+		}
 	}
 
+	protected String getFunctionInfo(String functionName, Object ... parameters){
+		String functionInfo = new String(functionName+"(");
+		int i=0;
+		for(Object parameter: parameters){
+			String parameterString= new String();
+			if(i>0){
+				parameterString += ", ";
+			}			
+			parameterString += "arg"+i+": '"+parameter+"'";
+			functionInfo+=parameterString;
+			i++;
+		}
+		functionInfo += ")";
+		return functionInfo;
+	}
 }

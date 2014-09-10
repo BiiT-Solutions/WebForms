@@ -15,7 +15,7 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "tree_categories")
 public class Category extends BaseCategory {
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(BaseQuestion.class,
 			Subcategory.class, BaseRepeatableGroup.class));

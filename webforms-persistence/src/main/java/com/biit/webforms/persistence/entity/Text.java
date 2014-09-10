@@ -12,7 +12,7 @@ import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 
 @Entity
-@Table(name = "texts")
+@Table(name = "tree_texts")
 public class Text extends BaseQuestion {
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 	public static final int MAX_DESCRIPTION_LABEL = 30;

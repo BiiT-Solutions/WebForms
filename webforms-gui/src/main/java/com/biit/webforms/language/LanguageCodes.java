@@ -157,8 +157,8 @@ public enum LanguageCodes implements ILanguageCode{
 	ERROR_ANSWER_NOT_INSERTED("error.answer.not.inserted"),
 	ERROR_SYSTEM_FIELD_NOT_INSERTED("error.system.field.not.inserted"),
 	
-	INFO_MESSAGE_CAPTION("info.message.caption"),
-	INFO_MESSAGE_DESCRIPTION("info.message.description"),
+	INFO_MESSAGE_CAPTION_SAVE("info.message.caption.save"),
+	INFO_MESSAGE_DESCRIPTION_SAVE("info.message.description.save"),
 	INFO_MESSAGE_FORM_IS_READ_ONLY("info.message.form.is.read.only"),
 	
 	TEXT_PROCEED_FORM_CLOSE("text.proceed.form.close"),
@@ -177,6 +177,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TABLE_RULE_TITLE_CONDITION("table.rule.title.condition"), 
 	
 	CAPTION_NEW_RULE("caption.new.rule"), 
+	CAPTION_EDIT_RULE("caption.edit.rule"),
 	CAPTION_SEARCH_ORIGIN("caption.search.origin"),
 	CAPTION_WINDOW_SELECT_FORM_ELEMENT("caption.window.select.form.element"),
 	CAPTION_FROM("caption.from"),
@@ -188,7 +189,8 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_RULE_TYPE_END_FORM("caption.rule.type.end.form"),
 	CAPTION_RULE_TYPE("caption.rule.type"),
 	
-	TOOLTIP_NEW_RULE("tooltip.new.rule"), 
+	TOOLTIP_NEW_RULE("tooltip.new.rule"),
+	TOOLTIP_EDIT_RULE("tooltip.edit.rule"),
 	TOOLTIP_SEARCH_ORIGIN("tooltip.search.origin"), 
 	
 	
@@ -202,7 +204,7 @@ public enum LanguageCodes implements ILanguageCode{
 	WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN("warning.description.destiny.is.before.origin"),
 	
 	NULL_VALUE_SEARCH_ORIGIN("null.value.search.origin"),
-	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),   
+	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),
 		
 	;
 

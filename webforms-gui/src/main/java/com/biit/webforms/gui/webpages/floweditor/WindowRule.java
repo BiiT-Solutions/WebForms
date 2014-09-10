@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
@@ -20,7 +21,8 @@ import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Window to generate or edit a flow rule.
+ * Window to generate or edit a flow rule. This gui class can call the update
+ * and insert of the rule by itself using the Application Controller.
  * 
  * It contains a "control" bar that permits the selection of origin, type and
  * destiny of rule. This window also has space to write the logic condition.
@@ -29,7 +31,7 @@ import com.vaadin.ui.VerticalLayout;
  * condition depending of the rule type.
  * 
  */
-public class WindowNewRule extends WindowAcceptCancel {
+public class WindowRule extends WindowAcceptCancel {
 	private static final long serialVersionUID = 5164868235165988674L;
 	private static final String width = "800px";
 	private static final String height = "600px";
@@ -41,7 +43,7 @@ public class WindowNewRule extends WindowAcceptCancel {
 	private RichTextArea richTextArea;
 	private Rule rule;
 
-	public WindowNewRule() {
+	public WindowRule() {
 		super();
 		setContent(generateContent());
 		setResizable(false);
@@ -97,7 +99,7 @@ public class WindowNewRule extends WindowAcceptCancel {
 
 		return barLayout;
 	}
-	
+
 	private void updateControls() {
 		searchOrigin.setTreeObject(rule.getOrigin());
 		ruleTypeSelector.setValue(rule.getRuleType());
@@ -158,7 +160,7 @@ public class WindowNewRule extends WindowAcceptCancel {
 			conditions = richTextArea.getValue();
 		}
 		try {
-			rule.setRuleContent(searchOrigin.getTreeObject(), (RuleType) ruleTypeSelector.getValue(),
+			UserSessionHandler.getController().updateRuleContent(rule, searchOrigin.getTreeObject(), (RuleType) ruleTypeSelector.getValue(),
 					searchDestiny.getTreeObject(), conditions);
 		} catch (BadRuleContentException e) {
 			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,

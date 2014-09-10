@@ -16,7 +16,7 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 @Entity
-@Table(name = "subcategories")
+@Table(name = "tree_subcategories")
 public class Subcategory extends BaseGroup {
 	private static final String DEFAULT_SUBCATEGORY_NAME = "Subcategory";
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(

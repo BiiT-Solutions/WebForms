@@ -9,7 +9,7 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "tree_groups")
 public class Group extends BaseRepeatableGroup {
 	private static final boolean DEFAULT_REPEATABLE = false;
 

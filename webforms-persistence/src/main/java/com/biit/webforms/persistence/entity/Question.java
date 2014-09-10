@@ -16,7 +16,7 @@ import com.biit.webforms.persistence.entity.enumerations.AnswerFormat;
 import com.biit.webforms.persistence.entity.enumerations.AnswerType;
 
 @Entity
-@Table(name = "questions")
+@Table(name = "tree_questions")
 public class Question extends BaseQuestion {
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 	public static final boolean DEFAULT_HORIZONTAL = false;

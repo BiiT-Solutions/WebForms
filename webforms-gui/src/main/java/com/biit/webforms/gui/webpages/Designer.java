@@ -131,7 +131,7 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				UserSessionHandler.getController().saveForm();
-				MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION, LanguageCodes.INFO_MESSAGE_DESCRIPTION);
+				MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
 			}
 		});
 		upperMenu.addSaveAsBlockButtonListener(new ClickListener() {
@@ -414,7 +414,7 @@ public class Designer extends SecuredWebPage {
 							newBlockWindow.getOrganization());
 					newBlockWindow.close();
 
-					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION, LanguageCodes.INFO_MESSAGE_DESCRIPTION);
+					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
 
 				} catch (FieldTooLongException e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);

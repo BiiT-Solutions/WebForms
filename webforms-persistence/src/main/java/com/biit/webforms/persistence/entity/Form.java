@@ -1,9 +1,15 @@
 package com.biit.webforms.persistence.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -15,8 +21,9 @@ import com.biit.webforms.persistence.entity.enumerations.FormWorkStatus;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 
+
 @Entity
-@Table(name = "forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "name", "version", "organizationId" }) })
+@Table(name = "tree_forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "name", "version", "organizationId" }) })
 public class Form extends BaseForm {
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 	
@@ -27,11 +34,15 @@ public class Form extends BaseForm {
 	private String description;
 
 	private Long organizationId;
+	
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true)
+	private Set<Rule> rules;
 
 	public Form() {
 		super();
 		status = FormWorkStatus.DESIGN;
 		description = new String();
+		rules = new HashSet<>();
 	}
 
 	public Form(String name, User user, Organization organization) throws FieldTooLongException {
@@ -100,4 +111,20 @@ public class Form extends BaseForm {
 	public void setStatus(FormWorkStatus status) {
 		this.status = status;
 	}
+
+	public void addRule(Rule rule) {
+		this.rules.add(rule);
+	}
+
+	public boolean containsRule(Rule rule) {
+		return rules.contains(rule);
+	}
+
+	public Set<Rule> getRules() {
+		return rules;
+	}
+
+	public void setRules(Set<Rule> rules) {
+		this.rules = rules;
+	}	
 }

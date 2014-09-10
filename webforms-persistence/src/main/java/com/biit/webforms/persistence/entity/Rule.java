@@ -84,16 +84,21 @@ public class Rule extends StorableObject {
 	}
 	
 	public static void checkRuleRestrictions(TreeObject origin, RuleType ruleType, TreeObject destiny, String conditionString) throws RuleWithoutSource, BadRuleContentException, RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin{
+		//No rule without source
 		if (origin == null) {
 			throw new RuleWithoutSource();
 		}
+		//If rule type doesn't need destiny, destiny must be null and otherwise
+		//If rule type doesn't need conditions, conditionString must be null or empty
 		if ((ruleType.isDestinyNull() && destiny != null) || (!ruleType.isDestinyNull() && destiny == null)
 				|| (ruleType.isOthers() && conditionString != null && !conditionString.isEmpty()) || (!ruleType.isOthers() && conditionString == null)) {
 			throw new BadRuleContentException();
 		}
+		//Rule origin can't be destiny
 		if(origin.equals(destiny)){
 			throw new RuleSameOriginAndDestinyException();
 		}
+		//Rule destiny cannot be prior to origin.
 		if(!ruleType.isDestinyNull()){
 			if(!(origin.compareTo(destiny)==-1)){
 				throw new RuleDestinyIsBeforeOrigin();
@@ -122,7 +127,7 @@ public class Rule extends StorableObject {
 	}
 
 	/**
-	 * Retrueves the rule interpretation
+	 * Retrieves the rule interpretation
 	 * 
 	 * @return
 	 */
