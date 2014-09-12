@@ -14,21 +14,26 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
+import com.biit.webforms.gui.components.FormFlowViewer;
 import com.biit.webforms.gui.webpages.floweditor.EditItemAction;
+import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
 import com.biit.webforms.gui.webpages.floweditor.TableRules;
 import com.biit.webforms.gui.webpages.floweditor.TableRules.NewItemAction;
 import com.biit.webforms.gui.webpages.floweditor.UpperMenuFlowEditor;
 import com.biit.webforms.gui.webpages.floweditor.WindowRule;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Rule;
-import com.biit.webforms.theme.ThemeIcons;
+import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Image;
+import com.vaadin.ui.Slider;
+import com.vaadin.ui.VerticalLayout;
 
 public class FlowEditor extends SecuredWebPage {
 	private static final long serialVersionUID = -6257723403353946354L;
@@ -37,6 +42,11 @@ public class FlowEditor extends SecuredWebPage {
 
 	private UpperMenuFlowEditor upperMenu;
 	private TableRules tableRules;
+	private FormFlowViewer formFlowViewer;
+	private SearchFormElementField tableFilterOrigin;
+	private SearchFormElementField tableFilterDestiny;
+	private SearchFormElementField flowViewerFilter;
+	private Slider zoomSlider;
 
 	@Override
 	protected void initContent() {
@@ -44,7 +54,6 @@ public class FlowEditor extends SecuredWebPage {
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
 		setBottomMenu(new FormEditBottomMenu());
-
 		getWorkingArea().addComponent(generateContent());
 	}
 
@@ -59,6 +68,11 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private Component createLeftComponent() {
+		VerticalLayout i = new VerticalLayout();
+		i.setSizeFull();
+		
+		Component tableFilterBar = createTableFilterBar();
+		
 		tableRules = new TableRules();
 		tableRules.setSizeFull();
 		tableRules.addNewItemActionListener(new NewItemAction() {
@@ -85,7 +99,34 @@ public class FlowEditor extends SecuredWebPage {
 		});
 		Set<Rule> rules = UserSessionHandler.getController().getFormInUse().getRules();
 		tableRules.addRows(rules);
-		return tableRules;
+		
+		i.addComponent(tableFilterBar);
+		i.addComponent(tableRules);
+		i.setExpandRatio(tableRules, 1.0f);
+		
+		return i;
+	}
+
+	private Component createTableFilterBar() {
+		HorizontalLayout i = new HorizontalLayout();
+		i.setMargin(true);
+		i.setSpacing(true);
+		i.setWidth("100%");
+
+		tableFilterOrigin = new SearchFormElementField();
+		tableFilterOrigin.setCaption(LanguageCodes.CAPTION_FILTER_ORIGIN.translation());
+		tableFilterDestiny = new SearchFormElementField();
+		tableFilterDestiny.setCaption(LanguageCodes.CAPTION_FILTER_DESTINY.translation());
+
+
+		i.addComponent(tableFilterOrigin);
+		i.addComponent(tableFilterDestiny);
+		i.setExpandRatio(tableFilterOrigin, 0.5f);
+		i.setExpandRatio(tableFilterDestiny, 0.5f);
+		i.setComponentAlignment(tableFilterOrigin, Alignment.MIDDLE_LEFT);
+		i.setComponentAlignment(tableFilterDestiny, Alignment.MIDDLE_RIGHT);
+
+		return i;
 	}
 
 	private void updateUiState() {
@@ -103,10 +144,55 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private Component createRightComponent() {
-		Image image = new Image(null, ThemeIcons.ALERT.getThemeResource());
-		image.setSizeFull();
+		VerticalLayout i = new VerticalLayout();
+		i.setSizeFull();
 
-		return image;
+		formFlowViewer = new FormFlowViewer(ImgType.SVG, 1.0f);
+		formFlowViewer.setSizeFull();
+		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getFormInUse(), null);
+
+		Component flowViewerControlBar = createFlowViewerControlBar();
+
+		i.addComponent(flowViewerControlBar);
+		i.addComponent(formFlowViewer);
+		i.setExpandRatio(formFlowViewer, 1.0f);
+
+		return i;
+	}
+
+	private Component createFlowViewerControlBar() {
+		HorizontalLayout i = new HorizontalLayout();
+		i.setMargin(true);
+		i.setSpacing(true);
+		i.setWidth("100%");
+
+		flowViewerFilter = new SearchFormElementField();
+		flowViewerFilter.setCaption(LanguageCodes.CAPTION_FILTER.translation());
+
+		zoomSlider = new Slider();
+		zoomSlider.setCaption(LanguageCodes.CAPTION_ZOOM_SLIDER.translation());
+		zoomSlider.setMin(1.0f);
+		zoomSlider.setMax(50.0f);
+		zoomSlider.setValue((double) 1.0f);
+		zoomSlider.setWidth("100%");
+		zoomSlider.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = 5649221005286915625L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				double currentValue = (double) event.getProperty().getValue();
+				formFlowViewer.setZoom((float) currentValue);
+			}
+		});
+
+		i.addComponent(flowViewerFilter);
+		i.addComponent(zoomSlider);
+		i.setExpandRatio(flowViewerFilter, 0.4f);
+		i.setExpandRatio(zoomSlider, 0.4f);
+		i.setComponentAlignment(flowViewerFilter, Alignment.MIDDLE_LEFT);
+		i.setComponentAlignment(zoomSlider, Alignment.MIDDLE_RIGHT);
+
+		return i;
 	}
 
 	@Override

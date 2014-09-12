@@ -8,7 +8,8 @@ public enum RuleType {
 	
 	LOOP(true,false),
 
-	END_LOOP(true,false),
+	//TODO this is not clear yet
+	END_LOOP(false,false),
 
 	END_FORM(true,false), ;
 

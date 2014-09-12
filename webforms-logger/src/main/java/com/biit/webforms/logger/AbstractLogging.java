@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public abstract class AbstractLogging {
 	// Logger specialized for each subclass.
-	protected final Log logger = LogFactory.getLog(this.getClass());
+	protected final Log logger = LogFactory.getLog(AbstractLogging.class);
 
 	/**
 	 * Method used for logging the name of the target class, parameters and the

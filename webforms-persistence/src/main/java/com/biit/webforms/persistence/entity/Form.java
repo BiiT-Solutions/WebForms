@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.biit.form.BaseForm;
+import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -21,12 +23,11 @@ import com.biit.webforms.persistence.entity.enumerations.FormWorkStatus;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 
-
 @Entity
 @Table(name = "tree_forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "name", "version", "organizationId" }) })
 public class Form extends BaseForm {
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
-	
+
 	@Enumerated(EnumType.STRING)
 	private FormWorkStatus status;
 
@@ -34,7 +35,7 @@ public class Form extends BaseForm {
 	private String description;
 
 	private Long organizationId;
-	
+
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true)
 	private Set<Rule> rules;
 
@@ -126,5 +127,34 @@ public class Form extends BaseForm {
 
 	public void setRules(Set<Rule> rules) {
 		this.rules = rules;
-	}	
+	}
+
+	/**
+	 * This method creates a ComputeRuleView with all the current rules and the
+	 * implicit rules (question without rule goes to the next element)
+	 * 
+	 * @return
+	 */
+	public ComputedRuleView getComputedRuleView() {
+		LinkedHashSet<TreeObject> allBaseQuestions = getAllChildrenInHierarchy(BaseQuestion.class);		
+		ComputedRuleView computedView = new ComputedRuleView();
+
+		if (!allBaseQuestions.isEmpty()) {
+			Object[] baseQuestions = allBaseQuestions.toArray();
+			computedView.setFirstElement((TreeObject)baseQuestions[0]);
+			computedView.addRules(rules);
+			
+			int numQuestions = baseQuestions.length - 1;
+
+			for (int i = 0; i < numQuestions; i++) {
+				if (computedView.getRulesByOrigin((TreeObject) baseQuestions[i]) == null) {
+					computedView.addNewNextElementRule((TreeObject)baseQuestions[i],(TreeObject)baseQuestions[i+1]);
+				}
+			}
+			if (computedView.getRulesByOrigin((TreeObject) baseQuestions[numQuestions]) == null) {
+				computedView.addNewEndFormRule((TreeObject)baseQuestions[numQuestions]);
+			}
+		}
+		return computedView;
+	}
 }

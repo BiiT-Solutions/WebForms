@@ -188,6 +188,10 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_RULE_TYPE_END_LOOP("caption.rule.type.end.loop"), 
 	CAPTION_RULE_TYPE_END_FORM("caption.rule.type.end.form"),
 	CAPTION_RULE_TYPE("caption.rule.type"),
+	CAPTION_FILTER("caption.filter"), 
+	CAPTION_FILTER_ORIGIN("caption.filter.origin"),
+	CAPTION_FILTER_DESTINY("caption.filter.destiny"),
+	CAPTION_ZOOM_SLIDER("caption.zoom.slider"),
 	
 	TOOLTIP_NEW_RULE("tooltip.new.rule"),
 	TOOLTIP_EDIT_RULE("tooltip.edit.rule"),
@@ -204,7 +208,7 @@ public enum LanguageCodes implements ILanguageCode{
 	WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN("warning.description.destiny.is.before.origin"),
 	
 	NULL_VALUE_SEARCH_ORIGIN("null.value.search.origin"),
-	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),
+	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),  
 		
 	;
 
