@@ -187,4 +187,8 @@ public class WindowAcceptCancel extends Window {
 		// DO nothing
 		return true;
 	}
+	
+	protected IconButton getAcceptButton(){
+		return acceptButton;
+	}
 }

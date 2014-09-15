@@ -5,10 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import com.biit.form.TreeObject;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.FilteredForm;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.exceptions.ExecutableCanNotBeExecuted;
 import com.biit.webforms.utils.exceptions.PathToExecutableNotFound;
+import com.biit.webforms.utils.exporters.dotgraph.ExporterDotFilteredForm;
 import com.biit.webforms.utils.exporters.dotgraph.ExporterDotForm;
 
 public class GraphvizApp {
@@ -95,14 +98,16 @@ public class GraphvizApp {
 			}
 
 			// Delete both files.
-//			if (dotTemp.delete() == false) {
-//				WebformsLogger.warning(GraphvizApp.class.getName(), dotTemp.getAbsolutePath()
-//						+ " could not be deleted.");
-//			}
-//			if (imgTemp.delete() == false) {
-//				WebformsLogger.warning(GraphvizApp.class.getName(), imgTemp.getAbsolutePath()
-//						+ " could not be deleted.");
-//			}
+			// if (dotTemp.delete() == false) {
+			// WebformsLogger.warning(GraphvizApp.class.getName(),
+			// dotTemp.getAbsolutePath()
+			// + " could not be deleted.");
+			// }
+			// if (imgTemp.delete() == false) {
+			// WebformsLogger.warning(GraphvizApp.class.getName(),
+			// imgTemp.getAbsolutePath()
+			// + " could not be deleted.");
+			// }
 		} catch (ExecutableCanNotBeExecuted e) {
 			WebformsLogger.severe(GraphvizApp.class.getName(), "Executable can't be executed.");
 		} catch (PathToExecutableNotFound e) {
@@ -112,21 +117,31 @@ public class GraphvizApp {
 	}
 
 	/**
-	 * Generates the graph image of a form with the type {@code imgType}
+	 * Generates the graph image of a form with the type {@code imgType} if
+	 * {@code filter} is null no filter is used and all the form is rendered.
 	 * 
 	 * @param form
 	 *            source form
+	 * @param filter
+	 *            data filter
 	 * @param imgType
 	 *            image file format
 	 * @return Byte data of image
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static byte[] generateImage(Form form, ImgType imgType) throws IOException, InterruptedException {
+	public static byte[] generateImage(Form form, TreeObject filter, ImgType imgType) throws IOException,
+			InterruptedException {
 		// Generate DotCode
-		ExporterDotForm exporter = new ExporterDotForm();
-		String dotCode = exporter.export(form);
-		
+		String dotCode = null;
+		if (filter == null) {
+			ExporterDotForm exporter = new ExporterDotForm();
+			dotCode = exporter.export(form);
+		}else{
+			ExporterDotFilteredForm exporter = new ExporterDotFilteredForm();
+			dotCode = exporter.export(new FilteredForm(form, filter));
+		}
+
 		// Call Graphviz to make a render from dot code.
 		return generateImageFromDotCode(dotCode, imgType);
 	}

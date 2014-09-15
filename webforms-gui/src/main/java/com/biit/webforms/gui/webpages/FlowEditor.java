@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import com.biit.form.TreeObject;
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
@@ -17,18 +18,22 @@ import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormFlowViewer;
 import com.biit.webforms.gui.webpages.floweditor.EditItemAction;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
+import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.gui.webpages.floweditor.TableRules;
 import com.biit.webforms.gui.webpages.floweditor.TableRules.NewItemAction;
 import com.biit.webforms.gui.webpages.floweditor.UpperMenuFlowEditor;
 import com.biit.webforms.gui.webpages.floweditor.WindowRule;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Rule;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -39,6 +44,8 @@ public class FlowEditor extends SecuredWebPage {
 	private static final long serialVersionUID = -6257723403353946354L;
 	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
 			Arrays.asList(WebformsActivity.READ));
+	private static final double ZOOM_MIN_VALUE = 1.0f;
+	private static final double ZOOM_MAX_VALUE = 50.0f;
 
 	private UpperMenuFlowEditor upperMenu;
 	private TableRules tableRules;
@@ -70,9 +77,9 @@ public class FlowEditor extends SecuredWebPage {
 	private Component createLeftComponent() {
 		VerticalLayout i = new VerticalLayout();
 		i.setSizeFull();
-		
+
 		Component tableFilterBar = createTableFilterBar();
-		
+
 		tableRules = new TableRules();
 		tableRules.setSizeFull();
 		tableRules.addNewItemActionListener(new NewItemAction() {
@@ -99,11 +106,11 @@ public class FlowEditor extends SecuredWebPage {
 		});
 		Set<Rule> rules = UserSessionHandler.getController().getFormInUse().getRules();
 		tableRules.addRows(rules);
-		
+
 		i.addComponent(tableFilterBar);
 		i.addComponent(tableRules);
 		i.setExpandRatio(tableRules, 1.0f);
-		
+
 		return i;
 	}
 
@@ -117,7 +124,6 @@ public class FlowEditor extends SecuredWebPage {
 		tableFilterOrigin.setCaption(LanguageCodes.CAPTION_FILTER_ORIGIN.translation());
 		tableFilterDestiny = new SearchFormElementField();
 		tableFilterDestiny.setCaption(LanguageCodes.CAPTION_FILTER_DESTINY.translation());
-
 
 		i.addComponent(tableFilterOrigin);
 		i.addComponent(tableFilterDestiny);
@@ -166,14 +172,22 @@ public class FlowEditor extends SecuredWebPage {
 		i.setSpacing(true);
 		i.setWidth("100%");
 
-		flowViewerFilter = new SearchFormElementField();
+		flowViewerFilter = new SearchFormElementField(Form.class, Category.class, Group.class);
 		flowViewerFilter.setCaption(LanguageCodes.CAPTION_FILTER.translation());
+		flowViewerFilter.setSelectableFilter(Category.class, Group.class);
+		flowViewerFilter.addValueChangeListener(new SearchFormElementChanged() {
+
+			@Override
+			public void currentElement(Object object) {
+				filterFlowDiagram((TreeObject) object);
+			}
+		});
 
 		zoomSlider = new Slider();
 		zoomSlider.setCaption(LanguageCodes.CAPTION_ZOOM_SLIDER.translation());
-		zoomSlider.setMin(1.0f);
-		zoomSlider.setMax(50.0f);
-		zoomSlider.setValue((double) 1.0f);
+		zoomSlider.setMin(ZOOM_MIN_VALUE);
+		zoomSlider.setMax(ZOOM_MAX_VALUE);
+		zoomSlider.setValue(ZOOM_MIN_VALUE);
 		zoomSlider.setWidth("100%");
 		zoomSlider.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = 5649221005286915625L;
@@ -193,6 +207,11 @@ public class FlowEditor extends SecuredWebPage {
 		i.setComponentAlignment(zoomSlider, Alignment.MIDDLE_RIGHT);
 
 		return i;
+	}
+
+	protected void filterFlowDiagram(TreeObject filter) {
+		zoomSlider.setValue(ZOOM_MIN_VALUE);
+		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getFormInUse(), filter);
 	}
 
 	@Override

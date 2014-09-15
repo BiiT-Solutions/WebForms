@@ -245,7 +245,7 @@ public class FormFlowViewer extends Panel {
 			try {
 				// TODO remove
 				if (inputStream == null) {
-					byte[] imageData = GraphvizApp.generateImage(form, imgType);
+					byte[] imageData = GraphvizApp.generateImage(form, filter, imgType);
 					inputStream = new ByteArrayInputStream(imageData);
 				}
 				return inputStream;

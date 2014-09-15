@@ -5,18 +5,24 @@ import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SearchButtonField;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
-import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.WindowTreeObject;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.Question;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 public class SearchFormElementField extends SearchButtonField {
 	private static final long serialVersionUID = -2774946945994290636L;
 
-	public SearchFormElementField() {
+	private Class<?>[] filterClasses;
+	private Class<?>[] selectFilter;
+
+	public interface SearchFormElementChanged {
+		public void currentElement(Object object);
+	}
+
+	public SearchFormElementField(final Class<?>... filterClases) {
 		super();
+		this.filterClasses = filterClases;
 		addSearchButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 7567983186702232872L;
 
@@ -27,21 +33,23 @@ public class SearchFormElementField extends SearchButtonField {
 		});
 	}
 
+	public void setSelectableFilter(Class<?>... selectfilter) {
+		this.selectFilter = selectfilter;
+	}
+
 	protected void openSearchFormElementWindow() {
 		final WindowTreeObject windowTreeObject = new WindowTreeObject(
-				LanguageCodes.CAPTION_WINDOW_SELECT_FORM_ELEMENT, UserSessionHandler.getController().getFormInUse());
+				LanguageCodes.CAPTION_WINDOW_SELECT_FORM_ELEMENT, UserSessionHandler.getController().getFormInUse(),
+				filterClasses);
+		windowTreeObject.setSelectableFilers(selectFilter);
 
 		windowTreeObject.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
-				if (windowTreeObject.getSelectedTreeObject() instanceof Question) {
-					TreeObject reference = windowTreeObject.getSelectedTreeObject();
-					setValue(reference,reference.getName());
-					windowTreeObject.close();
-				} else {
-					MessageManager.showInfo(LanguageCodes.WARNING_DESCRIPTION_CAN_ONLY_SELECT_QUESTIONS);
-				}
+				TreeObject reference = windowTreeObject.getSelectedTreeObject();
+				setValue(reference, reference.getName());
+				windowTreeObject.close();
 			}
 		});
 		windowTreeObject.showCentered();
@@ -50,11 +58,11 @@ public class SearchFormElementField extends SearchButtonField {
 	public TreeObject getTreeObject() {
 		return (TreeObject) getValue();
 	}
-	
-	public void setTreeObject(TreeObject treeObject){
-		if(treeObject!=null){
+
+	public void setTreeObject(TreeObject treeObject) {
+		if (treeObject != null) {
 			setValue(treeObject, treeObject.getName());
-		}else{
+		} else {
 			clear();
 		}
 	}

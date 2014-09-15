@@ -42,25 +42,43 @@ public class TreeObjectTable extends TreeTable {
 	}
 
 	/**
-	 * Loads a tree object structure recursively. Only selects the first
-	 * element.
+	 * Loads a tree object structure recursively. At the end of the process
+	 * selects the root element inserted. element. It can also be specified an
+	 * array of filterClasses. If this is not specified, then every kind of
+	 * element is allowed. Else only the elements in the hierarchy whose path
+	 * is made of valid elements.
 	 * 
 	 * @param element
 	 * @param parent
 	 */
-	public void loadTreeObject(TreeObject element, TreeObject parent) {
-		loadTreeObject(element, parent, true);
+	public void loadTreeObject(TreeObject element, TreeObject parent, Class<?> ... filterClases) {
+		loadTreeObject(element, parent, true, filterClases);
 	}
 
-	public void loadTreeObject(TreeObject element, TreeObject parent, boolean select) {
+	public void loadTreeObject(TreeObject element, TreeObject parent, boolean select, Class<?> ... filterClases) {
 		if (element != null) {
-			addRow(element, parent, select);
+			if (isAdmitedInFilter(element, filterClases)) {
+				addRow(element, parent, select);
 
-			List<TreeObject> children = element.getChildren();
-			for (TreeObject child : children) {
-				loadTreeObject(child, element, false);
+				List<TreeObject> children = element.getChildren();
+				for (TreeObject child : children) {
+					loadTreeObject(child, element, false, filterClases);
+				}
 			}
 		}
+	}
+
+	private boolean isAdmitedInFilter(TreeObject element, Class<?> ... filterClases) {
+		if (filterClases == null || filterClases.length == 0) {
+			// No filter, then everything is admited.
+			return true;
+		}
+		for (Class<?> filterClass : filterClases) {
+			if (filterClass.isInstance(element)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")

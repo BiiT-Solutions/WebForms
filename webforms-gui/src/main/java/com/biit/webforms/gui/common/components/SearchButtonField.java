@@ -1,7 +1,11 @@
 package com.biit.webforms.gui.common.components;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
+import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
@@ -18,9 +22,11 @@ public class SearchButtonField extends CustomComponent {
 	private IconOnlyButton removeButton;
 	private TextField textField;
 	private Object value;
+	private List<SearchFormElementChanged> valueChangeListeners;
 
 	public SearchButtonField() {
 		super();
+		valueChangeListeners = new ArrayList<SearchFormElementChanged>();
 		setCompositionRoot(generateComponent());
 		setWidth(TEXT_FIELD_FULL_WIDTH);
 		setStyleName(CLASSNAME);
@@ -68,6 +74,7 @@ public class SearchButtonField extends CustomComponent {
 			textField.setValue("");
 			removeButton.setEnabled(false);
 		}
+		fireValueChangeListeners();
 	}
 
 	public Object getValue() {
@@ -84,5 +91,19 @@ public class SearchButtonField extends CustomComponent {
 
 	public void setNullCaption(ILanguageCode languageCode) {
 		textField.setInputPrompt(languageCode.translation());
+	}
+	
+	public void addValueChangeListener(SearchFormElementChanged listener) {
+		valueChangeListeners.add(listener);
+	}
+
+	public void removeValueChangeListener(SearchFormElementChanged listener) {
+		valueChangeListeners.remove(listener);
+	}
+	
+	private void fireValueChangeListeners(){
+		for(SearchFormElementChanged listener: valueChangeListeners){
+			listener.currentElement(getValue());
+		}
 	}
 }
