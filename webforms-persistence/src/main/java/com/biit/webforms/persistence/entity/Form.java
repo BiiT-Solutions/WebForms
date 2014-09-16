@@ -50,6 +50,7 @@ public class Form extends BaseForm {
 		super(name);
 		status = FormWorkStatus.DESIGN;
 		description = new String();
+		rules = new HashSet<>();
 		setCreatedBy(user);
 		setUpdatedBy(user);
 		setOrganizationId(organization);

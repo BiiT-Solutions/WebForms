@@ -21,12 +21,16 @@ public class TableRules extends Table {
 		public void newItemAction();
 	};
 
-	private enum TableRuleProperties {
+	public enum TableRuleProperties {
 		ORIGIN, TYPE, DESTINY, CONDITION
 	};
 
 	private List<NewItemAction> newItemListeners;
 	private List<EditItemAction> editItemListeners;
+	
+	public Object getNewRuleId(){
+		return NEW_RULE;
+	}
 
 	public TableRules() {
 		super();

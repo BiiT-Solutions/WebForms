@@ -109,6 +109,7 @@ public class WindowRule extends WindowAcceptCancel {
 
 	private Component generateRuleType() {
 		ruleTypeSelector = new ComboBox(LanguageCodes.CAPTION_RULE_TYPE.translation());
+		ruleTypeSelector.setNullSelectionAllowed(false);
 		for (RuleTypeUi ruleType : RuleTypeUi.values()) {
 			ruleTypeSelector.addItem(ruleType.getType());
 			ruleTypeSelector.setItemCaption(ruleType.getType(), ruleType.getLanguageCode().translation());

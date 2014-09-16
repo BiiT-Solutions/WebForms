@@ -98,16 +98,14 @@ public class GraphvizApp {
 			}
 
 			// Delete both files.
-			// if (dotTemp.delete() == false) {
-			// WebformsLogger.warning(GraphvizApp.class.getName(),
-			// dotTemp.getAbsolutePath()
-			// + " could not be deleted.");
-			// }
-			// if (imgTemp.delete() == false) {
-			// WebformsLogger.warning(GraphvizApp.class.getName(),
-			// imgTemp.getAbsolutePath()
-			// + " could not be deleted.");
-			// }
+			if (dotTemp.delete() == false) {
+				WebformsLogger.warning(GraphvizApp.class.getName(), dotTemp.getAbsolutePath()
+						+ " could not be deleted.");
+			}
+			if (imgTemp.delete() == false) {
+				WebformsLogger.warning(GraphvizApp.class.getName(), imgTemp.getAbsolutePath()
+						+ " could not be deleted.");
+			}
 		} catch (ExecutableCanNotBeExecuted e) {
 			WebformsLogger.severe(GraphvizApp.class.getName(), "Executable can't be executed.");
 		} catch (PathToExecutableNotFound e) {
@@ -137,7 +135,7 @@ public class GraphvizApp {
 		if (filter == null) {
 			ExporterDotForm exporter = new ExporterDotForm();
 			dotCode = exporter.export(form);
-		}else{
+		} else {
 			ExporterDotFilteredForm exporter = new ExporterDotFilteredForm();
 			dotCode = exporter.export(new FilteredForm(form, filter));
 		}

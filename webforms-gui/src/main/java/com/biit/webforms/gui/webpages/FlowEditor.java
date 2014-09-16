@@ -29,6 +29,9 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Rule;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Container.Filterable;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
@@ -55,6 +58,9 @@ public class FlowEditor extends SecuredWebPage {
 	private SearchFormElementField flowViewerFilter;
 	private Slider zoomSlider;
 
+	private OriginFilter originFilter;
+	private OriginFilter destinyFilter;
+
 	@Override
 	protected void initContent() {
 		setCentralPanelAsWorkingArea();
@@ -62,6 +68,7 @@ public class FlowEditor extends SecuredWebPage {
 		setUpperMenu(upperMenu);
 		setBottomMenu(new FormEditBottomMenu());
 		getWorkingArea().addComponent(generateContent());
+		updateUiState();
 	}
 
 	private Component generateContent() {
@@ -114,6 +121,59 @@ public class FlowEditor extends SecuredWebPage {
 		return i;
 	}
 
+	public class OriginFilter implements Filter {
+		private static final long serialVersionUID = -8541390160081477981L;
+
+		protected TreeObject filter;
+		protected Object newRule;
+
+		public OriginFilter(TreeObject filter, Object newRule) {
+			super();
+			this.filter = filter;
+			this.newRule = newRule;
+		}
+
+		public TreeObject getFilter() {
+			return filter;
+		}
+
+		public void setFilter(TreeObject filter) {
+			this.filter = filter;
+		}
+
+		@Override
+		public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+			if (filter == null || (itemId != null && itemId.equals(newRule))) {
+				return true;
+			}
+			Rule rule = (Rule) itemId;
+			return filter.equals(rule.getOrigin())|| filter.contains(rule.getOrigin());
+		}
+
+		@Override
+		public boolean appliesToProperty(Object propertyId) {
+			// Doesn't apply to any property.
+			return false;
+		}
+	};
+	
+	public class DestinyFilter extends OriginFilter{
+		private static final long serialVersionUID = -7194892064324001003L;
+
+		public DestinyFilter(TreeObject filter, Object newRule) {
+			super(filter, newRule);
+		}
+
+		@Override
+		public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+			if (filter == null || (itemId != null && itemId.equals(newRule))) {
+				return true;
+			}
+			Rule rule = (Rule) itemId;
+			return filter.equals(rule.getDestiny())|| filter.contains(rule.getDestiny());
+		}
+	}
+
 	private Component createTableFilterBar() {
 		HorizontalLayout i = new HorizontalLayout();
 		i.setMargin(true);
@@ -122,8 +182,32 @@ public class FlowEditor extends SecuredWebPage {
 
 		tableFilterOrigin = new SearchFormElementField();
 		tableFilterOrigin.setCaption(LanguageCodes.CAPTION_FILTER_ORIGIN.translation());
+		tableFilterOrigin.addValueChangeListener(new SearchFormElementChanged() {
+
+			@Override
+			public void currentElement(Object object) {
+				Filterable f = (Filterable) tableRules.getContainerDataSource();
+				if (originFilter != null) {
+					f.removeContainerFilter(originFilter);
+				}
+				originFilter = new OriginFilter((TreeObject) tableFilterOrigin.getValue(), tableRules.getNewRuleId());
+				f.addContainerFilter(originFilter);
+			}
+		});
 		tableFilterDestiny = new SearchFormElementField();
 		tableFilterDestiny.setCaption(LanguageCodes.CAPTION_FILTER_DESTINY.translation());
+		tableFilterDestiny.addValueChangeListener(new SearchFormElementChanged() {
+
+			@Override
+			public void currentElement(Object object) {
+				Filterable f = (Filterable) tableRules.getContainerDataSource();
+				if (destinyFilter != null) {
+					f.removeContainerFilter(destinyFilter);
+				}
+				destinyFilter = new DestinyFilter((TreeObject) tableFilterDestiny.getValue(), tableRules.getNewRuleId());
+				f.addContainerFilter(destinyFilter);
+			}
+		});
 
 		i.addComponent(tableFilterOrigin);
 		i.addComponent(tableFilterDestiny);
