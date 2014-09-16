@@ -675,7 +675,24 @@ public class ApplicationController {
 		logInfoEnd("cloneRulesAndInsertIntoForm", selectedRules);
 		return clones;
 	}
+	
+	/**
+	 * Removes a set of rules from current form.
+	 * @param selectedRules
+	 */
+	public void removeRules(Set<Rule> selectedRules) {
+		removeRules(getFormInUse(), selectedRules);
+	}
+	
+	private void removeRules(Form form, Set<Rule> rules) {
+		logInfoStart("removeRules", form, rules);
+		for (Rule rule: rules) {
+			form.getRules().remove(rule);
+		}
+		logInfoEnd("removeRules", form, rules);
+	}
 
+	
 	protected void logInfoStart(String functionName, Object... parameters) {
 		WebformsLogger.info(ApplicationController.class.getName(),
 				getUserInfo() + " " + getFunctionInfo(functionName, parameters) + " START");

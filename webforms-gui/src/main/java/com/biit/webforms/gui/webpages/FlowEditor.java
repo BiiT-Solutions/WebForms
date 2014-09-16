@@ -225,12 +225,12 @@ public class FlowEditor extends SecuredWebPage {
 
 	private void updateUiState() {
 
-		boolean selectedRule = false;
+		boolean selectedNew = false;
 		@SuppressWarnings("unchecked")
 		Set<Object> itemIds = (Set<Object>) tableRules.getValue();
 		boolean multipleSelection = itemIds.size() > 1;
 		for (Object itemId : itemIds) {
-			selectedRule = itemId != null && itemId instanceof Rule;
+			selectedNew = itemId != null && itemId.equals(tableRules.getNewRuleId());
 		}
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
@@ -238,8 +238,9 @@ public class FlowEditor extends SecuredWebPage {
 		// Top button state
 		upperMenu.getSaveButton().setEnabled(canEdit);
 		upperMenu.getNewRuleButton().setEnabled(canEdit);
-		upperMenu.getEditRuleButton().setEnabled(canEdit && selectedRule && !multipleSelection);
-		upperMenu.getCloneRuleButton().setEnabled(canEdit && selectedRule);
+		upperMenu.getEditRuleButton().setEnabled(canEdit && !selectedNew && !multipleSelection);
+		upperMenu.getCloneRuleButton().setEnabled(canEdit && !selectedNew);
+		upperMenu.getRemoveRuleButton().setEnabled(canEdit && !selectedNew);
 		upperMenu.getValidateButton().setEnabled(false);
 		upperMenu.getFinishButton().setEnabled(canEdit);
 	}
@@ -385,6 +386,23 @@ public class FlowEditor extends SecuredWebPage {
 				}
 			}
 		});
+		upperMenu.addRemoveRuleButtonListener(new ClickListener() {
+			private static final long serialVersionUID = -5479947134511433646L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				@SuppressWarnings("unchecked")
+				Set<Object> selectedObjects = (Set<Object>) tableRules.getValue();
+				Set<Rule> selectedRules = new HashSet<Rule>();
+				for (Object selectedObject : selectedObjects) {
+					if (selectedObject instanceof Rule) {
+						selectedRules.add((Rule) selectedObject);
+					}
+				}
+				UserSessionHandler.getController().removeRules(selectedRules);
+				removeRulesFromTable(selectedRules);
+			}
+		});
 		upperMenu.addValidateButtonListener(new ClickListener() {
 			private static final long serialVersionUID = -1627616225877959507L;
 
@@ -445,7 +463,13 @@ public class FlowEditor extends SecuredWebPage {
 		window.showCentered();
 	}
 
-	protected void addOrUpdateRuleInTableAction(Rule... newRules) {
+	private void addOrUpdateRuleInTableAction(Rule... newRules) {
 		tableRules.addOrUpdateRules(newRules);
+	}
+	
+	private void removeRulesFromTable(Set<Rule> rules){
+		for(Rule rule: rules){
+			tableRules.removeItem(rule);
+		}
 	}
 }

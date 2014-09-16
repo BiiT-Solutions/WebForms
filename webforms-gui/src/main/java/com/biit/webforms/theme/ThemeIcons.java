@@ -59,8 +59,9 @@ public enum ThemeIcons implements IThemeIcon{
 	
 	SEARCH("search.svg"), 
 	
-	REDRAW("alert.svg"),//TODO
-	EDIT_CLONE("alert.svg"),//TODO
+	REDRAW("alert.svg"), //TODO
+	CLONE_RULE("alert.svg"), //TODO
+	REMOVE_RULE("alert.svg"), //TODO
 	
 		
 	;

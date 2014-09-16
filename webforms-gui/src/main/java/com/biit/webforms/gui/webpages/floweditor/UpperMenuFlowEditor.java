@@ -9,22 +9,26 @@ import com.vaadin.ui.Button.ClickListener;
 
 public class UpperMenuFlowEditor extends UpperMenuWebforms {
 	private static final long serialVersionUID = 4521719649478606926L;
-	
-	private IconButton saveButton, newRuleButton, editRuleButton, cloneRuleButton, validateButton, finishButton;
+
+	private IconButton saveButton, newRuleButton, editRuleButton, cloneRuleButton, removeRuleButton, validateButton,
+			finishButton;
 
 	public UpperMenuFlowEditor() {
 
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
 				LanguageCodes.COMMON_TOOLTIP_SAVE, IconSize.BIG);
-		
+
 		newRuleButton = new IconButton(LanguageCodes.CAPTION_NEW_RULE, ThemeIcons.NEW_RULE,
 				LanguageCodes.TOOLTIP_NEW_RULE, IconSize.BIG);
-		
+
 		editRuleButton = new IconButton(LanguageCodes.CAPTION_EDIT_RULE, ThemeIcons.EDIT_RULE,
 				LanguageCodes.TOOLTIP_EDIT_RULE, IconSize.BIG);
-		
-		cloneRuleButton = new IconButton(LanguageCodes.CAPTION_CLONE_RULE, ThemeIcons.EDIT_CLONE,
+
+		cloneRuleButton = new IconButton(LanguageCodes.CAPTION_CLONE_RULE, ThemeIcons.CLONE_RULE,
 				LanguageCodes.TOOLTIP_CLONE_RULE, IconSize.BIG);
+
+		removeRuleButton = new IconButton(LanguageCodes.CAPTION_REMOVE_RULE, ThemeIcons.REMOVE_RULE,
+				LanguageCodes.TOOLTIP_REMOVE_RULE, IconSize.BIG);
 
 		validateButton = new IconButton(LanguageCodes.COMMON_CAPTION_VALIDATE, ThemeIcons.FORM_VALIDATE,
 				LanguageCodes.COMMON_TOOLTIP_VALIDATE, IconSize.BIG);
@@ -36,6 +40,7 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		addIconButton(newRuleButton);
 		addIconButton(editRuleButton);
 		addIconButton(cloneRuleButton);
+		addIconButton(removeRuleButton);
 		addIconButton(validateButton);
 		addIconButton(finishButton);
 	}
@@ -51,17 +56,21 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 	public void addFinishButtonListener(ClickListener listener) {
 		finishButton.addClickListener(listener);
 	}
-	
-	public void addNewRuleButtonListener(ClickListener listener){
+
+	public void addNewRuleButtonListener(ClickListener listener) {
 		newRuleButton.addClickListener(listener);
 	}
-	
-	public void addEditRuleButtonListener(ClickListener listener){
+
+	public void addEditRuleButtonListener(ClickListener listener) {
 		editRuleButton.addClickListener(listener);
 	}
-	
-	public void addCloneRuleButtonListener(ClickListener listener){
+
+	public void addCloneRuleButtonListener(ClickListener listener) {
 		cloneRuleButton.addClickListener(listener);
+	}
+	
+	public void addRemoveRuleButtonListener(ClickListener listener){
+		removeRuleButton.addClickListener(listener);
 	}
 
 	public IconButton getSaveButton() {
@@ -75,9 +84,13 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 	public IconButton getEditRuleButton() {
 		return editRuleButton;
 	}
-	
+
 	public IconButton getCloneRuleButton() {
 		return cloneRuleButton;
+	}
+	
+	public IconButton getRemoveRuleButton() {
+		return removeRuleButton;
 	}
 
 	public IconButton getValidateButton() {
