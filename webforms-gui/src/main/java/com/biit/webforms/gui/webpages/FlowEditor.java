@@ -2,6 +2,7 @@ package com.biit.webforms.gui.webpages;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -28,6 +30,7 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
@@ -88,6 +91,7 @@ public class FlowEditor extends SecuredWebPage {
 		Component tableFilterBar = createTableFilterBar();
 
 		tableRules = new TableRules();
+		tableRules.setMultiSelect(true);
 		tableRules.setSizeFull();
 		tableRules.addNewItemActionListener(new NewItemAction() {
 
@@ -147,7 +151,7 @@ public class FlowEditor extends SecuredWebPage {
 				return true;
 			}
 			Rule rule = (Rule) itemId;
-			return filter.equals(rule.getOrigin())|| filter.contains(rule.getOrigin());
+			return filter.equals(rule.getOrigin()) || filter.contains(rule.getOrigin());
 		}
 
 		@Override
@@ -156,8 +160,8 @@ public class FlowEditor extends SecuredWebPage {
 			return false;
 		}
 	};
-	
-	public class DestinyFilter extends OriginFilter{
+
+	public class DestinyFilter extends OriginFilter {
 		private static final long serialVersionUID = -7194892064324001003L;
 
 		public DestinyFilter(TreeObject filter, Object newRule) {
@@ -170,7 +174,7 @@ public class FlowEditor extends SecuredWebPage {
 				return true;
 			}
 			Rule rule = (Rule) itemId;
-			return filter.equals(rule.getDestiny())|| filter.contains(rule.getDestiny());
+			return filter.equals(rule.getDestiny()) || filter.contains(rule.getDestiny());
 		}
 	}
 
@@ -221,14 +225,21 @@ public class FlowEditor extends SecuredWebPage {
 
 	private void updateUiState() {
 
-		boolean selectedRule = (tableRules.getValue() != null) && (tableRules.getValue() instanceof Rule);
+		boolean selectedRule = false;
+		@SuppressWarnings("unchecked")
+		Set<Object> itemIds = (Set<Object>) tableRules.getValue();
+		boolean multipleSelection = itemIds.size() > 1;
+		for (Object itemId : itemIds) {
+			selectedRule = itemId != null && itemId instanceof Rule;
+		}
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 
 		// Top button state
 		upperMenu.getSaveButton().setEnabled(canEdit);
 		upperMenu.getNewRuleButton().setEnabled(canEdit);
-		upperMenu.getEditRuleButton().setEnabled(canEdit && selectedRule);
+		upperMenu.getEditRuleButton().setEnabled(canEdit && selectedRule && !multipleSelection);
+		upperMenu.getCloneRuleButton().setEnabled(canEdit && selectedRule);
 		upperMenu.getValidateButton().setEnabled(false);
 		upperMenu.getFinishButton().setEnabled(canEdit);
 	}
@@ -267,6 +278,18 @@ public class FlowEditor extends SecuredWebPage {
 			}
 		});
 
+		IconButton redrawButton = new IconButton(LanguageCodes.CAPTION_REDRAW, ThemeIcons.REDRAW,
+				LanguageCodes.TOOLTIP_REDRAW);
+		redrawButton.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 7689117025171099202L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				formFlowViewer.setZoom(1.0f);
+				formFlowViewer.redraw();
+			}
+		});
+
 		zoomSlider = new Slider();
 		zoomSlider.setCaption(LanguageCodes.CAPTION_ZOOM_SLIDER.translation());
 		zoomSlider.setMin(ZOOM_MIN_VALUE);
@@ -284,10 +307,12 @@ public class FlowEditor extends SecuredWebPage {
 		});
 
 		i.addComponent(flowViewerFilter);
+		i.addComponent(redrawButton);
 		i.addComponent(zoomSlider);
 		i.setExpandRatio(flowViewerFilter, 0.4f);
 		i.setExpandRatio(zoomSlider, 0.4f);
 		i.setComponentAlignment(flowViewerFilter, Alignment.MIDDLE_LEFT);
+		i.setComponentAlignment(redrawButton, Alignment.BOTTOM_CENTER);
 		i.setComponentAlignment(zoomSlider, Alignment.MIDDLE_RIGHT);
 
 		return i;
@@ -326,10 +351,37 @@ public class FlowEditor extends SecuredWebPage {
 		upperMenu.addEditRuleButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 9116553626932253896L;
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if (tableRules != null) {
-					editRuleAction((Rule) tableRules.getValue());
+					Rule selectedRule = null;
+					if(tableRules.getValue() instanceof Rule){
+						selectedRule = (Rule) tableRules.getValue(); 
+					}
+					if(tableRules.getValue() instanceof Set<?>){
+						selectedRule = (Rule)((Set<Object>)tableRules.getValue()).iterator().next();
+					}
+					editRuleAction(selectedRule);
+				}
+			}
+		});
+		upperMenu.addCloneRuleButtonListener(new ClickListener() {
+			private static final long serialVersionUID = -151662907240066702L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				@SuppressWarnings("unchecked")
+				Set<Object> selectedObjects = (Set<Object>) tableRules.getValue();
+				if (selectedObjects != null) {
+					Set<Rule> selectedRules = new HashSet<Rule>();
+					for (Object selectedObject : selectedObjects) {
+						if (selectedObject instanceof Rule) {
+							selectedRules.add((Rule) selectedObject);
+						}
+					}
+					Set<Rule> clones = UserSessionHandler.getController().cloneRulesAndInsertIntoForm(selectedRules);
+					addOrUpdateRuleInTableAction(clones.toArray(new Rule[0]));
 				}
 			}
 		});
@@ -393,11 +445,7 @@ public class FlowEditor extends SecuredWebPage {
 		window.showCentered();
 	}
 
-	protected void addOrUpdateRuleInTableAction(Rule newRule) {
-		if (tableRules.containsId(newRule)) {
-			tableRules.updateRow(newRule);
-		} else {
-			tableRules.addRow(newRule);
-		}
+	protected void addOrUpdateRuleInTableAction(Rule... newRules) {
+		tableRules.addOrUpdateRules(newRules);
 	}
 }

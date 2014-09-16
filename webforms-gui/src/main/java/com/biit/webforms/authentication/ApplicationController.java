@@ -1,6 +1,8 @@
 package com.biit.webforms.authentication;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.exception.ConstraintViolationException;
 
@@ -237,8 +239,9 @@ public class ApplicationController {
 	}
 
 	public void clearFormInUse() {
-		if(formInUse != null){
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " clearFormInUse");
+		if (formInUse != null) {
+			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
+					+ " clearFormInUse");
 			UiAccesser.releaseForm(formInUse, user);
 			formInUse = null;
 		}
@@ -556,7 +559,7 @@ public class ApplicationController {
 	 * @param destiny
 	 * @throws NotValidChildException
 	 * @throws SameOriginAndDestinationException
-	 * @throws DestinyIsContainedAtOrigin 
+	 * @throws DestinyIsContainedAtOrigin
 	 */
 	public void moveTo(TreeObject origin, TreeObject destiny) throws NotValidChildException,
 			SameOriginAndDestinationException, DestinyIsContainedAtOrigin {
@@ -565,7 +568,7 @@ public class ApplicationController {
 		if (origin.equals(destiny)) {
 			throw new SameOriginAndDestinationException("Origin and destination are the same element");
 		}
-		if( origin.contains(destiny)){
+		if (origin.contains(destiny)) {
 			throw new DestinyIsContainedAtOrigin("Origin is contained inside destination element.");
 		}
 		try {
@@ -590,18 +593,20 @@ public class ApplicationController {
 
 	/**
 	 * Adds rule to a explicit form.
+	 * 
 	 * @param newRule
 	 * @param form
 	 */
-	public void addRuleToForm(Rule newRule,Form form) {
-		logInfoStart("addRuleToForm",newRule,form);
+	public void addRuleToForm(Rule newRule, Form form) {
+		logInfoStart("addRuleToForm", newRule, form);
 		form.addRule(newRule);
-		logInfoEnd("addRuleToForm",newRule,form);
+		logInfoEnd("addRuleToForm", newRule, form);
 	}
-	
+
 	/**
-	 * Update rule content. This function currently is a direct call to the structure function.
-	 * If the rule is not on the form, it gets added.
+	 * Update rule content. This function currently is a direct call to the
+	 * structure function. If the rule is not on the form, it gets added.
+	 * 
 	 * @param rule
 	 * @param origin
 	 * @param ruleType
@@ -612,58 +617,94 @@ public class ApplicationController {
 	 * @throws RuleSameOriginAndDestinyException
 	 * @throws RuleDestinyIsBeforeOrigin
 	 */
-	public void updateRuleContent(Rule rule, TreeObject origin, RuleType ruleType, TreeObject destiny, String conditionString) throws BadRuleContentException, RuleWithoutSource, RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin{
-		logInfoStart("updateRuleContent",rule,origin,ruleType,destiny,conditionString);
-		if(!getFormInUse().containsRule(rule)){
-			addRuleToForm(rule,getFormInUse());
-		}		
+	public void updateRuleContent(Rule rule, TreeObject origin, RuleType ruleType, TreeObject destiny,
+			String conditionString) throws BadRuleContentException, RuleWithoutSource,
+			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin {
+		logInfoStart("updateRuleContent", rule, origin, ruleType, destiny, conditionString);
+		if (!getFormInUse().containsRule(rule)) {
+			addRuleToForm(rule, getFormInUse());
+		}
 		rule.setRuleContent(origin, ruleType, destiny, conditionString);
 		rule.setUpdateTime();
 		rule.setUpdatedBy(getUser());
-		logInfoEnd("updateRuleContent",rule,origin,ruleType,destiny,conditionString);
+		logInfoEnd("updateRuleContent", rule, origin, ruleType, destiny, conditionString);
 	}
-	
-	
+
 	/**
-	 * Updates rule update time and updated by in rule. The content of the rule was already modified by {@link WindowRule} 
+	 * Updates rule update time and updated by in rule. The content of the rule
+	 * was already modified by {@link WindowRule}
+	 * 
 	 * @param newRule
 	 */
 	public void updateRule(Rule newRule) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " updateRule "
-				+ newRule + " in " + getFormInUse() + "START");
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " updateRule " + newRule + " in " + getFormInUse() + "START");
 		newRule.setUpdateTime();
 		newRule.setUpdatedBy(getUser());
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " updateRule "
-				+ newRule + " in " + getFormInUse() + "END");
+		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
+				+ " updateRule " + newRule + " in " + getFormInUse() + "END");
 	}
-	
-	protected void logInfoStart(String functionName, Object ... parameters){
-		WebformsLogger.info(ApplicationController.class.getName(),getUserInfo()+" "+getFunctionInfo(functionName, parameters)+ " START");
+
+	/**
+	 * Clones rules.
+	 * 
+	 * @param selectedRules
+	 */
+	public Set<Rule> cloneRules(Set<Rule> selectedRules) {
+		logInfoStart("cloneRules", selectedRules);
+		Set<Rule> clonedRules = new HashSet<Rule>();
+		for (Rule selectedRule : selectedRules) {
+			clonedRules.add(selectedRule.generateCopy());
+		}
+		logInfoEnd("cloneRules", selectedRules);
+		return clonedRules;
 	}
-	
-	protected void logInfoEnd(String functionName, Object ... parameters){
-		WebformsLogger.info(ApplicationController.class.getName(),getUserInfo()+" "+getFunctionInfo(functionName, parameters)+ " END");
+
+	/**
+	 * Clones a set of rules, reset Ids and inserts into form
+	 * @param selectedRules
+	 * @return
+	 */
+	public Set<Rule> cloneRulesAndInsertIntoForm(Set<Rule> selectedRules) {
+		logInfoStart("cloneRulesAndInsertIntoForm", selectedRules);
+		Set<Rule> clones = cloneRules(selectedRules);		
+		for (Rule clone : clones) {
+			clone.resetIds();
+			addRuleToForm(clone, UserSessionHandler.getController().getFormInUse());
+		}
+		logInfoEnd("cloneRulesAndInsertIntoForm", selectedRules);
+		return clones;
 	}
-	
-	protected String getUserInfo(){
+
+	protected void logInfoStart(String functionName, Object... parameters) {
+		WebformsLogger.info(ApplicationController.class.getName(),
+				getUserInfo() + " " + getFunctionInfo(functionName, parameters) + " START");
+	}
+
+	protected void logInfoEnd(String functionName, Object... parameters) {
+		WebformsLogger.info(ApplicationController.class.getName(),
+				getUserInfo() + " " + getFunctionInfo(functionName, parameters) + " END");
+	}
+
+	protected String getUserInfo() {
 		String userInfo = new String("User: ");
-		if(getUser()==null){
+		if (getUser() == null) {
 			return userInfo + "NO USER";
-		}else{
+		} else {
 			return userInfo + getUser().getEmailAddress();
 		}
 	}
 
-	protected String getFunctionInfo(String functionName, Object ... parameters){
-		String functionInfo = new String(functionName+"(");
-		int i=0;
-		for(Object parameter: parameters){
-			String parameterString= new String();
-			if(i>0){
+	protected String getFunctionInfo(String functionName, Object... parameters) {
+		String functionInfo = new String(functionName + "(");
+		int i = 0;
+		for (Object parameter : parameters) {
+			String parameterString = new String();
+			if (i > 0) {
 				parameterString += ", ";
-			}			
-			parameterString += "arg"+i+": '"+parameter+"'";
-			functionInfo+=parameterString;
+			}
+			parameterString += "arg" + i + ": '" + parameter + "'";
+			functionInfo += parameterString;
 			i++;
 		}
 		functionInfo += ")";

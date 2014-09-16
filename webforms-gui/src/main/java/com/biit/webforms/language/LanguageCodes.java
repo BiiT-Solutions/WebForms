@@ -192,11 +192,14 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_FILTER_ORIGIN("caption.filter.origin"),
 	CAPTION_FILTER_DESTINY("caption.filter.destiny"),
 	CAPTION_ZOOM_SLIDER("caption.zoom.slider"),
+	CAPTION_REDRAW("caption.redraw"),
+	CAPTION_CLONE_RULE("caption.clone.rule"),
 	
 	TOOLTIP_NEW_RULE("tooltip.new.rule"),
 	TOOLTIP_EDIT_RULE("tooltip.edit.rule"),
-	TOOLTIP_SEARCH_ORIGIN("tooltip.search.origin"), 
-	
+	TOOLTIP_SEARCH_ORIGIN("tooltip.search.origin"),
+	TOOLTIP_REDRAW("tooltip.redraw"),
+	TOOLTIP_CLONE_RULE("tooltip.clone.rule"),	
 	
 	WARNING_CAPTION_RULE_ORIGIN_INVALID("warning.caption.rule.origin.invalid"),
 	WARNING_CAPTION_RULE_NOT_CORRECT("warning.caption.rule.not.correct"),

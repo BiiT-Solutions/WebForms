@@ -77,7 +77,7 @@ public class FormFlowViewer extends Panel {
 		this.form = form;
 		this.filter = filter;
 
-		generateNewImage();
+		redraw();
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class FormFlowViewer extends Panel {
 		return form.getName() + "_" + df.format(new Date()) + "." + imgType.getType();
 	}
 
-	private void generateNewImage() {
+	public void redraw() {
 		imagesource = new FlowImageSource();
 
 		String imageName = getImageFilename();

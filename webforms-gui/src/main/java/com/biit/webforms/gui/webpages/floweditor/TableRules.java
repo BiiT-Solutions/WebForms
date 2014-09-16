@@ -27,8 +27,8 @@ public class TableRules extends Table {
 
 	private List<NewItemAction> newItemListeners;
 	private List<EditItemAction> editItemListeners;
-	
-	public Object getNewRuleId(){
+
+	public Object getNewRuleId() {
 		return NEW_RULE;
 	}
 
@@ -66,7 +66,7 @@ public class TableRules extends Table {
 			listener.newItemAction();
 		}
 	}
-	
+
 	protected void fireEditItemActionListener(Rule ruleToEdit) {
 		for (EditItemAction listener : editItemListeners) {
 			listener.editItemAction(ruleToEdit);
@@ -101,9 +101,9 @@ public class TableRules extends Table {
 		setColumnExpandRatio(TableRuleProperties.DESTINY, 1.0f);
 		setColumnExpandRatio(TableRuleProperties.CONDITION, 2.0f);
 	}
-	
+
 	public void addRows(Set<Rule> rules) {
-		for(Rule rule:rules){
+		for (Rule rule : rules) {
 			addRow(rule, false, false);
 		}
 		addCleanRow();
@@ -116,23 +116,36 @@ public class TableRules extends Table {
 	 * @param newRule
 	 */
 	public void addRow(Rule newRule) {
-		addRow(newRule,true,true);
+		addRow(newRule, true, true);
 	}
-	
+
 	public void addRow(Rule newRule, boolean addCleanRow, boolean select) {
 		Item item = addItem(newRule);
 		if (item != null) {
 			setItemProperties(newRule, item);
-			if(addCleanRow){
+			if (addCleanRow) {
 				addCleanRow();
 			}
-			if(select){
+			if (select) {
 				setValue(newRule);
 			}
 		}
 	}
-	
-	
+
+	public void addOrUpdateRules(Rule... newRules) {
+		if (newRules == null || newRules.length == 0) {
+			return;
+		}
+		for (Rule newRule : newRules) {
+			if (containsId(newRule)) {
+				updateRow(newRule);
+			} else {
+				addRow(newRule, false, false);
+			}
+		}
+		addCleanRow();
+		setValue(newRules);
+	}
 
 	/**
 	 * Sets item properties values from the given rule.
@@ -145,7 +158,7 @@ public class TableRules extends Table {
 		item.getItemProperty(TableRuleProperties.ORIGIN).setValue(rule.getOrigin().getName());
 
 		item.getItemProperty(TableRuleProperties.TYPE).setValue(RuleTypeUi.getTranslation(rule.getRuleType()));
-		
+
 		String destiny = "";
 		if (rule.getDestiny() != null) {
 			destiny = rule.getDestiny().getName();

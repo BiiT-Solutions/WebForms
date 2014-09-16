@@ -8,10 +8,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
 import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.enumerations.RuleType;
 import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
 import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
@@ -19,8 +19,11 @@ import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyE
 import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
 
 @Entity
-@Table(name = "rules", uniqueConstraints = { @UniqueConstraint(columnNames = { "origin_id", "destiny_id" }) })
+@Table(name = "rules")
 public class Rule extends StorableObject {
+
+	// uniqueConstraints = { @UniqueConstraint(columnNames = { "origin_id",
+	// "destiny_id" }) }
 
 	/*
 	 * Hibernate changes name of column when you use a many-to-one relationship.
@@ -74,36 +77,41 @@ public class Rule extends StorableObject {
 	}
 
 	public void setRuleContent(TreeObject origin, RuleType ruleType, TreeObject destiny, String conditionString)
-			throws BadRuleContentException, RuleWithoutSource, RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin {
-		checkRuleRestrictions(origin,ruleType,destiny,conditionString);
-		
+			throws BadRuleContentException, RuleWithoutSource, RuleSameOriginAndDestinyException,
+			RuleDestinyIsBeforeOrigin {
+		checkRuleRestrictions(origin, ruleType, destiny, conditionString);
+
 		this.origin = origin;
 		this.ruleType = ruleType;
 		this.destiny = destiny;
 		this.conditionString = conditionString;
 	}
-	
-	public static void checkRuleRestrictions(TreeObject origin, RuleType ruleType, TreeObject destiny, String conditionString) throws RuleWithoutSource, BadRuleContentException, RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin{
-		//No rule without source
+
+	public static void checkRuleRestrictions(TreeObject origin, RuleType ruleType, TreeObject destiny,
+			String conditionString) throws RuleWithoutSource, BadRuleContentException,
+			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin {
+		// No rule without source
 		if (origin == null) {
 			throw new RuleWithoutSource();
 		}
-		//If rule type doesn't need destiny, destiny must be null and otherwise
-		//If rule type doesn't need conditions, conditionString must be null or empty
+		// If rule type doesn't need destiny, destiny must be null and otherwise
+		// If rule type doesn't need conditions, conditionString must be null or
+		// empty
 		if ((ruleType.isDestinyNull() && destiny != null) || (!ruleType.isDestinyNull() && destiny == null)
-				|| (ruleType.isOthers() && conditionString != null && !conditionString.isEmpty()) || (!ruleType.isOthers() && conditionString == null)) {
+				|| (ruleType.isOthers() && conditionString != null && !conditionString.isEmpty())
+				|| (!ruleType.isOthers() && conditionString == null)) {
 			throw new BadRuleContentException();
 		}
-		//Rule origin can't be destiny
-		if(origin.equals(destiny)){
+		// Rule origin can't be destiny
+		if (origin.equals(destiny)) {
 			throw new RuleSameOriginAndDestinyException();
 		}
-		//Rule destiny cannot be prior to origin.
-		if(!ruleType.isDestinyNull()){
-			if(!(origin.compareTo(destiny)==-1)){
+		// Rule destiny cannot be prior to origin.
+		if (!ruleType.isDestinyNull()) {
+			if (!(origin.compareTo(destiny) == -1)) {
 				throw new RuleDestinyIsBeforeOrigin();
 			}
-		}		
+		}
 	}
 
 	/**
@@ -133,5 +141,27 @@ public class Rule extends StorableObject {
 	 */
 	public Object getInterpretedRule() {
 		return interpretedRule;
+	}
+
+	public Rule generateCopy() {
+		Rule newInstance = null;
+
+		// Store object copy
+		try {
+			newInstance = this.getClass().newInstance();
+			newInstance.setId(getId());
+			newInstance.setComparationId(getComparationId());
+			newInstance.setCreatedBy(getCreatedBy());
+			newInstance.setUpdatedBy(getUpdatedBy());
+
+			// Rule elements copy
+			newInstance.setRuleContent(origin, ruleType, destiny, conditionString);
+		} catch (InstantiationException | IllegalAccessException | BadRuleContentException | RuleWithoutSource
+				| RuleSameOriginAndDestinyException | RuleDestinyIsBeforeOrigin e) {
+			// Impossible
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+
+		return newInstance;
 	}
 }
