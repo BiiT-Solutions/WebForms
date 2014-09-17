@@ -1,7 +1,7 @@
 package com.biit.webforms.utils.lexer.tokens;
 
-import com.biit.webforms.utils.lexer.IToken;
+import com.biit.webforms.utils.lexer.Token;
 
-public class TokenNe extends IToken {
+public class TokenNe extends Token {
 
 }

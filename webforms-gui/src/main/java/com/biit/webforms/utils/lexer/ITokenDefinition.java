@@ -7,6 +7,6 @@ public interface ITokenDefinition {
 	public String getRegexFilter();
 	public Pattern getRegexFilterPattern();
 	public int getPrecedence();
-	public IToken generateToken(String tokenContent);
+	public Token generateToken(String tokenContent);
 	
 }

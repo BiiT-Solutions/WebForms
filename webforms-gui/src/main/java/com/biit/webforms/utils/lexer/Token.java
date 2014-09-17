@@ -1,6 +1,6 @@
 package com.biit.webforms.utils.lexer;
 
-public abstract class IToken {
+public abstract class Token {
 
 	private String originalString;
 

@@ -6,12 +6,12 @@ import java.util.regex.Matcher;
 
 import com.biit.webforms.utils.lexer.exceptions.TokenizationError;
 
-public class Tokenizer {
+public class Lexer {
 
 	// Token list by precedence.
 	private List<List<ITokenDefinition>> tokenDefinitions;
 
-	public Tokenizer() {
+	public Lexer() {
 		tokenDefinitions = new ArrayList<List<ITokenDefinition>>();
 	}
 
@@ -32,12 +32,12 @@ public class Tokenizer {
 	 * @return
 	 * @throws TokenizationError
 	 */
-	public List<IToken> tokenize(String string) throws TokenizationError {
-		List<IToken> tokens = new ArrayList<IToken>();
+	public List<Token> tokenize(String string) throws TokenizationError {
+		List<Token> tokens = new ArrayList<Token>();
 		if (string != null && !string.isEmpty()) {
 			String tempString = new String(string);
 			while (!tempString.isEmpty()) {
-				IToken currentToken = getNextToken(tempString);
+				Token currentToken = getNextToken(tempString);
 				tokens.add(currentToken);
 				// Consume string.
 				int sizeToConsume = currentToken.getOriginalString().length();
@@ -50,9 +50,9 @@ public class Tokenizer {
 		return tokens;
 	}
 
-	private IToken getNextToken(String string) throws TokenizationError {
+	private Token getNextToken(String string) throws TokenizationError {
 		for (List<ITokenDefinition> levelTokenDefinitions : tokenDefinitions) {
-			IToken token = getNextToken(string, levelTokenDefinitions);
+			Token token = getNextToken(string, levelTokenDefinitions);
 			if (token != null) {
 				return token;
 			}
@@ -67,14 +67,14 @@ public class Tokenizer {
 	 * @param levelTokenDefinitions
 	 * @return
 	 */
-	private IToken getNextToken(String string, List<ITokenDefinition> levelTokenDefinitions) {
-		IToken token = null;
+	private Token getNextToken(String string, List<ITokenDefinition> levelTokenDefinitions) {
+		Token token = null;
 		for (ITokenDefinition definition : levelTokenDefinitions) {
 			Matcher m = definition.getRegexFilterPattern().matcher(string);
 			if (m.find() && m.start()==0) {
 				// Match found.
 				String tokenString = m.group();
-				IToken tempToken = definition.generateToken(tokenString);
+				Token tempToken = definition.generateToken(tokenString);
 				// If no token yet or larger than current one
 				if (token == null || token.getOriginalString().length() < tempToken.getOriginalString().length()) {
 					token = tempToken;

@@ -59,9 +59,9 @@ public enum WebformTokenTypes implements ITokenDefinition {
 
 	private Pattern regexFilter;
 	private int preference;
-	private Class<? extends IToken> classToGenerate;
+	private Class<? extends Token> classToGenerate;
 
-	WebformTokenTypes(String regexFilter, int precedence, Class<? extends IToken> classToGenerate) {
+	WebformTokenTypes(String regexFilter, int precedence, Class<? extends Token> classToGenerate) {
 		this.regexFilter = Pattern.compile(regexFilter);
 		this.preference = precedence;
 		this.classToGenerate = classToGenerate;
@@ -83,9 +83,9 @@ public enum WebformTokenTypes implements ITokenDefinition {
 	}
 
 	@Override
-	public IToken generateToken(String tokenContent) {
+	public Token generateToken(String tokenContent) {
 		try {
-			IToken token = classToGenerate.newInstance();
+			Token token = classToGenerate.newInstance();
 			token.setOriginalString(tokenContent);
 			return token;
 		} catch (InstantiationException | IllegalAccessException e) {

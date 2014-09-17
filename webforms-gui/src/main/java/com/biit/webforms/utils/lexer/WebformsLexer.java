@@ -1,8 +1,8 @@
 package com.biit.webforms.utils.lexer;
 
-public class WebformsTokenizer extends Tokenizer{
+public class WebformsLexer extends Lexer{
 	
-	public WebformsTokenizer() {
+	public WebformsLexer() {
 		super();
 		for(WebformTokenTypes tokenType: WebformTokenTypes.values()){
 			addTokenDefinition(tokenType);
