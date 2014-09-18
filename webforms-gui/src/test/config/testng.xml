@@ -3,11 +3,13 @@
 	<test name="WebformsTest" enabled="true" preserve-order="true">
 		<groups>
 			<run>
-				<include name="tokenizer" />
+				<include name="lexer" />
+				<include name="parser" />
 			</run>
 		</groups>
 		<classes>
-			<class name="com.biit.webforms.utils.tokenizer.TestTokenizer" />
+			<class name="com.biit.webforms.utils.lexer.TestLexer" />
+			<class name="com.biit.webforms.utils.parser.TestParser" />
 		</classes>
 	</test>
 </suite>

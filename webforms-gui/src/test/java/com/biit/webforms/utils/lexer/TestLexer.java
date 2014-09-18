@@ -1,4 +1,4 @@
-package com.biit.webforms.utils.tokenizer;
+package com.biit.webforms.utils.lexer;
 
 import java.util.List;
 
@@ -6,8 +6,6 @@ import junit.framework.Assert;
 
 import org.testng.annotations.Test;
 
-import com.biit.webforms.utils.lexer.Token;
-import com.biit.webforms.utils.lexer.WebformsLexer;
 import com.biit.webforms.utils.lexer.exceptions.TokenizationError;
 import com.biit.webforms.utils.lexer.tokens.TokenAnd;
 import com.biit.webforms.utils.lexer.tokens.TokenBetween;
@@ -27,8 +25,8 @@ import com.biit.webforms.utils.lexer.tokens.TokenRightPar;
 import com.biit.webforms.utils.lexer.tokens.TokenText;
 import com.biit.webforms.utils.lexer.tokens.TokenWhitespace;
 
-@Test(groups = { "tokenizer" })
-public class TestTokenizer {
+@Test(groups = { "lexer" })
+public class TestLexer {
 
 	private final static String EMPTY_RULE = "";
 	private final static String WHITESPACE_1 = " "; // One space
@@ -54,8 +52,8 @@ public class TestTokenizer {
 	private final static String LE = "<=";
 	private final static String EQ = "==";
 	private final static String NE = "!=";
-	private final static String REFERENCE_1 = "${category.group.question}";
-	private final static String REFERENCE_2 = "${answer}";
+	private final static String REFERENCE_1 = "${<category><group><question>}";
+	private final static String REFERENCE_2 = "${<answer>}";
 	private final static String TEXT_VALID = "aanvrager";
 	private final static String TEXT_NOT_VALID = "andaanvrager";
 	private final static String DATE_1 = "01-01-1950";
@@ -66,9 +64,9 @@ public class TestTokenizer {
 	private final static String DATE_PERIOD_4 = "D";
 	private final static String BETWEEN_1 = "BETWEEN";
 	private final static String BETWEEN_2 = "between";
-	private final static String TEST_1 = "${category.persondata.birthdate}<=18Y";
-	private final static String TEST_2 = "${category.persondata.birthdate}>01-01-1950";
-	private final static String TEST_3 = "(${category.persondata.birthdate}>01-01-1950 && ${category.persondata.birthdate}<=18Y)";
+	private final static String TEST_1 = "${<category><persondata><birthdate>}<=18Y";
+	private final static String TEST_2 = "${<category><persondata><birthdate>}>01-01-1950";
+	private final static String TEST_3 = "(${<category><persondata><birthdate>}>01-01-1950 && ${<category><persondata><birthdate>}<=18Y)";
 	private final static String TEST_ = "";
 
 	@Test

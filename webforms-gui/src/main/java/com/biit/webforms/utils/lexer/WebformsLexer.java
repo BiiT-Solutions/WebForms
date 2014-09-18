@@ -4,7 +4,7 @@ public class WebformsLexer extends Lexer{
 	
 	public WebformsLexer() {
 		super();
-		for(WebformTokenTypes tokenType: WebformTokenTypes.values()){
+		for(WebformsTokenTypes tokenType: WebformsTokenTypes.values()){
 			addTokenDefinition(tokenType);
 		}
 	}

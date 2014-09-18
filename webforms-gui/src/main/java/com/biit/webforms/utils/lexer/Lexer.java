@@ -9,19 +9,19 @@ import com.biit.webforms.utils.lexer.exceptions.TokenizationError;
 public class Lexer {
 
 	// Token list by precedence.
-	private List<List<ITokenDefinition>> tokenDefinitions;
+	private List<List<ITokenType>> tokenDefinitions;
 
 	public Lexer() {
-		tokenDefinitions = new ArrayList<List<ITokenDefinition>>();
+		tokenDefinitions = new ArrayList<List<ITokenType>>();
 	}
 
-	public void addTokenDefinition(ITokenDefinition tokenType) {
+	public void addTokenDefinition(ITokenType tokenType) {
 		// Initialize with empty lists if there is no token with that
 		// precendence level
-		while (tokenDefinitions.size() <= tokenType.getPrecedence()) {
-			tokenDefinitions.add(new ArrayList<ITokenDefinition>());
+		while (tokenDefinitions.size() <= tokenType.getLexerPrecedence()) {
+			tokenDefinitions.add(new ArrayList<ITokenType>());
 		}
-		tokenDefinitions.get(tokenType.getPrecedence()).add(tokenType);
+		tokenDefinitions.get(tokenType.getLexerPrecedence()).add(tokenType);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class Lexer {
 				Token currentToken = getNextToken(tempString);
 				tokens.add(currentToken);
 				// Consume string.
-				int sizeToConsume = currentToken.getOriginalString().length();
+				int sizeToConsume = currentToken.getContent().length();
 				if (sizeToConsume <= 0) {
 					throw new TokenizationError("Size To consume equals 0 in: '" + tempString + "'");
 				}
@@ -51,7 +51,7 @@ public class Lexer {
 	}
 
 	private Token getNextToken(String string) throws TokenizationError {
-		for (List<ITokenDefinition> levelTokenDefinitions : tokenDefinitions) {
+		for (List<ITokenType> levelTokenDefinitions : tokenDefinitions) {
 			Token token = getNextToken(string, levelTokenDefinitions);
 			if (token != null) {
 				return token;
@@ -67,16 +67,16 @@ public class Lexer {
 	 * @param levelTokenDefinitions
 	 * @return
 	 */
-	private Token getNextToken(String string, List<ITokenDefinition> levelTokenDefinitions) {
+	private Token getNextToken(String string, List<ITokenType> levelTokenDefinitions) {
 		Token token = null;
-		for (ITokenDefinition definition : levelTokenDefinitions) {
+		for (ITokenType definition : levelTokenDefinitions) {
 			Matcher m = definition.getRegexFilterPattern().matcher(string);
 			if (m.find() && m.start()==0) {
 				// Match found.
 				String tokenString = m.group();
 				Token tempToken = definition.generateToken(tokenString);
 				// If no token yet or larger than current one
-				if (token == null || token.getOriginalString().length() < tempToken.getOriginalString().length()) {
+				if (token == null || token.getContent().length() < tempToken.getContent().length()) {
 					token = tempToken;
 				}
 			}

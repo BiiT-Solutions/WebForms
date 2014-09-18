@@ -21,7 +21,7 @@ import com.biit.webforms.utils.lexer.tokens.TokenRightPar;
 import com.biit.webforms.utils.lexer.tokens.TokenText;
 import com.biit.webforms.utils.lexer.tokens.TokenWhitespace;
 
-public enum WebformTokenTypes implements ITokenDefinition {
+public enum WebformsTokenTypes implements ITokenType {
 
 	WHITESPACE("\\s+|\\n+", 0, TokenWhitespace.class),
 
@@ -49,7 +49,7 @@ public enum WebformTokenTypes implements ITokenDefinition {
 
 	BETWEEN("BETWEEN|between", 1, TokenBetween.class),
 
-	REFERENCE("\\$\\{[a-z|A-z|_|.]+\\}", 1, TokenReference.class),
+	REFERENCE("\\$\\{(<[a-zA-Z][a-zA-Z0-9_.]*>)+\\}", 1, TokenReference.class),
 
 	DATE("[0-9][0-9](-|/)[0-9][0-9](-|/)[0-9][0-9][0-9][0-9]", 2, TokenDate.class),
 
@@ -59,12 +59,12 @@ public enum WebformTokenTypes implements ITokenDefinition {
 
 	private Pattern regexFilter;
 	private int preference;
-	private Class<? extends Token> classToGenerate;
+	private Class<? extends Token> tokenClass;
 
-	WebformTokenTypes(String regexFilter, int precedence, Class<? extends Token> classToGenerate) {
+	WebformsTokenTypes(String regexFilter, int precedence, Class<? extends Token> tokenClass) {
 		this.regexFilter = Pattern.compile(regexFilter);
 		this.preference = precedence;
-		this.classToGenerate = classToGenerate;
+		this.tokenClass = tokenClass;
 	}
 
 	@Override
@@ -78,20 +78,26 @@ public enum WebformTokenTypes implements ITokenDefinition {
 	}
 
 	@Override
-	public int getPrecedence() {
+	public int getLexerPrecedence() {
 		return preference;
 	}
 
 	@Override
 	public Token generateToken(String tokenContent) {
 		try {
-			Token token = classToGenerate.newInstance();
+			Token token = tokenClass.newInstance();
 			token.setOriginalString(tokenContent);
+			token.setType(this);
 			return token;
 		} catch (InstantiationException | IllegalAccessException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 		return null;
+	}
+
+	@Override
+	public boolean match(Token token) {
+		return tokenClass.isInstance(token);
 	}
 
 }
