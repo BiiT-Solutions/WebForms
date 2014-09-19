@@ -14,6 +14,7 @@ import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.stereotype.Repository;
 
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
 import com.liferay.portal.model.Organization;
@@ -27,10 +28,27 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 
 	@Override
 	protected void initializeSets(List<Form> forms) {
+		super.initializeSets(forms);
 		for (Form form : forms) {
 			// Initializes the sets for lazy-loading (within the same session)+
-			Hibernate.initialize(form.getChildren());
 			Hibernate.initialize(form.getRules());
+		}
+	}
+	
+	@Override
+	public int getLastVersion(Long formId) {
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		try {
+			Criteria criteria = session.createCriteria(Form.class);
+			criteria.setProjection(Projections.max("version"));
+			criteria.add(Restrictions.eq("id", formId));
+			Integer maxVersion = (Integer) criteria.uniqueResult();
+			session.getTransaction().commit();
+			return maxVersion;
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			throw e;
 		}
 	}
 
@@ -138,6 +156,7 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			sortChildren(result);
 			return result;
 		} catch (RuntimeException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			session.getTransaction().rollback();
 			throw e;
 		}

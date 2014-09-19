@@ -25,9 +25,27 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 
 	@Override
 	protected void initializeSets(List<Block> blocks) {
+		super.initializeSets(blocks);
 		for (Block block : blocks) {
 			// Initializes the sets for lazy-loading (within the same session)+
-			Hibernate.initialize(block.getChildren());
+			Hibernate.initialize(block.getRules());
+		}
+	}
+
+	@Override
+	public int getLastVersion(Long formId) {
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		try {
+			Criteria criteria = session.createCriteria(Form.class);
+			criteria.setProjection(Projections.max("version"));
+			criteria.add(Restrictions.eq("id", formId));
+			Integer maxVersion = (Integer) criteria.uniqueResult();
+			session.getTransaction().commit();
+			return maxVersion;
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			throw e;
 		}
 	}
 
