@@ -20,6 +20,7 @@ import com.biit.form.BaseForm;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.persistence.entity.enumerations.FormWorkStatus;
 import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToForm;
@@ -178,4 +179,15 @@ public class Form extends BaseForm {
 		}
 		return "${"+reference+"}";
 	}
+	
+	@Override
+	public Set<StorableObject> getAllInnerStorableObjects() {
+		Set<StorableObject> innerStorableObjects = new HashSet<>();
+		innerStorableObjects.addAll(super.getAllInnerStorableObjects());
+		for(Rule rule: rules){
+			innerStorableObjects.addAll(rule.getAllInnerStorableObjects());
+		}
+		return innerStorableObjects;
+	}
+
 }

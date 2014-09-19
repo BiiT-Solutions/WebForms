@@ -1,5 +1,8 @@
 package com.biit.webforms.persistence.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -179,5 +182,11 @@ public class Rule extends StorableObject {
 		}
 
 		return newInstance;
+	}
+
+	@Override
+	public Set<StorableObject> getAllInnerStorableObjects() {
+		// Return nothing
+		return new HashSet<>();
 	}
 }
