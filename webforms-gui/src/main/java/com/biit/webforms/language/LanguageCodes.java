@@ -174,7 +174,9 @@ public enum LanguageCodes implements ILanguageCode{
 	TABLE_RULE_TITLE_ORIGIN("table.rule.title.origin"),
 	TABLE_RULE_TITLE_TYPE("table.rule.title.type"),
 	TABLE_RULE_TITLE_DESTINY("table.rule.title.destiny"),
-	TABLE_RULE_TITLE_CONDITION("table.rule.title.condition"), 
+	TABLE_RULE_TITLE_CONDITION("table.rule.title.condition"),
+	TABLE_RULE_TITLE_CREATION_DATE("table.rule.title.creation.date"),
+	TABLE_RULE_TITLE_UPDATE_DATE("table.rule.title.update.date"),
 	
 	CAPTION_NEW_RULE("caption.new.rule"), 
 	CAPTION_EDIT_RULE("caption.edit.rule"),

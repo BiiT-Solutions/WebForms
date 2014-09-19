@@ -625,6 +625,11 @@ public class ApplicationController {
 		logInfoStart("updateRuleContent", rule, origin, ruleType, destiny, others, conditionString);
 		
 		rule.setRuleContent(origin, ruleType, destiny, others, conditionString);
+		
+		if(rule.getCreatedBy()==null){
+			rule.setCreationTime();
+			rule.setCreatedBy(getUser());
+		}
 		rule.setUpdateTime();
 		rule.setUpdatedBy(getUser());
 		

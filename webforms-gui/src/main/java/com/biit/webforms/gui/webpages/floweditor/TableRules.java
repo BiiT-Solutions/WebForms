@@ -7,6 +7,7 @@ import java.util.Set;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.language.RuleTypeUi;
 import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.utils.DateUtils;
 import com.vaadin.data.Item;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -22,7 +23,7 @@ public class TableRules extends Table {
 	};
 
 	public enum TableRuleProperties {
-		ORIGIN, TYPE, DESTINY, CONDITION
+		ORIGIN, TYPE, DESTINY, CONDITION, CREATION_DATE, UPDATE_DATE
 	};
 
 	private List<NewItemAction> newItemListeners;
@@ -96,10 +97,28 @@ public class TableRules extends Table {
 				LanguageCodes.TABLE_RULE_TITLE_DESTINY.translation(), null, Align.LEFT);
 		addContainerProperty(TableRuleProperties.CONDITION, String.class, null,
 				LanguageCodes.TABLE_RULE_TITLE_CONDITION.translation(), null, Align.LEFT);
+		addContainerProperty(TableRuleProperties.CREATION_DATE, String.class, null,
+				LanguageCodes.TABLE_RULE_TITLE_CREATION_DATE.translation(), null, Align.LEFT);
+		addContainerProperty(TableRuleProperties.UPDATE_DATE, String.class, null,
+				LanguageCodes.TABLE_RULE_TITLE_UPDATE_DATE.translation(), null, Align.LEFT);
 
 		setColumnExpandRatio(TableRuleProperties.ORIGIN, 1.0f);
 		setColumnExpandRatio(TableRuleProperties.DESTINY, 1.0f);
 		setColumnExpandRatio(TableRuleProperties.CONDITION, 2.0f);
+		
+		setColumnCollapsingAllowed(true);
+		
+		setColumnCollapsible(TableRuleProperties.ORIGIN, false);
+		setColumnCollapsible(TableRuleProperties.TYPE, false);
+		setColumnCollapsible(TableRuleProperties.DESTINY, false);		
+		setColumnCollapsible(TableRuleProperties.CONDITION, false);
+		
+		setColumnCollapsible(TableRuleProperties.CREATION_DATE, true);
+		setColumnCollapsible(TableRuleProperties.UPDATE_DATE, true);
+		
+		setColumnCollapsed(TableRuleProperties.CREATION_DATE, true);
+		setColumnCollapsed(TableRuleProperties.UPDATE_DATE, true);
+
 	}
 
 	public void addRows(Set<Rule> rules) {
@@ -172,6 +191,9 @@ public class TableRules extends Table {
 			condition = rule.getConditionString();
 		}
 		item.getItemProperty(TableRuleProperties.CONDITION).setValue(condition);
+		
+		item.getItemProperty(TableRuleProperties.CREATION_DATE).setValue(DateUtils.getDateString(rule.getCreationTime()));
+		item.getItemProperty(TableRuleProperties.UPDATE_DATE).setValue(DateUtils.getDateString(rule.getUpdateTime()));
 	}
 
 	public void addEditItemActionListener(EditItemAction listener) {
