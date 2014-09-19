@@ -105,7 +105,9 @@ public class WindowRule extends WindowAcceptCancel {
 		ruleTypeSelector.setValue(rule.getRuleType());
 		searchDestiny.setTreeObject(rule.getDestiny());
 		others.setValue(rule.isOthers());
-		conditionEditor.setCondition(rule.getConditionString());
+		if(!rule.isOthers()){
+			conditionEditor.setCondition(rule.getConditionString());
+		}
 	}
 
 	private Component generateRuleType() {

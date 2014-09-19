@@ -481,6 +481,7 @@ public class FlowEditor extends SecuredWebPage {
 				}
 			}
 		});
+		window.setRule(rule);
 		window.showCentered();
 	}
 
