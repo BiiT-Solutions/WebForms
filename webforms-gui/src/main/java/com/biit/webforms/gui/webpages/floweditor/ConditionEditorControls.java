@@ -8,7 +8,9 @@ import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.TreeObjectTable;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.lexer.TokenTypes;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -33,9 +35,11 @@ public class ConditionEditorControls extends TabSheet {
 	private static final String EXPAND = null;
 	private static final int NUM_BUTTON_COLUMNS = 3;
 	private static final int NUM_BUTTON_ROWS = 4;
+	protected static final TokenTypes DEFAULT_ANSWER_REFERENCE_TOKEN = TokenTypes.EQ;
 
 	private TreeObjectTable treeObjectTable;
 	private IconButton insertReference;
+	private IconButton insertAnswer;
 
 	// Logic
 	private Button and, or, not;
@@ -62,6 +66,7 @@ public class ConditionEditorControls extends TabSheet {
 
 	private void initializeComposition() {
 		treeObjectTable.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);
+		treeObjectTable.setValue(null);
 	}
 
 	private Component generateReferenceTab() {
@@ -80,20 +85,56 @@ public class ConditionEditorControls extends TabSheet {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				if (treeObjectTable.getValue() == null || treeObjectTable.getValue() instanceof Form) {
+				if (treeObjectTable.getValue() == null
+						|| !(treeObjectTable.getValue() instanceof Question || treeObjectTable.getValue() instanceof Answer)) {
 					insertReference.setEnabled(false);
 				} else {
 					insertReference.setEnabled(true);
 				}
+				if (treeObjectTable.getValue() == null || !(treeObjectTable.getValue() instanceof Answer)) {
+					insertAnswer.setEnabled(false);
+				} else {
+					insertAnswer.setEnabled(true);
+				}
 			}
 		});
 
-		insertReference = new IconButton(LanguageCodes.CAPTION_INSERT_TREE_OBJECT_REFENCE, ThemeIcons.INSERT_REFERENCE,
-				LanguageCodes.TOOLTIP_INSERT_TREE_OBJECT_REFENCE);
+		insertReference = new IconButton(LanguageCodes.CAPTION_INSERT_QUESTION_REFENCE, ThemeIcons.INSERT_REFERENCE,
+				LanguageCodes.TOOLTIP_INSERT_QUESTION_REFENCE);
 		insertReference.setWidth(FULL);
+		insertReference.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 2959069539884251545L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				// Inserts only the reference to question or answer value
+				fireInsertReferenceListeners(getCurrentTreeObjectReference());
+			}
+		});
+		insertAnswer = new IconButton(LanguageCodes.CAPTION_INSERT_ANSWER_REFENCE, ThemeIcons.INSERT_ANSWER_REFERENCE,
+				LanguageCodes.TOOLTIP_INSERT_ANSWER_REFENCE);
+		insertAnswer.setWidth(FULL);
+		insertAnswer.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 2959069539884251545L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				// The expression for answer
+				if (getCurrentTreeObjectReference().getParent() instanceof Question) {
+					// First level answer
+					fireInsertReferenceListeners(getCurrentTreeObjectReference().getParent());
+				} else {
+					// Second level answer
+					fireInsertReferenceListeners(getCurrentTreeObjectReference().getParent().getParent());
+				}
+				fireInsertTokenListeners(DEFAULT_ANSWER_REFERENCE_TOKEN);
+				fireInsertAnswerValueListeners((Answer) getCurrentTreeObjectReference());
+			}
+		});
 
 		root.addComponent(treeObjectTable);
 		root.addComponent(insertReference);
+		root.addComponent(insertAnswer);
 
 		root.setExpandRatio(treeObjectTable, 1.0f);
 
@@ -157,9 +198,15 @@ public class ConditionEditorControls extends TabSheet {
 		}
 	}
 
-	protected void fireInsertReferenceListeners() {
+	protected void fireInsertReferenceListeners(TreeObject treeObject) {
 		for (InsertTokenListener listener : insertTokenListeners) {
-			listener.insert(getCurrentTreeObjectReference());
+			listener.insert(treeObject);
+		}
+	}
+
+	protected void fireInsertAnswerValueListeners(Answer answer) {
+		for (InsertTokenListener listener : insertTokenListeners) {
+			listener.insert(answer);
 		}
 	}
 
@@ -170,5 +217,14 @@ public class ConditionEditorControls extends TabSheet {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Selects a treeObject element from the form tree object table.
+	 * 
+	 * @param treeObject
+	 */
+	public void selectTreeObject(TreeObject treeObject) {
+		treeObjectTable.setValue(treeObject);
 	}
 }

@@ -7,33 +7,27 @@ import com.biit.form.TreeObject;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Rule;
 
-public abstract class ExporterDotFormBasic<T> extends ExporterDot<T>{
+public abstract class ExporterDotFormBasic<T> extends ExporterDot<T> {
 
 	protected String generateDotRule(Rule rule) {
 		String dotRule = new String();
 		String origin = getDotId(rule.getOrigin());
 		String destiny = null;
 		String label = null;
+		
+		if (rule.isOthers()) {
+			label = "OTHERS";
+		} else {	
+			label = filterDotLanguage(rule.getConditionString());
+		}
+		
 		switch (rule.getRuleType()) {
 		case NORMAL:
-			destiny = getDotId(rule.getDestiny());
-			label = filterDotLanguage(rule.getConditionString());
-			break;
-		case OTHERS:
-			destiny = getDotId(rule.getDestiny());
-			label = "OTHERS";
+		case END_LOOP:
+			destiny = getDotId(rule.getDestiny());			
 			break;
 		case END_FORM:
 			destiny = "end";
-			label = filterDotLanguage(rule.getConditionString());
-			break;
-		case END_LOOP:
-			destiny = getDotId(rule.getDestiny());
-			label = filterDotLanguage(rule.getConditionString());
-			break;
-		case LOOP:
-			destiny = "LOOP";
-			label = filterDotLanguage(rule.getConditionString());
 			break;
 		}
 
@@ -48,7 +42,7 @@ public abstract class ExporterDotFormBasic<T> extends ExporterDot<T>{
 				+ form.getName() + "</td></tr><tr><td>version " + form.getVersion() + " ("
 				+ getTimestampFormattedString(form.getUpdateTime()) + ")</td></tr></table>> ]}\n";
 	}
-	
+
 	protected String getTimestampFormattedString(Timestamp timestamp) {
 		SimpleDateFormat formatter = new SimpleDateFormat();
 		return formatter.format(timestamp);
@@ -57,5 +51,5 @@ public abstract class ExporterDotFormBasic<T> extends ExporterDot<T>{
 	protected String getDotId(TreeObject node) {
 		return "id_" + filterDotLanguageId(node.getComparationId());
 	}
-	
+
 }

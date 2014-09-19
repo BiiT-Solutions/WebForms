@@ -66,7 +66,8 @@ public enum ThemeIcons implements IThemeIcon{
 	CONDITION_HELPER_REFERENCE("alert.svg"), //TODO 
 	CONDITION_HELPER_CONTROLS("alert.svg"), //TODO
 	
-	INSERT_REFERENCE("alert.svg"), //TODO	
+	INSERT_REFERENCE("alert.svg"),  //TODO
+	INSERT_ANSWER_REFERENCE("alert.svg"), //TODO	
 		
 	;
 	

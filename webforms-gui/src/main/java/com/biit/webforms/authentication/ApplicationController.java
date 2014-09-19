@@ -35,6 +35,7 @@ import com.biit.webforms.persistence.entity.enumerations.RuleType;
 import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
 import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.RuleWithoutDestiny;
 import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
@@ -616,17 +617,20 @@ public class ApplicationController {
 	 * @throws RuleWithoutSource
 	 * @throws RuleSameOriginAndDestinyException
 	 * @throws RuleDestinyIsBeforeOrigin
+	 * @throws RuleWithoutDestiny 
 	 */
-	public void updateRuleContent(Rule rule, TreeObject origin, RuleType ruleType, TreeObject destiny,
+	public void updateRuleContent(Rule rule, TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others,
 			String conditionString) throws BadRuleContentException, RuleWithoutSource,
-			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin {
-		logInfoStart("updateRuleContent", rule, origin, ruleType, destiny, conditionString);
+			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
+		logInfoStart("updateRuleContent", rule, origin, ruleType, destiny, others, conditionString);
+		
+		rule.setRuleContent(origin, ruleType, destiny, others, conditionString);
+		rule.setUpdateTime();
+		rule.setUpdatedBy(getUser());
+		
 		if (!getFormInUse().containsRule(rule)) {
 			addRuleToForm(rule, getFormInUse());
 		}
-		rule.setRuleContent(origin, ruleType, destiny, conditionString);
-		rule.setUpdateTime();
-		rule.setUpdatedBy(getUser());
 		logInfoEnd("updateRuleContent", rule, origin, ruleType, destiny, conditionString);
 	}
 

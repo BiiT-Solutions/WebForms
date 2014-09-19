@@ -29,7 +29,7 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
  */
 @Entity
 @Table(name = "tree_answers")
-public class Answer extends BaseAnswer {
+public class Answer extends BaseAnswer implements FlowConditionScript{
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(Answer.class));
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 
@@ -88,4 +88,8 @@ public class Answer extends BaseAnswer {
 		this.description = description;
 	}
 
+	@Override
+	public String getScriptRepresentation() {
+		return "<"+getName()+">";
+	}
 }

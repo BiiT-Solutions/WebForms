@@ -10,6 +10,7 @@ import com.biit.webforms.persistence.entity.enumerations.RuleType;
 import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
 import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.RuleWithoutDestiny;
 import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
 
 public class ComputedRuleView {
@@ -81,10 +82,10 @@ public class ComputedRuleView {
 	public void addNewNextElementRule(TreeObject origin, TreeObject destiny) {
 		Rule newRule = new Rule();
 		try {
-			newRule.setRuleContent(origin, RuleType.NORMAL, destiny, NEXT_ELEMENT_CONDITION);
+			newRule.setRuleContent(origin, RuleType.NORMAL, destiny, false, NEXT_ELEMENT_CONDITION);
 			addRule(newRule);
 		} catch (BadRuleContentException | RuleWithoutSource | RuleSameOriginAndDestinyException
-				| RuleDestinyIsBeforeOrigin e) {
+				| RuleDestinyIsBeforeOrigin | RuleWithoutDestiny e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -93,10 +94,10 @@ public class ComputedRuleView {
 	public void addNewEndFormRule(TreeObject origin) {
 		Rule newRule = new Rule();
 		try {
-			newRule.setRuleContent(origin, RuleType.END_FORM, null, NEXT_ELEMENT_CONDITION);
+			newRule.setRuleContent(origin, RuleType.END_FORM, null, false, NEXT_ELEMENT_CONDITION);
 			addRule(newRule);
 		} catch (BadRuleContentException | RuleWithoutSource | RuleSameOriginAndDestinyException
-				| RuleDestinyIsBeforeOrigin e) {
+				| RuleDestinyIsBeforeOrigin | RuleWithoutDestiny e) {
 			// Imposible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

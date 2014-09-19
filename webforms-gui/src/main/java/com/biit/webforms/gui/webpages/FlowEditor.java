@@ -26,10 +26,16 @@ import com.biit.webforms.gui.webpages.floweditor.TableRules.NewItemAction;
 import com.biit.webforms.gui.webpages.floweditor.UpperMenuFlowEditor;
 import com.biit.webforms.gui.webpages.floweditor.WindowRule;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
+import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.RuleWithoutDestiny;
+import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.vaadin.data.Container.Filter;
@@ -357,11 +363,11 @@ public class FlowEditor extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				if (tableRules != null) {
 					Rule selectedRule = null;
-					if(tableRules.getValue() instanceof Rule){
-						selectedRule = (Rule) tableRules.getValue(); 
+					if (tableRules.getValue() instanceof Rule) {
+						selectedRule = (Rule) tableRules.getValue();
 					}
-					if(tableRules.getValue() instanceof Set<?>){
-						selectedRule = (Rule)((Set<Object>)tableRules.getValue()).iterator().next();
+					if (tableRules.getValue() instanceof Set<?>) {
+						selectedRule = (Rule) ((Set<Object>) tableRules.getValue()).iterator().next();
 					}
 					editRuleAction(selectedRule);
 				}
@@ -429,17 +435,7 @@ public class FlowEditor extends SecuredWebPage {
 	 * This method opens the new rule window
 	 */
 	protected void addNewRuleAction() {
-		WindowRule window = new WindowRule();
-		window.addAcceptActionListener(new AcceptActionListener() {
-
-			@Override
-			public void acceptAction(WindowAcceptCancel window) {
-				Rule newRule = ((WindowRule) window).getRule();
-				addOrUpdateRuleInTableAction(newRule);
-				window.close();
-			}
-		});
-		window.showCentered();
+		createRuleWindow(new Rule());
 	}
 
 	/**
@@ -449,15 +445,40 @@ public class FlowEditor extends SecuredWebPage {
 	 * @param rule
 	 */
 	protected void editRuleAction(Rule rule) {
+		createRuleWindow(rule);
+	}
+
+	private void createRuleWindow(final Rule rule) {
 		WindowRule window = new WindowRule();
-		window.setRule(rule);
 		window.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
-				Rule newRule = ((WindowRule) window).getRule();
-				addOrUpdateRuleInTableAction(newRule);
-				window.close();
+				try {
+					WindowRule windowRule = (WindowRule) window;
+					UserSessionHandler.getController().updateRuleContent(rule, windowRule.getOrigin(),
+							windowRule.getRuleType(), windowRule.getDestiny(), windowRule.isOthers(),
+							windowRule.getCondition());
+
+					addOrUpdateRuleInTableAction(rule);
+					window.close();
+				} catch (BadRuleContentException e) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.WARNING_DESCRIPTION_RULE_BAD_FORMED);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				} catch (RuleWithoutSource e) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.WARNING_DESCRIPTION_ORIGIN_IS_NULL);
+				} catch (RuleSameOriginAndDestinyException e) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN_AND_DESTINY);
+				} catch (RuleDestinyIsBeforeOrigin e) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN);
+				} catch (RuleWithoutDestiny e) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_NULL);
+				}
 			}
 		});
 		window.showCentered();
@@ -466,9 +487,9 @@ public class FlowEditor extends SecuredWebPage {
 	private void addOrUpdateRuleInTableAction(Rule... newRules) {
 		tableRules.addOrUpdateRules(newRules);
 	}
-	
-	private void removeRulesFromTable(Set<Rule> rules){
-		for(Rule rule: rules){
+
+	private void removeRulesFromTable(Set<Rule> rules) {
+		for (Rule rule : rules) {
 			tableRules.removeItem(rule);
 		}
 	}

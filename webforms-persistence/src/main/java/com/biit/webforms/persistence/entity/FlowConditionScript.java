@@ -1,0 +1,13 @@
+package com.biit.webforms.persistence.entity;
+
+public interface FlowConditionScript {
+
+	/**
+	 * Returns a script with the representation of the element in the Webforms
+	 * flow condition script.
+	 * 
+	 * @return
+	 */
+	public String getScriptRepresentation();
+
+}

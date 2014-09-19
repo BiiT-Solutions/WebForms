@@ -16,6 +16,7 @@ import com.biit.webforms.persistence.entity.enumerations.RuleType;
 import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
 import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.RuleWithoutDestiny;
 import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
 
 @Entity
@@ -41,6 +42,8 @@ public class Rule extends StorableObject {
 	@JoinColumn(name = "destiny_id")
 	private TreeObject destiny;
 
+	private boolean others;
+	
 	private String conditionString;
 
 	@Transient
@@ -75,33 +78,46 @@ public class Rule extends StorableObject {
 	protected void setDestiny(TreeObject destiny) {
 		this.destiny = destiny;
 	}
+	
+	public boolean isOthers() {
+		return others;
+	}
 
-	public void setRuleContent(TreeObject origin, RuleType ruleType, TreeObject destiny, String conditionString)
+	protected void setOthers(boolean others) {
+		this.others = others;
+	}
+
+	public void setRuleContent(TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others, String conditionString)
 			throws BadRuleContentException, RuleWithoutSource, RuleSameOriginAndDestinyException,
-			RuleDestinyIsBeforeOrigin {
-		checkRuleRestrictions(origin, ruleType, destiny, conditionString);
+			RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
+		checkRuleRestrictions(origin, ruleType, destiny, others, conditionString);
 
 		this.origin = origin;
 		this.ruleType = ruleType;
 		this.destiny = destiny;
+		this.others = others;
 		this.conditionString = conditionString;
 	}
 
-	public static void checkRuleRestrictions(TreeObject origin, RuleType ruleType, TreeObject destiny,
+	public static void checkRuleRestrictions(TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others,
 			String conditionString) throws RuleWithoutSource, BadRuleContentException,
-			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin {
+			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
 		// No rule without source
 		if (origin == null) {
 			throw new RuleWithoutSource();
 		}
 		// If rule type doesn't need destiny, destiny must be null and otherwise
-		// If rule type doesn't need conditions, conditionString must be null or
-		// empty
-		if ((ruleType.isDestinyNull() && destiny != null) || (!ruleType.isDestinyNull() && destiny == null)
-				|| (ruleType.isOthers() && conditionString != null && !conditionString.isEmpty())
-				|| (!ruleType.isOthers() && conditionString == null)) {
-			throw new BadRuleContentException();
+		if((ruleType.isDestinyNull() && destiny !=null) || (!ruleType.isDestinyNull() && destiny ==null)){
+			throw new RuleWithoutDestiny();
 		}
+		
+		if(others && (conditionString!=null)){
+			throw new BadRuleContentException("Rules with other must have null condition string");
+		}
+		if(!others && (conditionString==null)){
+			throw new BadRuleContentException("Rules that are not other must have a not null condition string.");
+		}
+		
 		// Rule origin can't be destiny
 		if (origin.equals(destiny)) {
 			throw new RuleSameOriginAndDestinyException();
@@ -155,9 +171,9 @@ public class Rule extends StorableObject {
 			newInstance.setUpdatedBy(getUpdatedBy());
 
 			// Rule elements copy
-			newInstance.setRuleContent(origin, ruleType, destiny, conditionString);
+			newInstance.setRuleContent(origin, ruleType, destiny, others, conditionString);
 		} catch (InstantiationException | IllegalAccessException | BadRuleContentException | RuleWithoutSource
-				| RuleSameOriginAndDestinyException | RuleDestinyIsBeforeOrigin e) {
+				| RuleSameOriginAndDestinyException | RuleDestinyIsBeforeOrigin | RuleWithoutDestiny e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

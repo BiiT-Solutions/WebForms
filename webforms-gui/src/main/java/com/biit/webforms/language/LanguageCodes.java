@@ -195,7 +195,9 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_REDRAW("caption.redraw"),
 	CAPTION_CLONE_RULE("caption.clone.rule"),
 	CAPTION_REMOVE_RULE("caption.remove.rule"),
-	CAPTION_INSERT_TREE_OBJECT_REFENCE("caption.insert.tree.object.reference"),
+	CAPTION_INSERT_QUESTION_REFENCE("caption.insert.question.reference"),
+	CAPTION_INSERT_ANSWER_REFENCE("caption.insert.answer.reference"),
+	CAPTION_OTHERS("caption.others"),
 	
 	TOOLTIP_NEW_RULE("tooltip.new.rule"),
 	TOOLTIP_EDIT_RULE("tooltip.edit.rule"),
@@ -203,7 +205,8 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_REDRAW("tooltip.redraw"),
 	TOOLTIP_CLONE_RULE("tooltip.clone.rule"),
 	TOOLTIP_REMOVE_RULE("tooltip.remove.rule"),
-	TOOLTIP_INSERT_TREE_OBJECT_REFENCE("tooltip.insert.tree.object.reference"),
+	TOOLTIP_INSERT_QUESTION_REFENCE("tooltip.insert.question.reference"),
+	TOOLTIP_INSERT_ANSWER_REFENCE("tooltip.insert.answer.reference"),
 	
 	WARNING_CAPTION_RULE_ORIGIN_INVALID("warning.caption.rule.origin.invalid"),
 	WARNING_CAPTION_RULE_NOT_CORRECT("warning.caption.rule.not.correct"),
@@ -213,6 +216,7 @@ public enum LanguageCodes implements ILanguageCode{
 	WARNING_DESCRIPTION_ORIGIN_IS_NULL("warning.description.origin.is.null"),
 	WARNING_DESCRIPTION_SAME_ORIGIN_AND_DESTINY("warning.description.same.origin.and.destiny"),
 	WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN("warning.description.destiny.is.before.origin"),
+	WARNING_DESCRIPTION_RULE_BAD_FORMED("warning.description.rule.bad.formed"),
 	
 	NULL_VALUE_SEARCH_ORIGIN("null.value.search.origin"),
 	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),

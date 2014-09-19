@@ -1,5 +1,8 @@
 package com.biit.webforms.persistence.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,7 +20,7 @@ import com.biit.webforms.persistence.entity.enumerations.AnswerType;
 
 @Entity
 @Table(name = "tree_questions")
-public class Question extends BaseQuestion {
+public class Question extends BaseQuestion implements FlowConditionScript {
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 	public static final boolean DEFAULT_HORIZONTAL = false;
 	public static final boolean DEFAULT_MANDATORY = true;
@@ -61,7 +64,7 @@ public class Question extends BaseQuestion {
 		this.answerType = answerType;
 		try {
 			setAnswerFormat(answerType.getDefaultAnswerFormat());
-			if(!answerType.isChildrenAllowed()){
+			if (!answerType.isChildrenAllowed()) {
 				getChildren().clear();
 			}
 			horizontal = answerType.getDefaultHorizontal();
@@ -90,21 +93,22 @@ public class Question extends BaseQuestion {
 
 	@Override
 	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
-		if (object instanceof Question) {			
+		if (object instanceof Question) {
 			Question question = (Question) object;
 
 			setDescription(new String(question.getDescription()));
 			setMandatory(question.isMandatory());
-			//This need to be set on order or otherwise the assignment process will fail
+			// This need to be set on order or otherwise the assignment process
+			// will fail
 			setAnswerType(question.getAnswerType());
 			try {
 				setAnswerFormat(question.getAnswerFormat());
 			} catch (InvalidAnswerFormatException e) {
 				// Its a copy, it should never happen.
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			}			
+			}
 			setHorizontal(question.isHorizontal());
-			
+
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy");
 		}
@@ -133,14 +137,30 @@ public class Question extends BaseQuestion {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	@Override
-	public boolean isAllowedChildren(Class<? extends TreeObject> childClass){
-		if(super.isAllowedChildren(childClass)){
-			if(answerType.isChildrenAllowed()){
+	public boolean isAllowedChildren(Class<? extends TreeObject> childClass) {
+		if (super.isAllowedChildren(childClass)) {
+			if (answerType.isChildrenAllowed()) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public String getScriptRepresentation() {
+		List<TreeObject> parents = new ArrayList<TreeObject>();
+		TreeObject tempParent = getParent();
+		while (tempParent != null && !(tempParent instanceof Form)) {
+			parents.add(tempParent);
+			tempParent = tempParent.getParent();
+		}
+		String representation = "<" + getName() + ">";
+		for (int i = 0; i < parents.size(); i++) {
+			representation = "<" + parents.get(i).getName() + ">" + representation;
+		}
+		representation = "${" + representation + "}";
+		return representation;
 	}
 }

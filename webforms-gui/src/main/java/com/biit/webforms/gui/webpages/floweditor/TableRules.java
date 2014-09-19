@@ -166,7 +166,9 @@ public class TableRules extends Table {
 		item.getItemProperty(TableRuleProperties.DESTINY).setValue(destiny);
 
 		String condition = "";
-		if (rule.getConditionString() != null) {
+		if(rule.isOthers()){
+			condition = "OTHERS";
+		}else{
 			condition = rule.getConditionString();
 		}
 		item.getItemProperty(TableRuleProperties.CONDITION).setValue(condition);

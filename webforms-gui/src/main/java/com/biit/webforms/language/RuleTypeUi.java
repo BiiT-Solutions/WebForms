@@ -6,10 +6,6 @@ import com.biit.webforms.persistence.entity.enumerations.RuleType;
 public enum RuleTypeUi {
 	
 	NORMAL(RuleType.NORMAL, LanguageCodes.CAPTION_RULE_TYPE_NORMAL),
-	
-	OTHERS(RuleType.OTHERS, LanguageCodes.CAPTION_RULE_TYPE_OTHERS),
-	
-	LOOP(RuleType.LOOP, LanguageCodes.CAPTION_RULE_TYPE_LOOP),
 
 	END_LOOP(RuleType.END_LOOP, LanguageCodes.CAPTION_RULE_TYPE_END_LOOP),
 

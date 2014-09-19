@@ -1,19 +1,16 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.form.TreeObject;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
-import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.language.RuleTypeUi;
 import com.biit.webforms.persistence.entity.Rule;
 import com.biit.webforms.persistence.entity.enumerations.RuleType;
-import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
-import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
-import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -39,8 +36,8 @@ public class WindowRule extends WindowAcceptCancel {
 	private SearchFormElementField searchOrigin;
 	private SearchFormElementField searchDestiny;
 	private ComboBox ruleTypeSelector;
+	private CheckBox others;
 	private ConditionEditor conditionEditor;
-	private Rule rule;
 
 	public WindowRule() {
 		super();
@@ -51,7 +48,6 @@ public class WindowRule extends WindowAcceptCancel {
 		setModal(true);
 		setWidth(width);
 		setHeight(height);
-		setRule(new Rule());
 	}
 
 	public Component generateContent() {
@@ -62,10 +58,12 @@ public class WindowRule extends WindowAcceptCancel {
 
 		Component barLayout = generateControlBar();
 		barLayout.setHeight(BAR_HEIGHT);
+		Component selectOthers = generateOthersComponent();
 
-		initializeConditionEditor();
+		generateConditionEditor();
 
 		rootLayout.addComponent(barLayout);
+		rootLayout.addComponent(selectOthers);
 		rootLayout.addComponent(conditionEditor);
 
 		rootLayout.setExpandRatio(conditionEditor, 1.0f);
@@ -76,7 +74,7 @@ public class WindowRule extends WindowAcceptCancel {
 		return rootLayout;
 	}
 
-	private Component initializeConditionEditor() {
+	private Component generateConditionEditor() {
 		conditionEditor = new ConditionEditor();
 
 		return conditionEditor;
@@ -84,8 +82,7 @@ public class WindowRule extends WindowAcceptCancel {
 
 	private Component generateControlBar() {
 		HorizontalLayout barLayout = new HorizontalLayout();
-		barLayout.setSizeFull();
-		// barLayout.setMargin(true);
+		barLayout.setWidth("100%");
 		barLayout.setSpacing(true);
 
 		Component selectOriginComponent = generateSearchOriginContent();
@@ -99,19 +96,16 @@ public class WindowRule extends WindowAcceptCancel {
 		barLayout.setComponentAlignment(selectOriginComponent, Alignment.BOTTOM_LEFT);
 		barLayout.setComponentAlignment(selectRuleType, Alignment.BOTTOM_CENTER);
 		barLayout.setComponentAlignment(selectDestinyComponent, Alignment.BOTTOM_RIGHT);
-		barLayout.setExpandRatio(selectOriginComponent, 0.0f);
-		barLayout.setExpandRatio(selectRuleType, 0.0f);
-		barLayout.setExpandRatio(selectDestinyComponent, 0.0f);
 
 		return barLayout;
 	}
 
-	private void updateControls() {
+	private void updateControls(Rule rule) {
 		searchOrigin.setTreeObject(rule.getOrigin());
 		ruleTypeSelector.setValue(rule.getRuleType());
 		searchDestiny.setTreeObject(rule.getDestiny());
-		// TODO
-		// richTextArea.setValue(rule.getConditionString());
+		others.setValue(rule.isOthers());
+		conditionEditor.setCondition(rule.getConditionString());
 	}
 
 	private Component generateRuleType() {
@@ -133,12 +127,6 @@ public class WindowRule extends WindowAcceptCancel {
 				} else {
 					searchDestiny.setEnabled(true);
 				}
-				if (type.isOthers()) {
-					conditionEditor.clean();
-					conditionEditor.setEnabled(false);
-				} else {
-					conditionEditor.setEnabled(true);
-				}
 			}
 		});
 		return ruleTypeSelector;
@@ -148,6 +136,13 @@ public class WindowRule extends WindowAcceptCancel {
 		searchOrigin = new SearchFormElementField();
 		searchOrigin.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_ORIGIN);
 		searchOrigin.setCaption(LanguageCodes.CAPTION_FROM.translation());
+		searchOrigin.addValueChangeListener(new SearchFormElementChanged() {
+
+			@Override
+			public void currentElement(Object object) {
+				conditionEditor.selectReferenceElement((TreeObject) object);
+			}
+		});
 
 		return searchOrigin;
 	}
@@ -160,43 +155,48 @@ public class WindowRule extends WindowAcceptCancel {
 		return searchDestiny;
 	}
 
-	@Override
-	protected boolean acceptAction() {
-		// Actualize the object.
-		String conditions = null;
-		if (conditionEditor.isEnabled()) {
-			//TODO
-			//conditions = richTextArea.getValue();
-		}
-		try {
-			UserSessionHandler.getController().updateRuleContent(rule, searchOrigin.getTreeObject(),
-					(RuleType) ruleTypeSelector.getValue(), searchDestiny.getTreeObject(), conditions);
-		} catch (BadRuleContentException e) {
-			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-					LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_NULL);
-			return false;
-		} catch (RuleWithoutSource e) {
-			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-					LanguageCodes.WARNING_DESCRIPTION_ORIGIN_IS_NULL);
-			return false;
-		} catch (RuleSameOriginAndDestinyException e) {
-			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-					LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN_AND_DESTINY);
-			return false;
-		} catch (RuleDestinyIsBeforeOrigin e) {
-			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-					LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN);
-			return false;
-		}
-		return true;
-	}
+	private Component generateOthersComponent() {
+		others = new CheckBox(LanguageCodes.CAPTION_OTHERS.translation());
+		others.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = 1241982496892267519L;
 
-	public Rule getRule() {
-		return rule;
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				if (others.getValue()) {
+					conditionEditor.setEnabled(false);
+					conditionEditor.clean();
+				} else {
+					conditionEditor.setEnabled(true);
+				}
+			}
+		});
+		return others;
 	}
 
 	public void setRule(Rule rule) {
-		this.rule = rule;
-		updateControls();
+		updateControls(rule);
+	}
+
+	public TreeObject getOrigin() {
+		return searchOrigin.getTreeObject();
+	}
+
+	public TreeObject getDestiny() {
+		return searchDestiny.getTreeObject();
+	}
+
+	public RuleType getRuleType() {
+		return (RuleType) ruleTypeSelector.getValue();
+	}
+
+	public String getCondition() {
+		if (conditionEditor.isEnabled()) {
+			return conditionEditor.getCondition();
+		}
+		return null;
+	}
+
+	public boolean isOthers() {
+		return others.getValue();
 	}
 }
