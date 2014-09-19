@@ -17,7 +17,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -40,7 +39,7 @@ public class WindowRule extends WindowAcceptCancel {
 	private SearchFormElementField searchOrigin;
 	private SearchFormElementField searchDestiny;
 	private ComboBox ruleTypeSelector;
-	private RichTextArea richTextArea;
+	private ConditionEditor conditionEditor;
 	private Rule rule;
 
 	public WindowRule() {
@@ -61,19 +60,26 @@ public class WindowRule extends WindowAcceptCancel {
 		rootLayout.setMargin(true);
 		rootLayout.setSpacing(true);
 
-		richTextArea = new RichTextArea();
-		richTextArea.setSizeFull();
-		richTextArea.addStyleName("richTextArea-noControls");
-
 		Component barLayout = generateControlBar();
 		barLayout.setHeight(BAR_HEIGHT);
-		ruleTypeSelector.setValue(RuleType.NORMAL);
+
+		initializeConditionEditor();
 
 		rootLayout.addComponent(barLayout);
-		rootLayout.addComponent(richTextArea);
+		rootLayout.addComponent(conditionEditor);
 
-		rootLayout.setExpandRatio(richTextArea, 1.0f);
+		rootLayout.setExpandRatio(conditionEditor, 1.0f);
+
+		// Initialize component default values.
+		ruleTypeSelector.setValue(RuleType.NORMAL);
+
 		return rootLayout;
+	}
+
+	private Component initializeConditionEditor() {
+		conditionEditor = new ConditionEditor();
+
+		return conditionEditor;
 	}
 
 	private Component generateControlBar() {
@@ -104,7 +110,8 @@ public class WindowRule extends WindowAcceptCancel {
 		searchOrigin.setTreeObject(rule.getOrigin());
 		ruleTypeSelector.setValue(rule.getRuleType());
 		searchDestiny.setTreeObject(rule.getDestiny());
-		richTextArea.setValue(rule.getConditionString());
+		// TODO
+		// richTextArea.setValue(rule.getConditionString());
 	}
 
 	private Component generateRuleType() {
@@ -127,10 +134,10 @@ public class WindowRule extends WindowAcceptCancel {
 					searchDestiny.setEnabled(true);
 				}
 				if (type.isOthers()) {
-					richTextArea.setValue("");
-					richTextArea.setEnabled(false);
+					conditionEditor.clean();
+					conditionEditor.setEnabled(false);
 				} else {
-					richTextArea.setEnabled(true);
+					conditionEditor.setEnabled(true);
 				}
 			}
 		});
@@ -157,12 +164,13 @@ public class WindowRule extends WindowAcceptCancel {
 	protected boolean acceptAction() {
 		// Actualize the object.
 		String conditions = null;
-		if (richTextArea.isEnabled()) {
-			conditions = richTextArea.getValue();
+		if (conditionEditor.isEnabled()) {
+			//TODO
+			//conditions = richTextArea.getValue();
 		}
 		try {
-			UserSessionHandler.getController().updateRuleContent(rule, searchOrigin.getTreeObject(), (RuleType) ruleTypeSelector.getValue(),
-					searchDestiny.getTreeObject(), conditions);
+			UserSessionHandler.getController().updateRuleContent(rule, searchOrigin.getTreeObject(),
+					(RuleType) ruleTypeSelector.getValue(), searchDestiny.getTreeObject(), conditions);
 		} catch (BadRuleContentException e) {
 			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 					LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_NULL);

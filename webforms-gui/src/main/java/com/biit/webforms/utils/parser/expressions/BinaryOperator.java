@@ -1,7 +1,7 @@
 package com.biit.webforms.utils.parser.expressions;
 
 import com.biit.webforms.utils.lexer.ITokenType;
-import com.biit.webforms.utils.lexer.WebformsTokenTypes;
+import com.biit.webforms.utils.lexer.TokenTypes;
 
 /**
  * Expressions [EXPR] and [EXPR]
@@ -12,12 +12,12 @@ import com.biit.webforms.utils.lexer.WebformsTokenTypes;
 public class BinaryOperator extends Expression {
 
 	private Expression left;
-	private WebformsTokenTypes type;
+	private TokenTypes type;
 	private Expression right;
 
 	public BinaryOperator(Expression left, ITokenType type, Expression right) {
 		this.left = left;
-		this.type = (WebformsTokenTypes) type;
+		this.type = (TokenTypes) type;
 		this.right = right;
 	}
 

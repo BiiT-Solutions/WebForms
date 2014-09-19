@@ -1,7 +1,9 @@
 package com.biit.webforms.persistence.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -20,6 +22,7 @@ import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.persistence.entity.enumerations.FormWorkStatus;
+import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToForm;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 
@@ -157,5 +160,22 @@ public class Form extends BaseForm {
 			}
 		}
 		return computedView;
+	}
+
+	public String getReference(TreeObject element) throws ReferenceNotPertainsToForm {
+		List<TreeObject> parentList = new ArrayList<>();
+		TreeObject parent;
+		while((parent=element.getParent()) != null){
+			parentList.add(parent);
+		}
+		if(!parentList.get(parentList.size()-1).equals(this)){
+			throw new ReferenceNotPertainsToForm("TreeObject: '"+element+"' doesn't belong to '"+this+"'");
+		}
+		
+		String reference = "<"+element.getName()+">";
+		for(TreeObject listedParent: parentList){
+			reference = "<"+listedParent.getName()+">"+reference;
+		}
+		return "${"+reference+"}";
 	}
 }

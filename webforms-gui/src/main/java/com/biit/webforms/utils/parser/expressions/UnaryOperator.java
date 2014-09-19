@@ -1,22 +1,22 @@
 package com.biit.webforms.utils.parser.expressions;
 
 import com.biit.webforms.utils.lexer.ITokenType;
-import com.biit.webforms.utils.lexer.WebformsTokenTypes;
+import com.biit.webforms.utils.lexer.TokenTypes;
 
 public class UnaryOperator extends Expression {
 
 	private boolean prefix;
-	private WebformsTokenTypes type;
+	private TokenTypes type;
 	private Expression expression;
 
 	public UnaryOperator(ITokenType type, Expression right) {
-		this.type = (WebformsTokenTypes) type;
+		this.type = (TokenTypes) type;
 		this.expression = right;
 		this.prefix = true;
 	}
 
 	public UnaryOperator(Expression left, ITokenType type) {
-		this.type = (WebformsTokenTypes) type;
+		this.type = (TokenTypes) type;
 		this.expression = left;
 		this.prefix = false;
 	}

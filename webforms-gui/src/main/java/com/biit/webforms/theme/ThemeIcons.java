@@ -61,8 +61,12 @@ public enum ThemeIcons implements IThemeIcon{
 	
 	REDRAW("alert.svg"), //TODO
 	CLONE_RULE("alert.svg"), //TODO
-	REMOVE_RULE("alert.svg"), //TODO
+	REMOVE_RULE("alert.svg"),  //TODO
 	
+	CONDITION_HELPER_REFERENCE("alert.svg"), //TODO 
+	CONDITION_HELPER_CONTROLS("alert.svg"), //TODO
+	
+	INSERT_REFERENCE("alert.svg"), //TODO	
 		
 	;
 	
