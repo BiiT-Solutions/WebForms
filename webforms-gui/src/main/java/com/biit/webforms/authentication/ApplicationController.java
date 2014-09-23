@@ -711,6 +711,11 @@ public class ApplicationController {
 		WebformsLogger.info(ApplicationController.class.getName(),
 				getUserInfo() + " " + getFunctionInfo(functionName, parameters) + " END");
 	}
+	
+	protected void logInfo(String functionName, Object... parameters) {
+		WebformsLogger.info(ApplicationController.class.getName(),
+				getUserInfo() + " " + getFunctionInfo(functionName, parameters));
+	}
 
 	protected String getUserInfo() {
 		String userInfo = new String("User: ");
@@ -735,5 +740,10 @@ public class ApplicationController {
 		}
 		functionInfo += ")";
 		return functionInfo;
+	}
+
+	public Set<Rule> getFormInUseRules() {
+		logInfo("getFormInUseRules");
+		return getFormInUse().getRules();
 	}
 }

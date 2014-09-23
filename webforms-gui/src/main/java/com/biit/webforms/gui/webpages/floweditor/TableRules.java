@@ -1,14 +1,17 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.biit.webforms.gui.common.components.StringToTimestampConverter;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.language.RuleTypeUi;
 import com.biit.webforms.persistence.entity.Rule;
-import com.biit.webforms.utils.DateUtils;
 import com.vaadin.data.Item;
+import com.vaadin.data.util.DefaultItemSorter;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Table;
@@ -97,28 +100,32 @@ public class TableRules extends Table {
 				LanguageCodes.TABLE_RULE_TITLE_DESTINY.translation(), null, Align.LEFT);
 		addContainerProperty(TableRuleProperties.CONDITION, String.class, null,
 				LanguageCodes.TABLE_RULE_TITLE_CONDITION.translation(), null, Align.LEFT);
-		addContainerProperty(TableRuleProperties.CREATION_DATE, String.class, null,
+		addContainerProperty(TableRuleProperties.CREATION_DATE, Timestamp.class, null,
 				LanguageCodes.TABLE_RULE_TITLE_CREATION_DATE.translation(), null, Align.LEFT);
-		addContainerProperty(TableRuleProperties.UPDATE_DATE, String.class, null,
+		addContainerProperty(TableRuleProperties.UPDATE_DATE, Timestamp.class, null,
 				LanguageCodes.TABLE_RULE_TITLE_UPDATE_DATE.translation(), null, Align.LEFT);
+
+		setConverter(TableRuleProperties.CREATION_DATE, new StringToTimestampConverter());
+		setConverter(TableRuleProperties.UPDATE_DATE, new StringToTimestampConverter());
 
 		setColumnExpandRatio(TableRuleProperties.ORIGIN, 1.0f);
 		setColumnExpandRatio(TableRuleProperties.DESTINY, 1.0f);
 		setColumnExpandRatio(TableRuleProperties.CONDITION, 2.0f);
-		
+
 		setColumnCollapsingAllowed(true);
-		
+
 		setColumnCollapsible(TableRuleProperties.ORIGIN, false);
 		setColumnCollapsible(TableRuleProperties.TYPE, false);
-		setColumnCollapsible(TableRuleProperties.DESTINY, false);		
+		setColumnCollapsible(TableRuleProperties.DESTINY, false);
 		setColumnCollapsible(TableRuleProperties.CONDITION, false);
-		
+
 		setColumnCollapsible(TableRuleProperties.CREATION_DATE, true);
 		setColumnCollapsible(TableRuleProperties.UPDATE_DATE, true);
-		
+
 		setColumnCollapsed(TableRuleProperties.CREATION_DATE, true);
 		setColumnCollapsed(TableRuleProperties.UPDATE_DATE, true);
 
+		((IndexedContainer) getContainerDataSource()).setItemSorter(new TableRulesSorter());
 	}
 
 	public void addRows(Set<Rule> rules) {
@@ -185,15 +192,15 @@ public class TableRules extends Table {
 		item.getItemProperty(TableRuleProperties.DESTINY).setValue(destiny);
 
 		String condition = "";
-		if(rule.isOthers()){
+		if (rule.isOthers()) {
 			condition = "OTHERS";
-		}else{
+		} else {
 			condition = rule.getConditionString();
 		}
 		item.getItemProperty(TableRuleProperties.CONDITION).setValue(condition);
-		
-		item.getItemProperty(TableRuleProperties.CREATION_DATE).setValue(DateUtils.getDateString(rule.getCreationTime()));
-		item.getItemProperty(TableRuleProperties.UPDATE_DATE).setValue(DateUtils.getDateString(rule.getUpdateTime()));
+
+		item.getItemProperty(TableRuleProperties.CREATION_DATE).setValue(rule.getCreationTime());
+		item.getItemProperty(TableRuleProperties.UPDATE_DATE).setValue(rule.getUpdateTime());
 	}
 
 	public void addEditItemActionListener(EditItemAction listener) {
@@ -209,6 +216,31 @@ public class TableRules extends Table {
 		Item item = getItem(rule);
 		if (item != null) {
 			setItemProperties(rule, item);
+		}
+	}
+
+	public void sortByUpdateDate(boolean ascending) {
+		sort(new Object[] { TableRuleProperties.UPDATE_DATE }, new boolean[] { ascending });
+	}
+
+	/**
+	 * Custom Item sorter.
+	 * 
+	 * @author joriz_000
+	 * 
+	 */
+	public class TableRulesSorter extends DefaultItemSorter {
+		private static final long serialVersionUID = 132410424035740848L;
+
+		@Override
+		public int compare(Object itemId1, Object itemId2) {
+			if (itemId1 instanceof String) {
+				return 1;
+			}
+			if (itemId2 instanceof String) {
+				return -1;
+			}
+			return super.compare(itemId1, itemId2);
 		}
 	}
 }

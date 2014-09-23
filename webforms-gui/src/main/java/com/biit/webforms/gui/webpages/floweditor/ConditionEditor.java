@@ -7,10 +7,12 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.FlowConditionScript;
 import com.biit.webforms.utils.lexer.TokenTypes;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextArea;
+import com.vaadin.ui.VerticalLayout;
 
 public class ConditionEditor extends CustomComponent {
 	private static final long serialVersionUID = -4957758105459476797L;
@@ -41,6 +43,11 @@ public class ConditionEditor extends CustomComponent {
 		HorizontalLayout horizontalLayout = new HorizontalLayout();
 		horizontalLayout.setSizeFull();
 		horizontalLayout.setSpacing(true);
+		
+		VerticalLayout checkAndText = new VerticalLayout();
+		checkAndText.setSizeFull();
+		
+		checkAndText.addComponent(new Button("kiwi"));
 
 		textArea = new TextArea();
 		textArea.setSizeFull();
@@ -53,6 +60,8 @@ public class ConditionEditor extends CustomComponent {
 		// }
 		// });
 		textArea.setImmediate(true);
+		checkAndText.addComponent(textArea);
+		checkAndText.setExpandRatio(textArea, 1.0f);
 
 		controls = new ConditionEditorControls();
 		controls.setSizeFull();
@@ -74,11 +83,11 @@ public class ConditionEditor extends CustomComponent {
 			}
 		});
 
-		horizontalLayout.addComponent(textArea);
+		horizontalLayout.addComponent(checkAndText);
 		horizontalLayout.addComponent(controls);
 
 		horizontalLayout.setExpandRatio(textArea, 0.70f);
-		horizontalLayout.setExpandRatio(controls, 0.30f);
+		horizontalLayout.setExpandRatio(checkAndText, 0.30f);
 		return horizontalLayout;
 	}
 

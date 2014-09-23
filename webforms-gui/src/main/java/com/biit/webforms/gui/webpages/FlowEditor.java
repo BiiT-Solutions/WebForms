@@ -77,6 +77,7 @@ public class FlowEditor extends SecuredWebPage {
 		setUpperMenu(upperMenu);
 		setBottomMenu(new FormEditBottomMenu());
 		getWorkingArea().addComponent(generateContent());
+		initializeContent();
 		updateUiState();
 	}
 
@@ -88,6 +89,13 @@ public class FlowEditor extends SecuredWebPage {
 		horizontalSplitPanel.setSplitPosition(50.0f);
 
 		return horizontalSplitPanel;
+	}
+	
+	private void initializeContent(){
+		Set<Rule> rules = UserSessionHandler.getController().getFormInUseRules();
+		tableRules.addRows(rules);
+		tableRules.sortByUpdateDate(true);
+		
 	}
 
 	private Component createLeftComponent() {
@@ -121,8 +129,6 @@ public class FlowEditor extends SecuredWebPage {
 				updateUiState();
 			}
 		});
-		Set<Rule> rules = UserSessionHandler.getController().getFormInUse().getRules();
-		tableRules.addRows(rules);
 
 		i.addComponent(tableFilterBar);
 		i.addComponent(tableRules);
