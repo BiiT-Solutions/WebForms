@@ -787,4 +787,27 @@ $open-sans-pathPrefix: "./fonts/";
 	.v-search-button-field.v-customcomponent-v-search-button-field>.v-csslayout.v-layout.v-widget {
 		padding: 0px 0px 0px 0px;
 	}
+	
+	/* condition */
+	.v-csslayout.v-layout.v-widget.condition-validator.v-csslayout-condition-validator {
+		padding: 0px;
+		border-color: #c2c3c4;
+		border: 1px solid #c2c3c4;
+		border-bottom: none;
+		background: transparent repeat-x;
+		background-image: linear-gradient(to bottom, #fefefe 0%, #e2e2e2 51%, #d3d3d3 80%);
+		height: 32px;
+		padding-left: 3px;
+		padding-top: 2px;
+	}
+	/* condition button */
+	.condition-validator .v-button-wrap {
+		padding: 1px 21px 0 6px;
+	}
+	/* condition label */
+	.condition-validator .v-label {
+		padding-top: 5px;
+		padding-left: 5px;
+	}	
+	
 }

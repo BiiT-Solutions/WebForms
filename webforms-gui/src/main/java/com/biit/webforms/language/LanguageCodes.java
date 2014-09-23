@@ -200,6 +200,9 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_INSERT_QUESTION_REFENCE("caption.insert.question.reference"),
 	CAPTION_INSERT_ANSWER_REFENCE("caption.insert.answer.reference"),
 	CAPTION_OTHERS("caption.others"),
+	CAPTION_VALIDATE_CONDITION("caption.validate.condition"),
+	CAPTION_OK_EMPTY_EXPRESSION("caption.ok.empty.expression"),
+	CAPTION_OK_VALID_EXPRESSION("caption.ok.valid.expression"),
 	
 	TOOLTIP_NEW_RULE("tooltip.new.rule"),
 	TOOLTIP_EDIT_RULE("tooltip.edit.rule"),

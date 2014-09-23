@@ -9,7 +9,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.biit.webforms.utils.lexer.ITokenType;
+import com.biit.webforms.utils.lexer.Lexer;
 import com.biit.webforms.utils.lexer.Token;
+import com.biit.webforms.utils.lexer.exceptions.TokenizationError;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.expressions.Expression;
 import com.biit.webforms.utils.parser.parselets.InfixParselet;
@@ -17,12 +19,16 @@ import com.biit.webforms.utils.parser.parselets.PrefixParselet;
 
 public class Parser {
 
-	private final Iterator<Token> tokens;
+	protected final Iterator<Token> tokens;
 	private final List<Token> read = new ArrayList<Token>();
 	private final Set<ITokenType> ignore = new HashSet<>();
 	private final Map<ITokenType, PrefixParselet> prefixParselets = new HashMap<ITokenType, PrefixParselet>();
 	private final Map<ITokenType, InfixParselet> infixParselets = new HashMap<ITokenType, InfixParselet>();
 
+	public Parser(Lexer lexer, String string) throws TokenizationError{
+		this.tokens = lexer.tokenize(string).iterator();
+	}
+	
 	public Parser(Iterator<Token> tokens) {
 		this.tokens = tokens;
 	}
@@ -141,4 +147,5 @@ public class Parser {
 	private boolean isIgnored(Token token){
 		return ignore.contains(token.getType());
 	}
+
 }

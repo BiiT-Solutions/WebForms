@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 import com.biit.webforms.utils.lexer.Token;
 import com.biit.webforms.utils.lexer.TokenTypes;
+import com.biit.webforms.utils.lexer.WebformsLexer;
+import com.biit.webforms.utils.lexer.exceptions.TokenizationError;
 import com.biit.webforms.utils.parser.parselets.BinaryOperationParselet;
 import com.biit.webforms.utils.parser.parselets.ComparationParselet;
 import com.biit.webforms.utils.parser.parselets.ParenthesisParselet;
@@ -13,8 +15,17 @@ import com.biit.webforms.utils.parser.parselets.TextParselet;
 
 public class WebformsParser extends Parser {
 
+	public WebformsParser(String condition) throws TokenizationError {
+		super(new WebformsLexer(), condition);
+		configureParser();
+	}
+
 	public WebformsParser(Iterator<Token> tokens) {
 		super(tokens);
+		configureParser();
+	}
+
+	private void configureParser() {
 		// Register prefix parselets
 		register(TokenTypes.REFERENCE, new ReferenceParselet());
 		register(TokenTypes.TEXT, new TextParselet());
