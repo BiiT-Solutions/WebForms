@@ -25,7 +25,8 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	private static final long serialVersionUID = 7572463216386081265L;
 	private static final String WIDTH = "200px";
 
-	private TextField name, label;
+	private TextField name;
+	private TextArea label;
 
 	private TextArea description;
 
@@ -48,7 +49,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		name.setWidth(WIDTH);
 		name.setRequired(true);
 
-		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
+		label = new TextArea(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
 
 		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());

@@ -438,7 +438,7 @@ public class Designer extends SecuredWebPage {
 	 */
 	protected void openMoveWindow() {
 		final WindowTreeObject moveWindow = new WindowTreeObject(LanguageCodes.CAPTION_WINDOW_MOVE,
-				getCurrentForm());
+				getCurrentForm(),Form.class,Category.class,Group.class);
 		moveWindow.showCentered();
 		moveWindow.addAcceptActionListener(new AcceptActionListener() {
 

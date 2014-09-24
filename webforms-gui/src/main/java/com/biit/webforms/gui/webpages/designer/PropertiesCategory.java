@@ -9,13 +9,15 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
 public class PropertiesCategory extends StorableObjectProperties<Category> {
 	private static final long serialVersionUID = 766903215139261772L;
 	private static final String WIDTH = "200px";
 
-	private TextField name, label;
+	private TextField name;
+	private TextArea label;
 
 	public PropertiesCategory() {
 		super(Category.class);
@@ -28,7 +30,7 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 		name.setWidth(WIDTH);
 		name.setRequired(true);
 
-		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
+		label = new TextArea(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
 
 		FormLayout commonProperties = new FormLayout();

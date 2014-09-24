@@ -74,6 +74,13 @@ public class ConditionEditorControls extends TabSheet {
 	private void initializeComposition() {
 		treeObjectTable.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);
 		treeObjectTable.setValue(null);
+		
+		//Answer format.
+		for (AnswerFormatUi format : AnswerFormatUi.values()) {
+			valueFormat.addItem(format.getAnswerFormat());
+			valueFormat.setItemCaption(format.getAnswerFormat(), format.getLanguageCode().translation());
+		}
+		valueFormat.setValue(AnswerFormatUi.values()[0].getAnswerFormat());
 	}
 
 	private Component generateReferenceTab() {
@@ -184,19 +191,24 @@ public class ConditionEditorControls extends TabSheet {
 
 		GridLayout buttonHolder = new GridLayout(NUM_BUTTON_COLUMNS, NUM_BUTTON_ROWS, and, or, not, lessThan,
 				lessEqual, greaterThan, greaterEqual, equals, notEquals, leftPar, rightPar, carry);
+		buttonHolder.setCaption(LanguageCodes.CAPTION_OPERATORS.translation());
 
 		buttonHolder.setWidth(FULL);
 		buttonHolder.setHeight(EXPAND);
 
 		root.addComponent(buttonHolder);
-		root.setComponentAlignment(buttonHolder, Alignment.MIDDLE_CENTER);
+		root.setComponentAlignment(buttonHolder, Alignment.TOP_CENTER);
 
+		VerticalLayout verticalValueLayout = new VerticalLayout();
+		verticalValueLayout.setCaption(LanguageCodes.CAPTION_VALUE.translation());
+		verticalValueLayout.setWidth(FULL);
+		verticalValueLayout.setHeight(EXPAND);
+		verticalValueLayout.setSpacing(true);
+		
 		valueFormat = new ComboBox(LanguageCodes.CAPTION_ANSWER_FORMAT.translation());
-		for (AnswerFormatUi format : AnswerFormatUi.values()) {
-			valueFormat.addItem(format.getAnswerFormat());
-			valueFormat.setItemCaption(format.getAnswerFormat(), format.getLanguageCode().translation());
-		}
+		valueFormat.setNullSelectionAllowed(false);
 		valueFormat.setImmediate(true);
+		valueFormat.setWidth(FULL);
 		valueFormat.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = 7254145595251837513L;
 
@@ -207,7 +219,9 @@ public class ConditionEditorControls extends TabSheet {
 			}
 		});
 		value = new TextField();
+		value.setWidth(FULL);
 		insertValue = new Button(LanguageCodes.CAPTION_VALUE.translation());
+		insertValue.setWidth(FULL);
 		insertValue.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 5350736534893525919L;
 
@@ -216,6 +230,13 @@ public class ConditionEditorControls extends TabSheet {
 				insertValue();
 			}
 		});
+		
+		verticalValueLayout.addComponent(valueFormat);
+		verticalValueLayout.addComponent(value);
+		verticalValueLayout.addComponent(insertValue);
+		
+		root.addComponent(verticalValueLayout);
+		root.setComponentAlignment(verticalValueLayout, Alignment.BOTTOM_CENTER);
 
 		return root;
 	}

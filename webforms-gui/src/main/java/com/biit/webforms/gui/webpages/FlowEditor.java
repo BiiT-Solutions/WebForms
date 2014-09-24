@@ -31,6 +31,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Rule;
 import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
 import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
@@ -91,12 +92,12 @@ public class FlowEditor extends SecuredWebPage {
 
 		return horizontalSplitPanel;
 	}
-	
-	private void initializeContent(){
+
+	private void initializeContent() {
 		Set<Rule> rules = UserSessionHandler.getController().getFormInUseRules();
 		tableRules.addRows(rules);
 		tableRules.sortByUpdateDate(true);
-		
+
 	}
 
 	private Component createLeftComponent() {
@@ -197,7 +198,7 @@ public class FlowEditor extends SecuredWebPage {
 		i.setSpacing(true);
 		i.setWidth("100%");
 
-		tableFilterOrigin = new SearchFormElementField();
+		tableFilterOrigin = new SearchFormElementField(Form.class, Category.class, Group.class,Question.class);
 		tableFilterOrigin.setCaption(LanguageCodes.CAPTION_FILTER_ORIGIN.translation());
 		tableFilterOrigin.addValueChangeListener(new SearchFormElementChanged() {
 
@@ -211,7 +212,7 @@ public class FlowEditor extends SecuredWebPage {
 				f.addContainerFilter(originFilter);
 			}
 		});
-		tableFilterDestiny = new SearchFormElementField();
+		tableFilterDestiny = new SearchFormElementField(Form.class, Category.class, Group.class,Question.class);
 		tableFilterDestiny.setCaption(LanguageCodes.CAPTION_FILTER_DESTINY.translation());
 		tableFilterDestiny.addValueChangeListener(new SearchFormElementChanged() {
 

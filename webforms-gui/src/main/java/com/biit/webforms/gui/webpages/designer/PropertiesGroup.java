@@ -10,13 +10,15 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Group;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
 public class PropertiesGroup extends StorableObjectProperties<Group> {
 	private static final long serialVersionUID = 2409507883007287631L;
 	private static final String WIDTH = "200px";
 
-	private TextField name, label;
+	private TextField name;
+	private TextArea label;
 
 	private CheckBox repeatable;
 
@@ -31,7 +33,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		name.setWidth(WIDTH);
 		name.setRequired(true);
 
-		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
+		label = new TextArea(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
 
 		repeatable = new CheckBox(LanguageCodes.CAPTION_REPETABLE.translation());
