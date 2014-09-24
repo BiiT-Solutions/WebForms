@@ -6,6 +6,7 @@ import javax.persistence.Table;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 @Entity
 @Table(name = "tree_system_fields")
@@ -20,7 +21,7 @@ public class SystemField extends BaseQuestion {
 		//Nothing to copy.
 	}
 
-	public void setFieldName(String value) {
+	public void setFieldName(String value) throws FieldTooLongException {
 		super.setLabel(value);
 	}
 	

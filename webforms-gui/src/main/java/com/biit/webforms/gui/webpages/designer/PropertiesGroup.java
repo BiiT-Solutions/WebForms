@@ -59,6 +59,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		name.addValidator(new TreeObjectNameValidator(instance.getNameAllowedPattern()));
 		name.setValue(instance.getName());
 		label.setValue(instance.getLabel());
+		label.addValidator(new LengthValidator(instance.getMaxLabelLength()));
 		repeatable.setValue(instance.isRepeatable());
 	}
 

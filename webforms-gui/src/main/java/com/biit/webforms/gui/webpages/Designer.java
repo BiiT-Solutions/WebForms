@@ -346,7 +346,7 @@ public class Designer extends SecuredWebPage {
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
 
 			upperMenu.getSaveButton().setEnabled(canEdit);
-			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock);
+			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock&&!rowIsForm);
 			upperMenu.getInsertBlockButton().setEnabled(canEdit);
 			upperMenu.getInsertBlockButton().setVisible(!formIsBlock);
 			upperMenu.getNewCategoryButton().setEnabled(canEdit && (formIsBlockAndNoCategories || (!formIsBlock)));
