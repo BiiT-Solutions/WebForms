@@ -75,6 +75,7 @@ public class Designer extends SecuredWebPage {
 		table.setSizeFull();
 		table.setSelectable(true);
 		table.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);
+		table.collapseFrom(Question.class);
 		table.setValue(null);
 		table.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -1169897738297107301L;
@@ -148,15 +149,6 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				openInsertBlock();
-			}
-		});
-		upperMenu.addValidateButtonListener(new ClickListener() {
-			private static final long serialVersionUID = -1627616225877959507L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-
 			}
 		});
 		upperMenu.addFinishButtonListener(new ClickListener() {
@@ -359,8 +351,6 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
 			upperMenu.getDownButton().setEnabled(canEdit && !rowIsForm);
-			upperMenu.getValidateButton().setEnabled(false);
-			upperMenu.getValidateButton().setVisible(!formIsBlock);
 			upperMenu.getFinishButton().setEnabled(canEdit);
 			upperMenu.getFinishButton().setVisible(!formIsBlock);
 		} catch (IOException | AuthenticationRequired e) {
@@ -379,7 +369,6 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getDeleteButton().setEnabled(false);
 			upperMenu.getUpButton().setEnabled(false);
 			upperMenu.getDownButton().setEnabled(false);
-			upperMenu.getValidateButton().setEnabled(false);
 			upperMenu.getFinishButton().setEnabled(false);
 			upperMenu.getFinishButton().setVisible(false);
 		}
@@ -449,7 +438,7 @@ public class Designer extends SecuredWebPage {
 	 */
 	protected void openMoveWindow() {
 		final WindowTreeObject moveWindow = new WindowTreeObject(LanguageCodes.CAPTION_WINDOW_MOVE,
-				getCurrentForm());
+				getCurrentForm(),Form.class,Category.class,Group.class);
 		moveWindow.showCentered();
 		moveWindow.addAcceptActionListener(new AcceptActionListener() {
 

@@ -5,6 +5,10 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.language.RuleTypeUi;
+import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Rule;
 import com.biit.webforms.persistence.entity.enumerations.RuleType;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -135,7 +139,7 @@ public class WindowRule extends WindowAcceptCancel {
 	}
 
 	private Component generateSearchOriginContent() {
-		searchOrigin = new SearchFormElementField();
+		searchOrigin = new SearchFormElementField(Form.class, Category.class, Group.class,Question.class);
 		searchOrigin.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_ORIGIN);
 		searchOrigin.setCaption(LanguageCodes.CAPTION_FROM.translation());
 		searchOrigin.addValueChangeListener(new SearchFormElementChanged() {
@@ -150,7 +154,7 @@ public class WindowRule extends WindowAcceptCancel {
 	}
 
 	private Component generateSearchDestinyContent() {
-		searchDestiny = new SearchFormElementField();
+		searchDestiny = new SearchFormElementField(Form.class,Category.class,Group.class,Question.class);
 		searchDestiny.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_DESTINY);
 		searchDestiny.setCaption(LanguageCodes.CAPTION_TO.translation());
 

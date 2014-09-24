@@ -203,6 +203,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_VALIDATE_CONDITION("caption.validate.condition"),
 	CAPTION_OK_EMPTY_EXPRESSION("caption.ok.empty.expression"),
 	CAPTION_OK_VALID_EXPRESSION("caption.ok.valid.expression"),
+	CAPTION_OPERATORS("caption.operators"),
 	
 	TOOLTIP_NEW_RULE("tooltip.new.rule"),
 	TOOLTIP_EDIT_RULE("tooltip.edit.rule"),
