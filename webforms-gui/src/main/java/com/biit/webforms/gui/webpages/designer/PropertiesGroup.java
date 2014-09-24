@@ -69,7 +69,9 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 			if(name.isValid()){
 				instance.setName(name.getValue());
 			}
-			instance.setLabel(label.getValue());
+			if(label.isValid()){
+				instance.setLabel(label.getValue());
+			}
 			instance.setRepeatable(repeatable.getValue());
 
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {

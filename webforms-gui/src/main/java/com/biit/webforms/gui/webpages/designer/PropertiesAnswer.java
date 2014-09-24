@@ -72,7 +72,9 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 				instance.setValue(value.getValue());
 			}
 			// TODO dynamic label
-			instance.setLabel(label.getValue());
+			if(label.isValid()){
+				instance.setLabel(label.getValue());
+			}
 			instance.setDescription(description.getValue());
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

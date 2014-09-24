@@ -121,7 +121,7 @@ public class ConditionEditor extends CustomComponent {
 				validateCondition();
 			}
 		});
-		status = new StatusLabel("kiwi");
+		status = new StatusLabel("");
 
 		validator.addComponent(validate);
 		validator.addComponent(status);

@@ -62,7 +62,9 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 			if (name.isValid()) {
 				instance.setName(name.getValue());
 			}
-			instance.setLabel(label.getValue());
+			if(label.isValid()){
+				instance.setLabel(label.getValue());
+			}
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

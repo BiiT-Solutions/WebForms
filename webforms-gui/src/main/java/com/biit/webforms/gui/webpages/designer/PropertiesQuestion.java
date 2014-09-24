@@ -136,7 +136,9 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 				instance.setName(name.getValue());
 			}
 			// TODO dynamic label
-			instance.setLabel(label.getValue());
+			if(label.isValid()){
+				instance.setLabel(label.getValue());
+			}
 			instance.setDescription(description.getValue());
 			instance.setMandatory(mandatory.getValue());
 			instance.setAnswerType((AnswerType) answerType.getValue());
