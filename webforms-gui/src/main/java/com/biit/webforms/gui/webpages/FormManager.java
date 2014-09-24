@@ -75,12 +75,12 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				updateUpperMenu();
+				updateMenus();
 			}
 		});
 		formTable.selectLastUsedForm();
 		// If it was already null
-		updateUpperMenu();
+		updateMenus();
 
 		getWorkingArea().addComponent(formTable);
 	}
@@ -215,7 +215,7 @@ public class FormManager extends SecuredWebPage {
 		return form;
 	}
 
-	private void updateUpperMenu() {
+	private void updateMenus() {
 		upperMenu.getNewForm().setEnabled(true);
 
 		Object row = formTable.getValue();
