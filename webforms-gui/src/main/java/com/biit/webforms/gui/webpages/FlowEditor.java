@@ -198,7 +198,7 @@ public class FlowEditor extends SecuredWebPage {
 		i.setSpacing(true);
 		i.setWidth("100%");
 
-		tableFilterOrigin = new SearchFormElementField(Form.class, Category.class, Group.class,Question.class);
+		tableFilterOrigin = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
 		tableFilterOrigin.setCaption(LanguageCodes.CAPTION_FILTER_ORIGIN.translation());
 		tableFilterOrigin.addValueChangeListener(new SearchFormElementChanged() {
 
@@ -212,7 +212,7 @@ public class FlowEditor extends SecuredWebPage {
 				f.addContainerFilter(originFilter);
 			}
 		});
-		tableFilterDestiny = new SearchFormElementField(Form.class, Category.class, Group.class,Question.class);
+		tableFilterDestiny = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
 		tableFilterDestiny.setCaption(LanguageCodes.CAPTION_FILTER_DESTINY.translation());
 		tableFilterDestiny.addValueChangeListener(new SearchFormElementChanged() {
 
@@ -433,7 +433,11 @@ public class FlowEditor extends SecuredWebPage {
 	 * This method opens the new rule window
 	 */
 	protected void addNewRuleAction() {
-		createRuleWindow(new Rule());
+		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		if (canEdit) {
+			createRuleWindow(new Rule());
+		}
 	}
 
 	/**
@@ -443,7 +447,11 @@ public class FlowEditor extends SecuredWebPage {
 	 * @param rule
 	 */
 	protected void editRuleAction(Rule rule) {
-		createRuleWindow(rule);
+		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		if (canEdit) {
+			createRuleWindow(rule);
+		}
 	}
 
 	private void createRuleWindow(final Rule rule) {
