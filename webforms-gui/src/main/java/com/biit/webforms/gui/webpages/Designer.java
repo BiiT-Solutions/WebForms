@@ -151,15 +151,6 @@ public class Designer extends SecuredWebPage {
 				openInsertBlock();
 			}
 		});
-		upperMenu.addValidateButtonListener(new ClickListener() {
-			private static final long serialVersionUID = -1627616225877959507L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-
-			}
-		});
 		upperMenu.addFinishButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 8869180038869702710L;
 
@@ -360,8 +351,6 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
 			upperMenu.getDownButton().setEnabled(canEdit && !rowIsForm);
-			upperMenu.getValidateButton().setEnabled(false);
-			upperMenu.getValidateButton().setVisible(!formIsBlock);
 			upperMenu.getFinishButton().setEnabled(canEdit);
 			upperMenu.getFinishButton().setVisible(!formIsBlock);
 		} catch (IOException | AuthenticationRequired e) {
@@ -380,7 +369,6 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getDeleteButton().setEnabled(false);
 			upperMenu.getUpButton().setEnabled(false);
 			upperMenu.getDownButton().setEnabled(false);
-			upperMenu.getValidateButton().setEnabled(false);
 			upperMenu.getFinishButton().setEnabled(false);
 			upperMenu.getFinishButton().setVisible(false);
 		}

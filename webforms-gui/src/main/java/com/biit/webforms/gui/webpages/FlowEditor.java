@@ -11,6 +11,7 @@ import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -253,7 +254,6 @@ public class FlowEditor extends SecuredWebPage {
 		upperMenu.getEditRuleButton().setEnabled(canEdit && !selectedNew && !multipleSelection);
 		upperMenu.getCloneRuleButton().setEnabled(canEdit && !selectedNew);
 		upperMenu.getRemoveRuleButton().setEnabled(canEdit && !selectedNew);
-		upperMenu.getValidateButton().setEnabled(false);
 		upperMenu.getFinishButton().setEnabled(canEdit);
 	}
 
@@ -415,22 +415,13 @@ public class FlowEditor extends SecuredWebPage {
 				removeRulesFromTable(selectedRules);
 			}
 		});
-		upperMenu.addValidateButtonListener(new ClickListener() {
-			private static final long serialVersionUID = -1627616225877959507L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-
-			}
-		});
 		upperMenu.addFinishButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 8869180038869702710L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-
+				UserSessionHandler.getController().finishForm();
+				ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
 			}
 		});
 

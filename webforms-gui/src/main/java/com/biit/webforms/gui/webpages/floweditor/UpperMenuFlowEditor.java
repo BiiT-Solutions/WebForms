@@ -10,7 +10,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuFlowEditor extends UpperMenuWebforms {
 	private static final long serialVersionUID = 4521719649478606926L;
 
-	private IconButton saveButton, newRuleButton, editRuleButton, cloneRuleButton, removeRuleButton, validateButton,
+	private IconButton saveButton, newRuleButton, editRuleButton, cloneRuleButton, removeRuleButton,
 			finishButton;
 
 	public UpperMenuFlowEditor() {
@@ -30,9 +30,6 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		removeRuleButton = new IconButton(LanguageCodes.CAPTION_REMOVE_RULE, ThemeIcons.RULE_REMOVE,
 				LanguageCodes.TOOLTIP_REMOVE_RULE, IconSize.BIG);
 
-		validateButton = new IconButton(LanguageCodes.COMMON_CAPTION_VALIDATE, ThemeIcons.FORM_VALIDATE,
-				LanguageCodes.COMMON_TOOLTIP_VALIDATE, IconSize.BIG);
-
 		finishButton = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
 				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 
@@ -41,16 +38,11 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		addIconButton(editRuleButton);
 		addIconButton(cloneRuleButton);
 		addIconButton(removeRuleButton);
-		addIconButton(validateButton);
 		addIconButton(finishButton);
 	}
 
 	public void addSaveButtonListener(ClickListener listener) {
 		saveButton.addClickListener(listener);
-	}
-
-	public void addValidateButtonListener(ClickListener listener) {
-		validateButton.addClickListener(listener);
 	}
 
 	public void addFinishButtonListener(ClickListener listener) {
@@ -91,10 +83,6 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 	
 	public IconButton getRemoveRuleButton() {
 		return removeRuleButton;
-	}
-
-	public IconButton getValidateButton() {
-		return validateButton;
 	}
 
 	public IconButton getFinishButton() {

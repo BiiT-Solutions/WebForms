@@ -235,7 +235,7 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion);
 			upperMenu.getExportPdf().setEnabled(rowNotNullAndForm);
 			if (rowNotNull) {
-				upperMenu.setExportFormPdfDefaultName(((Form) row).getName() + ".pdf");
+				upperMenu.setExportFormPdfDefaultName(((Form) row).getLabel() + ".pdf");
 			}
 
 			// Bottom menu
