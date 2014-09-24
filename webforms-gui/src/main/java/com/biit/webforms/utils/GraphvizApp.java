@@ -2,10 +2,10 @@ package com.biit.webforms.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import com.biit.form.TreeObject;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.FilteredForm;
 import com.biit.webforms.persistence.entity.Form;
@@ -16,8 +16,6 @@ import com.biit.webforms.utils.exporters.dotgraph.ExporterDotForm;
 
 public class GraphvizApp {
 
-	public static String GRAPHVIZ_PROPERTIES = "graphviz.properties";
-	public static String GRAPHVIZ_BIN_PROPERTY = "gvbindir";
 	/* Official variable name but it's not usually set */
 	public static String GRAPHVIZ_SYSVAR = "GVBINDIR";
 	public static String applicationPath = null;
@@ -45,18 +43,13 @@ public class GraphvizApp {
 	 */
 	private static synchronized void findApplication() throws ExecutableCanNotBeExecuted, PathToExecutableNotFound {
 		if (applicationPath == null) {
-			try {
-				applicationPath = OsUtils.findExecutablePropertiesFile(GRAPHVIZ_PROPERTIES, GRAPHVIZ_BIN_PROPERTY);
-				if (applicationPath != null) {
-					return;
-				}
-			} catch (FileNotFoundException e) {
-				WebformsLogger.debug(GraphvizApp.class.getName(), "There was no properties file for graphviz");
-			} catch (IOException e) {
-				WebformsLogger.errorMessage(GraphvizApp.class.getName(), e);
+
+			applicationPath = WebformsConfigurationReader.getInstance().getGraphvizBinPath();
+			if (applicationPath != null) {
+				return;
 			}
 
-			applicationPath = OsUtils.findExecutableEnvironmentVariable(GRAPHVIZ_BIN_PROPERTY);
+			applicationPath = OsUtils.findExecutableEnvironmentVariable(GRAPHVIZ_SYSVAR);
 		}
 	}
 

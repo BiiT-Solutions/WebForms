@@ -12,16 +12,16 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	private static final long serialVersionUID = -368255188051163986L;
 
 	private IconButton saveButton, saveAsBlockButton, insertBlockButton, finishButton, newCategoryButton,
-			newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, moveButton, deleteButton, upButton, downButton;
+			newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, moveButton,
+			deleteButton, upButton, downButton;
 
 	public UpperMenuDesigner() {
-
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
 				LanguageCodes.COMMON_TOOLTIP_SAVE, IconSize.BIG);
-		
+
 		saveAsBlockButton = new IconButton(LanguageCodes.CAPTION_SAVE_AS_BLOCK, ThemeIcons.BUILDING_BLOCK_SAVE,
 				LanguageCodes.TOOLTIP_SAVE_AS_BLOCK, IconSize.BIG);
-		
+
 		insertBlockButton = new IconButton(LanguageCodes.COMMON_CAPTION_INSERT_BLOCK, ThemeIcons.BUILDING_BLOCK_ADD,
 				LanguageCodes.COMMON_TOOLTIP_INSERT_BLOCK, IconSize.BIG);
 
@@ -38,8 +38,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_NEW_ANSWER);
 		newTextButton = new IconButton(LanguageCodes.CAPTION_NEW_TEXT, ThemeIcons.DESIGNER_NEW_INFOTEXT,
 				LanguageCodes.TOOLTIP_NEW_TEXT);
-		newSystemFieldButton = new IconButton(LanguageCodes.CAPTION_NEW_SYSTEM_FIELD, ThemeIcons.DESIGNER_NEW_SYSTEM_FIELD,
-				LanguageCodes.TOOLTIP_NEW_SYSTEM_FIELD);		
+		newSystemFieldButton = new IconButton(LanguageCodes.CAPTION_NEW_SYSTEM_FIELD,
+				ThemeIcons.DESIGNER_NEW_SYSTEM_FIELD, LanguageCodes.TOOLTIP_NEW_SYSTEM_FIELD);
 		moveButton = new IconButton(LanguageCodes.COMMON_CAPTION_MOVE, ThemeIcons.DESIGNER_MOVE,
 				LanguageCodes.COMMON_TOOLTIP_MOVE);
 		upButton = new IconButton(LanguageCodes.COMMON_CAPTION_UP, ThemeIcons.ELEMENT_MOVE_UP,
@@ -68,11 +68,11 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public void addSaveButtonListener(ClickListener listener) {
 		saveButton.addClickListener(listener);
 	}
-	
+
 	public void addSaveAsBlockButtonListener(ClickListener listener) {
 		saveAsBlockButton.addClickListener(listener);
 	}
-	
+
 	public void addInsertBlockButtonListener(ClickListener listener) {
 		insertBlockButton.addClickListener(listener);
 	}
@@ -80,56 +80,56 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public void addFinishButtonListener(ClickListener listener) {
 		finishButton.addClickListener(listener);
 	}
-	
-	public void addNewCategoryButtonListener(ClickListener listener){
+
+	public void addNewCategoryButtonListener(ClickListener listener) {
 		newCategoryButton.addClickListener(listener);
 	}
-	
-	public void addNewGroupButtonListener(ClickListener listener){
+
+	public void addNewGroupButtonListener(ClickListener listener) {
 		newGroupButton.addClickListener(listener);
 	}
-	
-	public void addNewQuestionButtonListener(ClickListener listener){
+
+	public void addNewQuestionButtonListener(ClickListener listener) {
 		newQuestionButton.addClickListener(listener);
 	}
-	
-	public void addnewSystemFieldButtonListener(ClickListener listener){
+
+	public void addnewSystemFieldButtonListener(ClickListener listener) {
 		newSystemFieldButton.addClickListener(listener);
 	}
-	
-	public void addNewTextButtonListener(ClickListener listener){
+
+	public void addNewTextButtonListener(ClickListener listener) {
 		newTextButton.addClickListener(listener);
 	}
-	
-	public void addNewAnswerButtonListener(ClickListener listener){
+
+	public void addNewAnswerButtonListener(ClickListener listener) {
 		newAnswerButton.addClickListener(listener);
 	}
-	
-	public void addMoveButtonListener(ClickListener listener){
+
+	public void addMoveButtonListener(ClickListener listener) {
 		moveButton.addClickListener(listener);
 	}
-	
-	public void addDeleteButtonListener(ClickListener listener){
+
+	public void addDeleteButtonListener(ClickListener listener) {
 		deleteButton.addClickListener(listener);
 	}
-	
-	public void addUpButtonListener(ClickListener listener){
+
+	public void addUpButtonListener(ClickListener listener) {
 		upButton.addClickListener(listener);
 	}
 
-	public void addDownButtonListener(ClickListener listener){
+	public void addDownButtonListener(ClickListener listener) {
 		downButton.addClickListener(listener);
 	}
 
 	public IconButton getSaveButton() {
 		return saveButton;
 	}
-	
+
 	public IconButton getSaveAsBlockButton() {
 		return saveAsBlockButton;
 	}
-	
-	public IconButton getInsertBlockButton(){
+
+	public IconButton getInsertBlockButton() {
 		return insertBlockButton;
 	}
 
@@ -148,7 +148,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public IconButton getNewQuestionButton() {
 		return newQuestionButton;
 	}
-	
+
 	public IconButton getNewSystemFieldButton() {
 		return newSystemFieldButton;
 	}

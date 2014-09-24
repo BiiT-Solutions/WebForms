@@ -205,7 +205,7 @@ public class ConditionEditorControls extends TabSheet {
 		verticalValueLayout.setHeight(EXPAND);
 		verticalValueLayout.setSpacing(true);
 		
-		valueFormat = new ComboBox(LanguageCodes.CAPTION_ANSWER_FORMAT.translation());
+		valueFormat = new ComboBox();
 		valueFormat.setNullSelectionAllowed(false);
 		valueFormat.setImmediate(true);
 		valueFormat.setWidth(FULL);
