@@ -26,7 +26,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_EDIT_FORM_DESIGN("caption.edit.form.design"),
 	CAPTION_EDIT_FORM_FLOW("caption.edit.form.flow"),
 	CAPTION_VALIDATE_FORM("caption.validate.form"),
-	CAPTION_IMPACT_ANALISYS("caption.impact.analisys"),
+	CAPTION_IMPACT_ANALYSIS("caption.impact.analysis"),
 //	TOOLTIP_EDIT_FORM_DESIGN,
 //	TOOLTIP_EDIT_FORM_FLOW,
 //	TOOLTIP_VALIDATE_FORM,

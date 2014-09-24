@@ -7,6 +7,7 @@ import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.TreeObjectTable;
+import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Form;
@@ -38,8 +39,8 @@ public class ConditionEditorControls extends TabSheet {
 	protected static final TokenTypes DEFAULT_ANSWER_REFERENCE_TOKEN = TokenTypes.EQ;
 
 	private TreeObjectTable treeObjectTable;
-	private IconButton insertReference;
-	private IconButton insertAnswer;
+	private Button insertReference;
+	private Button insertAnswer;
 
 	// Logic
 	private Button and, or, not;
@@ -60,7 +61,7 @@ public class ConditionEditorControls extends TabSheet {
 	}
 
 	private void generateComposition() {
-		addTab(generateReferenceTab(), "", ThemeIcons.CONDITION_HELPER_REFERENCE.getThemeResource());
+		addTab(generateReferenceTab(), "", ThemeIcons.CONDITION_HELPER_FORM_REFERENCE.getThemeResource());
 		addTab(generateControlsTab(), "", ThemeIcons.CONDITION_HELPER_CONTROLS.getThemeResource());
 	}
 
@@ -99,8 +100,9 @@ public class ConditionEditorControls extends TabSheet {
 			}
 		});
 
-		insertReference = new IconButton(LanguageCodes.CAPTION_INSERT_QUESTION_REFENCE, ThemeIcons.INSERT_REFERENCE,
-				LanguageCodes.TOOLTIP_INSERT_QUESTION_REFENCE);
+//		insertReference = new IconButton(LanguageCodes.CAPTION_INSERT_QUESTION_REFENCE, ThemeIcons.INSERT_REFERENCE,
+//				LanguageCodes.TOOLTIP_INSERT_QUESTION_REFENCE);
+		insertReference = new Button(ServerTranslate.translate(LanguageCodes.CAPTION_INSERT_QUESTION_REFENCE));
 		insertReference.setWidth(FULL);
 		insertReference.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 2959069539884251545L;
@@ -111,8 +113,9 @@ public class ConditionEditorControls extends TabSheet {
 				fireInsertReferenceListeners(getCurrentTreeObjectReference());
 			}
 		});
-		insertAnswer = new IconButton(LanguageCodes.CAPTION_INSERT_ANSWER_REFENCE, ThemeIcons.INSERT_ANSWER_REFERENCE,
-				LanguageCodes.TOOLTIP_INSERT_ANSWER_REFENCE);
+//		insertAnswer = new IconButton(LanguageCodes.CAPTION_INSERT_ANSWER_REFENCE, ThemeIcons.INSERT_ANSWER_REFERENCE,
+//				LanguageCodes.TOOLTIP_INSERT_ANSWER_REFENCE);
+		insertAnswer = new Button(ServerTranslate.translate(LanguageCodes.CAPTION_INSERT_ANSWER_REFENCE));
 		insertAnswer.setWidth(FULL);
 		insertAnswer.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 2959069539884251545L;

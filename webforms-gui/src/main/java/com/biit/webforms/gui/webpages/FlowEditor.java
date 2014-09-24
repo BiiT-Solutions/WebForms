@@ -291,7 +291,7 @@ public class FlowEditor extends SecuredWebPage {
 			}
 		});
 
-		IconButton redrawButton = new IconButton(LanguageCodes.CAPTION_REDRAW, ThemeIcons.REDRAW,
+		IconButton redrawButton = new IconButton(LanguageCodes.CAPTION_REDRAW, ThemeIcons.RULE_DIAGRAM_REDRAW,
 				LanguageCodes.TOOLTIP_REDRAW);
 		redrawButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 7689117025171099202L;
