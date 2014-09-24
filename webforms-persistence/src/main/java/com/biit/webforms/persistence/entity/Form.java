@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -44,7 +45,7 @@ public class Form extends BaseForm {
 
 	private Long organizationId;
 
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "form")
 	private Set<Rule> rules;
 
 	public Form() {
@@ -67,7 +68,11 @@ public class Form extends BaseForm {
 
 	@Override
 	public void resetIds() {
+		// Overriden version to also reset ids of rules.
 		super.resetIds();
+		for (Rule rule : getRules()) {
+			rule.resetIds();
+		}
 	}
 
 	@Override
@@ -128,6 +133,7 @@ public class Form extends BaseForm {
 
 	public void addRule(Rule rule) {
 		this.rules.add(rule);
+		rule.setForm(this);
 	}
 
 	public boolean containsRule(Rule rule) {
@@ -139,7 +145,15 @@ public class Form extends BaseForm {
 	}
 
 	public void setRules(Set<Rule> rules) {
-		this.rules = rules;
+		this.rules.clear();
+		addRules(rules);
+	}
+
+	public void addRules(Set<Rule> rules) {
+		this.rules.addAll(rules);
+		for (Rule rule : rules) {
+			rule.setForm(this);
+		}
 	}
 
 	/**
@@ -199,4 +213,64 @@ public class Form extends BaseForm {
 		return innerStorableObjects;
 	}
 
+	/**
+	 * Overriden version of generate Copy to generate a copy of the flow rules.
+	 */
+	@Override
+	public TreeObject generateCopy(boolean copyParentHierarchy, boolean copyChilds) throws NotValidTreeObjectException,
+			CharacterNotAllowedException {
+		Form copy = (Form) super.generateCopy(copyParentHierarchy, copyChilds);
+
+		if (copyChilds) {
+			// Now we get all the questions
+			LinkedHashSet<TreeObject> copiedQuestions = copy.getAllChildrenInHierarchy(BaseQuestion.class);
+			HashMap<TreeObject, TreeObject> mappedCopiedQuestions = new HashMap<>();
+			for (TreeObject question : copiedQuestions) {
+				mappedCopiedQuestions.put(question, question);
+			}
+
+			for (Rule rule : getRules()) {
+				Rule copiedRule = rule.generateCopy();
+				if (copiedRule.getOrigin() != null) {
+					copiedRule.setOrigin(mappedCopiedQuestions.get(copiedRule.getOrigin()));
+				}
+				if (copiedRule.getDestiny() != null) {
+					copiedRule.setDestiny(mappedCopiedQuestions.get(copiedRule.getDestiny()));
+				}
+				copy.addRule(copiedRule);
+			}
+		}
+
+		return copy;
+	}
+
+	public Form generateFormCopiedSimplification(TreeObject seed) throws NotValidTreeObjectException,
+			CharacterNotAllowedException {
+		TreeObject copiedSeed = seed.generateCopy(true, true);
+		Form formSeed = (Form) copiedSeed.getAncestor(Form.class);
+
+		LinkedHashSet<TreeObject> copiedQuestions = formSeed.getAllChildrenInHierarchy(BaseQuestion.class);
+		HashMap<TreeObject, TreeObject> mappedCopiedQuestions = new HashMap<>();
+		for (TreeObject question : copiedQuestions) {
+			mappedCopiedQuestions.put(question, question);
+		}
+
+		for (Rule rule : getRules()) {
+			if (mappedCopiedQuestions.containsKey(rule.getOrigin())
+					&& (rule.getDestiny() == null || mappedCopiedQuestions.containsKey(rule.getDestiny()))) {
+				Rule copiedRule = rule.generateCopy();
+				if (copiedRule.getOrigin() != null) {
+					copiedRule.setOrigin(mappedCopiedQuestions.get(copiedRule.getOrigin()));
+				}
+				if (copiedRule.getDestiny() != null) {
+					copiedRule.setDestiny(mappedCopiedQuestions.get(copiedRule.getDestiny()));
+				}
+				formSeed.addRule(copiedRule);
+			} else {
+				continue;
+			}
+		}
+
+		return formSeed;
+	}
 }

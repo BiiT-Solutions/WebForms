@@ -503,11 +503,11 @@ public class ApplicationController {
 		try {
 			// First we create the new block
 			block = createBlock(blockLabel, organization);
-
-			TreeObject copy = element.generateCopy(true, true);
-			Form formOfCopy = (Form) copy.getAncestor(Form.class);
-			formOfCopy.resetIds();
-			block.setChildren(formOfCopy.getChildren());
+			
+			Form copiedForm = formInUse.generateFormCopiedSimplification(element);
+			copiedForm.resetIds();
+			block.setChildren(copiedForm.getChildren());
+			block.addRules(copiedForm.getRules());
 
 			block.setUpdatedBy(getUser());
 			block.setUpdateTime();
@@ -541,11 +541,13 @@ public class ApplicationController {
 				+ " insertBlock " + formInUse + " " + element + " START");
 
 		try {
-			TreeObject copy = element.generateCopy(true, true);
-			Block blockOfCopy = (Block) copy.getAncestor(Block.class);
-			blockOfCopy.resetIds();
+			Block blockToInsert = (Block) element.getAncestor(Block.class);
+			Block copiedBlock = (Block) blockToInsert.generateFormCopiedSimplification(element);
+			copiedBlock.resetIds();
 
-			formInUse.addChildren(blockOfCopy.getChildren());
+			formInUse.addChildren(copiedBlock.getChildren());
+			formInUse.addRules(copiedBlock.getRules());
+			
 		} catch (NotValidTreeObjectException | NotValidChildException | CharacterNotAllowedException e) {
 			// Impossible.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

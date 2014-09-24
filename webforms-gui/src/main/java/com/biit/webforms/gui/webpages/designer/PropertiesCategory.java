@@ -53,6 +53,7 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 		name.addValidator(new TreeObjectNameValidator(instance.getNameAllowedPattern()));
 		name.setValue(instance.getName());
 		label.setValue(instance.getLabel());
+		label.addValidator(new LengthValidator(instance.getMaxLabelLength()));
 	}
 
 	@Override
@@ -61,7 +62,9 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 			if (name.isValid()) {
 				instance.setName(name.getValue());
 			}
-			instance.setLabel(label.getValue());
+			if(label.isValid()){
+				instance.setLabel(label.getValue());
+			}
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

@@ -465,7 +465,6 @@ public class FlowEditor extends SecuredWebPage {
 					UserSessionHandler.getController().updateRuleContent(rule, windowRule.getOrigin(),
 							windowRule.getRuleType(), windowRule.getDestiny(), windowRule.isOthers(),
 							windowRule.getCondition());
-
 					addOrUpdateRuleInTableAction(rule);
 					window.close();
 				} catch (BadRuleContentException e) {

@@ -46,11 +46,14 @@ public class Rule extends StorableObject {
 	private TreeObject destiny;
 
 	private boolean others;
-	
+
 	private String conditionString;
 
 	@Transient
 	private Object interpretedRule;
+
+	@ManyToOne
+	private Form form;
 
 	public Rule() {
 		super();
@@ -81,7 +84,7 @@ public class Rule extends StorableObject {
 	protected void setDestiny(TreeObject destiny) {
 		this.destiny = destiny;
 	}
-	
+
 	public boolean isOthers() {
 		return others;
 	}
@@ -90,9 +93,9 @@ public class Rule extends StorableObject {
 		this.others = others;
 	}
 
-	public void setRuleContent(TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others, String conditionString)
-			throws BadRuleContentException, RuleWithoutSource, RuleSameOriginAndDestinyException,
-			RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
+	public void setRuleContent(TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others,
+			String conditionString) throws BadRuleContentException, RuleWithoutSource,
+			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
 		checkRuleRestrictions(origin, ruleType, destiny, others, conditionString);
 
 		this.origin = origin;
@@ -110,17 +113,17 @@ public class Rule extends StorableObject {
 			throw new RuleWithoutSource();
 		}
 		// If rule type doesn't need destiny, destiny must be null and otherwise
-		if((ruleType.isDestinyNull() && destiny !=null) || (!ruleType.isDestinyNull() && destiny ==null)){
+		if ((ruleType.isDestinyNull() && destiny != null) || (!ruleType.isDestinyNull() && destiny == null)) {
 			throw new RuleWithoutDestiny();
 		}
-		
-		if(others && (conditionString!=null)){
+
+		if (others && (conditionString != null)) {
 			throw new BadRuleContentException("Rules with other must have null condition string");
 		}
-		if(!others && (conditionString==null)){
+		if (!others && (conditionString == null)) {
 			throw new BadRuleContentException("Rules that are not other must have a not null condition string.");
 		}
-		
+
 		// Rule origin can't be destiny
 		if (origin.equals(destiny)) {
 			throw new RuleSameOriginAndDestinyException();
@@ -188,5 +191,13 @@ public class Rule extends StorableObject {
 	public Set<StorableObject> getAllInnerStorableObjects() {
 		// Return nothing
 		return new HashSet<>();
+	}
+
+	public void setForm(Form form) {
+		this.form = form;
+	}
+	
+	public Form getForm(){
+		return form;
 	}
 }

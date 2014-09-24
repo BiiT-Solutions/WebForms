@@ -54,6 +54,7 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 		name.addValidator(new TreeObjectNameValidator(instance.getNameAllowedPattern()));
 		name.setValue(instance.getName());
 		field.setValue(instance.getFieldName());
+		field.addValidator(new LengthValidator(instance.getMaxLabelLength()));
 	}
 
 	@Override
@@ -68,8 +69,9 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 			if(name.isValid()){
 				instance.setName(name.getValue());
 			}
-			instance.setFieldName(field.getValue());
-
+			if(field.isValid()){
+				instance.setFieldName(field.getValue());
+			}
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

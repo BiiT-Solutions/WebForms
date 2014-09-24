@@ -346,7 +346,7 @@ public class Designer extends SecuredWebPage {
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
 
 			upperMenu.getSaveButton().setEnabled(canEdit);
-			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock);
+			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock&&!rowIsForm);
 			upperMenu.getInsertBlockButton().setEnabled(canEdit);
 			upperMenu.getInsertBlockButton().setVisible(!formIsBlock);
 			upperMenu.getNewCategoryButton().setEnabled(canEdit && (formIsBlockAndNoCategories || (!formIsBlock)));
@@ -355,7 +355,7 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getNewSystemFieldButton().setEnabled(canEdit && selectedRowHierarchyAllows(SystemField.class));
 			upperMenu.getNewTextButton().setEnabled(canEdit && selectedRowHierarchyAllows(Text.class));
 			upperMenu.getNewAnswerButton().setEnabled(canEdit && selectedRowHierarchyAllows(Answer.class));
-			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull);
+			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
 			upperMenu.getDownButton().setEnabled(canEdit && !rowIsForm);
