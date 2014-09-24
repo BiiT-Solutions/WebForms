@@ -75,6 +75,7 @@ public class Designer extends SecuredWebPage {
 		table.setSizeFull();
 		table.setSelectable(true);
 		table.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);
+		table.collapseFrom(Question.class);
 		table.setValue(null);
 		table.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -1169897738297107301L;
