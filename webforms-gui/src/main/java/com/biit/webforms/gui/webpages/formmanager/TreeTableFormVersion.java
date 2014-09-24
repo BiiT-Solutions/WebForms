@@ -45,7 +45,7 @@ public class TreeTableFormVersion extends TreeTable {
 	private List<EditInfoListener> editInfoListeners;
 
 	enum TreeTableFormVersionProperties {
-		FORM_NAME, VERSION, INFO, ACCESS, ORGANIZATION, USED_BY, STATUS, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
+		FORM_LABEL, VERSION, INFO, ACCESS, ORGANIZATION, USED_BY, STATUS, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
 	};
 
 	public TreeTableFormVersion() {
@@ -66,7 +66,7 @@ public class TreeTableFormVersion extends TreeTable {
 		setNullSelectionAllowed(true);
 		setSizeFull();
 
-		addContainerProperty(TreeTableFormVersionProperties.FORM_NAME, String.class, "",
+		addContainerProperty(TreeTableFormVersionProperties.FORM_LABEL, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_NAME), null, Align.LEFT);
 
 		addContainerProperty(TreeTableFormVersionProperties.VERSION, String.class, "",
@@ -100,7 +100,7 @@ public class TreeTableFormVersion extends TreeTable {
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_MODIFICATIONDATE), null, Align.CENTER);
 
 		setColumnCollapsingAllowed(true);
-		setColumnCollapsible(TreeTableFormVersionProperties.FORM_NAME, false);
+		setColumnCollapsible(TreeTableFormVersionProperties.FORM_LABEL, false);
 		setColumnCollapsible(TreeTableFormVersionProperties.VERSION, false);
 		setColumnCollapsible(TreeTableFormVersionProperties.ORGANIZATION, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.ACCESS, true);
@@ -113,7 +113,7 @@ public class TreeTableFormVersion extends TreeTable {
 		setColumnCollapsed(TreeTableFormVersionProperties.CREATED_BY, true);
 		setColumnCollapsed(TreeTableFormVersionProperties.CREATION_DATE, true);
 
-		setColumnExpandRatio(TreeTableFormVersionProperties.FORM_NAME, 3);
+		setColumnExpandRatio(TreeTableFormVersionProperties.FORM_LABEL, 3);
 		setColumnExpandRatio(TreeTableFormVersionProperties.VERSION, 0.5f);
 		setColumnExpandRatio(TreeTableFormVersionProperties.ORGANIZATION, 1f);
 		setColumnExpandRatio(TreeTableFormVersionProperties.ACCESS, 1);
@@ -135,7 +135,7 @@ public class TreeTableFormVersion extends TreeTable {
 	private void addRow(Form form) {
 		if (form != null) {
 			Item item = addItem(form);
-			item.getItemProperty(TreeTableFormVersionProperties.FORM_NAME).setValue(form.getName());
+			item.getItemProperty(TreeTableFormVersionProperties.FORM_LABEL).setValue(form.getLabel());
 			item.getItemProperty(TreeTableFormVersionProperties.VERSION).setValue(form.getVersion() + "");
 			item.getItemProperty(TreeTableFormVersionProperties.INFO).setValue(createInfoButton(form));
 
@@ -248,14 +248,14 @@ public class TreeTableFormVersion extends TreeTable {
 	private void addRow(RootForm form) {
 		if (form != null) {
 			Item item = addItem(form);
-			item.getItemProperty(TreeTableFormVersionProperties.FORM_NAME).setValue(form.getName());
+			item.getItemProperty(TreeTableFormVersionProperties.FORM_LABEL).setValue(form.getName());
 		}
 	}
 
 	public void addForm(Form form) {
 		RootForm parent = getFormRoot(form);
 		if (parent == null) {
-			parent = new RootForm(form.getName(), form.getOrganizationId());
+			parent = new RootForm(form.getLabel(), form.getOrganizationId());
 			addRow(parent);
 		}
 		if (form != null) {
@@ -280,7 +280,7 @@ public class TreeTableFormVersion extends TreeTable {
 	private RootForm getFormRoot(Form form) {
 		for (Object item : getItemIds()) {
 			if (item instanceof RootForm) {
-				if (((RootForm) item).getName().equals(form.getName())
+				if (((RootForm) item).getName().equals(form.getLabel())
 						&& ((RootForm) item).getOrganizationId().equals(form.getOrganizationId())) {
 					return (RootForm) item;
 				}
@@ -297,7 +297,7 @@ public class TreeTableFormVersion extends TreeTable {
 			}
 		}
 
-		setSortContainerPropertyId(TreeTableFormVersionProperties.FORM_NAME);
+		setSortContainerPropertyId(TreeTableFormVersionProperties.FORM_LABEL);
 		setSortAscending(true);
 		sort();
 	}
@@ -410,7 +410,7 @@ public class TreeTableFormVersion extends TreeTable {
 
 	@Override
 	public Collection<?> getSortableContainerPropertyIds() {
-		return new ArrayList<>(Arrays.asList(TreeTableFormVersionProperties.FORM_NAME));
+		return new ArrayList<>(Arrays.asList(TreeTableFormVersionProperties.FORM_LABEL));
 	}
 
 	public void addEditInfoListener(EditInfoListener listener) {

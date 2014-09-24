@@ -21,9 +21,9 @@ public interface IFormDao extends IBaseFormDao<Form> {
 	/**
 	 * Filtered version of getForm by organization
 	 * 
-	 * @param formName
+	 * @param formLabel
 	 * @param organization
 	 * @return
 	 */
-	public Form getForm(String formName, Organization organization);
+	public Form getForm(String formLabel, Organization organization);
 }

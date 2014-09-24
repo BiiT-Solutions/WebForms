@@ -11,6 +11,7 @@ import com.biit.form.BaseCategory;
 import com.biit.form.BaseQuestion;
 import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
@@ -24,7 +25,7 @@ public class Category extends BaseCategory {
 		super();
 	}
 
-	public Category(String name) throws FieldTooLongException {
+	public Category(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		super(name);
 	}
 

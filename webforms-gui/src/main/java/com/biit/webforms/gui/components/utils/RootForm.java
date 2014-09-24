@@ -10,8 +10,8 @@ public class RootForm extends Form{
 	private String name;
 	private List<Form> childForms;
 
-	public RootForm(String name, Long organizationId) {
-		this.name = name;
+	public RootForm(String label, Long organizationId) {
+		this.name = label;
 		childForms = new ArrayList<Form>();
 		setOrganizationId(organizationId);
 	}

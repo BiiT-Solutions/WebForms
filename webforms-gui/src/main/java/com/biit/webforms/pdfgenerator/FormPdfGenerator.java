@@ -23,7 +23,7 @@ public class FormPdfGenerator extends DocumentGenerator {
 		this.form = form;
 
 		FormPageEvent formPageEvent = new FormPageEvent();
-		formPageEvent.setHeader(form.getName());
+		formPageEvent.setHeader(form.getLabel());
 
 		setPageEvent(formPageEvent);
 
@@ -32,7 +32,7 @@ public class FormPdfGenerator extends DocumentGenerator {
 	@Override
 	protected void generateDocumentContent(Document document) throws DocumentException {
 
-		ParagraphGenerator.generateAndAddFormTitle(document, form.getName(), PdfAlign.ALIGN_CENTER);
+		ParagraphGenerator.generateAndAddFormTitle(document, form.getLabel(), PdfAlign.ALIGN_CENTER);
 		String updateDate = DateManager.convertDateToString(form.getUpdateTime());
 		ParagraphGenerator.generateAndAddSubtitle(document, "Version: " + form.getVersion() + " - " + updateDate,
 				PdfAlign.ALIGN_CENTER);

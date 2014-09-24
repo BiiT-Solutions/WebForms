@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import com.biit.form.BaseAnswer;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
@@ -29,8 +30,9 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
  */
 @Entity
 @Table(name = "tree_answers")
-public class Answer extends BaseAnswer implements FlowConditionScript{
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(Answer.class));
+public class Answer extends BaseAnswer implements FlowConditionScript {
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<Class<? extends TreeObject>>(
+			Arrays.asList(Answer.class));
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 
 	@Column(length = MAX_DESCRIPTION_LENGTH)
@@ -41,11 +43,11 @@ public class Answer extends BaseAnswer implements FlowConditionScript{
 		description = new String();
 	}
 
-	public Answer(String name) throws FieldTooLongException {
+	public Answer(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		super(name);
 		description = new String();
 	}
-	
+
 	@Override
 	protected List<Class<? extends TreeObject>> getAllowedChildren() {
 		return ALLOWED_CHILDREN;
@@ -54,7 +56,7 @@ public class Answer extends BaseAnswer implements FlowConditionScript{
 	@Override
 	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
 		if (object instanceof Answer) {
-			if(((Answer) object).getDescription()!=null){
+			if (((Answer) object).getDescription() != null) {
 				description = new String(((Answer) object).getDescription());
 			}
 		} else {
@@ -63,17 +65,19 @@ public class Answer extends BaseAnswer implements FlowConditionScript{
 	}
 
 	/**
-	 * Set value is an alias for {@link Answer#setName(String)}
+	 * Set value is an alias for {@link Answer#setLabel(String)}
 	 * 
 	 * @param value
 	 * @throws FieldTooLongException
+	 * @throws CharacterNotAllowedException
 	 */
-	public void setValue(String value) throws FieldTooLongException {
+	public void setValue(String value) throws FieldTooLongException, CharacterNotAllowedException {
 		setName(value);
 	}
 
 	/**
 	 * Get Value is an alias for {@link Answer#getName()}
+	 * 
 	 * @return
 	 */
 	public String getValue() {
@@ -90,6 +94,6 @@ public class Answer extends BaseAnswer implements FlowConditionScript{
 
 	@Override
 	public String getScriptRepresentation() {
-		return "<"+getName()+">";
+		return "<" + getName() + ">";
 	}
 }

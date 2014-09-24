@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
@@ -26,6 +27,7 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 
 		name = new TextField(LanguageCodes.CAPTION_NAME.translation());
 		name.setWidth(WIDTH);
+		name.setRequired(true);
 
 		field = new TextField(LanguageCodes.CAPTION_FIELD.translation());
 		field.setWidth(WIDTH);
@@ -48,7 +50,8 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 	@Override
 	protected void initValues() {
 		super.initValues();
-
+		
+		name.addValidator(new TreeObjectNameValidator(instance.getNameAllowedPattern()));
 		name.setValue(instance.getName());
 		field.setValue(instance.getFieldName());
 	}
@@ -62,10 +65,12 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 	@Override
 	public void updateElement() {
 		try {
-			instance.setName(name.getValue());
+			if(name.isValid()){
+				instance.setName(name.getValue());
+			}
 			instance.setFieldName(field.getValue());
 
-		} catch (FieldTooLongException e) {
+		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 		super.updateElement();

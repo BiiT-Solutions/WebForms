@@ -59,7 +59,7 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 		try {
 			Criteria criteria = session.createCriteria(Form.class);
 			criteria.setProjection(Projections.max("version"));
-			criteria.add(Restrictions.eq("name", form.getName()));
+			criteria.add(Restrictions.eq("label", form.getLabel()));
 			Integer maxVersion = (Integer) criteria.uniqueResult();
 			session.getTransaction().commit();
 			return maxVersion;
@@ -70,12 +70,12 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 	}
 
 	@Override
-	public Form getForm(String name) {
+	public Form getForm(String label) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
 			Criteria criteria = session.createCriteria(Form.class);
-			criteria.add(Restrictions.eq("name", name));
+			criteria.add(Restrictions.eq("label", label));
 			@SuppressWarnings("unchecked")
 			List<Form> results = criteria.list();
 			initializeSets(results);
@@ -91,12 +91,12 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 	}
 
 	@Override
-	public Form getForm(String formName, Organization organization) {
+	public Form getForm(String formLabel, Organization organization) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
 			Criteria criteria = session.createCriteria(Form.class);
-			criteria.add(Restrictions.eq("name", formName));
+			criteria.add(Restrictions.eq("label", formLabel));
 			criteria.add(Restrictions.eq("organizationId", organization.getOrganizationId()));
 			@SuppressWarnings("unchecked")
 			List<Form> results = criteria.list();

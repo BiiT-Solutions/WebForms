@@ -11,6 +11,7 @@ import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
 import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -26,7 +27,7 @@ public class Subcategory extends BaseGroup {
 		super();
 	}
 
-	public Subcategory(String name) throws FieldTooLongException {
+	public Subcategory(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		super();
 		setName(name);
 	}
@@ -43,7 +44,7 @@ public class Subcategory extends BaseGroup {
 	}
 
 	@Override
-	protected String getTechnicalName() {
+	protected String getDefaultTechnicalName() {
 		return DEFAULT_SUBCATEGORY_NAME;
 	}
 

@@ -24,7 +24,7 @@ public class FormDescriptionGenerator extends DocumentGenerator{
 
 	@Override
 	protected void generateDocumentContent(Document document) throws DocumentException {
-		ParagraphGenerator.generateAndAddTitle(document, form.getName(), PdfAlign.ALIGN_CENTER);
+		ParagraphGenerator.generateAndAddTitle(document, form.getLabel(), PdfAlign.ALIGN_CENTER);
 
 		String updateDate = DateManager.convertDateToString(form.getUpdateTime());
 		ParagraphGenerator.generateAndAddSubtitle(document, "Version: " + form.getVersion() + " - " + updateDate,

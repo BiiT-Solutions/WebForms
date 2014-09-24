@@ -24,7 +24,7 @@ public class WebformsParser extends Parser {
 		super(tokens);
 		configureParser();
 	}
-
+	
 	private void configureParser() {
 		// Register prefix parselets
 		register(TokenTypes.REFERENCE, new ReferenceParselet());

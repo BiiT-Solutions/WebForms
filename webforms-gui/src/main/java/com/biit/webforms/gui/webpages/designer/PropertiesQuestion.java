@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.UserSessionHandler;
@@ -45,6 +46,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 		name = new TextField(LanguageCodes.CAPTION_NAME.translation());
 		name.setWidth(WIDTH);
+		name.setRequired(true);
 
 		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
@@ -83,7 +85,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		answerFormat.setNullSelectionAllowed(false);
 
 		horizontal = new CheckBox(LanguageCodes.CAPTION_HORIZONTAL.translation());
-		
+
 		mandatory = new CheckBox(LanguageCodes.CAPTION_MANDATORY.translation());
 
 		FormLayout commonProperties = new FormLayout();
@@ -96,7 +98,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		commonProperties.addComponent(answerFormat);
 		commonProperties.addComponent(horizontal);
 		commonProperties.addComponent(mandatory);
-		
+
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
@@ -109,10 +111,10 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	@Override
 	protected void initValues() {
 		super.initValues();
-
+		name.addValidator(new TreeObjectNameValidator(instance.getNameAllowedPattern()));
 		name.setValue(instance.getName());
-		//TODO dynamic label
-		label.setValue(instance.getLabel());		
+		// TODO dynamic label
+		label.setValue(instance.getLabel());
 		description.setValue(instance.getDescription());
 		mandatory.setValue(instance.isMandatory());
 		answerType.setValue(instance.getAnswerType());
@@ -129,8 +131,10 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	@Override
 	public void updateElement() {
 		try {
-			instance.setName(name.getValue());
-			//TODO dynamic label
+			if (name.isValid()) {
+				instance.setName(name.getValue());
+			}
+			// TODO dynamic label
 			instance.setLabel(label.getValue());
 			instance.setDescription(description.getValue());
 			instance.setMandatory(mandatory.getValue());
@@ -138,7 +142,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 			instance.setAnswerFormat((AnswerFormat) answerFormat.getValue());
 			instance.setHorizontal(horizontal.getValue());
 
-		} catch (FieldTooLongException | InvalidAnswerFormatException e) {
+		} catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 

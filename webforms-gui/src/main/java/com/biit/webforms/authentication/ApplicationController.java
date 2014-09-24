@@ -7,6 +7,7 @@ import java.util.Set;
 import org.hibernate.exception.ConstraintViolationException;
 
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -62,29 +63,29 @@ public class ApplicationController {
 	 * User action to create a form. Needs a unique name where name.length() <
 	 * 190 characters.
 	 * 
-	 * @param formName
+	 * @param formLabel
 	 * @return
 	 * @throws FieldTooLongException
 	 * @throws FormWithSameNameException
 	 */
-	public Form createForm(String formName, Organization organization) throws FieldTooLongException,
-			FormWithSameNameException {
+	public Form createForm(String formLabel, Organization organization) throws FieldTooLongException,
+			FormWithSameNameException, CharacterNotAllowedException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " createForm " + formName + " START");
+				+ " createForm " + formLabel + " START");
 
 		// Create new form
 		Form newform = null;
 		try {
-			newform = new Form(formName, getUser(), organization);
-		} catch (FieldTooLongException ex) {
+			newform = new Form(formLabel, getUser(), organization);
+		} catch (FieldTooLongException | CharacterNotAllowedException ex) {
 			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " createForm " + ex.getMessage());
 			throw ex;
 		}
 
 		// Check if database contains a form with the same name.
-		if (formDao.getForm(formName, organization) != null) {
-			FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formName
+		if (formDao.getForm(formLabel, organization) != null) {
+			FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel
 					+ " already exists");
 			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " createForm " + ex.getMessage());
@@ -100,12 +101,11 @@ public class ApplicationController {
 		}
 
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " createForm " + formName + " END");
+				+ " createForm " + formLabel + " END");
 		return newform;
 	}
 
-	public Block createBlock(String blockName, Organization organization) throws FieldTooLongException,
-			FormWithSameNameException {
+	public Block createBlock(String blockName, Organization organization) throws FieldTooLongException, CharacterNotAllowedException, FormWithSameNameException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createBlock " + blockName + " START");
 
@@ -113,7 +113,7 @@ public class ApplicationController {
 		Block newBlock = null;
 		try {
 			newBlock = new Block(blockName, getUser(), organization);
-		} catch (FieldTooLongException ex) {
+		} catch (FieldTooLongException | CharacterNotAllowedException ex) {
 			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " createBlock " + ex.getMessage());
 			throw ex;
@@ -141,8 +141,7 @@ public class ApplicationController {
 		return newBlock;
 	}
 
-	public Form createNewFormVersion(Form form) throws NotValidTreeObjectException,
-			NewVersionWithoutFinalDesignException {
+	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException, NotValidTreeObjectException, CharacterNotAllowedException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createNewFormVersion " + form + " START");
 
@@ -155,7 +154,7 @@ public class ApplicationController {
 		Form newFormVersion;
 		try {
 			newFormVersion = form.createNewVersion(getUser());
-		} catch (NotValidTreeObjectException ex) {
+		} catch (NotValidTreeObjectException | CharacterNotAllowedException ex) {
 			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " createForm " + ex.getMessage());
 			throw ex;
@@ -256,7 +255,7 @@ public class ApplicationController {
 	 */
 	public Category addNewCategory() {
 		try {
-			return (Category) insertTreeObject(Category.class, getFormInUse(), "new-category");
+			return (Category) insertTreeObject(Category.class, getFormInUse(), "new_category");
 		} catch (NotValidChildException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -272,7 +271,7 @@ public class ApplicationController {
 	 * @throws NotValidChildException
 	 */
 	public Subcategory addNewSubcategory(TreeObject parent) throws NotValidChildException {
-		return (Subcategory) insertTreeObject(Subcategory.class, parent, "new-subcategory");
+		return (Subcategory) insertTreeObject(Subcategory.class, parent, "new_subcategory");
 	}
 
 	/**
@@ -283,7 +282,7 @@ public class ApplicationController {
 	 * @throws NotValidChildException
 	 */
 	public Group addNewGroup(TreeObject parent) throws NotValidChildException {
-		return (Group) insertTreeObject(Group.class, parent, "new-group");
+		return (Group) insertTreeObject(Group.class, parent, "new_group");
 	}
 
 	/**
@@ -294,7 +293,7 @@ public class ApplicationController {
 	 * @throws NotValidChildException
 	 */
 	public Question addNewQuestion(TreeObject parent) throws NotValidChildException {
-		return (Question) insertTreeObject(Question.class, parent, "new-question");
+		return (Question) insertTreeObject(Question.class, parent, "new_question");
 	}
 
 	/**
@@ -305,7 +304,7 @@ public class ApplicationController {
 	 * @throws NotValidChildException
 	 */
 	public SystemField addNewSystemField(TreeObject parent) throws NotValidChildException {
-		return (SystemField) insertTreeObject(SystemField.class, parent, "new-system-field");
+		return (SystemField) insertTreeObject(SystemField.class, parent, "new_system_field");
 	}
 
 	/**
@@ -316,7 +315,7 @@ public class ApplicationController {
 	 * @throws NotValidChildException
 	 */
 	public Text addNewText(TreeObject parent) throws NotValidChildException {
-		return (Text) insertTreeObject(Text.class, parent, "new-text");
+		return (Text) insertTreeObject(Text.class, parent, "new_text");
 	}
 
 	/**
@@ -327,7 +326,7 @@ public class ApplicationController {
 	 * @throws NotValidChildException
 	 */
 	public Answer addNewAnswer(TreeObject parent) throws NotValidChildException {
-		return (Answer) insertTreeObject(Answer.class, parent, "new-answer");
+		return (Answer) insertTreeObject(Answer.class, parent, "new_answer");
 	}
 
 	/**
@@ -358,7 +357,7 @@ public class ApplicationController {
 			parent.addChild(treeObject);
 			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " inserted '" + treeObject + "' into '" + parent + "'");
-		} catch (FieldTooLongException | InstantiationException | IllegalAccessException e) {
+		} catch (FieldTooLongException | InstantiationException | IllegalAccessException | CharacterNotAllowedException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		} catch (NotValidChildException e) {
@@ -402,7 +401,7 @@ public class ApplicationController {
 		if (maxNewString == 0) {
 			return newString;
 		} else {
-			return newString + "-" + (maxNewString + 1);
+			return newString + "_" + (maxNewString + 1);
 		}
 	}
 
@@ -495,15 +494,16 @@ public class ApplicationController {
 				+ " finishForm " + formInUse + " END");
 	}
 
-	public void saveAsBlock(TreeObject element, String blockName, Organization organization)
+	public void saveAsBlock(TreeObject element, String blockLabel, Organization organization)
 			throws FieldTooLongException, FormWithSameNameException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " saveAsBlock " + formInUse + " " + element + " " + blockName + " START");
+				+ " saveAsBlock " + formInUse + " " + element + " " + blockLabel + " START");
 
-		// First we create the new block
-		Block block = createBlock(blockName, organization);
-
+		Block block = null;
 		try {
+			// First we create the new block
+			block = createBlock(blockLabel, organization);
+
 			TreeObject copy = element.generateCopy(true, true);
 			Form formOfCopy = (Form) copy.getAncestor(Form.class);
 			formOfCopy.resetIds();
@@ -512,14 +512,16 @@ public class ApplicationController {
 			block.setUpdatedBy(getUser());
 			block.setUpdateTime();
 			blockDao.makePersistent(block);
-		} catch (NotValidTreeObjectException | NotValidChildException e) {
+		} catch (NotValidTreeObjectException | NotValidChildException | CharacterNotAllowedException e) {
 			// Impossible, still, if fails remove block.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			blockDao.makeTransient(block);
+			if (block != null) {
+				blockDao.makeTransient(block);
+			}
 		}
 
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " saveAsBlock " + formInUse + " " + element + " " + blockName + " END");
+				+ " saveAsBlock " + formInUse + " " + element + " " + blockLabel + " END");
 	}
 
 	public void notifyTreeObjectUpdated(Object element) {
@@ -544,7 +546,7 @@ public class ApplicationController {
 			blockOfCopy.resetIds();
 
 			formInUse.addChildren(blockOfCopy.getChildren());
-		} catch (NotValidTreeObjectException | NotValidChildException e) {
+		} catch (NotValidTreeObjectException | NotValidChildException | CharacterNotAllowedException e) {
 			// Impossible.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -617,22 +619,22 @@ public class ApplicationController {
 	 * @throws RuleWithoutSource
 	 * @throws RuleSameOriginAndDestinyException
 	 * @throws RuleDestinyIsBeforeOrigin
-	 * @throws RuleWithoutDestiny 
+	 * @throws RuleWithoutDestiny
 	 */
 	public void updateRuleContent(Rule rule, TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others,
 			String conditionString) throws BadRuleContentException, RuleWithoutSource,
 			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
 		logInfoStart("updateRuleContent", rule, origin, ruleType, destiny, others, conditionString);
-		
+
 		rule.setRuleContent(origin, ruleType, destiny, others, conditionString);
-		
-		if(rule.getCreatedBy()==null){
+
+		if (rule.getCreatedBy() == null) {
 			rule.setCreationTime();
 			rule.setCreatedBy(getUser());
 		}
 		rule.setUpdateTime();
 		rule.setUpdatedBy(getUser());
-		
+
 		if (!getFormInUse().containsRule(rule)) {
 			addRuleToForm(rule, getFormInUse());
 		}
@@ -671,12 +673,13 @@ public class ApplicationController {
 
 	/**
 	 * Clones a set of rules, reset Ids and inserts into form
+	 * 
 	 * @param selectedRules
 	 * @return
 	 */
 	public Set<Rule> cloneRulesAndInsertIntoForm(Set<Rule> selectedRules) {
 		logInfoStart("cloneRulesAndInsertIntoForm", selectedRules);
-		Set<Rule> clones = cloneRules(selectedRules);		
+		Set<Rule> clones = cloneRules(selectedRules);
 		for (Rule clone : clones) {
 			clone.resetIds();
 			addRuleToForm(clone, UserSessionHandler.getController().getFormInUse());
@@ -684,24 +687,24 @@ public class ApplicationController {
 		logInfoEnd("cloneRulesAndInsertIntoForm", selectedRules);
 		return clones;
 	}
-	
+
 	/**
 	 * Removes a set of rules from current form.
+	 * 
 	 * @param selectedRules
 	 */
 	public void removeRules(Set<Rule> selectedRules) {
 		removeRules(getFormInUse(), selectedRules);
 	}
-	
+
 	private void removeRules(Form form, Set<Rule> rules) {
 		logInfoStart("removeRules", form, rules);
-		for (Rule rule: rules) {
+		for (Rule rule : rules) {
 			form.getRules().remove(rule);
 		}
 		logInfoEnd("removeRules", form, rules);
 	}
 
-	
 	protected void logInfoStart(String functionName, Object... parameters) {
 		WebformsLogger.info(ApplicationController.class.getName(),
 				getUserInfo() + " " + getFunctionInfo(functionName, parameters) + " START");
@@ -711,7 +714,7 @@ public class ApplicationController {
 		WebformsLogger.info(ApplicationController.class.getName(),
 				getUserInfo() + " " + getFunctionInfo(functionName, parameters) + " END");
 	}
-	
+
 	protected void logInfo(String functionName, Object... parameters) {
 		WebformsLogger.info(ApplicationController.class.getName(),
 				getUserInfo() + " " + getFunctionInfo(functionName, parameters));

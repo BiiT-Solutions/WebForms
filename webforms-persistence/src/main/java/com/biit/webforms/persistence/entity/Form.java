@@ -19,6 +19,7 @@ import javax.persistence.UniqueConstraint;
 import com.biit.form.BaseForm;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -28,7 +29,7 @@ import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 
 @Entity
-@Table(name = "tree_forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "name", "version", "organizationId" }) })
+@Table(name = "tree_forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "label", "version", "organizationId" }) })
 public class Form extends BaseForm {
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
@@ -50,8 +51,8 @@ public class Form extends BaseForm {
 		rules = new HashSet<>();
 	}
 
-	public Form(String name, User user, Organization organization) throws FieldTooLongException {
-		super(name);
+	public Form(String label, User user, Organization organization) throws FieldTooLongException, CharacterNotAllowedException {
+		super(label);
 		status = FormWorkStatus.DESIGN;
 		description = new String();
 		rules = new HashSet<>();
@@ -77,7 +78,7 @@ public class Form extends BaseForm {
 		}
 	}
 
-	public Form createNewVersion(User user) throws NotValidTreeObjectException {
+	public Form createNewVersion(User user) throws NotValidTreeObjectException, CharacterNotAllowedException {
 		Form newVersion = (Form) generateCopy(false, true);
 		newVersion.setVersion(newVersion.getVersion() + 1);
 		newVersion.resetIds();

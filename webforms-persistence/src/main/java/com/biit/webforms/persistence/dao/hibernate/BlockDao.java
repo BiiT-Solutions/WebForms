@@ -56,7 +56,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 		try {
 			Criteria criteria = session.createCriteria(Form.class);
 			criteria.setProjection(Projections.max("version"));
-			criteria.add(Restrictions.eq("name", form.getName()));
+			criteria.add(Restrictions.eq("label", form.getLabel()));
 			Integer maxVersion = (Integer) criteria.uniqueResult();
 			session.getTransaction().commit();
 			return maxVersion;
@@ -67,12 +67,12 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	public Block getBlock(String blockName, Organization organization) {
+	public Block getBlock(String blockLabel, Organization organization) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
 			Criteria criteria = session.createCriteria(Block.class);
-			criteria.add(Restrictions.eq("name", blockName));
+			criteria.add(Restrictions.eq("label", blockLabel));
 			criteria.add(Restrictions.eq("organizationId", organization.getOrganizationId()));
 			@SuppressWarnings("unchecked")
 			List<Block> results = criteria.list();
@@ -89,12 +89,12 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	public Block getForm(String name) {
+	public Block getForm(String label) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
 			Criteria criteria = session.createCriteria(Block.class);
-			criteria.add(Restrictions.eq("name", name));
+			criteria.add(Restrictions.eq("label", label));
 			@SuppressWarnings("unchecked")
 			List<Block> results = criteria.list();
 			initializeSets(results);

@@ -39,7 +39,7 @@ public abstract class ExporterDotFormBasic<T> extends ExporterDot<T> {
 
 	protected String createLegend(Form form) {
 		return "\tsubgraph cluster_0{rank = sink; Legend [shape=none, margin=0, label=<<table border=\"0\"><tr><td>"
-				+ form.getName() + "</td></tr><tr><td>version " + form.getVersion() + " ("
+				+ form.getLabel() + "</td></tr><tr><td>version " + form.getVersion() + " ("
 				+ getTimestampFormattedString(form.getUpdateTime()) + ")</td></tr></table>> ]}\n";
 	}
 

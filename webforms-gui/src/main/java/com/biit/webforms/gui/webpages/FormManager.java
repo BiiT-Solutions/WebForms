@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
@@ -143,6 +144,9 @@ public class FormManager extends SecuredWebPage {
 		} catch (NewVersionWithoutFinalDesignException e) {
 			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED,
 					LanguageCodes.WARNING_DESCRIPTION_NEW_VERSION_WHEN_DESIGN);
+		}  catch (CharacterNotAllowedException e) {
+			// Impossible
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 
@@ -170,6 +174,9 @@ public class FormManager extends SecuredWebPage {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 				} catch (FormWithSameNameException e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
+				}  catch (CharacterNotAllowedException e) {
+					// Impossible
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});

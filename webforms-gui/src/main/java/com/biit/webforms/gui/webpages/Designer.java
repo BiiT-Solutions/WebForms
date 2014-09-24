@@ -342,11 +342,11 @@ public class Designer extends SecuredWebPage {
 			boolean rowIsForm = selectedRow instanceof Form;
 			boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 					UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
-			boolean canInsertBlock = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+			boolean canStoreBlock = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
 
 			upperMenu.getSaveButton().setEnabled(canEdit);
-			upperMenu.getSaveAsBlockButton().setEnabled(canInsertBlock);
+			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock);
 			upperMenu.getInsertBlockButton().setEnabled(canEdit);
 			upperMenu.getInsertBlockButton().setVisible(!formIsBlock);
 			upperMenu.getNewCategoryButton().setEnabled(canEdit && (formIsBlockAndNoCategories || (!formIsBlock)));

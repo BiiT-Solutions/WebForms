@@ -9,9 +9,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.NotValidChildException;
-import com.biit.form.persistence.dao.IBaseQuestionDao;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Answer;
@@ -33,16 +33,13 @@ public class FormTest extends AbstractTransactionalTestNGSpringContextTests {
 	@Autowired
 	private IFormDao formDao;
 
-	@Autowired
-	private IBaseQuestionDao<Question> questionDao;
-
 	@Test
 	public void storeDummyForm() throws FieldTooLongException {
 		Form form = new Form();
-		form.setName(DUMMY_FORM);
+		form.setLabel(DUMMY_FORM);
 		formDao.makePersistent(form);
 		Assert.assertEquals(formDao.getRowCount(), 1);
-		Assert.assertEquals(formDao.getForm(DUMMY_FORM).getName(), DUMMY_FORM);
+		Assert.assertEquals(formDao.getForm(DUMMY_FORM).getLabel(), DUMMY_FORM);
 		formDao.makeTransient(form);
 		Assert.assertNull(formDao.getForm(DUMMY_FORM));
 	}
@@ -50,9 +47,9 @@ public class FormTest extends AbstractTransactionalTestNGSpringContextTests {
 	@Test
 	public void storeFormWithCategory() throws NotValidChildException, FieldTooLongException {
 		Form form = new Form();
-		form.setName(FULL_FORM);
+		form.setLabel(FULL_FORM);
 		Category category = new Category();
-		category.setName(CATEGORY_LABEL);
+		category.setLabel(CATEGORY_LABEL);
 		form.addChild(category);
 		formDao.makePersistent(form);
 		Form retrievedForm = formDao.read(form.getId());
@@ -62,9 +59,10 @@ public class FormTest extends AbstractTransactionalTestNGSpringContextTests {
 	}
 
 	@Test
-	public void storeOtherFormWithSameLabelCategory() throws NotValidChildException, FieldTooLongException {
+	public void storeOtherFormWithSameLabelCategory() throws NotValidChildException, FieldTooLongException,
+			CharacterNotAllowedException {
 		Form form = new Form();
-		form.setName(OTHER_FORM);
+		form.setLabel(OTHER_FORM);
 		Category category = new Category();
 		category.setName(CATEGORY_LABEL);
 		form.addChild(category);
@@ -77,9 +75,10 @@ public class FormTest extends AbstractTransactionalTestNGSpringContextTests {
 	}
 
 	@Test
-	public void moveElementsUp() throws NotValidChildException, ChildrenNotFoundException, FieldTooLongException {
+	public void moveElementsUp() throws NotValidChildException, ChildrenNotFoundException, FieldTooLongException,
+			CharacterNotAllowedException {
 		Form form = new Form();
-		form.setName("MoveUp");
+		form.setLabel("MoveUp");
 
 		Category category = new Category();
 		category.setName("Category1");
@@ -118,15 +117,15 @@ public class FormTest extends AbstractTransactionalTestNGSpringContextTests {
 		group2.addChild(question3);
 
 		Answer answer1 = new Answer();
-		answer1.setName("Answer1");
+		answer1.setValue("Answer1");
 		question2.addChild(answer1);
 
 		Answer answer2 = new Answer();
-		answer2.setName("Answer2");
+		answer2.setValue("Answer2");
 		question2.addChild(answer2);
 
 		Answer answer3 = new Answer();
-		answer3.setName("Answer3");
+		answer3.setValue("Answer3");
 		question2.addChild(answer3);
 
 		// Update form with new elements

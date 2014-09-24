@@ -29,9 +29,7 @@ public class WindowProceedAction extends WindowAcceptCancel{
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				listener.acceptAction(window);
-				if(window.isClosable()){
-					window.close();
-				}
+				window.close();
 			}
 		});
 		showCentered();

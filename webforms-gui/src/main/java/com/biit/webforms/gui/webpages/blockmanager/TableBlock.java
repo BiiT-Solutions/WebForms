@@ -30,7 +30,7 @@ public class TableBlock extends Table {
 	private IBlockDao blockDao;
 
 	enum TreeTableBlockProperties {
-		BLOCK_NAME, ORGANIZATION, ACCESS, USED_BY, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
+		BLOCK_LABEL, ORGANIZATION, ACCESS, USED_BY, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
 	};
 
 	public TableBlock() {
@@ -62,7 +62,7 @@ public class TableBlock extends Table {
 	public void addRow(Block block) {
 		if (block != null) {
 			Item item = addItem(block);
-			item.getItemProperty(TreeTableBlockProperties.BLOCK_NAME).setValue(block.getName());
+			item.getItemProperty(TreeTableBlockProperties.BLOCK_LABEL).setValue(block.getLabel());
 
 			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
 					UserSessionHandler.getUser(), block.getOrganizationId());
@@ -121,7 +121,7 @@ public class TableBlock extends Table {
 		setNullSelectionAllowed(true);
 		setSizeFull();
 
-		addContainerProperty(TreeTableBlockProperties.BLOCK_NAME, String.class, "",
+		addContainerProperty(TreeTableBlockProperties.BLOCK_LABEL, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_NAME), null, Align.LEFT);
 
 		addContainerProperty(TreeTableBlockProperties.ORGANIZATION, String.class, "",
@@ -145,7 +145,7 @@ public class TableBlock extends Table {
 		addContainerProperty(TreeTableBlockProperties.MODIFICATION_DATE, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_MODIFICATIONDATE), null, Align.CENTER);
 
-		setColumnExpandRatio(TreeTableBlockProperties.BLOCK_NAME, 3);
+		setColumnExpandRatio(TreeTableBlockProperties.BLOCK_LABEL, 3);
 		setColumnExpandRatio(TreeTableBlockProperties.USED_BY, 1);
 		setColumnExpandRatio(TreeTableBlockProperties.CREATED_BY, 1.2f);
 		setColumnExpandRatio(TreeTableBlockProperties.CREATION_DATE, 1);

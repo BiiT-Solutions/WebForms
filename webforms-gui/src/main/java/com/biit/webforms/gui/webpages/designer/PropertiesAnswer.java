@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
@@ -28,6 +29,7 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 
 		value = new TextField(LanguageCodes.CAPTION_VALUE.translation());
 		value.setWidth(WIDTH);
+		value.setRequired(true);
 
 		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
@@ -55,6 +57,7 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 	protected void initValues() {
 		super.initValues();
 
+		value.addValidator(new TreeObjectNameValidator(instance.getNameAllowedPattern()));
 		value.setValue(instance.getValue());
 		// TODO dynamic label
 		label.setValue(instance.getLabel());
@@ -64,11 +67,13 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 	@Override
 	public void updateElement() {
 		try {
-			instance.setValue(value.getValue());
+			if (value.isValid()) {
+				instance.setValue(value.getValue());
+			}
 			// TODO dynamic label
 			instance.setLabel(label.getValue());
 			instance.setDescription(description.getValue());
-		} catch (FieldTooLongException e) {
+		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 

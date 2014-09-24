@@ -7,8 +7,8 @@ public enum WebformsRoles {
 
 	READ("webforms2_read-only"),
 	
-	FORM_EDIT("webforms2_manage-building_blocks"),
-	
+	FORM_EDIT("webforms2_manage-forms"),
+
 	BLOCK_EDIT("webforms2_manage-building_blocks"),
 	
 	ADMIN("webforms2_manage-forms_administration"),

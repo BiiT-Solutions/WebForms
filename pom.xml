@@ -38,7 +38,7 @@
 		<vaadin.version>7.2.6</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
 		<mysql-odbc.version>5.1.31</mysql-odbc.version>
-		<org.springframework.version>4.0.6.RELEASE</org.springframework.version>
+		<org.springframework.version>3.2.5.RELEASE</org.springframework.version>
 		<aspectj.version>1.8.1</aspectj.version>
 		<log4j.version>1.2.17</log4j.version>
 		<slf4j-api.version>1.7.7</slf4j-api.version>
@@ -46,7 +46,7 @@
 		<hibernate.version>4.3.6.Final</hibernate.version>
 		<liferay-service-common.version>0.4.0</liferay-service-common.version>
 		<liferay-authentication-client.version>0.5.0</liferay-authentication-client.version>
-		<form-structure.version>0.1.5</form-structure.version>
+		<form-structure.version>0.1.6</form-structure.version>
 		<root.directory>${project.basedir}</root.directory>
 		<itext.version>2.1.7</itext.version>
 	</properties>

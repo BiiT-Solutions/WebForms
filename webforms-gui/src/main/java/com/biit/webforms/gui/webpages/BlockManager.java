@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -150,6 +151,9 @@ public class BlockManager extends SecuredWebPage {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 				} catch (FormWithSameNameException e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
+				} catch (CharacterNotAllowedException e) {
+					// Impossible
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});

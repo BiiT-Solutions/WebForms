@@ -5,6 +5,7 @@ import javax.persistence.Table;
 
 import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
@@ -18,7 +19,7 @@ public class Group extends BaseRepeatableGroup {
 		setRepeatable(DEFAULT_REPEATABLE);
 	}
 
-	public Group(String name) throws FieldTooLongException {
+	public Group(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		super(name);
 		setRepeatable(DEFAULT_REPEATABLE);
 	}

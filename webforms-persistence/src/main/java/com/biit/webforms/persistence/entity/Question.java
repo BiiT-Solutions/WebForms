@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -46,7 +47,7 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 		answerFormat = AnswerFormat.TEXT;
 	}
 
-	public Question(String name) throws FieldTooLongException {
+	public Question(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		super(name);
 	}
 

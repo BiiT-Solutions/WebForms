@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.enumerations.RuleType;
@@ -54,7 +55,7 @@ public class FilteredForm {
 		selectedChilds.addAll(dependantElements);
 		try {
 			filteredForm = (Form) originalForm.generateCopyWithChilds(selectedChilds);
-		} catch (NotValidTreeObjectException e) {
+		} catch (NotValidTreeObjectException | CharacterNotAllowedException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
