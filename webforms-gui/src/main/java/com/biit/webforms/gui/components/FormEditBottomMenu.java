@@ -29,7 +29,7 @@ public class FormEditBottomMenu extends BottomMenu {
 				LanguageCodes.TOOLTIP_EDIT_FORM_FLOW, IconSize.BIG);
 		validateForm = new IconButton(LanguageCodes.CAPTION_VALIDATE_FORM, ThemeIcons.VALIDATE_FORM,
 				LanguageCodes.TOOLTIP_VALIDATE_FORM, IconSize.BIG);
-		impactAnalisys = new IconButton(LanguageCodes.CAPTION_IMPACT_ANALISYS, ThemeIcons.IMPACT_ANALISYS,
+		impactAnalisys = new IconButton(LanguageCodes.CAPTION_IMPACT_ANALYSIS, ThemeIcons.IMPACT_ANALYSIS,
 				LanguageCodes.TOOLTIP_IMPACT_ANALISYS, IconSize.BIG);
 		
 		editFormButton.addClickListener(new ClickListener() {

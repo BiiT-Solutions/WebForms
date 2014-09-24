@@ -49,25 +49,21 @@ public enum ThemeIcons implements IThemeIcon{
 	
 	EDIT_FORM_DESIGN("page.form.edit.svg"),
 	EDIT_FORM_FLOW("page.flow.editor.svg"),
-	VALIDATE_FORM("alert.svg"), //TODO
-	IMPACT_ANALISYS("alert.svg"),//TODO
+	VALIDATE_FORM("form.validate.svg"), 
+	IMPACT_ANALYSIS("form.impact.analysis.svg"),
 	
-	ALERT("alert.svg"), 
-	
-	NEW_RULE("alert.svg"),//TODO
-	EDIT_RULE("alert.svg"), //TODO
+	ALERT("alert.svg"),
 	
 	SEARCH("search.svg"), 
 	
-	REDRAW("alert.svg"), //TODO
-	CLONE_RULE("alert.svg"), //TODO
-	REMOVE_RULE("alert.svg"),  //TODO
+	RULE_ADD("flow.rule.add.svg"),
+	RULE_EDIT("flow.rule.edit.svg"), 
+	RULE_CLONE("flow.rule.duplicate.svg"), 
+	RULE_REMOVE("flow.rule.remove.svg"),  	
+	RULE_DIAGRAM_REDRAW("flow.diagram.refresh.svg"),	
 	
-	CONDITION_HELPER_REFERENCE("alert.svg"), //TODO 
-	CONDITION_HELPER_CONTROLS("alert.svg"), //TODO
-	
-	INSERT_REFERENCE("alert.svg"),  //TODO
-	INSERT_ANSWER_REFERENCE("alert.svg"), //TODO	
+	CONDITION_HELPER_FORM_REFERENCE("flow.helper.form.svg"),
+	CONDITION_HELPER_CONTROLS("flow.helper.control.svg"),
 		
 	;
 	

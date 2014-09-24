@@ -16,7 +16,7 @@ public class BasicLogging extends AbstractLogging {
 		log(joinPoint);
 	}
 
-	@Around("execution(* com.biit.webforms..*.*(..))")
+	@Around("execution(* com.biit.webforms..*.*(..)) || execution(* com.biit.form.persistence..*.*(..))")
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 		StopWatch stopWatch = new StopWatch();
 		Object returnValue = null;

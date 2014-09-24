@@ -18,22 +18,22 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
 				LanguageCodes.COMMON_TOOLTIP_SAVE, IconSize.BIG);
 
-		newRuleButton = new IconButton(LanguageCodes.CAPTION_NEW_RULE, ThemeIcons.NEW_RULE,
+		newRuleButton = new IconButton(LanguageCodes.CAPTION_NEW_RULE, ThemeIcons.RULE_ADD,
 				LanguageCodes.TOOLTIP_NEW_RULE, IconSize.BIG);
 
-		editRuleButton = new IconButton(LanguageCodes.CAPTION_EDIT_RULE, ThemeIcons.EDIT_RULE,
+		editRuleButton = new IconButton(LanguageCodes.CAPTION_EDIT_RULE, ThemeIcons.RULE_EDIT,
 				LanguageCodes.TOOLTIP_EDIT_RULE, IconSize.BIG);
 
-		cloneRuleButton = new IconButton(LanguageCodes.CAPTION_CLONE_RULE, ThemeIcons.CLONE_RULE,
+		cloneRuleButton = new IconButton(LanguageCodes.CAPTION_CLONE_RULE, ThemeIcons.RULE_CLONE,
 				LanguageCodes.TOOLTIP_CLONE_RULE, IconSize.BIG);
 
-		removeRuleButton = new IconButton(LanguageCodes.CAPTION_REMOVE_RULE, ThemeIcons.REMOVE_RULE,
+		removeRuleButton = new IconButton(LanguageCodes.CAPTION_REMOVE_RULE, ThemeIcons.RULE_REMOVE,
 				LanguageCodes.TOOLTIP_REMOVE_RULE, IconSize.BIG);
 
 		validateButton = new IconButton(LanguageCodes.COMMON_CAPTION_VALIDATE, ThemeIcons.FORM_VALIDATE,
 				LanguageCodes.COMMON_TOOLTIP_VALIDATE, IconSize.BIG);
 
-		finishButton = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_VALIDATE,
+		finishButton = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
 				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 
 		addIconButton(saveButton);
