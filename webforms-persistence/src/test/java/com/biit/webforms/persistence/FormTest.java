@@ -2,6 +2,7 @@ package com.biit.webforms.persistence;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -23,6 +24,7 @@ import com.biit.webforms.persistence.entity.Question;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContextTest.xml" })
 @Test(groups = { "formDao" })
+@DirtiesContext
 public class FormTest extends AbstractTransactionalTestNGSpringContextTests {
 	private final static String DUMMY_FORM = "Dummy Form";
 	private final static String FULL_FORM = "Complete Form";
@@ -41,6 +43,7 @@ public class FormTest extends AbstractTransactionalTestNGSpringContextTests {
 		Assert.assertEquals(formDao.getRowCount(), 1);
 		Assert.assertEquals(formDao.getForm(DUMMY_FORM).getLabel(), DUMMY_FORM);
 		formDao.makeTransient(form);
+		Assert.assertEquals(formDao.getRowCount(), 0);
 		Assert.assertNull(formDao.getForm(DUMMY_FORM));
 	}
 

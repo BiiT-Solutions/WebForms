@@ -14,9 +14,13 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.biit.form.BaseForm;
 import com.biit.form.BaseQuestion;
@@ -34,6 +38,7 @@ import com.liferay.portal.model.User;
 @Table(name = "tree_forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "label", "version",
 		"organizationId" }) })
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH))
+@Cache(region="forms", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Form extends BaseForm {
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
@@ -41,11 +46,13 @@ public class Form extends BaseForm {
 	private FormWorkStatus status;
 
 	@Column(length = MAX_DESCRIPTION_LENGTH)
+	@Lob
 	private String description;
 
 	private Long organizationId;
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "form")
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<Rule> rules;
 
 	public Form() {

@@ -49,6 +49,9 @@
 		<form-structure.version>0.1.6</form-structure.version>
 		<root.directory>${project.basedir}</root.directory>
 		<itext.version>2.1.7</itext.version>
+		<h2.version>1.4.181</h2.version>
+		<ehcache.version>2.6.9</ehcache.version>
+		<c3p0.version>0.9.1.2</c3p0.version>
 	</properties>
 
 	<dependencies>
