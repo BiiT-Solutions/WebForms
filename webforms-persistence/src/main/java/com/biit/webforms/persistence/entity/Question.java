@@ -17,7 +17,9 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.enumerations.AnswerFormat;
+import com.biit.webforms.persistence.entity.enumerations.AnswerSubformat;
 import com.biit.webforms.persistence.entity.enumerations.AnswerType;
+import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
 @Entity
 @Table(name = "tree_questions")
@@ -36,6 +38,8 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 	private AnswerType answerType;
 	@Enumerated(EnumType.STRING)
 	private AnswerFormat answerFormat;
+	@Enumerated(EnumType.STRING)
+	private AnswerSubformat answerSubformat;
 
 	public Question() {
 		super();
@@ -45,6 +49,7 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 		description = new String();
 		answerType = AnswerType.INPUT;
 		answerFormat = AnswerFormat.TEXT;
+		answerSubformat = null;
 	}
 
 	public Question(String name) throws FieldTooLongException, CharacterNotAllowedException {
@@ -90,6 +95,25 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 			}
 		}
 		this.answerFormat = answerFormat;
+		this.answerSubformat = null;
+	}
+	
+	public AnswerSubformat getAnswerSubformat(){
+		return answerSubformat;
+	}
+	
+	public void setAnswerSubformat(AnswerSubformat answerSubformat) throws InvalidAnswerSubformatException {
+		if(answerFormat ==null && answerSubformat!=null){
+			throw new InvalidAnswerSubformatException("Answer subformat can't be defined if the question doesn't have any format.");
+		}
+		if(answerFormat !=null && answerSubformat != null && !answerFormat.isSubformat(answerSubformat)){
+			throw new InvalidAnswerSubformatException("Answer subformat "+answerSubformat+" is not compatible with answer format "+answerFormat);
+		}
+		if(answerFormat !=null && answerSubformat ==null){
+			this.answerSubformat = answerFormat.getDefaultSubformat();
+		}else{
+			this.answerSubformat = answerSubformat;
+		}
 	}
 
 	@Override

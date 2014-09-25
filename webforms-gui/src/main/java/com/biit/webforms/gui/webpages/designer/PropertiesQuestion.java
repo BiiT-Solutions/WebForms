@@ -7,12 +7,15 @@ import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.AnswerFormatUi;
+import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.AnswerTypeUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.enumerations.AnswerFormat;
+import com.biit.webforms.persistence.entity.enumerations.AnswerSubformat;
 import com.biit.webforms.persistence.entity.enumerations.AnswerType;
+import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.CheckBox;
@@ -35,6 +38,8 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	private ComboBox answerType;
 
 	private ComboBox answerFormat;
+
+	private ComboBox answerSubformat;
 
 	private CheckBox horizontal;
 
@@ -84,6 +89,20 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 			answerFormat.setItemCaption(format.getAnswerFormat(), format.getLanguageCode().translation());
 		}
 		answerFormat.setNullSelectionAllowed(false);
+		answerFormat.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = -1366771633100053513L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				refreshAnswerSubformatOptions();
+			}
+		});
+		answerFormat.setImmediate(true);
+
+		answerSubformat = new ComboBox(LanguageCodes.CAPTION_ANSWER_SUBFORMAT.translation());
+		answerSubformat.setWidth(WIDTH);
+		answerSubformat.setNullSelectionAllowed(false);
+		refreshAnswerSubformatOptions();
 
 		horizontal = new CheckBox(LanguageCodes.CAPTION_HORIZONTAL.translation());
 
@@ -97,6 +116,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		commonProperties.addComponent(description);
 		commonProperties.addComponent(answerType);
 		commonProperties.addComponent(answerFormat);
+		commonProperties.addComponent(answerSubformat);
 		commonProperties.addComponent(horizontal);
 		commonProperties.addComponent(mandatory);
 
@@ -107,6 +127,24 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_QUESTION.translation(), true);
 
 		super.initElement();
+	}
+
+	protected void refreshAnswerSubformatOptions() {
+		if (answerFormat.getValue() == null) {
+			answerSubformat.setValue(null);
+			answerSubformat.removeAllItems();
+			answerSubformat.setEnabled(false);
+		} else {
+			answerSubformat.setValue(null);
+			answerSubformat.removeAllItems();
+			AnswerFormat format = (AnswerFormat) answerFormat.getValue();
+			for (AnswerSubformatUi subformat : AnswerSubformatUi.values(format)) {
+				answerSubformat.addItem(subformat.getSubformat());
+				answerSubformat.setItemCaption(subformat.getSubformat(), subformat.getTranslationCode().translation());
+			}
+			answerSubformat.setEnabled(true);
+			answerSubformat.setValue(format.getDefaultSubformat());
+		}
 	}
 
 	@Override
@@ -121,6 +159,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		mandatory.setValue(instance.isMandatory());
 		answerType.setValue(instance.getAnswerType());
 		answerFormat.setValue(instance.getAnswerFormat());
+		answerSubformat.setValue(instance.getAnswerSubformat());
 		horizontal.setValue(instance.isHorizontal());
 	}
 
@@ -137,16 +176,18 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 				instance.setName(name.getValue());
 			}
 			// TODO dynamic label
-			if(label.isValid()){
+			if (label.isValid()) {
 				instance.setLabel(label.getValue());
 			}
 			instance.setDescription(description.getValue());
 			instance.setMandatory(mandatory.getValue());
 			instance.setAnswerType((AnswerType) answerType.getValue());
 			instance.setAnswerFormat((AnswerFormat) answerFormat.getValue());
+			instance.setAnswerSubformat((AnswerSubformat) answerSubformat.getValue());
 			instance.setHorizontal(horizontal.getValue());
 
-		} catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException e) {
+		} catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException
+				| InvalidAnswerSubformatException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 

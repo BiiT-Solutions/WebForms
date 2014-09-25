@@ -5,11 +5,38 @@ package com.biit.webforms.persistence.entity.enumerations;
  */
 public enum AnswerFormat {
 
-	TEXT,
+	TEXT(AnswerSubformat.TEXT,new AnswerSubformat[]{AnswerSubformat.TEXT,AnswerSubformat.EMAIL,AnswerSubformat.PHONE,AnswerSubformat.IBAN,AnswerSubformat.BSN}),
 
-	NUMBER,
+	NUMBER(AnswerSubformat.NUMBER, new AnswerSubformat[]{AnswerSubformat.NUMBER,AnswerSubformat.FLOAT}),
 
-	DATE,
+	DATE(AnswerSubformat.DATE, new AnswerSubformat[]{AnswerSubformat.DATE,AnswerSubformat.DATE_PAST,AnswerSubformat.DATE_FUTURE}),
 
-	POSTAL_CODE;
+	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, new AnswerSubformat[]{AnswerSubformat.POSTAL_CODE})
+	
+	;
+	
+	private final AnswerSubformat defaultSubformat;
+	private final AnswerSubformat[] subformats;
+	
+	private AnswerFormat(AnswerSubformat defaultSubformat, AnswerSubformat[] subformats) {
+		this.defaultSubformat = defaultSubformat;
+		this.subformats = subformats;
+	}
+	
+	public AnswerSubformat[] getSubformats(){
+		return subformats;
+	}
+	
+	public AnswerSubformat getDefaultSubformat(){
+		return defaultSubformat;
+	}
+	
+	public boolean isSubformat(AnswerSubformat subformat){
+		for(AnswerSubformat value: subformats){
+			if(value.equals(subformat)){
+				return true;
+			}
+		}
+		return false;
+	}
 }
