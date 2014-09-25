@@ -11,6 +11,9 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
@@ -34,7 +37,7 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			Hibernate.initialize(form.getRules());
 		}
 	}
-	
+
 	@Override
 	public int getLastVersion(Long formId) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -70,6 +73,21 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 	}
 
 	@Override
+	@Cacheable(value = "forms", key = "#id")
+	public Form read(Long id) {
+		return super.read(id);
+	}
+
+	@Override
+	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.label"),
+			@CacheEvict(value = "forms", key = "#form.id"),
+			@CacheEvict(value = "forms", key = "#form.label, #form.organizationId") })
+	public void makeTransient(Form form) {
+		super.makeTransient(form);
+	}
+
+	@Override
+	@Cacheable(value = "forms", key = "#label")
 	public Form getForm(String label) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
@@ -91,6 +109,7 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 	}
 
 	@Override
+	@Cacheable(value = "forms", key = "#label, #organization.id")
 	public Form getForm(String formLabel, Organization organization) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
@@ -113,17 +132,18 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 	}
 
 	/**
-	 * Filtered version of get All. Takes a Class argument and returns a list
-	 * with all the elements that match the class argument.
+	 * Filtered version of get All. Takes a Class argument and returns a list with all the elements that match the class
+	 * argument.
 	 * 
 	 * @param cls
 	 * @return
 	 */
+	@Cacheable(value = "forms")
 	public List<Form> getAll(Class<?> cls, Organization organization) {
 		if (!Form.class.isAssignableFrom(cls)) {
 			throw new TypeConstraintException("FormDao can only filter subclasses of " + Form.class.getName());
 		}
-		
+
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
@@ -137,12 +157,12 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			criteria.add(Restrictions.eq("organizationId", organization.getOrganizationId()));
 			@SuppressWarnings("unchecked")
 			List<Form> result = criteria.list();
-			
-			//Filter by class
+
+			// Filter by class
 			Iterator<Form> itr = result.iterator();
-			while(itr.hasNext()){
+			while (itr.hasNext()) {
 				Form form = itr.next();
-				if(!form.getClass().isAssignableFrom(cls)){
+				if (!form.getClass().isAssignableFrom(cls)) {
 					itr.remove();
 				}
 			}
