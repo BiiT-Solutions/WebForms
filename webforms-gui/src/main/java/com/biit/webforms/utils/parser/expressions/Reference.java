@@ -1,26 +1,28 @@
 package com.biit.webforms.utils.parser.expressions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.biit.webforms.utils.lexer.Token;
 
-public class Reference extends Expression{
+public class Reference extends Expression {
 
-	private String referenceString;
-	
-	public Reference(Token token){
-		setReferenceString(token.getContent());
+	private List<String> references;
+
+	public Reference(List<Token> tokens) {
+		references = new ArrayList<>();
+		for (Token token : tokens) {
+			references.add(token.getContent());
+		}
 	}
 
-	public String getReferenceString() {
-		return referenceString;
-	}
-
-	private void setReferenceString(String referenceString) {
-		this.referenceString = referenceString;
+	public List<String> getReferences() {
+		return references;
 	}
 
 	@Override
 	public void getString(StringBuilder builder) {
-		builder.append(referenceString);
+		builder.append(references);
 	}
-	
+
 }

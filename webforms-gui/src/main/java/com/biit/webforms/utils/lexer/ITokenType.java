@@ -10,8 +10,7 @@ public interface ITokenType {
 
 	public int getLexerPrecedence();
 
-	public Token generateToken(String tokenContent);
-
+	public Token generateToken(String tokenContent, int originalPosition);
 	/**
 	 * Matches token type with {@code token} if is an instance of the type, then
 	 * returns true. Otherwise false.

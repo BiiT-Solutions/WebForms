@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
 import com.biit.webforms.utils.lexer.exceptions.TokenizationError;
 
 public class Lexer {
@@ -30,29 +31,34 @@ public class Lexer {
 	 * 
 	 * @param string
 	 * @return
+	 * @throws StringTokenizationError
 	 * @throws TokenizationError
 	 */
-	public List<Token> tokenize(String string) throws TokenizationError {
+	public List<Token> tokenize(String string) throws StringTokenizationError {
 		List<Token> tokens = new ArrayList<Token>();
 		if (string != null && !string.isEmpty()) {
 			String tempString = new String(string);
 			while (!tempString.isEmpty()) {
-				Token currentToken = getNextToken(tempString);
-				tokens.add(currentToken);
-				// Consume string.
-				int sizeToConsume = currentToken.getContent().length();
-				if (sizeToConsume <= 0) {
-					throw new TokenizationError("Size To consume equals 0 in: '" + tempString + "'");
+				try {
+					Token currentToken = getNextToken(tempString, string.lastIndexOf(tempString));
+					tokens.add(currentToken);
+					// Consume string.
+					int sizeToConsume = currentToken.getContent().length();
+					if (sizeToConsume <= 0) {
+						throw new TokenizationError("Size To consume equals 0 in: '" + tempString + "'");
+					}
+					tempString = tempString.substring(sizeToConsume);
+				} catch (TokenizationError e) {
+					throw new StringTokenizationError(string, tempString);
 				}
-				tempString = tempString.substring(sizeToConsume);
 			}
 		}
 		return tokens;
 	}
 
-	private Token getNextToken(String string) throws TokenizationError {
+	private Token getNextToken(String string, int originalPosition) throws TokenizationError {
 		for (List<ITokenType> levelTokenDefinitions : tokenDefinitions) {
-			Token token = getNextToken(string, levelTokenDefinitions);
+			Token token = getNextToken(string, originalPosition, levelTokenDefinitions);
 			if (token != null) {
 				return token;
 			}
@@ -67,14 +73,14 @@ public class Lexer {
 	 * @param levelTokenDefinitions
 	 * @return
 	 */
-	private Token getNextToken(String string, List<ITokenType> levelTokenDefinitions) {
+	private Token getNextToken(String string, int originalPosition, List<ITokenType> levelTokenDefinitions) {
 		Token token = null;
 		for (ITokenType definition : levelTokenDefinitions) {
 			Matcher m = definition.getRegexFilterPattern().matcher(string);
-			if (m.find() && m.start()==0) {
+			if (m.find() && m.start() == 0) {
 				// Match found.
 				String tokenString = m.group();
-				Token tempToken = definition.generateToken(tokenString);
+				Token tempToken = definition.generateToken(tokenString, originalPosition);
 				// If no token yet or larger than current one
 				if (token == null || token.getContent().length() < tempToken.getContent().length()) {
 					token = tempToken;

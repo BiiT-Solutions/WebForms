@@ -185,7 +185,6 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 		for (int i = 0; i < parents.size(); i++) {
 			representation = "<" + parents.get(i).getName() + ">" + representation;
 		}
-		representation = "${" + representation + "}";
 		return representation;
 	}
 }

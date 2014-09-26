@@ -11,7 +11,10 @@ import java.util.Set;
 import com.biit.webforms.utils.lexer.ITokenType;
 import com.biit.webforms.utils.lexer.Lexer;
 import com.biit.webforms.utils.lexer.Token;
-import com.biit.webforms.utils.lexer.exceptions.TokenizationError;
+import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
+import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
+import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
+import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.expressions.Expression;
 import com.biit.webforms.utils.parser.parselets.InfixParselet;
@@ -25,10 +28,10 @@ public class Parser {
 	private final Map<ITokenType, PrefixParselet> prefixParselets = new HashMap<ITokenType, PrefixParselet>();
 	private final Map<ITokenType, InfixParselet> infixParselets = new HashMap<ITokenType, InfixParselet>();
 
-	public Parser(Lexer lexer, String string) throws TokenizationError{
+	public Parser(Lexer lexer, String string) throws StringTokenizationError {
 		this.tokens = lexer.tokenize(string).iterator();
 	}
-	
+
 	public Parser(Iterator<Token> tokens) {
 		this.tokens = tokens;
 	}
@@ -58,7 +61,7 @@ public class Parser {
 		ignore.add(tokenType);
 	}
 
-	public Expression parseExpression(int precedence) throws ParseException, ExpectedTokenNotFound {
+	public Expression parseExpression(int precedence) throws ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException {
 		Token token = consume();
 		if (token == null) {
 			// EOF reached
@@ -82,7 +85,7 @@ public class Parser {
 		return left;
 	}
 
-	public Expression parseExpression() throws ParseException, ExpectedTokenNotFound {
+	public Expression parseExpression() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException {
 		return parseExpression(0);
 	}
 
@@ -96,16 +99,15 @@ public class Parser {
 		return true;
 	}
 
-	public Token consume(ITokenType expected) throws ExpectedTokenNotFound  {
+	public Token consume(ITokenType expected) throws ExpectedTokenNotFound, NoMoreTokensException {
 		Token token = lookAhead(0);
 		if (token == null) {
-			return null;
-		} else {
-			if (!token.getType().equals(expected)) {
-				throw new ExpectedTokenNotFound(expected,token.getType());
-			}
-			return consume();
+			throw new NoMoreTokensException("Unexpected consume");
 		}
+		if (!token.getType().equals(expected)) {
+			throw new ExpectedTokenNotFound(expected, token.getType());
+		}
+		return consume();
 	}
 
 	public Token consume() {
@@ -138,13 +140,13 @@ public class Parser {
 		InfixParselet parser = infixParselets.get(lookAhead(0).getType());
 		if (parser != null)
 			return parser.getPrecedence();
-		else{
-			//INFO - token not recognized with infix parselet
+		else {
+			// INFO - token not recognized with infix parselet
 			return 0;
-		}		
+		}
 	}
-	
-	private boolean isIgnored(Token token){
+
+	private boolean isIgnored(Token token) {
 		return ignore.contains(token.getType());
 	}
 

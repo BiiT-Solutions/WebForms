@@ -4,7 +4,8 @@ public abstract class Expression {
 
 	public abstract void getString(StringBuilder builder);
 	
-	public String getString(){
+	@Override
+	public String toString(){
 		StringBuilder builder = new StringBuilder();
 		getString(builder);
 		return builder.toString();

@@ -6,8 +6,9 @@ import junit.framework.Assert;
 
 import org.testng.annotations.Test;
 
-import com.biit.webforms.utils.lexer.exceptions.TokenizationError;
+import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
 import com.biit.webforms.utils.lexer.tokens.TokenAnd;
+import com.biit.webforms.utils.lexer.tokens.TokenAnswerValue;
 import com.biit.webforms.utils.lexer.tokens.TokenBetween;
 import com.biit.webforms.utils.lexer.tokens.TokenDate;
 import com.biit.webforms.utils.lexer.tokens.TokenDatePeriod;
@@ -22,7 +23,7 @@ import com.biit.webforms.utils.lexer.tokens.TokenNot;
 import com.biit.webforms.utils.lexer.tokens.TokenOr;
 import com.biit.webforms.utils.lexer.tokens.TokenReference;
 import com.biit.webforms.utils.lexer.tokens.TokenRightPar;
-import com.biit.webforms.utils.lexer.tokens.TokenText;
+import com.biit.webforms.utils.lexer.tokens.TokenTextValue;
 import com.biit.webforms.utils.lexer.tokens.TokenWhitespace;
 
 @Test(groups = { "lexer" })
@@ -52,25 +53,26 @@ public class TestLexer {
 	private final static String LE = "<=";
 	private final static String EQ = "==";
 	private final static String NE = "!=";
-	private final static String REFERENCE_1 = "${<category><group><question>}";
-	private final static String REFERENCE_2 = "${<answer>}";
-	private final static String TEXT_VALID = "aanvrager";
+	private final static String REFERENCE_1 = "<category><group><question>";
+	private final static String REFERENCE_2 = "<answer>";
+	private final static String TEXT_VALID = "\"aanvrager\"";
 	private final static String TEXT_NOT_VALID = "andaanvrager";
 	private final static String DATE_1 = "01-01-1950";
 	private final static String DATE_2 = "01/01/1950";
 	private final static String DATE_PERIOD_1 = "15D";
 	private final static String DATE_PERIOD_2 = "15M";
 	private final static String DATE_PERIOD_3 = "15Y";
-	private final static String DATE_PERIOD_4 = "D";
 	private final static String BETWEEN_1 = "BETWEEN";
 	private final static String BETWEEN_2 = "between";
-	private final static String TEST_1 = "${<category><persondata><birthdate>}<=18Y";
-	private final static String TEST_2 = "${<category><persondata><birthdate>}>01-01-1950";
-	private final static String TEST_3 = "(${<category><persondata><birthdate>}>01-01-1950 && ${<category><persondata><birthdate>}<=18Y)";
+	private final static String ANSWER_VALUE = "%categöry_gory%";
+	private final static String TEST_1 = "<category><persondata><birthdate><=18Y";
+	private final static String TEST_2 = "<category><persondata><birthdate>>01-01-1950";
+	private final static String TEST_3 = "(<category><persondata><birthdate>>01-01-1950) && (<category><persondata><birthdate><=18Y)";
+	private final static String TEST_4 = "<new_category><group1><qu1> == %a%";
 	private final static String TEST_ = "";
 
 	@Test
-	public void tokenizerTestEmpty() throws TokenizationError {
+	public void tokenizerTestEmpty() throws StringTokenizationError {
 
 		WebformsLexer tokenizer = new WebformsLexer();
 
@@ -82,7 +84,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestWhitespace() throws TokenizationError {
+	public void tokenizerTestWhitespace() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -102,7 +104,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestAnd() throws TokenizationError {
+	public void tokenizerTestAnd() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -115,7 +117,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestOr() throws TokenizationError {
+	public void tokenizerTestOr() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -128,7 +130,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestNot() throws TokenizationError {
+	public void tokenizerTestNot() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -141,7 +143,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestLeftPar() throws TokenizationError {
+	public void tokenizerTestLeftPar() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -150,7 +152,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestRightPar() throws TokenizationError {
+	public void tokenizerTestRightPar() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -159,7 +161,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestGt() throws TokenizationError {
+	public void tokenizerTestGt() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -168,7 +170,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestLt() throws TokenizationError {
+	public void tokenizerTestLt() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -177,7 +179,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestGe() throws TokenizationError {
+	public void tokenizerTestGe() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -186,7 +188,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestLe() throws TokenizationError {
+	public void tokenizerTestLe() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -195,7 +197,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestNe() throws TokenizationError {
+	public void tokenizerTestNe() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -204,7 +206,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestEq() throws TokenizationError {
+	public void tokenizerTestEq() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -213,29 +215,35 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestReference() throws TokenizationError {
+	public void tokenizerTestReference() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
 		tokens = tokenizer.tokenize(REFERENCE_1);
-		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenReference));
+		Assert.assertTrue((tokens.size() == 3) && (tokens.get(0) instanceof TokenReference)
+				&& (tokens.get(1) instanceof TokenReference) && (tokens.get(2) instanceof TokenReference));
 		tokens = tokenizer.tokenize(REFERENCE_2);
 		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenReference));
 	}
 
 	@Test
-	public void tokenizerTestText() throws TokenizationError {
+	public void tokenizerTestText() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
 		tokens = tokenizer.tokenize(TEXT_VALID);
-		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenText));
-		tokens = tokenizer.tokenize(TEXT_NOT_VALID);
-		Assert.assertTrue((tokens.size() != 1));
+		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenTextValue));
+	}
+
+	@Test(expectedExceptions = { StringTokenizationError.class })
+	public void tokenizerTestTextNotValid() throws StringTokenizationError {
+		WebformsLexer tokenizer = new WebformsLexer();
+
+		tokenizer.tokenize(TEXT_NOT_VALID);
 	}
 
 	@Test
-	public void tokenizerTestDate() throws TokenizationError {
+	public void tokenizerTestDate() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -246,7 +254,7 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestDatePeriod() throws TokenizationError {
+	public void tokenizerTestDatePeriod() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -256,12 +264,10 @@ public class TestLexer {
 		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenDatePeriod));
 		tokens = tokenizer.tokenize(DATE_PERIOD_3);
 		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenDatePeriod));
-		tokens = tokenizer.tokenize(DATE_PERIOD_4);
-		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenText));
 	}
 
 	@Test
-	public void tokenizerTestBetween() throws TokenizationError {
+	public void tokenizerTestBetween() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -272,27 +278,44 @@ public class TestLexer {
 	}
 
 	@Test
-	public void tokenizerTestExpressions() throws TokenizationError {
+	public void tokenizerTestAnswerValue() throws StringTokenizationError {
+		WebformsLexer tokenizer = new WebformsLexer();
+
+		List<Token> tokens;
+		tokens = tokenizer.tokenize(ANSWER_VALUE);
+		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenAnswerValue));
+	}
+
+	@Test
+	public void tokenizerTestExpressions() throws StringTokenizationError {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
 		tokens = tokenizer.tokenize(TEST_1);
+
 		Assert.assertTrue((!tokens.isEmpty()) && (tokens.get(0) instanceof TokenReference)
-				&& (tokens.get(1) instanceof TokenLe) && (tokens.get(2) instanceof TokenDatePeriod));
+				&& (tokens.get(1) instanceof TokenReference) && (tokens.get(2) instanceof TokenReference)
+				&& (tokens.get(3) instanceof TokenLe) && (tokens.get(4) instanceof TokenDatePeriod));
 		tokens = tokenizer.tokenize(TEST_2);
 		Assert.assertTrue((!tokens.isEmpty()) && (tokens.get(0) instanceof TokenReference)
-				&& (tokens.get(1) instanceof TokenGt) && (tokens.get(2) instanceof TokenDate));
+				&& (tokens.get(1) instanceof TokenReference) && (tokens.get(2) instanceof TokenReference)
+				&& (tokens.get(3) instanceof TokenGt) && (tokens.get(4) instanceof TokenDate));
 		tokens = tokenizer.tokenize(TEST_3);
 		Assert.assertTrue((!tokens.isEmpty()) && (tokens.get(0) instanceof TokenLeftPar)
-				&& (tokens.get(1) instanceof TokenReference) && (tokens.get(2) instanceof TokenGt)
-				&& (tokens.get(3) instanceof TokenDate) && (tokens.get(4) instanceof TokenWhitespace)
-				&& (tokens.get(5) instanceof TokenAnd) && (tokens.get(6) instanceof TokenWhitespace)
-				&& (tokens.get(7) instanceof TokenReference) && (tokens.get(8) instanceof TokenLe)
-				&& (tokens.get(9) instanceof TokenDatePeriod) && (tokens.get(10) instanceof TokenRightPar));
+				&& (tokens.get(1) instanceof TokenReference) && (tokens.get(2) instanceof TokenReference)
+				&& (tokens.get(3) instanceof TokenReference) && (tokens.get(4) instanceof TokenGt)
+				&& (tokens.get(5) instanceof TokenDate) && (tokens.get(6) instanceof TokenRightPar)
+				&& (tokens.get(7) instanceof TokenWhitespace) && (tokens.get(8) instanceof TokenAnd)
+				&& (tokens.get(9) instanceof TokenWhitespace) && (tokens.get(10) instanceof TokenLeftPar)
+				&& (tokens.get(11) instanceof TokenReference) && (tokens.get(12) instanceof TokenReference)
+				&& (tokens.get(13) instanceof TokenReference) && (tokens.get(14) instanceof TokenLe)
+				&& (tokens.get(15) instanceof TokenDatePeriod) && (tokens.get(16) instanceof TokenRightPar));
+		tokens = tokenizer.tokenize(TEST_4);
+		Assert.assertTrue(!tokens.isEmpty());
 	}
 
 	// @Test
-	// public void tokenizerTestAnd() throws TokenizationError {
+	// public void tokenizerTestAnd() throws StringTokenizationError {
 	//
 	// WebformsTokenizer tokenizer = new WebformsTokenizer();
 	//

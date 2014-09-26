@@ -9,9 +9,12 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.FlowConditionScript;
 import com.biit.webforms.utils.lexer.TokenTypes;
-import com.biit.webforms.utils.lexer.exceptions.TokenizationError;
+import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
 import com.biit.webforms.utils.parser.ExpectedTokenNotFound;
 import com.biit.webforms.utils.parser.WebformsParser;
+import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
+import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
+import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.expressions.Expression;
 import com.vaadin.ui.Button;
@@ -131,6 +134,7 @@ public class ConditionEditor extends CustomComponent {
 	public boolean validateCondition() {
 		String currentCondition = textArea.getValue();
 		System.out.println("Validate: " + currentCondition);
+		// TODO localization!
 
 		try {
 			WebformsParser parser = new WebformsParser(currentCondition);
@@ -140,12 +144,14 @@ public class ConditionEditor extends CustomComponent {
 				System.out.println("Expression: empty expression");
 				status.setOkText(LanguageCodes.CAPTION_OK_EMPTY_EXPRESSION.translation());
 			} else {
-				System.out.println("Expression: " + expression.getString());
+				System.out.println("Expression: " + expression);
 			}
+			status.setOkText(LanguageCodes.CAPTION_OK_VALID_EXPRESSION.translation());
 			return true;
-		} catch (TokenizationError | ParseException | ExpectedTokenNotFound e) {
+		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			
+		} catch (StringTokenizationError | IncompleteBinaryOperatorException | MissingParenthesisException e) {
+			status.setErrorText(e.getMessage());
 		}
 		return false;
 	}

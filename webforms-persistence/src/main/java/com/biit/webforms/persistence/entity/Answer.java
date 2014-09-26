@@ -94,6 +94,6 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 
 	@Override
 	public String getScriptRepresentation() {
-		return "<" + getName() + ">";
+		return "%" + getName() + "%";
 	}
 }

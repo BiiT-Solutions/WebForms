@@ -3,6 +3,9 @@ package com.biit.webforms.utils.parser.parselets;
 import com.biit.webforms.utils.lexer.Token;
 import com.biit.webforms.utils.parser.ExpectedTokenNotFound;
 import com.biit.webforms.utils.parser.Parser;
+import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
+import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
+import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.expressions.Expression;
 
@@ -16,7 +19,7 @@ import com.biit.webforms.utils.parser.expressions.Expression;
  * 
  */
 public interface InfixParselet {
-	Expression parse(Parser parser, Expression left, Token token) throws ParseException, ExpectedTokenNotFound;
+	Expression parse(Parser parser, Expression left, Token token) throws ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException;
 
 	int getPrecedence();
 }
