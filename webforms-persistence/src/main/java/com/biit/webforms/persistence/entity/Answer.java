@@ -96,4 +96,17 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 	public String getScriptRepresentation() {
 		return "%" + getName() + "%";
 	}
+
+	/**
+	 * Checks if this answer is a subanswer by looking if it has a parent and if
+	 * it has if is an answer.
+	 * 
+	 * @return
+	 */
+	public boolean isSubanswer() {
+		if (getParent() == null || !(getParent() instanceof Answer)) {
+			return false;
+		}
+		return true;
+	}
 }

@@ -33,8 +33,8 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class WindowRule extends WindowAcceptCancel {
 	private static final long serialVersionUID = 5164868235165988674L;
-	private static final String width = "800px";
-	private static final String height = "600px";
+	private static final String width = "75%";
+	private static final String height = "90%";
 	private static final String BAR_HEIGHT = "50px";
 
 	private SearchFormElementField searchOrigin;

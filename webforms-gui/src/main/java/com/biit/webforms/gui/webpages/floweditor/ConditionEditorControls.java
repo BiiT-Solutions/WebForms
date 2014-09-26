@@ -10,7 +10,9 @@ import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.lexer.TokenTypes;
@@ -42,7 +44,9 @@ public class ConditionEditorControls extends TabSheet {
 
 	private TreeObjectTable treeObjectTable;
 	private Button insertReference;
+	private TreeObjectTable answerTable;
 	private Button insertAnswer;
+	private VerticalLayout insertAnswerLayout;
 
 	// Logic
 	private Button and, or, not;
@@ -71,11 +75,16 @@ public class ConditionEditorControls extends TabSheet {
 		addTab(generateControlsTab(), "", ThemeIcons.CONDITION_HELPER_CONTROLS.getThemeResource());
 	}
 
+	/**
+	 * Initialize Ui default values.
+	 */
 	private void initializeComposition() {
-		treeObjectTable.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);
+		treeObjectTable.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null, Form.class,
+				Category.class, Group.class, Question.class);
 		treeObjectTable.setValue(null);
-		
-		//Answer format.
+		updateInsertAnswerLayout();
+
+		// Answer format.
 		for (AnswerFormatUi format : AnswerFormatUi.values()) {
 			valueFormat.addItem(format.getAnswerFormat());
 			valueFormat.setItemCaption(format.getAnswerFormat(), format.getLanguageCode().translation());
@@ -83,11 +92,15 @@ public class ConditionEditorControls extends TabSheet {
 		valueFormat.setValue(AnswerFormatUi.values()[0].getAnswerFormat());
 	}
 
-	private Component generateReferenceTab() {
-		VerticalLayout root = new VerticalLayout();
-		root.setWidth(FULL);
-		root.setHeight(FULL);
-		root.setSpacing(true);
+	/**
+	 * Layout with treeobjectTable and button to insert reference.
+	 * 
+	 * @return
+	 */
+	private Component generateInsertReferenceLayout() {
+		VerticalLayout rootLayout = new VerticalLayout();
+		rootLayout.setSpacing(true);
+		rootLayout.setSizeFull();
 
 		treeObjectTable = new TreeObjectTable();
 		treeObjectTable.setSizeFull();
@@ -105,11 +118,7 @@ public class ConditionEditorControls extends TabSheet {
 				} else {
 					insertReference.setEnabled(true);
 				}
-				if (treeObjectTable.getValue() == null || !(treeObjectTable.getValue() instanceof Answer)) {
-					insertAnswer.setEnabled(false);
-				} else {
-					insertAnswer.setEnabled(true);
-				}
+				updateInsertAnswerLayout();
 			}
 		});
 
@@ -125,6 +134,50 @@ public class ConditionEditorControls extends TabSheet {
 			}
 		});
 
+		rootLayout.addComponent(treeObjectTable);
+		rootLayout.addComponent(insertReference);
+		rootLayout.setExpandRatio(treeObjectTable, 1.0f);
+
+		return rootLayout;
+	}
+
+	/**
+	 * Removes all current items. Gets current selected element in tree.
+	 * Question answers to the list and selects the first or just disables the
+	 * whole component.
+	 */
+	protected void updateInsertAnswerLayout() {
+		answerTable.removeAllItems();
+		answerTable.setValue(null);
+		if (treeObjectTable.getValue() == null || !(treeObjectTable.getValue() instanceof Question)
+				|| ((Question) treeObjectTable.getValue()).getChildren().isEmpty()) {
+			insertAnswerLayout.setEnabled(false);
+		} else {
+			insertAnswerLayout.setEnabled(true);
+			Question question = (Question) treeObjectTable.getValue();			
+			for (TreeObject child : question.getChildren()) {
+				answerTable.loadTreeObject(child, null);
+			}
+			answerTable.setValue(question.getChildren().get(0));
+		}
+	}
+
+	/**
+	 * Layout with ListSelection and button to insert Q=A
+	 * 
+	 * @return
+	 */
+	private Component generateInsertAnswerLayout() {
+		insertAnswerLayout = new VerticalLayout();
+		insertAnswerLayout.setSpacing(true);
+		insertAnswerLayout.setSizeFull();
+
+		answerTable = new TreeObjectTable();
+		answerTable.setSizeFull();
+		answerTable.setNullSelectionAllowed(false);
+		answerTable.setImmediate(true); 
+		answerTable.setSelectable(true);
+
 		insertAnswer = new Button(ServerTranslate.translate(LanguageCodes.CAPTION_INSERT_ANSWER_REFENCE));
 		insertAnswer.setWidth(FULL);
 		insertAnswer.addClickListener(new ClickListener() {
@@ -132,24 +185,34 @@ public class ConditionEditorControls extends TabSheet {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				// The expression for answer
-				if (getCurrentTreeObjectReference().getParent() instanceof Question) {
-					// First level answer
-					fireInsertReferenceListeners(getCurrentTreeObjectReference().getParent());
-				} else {
-					// Second level answer
-					fireInsertReferenceListeners(getCurrentTreeObjectReference().getParent().getParent());
-				}
+				fireInsertReferenceListeners(getCurrentTreeObjectReference());
 				fireInsertTokenListeners(DEFAULT_ANSWER_REFERENCE_TOKEN);
-				fireInsertAnswerValueListeners((Answer) getCurrentTreeObjectReference());
+				fireInsertAnswerValueListeners((Answer) answerTable.getValue());
+				//TODO second level answer
 			}
 		});
 
-		root.addComponent(treeObjectTable);
-		root.addComponent(insertReference);
-		root.addComponent(insertAnswer);
+		insertAnswerLayout.addComponent(answerTable);
+		insertAnswerLayout.addComponent(insertAnswer);
+		insertAnswerLayout.setExpandRatio(answerTable, 1.0f);
 
-		root.setExpandRatio(treeObjectTable, 1.0f);
+		return insertAnswerLayout;
+	}
+
+	private Component generateReferenceTab() {
+		VerticalLayout root = new VerticalLayout();
+		root.setWidth(FULL);
+		root.setHeight(FULL);
+		root.setSpacing(true);
+
+		Component insertReferenceLayout = generateInsertReferenceLayout();
+		Component insertAnswerLayout = generateInsertAnswerLayout();
+
+		root.addComponent(insertReferenceLayout);
+		root.addComponent(insertAnswerLayout);
+
+		root.setExpandRatio(insertReferenceLayout, 1.0f);
+		root.setExpandRatio(insertAnswerLayout, 1.0f);
 
 		return root;
 	}
@@ -197,14 +260,14 @@ public class ConditionEditorControls extends TabSheet {
 		buttonHolder.setHeight(EXPAND);
 
 		root.addComponent(buttonHolder);
-		root.setComponentAlignment(buttonHolder, Alignment.TOP_CENTER);
+		root.setComponentAlignment(buttonHolder, Alignment.MIDDLE_CENTER);
 
 		VerticalLayout verticalValueLayout = new VerticalLayout();
 		verticalValueLayout.setCaption(LanguageCodes.CAPTION_VALUE.translation());
 		verticalValueLayout.setWidth(FULL);
 		verticalValueLayout.setHeight(EXPAND);
 		verticalValueLayout.setSpacing(true);
-		
+
 		valueFormat = new ComboBox();
 		valueFormat.setNullSelectionAllowed(false);
 		valueFormat.setImmediate(true);
@@ -230,20 +293,20 @@ public class ConditionEditorControls extends TabSheet {
 				insertValue();
 			}
 		});
-		
+
 		verticalValueLayout.addComponent(valueFormat);
 		verticalValueLayout.addComponent(value);
 		verticalValueLayout.addComponent(insertValue);
-		
+
 		root.addComponent(verticalValueLayout);
-		root.setComponentAlignment(verticalValueLayout, Alignment.BOTTOM_CENTER);
+		root.setComponentAlignment(verticalValueLayout, Alignment.MIDDLE_CENTER);
 
 		return root;
 	}
 
 	protected void insertValue() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void addInsertTokenListener(InsertTokenListener listener) {
