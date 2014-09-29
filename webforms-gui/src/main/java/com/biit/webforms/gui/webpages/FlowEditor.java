@@ -96,7 +96,7 @@ public class FlowEditor extends SecuredWebPage {
 	private void initializeContent() {
 		Set<Rule> rules = UserSessionHandler.getController().getFormInUseRules();
 		tableRules.addRows(rules);
-		tableRules.sortByUpdateDate(true);
+		tableRules.sortByUpdateDate(false);
 
 	}
 
