@@ -16,6 +16,7 @@ import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.gui.ApplicationUi;
@@ -425,10 +426,13 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				// Insert block in form
-				UserSessionHandler.getController().insertBlock(windowBlocks.getSelectedBlock());
-
-				clearAndUpdateFormTable();
-				window.close();
+				try {
+					UserSessionHandler.getController().insertBlock(windowBlocks.getSelectedBlock());
+					clearAndUpdateFormTable();
+					window.close();
+				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED, LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
+				}				
 			}
 		});
 	}

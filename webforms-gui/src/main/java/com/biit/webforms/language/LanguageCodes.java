@@ -185,6 +185,7 @@ public enum LanguageCodes implements ILanguageCode{
 	WARNING_DESCRIPTION_SAME_ORIGIN("warning.description.same.origin"), 
 	WARNING_DESCRIPTION_NEW_VERSION_WHEN_DESIGN("warning.description.new.version.when.design"),
 	WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY("warning.description.origin.included.in.destiny"), 
+	WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME("warning.description.repeated.category.name"),
 	
 	//Flow
 	TABLE_RULE_TITLE_ORIGIN("table.rule.title.origin"),

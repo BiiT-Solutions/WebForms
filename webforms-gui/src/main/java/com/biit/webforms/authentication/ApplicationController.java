@@ -12,6 +12,7 @@ import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
@@ -535,11 +536,19 @@ public class ApplicationController {
 	 * current form as a new category.
 	 * 
 	 * @param selectedRow
+	 * @throws CategoryWithSameNameAlreadyExistsInForm 
 	 */
-	public void insertBlock(TreeObject element) {
+	public void insertBlock(TreeObject element) throws CategoryWithSameNameAlreadyExistsInForm {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " insertBlock " + formInUse + " " + element + " START");
-
+		
+		//Check name uniqueness first
+		Category category = (Category) element.getAncestor(Category.class);
+		if(formInUse.findChild(category.getName())!=null){
+			//Element found, throw exception.
+			throw new CategoryWithSameNameAlreadyExistsInForm();
+		}
+		
 		try {
 			Block blockToInsert = (Block) element.getAncestor(Block.class);
 			Block copiedBlock = (Block) blockToInsert.generateFormCopiedSimplification(element);
