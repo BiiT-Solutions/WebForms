@@ -1,6 +1,10 @@
 package com.biit.webforms.gui.webpages;
 
 import java.io.IOException;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+
+import javax.servlet.ServletContext;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
@@ -20,12 +24,15 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.UserError;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
@@ -45,9 +52,18 @@ public class Login extends WebPageComponent {
 		setCompositionRoot(rootLayout);
 		setSizeFull();
 
+		VerticalLayout loginLayout = new VerticalLayout();
+		loginLayout.setSizeUndefined();
+		
 		Panel loginPanel = buildLoginForm();
-		rootLayout.addComponent(loginPanel);
-		rootLayout.setComponentAlignment(loginPanel, Alignment.MIDDLE_CENTER);
+		Component loginLabel = createNameVersion();
+		loginLayout.addComponent(loginPanel);
+		loginLayout.addComponent(loginLabel);
+		loginLayout.setComponentAlignment(loginPanel, Alignment.MIDDLE_CENTER);
+		loginLayout.setComponentAlignment(loginLabel, Alignment.MIDDLE_CENTER);
+		
+		rootLayout.addComponent(loginLayout);
+		rootLayout.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
 	}
 
 	@Override
@@ -67,7 +83,8 @@ public class Login extends WebPageComponent {
 		usernameField.setWidth(FIELD_SIZE);
 		usernameField.focus();
 
-		passwordField = new PasswordField(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_PASSWORD));
+		passwordField = new PasswordField(
+				ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_PASSWORD));
 		passwordField.setRequired(true);
 		passwordField.setWidth(FIELD_SIZE);
 		passwordField.setRequiredError(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_ERROR_PASSWORD));
@@ -157,5 +174,25 @@ public class Login extends WebPageComponent {
 			UserSessionHandler.setUser(user);
 			ApplicationUi.navigateTo(WebMap.getMainPage());
 		}
+	}
+
+	private String getVersion() {
+		ServletContext context = VaadinServlet.getCurrent().getServletContext();
+		Manifest manifest;
+		String version = null;
+		try {
+			manifest = new Manifest(context.getResourceAsStream("/META-INF/MANIFEST.MF"));
+			Attributes attributes = manifest.getMainAttributes();
+			version = attributes.getValue("Implementation-Version");
+		} catch (IOException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		return version;
+	}
+	
+	private Component createNameVersion() {
+		Label label = new Label("Agile Business sCenario Designer - v" + getVersion());
+		label.setWidth(null);
+		return label;
 	}
 }
