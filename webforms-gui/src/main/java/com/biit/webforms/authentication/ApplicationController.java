@@ -16,8 +16,10 @@ import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExi
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
+import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.gui.webpages.floweditor.WindowRule;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
@@ -759,5 +761,11 @@ public class ApplicationController {
 	public Set<Rule> getFormInUseRules() {
 		logInfo("getFormInUseRules");
 		return getFormInUse().getRules();
+	}
+
+	public void logOut() {
+		logInfo("logOut");
+		clearFormInUse();
+		ApplicationUi.navigateTo(WebMap.LOGIN_PAGE);
 	}
 }

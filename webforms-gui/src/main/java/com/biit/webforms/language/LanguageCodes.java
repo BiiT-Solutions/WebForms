@@ -27,6 +27,11 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_EDIT_FORM_FLOW("caption.edit.form.flow"),
 	CAPTION_VALIDATE_FORM("caption.validate.form"),
 	CAPTION_IMPACT_ANALYSIS("caption.impact.analysis"),
+	CAPTION_SETTINGS_TITLE("caption.settings.title"),
+	CAPTION_SETTINGS_LOG_OUT("caption.setting.log.out"),
+	CAPTION_PROCEED_LOG_OUT("caption.proceed.log.out"),
+	CAPTION_ABOUT_US("caption.about.us"),
+	CAPTION_SETTINGS_CLOSE("caption.settings.close"),
 //	TOOLTIP_EDIT_FORM_DESIGN,
 //	TOOLTIP_EDIT_FORM_FLOW,
 //	TOOLTIP_VALIDATE_FORM,
@@ -62,6 +67,13 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_FORM_WORK_STATUS_TEST("caption.form.work.status.test"),
 	CAPTION_FORM_WORK_STATUS_PRODUCTION("caption.form.work.status.production"),
 	
+	CAPTION_CLOSE("caption.close"),
+	ABOUT_US_TITLE("about.us.title"),
+	ABOUT_US_TOOL_NAME("about.us.tool.name"),
+	ABOUT_US_TOOL_PURPOUSE("about.us.tool.purpouse"),
+	ABOUT_US_BIIT("about.us.biit"),
+	ABOUT_US_REPORT("about.us.report"),
+	
 	COMMON_TOOLTIP_SETTINGS("tooltip.settings"),
 	COMMON_TOOLTIP_FORM_MANAGER("tooltip.form.manager"),
 	COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER("tooltip.buildingBlock.manager"),
@@ -80,6 +92,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_EDIT_FORM_FLOW("tooltip.edit.form.flow"),
 	TOOLTIP_VALIDATE_FORM("tooltip.validate.form"),
 	TOOLTIP_IMPACT_ANALISYS("tooltip.impact.analisys"),
+	TOOLTIP_CLOSE("tooltip.close"),
 	
 	COMMON_WARNING_TITLE_FORM_NOT_CREATED("common.warning.title.form.not.created"),
 	COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME("common.warning.description.form.needs.name"),

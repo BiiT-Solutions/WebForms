@@ -52,6 +52,7 @@
 		<h2.version>1.4.181</h2.version>
 		<ehcache.version>2.6.9</ehcache.version>
 		<c3p0.version>0.9.1.2</c3p0.version>
+		<DES-encryption.version>1.0.0</DES-encryption.version>
 	</properties>
 
 	<dependencies>

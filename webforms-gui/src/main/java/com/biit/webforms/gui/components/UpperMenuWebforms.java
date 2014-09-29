@@ -54,8 +54,8 @@ public class UpperMenuWebforms extends UpperMenu {
 
 					@Override
 					public void buttonClick(ClickEvent event) {
-						// SettingsWindow settings = new SettingsWindow();
-						// settings.showRelativeToComponent(settingsButton);
+						WindowSettings settings = new WindowSettings();
+						settings.showRelativeToComponent(settingsButton);
 					}
 				});
 		settingsButton.setHeight("100%");

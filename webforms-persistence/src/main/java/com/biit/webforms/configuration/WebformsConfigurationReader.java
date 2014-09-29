@@ -42,6 +42,10 @@ public class WebformsConfigurationReader {
 
 	private final String DEFAULT_REGEX_POSTAL_CODE = "[0-9]{4}[a-zA-Z]{2}";
 
+	private final String ISSUE_MANAGER_URL = "issueManagerUrl";
+
+	private final String DEFAULT_ISSUE_MANAGER_URL = null;
+
 	private String graphvizBinPath;
 
 	private String regexText;
@@ -57,6 +61,8 @@ public class WebformsConfigurationReader {
 	private String regexPostalCode;
 
 	private String regexEmail;
+
+	private String issueManagerUrl;
 
 	private static WebformsConfigurationReader instance;
 
@@ -91,6 +97,7 @@ public class WebformsConfigurationReader {
 			regexDate = prop.getProperty(REGEX_DATE, DEFAULT_REGEX_DATE);
 			regexPostalCode = prop.getProperty(REGEX_POSTAL_CODE, DEFAULT_REGEX_POSTAL_CODE);
 			regexEmail = prop.getProperty(REGEX_EMAIL, DEFAULT_REGEX_EMAIL);
+			issueManagerUrl = prop.getProperty(ISSUE_MANAGER_URL, DEFAULT_ISSUE_MANAGER_URL);
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -126,6 +133,10 @@ public class WebformsConfigurationReader {
 
 	public String getRegexEmail() {
 		return regexEmail;
+	}
+
+	public String getIssueManagerUrl() {
+		return issueManagerUrl;
 	}
 
 }

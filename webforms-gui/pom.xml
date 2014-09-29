@@ -69,6 +69,12 @@
 			<artifactId>liferay-authentication-client</artifactId>
 			<version>${liferay-authentication-client.version}</version>
 		</dependency>
+		<!-- DESEncryption -->
+		<dependency>
+			<groupId>com.biit.security</groupId>
+			<artifactId>DES-encryption</artifactId>
+			<version>${DES-encryption.version}</version>
+		</dependency>
 		<!-- Vaadin plugins -->
 		<!-- Vaadin -->
 		<dependency>
