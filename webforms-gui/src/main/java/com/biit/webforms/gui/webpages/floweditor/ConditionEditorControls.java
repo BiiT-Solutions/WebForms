@@ -282,7 +282,6 @@ public class ConditionEditorControls extends TabSheet {
 				
 				value.setValue("");
 				value.setInputPrompt(((AnswerSubformat) valueFormat.getValue()).getHint());
-//				value.validate();
 				
 				value.addValidator(new ValidatorPattern(((AnswerSubformat) valueFormat.getValue()).getRegex()));
 			}
