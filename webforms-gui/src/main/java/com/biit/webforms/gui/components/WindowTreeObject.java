@@ -43,24 +43,24 @@ public class WindowTreeObject extends WindowAcceptCancel {
 		});
 		return formTable;
 	}
-	
+
 	private void updateAcceptButtonState() {
-		if(isSelectAllowed()){
+		if (isSelectAllowed()) {
 			getAcceptButton().setEnabled(true);
-		}else{
+		} else {
 			getAcceptButton().setEnabled(false);
 		}
 	}
 
-	private boolean isSelectAllowed(){
-		if(selectFilters==null || selectFilters.length ==0){
+	private boolean isSelectAllowed() {
+		if (selectFilters == null || selectFilters.length == 0) {
 			return true;
 		}
-		if(formTable.getValue()==null){
+		if (formTable.getValue() == null) {
 			return false;
 		}
-		for(Class<?> filterClass : selectFilters){
-			if(filterClass.isInstance(formTable.getValue())){
+		for (Class<?> filterClass : selectFilters) {
+			if (filterClass.isInstance(formTable.getValue())) {
 				return true;
 			}
 		}
@@ -71,6 +71,12 @@ public class WindowTreeObject extends WindowAcceptCancel {
 		return formTable.getSelectedRow();
 	}
 
+	/**
+	 * This function sets the filter classes to determine the enable state of
+	 * the accept button.
+	 * 
+	 * @param selectFilters
+	 */
 	public void setSelectableFilers(Class<?>... selectFilters) {
 		this.selectFilters = selectFilters;
 		updateAcceptButtonState();

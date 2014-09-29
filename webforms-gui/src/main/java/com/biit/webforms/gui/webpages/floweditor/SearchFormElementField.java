@@ -33,6 +33,13 @@ public class SearchFormElementField extends SearchButtonField {
 		});
 	}
 
+	/**
+	 * This function configures the select treeObject window to enable accept
+	 * button only when the selected element is from any class contained in the
+	 * filter.
+	 * 
+	 * @param selectfilter
+	 */
 	public void setSelectableFilter(Class<?>... selectfilter) {
 		this.selectFilter = selectfilter;
 	}

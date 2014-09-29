@@ -140,6 +140,7 @@ public class WindowRule extends WindowAcceptCancel {
 
 	private Component generateSearchOriginContent() {
 		searchOrigin = new SearchFormElementField(Form.class, Category.class, Group.class,Question.class);
+		searchOrigin.setSelectableFilter(Question.class);
 		searchOrigin.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_ORIGIN);
 		searchOrigin.setCaption(LanguageCodes.CAPTION_FROM.translation());
 		searchOrigin.addValueChangeListener(new SearchFormElementChanged() {
@@ -155,6 +156,7 @@ public class WindowRule extends WindowAcceptCancel {
 
 	private Component generateSearchDestinyContent() {
 		searchDestiny = new SearchFormElementField(Form.class,Category.class,Group.class,Question.class);
+		searchDestiny.setSelectableFilter(Question.class);
 		searchDestiny.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_DESTINY);
 		searchDestiny.setCaption(LanguageCodes.CAPTION_TO.translation());
 
