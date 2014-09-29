@@ -156,6 +156,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_ORGANIZATION("caption.organization"),
 	CAPTION_VALIDATE_DUPLICATE_NAME("caption.validate.duplicate.name"),
 	CAPTION_VALIDATE_DUPLICATE_ANSWER_VALUE("caption.validate.duplicate.answer.value"),
+	CAPTION_NAME_TOO_LARGE("caption.name.too.large"),
 	
 	TOOLTIP_NEW_CATEGORY("tooltip.new.category"),
 	TOOLTIP_NEW_SUBCATEGORY("tooltip.new.subcategory"),

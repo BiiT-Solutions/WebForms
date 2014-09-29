@@ -54,6 +54,7 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 
 		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
 		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
+		name.addValidator(new ValidatorTreeObjectNameLength());
 		name.setValue(instance.getName());
 		label.setValue(instance.getLabel());
 		label.addValidator(new LengthValidator(instance.getMaxLabelLength()));
