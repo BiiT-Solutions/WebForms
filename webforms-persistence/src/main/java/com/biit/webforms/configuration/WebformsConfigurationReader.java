@@ -37,6 +37,18 @@ public class WebformsConfigurationReader {
 	private final String REGEX_DATE = "regexDate";
 
 	private final String DEFAULT_REGEX_DATE = "([0-9]{1,2}-){1,2}[0-9]{4}";
+	
+	private final String REGEX_DATE_PERIOD = "regexDatePeriod";
+	
+	private final String DEFAULT_REGEX_DATE_PERIOD = "[0-9]+[DMY]";
+	
+	private final String REGEX_NUMBER = "regexNumber";
+	
+	private final String DEFAULT_REGEX_NUMBER = "[0-9]+";
+	
+	private final String REGEX_FLOAT = "regexFloat";
+	
+	private final String DEFAULT_REGEX_FLOAT = "[0-9]+\\.[0-9]*";
 
 	private final String REGEX_POSTAL_CODE = "regexPostalCode";
 
@@ -61,6 +73,12 @@ public class WebformsConfigurationReader {
 	private String regexPostalCode;
 
 	private String regexEmail;
+	
+	private String regexDatePeriod;
+	
+	private String regexNumber;
+	
+	private String regexFloat;
 
 	private String issueManagerUrl;
 
@@ -97,6 +115,9 @@ public class WebformsConfigurationReader {
 			regexDate = prop.getProperty(REGEX_DATE, DEFAULT_REGEX_DATE);
 			regexPostalCode = prop.getProperty(REGEX_POSTAL_CODE, DEFAULT_REGEX_POSTAL_CODE);
 			regexEmail = prop.getProperty(REGEX_EMAIL, DEFAULT_REGEX_EMAIL);
+			regexDatePeriod = prop.getProperty(REGEX_DATE_PERIOD, DEFAULT_REGEX_DATE_PERIOD);
+			regexNumber = prop.getProperty(REGEX_NUMBER, DEFAULT_REGEX_NUMBER);
+			regexFloat = prop.getProperty(REGEX_FLOAT, DEFAULT_REGEX_FLOAT);
 			issueManagerUrl = prop.getProperty(ISSUE_MANAGER_URL, DEFAULT_ISSUE_MANAGER_URL);
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -133,6 +154,18 @@ public class WebformsConfigurationReader {
 
 	public String getRegexEmail() {
 		return regexEmail;
+	}
+	
+	public String getRegexDatePeriod(){
+		return regexDatePeriod;
+	}
+	
+	public String getRegexNumber(){
+		return regexNumber;
+	}
+	
+	public String getRegexFloat(){
+		return regexFloat;
 	}
 
 	public String getIssueManagerUrl() {

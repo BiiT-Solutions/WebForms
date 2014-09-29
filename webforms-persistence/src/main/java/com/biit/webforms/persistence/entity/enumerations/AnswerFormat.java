@@ -9,7 +9,7 @@ public enum AnswerFormat {
 
 	NUMBER(AnswerSubformat.NUMBER, new AnswerSubformat[]{AnswerSubformat.NUMBER,AnswerSubformat.FLOAT}),
 
-	DATE(AnswerSubformat.DATE, new AnswerSubformat[]{AnswerSubformat.DATE,AnswerSubformat.DATE_PAST,AnswerSubformat.DATE_FUTURE}),
+	DATE(AnswerSubformat.DATE, new AnswerSubformat[]{AnswerSubformat.DATE,AnswerSubformat.DATE_PAST,AnswerSubformat.DATE_FUTURE,AnswerSubformat.DATE_PERIOD}),
 
 	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, new AnswerSubformat[]{AnswerSubformat.POSTAL_CODE})
 	

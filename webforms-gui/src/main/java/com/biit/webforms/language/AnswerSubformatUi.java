@@ -28,7 +28,11 @@ public enum AnswerSubformatUi {
 
 	DATE_FUTURE(AnswerSubformat.DATE_FUTURE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE_FUTURE),
 
-	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_POSTAL_CODE);
+	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_POSTAL_CODE),
+	
+	DATE_PERIOD(AnswerSubformat.DATE_PERIOD, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE_PERIOD),
+	
+	;
 
 	private final AnswerSubformat subformat;
 	private final LanguageCodes translationCode;

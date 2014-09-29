@@ -7,13 +7,14 @@ import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.common.components.TreeObjectTable;
 import com.biit.webforms.gui.common.language.ServerTranslate;
-import com.biit.webforms.language.AnswerFormatUi;
+import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.enumerations.AnswerSubformat;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.lexer.TokenTypes;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -84,12 +85,12 @@ public class ConditionEditorControls extends TabSheet {
 		treeObjectTable.setValue(null);
 		updateInsertAnswerLayout();
 
-		// Answer format.
-		for (AnswerFormatUi format : AnswerFormatUi.values()) {
-			valueFormat.addItem(format.getAnswerFormat());
-			valueFormat.setItemCaption(format.getAnswerFormat(), format.getLanguageCode().translation());
+		// Subanswer format.
+		for (AnswerSubformatUi subformat : AnswerSubformatUi.values()) {
+			valueFormat.addItem(subformat.getSubformat());
+			valueFormat.setItemCaption(subformat.getSubformat(), subformat.getTranslationCode().translation());
 		}
-		valueFormat.setValue(AnswerFormatUi.values()[0].getAnswerFormat());
+		valueFormat.setValue(AnswerSubformatUi.values()[0].getSubformat());
 	}
 
 	/**
@@ -154,7 +155,7 @@ public class ConditionEditorControls extends TabSheet {
 			insertAnswerLayout.setEnabled(false);
 		} else {
 			insertAnswerLayout.setEnabled(true);
-			Question question = (Question) treeObjectTable.getValue();			
+			Question question = (Question) treeObjectTable.getValue();
 			for (TreeObject child : question.getChildren()) {
 				answerTable.loadTreeObject(child, null);
 			}
@@ -175,7 +176,7 @@ public class ConditionEditorControls extends TabSheet {
 		answerTable = new TreeObjectTable();
 		answerTable.setSizeFull();
 		answerTable.setNullSelectionAllowed(false);
-		answerTable.setImmediate(true); 
+		answerTable.setImmediate(true);
 		answerTable.setSelectable(true);
 
 		insertAnswer = new Button(ServerTranslate.translate(LanguageCodes.CAPTION_INSERT_ANSWER_REFENCE));
@@ -188,7 +189,7 @@ public class ConditionEditorControls extends TabSheet {
 				fireInsertReferenceListeners(getCurrentTreeObjectReference());
 				fireInsertTokenListeners(DEFAULT_ANSWER_REFERENCE_TOKEN);
 				fireInsertAnswerValueListeners((Answer) answerTable.getValue());
-				//TODO second level answer
+				// TODO second level answer
 			}
 		});
 
@@ -277,12 +278,19 @@ public class ConditionEditorControls extends TabSheet {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				// TODO Auto-generated method stub
-
+				value.removeAllValidators();
+				
+				value.setValue("");
+				value.setInputPrompt(((AnswerSubformat) valueFormat.getValue()).getHint());
+//				value.validate();
+				
+				value.addValidator(new ValidatorPattern(((AnswerSubformat) valueFormat.getValue()).getRegex()));
 			}
 		});
 		value = new TextField();
 		value.setWidth(FULL);
+		
+		value.setImmediate(true);
 		insertValue = new Button(LanguageCodes.CAPTION_VALUE.translation());
 		insertValue.setWidth(FULL);
 		insertValue.addClickListener(new ClickListener() {
@@ -292,7 +300,7 @@ public class ConditionEditorControls extends TabSheet {
 			public void buttonClick(ClickEvent event) {
 				insertValue();
 			}
-		});
+		});		
 
 		verticalValueLayout.addComponent(valueFormat);
 		verticalValueLayout.addComponent(value);

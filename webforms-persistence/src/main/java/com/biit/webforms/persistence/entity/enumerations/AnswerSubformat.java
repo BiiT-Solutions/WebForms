@@ -9,20 +9,17 @@ public enum AnswerSubformat {
 	// Text subtypes
 	TEXT("", WebformsConfigurationReader.getInstance().getRegexText()),
 
-	EMAIL("", WebformsConfigurationReader.getInstance().getRegexEmail()),
+	EMAIL("something@domain.ext", WebformsConfigurationReader.getInstance().getRegexEmail()),
 
 	PHONE("(+NN) NNN NNN NNN", WebformsConfigurationReader.getInstance().getRegexPhone()),
 
-	IBAN("", WebformsConfigurationReader.getInstance().getRegexIban()),
+	IBAN("LLNN [L/N](1-34)", WebformsConfigurationReader.getInstance().getRegexIban()),
 
-	BSN("#10", WebformsConfigurationReader.getInstance().getRegexBsn()),
+	BSN("#9", WebformsConfigurationReader.getInstance().getRegexBsn()),
 
-	// Number subtypes
-	// AMMOUNT("#9", ""),
+	NUMBER("[0-9]+", WebformsConfigurationReader.getInstance().getRegexNumber()),
 
-	NUMBER("", ""),
-
-	FLOAT("", ""),
+	FLOAT("[0-9]+\\.[0-9]*", WebformsConfigurationReader.getInstance().getRegexFloat()),
 
 	// Date subtypes
 	DATE("dd-mm-yyyy", WebformsConfigurationReader.getInstance().getRegexDate()),
@@ -31,10 +28,10 @@ public enum AnswerSubformat {
 
 	DATE_FUTURE("dd-mm-yyyy", WebformsConfigurationReader.getInstance().getRegexDate()),
 
-	// BIRTHDATE("dd-mm-yyyy",""),
+	DATE_PERIOD("[0-9]+[DMY]", WebformsConfigurationReader.getInstance().getRegexDatePeriod()),
 
 	// Postal code
-	POSTAL_CODE("nnnnaa", WebformsConfigurationReader.getInstance().getRegexPostalCode())
+	POSTAL_CODE("NNNNAA", WebformsConfigurationReader.getInstance().getRegexPostalCode())
 
 	;
 

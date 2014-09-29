@@ -60,6 +60,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_ANSWER_SUBFORMAT_DATE_PAST("caption.answer.subformat.date.past"),
 	CAPTION_ANSWER_SUBFORMAT_DATE_FUTURE("caption.answer.subformat.date.future"),
 	CAPTION_ANSWER_SUBFORMAT_POSTAL_CODE("caption.answer.subformat.postal.code"),
+	CAPTION_ANSWER_SUBFORMAT_DATE_PERIOD("caption.answer.subformat.date.period"),
 	
 	CAPTION_FORM_WORK_STATUS_DESIGN("caption.form.work.status.design"),
 	CAPTION_FORM_WORK_STATUS_FINAL_DESIGN("caption.form.work.status.final.design"),
@@ -255,6 +256,8 @@ public enum LanguageCodes implements ILanguageCode{
 	WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN("warning.description.destiny.is.before.origin"),
 	WARNING_DESCRIPTION_RULE_BAD_FORMED("warning.description.rule.bad.formed"),
 	WARNING_DESCRIPTION_CONDITION_BAD_FORMED("warning.description.condition.bad.formed"),
+	
+	VALIDATOR_ERROR_PATTERN("validator.error.pattern"),
 	
 	NULL_VALUE_SEARCH_ORIGIN("null.value.search.origin"),
 	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),
