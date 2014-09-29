@@ -121,7 +121,7 @@ public class ConditionEditor extends CustomComponent {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				validateCondition();
+				isConditionValid();
 			}
 		});
 		status = new StatusLabel("");
@@ -129,31 +129,6 @@ public class ConditionEditor extends CustomComponent {
 		validator.addComponent(validate);
 		validator.addComponent(status);
 		return validator;
-	}
-
-	public boolean validateCondition() {
-		String currentCondition = textArea.getValue();
-		System.out.println("Validate: " + currentCondition);
-		// TODO localization!
-
-		try {
-			WebformsParser parser = new WebformsParser(currentCondition);
-			Expression expression = parser.parseExpression();
-			if (expression == null) {
-				// No expression
-				System.out.println("Expression: empty expression");
-				status.setOkText(LanguageCodes.CAPTION_OK_EMPTY_EXPRESSION.translation());
-			} else {
-				System.out.println("Expression: " + expression);
-			}
-			status.setOkText(LanguageCodes.CAPTION_OK_VALID_EXPRESSION.translation());
-			return true;
-		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		} catch (StringTokenizationError | IncompleteBinaryOperatorException | MissingParenthesisException e) {
-			status.setErrorText(e.getMessage());
-		}
-		return false;
 	}
 
 	private void append(TokenTypes token) {
@@ -203,4 +178,27 @@ public class ConditionEditor extends CustomComponent {
 		textArea.setValue(conditionString);
 	}
 
+	public boolean isConditionValid() {
+		String currentCondition = textArea.getValue();
+		System.out.println("Validate: " + currentCondition);
+		// TODO localization!
+		try {
+			WebformsParser parser = new WebformsParser(currentCondition);
+			Expression expression = parser.parseExpression();
+			if (expression == null) {
+				// No expression
+				System.out.println("Expression: empty expression");
+				status.setOkText(LanguageCodes.CAPTION_OK_EMPTY_EXPRESSION.translation());
+			} else {
+				System.out.println("Expression: " + expression);
+			}
+			status.setOkText(LanguageCodes.CAPTION_OK_VALID_EXPRESSION.translation());
+			return true;
+		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		} catch (StringTokenizationError | IncompleteBinaryOperatorException | MissingParenthesisException e) {
+			status.setErrorText(e.getMessage());
+		}
+		return false;
+	}
 }

@@ -207,4 +207,8 @@ public class WindowRule extends WindowAcceptCancel {
 	public boolean isOthers() {
 		return others.getValue();
 	}
+
+	public boolean isConditionValid() {
+		return conditionEditor.isConditionValid();
+	}
 }

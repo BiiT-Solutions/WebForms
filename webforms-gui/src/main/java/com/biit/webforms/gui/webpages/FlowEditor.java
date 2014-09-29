@@ -454,6 +454,11 @@ public class FlowEditor extends SecuredWebPage {
 		}
 	}
 
+	/**
+	 * Opens the window to create a new rule and controls the return conditions.
+	 * 
+	 * @param rule
+	 */
 	private void createRuleWindow(final Rule rule) {
 		WindowRule window = new WindowRule();
 		window.addAcceptActionListener(new AcceptActionListener() {
@@ -462,11 +467,16 @@ public class FlowEditor extends SecuredWebPage {
 			public void acceptAction(WindowAcceptCancel window) {
 				try {
 					WindowRule windowRule = (WindowRule) window;
-					UserSessionHandler.getController().updateRuleContent(rule, windowRule.getOrigin(),
-							windowRule.getRuleType(), windowRule.getDestiny(), windowRule.isOthers(),
-							windowRule.getCondition());
-					addOrUpdateRuleInTableAction(rule);
-					window.close();
+					if (!windowRule.isConditionValid()) {
+						MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+								LanguageCodes.WARNING_DESCRIPTION_CONDITION_BAD_FORMED);
+					} else {
+						UserSessionHandler.getController().updateRuleContent(rule, windowRule.getOrigin(),
+								windowRule.getRuleType(), windowRule.getDestiny(), windowRule.isOthers(),
+								windowRule.getCondition());
+						addOrUpdateRuleInTableAction(rule);
+						window.close();
+					}
 				} catch (BadRuleContentException e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.WARNING_DESCRIPTION_RULE_BAD_FORMED);

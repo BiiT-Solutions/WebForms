@@ -240,10 +240,10 @@ public enum LanguageCodes implements ILanguageCode{
 	WARNING_DESCRIPTION_SAME_ORIGIN_AND_DESTINY("warning.description.same.origin.and.destiny"),
 	WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN("warning.description.destiny.is.before.origin"),
 	WARNING_DESCRIPTION_RULE_BAD_FORMED("warning.description.rule.bad.formed"),
+	WARNING_DESCRIPTION_CONDITION_BAD_FORMED("warning.description.condition.bad.formed"),
 	
 	NULL_VALUE_SEARCH_ORIGIN("null.value.search.origin"),
 	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),
-		
 	;
 
 	private String value;
