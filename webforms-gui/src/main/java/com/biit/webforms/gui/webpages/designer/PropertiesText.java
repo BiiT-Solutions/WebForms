@@ -59,7 +59,8 @@ public class PropertiesText extends StorableObjectProperties<Text> {
 	protected void initValues() {
 		super.initValues();
 		
-		name.addValidator(new TreeObjectNameValidator(instance.getNameAllowedPattern()));
+		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
+		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
 		name.setValue(instance.getName());
 		description.setValue(instance.getDescription());
 	}

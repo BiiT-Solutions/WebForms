@@ -4,12 +4,12 @@ import java.util.regex.Pattern;
 
 import com.vaadin.data.Validator;
 
-public class TreeObjectNameValidator implements Validator {
+public class ValidatorTreeObjectName implements Validator {
 	private static final long serialVersionUID = 8591363723969902840L;
 
 	private Pattern pattern;
 
-	public TreeObjectNameValidator(Pattern pattern) {
+	public ValidatorTreeObjectName(Pattern pattern) {
 		this.pattern = pattern;
 	}
 

@@ -150,7 +150,8 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	@Override
 	protected void initValues() {
 		super.initValues();
-		name.addValidator(new TreeObjectNameValidator(instance.getNameAllowedPattern()));
+		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
+		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
 		name.setValue(instance.getName());
 		// TODO dynamic label
 		label.setValue(instance.getLabel());

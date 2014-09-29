@@ -50,7 +50,7 @@ public class PropertiesSubcategory extends StorableObjectProperties<Subcategory>
 	protected void initValues() {
 		super.initValues();
 
-		name.addValidator(new TreeObjectNameValidator(instance.getNameAllowedPattern()));
+		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
 		name.setValue(instance.getName());
 		label.setValue(instance.getLabel());
 	}

@@ -51,7 +51,8 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 	protected void initValues() {
 		super.initValues();
 		
-		name.addValidator(new TreeObjectNameValidator(instance.getNameAllowedPattern()));
+		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
+		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
 		name.setValue(instance.getName());
 		field.setValue(instance.getFieldName());
 		field.addValidator(new LengthValidator(instance.getMaxLabelLength()));

@@ -57,7 +57,8 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 	protected void initValues() {
 		super.initValues();
 
-		value.addValidator(new TreeObjectNameValidator(instance.getNameAllowedPattern()));
+		value.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
+		value.addValidator(new ValidatorDuplicateValueAnswer(instance));
 		value.setValue(instance.getValue());
 		// TODO dynamic label
 		label.setValue(instance.getLabel());
