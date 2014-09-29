@@ -18,6 +18,7 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject> {
 			case MULTIPLE_SELECTION:
 				return ThemeIcons.DESIGNER_QUESTION_TYPE_CHECKLIST;
 			case SINGLE_SELECTION_LIST:
+				return ThemeIcons.DESIGNER_QUESTION_TYPE_DROPDOWN;
 			case SINGLE_SELECTION_RADIO:
 				return ThemeIcons.DESIGNER_QUESTION_TYPE_RADIOBUTTON;
 			case INPUT:
