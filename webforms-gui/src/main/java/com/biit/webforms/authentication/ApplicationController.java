@@ -8,6 +8,7 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -63,8 +64,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form. Needs a unique name where name.length() <
-	 * 190 characters.
+	 * User action to create a form. Needs a unique name where name.length() < 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -108,7 +108,8 @@ public class ApplicationController {
 		return newform;
 	}
 
-	public Block createBlock(String blockName, Organization organization) throws FieldTooLongException, CharacterNotAllowedException, FormWithSameNameException {
+	public Block createBlock(String blockName, Organization organization) throws FieldTooLongException,
+			CharacterNotAllowedException, FormWithSameNameException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createBlock " + blockName + " START");
 
@@ -144,7 +145,8 @@ public class ApplicationController {
 		return newBlock;
 	}
 
-	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException, NotValidTreeObjectException, CharacterNotAllowedException {
+	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException,
+			NotValidTreeObjectException, CharacterNotAllowedException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createNewFormVersion " + form + " START");
 
@@ -333,8 +335,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Creates any kind of TreeObject descendant with @name and inserts into
-	 * parent if possible.
+	 * Creates any kind of TreeObject descendant with @name and inserts into parent if possible.
 	 * 
 	 * @param classType
 	 * @param parent
@@ -506,7 +507,7 @@ public class ApplicationController {
 		try {
 			// First we create the new block
 			block = createBlock(blockLabel, organization);
-			
+
 			Form copiedForm = formInUse.generateFormCopiedSimplification(element);
 			copiedForm.resetIds();
 			block.setChildren(copiedForm.getChildren());
@@ -533,24 +534,23 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone
-	 * of the block using the element as hierarchy seed and introduces to
-	 * current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
+	 * hierarchy seed and introduces to current form as a new category.
 	 * 
 	 * @param selectedRow
-	 * @throws CategoryWithSameNameAlreadyExistsInForm 
+	 * @throws CategoryWithSameNameAlreadyExistsInForm
 	 */
 	public void insertBlock(TreeObject element) throws CategoryWithSameNameAlreadyExistsInForm {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " insertBlock " + formInUse + " " + element + " START");
-		
-		//Check name uniqueness first
+
+		// Check name uniqueness first
 		Category category = (Category) element.getAncestor(Category.class);
-		if(formInUse.findChild(category.getName())!=null){
-			//Element found, throw exception.
+		if (formInUse.findChild(category.getName()) != null) {
+			// Element found, throw exception.
 			throw new CategoryWithSameNameAlreadyExistsInForm();
 		}
-		
+
 		try {
 			Block blockToInsert = (Block) element.getAncestor(Block.class);
 			Block copiedBlock = (Block) blockToInsert.generateFormCopiedSimplification(element);
@@ -558,7 +558,7 @@ public class ApplicationController {
 
 			formInUse.addChildren(copiedBlock.getChildren());
 			formInUse.addRules(copiedBlock.getRules());
-			
+
 		} catch (NotValidTreeObjectException | NotValidChildException | CharacterNotAllowedException e) {
 			// Impossible.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -578,7 +578,7 @@ public class ApplicationController {
 	 * @throws DestinyIsContainedAtOrigin
 	 */
 	public void moveTo(TreeObject origin, TreeObject destiny) throws NotValidChildException,
-			SameOriginAndDestinationException, DestinyIsContainedAtOrigin {
+			SameOriginAndDestinationException, DestinyIsContainedAtOrigin, ChildrenNotFoundException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " move "
 				+ origin + " to " + destiny + " START");
 		if (origin.equals(destiny)) {
@@ -589,7 +589,8 @@ public class ApplicationController {
 		}
 		try {
 			destiny.addChild(origin);
-		} catch (NotValidChildException e) {
+			TreeObject.move(origin, destiny);
+		} catch (NotValidChildException | ChildrenNotFoundException e) {
 			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " move " + origin + " to " + destiny + " could not be done.");
 			throw e;
@@ -600,8 +601,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * This function is called when the ui has expired. The implementation needs
-	 * to free any "locked" resources
+	 * This function is called when the ui has expired. The implementation needs to free any "locked" resources
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
@@ -620,8 +620,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Update rule content. This function currently is a direct call to the
-	 * structure function. If the rule is not on the form, it gets added.
+	 * Update rule content. This function currently is a direct call to the structure function. If the rule is not on
+	 * the form, it gets added.
 	 * 
 	 * @param rule
 	 * @param origin
@@ -655,8 +655,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Updates rule update time and updated by in rule. The content of the rule
-	 * was already modified by {@link WindowRule}
+	 * Updates rule update time and updated by in rule. The content of the rule was already modified by
+	 * {@link WindowRule}
 	 * 
 	 * @param newRule
 	 */
