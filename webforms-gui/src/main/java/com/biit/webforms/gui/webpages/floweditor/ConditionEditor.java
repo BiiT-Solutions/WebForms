@@ -12,6 +12,7 @@ import com.biit.webforms.utils.lexer.TokenTypes;
 import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
 import com.biit.webforms.utils.parser.ExpectedTokenNotFound;
 import com.biit.webforms.utils.parser.WebformsParser;
+import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
 import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
 import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
@@ -202,7 +203,7 @@ public class ConditionEditor extends CustomComponent {
 			return true;
 		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		} catch (StringTokenizationError | IncompleteBinaryOperatorException | MissingParenthesisException | ExpressionNotWellFormedException e) {
+		} catch (StringTokenizationError | IncompleteBinaryOperatorException | MissingParenthesisException | ExpressionNotWellFormedException | EmptyParenthesisException e) {
 			status.setErrorText(e.getMessage());
 		}
 		return false;

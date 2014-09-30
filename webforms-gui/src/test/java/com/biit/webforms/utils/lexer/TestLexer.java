@@ -64,11 +64,11 @@ public class TestLexer {
 	private final static String DATE_PERIOD_3 = "15Y";
 	private final static String BETWEEN_1 = "BETWEEN";
 	private final static String BETWEEN_2 = "between";
-	private final static String ANSWER_VALUE = "%categöry_gory%";
+	private final static String ANSWER_VALUE = "'categöry_gory'";
 	private final static String TEST_1 = "<category><persondata><birthdate><=18Y";
 	private final static String TEST_2 = "<category><persondata><birthdate>>01-01-1950";
 	private final static String TEST_3 = "(<category><persondata><birthdate>>01-01-1950) && (<category><persondata><birthdate><=18Y)";
-	private final static String TEST_4 = "<new_category><group1><qu1> == %a%";
+	private final static String TEST_4 = "<new_category><group1><qu1> == 'a'";
 	private final static String TEST_ = "";
 
 	@Test

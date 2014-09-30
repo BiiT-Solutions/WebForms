@@ -3,6 +3,7 @@ package com.biit.webforms.utils.parser.parselets;
 import com.biit.webforms.utils.lexer.Token;
 import com.biit.webforms.utils.parser.ExpectedTokenNotFound;
 import com.biit.webforms.utils.parser.Parser;
+import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
 import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
@@ -24,7 +25,7 @@ public class PrefixOperatorParselet implements PrefixParselet {
 	}
 
 	@Override
-	public Expression parse(Parser parser, Token token) throws ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException {
+	public Expression parse(Parser parser, Token token) throws ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException, EmptyParenthesisException {
 		// To handle right-associative operators like "^", we allow a slightly
 		// lower precedence when parsing the right-hand side. This will let a
 		// parselet with the same precedence appear on the right, which will

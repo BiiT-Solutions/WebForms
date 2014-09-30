@@ -60,7 +60,7 @@ public enum TokenTypes implements ITokenType {
 
 	REFERENCE("<" + TreeObject.XML_TAG_ALLOWED_CHARS + ">", 1, TokenReference.class, "<REFERENCE>"),
 
-	VALUE_ANSWER("%" + BaseAnswer.ANSWER_TAG_ALLOWED_CHARS + "%", 1, TokenValueAnswer.class, "%ANSWER%"),
+	VALUE_ANSWER("'" + BaseAnswer.ANSWER_TAG_ALLOWED_CHARS + "'", 1, TokenValueAnswer.class, "'ANSWER'"),
 
 	VALUE_TEXT("\"[^\\\\\"]*(\\\\\")*[^\\\\\"]*\"", 2, TokenValueText.class, "\"TEXT\""),
 
