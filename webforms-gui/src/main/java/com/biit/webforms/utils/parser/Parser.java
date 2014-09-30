@@ -12,6 +12,7 @@ import com.biit.webforms.utils.lexer.ITokenType;
 import com.biit.webforms.utils.lexer.Lexer;
 import com.biit.webforms.utils.lexer.Token;
 import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
+import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
 import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
 import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
@@ -63,7 +64,7 @@ public class Parser {
 	}
 
 	public Expression parseExpression(int precedence) throws ParseException, ExpectedTokenNotFound,
-			NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException {
+			NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException, EmptyParenthesisException {
 		Token token = consume();
 		if (token == null) {
 			// EOF reached
@@ -88,7 +89,7 @@ public class Parser {
 	}
 
 	public Expression parseExpression() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
-			IncompleteBinaryOperatorException, MissingParenthesisException {
+			IncompleteBinaryOperatorException, MissingParenthesisException, EmptyParenthesisException {
 		return parseExpression(0);
 	}
 
@@ -103,8 +104,9 @@ public class Parser {
 	 * @throws ExpectedTokenNotFound 
 	 * @throws ParseException 
 	 * @throws ExpressionNotWellFormedException 
+	 * @throws EmptyParenthesisException 
 	 */
-	public Expression parseCompleteExpression() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException {
+	public Expression parseCompleteExpression() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException {
 		Expression expression = parseExpression();
 		Token nextToken = lookAhead(0);
 		if(nextToken!=null){
@@ -143,7 +145,7 @@ public class Parser {
 		}
 	}
 
-	private Token lookAhead(int distance) {
+	public Token lookAhead(int distance) {
 		// Read in as many as needed.
 		while (distance >= read.size()) {
 			if (!tokens.hasNext()) {

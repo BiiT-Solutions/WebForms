@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.gui.common.components.FilterTreeObjectTableContainsName;
 import com.biit.webforms.gui.common.components.TableTreeObject;
+import com.biit.webforms.gui.common.components.TableWithSearch;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.LanguageCodes;
@@ -124,6 +126,9 @@ public class ConditionEditorControls extends TabSheet {
 			}
 		});
 
+		TableWithSearch tableWithSearch = new TableWithSearch(treeObjectTable, new FilterTreeObjectTableContainsName());
+		tableWithSearch.setSizeFull();
+
 		insertReference = new Button(ServerTranslate.translate(LanguageCodes.CAPTION_INSERT_QUESTION_REFENCE));
 		insertReference.setWidth(FULL);
 		insertReference.addClickListener(new ClickListener() {
@@ -136,9 +141,9 @@ public class ConditionEditorControls extends TabSheet {
 			}
 		});
 
-		rootLayout.addComponent(treeObjectTable);
+		rootLayout.addComponent(tableWithSearch);
 		rootLayout.addComponent(insertReference);
-		rootLayout.setExpandRatio(treeObjectTable, 1.0f);
+		rootLayout.setExpandRatio(tableWithSearch, 1.0f);
 
 		return rootLayout;
 	}
@@ -206,6 +211,7 @@ public class ConditionEditorControls extends TabSheet {
 		root.setWidth(FULL);
 		root.setHeight(FULL);
 		root.setSpacing(true);
+		root.setMargin(true);
 
 		Component insertReferenceLayout = generateInsertReferenceLayout();
 		Component insertAnswerLayout = generateInsertAnswerLayout();
@@ -313,6 +319,7 @@ public class ConditionEditorControls extends TabSheet {
 		VerticalLayout root = new VerticalLayout();
 		root.setWidth(FULL);
 		root.setHeight(FULL);
+		root.setMargin(true);
 
 		Component buttonHolder = generateOperationButtons();
 		root.addComponent(buttonHolder);
@@ -326,9 +333,9 @@ public class ConditionEditorControls extends TabSheet {
 	}
 
 	protected void insertValue() {
-		String valueToInsert =  value.getValue();
-		if(((AnswerSubformat)valueFormat.getValue()).getAnswerFormat() == AnswerFormat.TEXT){
-			valueToInsert =  "\""+valueToInsert+"\"";
+		String valueToInsert = value.getValue();
+		if (((AnswerSubformat) valueFormat.getValue()).getAnswerFormat() == AnswerFormat.TEXT) {
+			valueToInsert = "\"" + valueToInsert + "\"";
 		}
 		fireInsertAnswerValueListeners(valueToInsert);
 	}
@@ -354,7 +361,7 @@ public class ConditionEditorControls extends TabSheet {
 			listener.insert(answer);
 		}
 	}
-	
+
 	protected void fireInsertAnswerValueListeners(String value) {
 		for (InsertTokenListener listener : insertTokenListeners) {
 			listener.insert(value);

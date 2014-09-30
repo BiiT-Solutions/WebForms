@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 import com.biit.webforms.utils.lexer.Token;
 import com.biit.webforms.utils.lexer.WebformsLexer;
 import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
+import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
 import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
 import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
@@ -60,7 +61,7 @@ public class TestParser {
 
 	@Test
 	public void parserTestReference() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
-			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException {
+			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -73,7 +74,7 @@ public class TestParser {
 
 	@Test
 	public void tokenizerTestComparation() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
-			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException {
+			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -85,7 +86,7 @@ public class TestParser {
 
 	@Test
 	public void tokenizerTestLogic() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
-			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException {
+			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -97,7 +98,7 @@ public class TestParser {
 
 	@Test
 	public void tokenizerTestLogic2() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
-			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException {
+			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -131,7 +132,7 @@ public class TestParser {
 
 	@Test
 	public void tokenizerTestExpressions() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
-			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException {
+			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -146,7 +147,7 @@ public class TestParser {
 
 	@Test(expectedExceptions = { IncompleteBinaryOperatorException.class })
 	public void parserTestIncompleteBinaryException() throws ParseException, ExpectedTokenNotFound,
-			NoMoreTokensException, StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException {
+			NoMoreTokensException, StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -158,7 +159,7 @@ public class TestParser {
 	
 	@Test(expectedExceptions = { ExpressionNotWellFormedException.class })
 	public void parserTestExpressionNotValid() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
-			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException {
+			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
@@ -169,7 +170,7 @@ public class TestParser {
 	
 	@Test
 	public void parserTestExpressionValue() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
-			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException {
+			StringTokenizationError, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException {
 		WebformsLexer tokenizer = new WebformsLexer();
 
 		List<Token> tokens;
