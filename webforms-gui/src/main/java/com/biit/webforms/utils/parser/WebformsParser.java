@@ -6,13 +6,12 @@ import com.biit.webforms.utils.lexer.Token;
 import com.biit.webforms.utils.lexer.TokenTypes;
 import com.biit.webforms.utils.lexer.WebformsLexer;
 import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
-import com.biit.webforms.utils.parser.parselets.AnswerValueParselet;
 import com.biit.webforms.utils.parser.parselets.BinaryOperationParselet;
 import com.biit.webforms.utils.parser.parselets.ComparationParselet;
 import com.biit.webforms.utils.parser.parselets.ParenthesisParselet;
 import com.biit.webforms.utils.parser.parselets.PrefixOperatorParselet;
 import com.biit.webforms.utils.parser.parselets.ReferenceParselet;
-import com.biit.webforms.utils.parser.parselets.TextValueParselet;
+import com.biit.webforms.utils.parser.parselets.ValueParselet;
 
 public class WebformsParser extends Parser {
 
@@ -29,8 +28,13 @@ public class WebformsParser extends Parser {
 	private void configureParser() {
 		// Register prefix parselets
 		register(TokenTypes.REFERENCE, new ReferenceParselet());
-		register(TokenTypes.ANSWER_VALUE, new AnswerValueParselet());
-		register(TokenTypes.TEXT_VALUE, new TextValueParselet());
+		register(TokenTypes.VALUE_ANSWER, new ValueParselet());
+		register(TokenTypes.VALUE_TEXT, new ValueParselet());
+		register(TokenTypes.VALUE_DATE, new ValueParselet());
+		register(TokenTypes.VALUE_DATE_PERIOD, new ValueParselet());
+		register(TokenTypes.VALUE_NUMBER, new ValueParselet());
+		register(TokenTypes.VALUE_FLOAT, new ValueParselet());
+		register(TokenTypes.VALUE_POSTAL_CODE, new ValueParselet());
 		register(TokenTypes.NOT, new PrefixOperatorParselet(Precedence.PREFIX));
 		// Register infix parselets
 		// Grouping

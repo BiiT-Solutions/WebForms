@@ -4,13 +4,16 @@ import java.util.regex.Pattern;
 
 import com.biit.form.BaseAnswer;
 import com.biit.form.TreeObject;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.utils.lexer.tokens.TokenAnd;
-import com.biit.webforms.utils.lexer.tokens.TokenAnswerValue;
+import com.biit.webforms.utils.lexer.tokens.TokenPostalCode;
+import com.biit.webforms.utils.lexer.tokens.TokenValueAnswer;
 import com.biit.webforms.utils.lexer.tokens.TokenBetween;
-import com.biit.webforms.utils.lexer.tokens.TokenDate;
-import com.biit.webforms.utils.lexer.tokens.TokenDatePeriod;
+import com.biit.webforms.utils.lexer.tokens.TokenValueDate;
+import com.biit.webforms.utils.lexer.tokens.TokenValueDatePeriod;
 import com.biit.webforms.utils.lexer.tokens.TokenEq;
+import com.biit.webforms.utils.lexer.tokens.TokenValueFloat;
 import com.biit.webforms.utils.lexer.tokens.TokenGe;
 import com.biit.webforms.utils.lexer.tokens.TokenGt;
 import com.biit.webforms.utils.lexer.tokens.TokenLe;
@@ -18,10 +21,11 @@ import com.biit.webforms.utils.lexer.tokens.TokenLeftPar;
 import com.biit.webforms.utils.lexer.tokens.TokenLt;
 import com.biit.webforms.utils.lexer.tokens.TokenNe;
 import com.biit.webforms.utils.lexer.tokens.TokenNot;
+import com.biit.webforms.utils.lexer.tokens.TokenValueNumber;
 import com.biit.webforms.utils.lexer.tokens.TokenOr;
 import com.biit.webforms.utils.lexer.tokens.TokenReference;
 import com.biit.webforms.utils.lexer.tokens.TokenRightPar;
-import com.biit.webforms.utils.lexer.tokens.TokenTextValue;
+import com.biit.webforms.utils.lexer.tokens.TokenValueText;
 import com.biit.webforms.utils.lexer.tokens.TokenWhitespace;
 
 public enum TokenTypes implements ITokenType {
@@ -56,16 +60,20 @@ public enum TokenTypes implements ITokenType {
 
 	REFERENCE("<" + TreeObject.XML_TAG_ALLOWED_CHARS + ">", 1, TokenReference.class, "<REFERENCE>"),
 
-	ANSWER_VALUE("%" + BaseAnswer.ANSWER_TAG_ALLOWED_CHARS + "%", 1, TokenAnswerValue.class, "%ANSWER%"),
+	VALUE_ANSWER("%" + BaseAnswer.ANSWER_TAG_ALLOWED_CHARS + "%", 1, TokenValueAnswer.class, "%ANSWER%"),
 
-	TEXT_VALUE("\"[^\\\\\"]*(\\\\\")*[^\\\\\"]*\"", 2, TokenTextValue.class, "\"TEXT\""),
+	VALUE_TEXT("\"[^\\\\\"]*(\\\\\")*[^\\\\\"]*\"", 2, TokenValueText.class, "\"TEXT\""),
 
-	DATE("[0-9][0-9](-|/)[0-9][0-9](-|/)[0-9][0-9][0-9][0-9]", 2, TokenDate.class, "<DATE>"),
+	VALUE_DATE(WebformsConfigurationReader.getInstance().getRegexDate(), 2, TokenValueDate.class, "DATE"),
 
-	DATE_PERIOD("[0-9]+(Y|M|D)", 2, TokenDatePeriod.class, "<DATE_PERIOD>"),
+	VALUE_DATE_PERIOD(WebformsConfigurationReader.getInstance().getRegexDatePeriod(), 2, TokenValueDatePeriod.class, "DATE_PERIOD"),
 
-	// TEXT("[a-z|A-Z|0-9][^(\\s)]*", 3, TokenText.class,"<NOT_RELATED_TEXT>"),
+	VALUE_NUMBER(WebformsConfigurationReader.getInstance().getRegexNumber(), 2, TokenValueNumber.class, "NUMBER"),
 
+	VALUE_FLOAT(WebformsConfigurationReader.getInstance().getRegexFloat(), 2, TokenValueFloat.class, "FLOAT"),
+
+	VALUE_POSTAL_CODE(WebformsConfigurationReader.getInstance().getRegexPostalCode(), 2, TokenPostalCode.class, "POSTAL_CODE"),
+	
 	;
 
 	private Pattern regexFilter;

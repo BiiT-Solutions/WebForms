@@ -12,6 +12,7 @@ import com.biit.webforms.utils.lexer.ITokenType;
 import com.biit.webforms.utils.lexer.Lexer;
 import com.biit.webforms.utils.lexer.Token;
 import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
+import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
 import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
 import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
@@ -61,7 +62,8 @@ public class Parser {
 		ignore.add(tokenType);
 	}
 
-	public Expression parseExpression(int precedence) throws ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException {
+	public Expression parseExpression(int precedence) throws ParseException, ExpectedTokenNotFound,
+			NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException {
 		Token token = consume();
 		if (token == null) {
 			// EOF reached
@@ -85,8 +87,30 @@ public class Parser {
 		return left;
 	}
 
-	public Expression parseExpression() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException {
+	public Expression parseExpression() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
+			IncompleteBinaryOperatorException, MissingParenthesisException {
 		return parseExpression(0);
+	}
+
+	/**
+	 * Method to parse the expression fully. It will raise an exception if there
+	 * are no consumed tokens
+	 * 
+	 * @return
+	 * @throws MissingParenthesisException 
+	 * @throws IncompleteBinaryOperatorException 
+	 * @throws NoMoreTokensException 
+	 * @throws ExpectedTokenNotFound 
+	 * @throws ParseException 
+	 * @throws ExpressionNotWellFormedException 
+	 */
+	public Expression parseCompleteExpression() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException {
+		Expression expression = parseExpression();
+		Token nextToken = lookAhead(0);
+		if(nextToken!=null){
+			throw new ExpressionNotWellFormedException(nextToken);
+		}
+		return expression;
 	}
 
 	public boolean match(ITokenType expected) {

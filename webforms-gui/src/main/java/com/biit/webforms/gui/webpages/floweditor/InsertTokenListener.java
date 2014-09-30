@@ -11,5 +11,7 @@ public interface InsertTokenListener {
 	void insert(TreeObject currentTreeObjectReference);
 	
 	void insert(Answer answerValue);
+	
+	void insert(String value);
 
 }

@@ -2,6 +2,6 @@ package com.biit.webforms.utils.lexer.tokens;
 
 import com.biit.webforms.utils.lexer.Token;
 
-public class TokenDatePeriod extends Token {
+public class TokenValueDatePeriod extends Token {
 
 }

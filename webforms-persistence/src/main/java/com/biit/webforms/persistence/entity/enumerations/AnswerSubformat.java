@@ -50,4 +50,13 @@ public enum AnswerSubformat {
 	public Pattern getRegex() {
 		return regex;
 	}
+
+	public AnswerFormat getAnswerFormat() {
+		for(AnswerFormat answerFormat: AnswerFormat.values()){
+			if(answerFormat.isSubformat(this)){
+				return answerFormat;
+			}
+		}
+		return null;
+	}
 }

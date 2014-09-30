@@ -8,10 +8,10 @@ import org.testng.annotations.Test;
 
 import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
 import com.biit.webforms.utils.lexer.tokens.TokenAnd;
-import com.biit.webforms.utils.lexer.tokens.TokenAnswerValue;
+import com.biit.webforms.utils.lexer.tokens.TokenValueAnswer;
 import com.biit.webforms.utils.lexer.tokens.TokenBetween;
-import com.biit.webforms.utils.lexer.tokens.TokenDate;
-import com.biit.webforms.utils.lexer.tokens.TokenDatePeriod;
+import com.biit.webforms.utils.lexer.tokens.TokenValueDate;
+import com.biit.webforms.utils.lexer.tokens.TokenValueDatePeriod;
 import com.biit.webforms.utils.lexer.tokens.TokenEq;
 import com.biit.webforms.utils.lexer.tokens.TokenGe;
 import com.biit.webforms.utils.lexer.tokens.TokenGt;
@@ -23,7 +23,7 @@ import com.biit.webforms.utils.lexer.tokens.TokenNot;
 import com.biit.webforms.utils.lexer.tokens.TokenOr;
 import com.biit.webforms.utils.lexer.tokens.TokenReference;
 import com.biit.webforms.utils.lexer.tokens.TokenRightPar;
-import com.biit.webforms.utils.lexer.tokens.TokenTextValue;
+import com.biit.webforms.utils.lexer.tokens.TokenValueText;
 import com.biit.webforms.utils.lexer.tokens.TokenWhitespace;
 
 @Test(groups = { "lexer" })
@@ -232,7 +232,7 @@ public class TestLexer {
 
 		List<Token> tokens;
 		tokens = tokenizer.tokenize(TEXT_VALID);
-		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenTextValue));
+		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenValueText));
 	}
 
 	@Test(expectedExceptions = { StringTokenizationError.class })
@@ -248,9 +248,9 @@ public class TestLexer {
 
 		List<Token> tokens;
 		tokens = tokenizer.tokenize(DATE_1);
-		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenDate));
+		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenValueDate));
 		tokens = tokenizer.tokenize(DATE_2);
-		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenDate));
+		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenValueDate));
 	}
 
 	@Test
@@ -259,11 +259,11 @@ public class TestLexer {
 
 		List<Token> tokens;
 		tokens = tokenizer.tokenize(DATE_PERIOD_1);
-		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenDatePeriod));
+		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenValueDatePeriod));
 		tokens = tokenizer.tokenize(DATE_PERIOD_2);
-		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenDatePeriod));
+		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenValueDatePeriod));
 		tokens = tokenizer.tokenize(DATE_PERIOD_3);
-		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenDatePeriod));
+		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenValueDatePeriod));
 	}
 
 	@Test
@@ -283,7 +283,7 @@ public class TestLexer {
 
 		List<Token> tokens;
 		tokens = tokenizer.tokenize(ANSWER_VALUE);
-		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenAnswerValue));
+		Assert.assertTrue((tokens.size() == 1) && (tokens.get(0) instanceof TokenValueAnswer));
 	}
 
 	@Test
@@ -295,21 +295,21 @@ public class TestLexer {
 
 		Assert.assertTrue((!tokens.isEmpty()) && (tokens.get(0) instanceof TokenReference)
 				&& (tokens.get(1) instanceof TokenReference) && (tokens.get(2) instanceof TokenReference)
-				&& (tokens.get(3) instanceof TokenLe) && (tokens.get(4) instanceof TokenDatePeriod));
+				&& (tokens.get(3) instanceof TokenLe) && (tokens.get(4) instanceof TokenValueDatePeriod));
 		tokens = tokenizer.tokenize(TEST_2);
 		Assert.assertTrue((!tokens.isEmpty()) && (tokens.get(0) instanceof TokenReference)
 				&& (tokens.get(1) instanceof TokenReference) && (tokens.get(2) instanceof TokenReference)
-				&& (tokens.get(3) instanceof TokenGt) && (tokens.get(4) instanceof TokenDate));
+				&& (tokens.get(3) instanceof TokenGt) && (tokens.get(4) instanceof TokenValueDate));
 		tokens = tokenizer.tokenize(TEST_3);
 		Assert.assertTrue((!tokens.isEmpty()) && (tokens.get(0) instanceof TokenLeftPar)
 				&& (tokens.get(1) instanceof TokenReference) && (tokens.get(2) instanceof TokenReference)
 				&& (tokens.get(3) instanceof TokenReference) && (tokens.get(4) instanceof TokenGt)
-				&& (tokens.get(5) instanceof TokenDate) && (tokens.get(6) instanceof TokenRightPar)
+				&& (tokens.get(5) instanceof TokenValueDate) && (tokens.get(6) instanceof TokenRightPar)
 				&& (tokens.get(7) instanceof TokenWhitespace) && (tokens.get(8) instanceof TokenAnd)
 				&& (tokens.get(9) instanceof TokenWhitespace) && (tokens.get(10) instanceof TokenLeftPar)
 				&& (tokens.get(11) instanceof TokenReference) && (tokens.get(12) instanceof TokenReference)
 				&& (tokens.get(13) instanceof TokenReference) && (tokens.get(14) instanceof TokenLe)
-				&& (tokens.get(15) instanceof TokenDatePeriod) && (tokens.get(16) instanceof TokenRightPar));
+				&& (tokens.get(15) instanceof TokenValueDatePeriod) && (tokens.get(16) instanceof TokenRightPar));
 		tokens = tokenizer.tokenize(TEST_4);
 		Assert.assertTrue(!tokens.isEmpty());
 	}

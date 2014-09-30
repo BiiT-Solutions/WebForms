@@ -24,7 +24,7 @@ public class WebformsConfigurationReader {
 
 	private final String REGEX_PHONE = "regexPhone";
 
-	private final String DEFAULT_REGEX_PHONE = "\\(\\+[0-9]{2}\\)( [0-9]{3}){3}";
+	private final String DEFAULT_REGEX_PHONE = "\\(\\+[0-9]{2}\\)( *[0-9]{3}){3}";
 
 	private final String REGEX_IBAN = "regexIban";
 
@@ -36,7 +36,7 @@ public class WebformsConfigurationReader {
 
 	private final String REGEX_DATE = "regexDate";
 
-	private final String DEFAULT_REGEX_DATE = "([0-9]{1,2}-){1,2}[0-9]{4}";
+	private final String DEFAULT_REGEX_DATE = "([0-9]{1,2}[-/]){1,2}[0-9]{4}";
 	
 	private final String REGEX_DATE_PERIOD = "regexDatePeriod";
 	

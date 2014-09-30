@@ -14,6 +14,7 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.enumerations.AnswerFormat;
 import com.biit.webforms.persistence.entity.enumerations.AnswerSubformat;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.lexer.TokenTypes;
@@ -232,11 +233,7 @@ public class ConditionEditorControls extends TabSheet {
 		return button;
 	}
 
-	private Component generateControlsTab() {
-		VerticalLayout root = new VerticalLayout();
-		root.setWidth(FULL);
-		root.setHeight(FULL);
-
+	private Component generateOperationButtons() {
 		and = createButton("AND", TokenTypes.AND);
 		or = createButton("OR", TokenTypes.OR);
 		not = createButton("NOT", TokenTypes.NOT);
@@ -260,14 +257,15 @@ public class ConditionEditorControls extends TabSheet {
 		buttonHolder.setWidth(FULL);
 		buttonHolder.setHeight(EXPAND);
 
-		root.addComponent(buttonHolder);
-		root.setComponentAlignment(buttonHolder, Alignment.MIDDLE_CENTER);
+		return buttonHolder;
+	}
 
-		VerticalLayout verticalValueLayout = new VerticalLayout();
-		verticalValueLayout.setCaption(LanguageCodes.CAPTION_VALUE.translation());
-		verticalValueLayout.setWidth(FULL);
-		verticalValueLayout.setHeight(EXPAND);
-		verticalValueLayout.setSpacing(true);
+	private Component generateInsertValue() {
+		VerticalLayout insertValueLayout = new VerticalLayout();
+		insertValueLayout.setCaption(LanguageCodes.CAPTION_VALUE.translation());
+		insertValueLayout.setWidth(FULL);
+		insertValueLayout.setHeight(EXPAND);
+		insertValueLayout.setSpacing(true);
 
 		valueFormat = new ComboBox();
 		valueFormat.setNullSelectionAllowed(false);
@@ -279,16 +277,17 @@ public class ConditionEditorControls extends TabSheet {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				value.removeAllValidators();
-				
+
 				value.setValue("");
 				value.setInputPrompt(((AnswerSubformat) valueFormat.getValue()).getHint());
-				
+
 				value.addValidator(new ValidatorPattern(((AnswerSubformat) valueFormat.getValue()).getRegex()));
 			}
 		});
 		value = new TextField();
 		value.setWidth(FULL);
-		
+		value.setRequired(true);
+
 		value.setImmediate(true);
 		insertValue = new Button(LanguageCodes.CAPTION_VALUE.translation());
 		insertValue.setWidth(FULL);
@@ -297,23 +296,41 @@ public class ConditionEditorControls extends TabSheet {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				insertValue();
+				if (value.isValid()) {
+					insertValue();
+				}
 			}
-		});		
+		});
 
-		verticalValueLayout.addComponent(valueFormat);
-		verticalValueLayout.addComponent(value);
-		verticalValueLayout.addComponent(insertValue);
+		insertValueLayout.addComponent(valueFormat);
+		insertValueLayout.addComponent(value);
+		insertValueLayout.addComponent(insertValue);
 
-		root.addComponent(verticalValueLayout);
-		root.setComponentAlignment(verticalValueLayout, Alignment.MIDDLE_CENTER);
+		return insertValueLayout;
+	}
+
+	private Component generateControlsTab() {
+		VerticalLayout root = new VerticalLayout();
+		root.setWidth(FULL);
+		root.setHeight(FULL);
+
+		Component buttonHolder = generateOperationButtons();
+		root.addComponent(buttonHolder);
+		root.setComponentAlignment(buttonHolder, Alignment.MIDDLE_CENTER);
+
+		Component insertValueLayout = generateInsertValue();
+		root.addComponent(insertValueLayout);
+		root.setComponentAlignment(insertValueLayout, Alignment.MIDDLE_CENTER);
 
 		return root;
 	}
 
 	protected void insertValue() {
-		// TODO Auto-generated method stub
-
+		String valueToInsert =  value.getValue();
+		if(((AnswerSubformat)valueFormat.getValue()).getAnswerFormat() == AnswerFormat.TEXT){
+			valueToInsert =  "\""+valueToInsert+"\"";
+		}
+		fireInsertAnswerValueListeners(valueToInsert);
 	}
 
 	public void addInsertTokenListener(InsertTokenListener listener) {
@@ -335,6 +352,12 @@ public class ConditionEditorControls extends TabSheet {
 	protected void fireInsertAnswerValueListeners(Answer answer) {
 		for (InsertTokenListener listener : insertTokenListeners) {
 			listener.insert(answer);
+		}
+	}
+	
+	protected void fireInsertAnswerValueListeners(String value) {
+		for (InsertTokenListener listener : insertTokenListeners) {
+			listener.insert(value);
 		}
 	}
 

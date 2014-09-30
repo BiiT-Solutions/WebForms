@@ -12,6 +12,7 @@ import com.biit.webforms.utils.lexer.TokenTypes;
 import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
 import com.biit.webforms.utils.parser.ExpectedTokenNotFound;
 import com.biit.webforms.utils.parser.WebformsParser;
+import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
 import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
 import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
@@ -100,6 +101,11 @@ public class ConditionEditor extends CustomComponent {
 			public void insert(Answer answerValue) {
 				append(answerValue);
 			}
+
+			@Override
+			public void insert(String value) {
+				append(value);
+			}
 		});
 
 		horizontalLayout.addComponent(checkAndText);
@@ -184,7 +190,7 @@ public class ConditionEditor extends CustomComponent {
 		// TODO localization!
 		try {
 			WebformsParser parser = new WebformsParser(currentCondition);
-			Expression expression = parser.parseExpression();
+			Expression expression = parser.parseCompleteExpression();
 			if (expression == null) {
 				// No expression
 				System.out.println("Expression: empty expression");
@@ -196,7 +202,7 @@ public class ConditionEditor extends CustomComponent {
 			return true;
 		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		} catch (StringTokenizationError | IncompleteBinaryOperatorException | MissingParenthesisException e) {
+		} catch (StringTokenizationError | IncompleteBinaryOperatorException | MissingParenthesisException | ExpressionNotWellFormedException e) {
 			status.setErrorText(e.getMessage());
 		}
 		return false;

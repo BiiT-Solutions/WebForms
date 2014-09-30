@@ -16,10 +16,6 @@ public class ValidatorPattern implements Validator {
 
 	@Override
 	public void validate(Object value) throws InvalidValueException {
-		
-		System.out.println(value);
-		System.out.println(regex.pattern());
-		
 		if(value!=null &&!regex.matcher((String)value).matches()){
 			throw new InvalidValueException(LanguageCodes.VALIDATOR_ERROR_PATTERN.translation()+" "+regex.pattern());
 		}
