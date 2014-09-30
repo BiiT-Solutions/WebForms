@@ -37,12 +37,12 @@ public class TestParser {
 	private final static String TEST_7_PARSED = "((\"A\" AND (NOT (\"B\" OR \"D\"))) OR \"C\")";
 	private final static String TEST_8 = "\"A\" AND \"B\" OR NOT(\"C\" OR \"D\")";
 	private final static String TEST_8_PARSED = "((\"A\" AND \"B\") OR (NOT (\"C\" OR \"D\")))";
-	private final static String TEST_9 = "<new_category><group1><qu1> == %a%";
-	private final static String TEST_INCOMPLETE_BINARY_EXCEPTION = "<new_category><group1><qu1> == %a% OR ";
-	private static final String TEST_9_PARSED = "([<new_category>, <group1>, <qu1>] EQ %a%)";
+	private final static String TEST_9 = "<new_category><group1><qu1> == 'a'";
+	private final static String TEST_INCOMPLETE_BINARY_EXCEPTION = "<new_category><group1><qu1> == 'a' OR ";
+	private static final String TEST_9_PARSED = "([<new_category>, <group1>, <qu1>] EQ 'a')";
 	private static final String TEST_10 = "\"biit@biit.com\"\"biit@biit.com\"";
-	private static final String TEST_11 = "<new_category><group1><qu1> == %a%";
-	private static final String TEST_11_PARSED = "([<new_category>, <group1>, <qu1>] EQ %a%)";
+	private static final String TEST_11 = "<new_category><group1><qu1> == 'a'";
+	private static final String TEST_11_PARSED = "([<new_category>, <group1>, <qu1>] EQ 'a')";
 	private static final String TEST_12 = "<new_category><group1><qu1> == \"a\"";
 	private static final String TEST_13 = "<new_category><group1><qu1> == 10-05-1985";
 	private static final String TEST_14 = "<new_category><group1><qu1> == 10/05/1985";
