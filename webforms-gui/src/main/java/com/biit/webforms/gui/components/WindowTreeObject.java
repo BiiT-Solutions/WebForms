@@ -1,38 +1,45 @@
 package com.biit.webforms.gui.components;
 
 import com.biit.form.TreeObject;
+import com.biit.webforms.gui.common.components.TableWithSearch;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.language.ILanguageCode;
-import com.biit.webforms.gui.webpages.designer.TreeObjectTableDesigner;
 import com.biit.webforms.persistence.entity.Form;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Component;
 
+/**
+ * Accept cancel window with a TableTreeObject and a search box to filter
+ * content. This window also accepts a filter class at creation time to set the
+ * limits when loading the hierarchy and a selection filter for the enable state
+ * of accept button
+ * 
+ */
 public class WindowTreeObject extends WindowAcceptCancel {
 	private static final long serialVersionUID = -1341380408900400222L;
 	private static final String width = "640px";
 	private static final String height = "480px";
-	private TreeObjectTableDesigner formTable;
+	private TableTreeObjectLabel formTable;
 	private Class<?>[] selectFilters;
 
-	public WindowTreeObject(ILanguageCode code, Form form, Class<?>... filterClases) {
+	public WindowTreeObject(ILanguageCode code, Form form, Class<?>... loadfilter) {
 		super();
 		setCaption(code.translation());
-		setContent(generateContent(form, filterClases));
+		setContent(generateContent(form, loadfilter));
 		setResizable(false);
 		setDraggable(false);
-		setClosable(false);
+		setClosable(true);
 		setModal(true);
 		setWidth(width);
 		setHeight(height);
 	}
 
-	private Component generateContent(Form form, Class<?>... filterClases) {
-		formTable = new TreeObjectTableDesigner();
+	private Component generateContent(Form form, Class<?>... loadFilter) {
+		formTable = new TableTreeObjectLabel();
 		formTable.setSizeFull();
 		formTable.setSelectable(true);
-		formTable.loadTreeObject(form, null, filterClases);
+		formTable.loadTreeObject(form, null, loadFilter);
 		formTable.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -6136068342027536453L;
 
@@ -41,7 +48,11 @@ public class WindowTreeObject extends WindowAcceptCancel {
 				updateAcceptButtonState();
 			}
 		});
-		return formTable;
+
+		TableWithSearch tableWithSearch = new TableWithSearch(formTable, new FilterTreeObjectTableContainsNameLabel());
+		tableWithSearch.setSizeFull();
+
+		return tableWithSearch;
 	}
 
 	private void updateAcceptButtonState() {

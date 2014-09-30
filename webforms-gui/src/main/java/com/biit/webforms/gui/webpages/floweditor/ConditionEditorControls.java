@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
-import com.biit.webforms.gui.common.components.TreeObjectTable;
+import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.LanguageCodes;
@@ -44,9 +44,9 @@ public class ConditionEditorControls extends TabSheet {
 	private static final int NUM_BUTTON_ROWS = 4;
 	protected static final TokenTypes DEFAULT_ANSWER_REFERENCE_TOKEN = TokenTypes.EQ;
 
-	private TreeObjectTable treeObjectTable;
+	private TableTreeObject treeObjectTable;
 	private Button insertReference;
-	private TreeObjectTable answerTable;
+	private TableTreeObject answerTable;
 	private Button insertAnswer;
 	private VerticalLayout insertAnswerLayout;
 
@@ -104,7 +104,7 @@ public class ConditionEditorControls extends TabSheet {
 		rootLayout.setSpacing(true);
 		rootLayout.setSizeFull();
 
-		treeObjectTable = new TreeObjectTable();
+		treeObjectTable = new TableTreeObject();
 		treeObjectTable.setSizeFull();
 		treeObjectTable.setSelectable(true);
 		// Insert reference button is only enabled if the selection in tree
@@ -174,7 +174,7 @@ public class ConditionEditorControls extends TabSheet {
 		insertAnswerLayout.setSpacing(true);
 		insertAnswerLayout.setSizeFull();
 
-		answerTable = new TreeObjectTable();
+		answerTable = new TableTreeObject();
 		answerTable.setSizeFull();
 		answerTable.setNullSelectionAllowed(false);
 		answerTable.setImmediate(true);

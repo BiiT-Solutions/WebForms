@@ -5,7 +5,7 @@ import com.biit.form.BaseCategory;
 import com.biit.form.BaseForm;
 import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
-import com.biit.webforms.gui.common.components.TreeObjectTable.TreeObjectTableProperties;
+import com.biit.webforms.gui.common.components.TableTreeObject.TreeObjectTableProperties;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
 

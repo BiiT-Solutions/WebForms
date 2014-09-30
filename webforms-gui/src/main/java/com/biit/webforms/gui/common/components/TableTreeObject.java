@@ -22,7 +22,7 @@ import com.vaadin.ui.TreeTable;
  * This is a customized component to represent a TreeObject in a tree table.
  * 
  */
-public class TreeObjectTable extends TreeTable {
+public class TableTreeObject extends TreeTable {
 	private static final long serialVersionUID = -6949123334668973540L;
 	private IconProvider<TreeObject> iconProvider = new IconProviderTreeObjectDefault();
 
@@ -30,7 +30,7 @@ public class TreeObjectTable extends TreeTable {
 		ELEMENT_NAME
 	};
 
-	public TreeObjectTable() {
+	public TableTreeObject() {
 		initContainerProperties();
 		setImmediate(true);
 	}

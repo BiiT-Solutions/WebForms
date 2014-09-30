@@ -1,15 +1,19 @@
-package com.biit.webforms.gui.webpages.designer;
+package com.biit.webforms.gui.components;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.gui.common.components.TreeObjectTable;
+import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.data.Item;
 
-public class TreeObjectTableDesigner extends TreeObjectTable {
+/**
+ * Table tree object with a label property added.
+ *
+ */
+public class TableTreeObjectLabel extends TableTreeObject {
 	private static final long serialVersionUID = 2882643672843469056L;
 	private static final int LABEL_MAX_LENGTH = 50;
 
-	protected enum TreeObjectTableDesignerProperties {
+	public enum TreeObjectTableDesignerProperties {
 		ELEMENT_LABEL
 	};
 

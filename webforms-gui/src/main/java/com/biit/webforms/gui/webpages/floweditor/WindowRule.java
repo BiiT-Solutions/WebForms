@@ -48,7 +48,7 @@ public class WindowRule extends WindowAcceptCancel {
 		setContent(generateContent());
 		setResizable(false);
 		setDraggable(false);
-		setClosable(false);
+		setClosable(true);
 		setModal(true);
 		setWidth(width);
 		setHeight(height);

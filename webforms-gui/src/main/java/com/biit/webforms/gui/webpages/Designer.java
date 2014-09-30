@@ -27,11 +27,11 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
+import com.biit.webforms.gui.components.TableTreeObjectLabel;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.WindowTreeObject;
 import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
-import com.biit.webforms.gui.webpages.designer.TreeObjectTableDesigner;
 import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.designer.WindowBlocks;
 import com.biit.webforms.language.LanguageCodes;
@@ -56,7 +56,7 @@ public class Designer extends SecuredWebPage {
 			Arrays.asList(WebformsActivity.READ));
 
 	private UpperMenuDesigner upperMenu;
-	private TreeObjectTableDesigner table;
+	private TableTreeObjectLabel table;
 	private DesignerPropertiesComponent properties;
 
 	@Override
@@ -71,7 +71,7 @@ public class Designer extends SecuredWebPage {
 		setUpperMenu(upperMenu);
 		setBottomMenu(new FormEditBottomMenu());
 
-		table = new TreeObjectTableDesigner();
+		table = new TableTreeObjectLabel();
 		table.setIconProvider(new IconProviderTreeObjectWebforms());
 		table.setSizeFull();
 		table.setSelectable(true);

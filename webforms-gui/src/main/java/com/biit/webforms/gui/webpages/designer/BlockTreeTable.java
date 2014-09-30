@@ -9,6 +9,7 @@ import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
+import com.biit.webforms.gui.components.TableTreeObjectLabel;
 import com.biit.webforms.gui.webpages.blockmanager.TreeObjectUpdateDateComparator;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.IBlockDao;
@@ -18,7 +19,7 @@ import com.liferay.portal.model.Organization;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
 
-public class BlockTreeTable extends TreeObjectTableDesigner {
+public class BlockTreeTable extends TableTreeObjectLabel {
 
 	private static final long serialVersionUID = 2428935033753125285L;
 

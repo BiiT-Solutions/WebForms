@@ -32,6 +32,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_PROCEED_LOG_OUT("caption.proceed.log.out"),
 	CAPTION_ABOUT_US("caption.about.us"),
 	CAPTION_SETTINGS_CLOSE("caption.settings.close"),
+	CAPTION_SEARCH("caption.search"),
 //	TOOLTIP_EDIT_FORM_DESIGN,
 //	TOOLTIP_EDIT_FORM_FLOW,
 //	TOOLTIP_VALIDATE_FORM,
