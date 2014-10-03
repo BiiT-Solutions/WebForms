@@ -17,7 +17,6 @@ import com.biit.webforms.condition.parser.exceptions.ParseException;
 import com.biit.webforms.condition.parser.expressions.Expression;
 import com.biit.webforms.condition.parser.parselets.InfixParselet;
 import com.biit.webforms.condition.parser.parselets.PrefixParselet;
-import com.biit.webforms.persistence.entity.condition.ITokenType;
 import com.biit.webforms.persistence.entity.condition.Token;
 
 

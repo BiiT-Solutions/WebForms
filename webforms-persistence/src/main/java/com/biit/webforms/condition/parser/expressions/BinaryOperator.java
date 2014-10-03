@@ -1,7 +1,7 @@
 package com.biit.webforms.condition.parser.expressions;
 
-import com.biit.webforms.persistence.entity.condition.ITokenType;
-import com.biit.webforms.persistence.entity.condition.TokenTypes;
+import com.biit.webforms.condition.parser.ITokenType;
+import com.biit.webforms.enumerations.TokenTypes;
 
 /**
  * Expressions [EXPR] and [EXPR]

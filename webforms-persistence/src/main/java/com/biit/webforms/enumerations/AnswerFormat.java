@@ -1,6 +1,5 @@
 package com.biit.webforms.enumerations;
 
-import com.biit.webforms.persistence.entity.condition.TokenTypes;
 
 /**
  * Used only for text inputs.

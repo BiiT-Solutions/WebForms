@@ -1,10 +1,10 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
 import com.biit.form.TreeObject;
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
-import com.biit.webforms.persistence.entity.condition.TokenTypes;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;

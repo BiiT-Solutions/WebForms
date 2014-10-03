@@ -1,6 +1,5 @@
 package com.biit.webforms.condition.parser;
 
-import com.biit.webforms.persistence.entity.condition.ITokenType;
 
 public class ExpectedTokenNotFound extends Exception {
 	private static final long serialVersionUID = 3489582832259193623L;

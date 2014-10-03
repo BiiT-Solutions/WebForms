@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.transaction.NotSupportedException;
 
 import com.biit.persistence.entity.StorableObject;
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Rule;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;

@@ -1,4 +1,4 @@
-package com.biit.webforms.persistence.entity.condition;
+package com.biit.webforms.condition.parser;
 
 import java.util.regex.Pattern;
 

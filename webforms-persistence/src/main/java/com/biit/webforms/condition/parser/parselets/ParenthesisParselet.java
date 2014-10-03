@@ -8,8 +8,8 @@ import com.biit.webforms.condition.parser.exceptions.MissingParenthesisException
 import com.biit.webforms.condition.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.condition.parser.exceptions.ParseException;
 import com.biit.webforms.condition.parser.expressions.Expression;
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.persistence.entity.condition.TokenTypes;
 
 public class ParenthesisParselet implements PrefixParselet{
 
