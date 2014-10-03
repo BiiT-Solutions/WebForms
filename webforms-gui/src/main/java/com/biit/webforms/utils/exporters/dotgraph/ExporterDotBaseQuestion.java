@@ -2,11 +2,11 @@ package com.biit.webforms.utils.exporters.dotgraph;
 
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
+import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
-import com.biit.webforms.persistence.entity.enumerations.AnswerType;
 
 public class ExporterDotBaseQuestion extends ExporterDot<BaseQuestion> {
 

@@ -1,21 +1,17 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.form.exceptions.InvalidAnswerFormatException;
-import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.AnswerTypeUi;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.enumerations.AnswerFormat;
-import com.biit.webforms.persistence.entity.enumerations.AnswerSubformat;
-import com.biit.webforms.persistence.entity.enumerations.AnswerType;
-import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.CheckBox;
@@ -53,12 +49,16 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		name = new TextField(LanguageCodes.CAPTION_NAME.translation());
 		name.setWidth(WIDTH);
 		name.setRequired(true);
+		name.setMaxLength(TreeObject.MAX_UNIQUE_COLUMN_LENGTH);
 
 		label = new TextArea(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
+		label.setMaxLength(TreeObject.MAX_LABEL_LENGTH);
+		label.setImmediate(true);
 
 		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
 		description.setWidth(WIDTH);
+		description.setMaxLength(Question.MAX_DESCRIPTION_LENGTH);
 
 		answerType = new ComboBox(LanguageCodes.CAPTION_ANSWER_TYPE.translation());
 		answerType.setWidth(WIDTH);
@@ -173,25 +173,17 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 	@Override
 	public void updateElement() {
-		try {
-			if (name.isValid()) {
-				instance.setName(name.getValue());
-			}
-			// TODO dynamic label
-			if (label.isValid()) {
-				instance.setLabel(label.getValue());
-			}
-			instance.setDescription(description.getValue());
-			instance.setMandatory(mandatory.getValue());
-			instance.setAnswerType((AnswerType) answerType.getValue());
-			instance.setAnswerFormat((AnswerFormat) answerFormat.getValue());
-			instance.setAnswerSubformat((AnswerSubformat) answerSubformat.getValue());
-			instance.setHorizontal(horizontal.getValue());
-
-		} catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException
-				| InvalidAnswerSubformatException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		String tempName = instance.getName();
+		String tempLabel = instance.getLabel();
+		if (name.isValid()) {
+			tempName = name.getValue();
 		}
+		if (label.isValid()) {
+			tempLabel = label.getValue();
+		}
+		UserSessionHandler.getController().updateQuestion(instance, tempName, tempLabel, description.getValue(),
+				mandatory.getValue(), (AnswerType) answerType.getValue(), (AnswerFormat) answerFormat.getValue(),
+				(AnswerSubformat) answerSubformat.getValue(), horizontal.getValue());
 
 		super.updateElement();
 	}

@@ -1,6 +1,11 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.NotValidChildException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.RuleType;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.language.LanguageCodes;
@@ -10,7 +15,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Rule;
-import com.biit.webforms.persistence.entity.enumerations.RuleType;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
@@ -80,6 +85,25 @@ public class WindowRule extends WindowAcceptCancel {
 
 	private Component generateConditionEditor() {
 		conditionEditor = new ConditionEditor();
+		conditionEditor.setSizeFull();
+
+		// TODO remove at end
+		Question testQuestion;
+		try {
+			testQuestion = new Question("kiwi");
+			Category testCategory = new Category("cat1");
+			Form testForm = new Form();
+			testForm.addChild(testCategory);
+			testCategory.addChild(testQuestion);
+
+			conditionEditor.addToken(TokenComparationValue.getTokenEqual(testQuestion, AnswerSubformat.TEXT,
+					"test1"));
+			conditionEditor.addToken(TokenComparationValue.getTokenNotEqual(testQuestion, AnswerSubformat.TEXT,
+					"test2"));
+		} catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return conditionEditor;
 	}
@@ -109,8 +133,9 @@ public class WindowRule extends WindowAcceptCancel {
 		ruleTypeSelector.setValue(rule.getRuleType());
 		searchDestiny.setTreeObject(rule.getDestiny());
 		others.setValue(rule.isOthers());
-		if(!rule.isOthers()){
-			conditionEditor.setCondition(rule.getConditionString());
+		if (!rule.isOthers()) {
+			// TODO
+			// conditionEditor.setCondition(rule.getConditionString());
 		}
 	}
 
@@ -139,7 +164,7 @@ public class WindowRule extends WindowAcceptCancel {
 	}
 
 	private Component generateSearchOriginContent() {
-		searchOrigin = new SearchFormElementField(Form.class, Category.class, Group.class,Question.class);
+		searchOrigin = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
 		searchOrigin.setSelectableFilter(Question.class);
 		searchOrigin.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_ORIGIN);
 		searchOrigin.setCaption(LanguageCodes.CAPTION_FROM.translation());
@@ -147,7 +172,8 @@ public class WindowRule extends WindowAcceptCancel {
 
 			@Override
 			public void currentElement(Object object) {
-				conditionEditor.selectReferenceElement((TreeObject) object);
+				// TODO
+				// conditionEditor.selectReferenceElement((TreeObject) object);
 			}
 		});
 
@@ -155,7 +181,7 @@ public class WindowRule extends WindowAcceptCancel {
 	}
 
 	private Component generateSearchDestinyContent() {
-		searchDestiny = new SearchFormElementField(Form.class,Category.class,Group.class,Question.class);
+		searchDestiny = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
 		searchDestiny.setSelectableFilter(Question.class);
 		searchDestiny.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_DESTINY);
 		searchDestiny.setCaption(LanguageCodes.CAPTION_TO.translation());
@@ -172,7 +198,8 @@ public class WindowRule extends WindowAcceptCancel {
 			public void valueChange(ValueChangeEvent event) {
 				if (others.getValue()) {
 					conditionEditor.setEnabled(false);
-					conditionEditor.clean();
+					// TODO
+					// conditionEditor.clean();
 				} else {
 					conditionEditor.setEnabled(true);
 				}
@@ -199,7 +226,8 @@ public class WindowRule extends WindowAcceptCancel {
 
 	public String getCondition() {
 		if (conditionEditor.isEnabled()) {
-			return conditionEditor.getCondition();
+			// TODO
+			// return conditionEditor.getCondition();
 		}
 		return null;
 	}
@@ -209,6 +237,8 @@ public class WindowRule extends WindowAcceptCancel {
 	}
 
 	public boolean isConditionValid() {
-		return conditionEditor.isConditionValid();
+		// TODO
+		// return conditionEditor.isConditionValid();
+		return true;
 	}
 }

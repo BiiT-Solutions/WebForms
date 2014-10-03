@@ -33,6 +33,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
 import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
@@ -471,9 +472,10 @@ public class FlowEditor extends SecuredWebPage {
 						MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 								LanguageCodes.WARNING_DESCRIPTION_CONDITION_BAD_FORMED);
 					} else {
+						//TODO change this!
 						UserSessionHandler.getController().updateRuleContent(rule, windowRule.getOrigin(),
 								windowRule.getRuleType(), windowRule.getDestiny(), windowRule.isOthers(),
-								windowRule.getCondition());
+								new ArrayList<Token>());
 						addOrUpdateRuleInTableAction(rule);
 						window.close();
 					}

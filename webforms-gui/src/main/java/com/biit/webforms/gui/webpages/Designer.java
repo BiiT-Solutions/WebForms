@@ -94,7 +94,6 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void propertyUpdate(Object element) {
-				UserSessionHandler.getController().notifyTreeObjectUpdated(element);
 				table.updateRow((TreeObject) element);
 				updateUpperMenu();
 			}

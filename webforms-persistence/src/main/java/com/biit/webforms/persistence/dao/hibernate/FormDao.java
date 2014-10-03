@@ -1,7 +1,9 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.TypeConstraintException;
 
@@ -15,11 +17,13 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Rule;
 import com.liferay.portal.model.Organization;
 
 @Repository
@@ -132,8 +136,8 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 	}
 
 	/**
-	 * Filtered version of get All. Takes a Class argument and returns a list with all the elements that match the class
-	 * argument.
+	 * Filtered version of get All. Takes a Class argument and returns a list
+	 * with all the elements that match the class argument.
 	 * 
 	 * @param cls
 	 * @return
@@ -180,5 +184,45 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			session.getTransaction().rollback();
 			throw e;
 		}
+	}
+
+	@Override
+	protected void sortChildren(List<Form> forms) {
+		for (Form form : forms) {
+			sortChildren(form);
+		}
+	}
+
+	protected void sortChildren(Form form) {
+		super.sortChildren(form);
+
+		for (Rule rule : form.getRules()) {
+			sortChildren(rule);
+		}
+	}
+
+	private void sortChildren(Rule rule) {
+		if (rule != null) {
+			Collections.sort(rule.getCondition(), new TokenSort());
+		}
+	}
+
+	@Override
+	@Transactional
+	public Form makePersistent(Form entity) {
+		// For solving Hibernate bug
+		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
+		// list of children
+		// with @Orderby or @OrderColumn we use our own order manager.
+
+		// Sort the rules
+		Set<Rule> rules = entity.getRules();
+		Iterator<Rule> ruleItr = rules.iterator();
+		while (ruleItr.hasNext()) {
+			Rule rule = ruleItr.next();
+			rule.updateConditionSortSeq();
+		}
+
+		return super.makePersistent(entity);
 	}
 }

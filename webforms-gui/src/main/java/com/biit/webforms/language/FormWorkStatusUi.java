@@ -1,6 +1,6 @@
 package com.biit.webforms.language;
 
-import com.biit.webforms.persistence.entity.enumerations.FormWorkStatus;
+import com.biit.webforms.enumerations.FormWorkStatus;
 
 public enum FormWorkStatusUi {
 

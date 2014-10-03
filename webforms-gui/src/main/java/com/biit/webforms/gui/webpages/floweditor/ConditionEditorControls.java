@@ -5,65 +5,65 @@ import java.util.List;
 
 import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.gui.common.components.FilterTreeObjectTableContainsName;
 import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.gui.common.components.TableWithSearch;
-import com.biit.webforms.gui.common.language.ServerTranslate;
-import com.biit.webforms.language.AnswerSubformatUi;
+import com.biit.webforms.gui.webpages.floweditor.listeners.InsertTokenListener;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.enumerations.AnswerFormat;
-import com.biit.webforms.persistence.entity.enumerations.AnswerSubformat;
+import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenTypes;
 import com.biit.webforms.theme.ThemeIcons;
-import com.biit.webforms.utils.lexer.TokenTypes;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-/**
- * Right side controls of
- * 
- */
 public class ConditionEditorControls extends TabSheet {
 
 	private static final long serialVersionUID = 105765485106857208L;
 	private static final String FULL = "100%";
 	private static final String EXPAND = null;
 	private static final int NUM_BUTTON_COLUMNS = 3;
-	private static final int NUM_BUTTON_ROWS = 4;
+	private static final int NUM_BUTTON_ROWS = 2;
 	protected static final TokenTypes DEFAULT_ANSWER_REFERENCE_TOKEN = TokenTypes.EQ;
+	private static final int VALUE_BUTTON_COLS = 3;
+	private static final int VALUE_BUTTON_ROWS = 2;
 
 	private TableTreeObject treeObjectTable;
-	private Button insertReference;
 	private TableTreeObject answerTable;
-	private Button insertAnswer;
+	private Button insertEqAnswer;
+	private Button insertNeAnswer;
+	private VerticalLayout insertLayout;
 	private VerticalLayout insertAnswerLayout;
+	private VerticalLayout insertValueLayout;
 
 	// Logic
 	private Button and, or, not;
-	// Comparation
-	private Button lessThan, lessEqual, greaterThan, greaterEqual, equals, notEquals;
 	// Order
 	private Button leftPar, rightPar;
 	// Oher
 	private Button carry;
 
-	private ComboBox valueFormat;
 	private TextField value;
-	private Button insertValue;
+	private Button insertEqValue, insertNeValue, insertLtValue, insertGtValue, insertLeValue, insertGeValue;
 
 	private List<InsertTokenListener> insertTokenListeners;
 
@@ -88,12 +88,6 @@ public class ConditionEditorControls extends TabSheet {
 		treeObjectTable.setValue(null);
 		updateInsertAnswerLayout();
 
-		// Subanswer format.
-		for (AnswerSubformatUi subformat : AnswerSubformatUi.values()) {
-			valueFormat.addItem(subformat.getSubformat());
-			valueFormat.setItemCaption(subformat.getSubformat(), subformat.getTranslationCode().translation());
-		}
-		valueFormat.setValue(AnswerSubformatUi.values()[0].getSubformat());
 	}
 
 	/**
@@ -101,11 +95,7 @@ public class ConditionEditorControls extends TabSheet {
 	 * 
 	 * @return
 	 */
-	private Component generateInsertReferenceLayout() {
-		VerticalLayout rootLayout = new VerticalLayout();
-		rootLayout.setSpacing(true);
-		rootLayout.setSizeFull();
-
+	private Component generateTreeTableSearch() {
 		treeObjectTable = new TableTreeObject();
 		treeObjectTable.setSizeFull();
 		treeObjectTable.setSelectable(true);
@@ -116,11 +106,15 @@ public class ConditionEditorControls extends TabSheet {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				if (treeObjectTable.getValue() == null
-						|| !(treeObjectTable.getValue() instanceof Question || treeObjectTable.getValue() instanceof Answer)) {
-					insertReference.setEnabled(false);
+				if (treeObjectTable.getValue() == null || !(treeObjectTable.getValue() instanceof Question)) {
+					insertLayout.removeAllComponents();
 				} else {
-					insertReference.setEnabled(true);
+					AnswerType answerType = ((Question) treeObjectTable.getValue()).getAnswerType();
+					if (answerType == AnswerType.INPUT) {
+						showInsertValueLayout();
+					} else {
+						showInsertAnswerLayout();
+					}
 				}
 				updateInsertAnswerLayout();
 			}
@@ -129,23 +123,47 @@ public class ConditionEditorControls extends TabSheet {
 		TableWithSearch tableWithSearch = new TableWithSearch(treeObjectTable, new FilterTreeObjectTableContainsName());
 		tableWithSearch.setSizeFull();
 
-		insertReference = new Button(ServerTranslate.translate(LanguageCodes.CAPTION_INSERT_QUESTION_REFENCE));
-		insertReference.setWidth(FULL);
-		insertReference.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 2959069539884251545L;
+		return tableWithSearch;
+	}
 
-			@Override
-			public void buttonClick(ClickEvent event) {
-				// Inserts only the reference to question or answer value
-				fireInsertReferenceListeners(getCurrentTreeObjectReference());
-			}
-		});
+	protected void showInsertValueLayout() {
+		insertLayout.removeAllComponents();
+		updateInsertValueLayout();
+		insertLayout.addComponent(insertValueLayout);
+	}
 
-		rootLayout.addComponent(tableWithSearch);
-		rootLayout.addComponent(insertReference);
-		rootLayout.setExpandRatio(tableWithSearch, 1.0f);
+	/**
+	 * Updates insert value hint, prompt and validator.
+	 */
+	private void updateInsertValueLayout() {
+		value.removeAllValidators();
+		value.setValue("");
+		if (getCurrentQuestion().getAnswerFormat() == AnswerFormat.DATE
+				&& getCurrentQuestion().getAnswerSubformat() != AnswerSubformat.DATE_PERIOD) {
+			value.setInputPrompt(getCurrentQuestion().getAnswerSubformat().getHint() + " or "
+					+ AnswerSubformat.DATE_PERIOD.getHint());
+			value.addValidator(new ValidatorPattern(getCurrentQuestion().getAnswerSubformat().getRegex(),
+					AnswerSubformat.DATE_PERIOD.getRegex()));
+		} else {
+			value.setInputPrompt(getCurrentQuestion().getAnswerSubformat().getHint());
+			value.addValidator(new ValidatorPattern(getCurrentQuestion().getAnswerSubformat().getRegex()));
+		}
 
-		return rootLayout;
+		insertEqValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.EQ));
+		insertNeValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.NE));
+		insertLeValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.LE));
+		insertGeValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.GE));
+		insertLtValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.LT));
+		insertGtValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.GT));
+	}
+
+	private Question getCurrentQuestion() {
+		return (Question) treeObjectTable.getValue();
+	}
+
+	protected void showInsertAnswerLayout() {
+		insertLayout.removeAllComponents();
+		insertLayout.addComponent(insertAnswerLayout);
 	}
 
 	/**
@@ -167,6 +185,8 @@ public class ConditionEditorControls extends TabSheet {
 			}
 			answerTable.setValue(question.getChildren().get(0));
 		}
+		insertEqAnswer.setEnabled(answerTable.getValue() != null);
+		insertNeAnswer.setEnabled(answerTable.getValue() != null);
 	}
 
 	/**
@@ -174,7 +194,7 @@ public class ConditionEditorControls extends TabSheet {
 	 * 
 	 * @return
 	 */
-	private Component generateInsertAnswerLayout() {
+	private Component generateInsertComparationAnswerLayout() {
 		insertAnswerLayout = new VerticalLayout();
 		insertAnswerLayout.setSpacing(true);
 		insertAnswerLayout.setSizeFull();
@@ -185,25 +205,85 @@ public class ConditionEditorControls extends TabSheet {
 		answerTable.setImmediate(true);
 		answerTable.setSelectable(true);
 
-		insertAnswer = new Button(ServerTranslate.translate(LanguageCodes.CAPTION_INSERT_ANSWER_REFENCE));
-		insertAnswer.setWidth(FULL);
-		insertAnswer.addClickListener(new ClickListener() {
+		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.setWidth(FULL);
+		buttonLayout.setHeight(EXPAND);
+
+		insertEqAnswer = new Button(TokenTypes.EQ.toString());
+		insertEqAnswer.setWidth(FULL);
+		insertEqAnswer.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 2959069539884251545L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				fireInsertReferenceListeners(getCurrentTreeObjectReference());
-				fireInsertTokenListeners(DEFAULT_ANSWER_REFERENCE_TOKEN);
-				fireInsertAnswerValueListeners((Answer) answerTable.getValue());
-				// TODO second level answer
+				fireInsertTokenListeners(TokenComparationAnswer.getTokenEqual(
+						(Question) treeObjectTable.getValue(), (Answer) answerTable.getValue()));
+			}
+		});
+		insertNeAnswer = new Button(TokenTypes.NE.toString());
+		insertNeAnswer.setWidth(FULL);
+		insertNeAnswer.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 2959069539884251545L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				fireInsertTokenListeners(TokenComparationAnswer.getTokenNotEqual(
+						(Question) treeObjectTable.getValue(), (Answer) answerTable.getValue()));
 			}
 		});
 
+		buttonLayout.addComponent(insertEqAnswer);
+		buttonLayout.addComponent(insertNeAnswer);
+
 		insertAnswerLayout.addComponent(answerTable);
-		insertAnswerLayout.addComponent(insertAnswer);
+		insertAnswerLayout.addComponent(buttonLayout);
 		insertAnswerLayout.setExpandRatio(answerTable, 1.0f);
 
 		return insertAnswerLayout;
+	}
+
+	/**
+	 * Layout with textField and button to insert Q=Value
+	 * 
+	 * @return
+	 */
+	private Component generateInsertComparationValueLayout() {
+		insertValueLayout = new VerticalLayout();
+		insertValueLayout.setSpacing(true);
+		insertValueLayout.setSizeFull();
+		insertValueLayout.setSpacing(true);
+
+		value = new TextField();
+		value.setWidth(FULL);
+		value.setRequired(true);
+		value.setImmediate(true);
+		value.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = -5155837781711968901L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				value.isValid();
+			}
+		});
+
+		insertEqValue = createTokenComparationValueButton(TokenTypes.EQ.toString(), TokenTypes.EQ);
+		insertNeValue = createTokenComparationValueButton(TokenTypes.NE.toString(), TokenTypes.NE);
+		insertLtValue = createTokenComparationValueButton(TokenTypes.LE.toString(), TokenTypes.LE);
+		insertGtValue = createTokenComparationValueButton(TokenTypes.GE.toString(), TokenTypes.GE);
+		insertLeValue = createTokenComparationValueButton(TokenTypes.LT.toString(), TokenTypes.LT);
+		insertGeValue = createTokenComparationValueButton(TokenTypes.GT.toString(), TokenTypes.GT);
+
+		GridLayout buttonLayout = new GridLayout(VALUE_BUTTON_COLS, VALUE_BUTTON_ROWS, insertEqValue, insertLeValue,
+				insertLtValue, insertNeValue, insertGeValue, insertGtValue);
+		buttonLayout.setWidth(FULL);
+
+		insertValueLayout.addComponent(value);
+		insertValueLayout.addComponent(buttonLayout);
+
+		insertValueLayout.setComponentAlignment(value, Alignment.BOTTOM_CENTER);
+		insertValueLayout.setComponentAlignment(buttonLayout, Alignment.BOTTOM_CENTER);
+
+		return insertValueLayout;
 	}
 
 	private Component generateReferenceTab() {
@@ -213,19 +293,23 @@ public class ConditionEditorControls extends TabSheet {
 		root.setSpacing(true);
 		root.setMargin(true);
 
-		Component insertReferenceLayout = generateInsertReferenceLayout();
-		Component insertAnswerLayout = generateInsertAnswerLayout();
+		Component insertReferenceLayout = generateTreeTableSearch();
+		// Generate comparation answer and value layout.
+		generateInsertComparationAnswerLayout();
+		generateInsertComparationValueLayout();
+
+		// Layout where we will change elements. Is needed to avoid resizing
+		// problems in component
+		insertLayout = new VerticalLayout();
+		insertLayout.setSizeFull();
 
 		root.addComponent(insertReferenceLayout);
-		root.addComponent(insertAnswerLayout);
-
-		root.setExpandRatio(insertReferenceLayout, 1.0f);
-		root.setExpandRatio(insertAnswerLayout, 1.0f);
+		root.addComponent(insertLayout);
 
 		return root;
 	}
 
-	private Button createButton(String caption, final TokenTypes type) {
+	private Button createTokenComparationValueButton(String caption, final TokenTypes type) {
 		Button button = new Button(caption);
 		button.setWidth(FULL);
 		button.addClickListener(new ClickListener() {
@@ -233,86 +317,58 @@ public class ConditionEditorControls extends TabSheet {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				fireInsertTokenListeners(type);
+				if (value.isValid()) {
+					fireInsertTokenListeners(TokenComparationValue.getToken(type, getCurrentQuestion(),
+							getCurrentValueAnswerSubformat(), value.getValue()));
+				}
+			}
+		});
+		return button;
+	}
+	
+	private Button createTokenButton(String string, final TokenTypes tokenType) {
+		Button button = new Button(string);
+		button.setWidth(FULL);
+		button.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 150904421483217498L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				fireInsertTokenListeners(Token.getToken(tokenType));
 			}
 		});
 		return button;
 	}
 
-	private Component generateOperationButtons() {
-		and = createButton("AND", TokenTypes.AND);
-		or = createButton("OR", TokenTypes.OR);
-		not = createButton("NOT", TokenTypes.NOT);
-		// Comparation
-		lessThan = createButton("<", TokenTypes.LT);
-		lessEqual = createButton("<=", TokenTypes.LE);
-		greaterThan = createButton(">", TokenTypes.GT);
-		greaterEqual = createButton(">=", TokenTypes.GE);
-		equals = createButton("==", TokenTypes.EQ);
-		notEquals = createButton("!=", TokenTypes.NE);
-		// Order
-		leftPar = createButton("(", TokenTypes.LEFT_PAR);
-		rightPar = createButton(")", TokenTypes.RIGHT_PAR);
-		// Oher
-		carry = createButton("\u23CE", TokenTypes.RETURN);
+	protected AnswerSubformat getCurrentValueAnswerSubformat() {
+		if (getCurrentQuestion().getAnswerFormat() == AnswerFormat.DATE
+				&& getCurrentQuestion().getAnswerSubformat() != AnswerSubformat.DATE_PERIOD) {
+			// Date time or period format
+			if (AnswerSubformat.DATE_PERIOD.getRegex().matcher(value.getValue()).matches()) {
+				return AnswerSubformat.DATE_PERIOD;
+			}
+		}
+		return getCurrentQuestion().getAnswerSubformat();
+	}
 
-		GridLayout buttonHolder = new GridLayout(NUM_BUTTON_COLUMNS, NUM_BUTTON_ROWS, and, or, not, lessThan,
-				lessEqual, greaterThan, greaterEqual, equals, notEquals, leftPar, rightPar, carry);
+	private Component generateOperationButtons() {
+		and = createTokenButton("AND", TokenTypes.AND);
+		or = createTokenButton("OR", TokenTypes.OR);
+		not = createTokenButton("NOT", TokenTypes.NOT);
+		// Order
+		leftPar = createTokenButton("(", TokenTypes.LEFT_PAR);
+		rightPar = createTokenButton(")", TokenTypes.RIGHT_PAR);
+		// Oher
+		carry = createTokenButton("\u23CE", TokenTypes.RETURN);
+
+		GridLayout buttonHolder = new GridLayout(NUM_BUTTON_COLUMNS, NUM_BUTTON_ROWS, and, or, not, leftPar, rightPar,
+				carry);
 		buttonHolder.setCaption(LanguageCodes.CAPTION_OPERATORS.translation());
 
 		buttonHolder.setWidth(FULL);
 		buttonHolder.setHeight(EXPAND);
 
 		return buttonHolder;
-	}
-
-	private Component generateInsertValue() {
-		VerticalLayout insertValueLayout = new VerticalLayout();
-		insertValueLayout.setCaption(LanguageCodes.CAPTION_VALUE.translation());
-		insertValueLayout.setWidth(FULL);
-		insertValueLayout.setHeight(EXPAND);
-		insertValueLayout.setSpacing(true);
-
-		valueFormat = new ComboBox();
-		valueFormat.setNullSelectionAllowed(false);
-		valueFormat.setImmediate(true);
-		valueFormat.setWidth(FULL);
-		valueFormat.addValueChangeListener(new ValueChangeListener() {
-			private static final long serialVersionUID = 7254145595251837513L;
-
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				value.removeAllValidators();
-
-				value.setValue("");
-				value.setInputPrompt(((AnswerSubformat) valueFormat.getValue()).getHint());
-
-				value.addValidator(new ValidatorPattern(((AnswerSubformat) valueFormat.getValue()).getRegex()));
-			}
-		});
-		value = new TextField();
-		value.setWidth(FULL);
-		value.setRequired(true);
-
-		value.setImmediate(true);
-		insertValue = new Button(LanguageCodes.CAPTION_VALUE.translation());
-		insertValue.setWidth(FULL);
-		insertValue.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 5350736534893525919L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				if (value.isValid()) {
-					insertValue();
-				}
-			}
-		});
-
-		insertValueLayout.addComponent(valueFormat);
-		insertValueLayout.addComponent(value);
-		insertValueLayout.addComponent(insertValue);
-
-		return insertValueLayout;
 	}
 
 	private Component generateControlsTab() {
@@ -325,46 +381,16 @@ public class ConditionEditorControls extends TabSheet {
 		root.addComponent(buttonHolder);
 		root.setComponentAlignment(buttonHolder, Alignment.MIDDLE_CENTER);
 
-		Component insertValueLayout = generateInsertValue();
-		root.addComponent(insertValueLayout);
-		root.setComponentAlignment(insertValueLayout, Alignment.MIDDLE_CENTER);
-
 		return root;
-	}
-
-	protected void insertValue() {
-		String valueToInsert = value.getValue();
-		if (((AnswerSubformat) valueFormat.getValue()).getAnswerFormat() == AnswerFormat.TEXT) {
-			valueToInsert = "\"" + valueToInsert + "\"";
-		}
-		fireInsertAnswerValueListeners(valueToInsert);
 	}
 
 	public void addInsertTokenListener(InsertTokenListener listener) {
 		insertTokenListeners.add(listener);
 	}
 
-	protected void fireInsertTokenListeners(TokenTypes type) {
+	protected void fireInsertTokenListeners(Token token) {
 		for (InsertTokenListener listener : insertTokenListeners) {
-			listener.insert(type);
-		}
-	}
-
-	protected void fireInsertReferenceListeners(TreeObject treeObject) {
-		for (InsertTokenListener listener : insertTokenListeners) {
-			listener.insert(treeObject);
-		}
-	}
-
-	protected void fireInsertAnswerValueListeners(Answer answer) {
-		for (InsertTokenListener listener : insertTokenListeners) {
-			listener.insert(answer);
-		}
-	}
-
-	protected void fireInsertAnswerValueListeners(String value) {
-		for (InsertTokenListener listener : insertTokenListeners) {
-			listener.insert(value);
+			listener.insert(token);
 		}
 	}
 
@@ -384,5 +410,9 @@ public class ConditionEditorControls extends TabSheet {
 	 */
 	public void selectTreeObject(TreeObject treeObject) {
 		treeObjectTable.setValue(treeObject);
+	}
+
+	public TextField getValueField() {
+		return value;
 	}
 }

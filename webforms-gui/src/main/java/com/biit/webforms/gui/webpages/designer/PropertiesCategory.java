@@ -1,12 +1,10 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
@@ -29,9 +27,11 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 		name = new TextField(LanguageCodes.CAPTION_NAME.translation());
 		name.setWidth(WIDTH);
 		name.setRequired(true);
+		name.setMaxLength(TreeObject.MAX_UNIQUE_COLUMN_LENGTH);
 
 		label = new TextArea(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
+		label.setMaxLength(TreeObject.MAX_LABEL_LENGTH);
 
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
@@ -62,16 +62,15 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 
 	@Override
 	public void updateElement() {
-		try {
-			if (name.isValid()) {
-				instance.setName(name.getValue());
-			}
-			if(label.isValid()){
-				instance.setLabel(label.getValue());
-			}
-		} catch (FieldTooLongException | CharacterNotAllowedException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		String tempName = instance.getName();
+		String tempLabel = instance.getLabel();
+		if (name.isValid()) {
+			tempName = name.getValue();
 		}
+		if (label.isValid()) {
+			tempLabel = label.getValue();
+		}
+		UserSessionHandler.getController().updateCategory(instance, tempName, tempLabel);
 
 		super.updateElement();
 	}
