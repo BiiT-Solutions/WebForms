@@ -8,6 +8,7 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
@@ -68,8 +69,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form. Needs a unique name where name.length() <
-	 * 190 characters.
+	 * User action to create a form. Needs a unique name where name.length() < 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -329,8 +329,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Creates any kind of TreeObject descendant with @name and inserts into
-	 * parent if possible.
+	 * Creates any kind of TreeObject descendant with @name and inserts into parent if possible.
 	 * 
 	 * @param classType
 	 * @param parent
@@ -604,9 +603,8 @@ public class ApplicationController {
 	}	
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone
-	 * of the block using the element as hierarchy seed and introduces to
-	 * current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
+	 * hierarchy seed and introduces to current form as a new category.
 	 * 
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
@@ -649,7 +647,7 @@ public class ApplicationController {
 	 * @throws DestinyIsContainedAtOrigin
 	 */
 	public void moveTo(TreeObject origin, TreeObject destiny) throws NotValidChildException,
-			SameOriginAndDestinationException, DestinyIsContainedAtOrigin {
+			SameOriginAndDestinationException, DestinyIsContainedAtOrigin, ChildrenNotFoundException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress() + " move "
 				+ origin + " to " + destiny + " START");
 		if (origin.equals(destiny)) {
@@ -660,7 +658,8 @@ public class ApplicationController {
 		}
 		try {
 			destiny.addChild(origin);
-		} catch (NotValidChildException e) {
+			TreeObject.move(origin, destiny);
+		} catch (NotValidChildException | ChildrenNotFoundException e) {
 			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " move " + origin + " to " + destiny + " could not be done.");
 			throw e;
@@ -671,8 +670,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * This function is called when the ui has expired. The implementation needs
-	 * to free any "locked" resources
+	 * This function is called when the ui has expired. The implementation needs to free any "locked" resources
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
@@ -691,8 +689,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Update rule content. This function currently is a direct call to the
-	 * structure function. If the rule is not on the form, it gets added.
+	 * Update rule content. This function currently is a direct call to the structure function. If the rule is not on
+	 * the form, it gets added.
 	 * 
 	 * @param rule
 	 * @param origin
@@ -726,8 +724,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Updates rule update time and updated by in rule. The content of the rule
-	 * was already modified by {@link WindowRule}
+	 * Updates rule update time and updated by in rule. The content of the rule was already modified by
+	 * {@link WindowRule}
 	 * 
 	 * @param newRule
 	 */

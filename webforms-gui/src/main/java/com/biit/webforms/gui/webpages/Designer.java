@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.biit.form.BaseAnswer;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
@@ -454,7 +455,7 @@ public class Designer extends SecuredWebPage {
 				} catch (SameOriginAndDestinationException e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
 							LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN);
-				} catch (DestinyIsContainedAtOrigin e) {
+				} catch (DestinyIsContainedAtOrigin | ChildrenNotFoundException e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
 							LanguageCodes.WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY);
 				}
