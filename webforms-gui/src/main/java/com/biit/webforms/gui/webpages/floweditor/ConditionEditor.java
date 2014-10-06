@@ -1,24 +1,30 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import javax.transaction.NotSupportedException;
+import java.util.List;
 
-import com.biit.form.TreeObject;
+import com.biit.webforms.condition.parser.ExpectedTokenNotFound;
+import com.biit.webforms.condition.parser.WebformsParser;
+import com.biit.webforms.condition.parser.exceptions.EmptyParenthesisException;
+import com.biit.webforms.condition.parser.exceptions.ExpressionNotWellFormedException;
+import com.biit.webforms.condition.parser.exceptions.IncompleteBinaryOperatorException;
+import com.biit.webforms.condition.parser.exceptions.MissingParenthesisException;
+import com.biit.webforms.condition.parser.exceptions.NoMoreTokensException;
+import com.biit.webforms.condition.parser.exceptions.ParseException;
 import com.biit.webforms.gui.common.components.StatusLabel;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
+import com.biit.webforms.gui.webpages.floweditor.listeners.InsertTokenListener;
+import com.biit.webforms.gui.webpages.floweditor.listeners.TokenDoubleClickListener;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.Answer;
-import com.biit.webforms.persistence.entity.FlowConditionScript;
-import com.biit.webforms.utils.lexer.TokenTypes;
-import com.biit.webforms.utils.lexer.exceptions.StringTokenizationError;
-import com.biit.webforms.utils.parser.ExpectedTokenNotFound;
-import com.biit.webforms.utils.parser.WebformsParser;
-import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
-import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
-import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
-import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
-import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
-import com.biit.webforms.utils.parser.exceptions.ParseException;
-import com.biit.webforms.utils.parser.expressions.Expression;
+import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -26,95 +32,141 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 
 public class ConditionEditor extends CustomComponent {
-	private static final long serialVersionUID = -4957758105459476797L;
+	private static final long serialVersionUID = 8836808232493250676L;
 
 	private static final String CONDITION_VALIDATOR = "condition-validator";
 
 	private static final String VALIDATE_BUTTON_HEIGHT = "26px";
 
-	private TextArea textArea;
 	private ConditionEditorControls controls;
 	private Button validate;
 	private StatusLabel status;
+	private TokenDisplay tokenDisplay;
 
 	public ConditionEditor() {
 		super();
 		setSizeFull();
-		setCompositionRoot(generateComposition());
-		initializeComposition();
+		setCompositionRoot(generate());
+		initialize();
 	}
 
-	/**
-	 * Initialize composition default values
-	 */
-	private void initializeComposition() {
-		clean();
-	}
-
-	/**
-	 * Generate Vaadin composition
-	 * 
-	 * @return
-	 */
-	private Component generateComposition() {
+	private Component generate() {
 		HorizontalLayout horizontalLayout = new HorizontalLayout();
 		horizontalLayout.setSizeFull();
 		horizontalLayout.setSpacing(true);
 
-		VerticalLayout checkAndText = new VerticalLayout();
-		checkAndText.setSizeFull();
+		VerticalLayout checkAndTokens = generateCheckAndTokens();
+		controls = generateControls();
+		// Text field needs to remove the shortcuts of the tokenDisplay.
+		controls.getValueField().addFocusListener(new FocusListener() {
+			private static final long serialVersionUID = -5045926489824179125L;
 
-		checkAndText.addComponent(generateValidator());
+			@Override
+			public void focus(FocusEvent event) {
+				tokenDisplay.disableShortcuts();
+			}
+		});
+		controls.getValueField().addBlurListener(new BlurListener() {
+			private static final long serialVersionUID = 619744746840638011L;
 
-		textArea = new TextArea();
-		textArea.setSizeFull();
-		// textArea.addTextChangeListener(new TextChangeListener() {
-		// private static final long serialVersionUID = 5907726658563018736L;
-		//
-		// @Override
-		// public void textChange(TextChangeEvent event) {
-		//
-		// }
-		// });
-		textArea.setImmediate(true);
-		checkAndText.addComponent(textArea);
-		checkAndText.setExpandRatio(textArea, 1.0f);
+			@Override
+			public void blur(BlurEvent event) {
+				tokenDisplay.enableShortcuts();
+			}
+		});
 
-		controls = new ConditionEditorControls();
+		horizontalLayout.addComponent(checkAndTokens);
+		horizontalLayout.addComponent(controls);
+
+		horizontalLayout.setExpandRatio(checkAndTokens, 0.70f);
+		horizontalLayout.setExpandRatio(controls, 0.30f);
+
+		return horizontalLayout;
+	}
+
+	private ConditionEditorControls generateControls() {
+		ConditionEditorControls controls = new ConditionEditorControls();
 		controls.setSizeFull();
 		controls.addInsertTokenListener(new InsertTokenListener() {
 
 			@Override
-			public void insert(TreeObject currentTreeObjectReference) {
-				append(currentTreeObjectReference);
+			public void insert(Token token) {
+				tokenDisplay.addToken(token);
 			}
+		});
+		return controls;
+	}
+
+	private VerticalLayout generateCheckAndTokens() {
+		VerticalLayout checkAndTokens = new VerticalLayout();
+		checkAndTokens.setSizeFull();
+		checkAndTokens.addComponent(generateValidator());
+
+		tokenDisplay = new TokenDisplay();
+		tokenDisplay.setSizeFull();
+		tokenDisplay.addTokenDoubleClickListener(new TokenDoubleClickListener() {
 
 			@Override
-			public void insert(TokenTypes type) {
-				append(type);
-			}
-
-			@Override
-			public void insert(Answer answerValue) {
-				append(answerValue);
-			}
-
-			@Override
-			public void insert(String value) {
-				append(value);
+			public void doubleClick(TokenComponent tokenComponent) {
+				Token token = tokenComponent.getToken();
+				if (token instanceof TokenComparationAnswer) {
+					openEditComparationOperatorAnswer(tokenComponent);
+				}
+				if (token instanceof TokenComparationValue) {
+					openEditComparationOperatorValue(tokenComponent);
+				}
 			}
 		});
 
-		horizontalLayout.addComponent(checkAndText);
-		horizontalLayout.addComponent(controls);
+		checkAndTokens.addComponent(tokenDisplay);
+		checkAndTokens.setExpandRatio(tokenDisplay, 1.0f);
 
-		horizontalLayout.setExpandRatio(checkAndText, 0.70f);
-		horizontalLayout.setExpandRatio(controls, 0.30f);
-		return horizontalLayout;
+		return checkAndTokens;
+	}
+
+	protected void openEditComparationOperatorValue(final TokenComponent tokenComponent) {
+		WindowTokenOperationValue window = new WindowTokenOperationValue();
+		window.setToken((TokenComparationValue) tokenComponent.getToken());
+		window.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				try {
+					WindowTokenOperationValue thisWindow = (WindowTokenOperationValue) window;
+					((TokenComparationValue) tokenComponent.getToken()).setContent(thisWindow.getOperator(),
+							thisWindow.getAnswerSubformat(), thisWindow.getValue());
+					tokenComponent.refresh();
+				} catch (NotValidTokenType e) {
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				}
+				window.close();
+			}
+		});
+		window.showCentered();
+	}
+
+	protected void openEditComparationOperatorAnswer(final TokenComponent tokenComponent) {
+		WindowTokenOperationAnswer window = new WindowTokenOperationAnswer();
+		window.setToken((TokenComparationAnswer) tokenComponent.getToken());
+		window.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				try {
+					WindowTokenOperationAnswer thisWindow = (WindowTokenOperationAnswer) window;
+					((TokenComparationAnswer) tokenComponent.getToken()).setContent(thisWindow.getOperator(),
+							thisWindow.getAnswer());
+					tokenComponent.refresh();
+				} catch (NotValidTokenType e) {
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				}
+				window.close();
+			}
+		});
+		window.showCentered();
 	}
 
 	private Component generateValidator() {
@@ -138,74 +190,45 @@ public class ConditionEditor extends CustomComponent {
 		return validator;
 	}
 
-	private void append(TokenTypes token) {
-		append(token.getStringForm());
-	}
-
-	private void append(String value) {
-		if (!textArea.getValue().isEmpty()) {
-			textArea.setValue(textArea.getValue() + " ");
-		}
-		textArea.setValue(textArea.getValue() + value);
-	}
-
-	private void append(TreeObject treeObject) {
-		if (treeObject instanceof FlowConditionScript) {
-			append(((FlowConditionScript) treeObject).getScriptRepresentation());
-		} else {
-			WebformsLogger.errorMessage(this.getClass().getName(), new NotSupportedException(
-					"TreeObject that doesn't support FlowConditionScript"));
+	protected boolean isConditionValid() {
+		// Translation
+		try {
+			WebformsParser parser = new WebformsParser(getTokens().iterator());
+			parser.parseCompleteExpression();
+			status.setOkText("Condition is valid");
+			return true;
+		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException | IncompleteBinaryOperatorException
+				| MissingParenthesisException | ExpressionNotWellFormedException | EmptyParenthesisException e) {
+			status.setErrorText(e.getMessage());
+			return false;
 		}
 	}
 
-	private void append(Answer reference) {
-		// If reference is a Answer, we insert a equals statement
-		append(reference.getScriptRepresentation());
-	}
-
-	public void clean() {
-		textArea.setValue(new String());
+	public List<Token> getTokens() {
+		return tokenDisplay.getTokens();
 	}
 
 	/**
-	 * Sets treeObject as the selected value in the reference table on control
-	 * panel.
-	 * 
-	 * @param treeObject
+	 * Initialize composition default values
 	 */
-	public void selectReferenceElement(TreeObject treeObject) {
-		controls.selectTreeObject(treeObject);
+	private void initialize() {
+		// TODO
+		// clean();
 	}
 
-	public String getCondition() {
-		return textArea.getValue();
+	public void delete() {
+		tokenDisplay.delete();
 	}
 
-	public void setCondition(String conditionString) {
-		textArea.setValue(conditionString);
+	public void next() {
+		tokenDisplay.next();
 	}
 
-	public boolean isConditionValid() {
-		String currentCondition = textArea.getValue();
-		System.out.println("Validate: " + currentCondition);
-		// TODO localization!
-		try {
-			WebformsParser parser = new WebformsParser(currentCondition);
-			Expression expression = parser.parseCompleteExpression();
-			if (expression == null) {
-				// No expression
-				System.out.println("Expression: empty expression");
-				status.setOkText(LanguageCodes.CAPTION_OK_EMPTY_EXPRESSION.translation());
-			} else {
-				System.out.println("Expression: " + expression);
-			}
-			status.setOkText(LanguageCodes.CAPTION_OK_VALID_EXPRESSION.translation());
-			return true;
-		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		} catch (StringTokenizationError | IncompleteBinaryOperatorException | MissingParenthesisException | ExpressionNotWellFormedException | EmptyParenthesisException e) {
-			status.setErrorText(e.getMessage());
-		}
-		return false;
+	public void previous() {
+		tokenDisplay.previous();
+	}
+
+	public void addToken(Token token) {
+		tokenDisplay.addToken(token);
 	}
 }

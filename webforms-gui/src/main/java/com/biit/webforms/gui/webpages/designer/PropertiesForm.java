@@ -1,17 +1,15 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-public class PropertiesForm extends StorableObjectProperties<Form>{
+public class PropertiesForm extends StorableObjectProperties<Form> {
 	private static final long serialVersionUID = -7053263006728113569L;
 	private static final String WIDTH = "200px";
 
@@ -26,7 +24,7 @@ public class PropertiesForm extends StorableObjectProperties<Form>{
 	protected void firePropertyUpdateOnExitListener() {
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	protected void initElement() {
 
@@ -37,9 +35,11 @@ public class PropertiesForm extends StorableObjectProperties<Form>{
 		version = new TextField(LanguageCodes.CAPTION_VERSION.translation());
 		version.setWidth(WIDTH);
 		version.setEnabled(false);
-		
+
 		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
 		description.setWidth(WIDTH);
+		description.setMaxLength(Form.MAX_DESCRIPTION_LENGTH);
+		description.setImmediate(true);
 
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
@@ -47,7 +47,7 @@ public class PropertiesForm extends StorableObjectProperties<Form>{
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(version);
 		commonProperties.addComponent(description);
-		
+
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
@@ -62,18 +62,14 @@ public class PropertiesForm extends StorableObjectProperties<Form>{
 		super.initValues();
 
 		name.setValue(instance.getName());
-		version.setValue(""+instance.getVersion());
+		version.setValue("" + instance.getVersion());
 		description.setValue(instance.getDescription());
-		
+
 	}
-	
+
 	@Override
 	public void updateElement() {
-		try {
-			instance.setDescription(description.getValue());
-		} catch (FieldTooLongException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}
+		UserSessionHandler.getController().updateForm(instance, description.getValue());
 
 		super.updateElement();
 	}

@@ -1,6 +1,9 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
@@ -9,11 +12,13 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Rule;
 import com.liferay.portal.model.Organization;
 
 @Repository
@@ -78,6 +83,11 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			List<Block> results = criteria.list();
 			initializeSets(results);
 			session.getTransaction().commit();
+			// For solving Hibernate bug
+			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
+			// list of children
+			// with @Orderby or @OrderColumn we use our own order manager.
+			sortChildren(results);
 			if (!results.isEmpty()) {
 				return (Block) results.get(0);
 			}
@@ -99,6 +109,11 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			List<Block> results = criteria.list();
 			initializeSets(results);
 			session.getTransaction().commit();
+			// For solving Hibernate bug
+			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
+			// list of children
+			// with @Orderby or @OrderColumn we use our own order manager.
+			sortChildren(results);
 			if (!results.isEmpty()) {
 				return (Block) results.get(0);
 			}
@@ -126,7 +141,6 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			List<Block> result = criteria.list();
 			initializeSets(result);
 			session.getTransaction().commit();
-
 			// For solving Hibernate bug
 			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
 			// list of children
@@ -137,5 +151,45 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			session.getTransaction().rollback();
 			throw e;
 		}
+	}
+
+	@Override
+	protected void sortChildren(List<Block> blocks) {
+		for (Block block : blocks) {
+			sortChildren(block);
+		}
+	}
+
+	protected void sortChildren(Block block) {
+		super.sortChildren(block);
+
+		for (Rule rule : block.getRules()) {
+			sortChildren(rule);
+		}
+	}
+
+	private void sortChildren(Rule rule) {
+		if (rule != null) {
+			Collections.sort(rule.getCondition(), new TokenSort());
+		}
+	}
+	
+	@Override
+	@Transactional
+	public Block makePersistent(Block entity) {
+		// For solving Hibernate bug
+		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
+		// list of children
+		// with @Orderby or @OrderColumn we use our own order manager.
+
+		// Sort the rules
+		Set<Rule> rules = entity.getRules();
+		Iterator<Rule> ruleItr = rules.iterator();
+		while (ruleItr.hasNext()) {
+			Rule rule = ruleItr.next();
+			rule.updateConditionSortSeq();
+		}
+
+		return super.makePersistent(entity);
 	}
 }

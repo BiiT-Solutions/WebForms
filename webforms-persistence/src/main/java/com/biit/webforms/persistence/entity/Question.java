@@ -15,10 +15,11 @@ import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.computed.FlowConditionScript;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.enumerations.AnswerFormat;
-import com.biit.webforms.persistence.entity.enumerations.AnswerSubformat;
-import com.biit.webforms.persistence.entity.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
 @Entity
@@ -49,7 +50,7 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 		description = new String();
 		answerType = AnswerType.INPUT;
 		answerFormat = AnswerFormat.TEXT;
-		answerSubformat = null;
+		answerSubformat = AnswerSubformat.TEXT;
 	}
 
 	public Question(String name) throws FieldTooLongException, CharacterNotAllowedException {

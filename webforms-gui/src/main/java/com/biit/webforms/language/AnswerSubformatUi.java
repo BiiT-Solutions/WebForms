@@ -3,8 +3,8 @@ package com.biit.webforms.language;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.webforms.persistence.entity.enumerations.AnswerFormat;
-import com.biit.webforms.persistence.entity.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
 
 public enum AnswerSubformatUi {
 

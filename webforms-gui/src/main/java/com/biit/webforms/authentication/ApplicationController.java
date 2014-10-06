@@ -10,6 +10,7 @@ import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -17,6 +18,11 @@ import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExi
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.enumerations.RuleType;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
@@ -32,12 +38,11 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Rule;
-import com.biit.webforms.persistence.entity.Subcategory;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
-import com.biit.webforms.persistence.entity.enumerations.FormWorkStatus;
-import com.biit.webforms.persistence.entity.enumerations.RuleType;
+import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.RuleWithoutDestiny;
@@ -266,17 +271,6 @@ public class ApplicationController {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 		return null;
-	}
-
-	/**
-	 * Adds new subcategory to parent
-	 * 
-	 * @param parent
-	 * @return
-	 * @throws NotValidChildException
-	 */
-	public Subcategory addNewSubcategory(TreeObject parent) throws NotValidChildException {
-		return (Subcategory) insertTreeObject(Subcategory.class, parent, "new_subcategory");
 	}
 
 	/**
@@ -527,11 +521,86 @@ public class ApplicationController {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " saveAsBlock " + formInUse + " " + element + " " + blockLabel + " END");
 	}
-
-	public void notifyTreeObjectUpdated(Object element) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " updated element " + element);
+	
+	public void updateForm(Form form, String description){
+		logInfoStart("updateForm", form, description);
+		try {
+			form.setDescription(description);
+			form.setUpdatedBy(UserSessionHandler.getUser());
+			form.setUpdateTime();
+		} catch (FieldTooLongException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}		
+		logInfoEnd("updateForm", form, description);
 	}
+	
+	public void updateAnswer(Answer answer, String value, String label, String description){
+		logInfoStart("updateAnswer", answer, value, label,description);
+		try {
+			answer.setValue(value);
+			answer.setLabel(label);
+			answer.setDescription(description);
+			answer.setUpdatedBy(UserSessionHandler.getUser());
+			answer.setUpdateTime();
+			
+		} catch (FieldTooLongException | CharacterNotAllowedException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		logInfoEnd("updateAnswer", answer, value, label);
+	}
+	
+	public void updateCategory(Category category, String name, String label) {
+		logInfoStart("updateCategory", category, name, label);
+		try {
+			category.setName(name);
+			category.setLabel(label);
+			category.setUpdatedBy(UserSessionHandler.getUser());
+			category.setUpdateTime();
+			
+		} catch (FieldTooLongException | CharacterNotAllowedException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		logInfoEnd("updateCategory", category, name, label);
+	}
+
+	public void updateGroup(Group group, String name, String label, boolean repeatable) {
+		logInfoStart("updateGroup", group, name, label, repeatable);
+		try {
+			group.setName(name);
+			group.setLabel(label);
+			group.setRepeatable(repeatable);
+			group.setUpdatedBy(UserSessionHandler.getUser());
+			group.setUpdateTime();
+
+		} catch (FieldTooLongException | CharacterNotAllowedException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		logInfoEnd("updateGroup", group, name, label, repeatable);
+	}
+
+	public void updateQuestion(Question question, String name, String label, String description, boolean mandatory,
+			AnswerType answerType, AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal) {
+		logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat,
+				answerSubformat, horizontal);
+		try {
+			question.setName(name);
+			question.setLabel(label);
+			question.setDescription(description);
+			question.setMandatory(mandatory);
+			question.setAnswerType(answerType);
+			question.setAnswerFormat(answerFormat);
+			question.setAnswerSubformat(answerSubformat);
+			question.setHorizontal(horizontal);
+			question.setUpdatedBy(UserSessionHandler.getUser());
+			question.setUpdateTime();
+		} catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException
+				| InvalidAnswerSubformatException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		
+		logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat,
+				answerSubformat, horizontal);
+	}	
 
 	/**
 	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
@@ -635,11 +704,11 @@ public class ApplicationController {
 	 * @throws RuleWithoutDestiny
 	 */
 	public void updateRuleContent(Rule rule, TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others,
-			String conditionString) throws BadRuleContentException, RuleWithoutSource,
+			List<Token> condition) throws BadRuleContentException, RuleWithoutSource,
 			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
-		logInfoStart("updateRuleContent", rule, origin, ruleType, destiny, others, conditionString);
+		logInfoStart("updateRuleContent", rule, origin, ruleType, destiny, others, condition);
 
-		rule.setRuleContent(origin, ruleType, destiny, others, conditionString);
+		rule.setRuleContent(origin, ruleType, destiny, others, condition);
 
 		if (rule.getCreatedBy() == null) {
 			rule.setCreationTime();
@@ -651,7 +720,7 @@ public class ApplicationController {
 		if (!getFormInUse().containsRule(rule)) {
 			addRuleToForm(rule, getFormInUse());
 		}
-		logInfoEnd("updateRuleContent", rule, origin, ruleType, destiny, conditionString);
+		logInfoEnd("updateRuleContent", rule, origin, ruleType, destiny, condition);
 	}
 
 	/**

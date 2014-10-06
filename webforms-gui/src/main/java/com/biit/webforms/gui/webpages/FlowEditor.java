@@ -19,13 +19,13 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormFlowViewer;
-import com.biit.webforms.gui.webpages.floweditor.EditItemAction;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.gui.webpages.floweditor.TableRules;
 import com.biit.webforms.gui.webpages.floweditor.TableRules.NewItemAction;
 import com.biit.webforms.gui.webpages.floweditor.UpperMenuFlowEditor;
 import com.biit.webforms.gui.webpages.floweditor.WindowRule;
+import com.biit.webforms.gui.webpages.floweditor.listeners.EditItemAction;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;

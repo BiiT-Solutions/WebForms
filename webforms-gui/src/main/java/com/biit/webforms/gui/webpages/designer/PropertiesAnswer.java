@@ -1,12 +1,10 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
@@ -30,12 +28,15 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 		value = new TextField(LanguageCodes.CAPTION_VALUE.translation());
 		value.setWidth(WIDTH);
 		value.setRequired(true);
+		value.setMaxLength(TreeObject.MAX_UNIQUE_COLUMN_LENGTH);
 
 		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
+		label.setMaxLength(TreeObject.MAX_LABEL_LENGTH);
 
 		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
 		description.setWidth(WIDTH);
+		description.setMaxLength(Answer.MAX_DESCRIPTION_LENGTH);
 
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
@@ -69,18 +70,15 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 
 	@Override
 	public void updateElement() {
-		try {
-			if (value.isValid()) {
-				instance.setValue(value.getValue());
-			}
-			// TODO dynamic label
-			if(label.isValid()){
-				instance.setLabel(label.getValue());
-			}
-			instance.setDescription(description.getValue());
-		} catch (FieldTooLongException | CharacterNotAllowedException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		String tempValue = instance.getValue();
+		String tempLabel = instance.getLabel();
+		if (value.isValid()) {
+			tempValue = value.getValue();
 		}
+		if (label.isValid()) {
+			tempLabel = label.getValue();
+		}
+		UserSessionHandler.getController().updateAnswer(instance, tempValue, tempLabel, description.getValue());
 
 		super.updateElement();
 	}

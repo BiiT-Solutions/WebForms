@@ -1,21 +1,25 @@
 package com.biit.webforms.persistence.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
+import com.biit.webforms.enumerations.RuleType;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.enumerations.RuleType;
+import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
 import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
@@ -29,6 +33,8 @@ public class Rule extends StorableObject {
 	// uniqueConstraints = { @UniqueConstraint(columnNames = { "origin_id",
 	// "destiny_id" }) }
 
+	private static final String TOKEN_SEPARATOR = " ";
+	
 	/*
 	 * Hibernate changes name of column when you use a many-to-one relationship.
 	 * If you want to add a constraint attached to that column, you have to
@@ -47,10 +53,8 @@ public class Rule extends StorableObject {
 
 	private boolean others;
 
-	private String conditionString;
-
-	@Transient
-	private Object interpretedRule;
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "rule")
+	private List<Token> condition;
 
 	@ManyToOne
 	private Form form;
@@ -58,7 +62,7 @@ public class Rule extends StorableObject {
 	public Rule() {
 		super();
 		ruleType = RuleType.NORMAL;
-		conditionString = new String();
+		condition = new ArrayList<Token>();
 	}
 
 	public TreeObject getOrigin() {
@@ -94,19 +98,19 @@ public class Rule extends StorableObject {
 	}
 
 	public void setRuleContent(TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others,
-			String conditionString) throws BadRuleContentException, RuleWithoutSource,
+			List<Token> condition) throws BadRuleContentException, RuleWithoutSource,
 			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
-		checkRuleRestrictions(origin, ruleType, destiny, others, conditionString);
+		checkRuleRestrictions(origin, ruleType, destiny, others, condition);
 
 		this.origin = origin;
 		this.ruleType = ruleType;
 		this.destiny = destiny;
 		this.others = others;
-		this.conditionString = conditionString;
+		setCondition(condition);
 	}
 
 	public static void checkRuleRestrictions(TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others,
-			String conditionString) throws RuleWithoutSource, BadRuleContentException,
+			List<Token> condition) throws RuleWithoutSource, BadRuleContentException,
 			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
 		// No rule without source
 		if (origin == null) {
@@ -117,10 +121,10 @@ public class Rule extends StorableObject {
 			throw new RuleWithoutDestiny();
 		}
 
-		if (others && (conditionString != null)) {
-			throw new BadRuleContentException("Rules with other must have null condition string");
+		if (others && (condition == null || !condition.isEmpty())) {
+			throw new BadRuleContentException("Rules with other must have empty condition");
 		}
-		if (!others && (conditionString == null)) {
+		if (!others && condition == null) {
 			throw new BadRuleContentException("Rules that are not other must have a not null condition string.");
 		}
 
@@ -145,24 +149,13 @@ public class Rule extends StorableObject {
 	 * @return
 	 */
 	public String getConditionString() {
-		if (getInterpretedRule() == null) {
-			// TODO get the new ruleString interpretation
+		String conditionString = new String();
+		
+		for (Token token : condition) {
+			conditionString += token + TOKEN_SEPARATOR;
 		}
-		// If not gets the original setted ruleString
+
 		return conditionString;
-	}
-
-	protected void setConditionString(String conditionString) {
-		this.conditionString = conditionString;
-	}
-
-	/**
-	 * Retrieves the rule interpretation
-	 * 
-	 * @return
-	 */
-	public Object getInterpretedRule() {
-		return interpretedRule;
 	}
 
 	public Rule generateCopy() {
@@ -177,7 +170,7 @@ public class Rule extends StorableObject {
 			newInstance.setUpdatedBy(getUpdatedBy());
 
 			// Rule elements copy
-			newInstance.setRuleContent(origin, ruleType, destiny, others, conditionString);
+			newInstance.setRuleContent(origin, ruleType, destiny, others, generateCopyCondition());
 		} catch (InstantiationException | IllegalAccessException | BadRuleContentException | RuleWithoutSource
 				| RuleSameOriginAndDestinyException | RuleDestinyIsBeforeOrigin | RuleWithoutDestiny e) {
 			// Impossible
@@ -185,6 +178,14 @@ public class Rule extends StorableObject {
 		}
 
 		return newInstance;
+	}
+
+	private List<Token> generateCopyCondition() {
+		List<Token> conditionCopy = new ArrayList<Token>();
+		for (Token token : condition) {
+			conditionCopy.add(token.generateCopy());
+		}
+		return conditionCopy;
 	}
 
 	@Override
@@ -196,8 +197,26 @@ public class Rule extends StorableObject {
 	public void setForm(Form form) {
 		this.form = form;
 	}
-	
-	public Form getForm(){
+
+	public Form getForm() {
 		return form;
+	}
+
+	public List<Token> getCondition() {
+		return condition;
+	}
+
+	protected void setCondition(List<Token> condition) {
+		this.condition.clear();
+		this.condition.addAll(condition);
+		for (Token token : this.condition) {
+			token.setRule(this);
+		}
+	}
+
+	public void updateConditionSortSeq() {
+		for (int i = 0; i < condition.size(); i++) {
+			condition.get(i).setSortSeq(i);
+		}
 	}
 }

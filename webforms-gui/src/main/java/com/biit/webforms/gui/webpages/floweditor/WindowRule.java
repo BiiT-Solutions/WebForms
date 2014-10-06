@@ -1,6 +1,10 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.biit.form.TreeObject;
+import com.biit.webforms.enumerations.RuleType;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.language.LanguageCodes;
@@ -10,7 +14,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Rule;
-import com.biit.webforms.persistence.entity.enumerations.RuleType;
+import com.biit.webforms.persistence.entity.condition.Token;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
@@ -80,6 +84,7 @@ public class WindowRule extends WindowAcceptCancel {
 
 	private Component generateConditionEditor() {
 		conditionEditor = new ConditionEditor();
+		conditionEditor.setSizeFull();
 
 		return conditionEditor;
 	}
@@ -109,8 +114,10 @@ public class WindowRule extends WindowAcceptCancel {
 		ruleTypeSelector.setValue(rule.getRuleType());
 		searchDestiny.setTreeObject(rule.getDestiny());
 		others.setValue(rule.isOthers());
-		if(!rule.isOthers()){
-			conditionEditor.setCondition(rule.getConditionString());
+		if (!rule.isOthers()) {
+			for(Token token: rule.getCondition()){
+				conditionEditor.addToken(token);
+			}
 		}
 	}
 
@@ -139,7 +146,7 @@ public class WindowRule extends WindowAcceptCancel {
 	}
 
 	private Component generateSearchOriginContent() {
-		searchOrigin = new SearchFormElementField(Form.class, Category.class, Group.class,Question.class);
+		searchOrigin = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
 		searchOrigin.setSelectableFilter(Question.class);
 		searchOrigin.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_ORIGIN);
 		searchOrigin.setCaption(LanguageCodes.CAPTION_FROM.translation());
@@ -147,7 +154,8 @@ public class WindowRule extends WindowAcceptCancel {
 
 			@Override
 			public void currentElement(Object object) {
-				conditionEditor.selectReferenceElement((TreeObject) object);
+				// TODO
+				// conditionEditor.selectReferenceElement((TreeObject) object);
 			}
 		});
 
@@ -155,7 +163,7 @@ public class WindowRule extends WindowAcceptCancel {
 	}
 
 	private Component generateSearchDestinyContent() {
-		searchDestiny = new SearchFormElementField(Form.class,Category.class,Group.class,Question.class);
+		searchDestiny = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
 		searchDestiny.setSelectableFilter(Question.class);
 		searchDestiny.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_DESTINY);
 		searchDestiny.setCaption(LanguageCodes.CAPTION_TO.translation());
@@ -172,7 +180,8 @@ public class WindowRule extends WindowAcceptCancel {
 			public void valueChange(ValueChangeEvent event) {
 				if (others.getValue()) {
 					conditionEditor.setEnabled(false);
-					conditionEditor.clean();
+					// TODO
+					// conditionEditor.clean();
 				} else {
 					conditionEditor.setEnabled(true);
 				}
@@ -197,11 +206,11 @@ public class WindowRule extends WindowAcceptCancel {
 		return (RuleType) ruleTypeSelector.getValue();
 	}
 
-	public String getCondition() {
+	public List<Token> getCondition() {
 		if (conditionEditor.isEnabled()) {
-			return conditionEditor.getCondition();
+			return conditionEditor.getTokens();
 		}
-		return null;
+		return new ArrayList<>();
 	}
 
 	public boolean isOthers() {

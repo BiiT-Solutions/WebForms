@@ -1,9 +1,9 @@
 package com.biit.webforms.utils.exporters.dotgraph;
 
 import com.biit.form.TreeObject;
+import com.biit.webforms.computed.ComputedRuleView;
+import com.biit.webforms.computed.FilteredForm;
 import com.biit.webforms.persistence.entity.Category;
-import com.biit.webforms.persistence.entity.ComputedRuleView;
-import com.biit.webforms.persistence.entity.FilteredForm;
 import com.biit.webforms.persistence.entity.Rule;
 
 public class ExporterDotFilteredForm extends ExporterDotFormBasic<FilteredForm> {

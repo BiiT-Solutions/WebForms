@@ -1,7 +1,7 @@
 package com.biit.webforms.language;
 
+import com.biit.webforms.enumerations.RuleType;
 import com.biit.webforms.gui.common.language.ILanguageCode;
-import com.biit.webforms.persistence.entity.enumerations.RuleType;
 
 public enum RuleTypeUi {
 	

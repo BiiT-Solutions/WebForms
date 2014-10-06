@@ -1,6 +1,6 @@
 package com.biit.webforms.language;
 
-import com.biit.webforms.persistence.entity.enumerations.AnswerType;
+import com.biit.webforms.enumerations.AnswerType;
 
 public enum AnswerTypeUi {
 

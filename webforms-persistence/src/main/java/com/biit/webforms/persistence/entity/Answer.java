@@ -13,6 +13,7 @@ import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.computed.FlowConditionScript;
 
 /**
  * Answer is a class that contains the information of a defined and possible
@@ -94,7 +95,11 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 
 	@Override
 	public String getScriptRepresentation() {
-		return "'" + getName() + "'";
+		return getScriptValueRepresentation(getName());
+	}
+	
+	public static String getScriptValueRepresentation(String value){
+		return "'" + value + "'";
 	}
 
 	/**
@@ -108,5 +113,13 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 			return false;
 		}
 		return true;
+	}
+
+	public String getPathAnswerValue() {
+		if(getParent() == null || !(getParent() instanceof Answer)){
+			return getValue();
+		}else{
+			return getParent().getPathName()+TreeObject.DEFAULT_PATH_SEPARATOR+getValue();
+		}
 	}
 }

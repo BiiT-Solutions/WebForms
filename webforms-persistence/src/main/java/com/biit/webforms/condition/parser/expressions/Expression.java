@@ -1,0 +1,13 @@
+package com.biit.webforms.condition.parser.expressions;
+
+public abstract class Expression {
+
+	public abstract void getString(StringBuilder builder);
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		getString(builder);
+		return builder.toString();
+	}
+}

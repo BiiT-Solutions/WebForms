@@ -808,6 +808,35 @@ $open-sans-pathPrefix: "./fonts/";
 	.condition-validator .v-label {
 		padding-top: 5px;
 		padding-left: 5px;
-	}	
+	}
+	
+	/* token display */
+	.token-display.v-customcomponent-token-display {
+		border: #c2c3c4;
+		border-width: 1px;
+		border-style: solid;
+	}
+	
+	.token-component.v-customcomponent-token-component {
+		border: #c2c3c4;
+		border-width: 1px;
+		border-style: solid;
+		box-shadow: 1px 1px 6px -1px #777777;
+	}
+	
+	.v-customcomponent-token-component.token-component-focused.v-customcomponent-token-component-focused {
+		box-shadow: 0px 0px 6px 1px #4BB4D3 !important;
+	}
+	
+	.token-component-layout.v-csslayout-token-component-layout {
+		padding-top: 1px !important;
+		padding-left: 5px !important;
+		padding-right: 5px !important;
+		padding-bottom: 0px !important;
+		color: #1C86C2;
+		text-shadow: #fff 0 1px 0;
+		font-weight: 600;
+		font-size: 16px !important;
+	}
 	
 }

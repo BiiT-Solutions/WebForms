@@ -1,12 +1,10 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Group;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
@@ -32,9 +30,11 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		name = new TextField(LanguageCodes.CAPTION_NAME.translation());
 		name.setWidth(WIDTH);
 		name.setRequired(true);
+		name.setMaxLength(TreeObject.MAX_UNIQUE_COLUMN_LENGTH);
 
 		label = new TextArea(LanguageCodes.CAPTION_LABEL.translation());
 		label.setWidth(WIDTH);
+		label.setMaxLength(TreeObject.MAX_LABEL_LENGTH);
 
 		repeatable = new CheckBox(LanguageCodes.CAPTION_REPETABLE.translation());
 
@@ -44,7 +44,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
 		commonProperties.addComponent(repeatable);
-		
+
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
@@ -69,18 +69,15 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 
 	@Override
 	public void updateElement() {
-		try {
-			if(name.isValid()){
-				instance.setName(name.getValue());
-			}
-			if(label.isValid()){
-				instance.setLabel(label.getValue());
-			}
-			instance.setRepeatable(repeatable.getValue());
-
-		} catch (FieldTooLongException | CharacterNotAllowedException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		String tempName = instance.getName();
+		String tempLabel = instance.getLabel();
+		if (name.isValid()) {
+			tempName = name.getValue();
 		}
+		if (label.isValid()) {
+			tempLabel = label.getValue();
+		}
+		UserSessionHandler.getController().updateGroup(instance, tempName, tempLabel, repeatable.getValue());
 
 		super.updateElement();
 	}

@@ -8,7 +8,6 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.Subcategory;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.lowagie.text.Document;
@@ -51,8 +50,6 @@ public class FormPdfGenerator extends DocumentGenerator {
 	private void generateAndAddTreeObject(Document document, TreeObject object) throws DocumentException {
 		if (object instanceof Category) {
 			generateAndAddCategory(document, (Category) object);
-		} else if (object instanceof Subcategory) {
-			generateAndAddSubcategory(document, (Subcategory) object);
 		} else if (object instanceof Group) {
 			generateAndAddGroup(document, (Group) object);
 		} else if (object instanceof Question) {
@@ -92,14 +89,6 @@ public class FormPdfGenerator extends DocumentGenerator {
 		}
 
 		for (TreeObject element : group.getChildren()) {
-			generateAndAddTreeObject(document, element);
-		}
-	}
-
-	private void generateAndAddSubcategory(Document document, Subcategory subcategory) throws DocumentException {
-		ParagraphGenerator.generateAndAddSubtitle(document, subcategory.getLabel(), PdfAlign.ALIGN_LEFT);
-
-		for (TreeObject element : subcategory.getChildren()) {
 			generateAndAddTreeObject(document, element);
 		}
 	}

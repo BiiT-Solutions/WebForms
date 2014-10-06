@@ -175,6 +175,7 @@ public class WindowAcceptCancel extends Window {
 	public void showCentered() {
 		center();
 		UI.getCurrent().addWindow(this);
+		focus();
 	}
 
 	/**

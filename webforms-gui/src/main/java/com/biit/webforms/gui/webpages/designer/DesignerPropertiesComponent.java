@@ -9,7 +9,6 @@ public class DesignerPropertiesComponent extends PropertiesComponent{
 		super();
 		registerPropertiesComponent(new PropertiesForm());
 		registerPropertiesComponent(new PropertiesCategory());
-		registerPropertiesComponent(new PropertiesSubcategory());
 		registerPropertiesComponent(new PropertiesGroup());
 		registerPropertiesComponent(new PropertiesQuestion());
 		registerPropertiesComponent(new PropertiesText());

@@ -29,7 +29,8 @@ import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.webforms.persistence.entity.enumerations.FormWorkStatus;
+import com.biit.webforms.computed.ComputedRuleView;
+import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToForm;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
@@ -38,7 +39,7 @@ import com.liferay.portal.model.User;
 @Table(name = "tree_forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "label", "version",
 		"organizationId" }) })
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH))
-@Cache(region="forms", usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "forms", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Form extends BaseForm {
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
@@ -164,8 +165,8 @@ public class Form extends BaseForm {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
-	 * goes to the next element)
+	 * This method creates a ComputeRuleView with all the current rules and the
+	 * implicit rules (question without rule goes to the next element)
 	 * 
 	 * @return
 	 */
@@ -277,7 +278,10 @@ public class Form extends BaseForm {
 				continue;
 			}
 		}
-
 		return formSeed;
+	}
+
+	public void removeRule(Rule dbRule) {
+		rules.remove(dbRule);
 	}
 }

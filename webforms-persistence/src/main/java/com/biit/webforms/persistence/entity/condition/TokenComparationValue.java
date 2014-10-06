@@ -1,0 +1,114 @@
+package com.biit.webforms.persistence.entity.condition;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.TokenTypes;
+import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
+
+@Entity
+@Table(name = "token_comparation_value")
+public class TokenComparationValue extends Token {
+
+	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.LT,
+			TokenTypes.GT, TokenTypes.LE, TokenTypes.GE };
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Question question;
+
+	@Enumerated(EnumType.STRING)
+	public AnswerSubformat subformat;
+
+	public String value;
+
+	public TokenComparationValue() {
+		super();
+	}
+
+	public TokenComparationValue(TokenTypes tokenType) throws NotValidTokenType {
+		super(tokenType);
+	}
+
+	@Override
+	public TokenTypes[] getValidTokenTypes() {
+		return tokenTypes;
+	}
+
+	public void setContent(Question reference, TokenTypes tokenType, AnswerSubformat subformat, String value)
+			throws NotValidTokenType {
+		this.setType(tokenType);
+		this.question = reference;
+		this.subformat = subformat;
+		this.value = value;
+	}
+
+	public void setContent(TokenTypes tokenType, AnswerSubformat subformat, String value) throws NotValidTokenType {
+		setContent(this.question, tokenType, subformat, value);
+	}
+
+	public static TokenComparationValue getToken(TokenTypes tokenType, Question reference,
+			AnswerSubformat subformat, String value) {
+		try {
+			TokenComparationValue token = new TokenComparationValue();
+			token.setContent(reference, tokenType, subformat, value);
+			return token;
+		} catch (NotValidTokenType e) {
+			WebformsLogger.errorMessage(TokenComparationValue.class.getName(), e);
+			return null;
+		}
+	}
+
+	public static TokenComparationValue getTokenEqual(Question reference, AnswerSubformat subformat,
+			String value) {
+		return getToken(TokenTypes.EQ, reference, subformat, value);
+	}
+
+	public static TokenComparationValue getTokenNotEqual(Question reference, AnswerSubformat subformat,
+			String value) {
+		return getToken(TokenTypes.NE, reference, subformat, value);
+	}
+
+	public static TokenComparationValue getTokenLessThan(Question reference, AnswerSubformat subformat,
+			String value) {
+		return getToken(TokenTypes.LT, reference, subformat, value);
+	}
+
+	public static TokenComparationValue getTokenGreaterThan(Question reference, AnswerSubformat subformat,
+			String value) {
+		return getToken(TokenTypes.GT, reference, subformat, value);
+	}
+
+	public static TokenComparationValue getTokenLessEqual(Question reference, AnswerSubformat subformat,
+			String value) {
+		return getToken(TokenTypes.LE, reference, subformat, value);
+	}
+
+	public static TokenComparationValue getTokenGreaterEqual(Question reference, AnswerSubformat subformat,
+			String value) {
+		return getToken(TokenTypes.LE, reference, subformat, value);
+	}
+
+	@Override
+	public String toString() {
+		String referenceString = null;
+		if (question != null) {
+			referenceString = question.getPathName();
+		}
+		return referenceString + getType() + value;
+	}
+
+	public Question getQuestion() {
+		return question;
+	}
+
+	public String getValue() {
+		return value;
+	}
+}

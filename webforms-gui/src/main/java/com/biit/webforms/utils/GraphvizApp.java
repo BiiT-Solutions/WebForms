@@ -5,9 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import com.biit.form.TreeObject;
+import com.biit.webforms.computed.FilteredForm;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.FilteredForm;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.exceptions.ExecutableCanNotBeExecuted;
 import com.biit.webforms.utils.exceptions.PathToExecutableNotFound;
