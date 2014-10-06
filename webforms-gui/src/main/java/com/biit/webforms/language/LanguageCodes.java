@@ -262,6 +262,8 @@ public enum LanguageCodes implements ILanguageCode{
 	
 	NULL_VALUE_SEARCH_ORIGIN("null.value.search.origin"),
 	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),
+	
+	ERROR_USER_SERVICE("error.userService"),
 	;
 
 	private String value;
