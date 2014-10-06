@@ -22,6 +22,7 @@ import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
+import com.vaadin.data.Container.Filter;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
@@ -239,5 +240,13 @@ public class ConditionEditor extends CustomComponent {
 
 	public void clean() {
 		tokenDisplay.clean();
+	}
+
+	public void removeFilter(Filter filter) {
+		controls.removeFilter(filter);
+	}
+
+	public void addFilter(Filter filter) {
+		controls.addFilter(filter);
 	}
 }

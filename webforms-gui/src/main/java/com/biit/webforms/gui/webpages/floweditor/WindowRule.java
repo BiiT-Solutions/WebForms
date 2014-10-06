@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.biit.form.TreeObject;
 import com.biit.webforms.enumerations.RuleType;
+import com.biit.webforms.gui.common.components.FilterByTreeObjectOrderGreater;
+import com.biit.webforms.gui.common.components.FilterByTreeObjectOrderGreaterEqual;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.language.LanguageCodes;
@@ -46,9 +48,13 @@ public class WindowRule extends WindowAcceptCancel {
 	private ComboBox ruleTypeSelector;
 	private CheckBox others;
 	private ConditionEditor conditionEditor;
+	private FilterByTreeObjectOrderGreater filterByTreeObjectOrderGreater;
+	private FilterByTreeObjectOrderGreaterEqual filterByTreeObjectOrderGreaterEqual;
 
 	public WindowRule() {
 		super();
+		filterByTreeObjectOrderGreater = new FilterByTreeObjectOrderGreater();
+		filterByTreeObjectOrderGreaterEqual = new FilterByTreeObjectOrderGreaterEqual();
 		setContent(generateContent());
 		setResizable(false);
 		setDraggable(false);
@@ -127,31 +133,50 @@ public class WindowRule extends WindowAcceptCancel {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				RuleType type = (RuleType) event.getProperty().getValue();
-				if (type==null || type.isDestinyNull()) {
+				if (type == null || type.isDestinyNull()) {
 					searchDestiny.clear();
 				}
 				updateSearchDestinyEnabledState();
+				updateSearchTreeObjectFilters();
 			}
 		});
 		return ruleTypeSelector;
 	}
 
-	protected void updateRuleTypeSelector() { 		
-		if(searchOrigin.getValue()==null){
+	protected void updateSearchTreeObjectFilters() {
+		searchDestiny.removeFilter(filterByTreeObjectOrderGreater);
+		if (searchOrigin.getValue() != null) {
+			filterByTreeObjectOrderGreater.setFilterSeed((TreeObject) searchOrigin.getValue());
+			searchDestiny.addFilter(filterByTreeObjectOrderGreater);
+		}
+		conditionEditor.removeFilter(filterByTreeObjectOrderGreaterEqual);
+		if (searchOrigin.getValue() != null) {
+			filterByTreeObjectOrderGreaterEqual.setFilterSeed((TreeObject) searchOrigin.getValue());
+			conditionEditor.addFilter(filterByTreeObjectOrderGreaterEqual);
+		}		
+	}
+
+	protected void updateRuleTypeSelector() {
+		if (searchOrigin.getValue() == null) {
 			ruleTypeSelector.setValue(null);
 			ruleTypeSelector.removeAllItems();
 			ruleTypeSelector.setEnabled(false);
-		}else{
+		} else {
 			RuleType currentRuleType = (RuleType) ruleTypeSelector.getValue();
-			//If the selected ruleType requires repeatable group and current element is not in a repeatable group then, reset the type.
-			if(currentRuleType==null || (currentRuleType.isOnlyInRepeatableGroups() &&  !((Question)searchOrigin.getValue()).isInRepeatableGroup())){
-				//Reset currentRuleType
+			// If the selected ruleType requires repeatable group and current
+			// element is not in a repeatable group then, reset the type.
+			if (currentRuleType == null
+					|| (currentRuleType.isOnlyInRepeatableGroups() && !((Question) searchOrigin.getValue())
+							.isInRepeatableGroup())) {
+				// Reset currentRuleType
 				currentRuleType = RuleType.getDefaultRuleType();
 			}
-			
+
 			ruleTypeSelector.removeAllItems();
 			for (RuleTypeUi ruleType : RuleTypeUi.values()) {
-				if (ruleType.getType().isOnlyInRepeatableGroups() && (searchOrigin.getValue()==null|| !((Question)searchOrigin.getValue()).isInRepeatableGroup())) {
+				if (ruleType.getType().isOnlyInRepeatableGroups()
+						&& (searchOrigin.getValue() == null || !((Question) searchOrigin.getValue())
+								.isInRepeatableGroup())) {
 					continue;
 				}
 				ruleTypeSelector.addItem(ruleType.getType());

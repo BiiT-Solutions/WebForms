@@ -5,6 +5,8 @@ import com.biit.webforms.gui.common.components.TableWithSearch;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.biit.webforms.persistence.entity.Form;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Component;
@@ -91,6 +93,11 @@ public class WindowTreeObject extends WindowAcceptCancel {
 	public void setSelectableFilers(Class<?>... selectFilters) {
 		this.selectFilters = selectFilters;
 		updateAcceptButtonState();
+	}
+
+	public void addFilter(Filter filter) {
+		Filterable container = (Filterable) formTable.getContainerDataSource();
+		container.addContainerFilter(filter);
 	}
 
 }

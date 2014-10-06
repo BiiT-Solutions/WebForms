@@ -23,6 +23,8 @@ import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.theme.ThemeIcons;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
@@ -216,8 +218,8 @@ public class ConditionEditorControls extends TabSheet {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				fireInsertTokenListeners(TokenComparationAnswer.getTokenEqual(
-						(Question) treeObjectTable.getValue(), (Answer) answerTable.getValue()));
+				fireInsertTokenListeners(TokenComparationAnswer.getTokenEqual((Question) treeObjectTable.getValue(),
+						(Answer) answerTable.getValue()));
 			}
 		});
 		insertNeAnswer = new Button(TokenTypes.NE.toString());
@@ -227,8 +229,8 @@ public class ConditionEditorControls extends TabSheet {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				fireInsertTokenListeners(TokenComparationAnswer.getTokenNotEqual(
-						(Question) treeObjectTable.getValue(), (Answer) answerTable.getValue()));
+				fireInsertTokenListeners(TokenComparationAnswer.getTokenNotEqual((Question) treeObjectTable.getValue(),
+						(Answer) answerTable.getValue()));
 			}
 		});
 
@@ -325,7 +327,7 @@ public class ConditionEditorControls extends TabSheet {
 		});
 		return button;
 	}
-	
+
 	private Button createTokenButton(String string, final TokenTypes tokenType) {
 		Button button = new Button(string);
 		button.setWidth(FULL);
@@ -414,5 +416,13 @@ public class ConditionEditorControls extends TabSheet {
 
 	public TextField getValueField() {
 		return value;
+	}
+
+	public void addFilter(Filter filter) {
+		((Filterable)treeObjectTable.getContainerDataSource()).addContainerFilter(filter);
+	}
+
+	public void removeFilter(Filter filter) {
+		((Filterable)treeObjectTable.getContainerDataSource()).removeContainerFilter(filter);
 	}
 }
