@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.biit.webforms.gui.common.components.StringToTimestampConverter;
+import com.biit.webforms.gui.webpages.floweditor.listeners.EditItemAction;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.language.RuleTypeUi;
 import com.biit.webforms.persistence.entity.Rule;
@@ -18,7 +19,7 @@ import com.vaadin.ui.Table;
 
 public class TableRules extends Table {
 	private static final long serialVersionUID = -296543725516584972L;
-	private static final String NEW_RULE = "NEW_RULE";
+	private static final String NEW_RULE_ID = "NEW_RULE";
 	private static final String EMPTY_TEXT = "--------";
 
 	public interface NewItemAction {
@@ -33,7 +34,7 @@ public class TableRules extends Table {
 	private List<EditItemAction> editItemListeners;
 
 	public Object getNewRuleId() {
-		return NEW_RULE;
+		return NEW_RULE_ID;
 	}
 
 	public TableRules() {
@@ -47,11 +48,11 @@ public class TableRules extends Table {
 			@Override
 			public void itemClick(ItemClickEvent event) {
 				Object itemId = event.getItemId();
-				if (itemId.equals(NEW_RULE) && event.isDoubleClick()) {
+				if (itemId.equals(NEW_RULE_ID) && event.isDoubleClick()) {
 					fireNewItemActionListener();
 					return;
 				}
-				if (!itemId.equals(NEW_RULE) && event.isDoubleClick()) {
+				if (!itemId.equals(NEW_RULE_ID) && event.isDoubleClick()) {
 					fireEditItemActionListener((Rule) event.getItemId());
 					return;
 				}
@@ -80,11 +81,11 @@ public class TableRules extends Table {
 	@SuppressWarnings("unchecked")
 	private void addCleanRow() {
 
-		Item cleanRow = getItem(NEW_RULE);
+		Item cleanRow = getItem(NEW_RULE_ID);
 		if (cleanRow != null) {
-			removeItem(NEW_RULE);
+			removeItem(NEW_RULE_ID);
 		}
-		cleanRow = addItem(NEW_RULE);
+		cleanRow = addItem(NEW_RULE_ID);
 		cleanRow.getItemProperty(TableRuleProperties.ORIGIN).setValue(EMPTY_TEXT);
 		cleanRow.getItemProperty(TableRuleProperties.TYPE).setValue(EMPTY_TEXT);
 		cleanRow.getItemProperty(TableRuleProperties.DESTINY).setValue(EMPTY_TEXT);
@@ -181,13 +182,13 @@ public class TableRules extends Table {
 	 */
 	@SuppressWarnings("unchecked")
 	public void setItemProperties(Rule rule, Item item) {
-		item.getItemProperty(TableRuleProperties.ORIGIN).setValue(rule.getOrigin().getName());
+		item.getItemProperty(TableRuleProperties.ORIGIN).setValue(rule.getOrigin().getPathName());
 
 		item.getItemProperty(TableRuleProperties.TYPE).setValue(RuleTypeUi.getTranslation(rule.getRuleType()));
 
 		String destiny = "";
 		if (rule.getDestiny() != null) {
-			destiny = rule.getDestiny().getName();
+			destiny = rule.getDestiny().getPathName();
 		}
 		item.getItemProperty(TableRuleProperties.DESTINY).setValue(destiny);
 

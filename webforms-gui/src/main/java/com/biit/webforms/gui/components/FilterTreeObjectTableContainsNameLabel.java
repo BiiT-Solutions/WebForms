@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.components;
 
+import com.biit.form.TreeObject;
 import com.biit.webforms.gui.common.components.FilterTreeObjectTableContainsName;
 import com.vaadin.data.Item;
 
@@ -13,16 +14,7 @@ public class FilterTreeObjectTableContainsNameLabel extends FilterTreeObjectTabl
 
 	@Override
 	public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-		if (super.passesFilter(itemId, item)) {
-			return true;
-		}
-
-		String name = ((String) item.getItemProperty(
-				TableTreeObjectLabel.TreeObjectTableDesignerProperties.ELEMENT_LABEL).getValue()).toLowerCase();
-		if (name.contains(getFilterText())) {
-			return true;
-		}
-		return false;
+		return checkIfTreeObjectPasses((TreeObject) itemId);
 	}
 
 	@Override
@@ -31,5 +23,22 @@ public class FilterTreeObjectTableContainsNameLabel extends FilterTreeObjectTabl
 			return true;
 		}
 		return super.appliesToProperty(propertyId);
+	}
+
+	public boolean checkIfTreeObjectPasses(TreeObject element) {
+		if (checkNameWithFilter(element)) {
+			return true;
+		}
+
+		String label = element.getLabel().toLowerCase();
+		if (label.contains(getFilterText())) {
+			return true;
+		}
+
+		if (element.getParent() == null) {
+			return false;
+		} else {
+			return checkIfTreeObjectPasses(element.getParent());
+		}
 	}
 }

@@ -33,6 +33,8 @@ public class Rule extends StorableObject {
 	// uniqueConstraints = { @UniqueConstraint(columnNames = { "origin_id",
 	// "destiny_id" }) }
 
+	private static final String TOKEN_SEPARATOR = " ";
+	
 	/*
 	 * Hibernate changes name of column when you use a many-to-one relationship.
 	 * If you want to add a constraint attached to that column, you have to
@@ -148,8 +150,9 @@ public class Rule extends StorableObject {
 	 */
 	public String getConditionString() {
 		String conditionString = new String();
+		
 		for (Token token : condition) {
-			conditionString += token;
+			conditionString += token + TOKEN_SEPARATOR;
 		}
 
 		return conditionString;
@@ -213,7 +216,7 @@ public class Rule extends StorableObject {
 
 	public void updateConditionSortSeq() {
 		for (int i = 0; i < condition.size(); i++) {
-			condition.get(0).setSortSeq(i);
+			condition.get(i).setSortSeq(i);
 		}
 	}
 }

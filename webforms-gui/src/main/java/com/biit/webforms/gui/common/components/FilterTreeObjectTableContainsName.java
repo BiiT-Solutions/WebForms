@@ -13,13 +13,7 @@ public class FilterTreeObjectTableContainsName implements IFilterContainsText {
 
 	@Override
 	public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-		TreeObject treeObject = (TreeObject) itemId;
-		String name = treeObject.getName().toLowerCase();
-
-		if (name.contains(getFilterText())) {
-			return true;
-		}
-		return false;
+		return checkIfTreeObjectPasses((TreeObject) itemId);
 	}
 
 	@Override
@@ -31,6 +25,27 @@ public class FilterTreeObjectTableContainsName implements IFilterContainsText {
 			return true;
 		}
 		return false;
+	}
+
+	protected boolean checkNameWithFilter(TreeObject element) {
+		String name = element.getName().toLowerCase();
+
+		if (name.contains(getFilterText())) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean checkIfTreeObjectPasses(TreeObject element) {
+		if (checkNameWithFilter(element)) {
+			return true;
+		}
+
+		if (element.getParent() == null) {
+			return false;
+		} else {
+			return checkIfTreeObjectPasses(element.getParent());
+		}
 	}
 
 	@Override

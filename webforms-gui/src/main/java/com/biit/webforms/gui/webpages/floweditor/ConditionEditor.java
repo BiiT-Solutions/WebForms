@@ -1,5 +1,15 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+import java.util.List;
+
+import com.biit.webforms.condition.parser.ExpectedTokenNotFound;
+import com.biit.webforms.condition.parser.WebformsParser;
+import com.biit.webforms.condition.parser.exceptions.EmptyParenthesisException;
+import com.biit.webforms.condition.parser.exceptions.ExpressionNotWellFormedException;
+import com.biit.webforms.condition.parser.exceptions.IncompleteBinaryOperatorException;
+import com.biit.webforms.condition.parser.exceptions.MissingParenthesisException;
+import com.biit.webforms.condition.parser.exceptions.NoMoreTokensException;
+import com.biit.webforms.condition.parser.exceptions.ParseException;
 import com.biit.webforms.gui.common.components.StatusLabel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -84,7 +94,6 @@ public class ConditionEditor extends CustomComponent {
 
 			@Override
 			public void insert(Token token) {
-				System.out.println("Insert: "+token);
 				tokenDisplay.addToken(token);
 			}
 		});
@@ -181,9 +190,22 @@ public class ConditionEditor extends CustomComponent {
 		return validator;
 	}
 
-	protected void isConditionValid() {
-		// TODO Auto-generated method stub
+	protected boolean isConditionValid() {
+		// Translation
+		try {
+			WebformsParser parser = new WebformsParser(getTokens().iterator());
+			parser.parseCompleteExpression();
+			status.setOkText("Condition is valid");
+			return true;
+		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException | IncompleteBinaryOperatorException
+				| MissingParenthesisException | ExpressionNotWellFormedException | EmptyParenthesisException e) {
+			status.setErrorText(e.getMessage());
+			return false;
+		}
+	}
 
+	public List<Token> getTokens() {
+		return tokenDisplay.getTokens();
 	}
 
 	/**

@@ -19,13 +19,13 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormFlowViewer;
-import com.biit.webforms.gui.webpages.floweditor.EditItemAction;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.gui.webpages.floweditor.TableRules;
 import com.biit.webforms.gui.webpages.floweditor.TableRules.NewItemAction;
 import com.biit.webforms.gui.webpages.floweditor.UpperMenuFlowEditor;
 import com.biit.webforms.gui.webpages.floweditor.WindowRule;
+import com.biit.webforms.gui.webpages.floweditor.listeners.EditItemAction;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
@@ -33,7 +33,6 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Rule;
-import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
 import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
@@ -472,10 +471,9 @@ public class FlowEditor extends SecuredWebPage {
 						MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 								LanguageCodes.WARNING_DESCRIPTION_CONDITION_BAD_FORMED);
 					} else {
-						//TODO change this!
 						UserSessionHandler.getController().updateRuleContent(rule, windowRule.getOrigin(),
 								windowRule.getRuleType(), windowRule.getDestiny(), windowRule.isOthers(),
-								new ArrayList<Token>());
+								windowRule.getCondition());
 						addOrUpdateRuleInTableAction(rule);
 						window.close();
 					}

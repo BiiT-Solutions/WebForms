@@ -102,6 +102,11 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			List<Form> results = criteria.list();
 			initializeSets(results);
 			session.getTransaction().commit();
+			// For solving Hibernate bug
+			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
+			// list of children
+			// with @Orderby or @OrderColumn we use our own order manager.
+			sortChildren(results);
 			if (!results.isEmpty()) {
 				return (Form) results.get(0);
 			}
@@ -125,6 +130,11 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			List<Form> results = criteria.list();
 			initializeSets(results);
 			session.getTransaction().commit();
+			// For solving Hibernate bug
+			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
+			// list of children
+			// with @Orderby or @OrderColumn we use our own order manager.
+			sortChildren(results);
 			if (!results.isEmpty()) {
 				return (Form) results.get(0);
 			}
@@ -172,7 +182,6 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			}
 			initializeSets(result);
 			session.getTransaction().commit();
-
 			// For solving Hibernate bug
 			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
 			// list of children

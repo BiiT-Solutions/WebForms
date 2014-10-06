@@ -246,7 +246,6 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
-					System.out.println(selectedRow+" "+selectedRow.getClass().getName());
 					Answer newAnswer;
 					if (selectedRow instanceof BaseAnswer) {
 						Question parentQuestion = (Question) selectedRow.getAncestor(Question.class);
