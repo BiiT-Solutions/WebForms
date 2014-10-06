@@ -55,7 +55,7 @@ public class SearchFormElementField extends SearchButtonField {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				TreeObject reference = windowTreeObject.getSelectedTreeObject();
-				setValue(reference, reference.getName());
+				setValue(reference, reference.getPathName());
 				windowTreeObject.close();
 			}
 		});
