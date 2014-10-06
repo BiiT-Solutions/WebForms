@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.biit.liferay.access.UserGroupService;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.AuthorizationService;
 import com.biit.liferay.security.IActivity;
@@ -53,7 +52,7 @@ public class WebformsAuthorizationService extends AuthorizationService {
 	private static final WebformsActivity[] WEBFORMS_ADMINISTRATOR_EXTRA_PERMISSIONS = {
 
 	WebformsActivity.FORM_STATUS_DOWNGRADE,
-	
+
 	WebformsActivity.ADMIN_RIGHTS,
 
 	};
@@ -86,11 +85,8 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		return instance;
 	}
 
-	private UserGroupService userGroupService = new UserGroupService();
-
 	public WebformsAuthorizationService() {
 		super();
-		userGroupService.serverConnection();
 	}
 
 	/**
@@ -123,40 +119,6 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		}
 		return activities;
 	}
-
-	// public boolean isAuthorizedActivity(User user, Form form, IActivity
-	// activity) {
-	// try {
-	// UserGroup userGroup =
-	// userGroupService.getUserGroup(form.getUserGroupId());
-	// return isAuthorizedActivity(user, userGroup, activity);
-	// } catch (NotConnectedToWebServiceException |
-	// UserGroupDoesNotExistException | IOException
-	// | AuthenticationRequired | WebServiceAccessError e) {
-	// WebformsLogger.errorMessage(this.getClass().getName(), e);
-	// }
-	// return false;
-	// }
-	//
-	// public boolean isAuthorizedActivity(User user, UserGroup group, IActivity
-	// activity) {
-	// try {
-	// List<UserGroup> userGroups = getUserGroups(user);
-	// if (!userGroups.contains(group)) {
-	// // User is not assigned to that user group.
-	// return false;
-	// }
-	// // Now check the roles of the user in the group.
-	// List<Role> userRolesForGroup = getUserGroupRoles(group);
-	// Set<IActivity> userActivitiesForGroup =
-	// getActivitiesOfRoles(userRolesForGroup);
-	// return userActivitiesForGroup.contains(activity);
-	//
-	// } catch (IOException | AuthenticationRequired e) {
-	// WebformsLogger.errorMessage(this.getClass().getName(), e);
-	// }
-	// return false;
-	// }
 
 	public Set<IActivity> getActivitiesOfRoles(List<Role> roles) {
 		Set<IActivity> activities = new HashSet<>();
@@ -195,7 +157,7 @@ public class WebformsAuthorizationService extends AuthorizationService {
 			return isAuthorizedActivity(user, organization, activity);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			//For security
+			// For security
 			return false;
 		}
 	}
@@ -231,8 +193,8 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		}
 		return organizations;
 	}
-	
-	public boolean isAuthorizedToForm(Form form, User user){
+
+	public boolean isAuthorizedToForm(Form form, User user) {
 		boolean formIsBlock = form instanceof Block;
 		boolean formIsInDesign = form.getStatus() == FormWorkStatus.DESIGN;
 		boolean blockEditAuthorized = isAuthorizedActivity(user, form, WebformsActivity.BUILDING_BLOCK_EDITING);
@@ -241,32 +203,13 @@ public class WebformsAuthorizationService extends AuthorizationService {
 	}
 
 	public boolean isFormEditable(Form form, User user) {
-		boolean userLockedForm = UiAccesser.isUserUserUsingForm(user,form);	
+		boolean userLockedForm = UiAccesser.isUserUserUsingForm(user, form);
 		return userLockedForm && isAuthorizedToForm(form, user);
 	}
 
 	public boolean isFormReadOnly(Form form, User user) {
-		boolean formIsInUse = UiAccesser.getUserUsingForm(form)!=null;
-		return (!formIsInUse && !isAuthorizedToForm(form, user)) || (formIsInUse && UiAccesser.getUserUsingForm(form)!=user);
+		boolean formIsInUse = UiAccesser.getUserUsingForm(form) != null;
+		return (!formIsInUse && !isAuthorizedToForm(form, user))
+				|| (formIsInUse && UiAccesser.getUserUsingForm(form) != user);
 	}
-
-	//
-	// @Override
-	// public boolean isAuthorizedActivity(User user, IActivity activity) throws
-	// IOException, AuthenticationRequired {
-	// if (user == null) {
-	// return false;
-	// }
-	// // Is it in the pool?
-	// Boolean authorized = authorizationPool.isAuthorizedActivity(user,
-	// activity);
-	// if (authorized != null) {
-	// return authorized;
-	// }
-	//
-	// // Calculate authorization.
-	// authorized = getUserActivitiesAllowed(user).contains(activity);
-	// authorizationPool.addUser(user, activity, authorized);
-	// return authorized;
-	// }
 }
