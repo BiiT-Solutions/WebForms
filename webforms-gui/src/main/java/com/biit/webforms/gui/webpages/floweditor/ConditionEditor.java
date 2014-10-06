@@ -2,6 +2,7 @@ package com.biit.webforms.gui.webpages.floweditor;
 
 import java.util.List;
 
+import com.biit.form.TreeObject;
 import com.biit.webforms.condition.parser.ExpectedTokenNotFound;
 import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.condition.parser.exceptions.EmptyParenthesisException;
@@ -230,5 +231,13 @@ public class ConditionEditor extends CustomComponent {
 
 	public void addToken(Token token) {
 		tokenDisplay.addToken(token);
+	}
+
+	public void selectReferenceElement(TreeObject treeObject) {
+		controls.selectTreeObject(treeObject);
+	}
+
+	public void clean() {
+		tokenDisplay.clean();
 	}
 }

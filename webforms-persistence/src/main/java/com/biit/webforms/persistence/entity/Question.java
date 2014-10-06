@@ -10,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 import com.biit.form.BaseQuestion;
+import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
@@ -187,5 +188,16 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 			representation = "<" + parents.get(i).getName() + ">" + representation;
 		}
 		return representation;
+	}
+
+	public boolean isInRepeatableGroup() {
+		TreeObject ancestor = getAncestor(BaseRepeatableGroup.class,false);
+		while(ancestor!=null){
+			if(((BaseRepeatableGroup)ancestor).isRepeatable()){
+				return true;
+			}
+			ancestor = ancestor.getAncestor(BaseRepeatableGroup.class,false);
+		}
+		return false;
 	}
 }

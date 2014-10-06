@@ -76,9 +76,6 @@ public class WindowRule extends WindowAcceptCancel {
 
 		rootLayout.setExpandRatio(conditionEditor, 1.0f);
 
-		// Initialize component default values.
-		ruleTypeSelector.setValue(RuleType.NORMAL);
-
 		return rootLayout;
 	}
 
@@ -115,7 +112,7 @@ public class WindowRule extends WindowAcceptCancel {
 		searchDestiny.setTreeObject(rule.getDestiny());
 		others.setValue(rule.isOthers());
 		if (!rule.isOthers()) {
-			for(Token token: rule.getCondition()){
+			for (Token token : rule.getCondition()) {
 				conditionEditor.addToken(token);
 			}
 		}
@@ -124,25 +121,54 @@ public class WindowRule extends WindowAcceptCancel {
 	private Component generateRuleType() {
 		ruleTypeSelector = new ComboBox(LanguageCodes.CAPTION_RULE_TYPE.translation());
 		ruleTypeSelector.setNullSelectionAllowed(false);
-		for (RuleTypeUi ruleType : RuleTypeUi.values()) {
-			ruleTypeSelector.addItem(ruleType.getType());
-			ruleTypeSelector.setItemCaption(ruleType.getType(), ruleType.getLanguageCode().translation());
-		}
 		ruleTypeSelector.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = 3216484668507720639L;
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				RuleType type = (RuleType) event.getProperty().getValue();
-				if (type.isDestinyNull()) {
+				if (type==null || type.isDestinyNull()) {
 					searchDestiny.clear();
-					searchDestiny.setEnabled(false);
-				} else {
-					searchDestiny.setEnabled(true);
 				}
+				updateSearchDestinyEnabledState();
 			}
 		});
 		return ruleTypeSelector;
+	}
+
+	protected void updateRuleTypeSelector() { 		
+		if(searchOrigin.getValue()==null){
+			ruleTypeSelector.setValue(null);
+			ruleTypeSelector.removeAllItems();
+			ruleTypeSelector.setEnabled(false);
+		}else{
+			RuleType currentRuleType = (RuleType) ruleTypeSelector.getValue();
+			//If the selected ruleType requires repeatable group and current element is not in a repeatable group then, reset the type.
+			if(currentRuleType==null || (currentRuleType.isOnlyInRepeatableGroups() &&  !((Question)searchOrigin.getValue()).isInRepeatableGroup())){
+				//Reset currentRuleType
+				currentRuleType = RuleType.getDefaultRuleType();
+			}
+			
+			ruleTypeSelector.removeAllItems();
+			for (RuleTypeUi ruleType : RuleTypeUi.values()) {
+				if (ruleType.getType().isOnlyInRepeatableGroups() && (searchOrigin.getValue()==null|| !((Question)searchOrigin.getValue()).isInRepeatableGroup())) {
+					continue;
+				}
+				ruleTypeSelector.addItem(ruleType.getType());
+				ruleTypeSelector.setItemCaption(ruleType.getType(), ruleType.getLanguageCode().translation());
+			}
+			ruleTypeSelector.setValue(currentRuleType);
+			ruleTypeSelector.setEnabled(true);
+		}
+	}
+
+	protected void updateSearchDestinyEnabledState() {
+		if (searchOrigin.getValue() == null || ruleTypeSelector.getValue() == null
+				|| ((RuleType) ruleTypeSelector.getValue()).isDestinyNull()) {
+			searchDestiny.setEnabled(false);
+		} else {
+			searchDestiny.setEnabled(true);
+		}
 	}
 
 	private Component generateSearchOriginContent() {
@@ -154,12 +180,28 @@ public class WindowRule extends WindowAcceptCancel {
 
 			@Override
 			public void currentElement(Object object) {
-				// TODO
-				// conditionEditor.selectReferenceElement((TreeObject) object);
+				if (object != null) {
+					updateSearchDestiny();
+					updateConditionTreeObjectSearch((TreeObject) object);
+				} else {
+					searchDestiny.clear();
+				}
+				updateRuleTypeSelector();
+				updateSearchDestinyEnabledState();
 			}
 		});
 
 		return searchOrigin;
+	}
+
+	protected void updateConditionTreeObjectSearch(TreeObject treeObject) {
+		conditionEditor.selectReferenceElement(treeObject);
+		// TODO filter
+	}
+
+	protected void updateSearchDestiny() {
+		// TODO Auto-generated method stub
+
 	}
 
 	private Component generateSearchDestinyContent() {
@@ -167,6 +209,7 @@ public class WindowRule extends WindowAcceptCancel {
 		searchDestiny.setSelectableFilter(Question.class);
 		searchDestiny.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_DESTINY);
 		searchDestiny.setCaption(LanguageCodes.CAPTION_TO.translation());
+		searchDestiny.setEnabled(false);
 
 		return searchDestiny;
 	}
@@ -180,8 +223,7 @@ public class WindowRule extends WindowAcceptCancel {
 			public void valueChange(ValueChangeEvent event) {
 				if (others.getValue()) {
 					conditionEditor.setEnabled(false);
-					// TODO
-					// conditionEditor.clean();
+					conditionEditor.clean();
 				} else {
 					conditionEditor.setEnabled(true);
 				}

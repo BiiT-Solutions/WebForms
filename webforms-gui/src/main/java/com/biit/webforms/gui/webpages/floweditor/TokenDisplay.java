@@ -6,8 +6,8 @@ import java.util.List;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenDoubleClickListener;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenSingleClickListener;
 import com.biit.webforms.persistence.entity.condition.Token;
-import com.vaadin.event.ShortcutListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomComponent;
@@ -68,7 +68,7 @@ public class TokenDisplay extends CustomComponent {
 	private void addTokenUi(Token token) {
 		TokenComponent tokenUi = new TokenComponent(token);
 		tokenUi.addTokenSingleClick(autoselectListener);
-		for(TokenDoubleClickListener listener: tokenDoubleClickListeners){
+		for (TokenDoubleClickListener listener : tokenDoubleClickListeners) {
 			tokenUi.addTokenDoubleClick(listener);
 		}
 
@@ -105,12 +105,16 @@ public class TokenDisplay extends CustomComponent {
 		if (focusedComponent != null) {
 			TokenComponent temp = focusedComponent;
 			previous();
-			if(focusedComponent == temp){
+			if (focusedComponent == temp) {
 				focusedComponent = null;
 			}
-			((ComponentContainer) temp.getParent()).removeComponent(temp);
-			tokenComponents.remove(temp);
+			deleteTokenComponent(temp);
 		}
+	}
+
+	private void deleteTokenComponent(TokenComponent tokenComponent) {
+		((ComponentContainer) tokenComponent.getParent()).removeComponent(tokenComponent);
+		tokenComponents.remove(tokenComponent);
 	}
 
 	/**
@@ -162,16 +166,16 @@ public class TokenDisplay extends CustomComponent {
 		return lastLine;
 	}
 
-	public void addTokenDoubleClickListener(TokenDoubleClickListener listener){
-		//Adds to the list for future tokens
+	public void addTokenDoubleClickListener(TokenDoubleClickListener listener) {
+		// Adds to the list for future tokens
 		tokenDoubleClickListeners.add(listener);
-		//And registres for the already existing tokens.
-		for(TokenComponent tokenComponent: tokenComponents){
+		// And registres for the already existing tokens.
+		for (TokenComponent tokenComponent : tokenComponents) {
 			tokenComponent.addTokenDoubleClick(listener);
 		}
 	}
-	
-	public void defineShortcuts(){
+
+	public void defineShortcuts() {
 		deleteShotcut = new ShortcutListener("DELETE_SHORTCUT", KeyCode.DELETE, null) {
 			private static final long serialVersionUID = -71562151456777493L;
 
@@ -180,7 +184,7 @@ public class TokenDisplay extends CustomComponent {
 				delete();
 			}
 		};
-		
+
 		nextShortcut = new ShortcutListener("SELECT_NEXT", KeyCode.ARROW_RIGHT, null) {
 			private static final long serialVersionUID = 7663105045629599269L;
 
@@ -189,7 +193,7 @@ public class TokenDisplay extends CustomComponent {
 				next();
 			}
 		};
-		
+
 		previousShortcut = new ShortcutListener("SELECT_PREVIOUS", KeyCode.ARROW_LEFT, null) {
 			private static final long serialVersionUID = 8453120978479798559L;
 
@@ -199,16 +203,22 @@ public class TokenDisplay extends CustomComponent {
 			}
 		};
 	}
-	
+
 	public void enableShortcuts() {
 		addShortcutListener(deleteShotcut);
 		addShortcutListener(nextShortcut);
 		addShortcutListener(previousShortcut);
 	}
-	
+
 	public void disableShortcuts() {
 		removeShortcutListener(deleteShotcut);
 		removeShortcutListener(nextShortcut);
 		removeShortcutListener(previousShortcut);
+	}
+
+	public void clean() {
+		for (TokenComponent tokenComponent : tokenComponents) {
+			deleteTokenComponent(tokenComponent);
+		}
 	}
 }
