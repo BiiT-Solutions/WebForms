@@ -26,11 +26,11 @@ public class WindowNameGroup extends WindowAcceptCancel {
 
 	private TextField textField;
 	private ComboBox organizationField;
-	private IActivity[] exclusivePermisssionFilter;
+	private IActivity[] exclusivePermissionFilter;
 
-	public WindowNameGroup(String inputFieldCaption, String groupCaption, IActivity[] exclusivePermisssionFilter) {
+	public WindowNameGroup(String inputFieldCaption, String groupCaption, IActivity[] exclusivePermissionFilter) {
 		super();
-		this.exclusivePermisssionFilter = exclusivePermisssionFilter;
+		this.exclusivePermissionFilter = exclusivePermissionFilter;
 		setContent(generateContent(inputFieldCaption, groupCaption));
 		setResizable(false);
 		setDraggable(false);
@@ -66,7 +66,7 @@ public class WindowNameGroup extends WindowAcceptCancel {
 			Iterator<Organization> itr = organizations.iterator();
 			while(itr.hasNext()){
 				Organization organization = itr.next();
-				for(IActivity activity: exclusivePermisssionFilter){
+				for(IActivity activity: exclusivePermissionFilter){
 					//If the user doesn't comply to all activities in the filter in the group, then exit  
 					if(!WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(), organization, activity)){
 						itr.remove();
