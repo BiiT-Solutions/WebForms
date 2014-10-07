@@ -6,7 +6,7 @@ import java.util.List;
 import com.biit.form.TreeObject;
 import com.biit.webforms.enumerations.RuleType;
 import com.biit.webforms.gui.common.components.FilterByTreeObjectOrderGreater;
-import com.biit.webforms.gui.common.components.FilterByTreeObjectOrderGreaterEqual;
+import com.biit.webforms.gui.common.components.FilterByTreeObjectOrderLessEqual;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.language.LanguageCodes;
@@ -49,12 +49,12 @@ public class WindowRule extends WindowAcceptCancel {
 	private CheckBox others;
 	private ConditionEditor conditionEditor;
 	private FilterByTreeObjectOrderGreater filterByTreeObjectOrderGreater;
-	private FilterByTreeObjectOrderGreaterEqual filterByTreeObjectOrderGreaterEqual;
+	private FilterByTreeObjectOrderLessEqual filterByTreeObjectOrderLessEqual;
 
 	public WindowRule() {
 		super();
 		filterByTreeObjectOrderGreater = new FilterByTreeObjectOrderGreater();
-		filterByTreeObjectOrderGreaterEqual = new FilterByTreeObjectOrderGreaterEqual();
+		filterByTreeObjectOrderLessEqual = new FilterByTreeObjectOrderLessEqual();
 		setContent(generateContent());
 		setResizable(false);
 		setDraggable(false);
@@ -149,10 +149,10 @@ public class WindowRule extends WindowAcceptCancel {
 			filterByTreeObjectOrderGreater.setFilterSeed((TreeObject) searchOrigin.getValue());
 			searchDestiny.addFilter(filterByTreeObjectOrderGreater);
 		}
-		conditionEditor.removeFilter(filterByTreeObjectOrderGreaterEqual);
+		conditionEditor.removeFilter(filterByTreeObjectOrderLessEqual);
 		if (searchOrigin.getValue() != null) {
-			filterByTreeObjectOrderGreaterEqual.setFilterSeed((TreeObject) searchOrigin.getValue());
-			conditionEditor.addFilter(filterByTreeObjectOrderGreaterEqual);
+			filterByTreeObjectOrderLessEqual.setFilterSeed((TreeObject) searchOrigin.getValue());
+			conditionEditor.addFilter(filterByTreeObjectOrderLessEqual);
 		}		
 	}
 

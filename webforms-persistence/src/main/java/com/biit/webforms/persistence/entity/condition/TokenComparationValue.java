@@ -1,11 +1,15 @@
 package com.biit.webforms.persistence.entity.condition;
 
+import java.util.HashMap;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.transaction.NotSupportedException;
 
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.TokenTypes;
@@ -23,6 +27,7 @@ public class TokenComparationValue extends Token {
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Question question;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	public AnswerSubformat subformat;
 
@@ -53,8 +58,8 @@ public class TokenComparationValue extends Token {
 		setContent(this.question, tokenType, subformat, value);
 	}
 
-	public static TokenComparationValue getToken(TokenTypes tokenType, Question reference,
-			AnswerSubformat subformat, String value) {
+	public static TokenComparationValue getToken(TokenTypes tokenType, Question reference, AnswerSubformat subformat,
+			String value) {
 		try {
 			TokenComparationValue token = new TokenComparationValue();
 			token.setContent(reference, tokenType, subformat, value);
@@ -65,33 +70,27 @@ public class TokenComparationValue extends Token {
 		}
 	}
 
-	public static TokenComparationValue getTokenEqual(Question reference, AnswerSubformat subformat,
-			String value) {
+	public static TokenComparationValue getTokenEqual(Question reference, AnswerSubformat subformat, String value) {
 		return getToken(TokenTypes.EQ, reference, subformat, value);
 	}
 
-	public static TokenComparationValue getTokenNotEqual(Question reference, AnswerSubformat subformat,
-			String value) {
+	public static TokenComparationValue getTokenNotEqual(Question reference, AnswerSubformat subformat, String value) {
 		return getToken(TokenTypes.NE, reference, subformat, value);
 	}
 
-	public static TokenComparationValue getTokenLessThan(Question reference, AnswerSubformat subformat,
-			String value) {
+	public static TokenComparationValue getTokenLessThan(Question reference, AnswerSubformat subformat, String value) {
 		return getToken(TokenTypes.LT, reference, subformat, value);
 	}
 
-	public static TokenComparationValue getTokenGreaterThan(Question reference, AnswerSubformat subformat,
-			String value) {
+	public static TokenComparationValue getTokenGreaterThan(Question reference, AnswerSubformat subformat, String value) {
 		return getToken(TokenTypes.GT, reference, subformat, value);
 	}
 
-	public static TokenComparationValue getTokenLessEqual(Question reference, AnswerSubformat subformat,
-			String value) {
+	public static TokenComparationValue getTokenLessEqual(Question reference, AnswerSubformat subformat, String value) {
 		return getToken(TokenTypes.LE, reference, subformat, value);
 	}
 
-	public static TokenComparationValue getTokenGreaterEqual(Question reference, AnswerSubformat subformat,
-			String value) {
+	public static TokenComparationValue getTokenGreaterEqual(Question reference, AnswerSubformat subformat, String value) {
 		return getToken(TokenTypes.LE, reference, subformat, value);
 	}
 
@@ -110,5 +109,30 @@ public class TokenComparationValue extends Token {
 
 	public String getValue() {
 		return value;
+	}
+
+	public AnswerSubformat getSubformat() {
+		return subformat;
+	}
+
+	@Override
+	public void copyData(Token token) throws NotSupportedException {
+		super.copyData(token);
+		if (!(token instanceof TokenComparationValue)) {
+			throw new NotSupportedException();
+		}
+		this.question = ((TokenComparationValue) token).question;
+		this.subformat = ((TokenComparationValue) token).subformat;
+		this.value = ((TokenComparationValue) token).value;
+	}
+
+	/**
+	 * Method to update references in a TokenComparationValue
+	 * 
+	 * @param mappedCopiedQuestions
+	 * @throws UpdateNullReferenceException
+	 */
+	public void updateReferences(HashMap<Question, Question> mappedCopiedQuestions) {
+		question = mappedCopiedQuestions.get(question);
 	}
 }

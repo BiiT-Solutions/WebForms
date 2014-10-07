@@ -4,7 +4,7 @@ import com.biit.form.TreeObject;
 import com.vaadin.data.Item;
 import com.vaadin.data.Container.Filter;
 
-public class FilterByTreeObjectOrderGreaterEqual implements Filter {
+public class FilterByTreeObjectOrderLessEqual implements Filter {
 
 	private static final long serialVersionUID = -7366271561916347424L;
 
@@ -13,7 +13,7 @@ public class FilterByTreeObjectOrderGreaterEqual implements Filter {
 	@Override
 	public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
 		TreeObject treeObject = (TreeObject) itemId;
-		if (filterSeed.compareTo(treeObject) > 0) {
+		if (filterSeed.compareTo(treeObject) < 0) {
 			return false;
 		} else {
 			return true;

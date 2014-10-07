@@ -1,15 +1,17 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenDoubleClickListener;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenSingleClickListener;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
@@ -17,6 +19,8 @@ import com.vaadin.ui.VerticalLayout;
 public class TokenDisplay extends CustomComponent {
 	private static final long serialVersionUID = 5091855550351857003L;
 	private static final String CLASSNAME = "token-display";
+	private static final String LINE_HEIGHT = "32px";
+	private static final String FULL = "100%";
 
 	private List<TokenComponent> tokenComponents;
 	private TokenComponent focusedComponent;
@@ -25,6 +29,7 @@ public class TokenDisplay extends CustomComponent {
 	private TokenSingleClickListener autoselectListener;
 	private List<TokenDoubleClickListener> tokenDoubleClickListeners;
 	private ShortcutListener deleteShotcut;
+	private ShortcutListener enterShotcut;
 	private ShortcutListener nextShortcut;
 	private ShortcutListener previousShortcut;
 
@@ -42,11 +47,12 @@ public class TokenDisplay extends CustomComponent {
 
 	private Component generateComposition() {
 		rootLayout = new VerticalLayout();
-		rootLayout.setSizeFull();
+		rootLayout.setWidth(FULL);
+		rootLayout.setHeight(null);
 		rootLayout.setSpacing(true);
 		rootLayout.setMargin(true);
 
-		createLine();
+		addLine();
 
 		return rootLayout;
 	}
@@ -72,13 +78,36 @@ public class TokenDisplay extends CustomComponent {
 			tokenUi.addTokenDoubleClick(listener);
 		}
 
-		addTokenUi(tokenUi);
+		if (token.getType() == TokenTypes.RETURN) {
+			addLine();
+			addTokenUi(tokenUi, lastLine);
+		} else {
+			addTokenUi(tokenUi,null);
+		}
 	}
 
-	private void addTokenUi(TokenComponent tokenUi) {
+	private void addTokenUi(TokenComponent tokenUi, AbstractOrderedLayout line) {
 		tokenComponents.add(tokenUi);
-		getLastLine().addComponent(tokenUi);
+		if(line !=null){
+			line.addComponent(tokenUi);
+		}else{
+			if (focusedComponent == null) {
+				getLastLine().addComponent(tokenUi);
+			} else {
+				AbstractOrderedLayout lineToInsert = getCurrentLine();
+				int index = lineToInsert.getComponentIndex(focusedComponent);
+				lineToInsert.addComponent(tokenUi, index + 1);
+			}
+		}
 		setFocused(tokenUi);
+	}
+
+	private AbstractOrderedLayout getCurrentLine() {
+		if (focusedComponent == null) {
+			return getLastLine();
+		} else {
+			return (AbstractOrderedLayout) focusedComponent.getParent();
+		}
 	}
 
 	private void setFocused(TokenComponent tokenUi) {
@@ -113,8 +142,34 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	private void deleteTokenComponent(TokenComponent tokenComponent) {
-		((ComponentContainer) tokenComponent.getParent()).removeComponent(tokenComponent);
+		if (tokenComponent.getToken().getType() == TokenTypes.RETURN) {
+			removeLine((AbstractOrderedLayout) tokenComponent.getParent());
+		}
+		((AbstractOrderedLayout) tokenComponent.getParent()).removeComponent(tokenComponent);
 		tokenComponents.remove(tokenComponent);
+	}
+
+	/**
+	 * Removes all elements in line, then inserts in previous line.
+	 * 
+	 * @param line
+	 */
+	private void removeLine(AbstractOrderedLayout line) {
+		int index = rootLayout.getComponentIndex(line);
+		AbstractOrderedLayout previousLine = (AbstractOrderedLayout) rootLayout.getComponent(index - 1);
+
+		List<Component> componentsToMove = new ArrayList<Component>();
+		Iterator<Component> componentItr = line.iterator();
+		while (componentItr.hasNext()) {
+			componentsToMove.add(componentItr.next());
+		}
+		line.removeAllComponents();
+
+		for (Component componentToMove : componentsToMove) {
+			previousLine.addComponent(componentToMove);
+		}
+		rootLayout.removeComponent(line);
+		lastLine = (HorizontalLayout) rootLayout.getComponent(rootLayout.getComponentCount()-1);
 	}
 
 	/**
@@ -151,9 +206,10 @@ public class TokenDisplay extends CustomComponent {
 		return tokens;
 	}
 
-	private HorizontalLayout createLine() {
+	private HorizontalLayout addLine() {
 		HorizontalLayout newLine = new HorizontalLayout();
-		newLine.setSizeUndefined();
+		newLine.setWidth(null);
+		newLine.setHeight(LINE_HEIGHT);
 		newLine.setSpacing(true);
 
 		lastLine = newLine;
@@ -185,6 +241,15 @@ public class TokenDisplay extends CustomComponent {
 			}
 		};
 
+		enterShotcut = new ShortcutListener("ENTER_SHORTCUT", KeyCode.ENTER, null) {
+			private static final long serialVersionUID = -6251977494304137847L;
+
+			@Override
+			public void handleAction(Object sender, Object target) {
+				addToken(Token.getToken(TokenTypes.RETURN));
+			}
+		};
+
 		nextShortcut = new ShortcutListener("SELECT_NEXT", KeyCode.ARROW_RIGHT, null) {
 			private static final long serialVersionUID = 7663105045629599269L;
 
@@ -206,12 +271,14 @@ public class TokenDisplay extends CustomComponent {
 
 	public void enableShortcuts() {
 		addShortcutListener(deleteShotcut);
+		addShortcutListener(enterShotcut);
 		addShortcutListener(nextShortcut);
 		addShortcutListener(previousShortcut);
 	}
 
 	public void disableShortcuts() {
 		removeShortcutListener(deleteShotcut);
+		removeShortcutListener(enterShotcut);
 		removeShortcutListener(nextShortcut);
 		removeShortcutListener(previousShortcut);
 	}

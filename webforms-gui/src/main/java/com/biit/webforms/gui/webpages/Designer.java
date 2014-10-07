@@ -133,7 +133,8 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				UserSessionHandler.getController().saveForm();
-				MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
+				MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE,
+						LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
 			}
 		});
 		upperMenu.addSaveAsBlockButtonListener(new ClickListener() {
@@ -332,7 +333,7 @@ public class Designer extends SecuredWebPage {
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
 
 			upperMenu.getSaveButton().setEnabled(canEdit);
-			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock&&!rowIsForm);
+			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock && !rowIsForm);
 			upperMenu.getInsertBlockButton().setEnabled(canEdit);
 			upperMenu.getInsertBlockButton().setVisible(!formIsBlock);
 			upperMenu.getNewCategoryButton().setEnabled(canEdit && (formIsBlockAndNoCategories || (!formIsBlock)));
@@ -397,7 +398,8 @@ public class Designer extends SecuredWebPage {
 							newBlockWindow.getOrganization());
 					newBlockWindow.close();
 
-					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
+					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE,
+							LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
 
 				} catch (FieldTooLongException e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
@@ -424,8 +426,9 @@ public class Designer extends SecuredWebPage {
 					clearAndUpdateFormTable();
 					window.close();
 				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED, LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
-				}				
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED,
+							LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
+				}
 			}
 		});
 	}
@@ -434,8 +437,8 @@ public class Designer extends SecuredWebPage {
 	 * Opens move element window.
 	 */
 	protected void openMoveWindow() {
-		final WindowTreeObject moveWindow = new WindowTreeObject(LanguageCodes.CAPTION_WINDOW_MOVE,
-				getCurrentForm(),Form.class,Category.class,Group.class);
+		final WindowTreeObject moveWindow = new WindowTreeObject(LanguageCodes.CAPTION_WINDOW_MOVE, getCurrentForm(),
+				Form.class, Category.class, Group.class);
 		moveWindow.showCentered();
 		moveWindow.addAcceptActionListener(new AcceptActionListener() {
 

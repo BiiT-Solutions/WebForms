@@ -27,6 +27,7 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Token extends StorableObject {
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private TokenTypes type;
 

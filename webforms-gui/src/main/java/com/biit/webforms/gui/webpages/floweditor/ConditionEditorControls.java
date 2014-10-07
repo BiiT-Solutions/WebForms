@@ -381,7 +381,7 @@ public class ConditionEditorControls extends TabSheet {
 
 		Component buttonHolder = generateOperationButtons();
 		root.addComponent(buttonHolder);
-		root.setComponentAlignment(buttonHolder, Alignment.MIDDLE_CENTER);
+		root.setComponentAlignment(buttonHolder, Alignment.TOP_CENTER);
 
 		return root;
 	}

@@ -191,13 +191,25 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 	}
 
 	public boolean isInRepeatableGroup() {
+		if(getRepeatableGroup()!=null){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	/**
+	 * Returns the first known ancestor repeatable group that is marked as such. 
+	 * @return
+	 */
+	public BaseRepeatableGroup getRepeatableGroup() {
 		TreeObject ancestor = getAncestor(BaseRepeatableGroup.class,false);
 		while(ancestor!=null){
 			if(((BaseRepeatableGroup)ancestor).isRepeatable()){
-				return true;
+				return (BaseRepeatableGroup) ancestor;
 			}
 			ancestor = ancestor.getAncestor(BaseRepeatableGroup.class,false);
 		}
-		return false;
+		return null;
 	}
 }
