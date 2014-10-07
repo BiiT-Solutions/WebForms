@@ -210,7 +210,12 @@ $open-sans-pathPrefix: "./fonts/";
 	  	font-size: 14px;
 	  	padding-top: 14px;
   	}
-	
+  	
+  	/* Normal button */
+  	.v-button-wrap img.v-icon {
+		width: 20px;
+		height: 20px;
+	}	
   
   	.v-horizontal-button-group {
 		background-color: white;
@@ -815,6 +820,7 @@ $open-sans-pathPrefix: "./fonts/";
 		border: #c2c3c4;
 		border-width: 1px;
 		border-style: solid;
+		overflow: auto;
 	}
 	
 	.token-component.v-customcomponent-token-component {

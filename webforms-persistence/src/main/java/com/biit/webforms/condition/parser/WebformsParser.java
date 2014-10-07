@@ -34,6 +34,7 @@ public class WebformsParser extends Parser {
 
 		// Register ignore
 		registerTokenToSkip(TokenTypes.WHITESPACE);
+		registerTokenToSkip(TokenTypes.RETURN);
 	}
 
 }

@@ -1,9 +1,12 @@
 package com.biit.webforms.persistence.entity.condition;
 
+import java.util.HashMap;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.transaction.NotSupportedException;
 
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -84,5 +87,28 @@ public class TokenComparationAnswer extends Token {
 
 	public Answer getAnswer() {
 		return answer;
+	}
+
+	@Override
+	public void copyData(Token token) throws NotSupportedException {
+		super.copyData(token);
+		if (!(token instanceof TokenComparationAnswer)) {
+			throw new NotSupportedException();
+		}
+		this.question = ((TokenComparationAnswer) token).question;
+		this.answer = ((TokenComparationAnswer) token).answer;
+	}
+
+	/**
+	 * Method to update references in a TokenComparationAnswer
+	 * 
+	 * @param mappedCopiedQuestions
+	 * @param mappedCopiedAnswers
+	 * @throws UpdateNullReferenceException
+	 */
+	public void updateReferences(HashMap<Question, Question> mappedCopiedQuestions,
+			HashMap<Answer, Answer> mappedCopiedAnswers) {
+		question = mappedCopiedQuestions.get(question);
+		answer = mappedCopiedAnswers.get(answer);
 	}
 }

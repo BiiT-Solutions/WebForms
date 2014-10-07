@@ -3,8 +3,10 @@ package com.biit.webforms.utils.exporters.dotgraph;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
+import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Rule;
 
 public abstract class ExporterDotFormBasic<T> extends ExporterDot<T> {
@@ -23,8 +25,14 @@ public abstract class ExporterDotFormBasic<T> extends ExporterDot<T> {
 		
 		switch (rule.getRuleType()) {
 		case NORMAL:
+			destiny = getDotId(rule.getDestiny());
+			break;
 		case END_LOOP:
-			destiny = getDotId(rule.getDestiny());			
+			BaseRepeatableGroup group = ((Question)rule.getOrigin()).getRepeatableGroup();
+			if(group == null || group.getChildren().isEmpty()){
+				return "";
+			}
+			destiny = getDotId(group.getChildren().get(0));			
 			break;
 		case END_FORM:
 			destiny = "end";

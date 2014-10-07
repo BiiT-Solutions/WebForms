@@ -33,6 +33,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_ABOUT_US("caption.about.us"),
 	CAPTION_SETTINGS_CLOSE("caption.settings.close"),
 	CAPTION_SEARCH("caption.search"),
+	CAPTION_DOWNLOAD_FILE("caption.download.file"),
 //	TOOLTIP_EDIT_FORM_DESIGN,
 //	TOOLTIP_EDIT_FORM_FLOW,
 //	TOOLTIP_VALIDATE_FORM,
@@ -95,6 +96,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_VALIDATE_FORM("tooltip.validate.form"),
 	TOOLTIP_IMPACT_ANALISYS("tooltip.impact.analisys"),
 	TOOLTIP_CLOSE("tooltip.close"),
+	TOOLTIP_DOWNLOAD_FILE("tooltip.download.file"),
 	
 	COMMON_WARNING_TITLE_FORM_NOT_CREATED("common.warning.title.form.not.created"),
 	COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME("common.warning.description.form.needs.name"),
@@ -237,6 +239,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_OK_EMPTY_EXPRESSION("caption.ok.empty.expression"),
 	CAPTION_OK_VALID_EXPRESSION("caption.ok.valid.expression"),
 	CAPTION_OPERATORS("caption.operators"),
+	CAPTION_PRINT_FLOW("caption.print.flow"),
 	
 	TOOLTIP_NEW_RULE("tooltip.new.rule"),
 	TOOLTIP_EDIT_RULE("tooltip.edit.rule"),
@@ -246,6 +249,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_REMOVE_RULE("tooltip.remove.rule"),
 	TOOLTIP_INSERT_QUESTION_REFENCE("tooltip.insert.question.reference"),
 	TOOLTIP_INSERT_ANSWER_REFENCE("tooltip.insert.answer.reference"),
+	TOOLTIP_PRINT_FLOW("tooltip.print.flow"),
 	
 	WARNING_CAPTION_RULE_ORIGIN_INVALID("warning.caption.rule.origin.invalid"),
 	WARNING_CAPTION_RULE_NOT_CORRECT("warning.caption.rule.not.correct"),
@@ -263,7 +267,7 @@ public enum LanguageCodes implements ILanguageCode{
 	NULL_VALUE_SEARCH_ORIGIN("null.value.search.origin"),
 	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),
 	
-	ERROR_USER_SERVICE("error.userService"),
+	ERROR_USER_SERVICE("error.userService"), 
 	;
 
 	private String value;

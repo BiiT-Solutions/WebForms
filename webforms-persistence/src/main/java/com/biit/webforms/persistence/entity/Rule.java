@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,8 @@ import com.biit.persistence.entity.StorableObject;
 import com.biit.webforms.enumerations.RuleType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
 import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
@@ -34,7 +37,7 @@ public class Rule extends StorableObject {
 	// "destiny_id" }) }
 
 	private static final String TOKEN_SEPARATOR = " ";
-	
+
 	/*
 	 * Hibernate changes name of column when you use a many-to-one relationship.
 	 * If you want to add a constraint attached to that column, you have to
@@ -150,7 +153,7 @@ public class Rule extends StorableObject {
 	 */
 	public String getConditionString() {
 		String conditionString = new String();
-		
+
 		for (Token token : condition) {
 			conditionString += token + TOKEN_SEPARATOR;
 		}
@@ -217,6 +220,36 @@ public class Rule extends StorableObject {
 	public void updateConditionSortSeq() {
 		for (int i = 0; i < condition.size(); i++) {
 			condition.get(i).setSortSeq(i);
+		}
+	}
+
+	/**
+	 * This functions updates references to question and answers If a reference
+	 * is missing it will throw a {@code UpdateNullReferenceException}
+	 * 
+	 * @param mappedCopiedQuestions
+	 * @param mappedCopiedAnswers
+	 * @throws UpdateNullReferenceException
+	 */
+	public void updateReferences(HashMap<Question, Question> mappedCopiedQuestions,
+			HashMap<Answer, Answer> mappedCopiedAnswers) {
+		if (getOrigin() != null) {
+			setOrigin(mappedCopiedQuestions.get(getOrigin()));
+		}
+		if (getDestiny() != null) {
+			setDestiny(mappedCopiedQuestions.get(getDestiny()));
+		}
+		for (Token token : getCondition()) {
+			System.out.println("update references of: "+token);
+			if (token instanceof TokenComparationAnswer) {
+				TokenComparationAnswer temp = (TokenComparationAnswer) token;
+				temp.updateReferences(mappedCopiedQuestions, mappedCopiedAnswers);
+			}
+			if (token instanceof TokenComparationValue) {
+				TokenComparationValue temp = (TokenComparationValue) token;
+				temp.updateReferences(mappedCopiedQuestions);
+			}
+			// This has to be modified for each modification of rules
 		}
 	}
 }

@@ -2,19 +2,29 @@ package com.biit.webforms.enumerations;
 
 public enum RuleType {
 
-	NORMAL(false),
+	NORMAL(false,false),
 
-	END_LOOP(false),
+	END_LOOP(true,true),
 
-	END_FORM(true), ;
+	END_FORM(true,false), ;
 
-	private boolean destinyNull;
+	private final boolean destinyNull;
+	private final boolean onlyInRepeatableGroups;
 
-	RuleType(boolean destinyNull) {
+	RuleType(boolean destinyNull, boolean onlyInRepeatableGroups) {
 		this.destinyNull = destinyNull;
+		this.onlyInRepeatableGroups = onlyInRepeatableGroups;
 	}
 
 	public boolean isDestinyNull() {
 		return destinyNull;
+	}
+	
+	public boolean isOnlyInRepeatableGroups() {
+		return onlyInRepeatableGroups;
+	}
+
+	public static RuleType getDefaultRuleType() {
+		return NORMAL;
 	}
 }

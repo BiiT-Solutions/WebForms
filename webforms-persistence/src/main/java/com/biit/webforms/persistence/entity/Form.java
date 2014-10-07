@@ -22,6 +22,7 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.biit.form.BaseAnswer;
 import com.biit.form.BaseForm;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
@@ -258,21 +259,23 @@ public class Form extends BaseForm {
 		Form formSeed = (Form) copiedSeed.getAncestor(Form.class);
 
 		LinkedHashSet<TreeObject> copiedQuestions = formSeed.getAllChildrenInHierarchy(BaseQuestion.class);
-		HashMap<TreeObject, TreeObject> mappedCopiedQuestions = new HashMap<>();
+		HashMap<Question, Question> mappedCopiedQuestions = new HashMap<>();
 		for (TreeObject question : copiedQuestions) {
-			mappedCopiedQuestions.put(question, question);
+			mappedCopiedQuestions.put((Question) question, (Question) question);
+		}
+		LinkedHashSet<TreeObject> copiedAnswers = formSeed.getAllChildrenInHierarchy(BaseAnswer.class);
+		HashMap<Answer, Answer> mappedCopiedAnswers = new HashMap<>();
+		for (TreeObject answer : copiedAnswers) {
+			mappedCopiedAnswers.put((Answer) answer, (Answer) answer);
 		}
 
 		for (Rule rule : getRules()) {
+			// Discard all the rules that do not apply to the simplified view.
 			if (mappedCopiedQuestions.containsKey(rule.getOrigin())
 					&& (rule.getDestiny() == null || mappedCopiedQuestions.containsKey(rule.getDestiny()))) {
+
 				Rule copiedRule = rule.generateCopy();
-				if (copiedRule.getOrigin() != null) {
-					copiedRule.setOrigin(mappedCopiedQuestions.get(copiedRule.getOrigin()));
-				}
-				if (copiedRule.getDestiny() != null) {
-					copiedRule.setDestiny(mappedCopiedQuestions.get(copiedRule.getDestiny()));
-				}
+				copiedRule.updateReferences(mappedCopiedQuestions, mappedCopiedAnswers);
 				formSeed.addRule(copiedRule);
 			} else {
 				continue;

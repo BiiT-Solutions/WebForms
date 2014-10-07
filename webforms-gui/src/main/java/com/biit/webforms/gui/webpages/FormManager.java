@@ -19,6 +19,8 @@ import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignEx
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
+import com.biit.webforms.gui.common.components.WindowDownloader;
+import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
 import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.EditInfoListener;
@@ -36,7 +38,6 @@ import com.biit.webforms.persistence.entity.Form;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -86,20 +87,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private UpperMenuProjectManager createUpperMenu() {
-		UpperMenuProjectManager upperMenu = new UpperMenuProjectManager(new StreamSource() {
-			private static final long serialVersionUID = -5165661957366294565L;
-
-			@Override
-			public InputStream getStream() {
-				try {
-					return FormGeneratorPdf.generatePdf(new FormPdfGenerator((Form) formTable.getValue()));
-				} catch (IOException | DocumentException e) {
-					WebformsLogger.errorMessage(FormManager.class.getName(), e);
-					MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-				}
-				return null;
-			}
-		}, "default.pdf");
+		UpperMenuProjectManager upperMenu = new UpperMenuProjectManager();
 		upperMenu.addNewFormListener(new ClickListener() {
 			private static final long serialVersionUID = 8958665495299558548L;
 
@@ -114,6 +102,29 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				newFormVersion();
+			}
+		});
+		upperMenu.addExportPdf(new ClickListener() {
+			private static final long serialVersionUID = 2864457152577148777L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				WindowDownloader downloader = new WindowDownloader(new WindowDownloaderProcess() {
+
+					@Override
+					public InputStream getInputStream() {
+						try {
+							return FormGeneratorPdf.generatePdf(new FormPdfGenerator((Form) formTable.getValue()));
+						} catch (IOException | DocumentException e) {
+							WebformsLogger.errorMessage(FormManager.class.getName(), e);
+							MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+						}
+						return null;
+					}
+				});
+				downloader.setIndeterminate(true);
+				downloader.setFilename(((Form) formTable.getValue()).getLabel() + ".pdf");
+				downloader.showCentered();
 			}
 		});
 		return upperMenu;
@@ -144,7 +155,7 @@ public class FormManager extends SecuredWebPage {
 		} catch (NewVersionWithoutFinalDesignException e) {
 			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED,
 					LanguageCodes.WARNING_DESCRIPTION_NEW_VERSION_WHEN_DESIGN);
-		}  catch (CharacterNotAllowedException e) {
+		} catch (CharacterNotAllowedException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -174,7 +185,7 @@ public class FormManager extends SecuredWebPage {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 				} catch (FormWithSameNameException e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
-				}  catch (CharacterNotAllowedException e) {
+				} catch (CharacterNotAllowedException e) {
 					// Impossible
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
@@ -234,9 +245,6 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.getNewForm().setEnabled(canCreateForms);
 			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion);
 			upperMenu.getExportPdf().setEnabled(rowNotNullAndForm);
-			if (rowNotNull) {
-				upperMenu.setExportFormPdfDefaultName(((Form) row).getLabel() + ".pdf");
-			}
 
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);

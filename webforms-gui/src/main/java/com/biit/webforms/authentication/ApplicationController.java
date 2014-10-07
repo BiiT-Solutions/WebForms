@@ -69,7 +69,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form. Needs a unique name where name.length() < 190 characters.
+	 * User action to create a form. Needs a unique name where name.length() <
+	 * 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -329,7 +330,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Creates any kind of TreeObject descendant with @name and inserts into parent if possible.
+	 * Creates any kind of TreeObject descendant with @name and inserts into
+	 * parent if possible.
 	 * 
 	 * @param classType
 	 * @param parent
@@ -499,11 +501,14 @@ public class ApplicationController {
 
 		Block block = null;
 		try {
-			// First we create the new block
-			block = createBlock(blockLabel, organization);
-
+			// First we generate a copy. This can abort the whole process if the
+			// resulted simplification is not complete.
 			Form copiedForm = formInUse.generateFormCopiedSimplification(element);
 			copiedForm.resetIds();
+
+			// Now we create the new block
+			block = createBlock(blockLabel, organization);
+			// And set the copied view content as the children
 			block.setChildren(copiedForm.getChildren());
 			block.addRules(copiedForm.getRules());
 
@@ -521,8 +526,8 @@ public class ApplicationController {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " saveAsBlock " + formInUse + " " + element + " " + blockLabel + " END");
 	}
-	
-	public void updateForm(Form form, String description){
+
+	public void updateForm(Form form, String description) {
 		logInfoStart("updateForm", form, description);
 		try {
 			form.setDescription(description);
@@ -530,25 +535,25 @@ public class ApplicationController {
 			form.setUpdateTime();
 		} catch (FieldTooLongException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}		
+		}
 		logInfoEnd("updateForm", form, description);
 	}
-	
-	public void updateAnswer(Answer answer, String value, String label, String description){
-		logInfoStart("updateAnswer", answer, value, label,description);
+
+	public void updateAnswer(Answer answer, String value, String label, String description) {
+		logInfoStart("updateAnswer", answer, value, label, description);
 		try {
 			answer.setValue(value);
 			answer.setLabel(label);
 			answer.setDescription(description);
 			answer.setUpdatedBy(UserSessionHandler.getUser());
 			answer.setUpdateTime();
-			
+
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 		logInfoEnd("updateAnswer", answer, value, label);
 	}
-	
+
 	public void updateCategory(Category category, String name, String label) {
 		logInfoStart("updateCategory", category, name, label);
 		try {
@@ -556,7 +561,7 @@ public class ApplicationController {
 			category.setLabel(label);
 			category.setUpdatedBy(UserSessionHandler.getUser());
 			category.setUpdateTime();
-			
+
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -597,17 +602,19 @@ public class ApplicationController {
 				| InvalidAnswerSubformatException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
-		
+
 		logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat,
 				answerSubformat, horizontal);
-	}	
+	}
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
-	 * hierarchy seed and introduces to current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone
+	 * of the block using the element as hierarchy seed and introduces to
+	 * current form as a new category.
 	 * 
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
+	 * @throws ImpossibleSimplificationBrokenRuleException
 	 */
 	public void insertBlock(TreeObject element) throws CategoryWithSameNameAlreadyExistsInForm {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
@@ -670,7 +677,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * This function is called when the ui has expired. The implementation needs to free any "locked" resources
+	 * This function is called when the ui has expired. The implementation needs
+	 * to free any "locked" resources
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
@@ -689,8 +697,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Update rule content. This function currently is a direct call to the structure function. If the rule is not on
-	 * the form, it gets added.
+	 * Update rule content. This function currently is a direct call to the
+	 * structure function. If the rule is not on the form, it gets added.
 	 * 
 	 * @param rule
 	 * @param origin
@@ -724,8 +732,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Updates rule update time and updated by in rule. The content of the rule was already modified by
-	 * {@link WindowRule}
+	 * Updates rule update time and updated by in rule. The content of the rule
+	 * was already modified by {@link WindowRule}
 	 * 
 	 * @param newRule
 	 */

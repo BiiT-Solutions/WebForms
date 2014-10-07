@@ -1,5 +1,8 @@
 package com.biit.webforms.gui.webpages;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,7 +18,10 @@ import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
+import com.biit.webforms.gui.common.components.WindowDownloader;
+import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormFlowViewer;
@@ -39,6 +45,7 @@ import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyE
 import com.biit.webforms.persistence.entity.exceptions.RuleWithoutDestiny;
 import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
 import com.biit.webforms.theme.ThemeIcons;
+import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
@@ -344,6 +351,29 @@ public class FlowEditor extends SecuredWebPage {
 
 	private UpperMenuFlowEditor createUpperMenu() {
 		UpperMenuFlowEditor upperMenu = new UpperMenuFlowEditor();
+		upperMenu.addPrintPdfButtonListener(new ClickListener() {
+			private static final long serialVersionUID = -1790801212813909643L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
+
+					@Override
+					public InputStream getInputStream() {
+						try {
+							return new ByteArrayInputStream(GraphvizApp.generateImage(UserSessionHandler
+									.getController().getFormInUse(), null, ImgType.PDF));
+						} catch (IOException | InterruptedException e) {
+							WebformsLogger.errorMessage(this.getClass().getName(), e);
+							return null;
+						}
+					}
+				});
+				window.setIndeterminate(true);
+				window.setFilename(UserSessionHandler.getController().getFormInUse().getLabel() + ".pdf");
+				window.showCentered();
+			}
+		});
 		upperMenu.addSaveButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 1679355377155929573L;
 
@@ -421,8 +451,14 @@ public class FlowEditor extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				UserSessionHandler.getController().finishForm();
-				ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
+				new WindowProceedAction(LanguageCodes.TEXT_PROCEED_FORM_CLOSE, new AcceptActionListener() {
+
+					@Override
+					public void acceptAction(WindowAcceptCancel window) {
+						UserSessionHandler.getController().finishForm();
+						ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
+					}
+				});
 			}
 		});
 

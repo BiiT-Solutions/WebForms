@@ -1,5 +1,8 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SearchButtonField;
@@ -7,6 +10,7 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.components.WindowTreeObject;
 import com.biit.webforms.language.LanguageCodes;
+import com.vaadin.data.Container.Filter;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -16,6 +20,8 @@ public class SearchFormElementField extends SearchButtonField {
 	private Class<?>[] filterClasses;
 	private Class<?>[] selectFilter;
 
+	private List<Filter> filters;
+
 	public interface SearchFormElementChanged {
 		public void currentElement(Object object);
 	}
@@ -23,6 +29,7 @@ public class SearchFormElementField extends SearchButtonField {
 	public SearchFormElementField(final Class<?>... filterClases) {
 		super();
 		this.filterClasses = filterClases;
+		filters = new ArrayList<>();
 		addSearchButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 7567983186702232872L;
 
@@ -49,6 +56,9 @@ public class SearchFormElementField extends SearchButtonField {
 				LanguageCodes.CAPTION_WINDOW_SELECT_FORM_ELEMENT, UserSessionHandler.getController().getFormInUse(),
 				filterClasses);
 		windowTreeObject.setSelectableFilers(selectFilter);
+		for (Filter filter : filters) {
+			windowTreeObject.addFilter(filter);
+		}
 
 		windowTreeObject.addAcceptActionListener(new AcceptActionListener() {
 
@@ -72,5 +82,13 @@ public class SearchFormElementField extends SearchButtonField {
 		} else {
 			clear();
 		}
+	}
+
+	public void addFilter(Filter filter) {
+		filters.add(filter);
+	}
+
+	public void removeFilter(Filter filter) {
+		filters.remove(filter);
 	}
 }

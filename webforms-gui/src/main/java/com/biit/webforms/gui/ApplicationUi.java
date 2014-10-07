@@ -4,6 +4,7 @@ import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -18,6 +19,7 @@ import com.vaadin.ui.UI;
  * event.
  * 
  */
+@Push
 @Theme("webforms")
 @PreserveOnRefresh
 public class ApplicationUi extends UI {

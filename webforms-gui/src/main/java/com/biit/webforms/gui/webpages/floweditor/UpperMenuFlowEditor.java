@@ -10,7 +10,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuFlowEditor extends UpperMenuWebforms {
 	private static final long serialVersionUID = 4521719649478606926L;
 
-	private IconButton saveButton, newRuleButton, editRuleButton, cloneRuleButton, removeRuleButton,
+	private IconButton saveButton, newRuleButton, editRuleButton, cloneRuleButton, removeRuleButton, printPdfButton,
 			finishButton;
 
 	public UpperMenuFlowEditor() {
@@ -30,6 +30,9 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		removeRuleButton = new IconButton(LanguageCodes.CAPTION_REMOVE_RULE, ThemeIcons.RULE_REMOVE,
 				LanguageCodes.TOOLTIP_REMOVE_RULE, IconSize.BIG);
 
+		printPdfButton = new IconButton(LanguageCodes.CAPTION_PRINT_FLOW, ThemeIcons.EXPORT_FORM_TO_PDF,
+				LanguageCodes.TOOLTIP_PRINT_FLOW, IconSize.BIG);
+
 		finishButton = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
 				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 
@@ -38,6 +41,7 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		addIconButton(editRuleButton);
 		addIconButton(cloneRuleButton);
 		addIconButton(removeRuleButton);
+		addIconButton(printPdfButton);
 		addIconButton(finishButton);
 	}
 
@@ -60,9 +64,13 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 	public void addCloneRuleButtonListener(ClickListener listener) {
 		cloneRuleButton.addClickListener(listener);
 	}
-	
-	public void addRemoveRuleButtonListener(ClickListener listener){
+
+	public void addRemoveRuleButtonListener(ClickListener listener) {
 		removeRuleButton.addClickListener(listener);
+	}
+
+	public void addPrintPdfButtonListener(ClickListener listener) {
+		printPdfButton.addClickListener(listener);
 	}
 
 	public IconButton getSaveButton() {
@@ -80,7 +88,7 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 	public IconButton getCloneRuleButton() {
 		return cloneRuleButton;
 	}
-	
+
 	public IconButton getRemoveRuleButton() {
 		return removeRuleButton;
 	}
