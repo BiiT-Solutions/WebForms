@@ -39,6 +39,7 @@ public class AccordionMultiple extends CustomComponent {
 		if(toggle){
 			tab.toggle();
 		}
+		tab.setWidth("100%");
 		rootLayout.addComponent(tab);
 	}
 

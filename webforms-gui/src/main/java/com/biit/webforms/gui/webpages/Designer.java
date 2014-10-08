@@ -55,6 +55,8 @@ public class Designer extends SecuredWebPage {
 	private static final long serialVersionUID = 9161313025929535348L;
 	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
 			Arrays.asList(WebformsActivity.READ));
+	private static final String FULL = "100%";
+	private static final String PROPERTIES_MIN_WIDTH = "380px";
 
 	private UpperMenuDesigner upperMenu;
 	private TableTreeObjectLabel table;
@@ -90,7 +92,8 @@ public class Designer extends SecuredWebPage {
 		});
 
 		properties = new DesignerPropertiesComponent();
-		properties.setSizeFull();
+		properties.setHeight(FULL);
+		properties.setWidth(PROPERTIES_MIN_WIDTH);
 		properties.addPropertyUpdateListener(new PropertieUpdateListener() {
 
 			@Override
@@ -106,9 +109,8 @@ public class Designer extends SecuredWebPage {
 		rootLayout.setMargin(true);
 
 		rootLayout.addComponent(table);
-		rootLayout.setExpandRatio(table, 0.75f);
+		rootLayout.setExpandRatio(table, 1.0f);
 		rootLayout.addComponent(properties);
-		rootLayout.setExpandRatio(properties, 0.25f);
 
 		getWorkingArea().addComponent(rootLayout);
 
