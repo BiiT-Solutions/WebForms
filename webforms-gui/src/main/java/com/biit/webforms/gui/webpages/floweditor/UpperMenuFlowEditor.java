@@ -43,6 +43,8 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		addIconButton(removeRuleButton);
 		addIconButton(printPdfButton);
 		addIconButton(finishButton);
+		
+		setConfirmationNeeded(true);
 	}
 
 	public void addSaveButtonListener(ClickListener listener) {

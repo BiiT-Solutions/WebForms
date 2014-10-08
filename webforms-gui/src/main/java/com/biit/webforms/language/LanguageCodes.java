@@ -35,6 +35,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_SETTINGS_CLOSE("caption.settings.close"),
 	CAPTION_SEARCH("caption.search"),
 	CAPTION_DOWNLOAD_FILE("caption.download.file"),
+	CAPTION_PROCEED_LOSE_DATA("caption.proceed.lose.data"),
 //	TOOLTIP_EDIT_FORM_DESIGN,
 //	TOOLTIP_EDIT_FORM_FLOW,
 //	TOOLTIP_VALIDATE_FORM,
