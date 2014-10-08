@@ -25,7 +25,6 @@ public class TokenDisplay extends CustomComponent {
 	private List<TokenComponent> tokenComponents;
 	private TokenComponent focusedComponent;
 	private VerticalLayout rootLayout;
-	private HorizontalLayout lastLine;
 	private TokenSingleClickListener autoselectListener;
 	private List<TokenDoubleClickListener> tokenDoubleClickListeners;
 	private ShortcutListener deleteShotcut;
@@ -79,20 +78,25 @@ public class TokenDisplay extends CustomComponent {
 		}
 
 		if (token.getType() == TokenTypes.RETURN) {
-			addLine();
-			addTokenUi(tokenUi, lastLine);
+			HorizontalLayout newLine = addLine();
+			addTokenUi(tokenUi, newLine);
 		} else {
 			addTokenUi(tokenUi,null);
 		}
 	}
 
 	private void addTokenUi(TokenComponent tokenUi, AbstractOrderedLayout line) {
-		tokenComponents.add(tokenUi);
+		if (focusedComponent == null) {
+			tokenComponents.add(tokenUi);
+		} else {
+			tokenComponents.add(tokenComponents.indexOf(focusedComponent)+1,tokenUi);
+		}		
+		
 		if(line !=null){
 			line.addComponent(tokenUi);
 		}else{
 			if (focusedComponent == null) {
-				getLastLine().addComponent(tokenUi);
+				getCurrentLine().addComponent(tokenUi);
 			} else {
 				AbstractOrderedLayout lineToInsert = getCurrentLine();
 				int index = lineToInsert.getComponentIndex(focusedComponent);
@@ -103,8 +107,11 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	private AbstractOrderedLayout getCurrentLine() {
+		if(rootLayout.getComponentCount()==0){
+			return null;
+		}
 		if (focusedComponent == null) {
-			return getLastLine();
+			return (AbstractOrderedLayout) rootLayout.getComponent(rootLayout.getComponentCount()-1);
 		} else {
 			return (AbstractOrderedLayout) focusedComponent.getParent();
 		}
@@ -169,7 +176,6 @@ public class TokenDisplay extends CustomComponent {
 			previousLine.addComponent(componentToMove);
 		}
 		rootLayout.removeComponent(line);
-		lastLine = (HorizontalLayout) rootLayout.getComponent(rootLayout.getComponentCount()-1);
 	}
 
 	/**
@@ -211,15 +217,20 @@ public class TokenDisplay extends CustomComponent {
 		newLine.setWidth(null);
 		newLine.setHeight(LINE_HEIGHT);
 		newLine.setSpacing(true);
-
-		lastLine = newLine;
-		rootLayout.addComponent(newLine);
+		
+		if(getCurrentLine()==null){
+			rootLayout.addComponent(newLine);
+			return newLine;
+		}
+		
+		int currentIndex = rootLayout.getComponentIndex(getCurrentLine());
+		if(currentIndex+1<rootLayout.getComponentCount()){
+			rootLayout.addComponent(newLine,currentIndex);
+		}else{
+			rootLayout.addComponent(newLine);
+		}
 
 		return newLine;
-	}
-
-	private HorizontalLayout getLastLine() {
-		return lastLine;
 	}
 
 	public void addTokenDoubleClickListener(TokenDoubleClickListener listener) {

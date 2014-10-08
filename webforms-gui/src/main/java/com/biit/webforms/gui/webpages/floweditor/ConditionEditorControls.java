@@ -12,6 +12,7 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.FilterTreeObjectTableContainsName;
 import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.gui.common.components.TableWithSearch;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.floweditor.listeners.InsertTokenListener;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
@@ -31,6 +32,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -56,6 +58,7 @@ public class ConditionEditorControls extends TabSheet {
 	private VerticalLayout insertLayout;
 	private VerticalLayout insertAnswerLayout;
 	private VerticalLayout insertValueLayout;
+	private ComboBox dateFormatType;
 
 	// Logic
 	private Button and, or, not;
@@ -132,6 +135,7 @@ public class ConditionEditorControls extends TabSheet {
 		insertLayout.removeAllComponents();
 		updateInsertValueLayout();
 		insertLayout.addComponent(insertValueLayout);
+		insertLayout.setComponentAlignment(insertValueLayout,Alignment.BOTTOM_CENTER);
 	}
 
 	/**
@@ -142,13 +146,14 @@ public class ConditionEditorControls extends TabSheet {
 		value.setValue("");
 		if (getCurrentQuestion().getAnswerFormat() == AnswerFormat.DATE
 				&& getCurrentQuestion().getAnswerSubformat() != AnswerSubformat.DATE_PERIOD) {
-			value.setInputPrompt(getCurrentQuestion().getAnswerSubformat().getHint() + " or "
-					+ AnswerSubformat.DATE_PERIOD.getHint());
-			value.addValidator(new ValidatorPattern(getCurrentQuestion().getAnswerSubformat().getRegex(),
-					AnswerSubformat.DATE_PERIOD.getRegex()));
+			dateFormatType.setValue(null);
+			dateFormatType.setEnabled(true);
+			updateDateValidatorAndInputPrompt();
 		} else {
 			value.setInputPrompt(getCurrentQuestion().getAnswerSubformat().getHint());
 			value.addValidator(new ValidatorPattern(getCurrentQuestion().getAnswerSubformat().getRegex()));
+			dateFormatType.setValue(null);
+			dateFormatType.setEnabled(false);
 		}
 
 		insertEqValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.EQ));
@@ -157,6 +162,17 @@ public class ConditionEditorControls extends TabSheet {
 		insertGeValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.GE));
 		insertLtValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.LT));
 		insertGtValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.GT));
+	}
+
+	private void updateDateValidatorAndInputPrompt() {
+		value.removeAllValidators();
+		if (dateFormatType.getValue() == null) {
+			value.setInputPrompt(getCurrentQuestion().getAnswerSubformat().getHint());
+			value.addValidator(new ValidatorPattern(getCurrentQuestion().getAnswerSubformat().getRegex()));
+		} else {
+			value.setInputPrompt(AnswerSubformat.NUMBER.getHint());
+			value.addValidator(new ValidatorPattern(AnswerSubformat.NUMBER.getRegex()));
+		}
 	}
 
 	private Question getCurrentQuestion() {
@@ -252,8 +268,24 @@ public class ConditionEditorControls extends TabSheet {
 	private Component generateInsertComparationValueLayout() {
 		insertValueLayout = new VerticalLayout();
 		insertValueLayout.setSpacing(true);
-		insertValueLayout.setSizeFull();
+		insertValueLayout.setWidth(FULL);
+		insertValueLayout.setHeight(EXPAND);
 		insertValueLayout.setSpacing(true);
+
+		dateFormatType = new ComboBox();
+		dateFormatType.setWidth(FULL);
+		for (DateTypeUi dateType : DateTypeUi.values()) {
+			dateFormatType.addItem(dateType);
+			dateFormatType.setItemCaption(dateType, dateType.getTranslation());
+		}
+		dateFormatType.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = -333682134124174959L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				updateDateValidatorAndInputPrompt();
+			}
+		});
 
 		value = new TextField();
 		value.setWidth(FULL);
@@ -279,6 +311,7 @@ public class ConditionEditorControls extends TabSheet {
 				insertLtValue, insertNeValue, insertGeValue, insertGtValue);
 		buttonLayout.setWidth(FULL);
 
+		insertValueLayout.addComponent(dateFormatType);
 		insertValueLayout.addComponent(value);
 		insertValueLayout.addComponent(buttonLayout);
 
@@ -321,11 +354,21 @@ public class ConditionEditorControls extends TabSheet {
 			public void buttonClick(ClickEvent event) {
 				if (value.isValid()) {
 					fireInsertTokenListeners(TokenComparationValue.getToken(type, getCurrentQuestion(),
-							getCurrentValueAnswerSubformat(), value.getValue()));
+							getCurrentValueAnswerSubformat(), getCurrentValue()));
+				}else{
+					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_VALUE_HAS_WRONG_FORMAT);
 				}
 			}
 		});
 		return button;
+	}
+
+	protected String getCurrentValue() {
+		if (dateFormatType.getValue() == null) {
+			return value.getValue();
+		} else {
+			return value.getValue()+((DateTypeUi)(dateFormatType.getValue())).getRepresentation();
+		}
 	}
 
 	private Button createTokenButton(String string, final TokenTypes tokenType) {
@@ -345,8 +388,10 @@ public class ConditionEditorControls extends TabSheet {
 	protected AnswerSubformat getCurrentValueAnswerSubformat() {
 		if (getCurrentQuestion().getAnswerFormat() == AnswerFormat.DATE
 				&& getCurrentQuestion().getAnswerSubformat() != AnswerSubformat.DATE_PERIOD) {
-			// Date time or period format
-			if (AnswerSubformat.DATE_PERIOD.getRegex().matcher(value.getValue()).matches()) {
+			if (dateFormatType.getValue() == null) {
+				// There is no dateFormat defined (normal date)
+				return getCurrentQuestion().getAnswerSubformat();
+			} else {
 				return AnswerSubformat.DATE_PERIOD;
 			}
 		}
@@ -419,10 +464,10 @@ public class ConditionEditorControls extends TabSheet {
 	}
 
 	public void addFilter(Filter filter) {
-		((Filterable)treeObjectTable.getContainerDataSource()).addContainerFilter(filter);
+		((Filterable) treeObjectTable.getContainerDataSource()).addContainerFilter(filter);
 	}
 
 	public void removeFilter(Filter filter) {
-		((Filterable)treeObjectTable.getContainerDataSource()).removeContainerFilter(filter);
+		((Filterable) treeObjectTable.getContainerDataSource()).removeContainerFilter(filter);
 	}
 }

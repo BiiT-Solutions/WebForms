@@ -233,19 +233,19 @@ public class Form extends BaseForm {
 		if (copyChilds) {
 			// Now we get all the questions
 			LinkedHashSet<TreeObject> copiedQuestions = copy.getAllChildrenInHierarchy(BaseQuestion.class);
-			HashMap<TreeObject, TreeObject> mappedCopiedQuestions = new HashMap<>();
+			HashMap<Question, Question> mappedCopiedQuestions = new HashMap<>();
 			for (TreeObject question : copiedQuestions) {
-				mappedCopiedQuestions.put(question, question);
+				mappedCopiedQuestions.put((Question)question, (Question)question);
+			}
+			LinkedHashSet<TreeObject> copiedAnswers = copy.getAllChildrenInHierarchy(BaseAnswer.class);
+			HashMap<Answer, Answer> mappedCopiedAnswers = new HashMap<>();
+			for (TreeObject answer : copiedAnswers) {
+				mappedCopiedAnswers.put((Answer) answer, (Answer) answer);
 			}
 
 			for (Rule rule : getRules()) {
 				Rule copiedRule = rule.generateCopy();
-				if (copiedRule.getOrigin() != null) {
-					copiedRule.setOrigin(mappedCopiedQuestions.get(copiedRule.getOrigin()));
-				}
-				if (copiedRule.getDestiny() != null) {
-					copiedRule.setDestiny(mappedCopiedQuestions.get(copiedRule.getDestiny()));
-				}
+				copiedRule.updateReferences(mappedCopiedQuestions, mappedCopiedAnswers);
 				copy.addRule(copiedRule);
 			}
 		}
@@ -253,6 +253,13 @@ public class Form extends BaseForm {
 		return copy;
 	}
 
+	/**
+	 * Generate copy used to remove all rule elements that are not in the view.
+	 * @param seed
+	 * @return
+	 * @throws NotValidTreeObjectException
+	 * @throws CharacterNotAllowedException
+	 */
 	public Form generateFormCopiedSimplification(TreeObject seed) throws NotValidTreeObjectException,
 			CharacterNotAllowedException {
 		TreeObject copiedSeed = seed.generateCopy(true, true);

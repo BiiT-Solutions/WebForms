@@ -70,6 +70,10 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_FORM_WORK_STATUS_TEST("caption.form.work.status.test"),
 	CAPTION_FORM_WORK_STATUS_PRODUCTION("caption.form.work.status.production"),
 	
+	CAPTION_YEAR("caption.year"),
+	CAPTION_MONTH("caption.month"),
+	CAPTION_DAY("caption.day"),
+	
 	CAPTION_CLOSE("caption.close"),
 	ABOUT_US_TITLE("about.us.title"),
 	ABOUT_US_TOOL_NAME("about.us.tool.name"),
@@ -261,6 +265,8 @@ public enum LanguageCodes implements ILanguageCode{
 	WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN("warning.description.destiny.is.before.origin"),
 	WARNING_DESCRIPTION_RULE_BAD_FORMED("warning.description.rule.bad.formed"),
 	WARNING_DESCRIPTION_CONDITION_BAD_FORMED("warning.description.condition.bad.formed"),
+	
+	INFO_MESSAGE_VALUE_HAS_WRONG_FORMAT("info.message.value.has.wrong.format"),
 	
 	VALIDATOR_ERROR_PATTERN("validator.error.pattern"),
 	

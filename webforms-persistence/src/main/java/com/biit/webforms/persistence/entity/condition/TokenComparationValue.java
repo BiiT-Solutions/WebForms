@@ -100,6 +100,11 @@ public class TokenComparationValue extends Token {
 		if (question != null) {
 			referenceString = question.getPathName();
 		}
+		
+		if(subformat == AnswerSubformat.DATE_PERIOD){
+			return referenceString+" ("+value.substring(value.length()-1)+")"+ getType() + value.substring(0, value.length()-1);
+		}
+		
 		return referenceString + getType() + value;
 	}
 
