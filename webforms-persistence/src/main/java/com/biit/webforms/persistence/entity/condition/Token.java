@@ -88,7 +88,7 @@ public class Token extends StorableObject {
 	}
 
 	@Override
-	protected void copyData(StorableObject object) throws NotValidStorableObjectException {
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof Token) {
 			copyBasicInfo(object);
 			Token token = (Token) object;

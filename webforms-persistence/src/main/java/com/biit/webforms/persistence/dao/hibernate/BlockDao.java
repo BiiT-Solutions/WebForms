@@ -8,7 +8,6 @@ import java.util.Set;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.stereotype.Repository;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
-import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Rule;
 import com.liferay.portal.model.Organization;
 
@@ -38,37 +36,13 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	public int getLastVersion(Long formId) {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		try {
-			Criteria criteria = session.createCriteria(Form.class);
-			criteria.setProjection(Projections.max("version"));
-			criteria.add(Restrictions.eq("id", formId));
-			Integer maxVersion = (Integer) criteria.uniqueResult();
-			session.getTransaction().commit();
-			return maxVersion;
-		} catch (RuntimeException e) {
-			session.getTransaction().rollback();
-			throw e;
-		}
+	public int getLastVersion(String label, Long organizationId) {
+		throw new UnsupportedOperationException("Block dao doesn't allow a get last version");
 	}
 
 	@Override
-	public int getLastVersion(Block form) {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		try {
-			Criteria criteria = session.createCriteria(Form.class);
-			criteria.setProjection(Projections.max("version"));
-			criteria.add(Restrictions.eq("label", form.getLabel()));
-			Integer maxVersion = (Integer) criteria.uniqueResult();
-			session.getTransaction().commit();
-			return maxVersion;
-		} catch (RuntimeException e) {
-			session.getTransaction().rollback();
-			throw e;
-		}
+	public int getLastVersion(Block form, Long organizationId) {
+		throw new UnsupportedOperationException("Block dao doesn't allow a get last version");
 	}
 
 	@Override

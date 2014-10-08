@@ -41,7 +41,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 public class ConditionEditorControls extends TabSheet {
-
 	private static final long serialVersionUID = 105765485106857208L;
 	private static final String FULL = "100%";
 	private static final String EXPAND = null;
@@ -50,6 +49,8 @@ public class ConditionEditorControls extends TabSheet {
 	protected static final TokenTypes DEFAULT_ANSWER_REFERENCE_TOKEN = TokenTypes.EQ;
 	private static final int VALUE_BUTTON_COLS = 3;
 	private static final int VALUE_BUTTON_ROWS = 2;
+	private static final float EXPAND_RATIO_REFERENCE = 0.7f;
+	private static final float EXPAND_RATIO_INSERT_VALUE_OR_ANSWER = 0.3f;
 
 	private TableTreeObject treeObjectTable;
 	private TableTreeObject answerTable;
@@ -126,6 +127,7 @@ public class ConditionEditorControls extends TabSheet {
 		});
 
 		TableWithSearch tableWithSearch = new TableWithSearch(treeObjectTable, new FilterTreeObjectTableContainsName());
+		tableWithSearch.setSearchCaptionAtLeft(true);
 		tableWithSearch.setSizeFull();
 
 		return tableWithSearch;
@@ -340,6 +342,8 @@ public class ConditionEditorControls extends TabSheet {
 
 		root.addComponent(insertReferenceLayout);
 		root.addComponent(insertLayout);
+		root.setExpandRatio(insertReferenceLayout,EXPAND_RATIO_REFERENCE);
+		root.setExpandRatio(insertLayout,EXPAND_RATIO_INSERT_VALUE_OR_ANSWER);
 
 		return root;
 	}

@@ -210,6 +210,7 @@ public class Form extends BaseForm {
 		Set<StorableObject> innerStorableObjects = new HashSet<>();
 		innerStorableObjects.addAll(super.getAllInnerStorableObjects());
 		for (Rule rule : rules) {
+			innerStorableObjects.add(rule);
 			innerStorableObjects.addAll(rule.getAllInnerStorableObjects());
 		}
 		return innerStorableObjects;

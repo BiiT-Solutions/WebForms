@@ -40,7 +40,7 @@ import com.vaadin.ui.VerticalLayout;
 public class WindowRule extends WindowAcceptCancel {
 	private static final long serialVersionUID = 5164868235165988674L;
 	private static final String width = "75%";
-	private static final String height = "90%";
+	private static final String height = "100%";
 	private static final String BAR_HEIGHT = "50px";
 
 	private SearchFormElementField searchOrigin;
@@ -57,7 +57,7 @@ public class WindowRule extends WindowAcceptCancel {
 		filterByTreeObjectOrderLessEqual = new FilterByTreeObjectOrderLessEqual();
 		setContent(generateContent());
 		setResizable(false);
-		setDraggable(false);
+		setDraggable(true);
 		setClosable(true);
 		setModal(true);
 		setWidth(width);
@@ -67,7 +67,7 @@ public class WindowRule extends WindowAcceptCancel {
 	public Component generateContent() {
 		VerticalLayout rootLayout = new VerticalLayout();
 		rootLayout.setSizeFull();
-		rootLayout.setMargin(true);
+		rootLayout.setMargin(false);
 		rootLayout.setSpacing(true);
 
 		Component barLayout = generateControlBar();

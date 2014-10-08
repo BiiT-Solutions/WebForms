@@ -246,9 +246,15 @@ public class FlowEditor extends SecuredWebPage {
 
 	private void updateUiState() {
 
+		boolean somethingSelected = false;
 		boolean selectedNew = false;
 		@SuppressWarnings("unchecked")
 		Set<Object> itemIds = (Set<Object>) tableRules.getValue();
+		if(itemIds == null || itemIds.isEmpty()){
+			somethingSelected = false;
+		}else{
+			somethingSelected = true;
+		}
 		boolean multipleSelection = itemIds.size() > 1;
 		for (Object itemId : itemIds) {
 			selectedNew = itemId != null && itemId.equals(tableRules.getNewRuleId());
@@ -259,9 +265,9 @@ public class FlowEditor extends SecuredWebPage {
 		// Top button state
 		upperMenu.getSaveButton().setEnabled(canEdit);
 		upperMenu.getNewRuleButton().setEnabled(canEdit);
-		upperMenu.getEditRuleButton().setEnabled(canEdit && !selectedNew && !multipleSelection);
-		upperMenu.getCloneRuleButton().setEnabled(canEdit && !selectedNew);
-		upperMenu.getRemoveRuleButton().setEnabled(canEdit && !selectedNew);
+		upperMenu.getEditRuleButton().setEnabled(canEdit && !selectedNew && !multipleSelection && somethingSelected);
+		upperMenu.getCloneRuleButton().setEnabled(canEdit && !selectedNew && somethingSelected);
+		upperMenu.getRemoveRuleButton().setEnabled(canEdit && !selectedNew && somethingSelected);
 		upperMenu.getFinishButton().setEnabled(canEdit);
 	}
 

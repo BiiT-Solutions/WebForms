@@ -161,7 +161,7 @@ public class Rule extends StorableObject {
 	}
 
 	@Override
-	protected void copyData(StorableObject object) throws NotValidStorableObjectException {
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof Rule) {
 			copyBasicInfo(object);
 			// Rule elements copy
@@ -211,7 +211,12 @@ public class Rule extends StorableObject {
 	@Override
 	public Set<StorableObject> getAllInnerStorableObjects() {
 		// Return nothing
-		return new HashSet<>();
+		HashSet<StorableObject> innerStorableObjects = new HashSet<StorableObject>();
+		
+		for(Token token: getCondition()){
+			innerStorableObjects.add(token);
+		}
+		return innerStorableObjects;
 	}
 
 	public void setForm(Form form) {
@@ -257,6 +262,14 @@ public class Rule extends StorableObject {
 		}
 		for (Token token : getCondition()) {
 			token.updateReferences(mappedElements);
+		}
+	}
+
+	@Override
+	public void resetIds() {
+		super.resetIds();
+		for (Token token : getCondition()) {
+			token.resetIds();
 		}
 	}
 }

@@ -41,15 +41,16 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			Hibernate.initialize(form.getRules());
 		}
 	}
-
+	
 	@Override
-	public int getLastVersion(Long formId) {
+	public int getLastVersion(Form form, Long organizationId) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
 			Criteria criteria = session.createCriteria(Form.class);
 			criteria.setProjection(Projections.max("version"));
-			criteria.add(Restrictions.eq("id", formId));
+			criteria.add(Restrictions.eq("label", form.getLabel()));
+			criteria.add(Restrictions.eq("organizationId", organizationId));
 			Integer maxVersion = (Integer) criteria.uniqueResult();
 			session.getTransaction().commit();
 			return maxVersion;
@@ -60,13 +61,14 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 	}
 
 	@Override
-	public int getLastVersion(Form form) {
+	public int getLastVersion(String label, Long organizationId) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
 			Criteria criteria = session.createCriteria(Form.class);
 			criteria.setProjection(Projections.max("version"));
-			criteria.add(Restrictions.eq("label", form.getLabel()));
+			criteria.add(Restrictions.eq("label", label));
+			criteria.add(Restrictions.eq("organizationId", organizationId));
 			Integer maxVersion = (Integer) criteria.uniqueResult();
 			session.getTransaction().commit();
 			return maxVersion;
