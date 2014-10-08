@@ -18,11 +18,10 @@ import javax.persistence.Table;
 
 import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.RuleType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
-import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
 import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
@@ -161,21 +160,39 @@ public class Rule extends StorableObject {
 		return conditionString;
 	}
 
+	@Override
+	protected void copyData(StorableObject object) throws NotValidStorableObjectException {
+		if (object instanceof Rule) {
+			copyBasicInfo(object);
+			// Rule elements copy
+			Rule rule = (Rule) object;
+			try {
+				setRuleContent(rule.getOrigin(), rule.getRuleType(), rule.getDestiny(), rule.isOthers(),
+						rule.generateCopyCondition());
+			} catch (BadRuleContentException | RuleWithoutSource | RuleSameOriginAndDestinyException
+					| RuleDestinyIsBeforeOrigin | RuleWithoutDestiny e) {
+				// Impossible
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+		} else {
+			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
+					+ Rule.class.getName());
+		}
+	}
+
+	/**
+	 * generates a new copy of the rule and its tokens.
+	 * 
+	 * @return
+	 */
 	public Rule generateCopy() {
 		Rule newInstance = null;
 
 		// Store object copy
 		try {
 			newInstance = this.getClass().newInstance();
-			newInstance.setId(getId());
-			newInstance.setComparationId(getComparationId());
-			newInstance.setCreatedBy(getCreatedBy());
-			newInstance.setUpdatedBy(getUpdatedBy());
-
-			// Rule elements copy
-			newInstance.setRuleContent(origin, ruleType, destiny, others, generateCopyCondition());
-		} catch (InstantiationException | IllegalAccessException | BadRuleContentException | RuleWithoutSource
-				| RuleSameOriginAndDestinyException | RuleDestinyIsBeforeOrigin | RuleWithoutDestiny e) {
+			newInstance.copyData(this);
+		} catch (InstantiationException | IllegalAccessException | NotValidStorableObjectException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -231,25 +248,15 @@ public class Rule extends StorableObject {
 	 * @param mappedCopiedAnswers
 	 * @throws UpdateNullReferenceException
 	 */
-	public void updateReferences(HashMap<Question, Question> mappedCopiedQuestions,
-			HashMap<Answer, Answer> mappedCopiedAnswers) {
+	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		if (getOrigin() != null) {
-			setOrigin(mappedCopiedQuestions.get(getOrigin()));
+			setOrigin(mappedElements.get(getOrigin().getComparationId()));
 		}
 		if (getDestiny() != null) {
-			setDestiny(mappedCopiedQuestions.get(getDestiny()));
+			setDestiny(mappedElements.get(getDestiny().getComparationId()));
 		}
 		for (Token token : getCondition()) {
-			System.out.println("update references of: "+token);
-			if (token instanceof TokenComparationAnswer) {
-				TokenComparationAnswer temp = (TokenComparationAnswer) token;
-				temp.updateReferences(mappedCopiedQuestions, mappedCopiedAnswers);
-			}
-			if (token instanceof TokenComparationValue) {
-				TokenComparationValue temp = (TokenComparationValue) token;
-				temp.updateReferences(mappedCopiedQuestions);
-			}
-			// This has to be modified for each modification of rules
+			token.updateReferences(mappedElements);
 		}
 	}
 }

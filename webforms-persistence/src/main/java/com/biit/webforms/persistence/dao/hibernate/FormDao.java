@@ -92,12 +92,13 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 
 	@Override
 	@Cacheable(value = "forms", key = "#label")
-	public Form getForm(String label) {
+	public Form getForm(String label,Long organizationId) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
 			Criteria criteria = session.createCriteria(Form.class);
 			criteria.add(Restrictions.eq("label", label));
+			criteria.add(Restrictions.eq("organizationId", organizationId));
 			@SuppressWarnings("unchecked")
 			List<Form> results = criteria.list();
 			initializeSets(results);
@@ -233,5 +234,43 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 		}
 
 		return super.makePersistent(entity);
+	}
+
+	@Override
+	public boolean exists(String label, Long organizationId) {
+		return getForm(label,organizationId)!=null;
+	}
+	
+	public Form getForm(String label, Integer version, Organization organization){
+		 return getForm(label,version,organization.getOrganizationId());
+	 }
+
+	@Override
+	public Form getForm(String label, Integer version, Long organizationId) {
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		try {
+			Criteria criteria = session.createCriteria(Form.class);
+			criteria.add(Restrictions.eq("label", label));
+			criteria.add(Restrictions.eq("version", version));
+			criteria.add(Restrictions.eq("organizationId", organizationId));
+			
+			@SuppressWarnings("unchecked")
+			List<Form> results = criteria.list();
+			initializeSets(results);
+			session.getTransaction().commit();
+			// For solving Hibernate bug
+			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
+			// list of children
+			// with @Orderby or @OrderColumn we use our own order manager.
+			sortChildren(results);
+			if (!results.isEmpty()) {
+				return (Form) results.get(0);
+			}
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			throw e;
+		}
+		return null;
 	}
 }

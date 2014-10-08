@@ -6,7 +6,7 @@ import java.util.Set;
 
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.RuleType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
@@ -30,14 +30,14 @@ public class FilteredForm {
 		filteredElements = filter.getAllChildrenInHierarchy(Question.class);
 
 		rules = originalForm.getComputedRuleView();
-		
+
 		// Filter rules and get all rules that have origin or destiny
 		filteredRules = new HashSet<>();
 		for (TreeObject child : filteredElements) {
-			if(rules.getRulesByOrigin(child)!=null){
+			if (rules.getRulesByOrigin(child) != null) {
 				filteredRules.addAll(rules.getRulesByOrigin(child));
 			}
-			if(rules.getRulesByDestiny(child)!=null){
+			if (rules.getRulesByDestiny(child) != null) {
 				filteredRules.addAll(rules.getRulesByDestiny(child));
 			}
 		}
@@ -58,7 +58,7 @@ public class FilteredForm {
 		selectedChilds.addAll(dependantElements);
 		try {
 			filteredForm = (Form) originalForm.generateCopyWithChilds(selectedChilds);
-		} catch (NotValidTreeObjectException | CharacterNotAllowedException e) {
+		} catch (NotValidStorableObjectException | CharacterNotAllowedException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -68,7 +68,7 @@ public class FilteredForm {
 	public Form getOriginalForm() {
 		return originalForm;
 	}
-	
+
 	public Form getFilteredForm() {
 		return filteredForm;
 	}

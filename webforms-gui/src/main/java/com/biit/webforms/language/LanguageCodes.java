@@ -5,6 +5,7 @@ import com.biit.webforms.gui.common.language.ServerTranslate;
 
 public enum LanguageCodes implements ILanguageCode{
 	//Common
+	APPLICATION_NAME("application.name"),
 	COMMON_CAPTION_NAME("caption.name"),
 	COMMON_CAPTION_DESCRIPTION("caption.description"),
 	COMMON_CAPTION_EDIT_DESCRIPTION("caption.edit.description"),

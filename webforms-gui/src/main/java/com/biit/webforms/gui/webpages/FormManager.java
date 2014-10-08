@@ -7,10 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
@@ -150,7 +150,7 @@ public class FormManager extends SecuredWebPage {
 
 			newForm = UserSessionHandler.getController().createNewFormVersion(currentForm);
 			addFormToTable(newForm);
-		} catch (NotValidTreeObjectException e) {
+		} catch (NotValidStorableObjectException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 		} catch (NewVersionWithoutFinalDesignException e) {
 			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED,

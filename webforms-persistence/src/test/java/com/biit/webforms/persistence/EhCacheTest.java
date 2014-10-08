@@ -19,6 +19,7 @@ import com.biit.webforms.persistence.entity.Form;
 @DirtiesContext
 public class EhCacheTest extends AbstractTransactionalTestNGSpringContextTests {
 	private final static String DUMMY_FORM = "Dummy Form with cache";
+	private static final Long ORGANIZATION_ID = 0L;
 
 	@Autowired
 	private IFormDao formDao;
@@ -27,10 +28,11 @@ public class EhCacheTest extends AbstractTransactionalTestNGSpringContextTests {
 	public void testSecondLevelCache() throws FieldTooLongException {
 		Form form = new Form();
 		form.setLabel(DUMMY_FORM);
+		form.setOrganizationId(ORGANIZATION_ID);
 		formDao.makePersistent(form);
 
 		// fetch the form entity from database first time
-		form = formDao.getForm(DUMMY_FORM);
+		form = formDao.getForm(DUMMY_FORM,ORGANIZATION_ID);
 		Assert.assertNotNull(form);
 
 		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getEntityFetchCount(), 0);
@@ -38,7 +40,7 @@ public class EhCacheTest extends AbstractTransactionalTestNGSpringContextTests {
 		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getSecondLevelCacheHitCount(), 0);
 
 		// Here entity is already in second level cache (session has been closed) so no database query will be hit
-		form = formDao.getForm(DUMMY_FORM);
+		form = formDao.getForm(DUMMY_FORM,ORGANIZATION_ID);
 		Assert.assertNotNull(form);
 
 		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getEntityFetchCount(), 0);

@@ -12,8 +12,8 @@ import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
-import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
@@ -152,7 +152,7 @@ public class ApplicationController {
 	}
 
 	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException,
-			NotValidTreeObjectException, CharacterNotAllowedException {
+			NotValidStorableObjectException, CharacterNotAllowedException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createNewFormVersion " + form + " START");
 
@@ -165,7 +165,7 @@ public class ApplicationController {
 		Form newFormVersion;
 		try {
 			newFormVersion = form.createNewVersion(getUser());
-		} catch (NotValidTreeObjectException | CharacterNotAllowedException ex) {
+		} catch (CharacterNotAllowedException | NotValidStorableObjectException ex) {
 			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " createForm " + ex.getMessage());
 			throw ex;
@@ -515,7 +515,7 @@ public class ApplicationController {
 			block.setUpdatedBy(getUser());
 			block.setUpdateTime();
 			blockDao.makePersistent(block);
-		} catch (NotValidTreeObjectException | NotValidChildException | CharacterNotAllowedException e) {
+		} catch (NotValidChildException | CharacterNotAllowedException | NotValidStorableObjectException e) {
 			// Impossible, still, if fails remove block.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			if (block != null) {
@@ -635,7 +635,7 @@ public class ApplicationController {
 			formInUse.addChildren(copiedBlock.getChildren());
 			formInUse.addRules(copiedBlock.getRules());
 
-		} catch (NotValidTreeObjectException | NotValidChildException | CharacterNotAllowedException e) {
+		} catch (NotValidStorableObjectException | NotValidChildException | CharacterNotAllowedException e) {
 			// Impossible.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

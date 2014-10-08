@@ -9,8 +9,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.transaction.NotSupportedException;
 
+import com.biit.form.TreeObject;
+import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -100,11 +102,12 @@ public class TokenComparationValue extends Token {
 		if (question != null) {
 			referenceString = question.getPathName();
 		}
-		
-		if(subformat == AnswerSubformat.DATE_PERIOD){
-			return referenceString+" ("+value.substring(value.length()-1)+")"+ getType() + value.substring(0, value.length()-1);
+
+		if (subformat == AnswerSubformat.DATE_PERIOD) {
+			return referenceString + " (" + value.substring(value.length() - 1) + ")" + getType()
+					+ value.substring(0, value.length() - 1);
 		}
-		
+
 		return referenceString + getType() + value;
 	}
 
@@ -121,23 +124,21 @@ public class TokenComparationValue extends Token {
 	}
 
 	@Override
-	public void copyData(Token token) throws NotSupportedException {
-		super.copyData(token);
-		if (!(token instanceof TokenComparationValue)) {
-			throw new NotSupportedException();
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
+		if (object instanceof TokenComparationValue) {
+			super.copyData(object);
+			TokenComparationValue token = (TokenComparationValue) object;
+			question = token.getQuestion();
+			subformat = token.getSubformat();
+			value = token.getValue();
+		} else {
+			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
+					+ TokenComparationValue.class.getName());
 		}
-		this.question = ((TokenComparationValue) token).question;
-		this.subformat = ((TokenComparationValue) token).subformat;
-		this.value = ((TokenComparationValue) token).value;
 	}
 
-	/**
-	 * Method to update references in a TokenComparationValue
-	 * 
-	 * @param mappedCopiedQuestions
-	 * @throws UpdateNullReferenceException
-	 */
-	public void updateReferences(HashMap<Question, Question> mappedCopiedQuestions) {
-		question = mappedCopiedQuestions.get(question);
+	@Override
+	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
+		question = (Question) mappedElements.get(question.getComparationId());
 	}
 }

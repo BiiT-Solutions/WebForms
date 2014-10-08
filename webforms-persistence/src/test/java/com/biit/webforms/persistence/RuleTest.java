@@ -49,6 +49,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 	private static final String QUESTION_W_ANSWERS = "question_w_answers";
 	private static final String ANSWER_1 = "answer1";
 	private static final String ANSWER_2 = "answer2";
+	private static final Long ORGANIZATION_ID = 0L;
 
 	@Autowired
 	private IFormDao formDao;
@@ -61,7 +62,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		formDao.makePersistent(form);
 		Assert.assertEquals(formDao.getRowCount(), 1);
 
-		Form dbForm = formDao.getForm(FORM_NAME);
+		Form dbForm = formDao.getForm(FORM_NAME,ORGANIZATION_ID);
 
 		Assert.assertTrue(!dbForm.getRules().isEmpty());
 
@@ -72,7 +73,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		Assert.assertTrue(dbForm.getAll(Question.class).size()==2);
 		dbForm.removeRule(dbRule);
 		formDao.makePersistent(dbForm);
-		dbForm = formDao.getForm(FORM_NAME);
+		dbForm = formDao.getForm(FORM_NAME,ORGANIZATION_ID);
 		Assert.assertTrue(dbForm.getAll(Question.class).size()==2);
 		Assert.assertTrue(dbForm.getRules().isEmpty());
 
@@ -83,6 +84,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		try {
 			Form form = new Form();
 			form.setLabel(FORM_NAME);
+			form.setOrganizationId(ORGANIZATION_ID);
 
 			Category category = new Category();
 			category.setName(CATEGORY_ONE_NAME);

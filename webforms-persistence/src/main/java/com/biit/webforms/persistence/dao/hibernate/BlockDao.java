@@ -99,12 +99,13 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	public Block getForm(String label) {
+	public Block getForm(String label, Long organizationId) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
 			Criteria criteria = session.createCriteria(Block.class);
 			criteria.add(Restrictions.eq("label", label));
+			criteria.add(Restrictions.eq("organizationId", organizationId));
 			@SuppressWarnings("unchecked")
 			List<Block> results = criteria.list();
 			initializeSets(results);
@@ -173,7 +174,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			Collections.sort(rule.getCondition(), new TokenSort());
 		}
 	}
-	
+
 	@Override
 	@Transactional
 	public Block makePersistent(Block entity) {
@@ -191,5 +192,15 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 		}
 
 		return super.makePersistent(entity);
+	}
+
+	@Override
+	public boolean exists(String label, Long organizationId) {
+		return getForm(label, organizationId) != null;
+	}
+
+	@Override
+	public Block getForm(String label, Integer version, Long organizationId) {
+		throw new UnsupportedOperationException("Block dao doesn't allow a get by name, version and organization");
 	}
 }

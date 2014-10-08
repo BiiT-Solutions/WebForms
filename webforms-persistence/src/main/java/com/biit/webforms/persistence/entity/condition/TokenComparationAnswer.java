@@ -6,8 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.transaction.NotSupportedException;
 
+import com.biit.form.TreeObject;
+import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
@@ -90,25 +92,21 @@ public class TokenComparationAnswer extends Token {
 	}
 
 	@Override
-	public void copyData(Token token) throws NotSupportedException {
-		super.copyData(token);
-		if (!(token instanceof TokenComparationAnswer)) {
-			throw new NotSupportedException();
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
+		if (object instanceof TokenComparationAnswer) {
+			super.copyData(object);
+			TokenComparationAnswer token = (TokenComparationAnswer) object;
+			question = token.getQuestion();
+			answer = token.getAnswer();
+		} else {
+			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
+					+ TokenComparationAnswer.class.getName());
 		}
-		this.question = ((TokenComparationAnswer) token).question;
-		this.answer = ((TokenComparationAnswer) token).answer;
 	}
-
-	/**
-	 * Method to update references in a TokenComparationAnswer
-	 * 
-	 * @param mappedCopiedQuestions
-	 * @param mappedCopiedAnswers
-	 * @throws UpdateNullReferenceException
-	 */
-	public void updateReferences(HashMap<Question, Question> mappedCopiedQuestions,
-			HashMap<Answer, Answer> mappedCopiedAnswers) {
-		question = mappedCopiedQuestions.get(question);
-		answer = mappedCopiedAnswers.get(answer);
+	
+	@Override
+	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
+		question = (Question) mappedElements.get(question.getComparationId());
+		answer = (Answer) mappedElements.get(answer.getComparationId());
 	}
 }
