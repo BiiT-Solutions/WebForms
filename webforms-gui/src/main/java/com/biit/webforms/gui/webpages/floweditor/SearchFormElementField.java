@@ -59,6 +59,7 @@ public class SearchFormElementField extends SearchButtonField {
 		for (Filter filter : filters) {
 			windowTreeObject.addFilter(filter);
 		}
+		windowTreeObject.setValue((TreeObject) getValue());
 
 		windowTreeObject.addAcceptActionListener(new AcceptActionListener() {
 
