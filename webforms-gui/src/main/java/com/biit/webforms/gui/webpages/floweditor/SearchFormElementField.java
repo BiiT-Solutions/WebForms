@@ -5,14 +5,13 @@ import java.util.List;
 
 import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.gui.common.components.OpenSearchComponentListener;
 import com.biit.webforms.gui.common.components.SearchButtonField;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.components.WindowTreeObject;
 import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.data.Container.Filter;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 
 public class SearchFormElementField extends SearchButtonField {
 	private static final long serialVersionUID = -2774946945994290636L;
@@ -30,12 +29,11 @@ public class SearchFormElementField extends SearchButtonField {
 		super();
 		this.filterClasses = filterClases;
 		filters = new ArrayList<>();
-		addSearchButtonListener(new ClickListener() {
-			private static final long serialVersionUID = 7567983186702232872L;
-
+		addOpenSearchComponentListener(new OpenSearchComponentListener() {
+			
 			@Override
-			public void buttonClick(ClickEvent event) {
-				openSearchFormElementWindow();
+			public void openSearchComponent(Object value) {
+				openSearchFormElementWindow((TreeObject) value);
 			}
 		});
 	}
@@ -51,7 +49,7 @@ public class SearchFormElementField extends SearchButtonField {
 		this.selectFilter = selectfilter;
 	}
 
-	protected void openSearchFormElementWindow() {
+	protected void openSearchFormElementWindow(TreeObject currentValue) {
 		final WindowTreeObject windowTreeObject = new WindowTreeObject(
 				LanguageCodes.CAPTION_WINDOW_SELECT_FORM_ELEMENT, UserSessionHandler.getController().getFormInUse(),
 				filterClasses);
@@ -59,7 +57,7 @@ public class SearchFormElementField extends SearchButtonField {
 		for (Filter filter : filters) {
 			windowTreeObject.addFilter(filter);
 		}
-		windowTreeObject.setValue((TreeObject) getValue());
+		windowTreeObject.setValue(currentValue);
 
 		windowTreeObject.addAcceptActionListener(new AcceptActionListener() {
 

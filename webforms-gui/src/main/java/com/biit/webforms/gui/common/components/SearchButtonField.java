@@ -6,6 +6,8 @@ import java.util.List;
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
@@ -23,10 +25,12 @@ public class SearchButtonField extends CustomComponent {
 	private TextField textField;
 	private Object value;
 	private List<SearchFormElementChanged> valueChangeListeners;
+	private List<OpenSearchComponentListener> openSearchComponentListeners;
 
 	public SearchButtonField() {
 		super();
 		valueChangeListeners = new ArrayList<SearchFormElementChanged>();
+		openSearchComponentListeners = new ArrayList<>();
 		setCompositionRoot(generateComponent());
 		setWidth(TEXT_FIELD_FULL_WIDTH);
 		setStyleName(CLASSNAME);
@@ -37,6 +41,16 @@ public class SearchButtonField extends CustomComponent {
 		rootLayout.setSpacing(true);
 		rootLayout.setMargin(false);
 		rootLayout.setWidth(TEXT_FIELD_FULL_WIDTH);
+		rootLayout.addLayoutClickListener(new LayoutClickListener() {
+			private static final long serialVersionUID = 6542167138988021658L;
+
+			@Override
+			public void layoutClick(LayoutClickEvent event) {
+				if(event.getChildComponent().equals(textField)){
+					fireOpenSearchComponentListener();
+				}
+			}
+		});
 
 		searchButton = new IconOnlyButton(CommonThemeIcon.SEARCH.getThemeResource());
 		removeButton = new IconOnlyButton(CommonThemeIcon.REMOVE.getThemeResource());
@@ -50,9 +64,17 @@ public class SearchButtonField extends CustomComponent {
 		rootLayout.addComponent(searchButton);
 		rootLayout.addComponent(textField);
 		rootLayout.addComponent(removeButton);
-		
+
 		rootLayout.setExpandRatio(textField, 1.0f);
 
+		searchButton.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 6896065935607888633L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				fireOpenSearchComponentListener();
+			}
+		});
 		removeButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = -7850712589452231075L;
 
@@ -63,6 +85,20 @@ public class SearchButtonField extends CustomComponent {
 		});
 
 		return rootLayout;
+	}
+
+	public void addOpenSearchComponentListener(OpenSearchComponentListener listener){
+		openSearchComponentListeners.add(listener);
+	}
+	
+	public void removeOpenSearchComponentListener(OpenSearchComponentListener listener){
+		openSearchComponentListeners.remove(listener);
+	}
+	
+	protected void fireOpenSearchComponentListener() {
+		for(OpenSearchComponentListener listener: openSearchComponentListeners){
+			listener.openSearchComponent(getValue());
+		}
 	}
 
 	public void setValue(Object value, String valueLabel) {
@@ -85,14 +121,10 @@ public class SearchButtonField extends CustomComponent {
 		setValue(null, null);
 	}
 
-	public void addSearchButtonListener(ClickListener listener) {
-		searchButton.addClickListener(listener);
-	}
-
 	public void setNullCaption(ILanguageCode languageCode) {
 		textField.setInputPrompt(languageCode.translation());
 	}
-	
+
 	public void addValueChangeListener(SearchFormElementChanged listener) {
 		valueChangeListeners.add(listener);
 	}
@@ -100,9 +132,9 @@ public class SearchButtonField extends CustomComponent {
 	public void removeValueChangeListener(SearchFormElementChanged listener) {
 		valueChangeListeners.remove(listener);
 	}
-	
-	private void fireValueChangeListeners(){
-		for(SearchFormElementChanged listener: valueChangeListeners){
+
+	private void fireValueChangeListeners() {
+		for (SearchFormElementChanged listener : valueChangeListeners) {
 			listener.currentElement(getValue());
 		}
 	}

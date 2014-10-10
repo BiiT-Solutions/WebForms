@@ -295,8 +295,10 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	public void clean() {
-		for (TokenComponent tokenComponent : tokenComponents) {
+		List<TokenComponent> componentsToDelete = new ArrayList<TokenComponent>(tokenComponents);
+		for (TokenComponent tokenComponent : componentsToDelete) {
 			deleteTokenComponent(tokenComponent);
 		}
+		componentsToDelete.clear();
 	}
 }
