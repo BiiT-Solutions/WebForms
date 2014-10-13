@@ -847,5 +847,13 @@ $open-sans-pathPrefix: "./fonts/";
 		font-weight: 600;
 		font-size: 16px !important;
 	}
-	
+
+	/* Label box */
+	.v-label-box {
+		border: 1px;
+		border-style: solid;
+		border-color: #c2c3c4;
+		border-radius: 3px 3px;
+		overflow: hidden;
+	}	
 }

@@ -560,7 +560,6 @@ public class ApplicationController {
 			category.setLabel(label);
 			category.setUpdatedBy(UserSessionHandler.getUser());
 			category.setUpdateTime();
-
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

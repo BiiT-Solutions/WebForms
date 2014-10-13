@@ -41,7 +41,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	public int getLastVersion(Block form, Long organizationId) {
+	public int getLastVersion(Block form) {
 		throw new UnsupportedOperationException("Block dao doesn't allow a get last version");
 	}
 

@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.authentication.UserSessionHandler;
@@ -18,10 +19,10 @@ import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
-import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
+import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormFlowViewer;
@@ -35,10 +36,10 @@ import com.biit.webforms.gui.webpages.floweditor.listeners.EditItemAction;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
@@ -140,8 +141,8 @@ public class FlowEditor extends SecuredWebPage {
 				updateUiState();
 			}
 		});
-		//Shortcut to remove flows with delete key.
-		tableFlows.addShortcutListener(new ShortcutListener("REMOVE_RULES",KeyCode.DELETE,null) {
+		// Shortcut to remove flows with delete key.
+		tableFlows.addShortcutListener(new ShortcutListener("REMOVE_RULES", KeyCode.DELETE, null) {
 			private static final long serialVersionUID = -6749245457349356221L;
 
 			@Override
@@ -216,7 +217,7 @@ public class FlowEditor extends SecuredWebPage {
 		i.setSpacing(true);
 		i.setWidth("100%");
 
-		tableFilterOrigin = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
+		tableFilterOrigin = new SearchFormElementField(Form.class, Category.class, Group.class, BaseQuestion.class);
 		tableFilterOrigin.setCaption(LanguageCodes.CAPTION_FILTER_ORIGIN.translation());
 		tableFilterOrigin.addValueChangeListener(new SearchFormElementChanged() {
 
@@ -261,9 +262,9 @@ public class FlowEditor extends SecuredWebPage {
 		boolean selectedNew = false;
 		@SuppressWarnings("unchecked")
 		Set<Object> itemIds = (Set<Object>) tableFlows.getValue();
-		if(itemIds == null || itemIds.isEmpty()){
+		if (itemIds == null || itemIds.isEmpty()) {
 			somethingSelected = false;
-		}else{
+		} else {
 			somethingSelected = true;
 		}
 		boolean multipleSelection = itemIds.size() > 1;

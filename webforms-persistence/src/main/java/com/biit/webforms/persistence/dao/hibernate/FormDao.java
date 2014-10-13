@@ -43,14 +43,14 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 	}
 	
 	@Override
-	public int getLastVersion(Form form, Long organizationId) {
+	public int getLastVersion(Form form) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
 			Criteria criteria = session.createCriteria(Form.class);
 			criteria.setProjection(Projections.max("version"));
 			criteria.add(Restrictions.eq("label", form.getLabel()));
-			criteria.add(Restrictions.eq("organizationId", organizationId));
+			criteria.add(Restrictions.eq("organizationId", form.getOrganizationId()));
 			Integer maxVersion = (Integer) criteria.uniqueResult();
 			session.getTransaction().commit();
 			return maxVersion;

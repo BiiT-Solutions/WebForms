@@ -3,6 +3,7 @@ package com.biit.webforms.gui.webpages.floweditor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.gui.common.components.FilterByTreeObjectOrderGreater;
@@ -197,8 +198,8 @@ public class WindowFlow extends WindowAcceptCancel {
 	}
 
 	private Component generateSearchOriginContent() {
-		searchOrigin = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
-		searchOrigin.setSelectableFilter(Question.class);
+		searchOrigin = new SearchFormElementField(Form.class, Category.class, Group.class, BaseQuestion.class);
+		searchOrigin.setSelectableFilter(BaseQuestion.class);
 		searchOrigin.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_ORIGIN);
 		searchOrigin.setCaption(LanguageCodes.CAPTION_FROM.translation());
 		searchOrigin.addValueChangeListener(new SearchFormElementChanged() {
@@ -230,8 +231,8 @@ public class WindowFlow extends WindowAcceptCancel {
 	}
 
 	private Component generateSearchDestinyContent() {
-		searchDestiny = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
-		searchDestiny.setSelectableFilter(Question.class);
+		searchDestiny = new SearchFormElementField(Form.class, Category.class, Group.class, BaseQuestion.class);
+		searchDestiny.setSelectableFilter(BaseQuestion.class);
 		searchDestiny.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_DESTINY);
 		searchDestiny.setCaption(LanguageCodes.CAPTION_TO.translation());
 		searchDestiny.setEnabled(false);
