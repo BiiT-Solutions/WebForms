@@ -7,19 +7,19 @@ import java.util.Set;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
-import com.biit.webforms.enumerations.RuleType;
+import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.Rule;
 
 public class FilteredForm {
 
 	private Form originalForm;
 	private TreeObject filter;
 	private LinkedHashSet<TreeObject> filteredElements;
-	private Set<Rule> filteredRules;
-	private ComputedRuleView rules;
+	private Set<Flow> filteredFlows;
+	private ComputedFlowView flows;
 	private Set<TreeObject> dependantElements;
 	private Form filteredForm;
 
@@ -29,27 +29,27 @@ public class FilteredForm {
 
 		filteredElements = filter.getAllChildrenInHierarchy(Question.class);
 
-		rules = originalForm.getComputedRuleView();
+		flows = originalForm.getComputedFlowsView();
 
-		// Filter rules and get all rules that have origin or destiny
-		filteredRules = new HashSet<>();
+		// Filter flows and get all flows that have origin or destiny
+		filteredFlows = new HashSet<>();
 		for (TreeObject child : filteredElements) {
-			if (rules.getRulesByOrigin(child) != null) {
-				filteredRules.addAll(rules.getRulesByOrigin(child));
+			if (flows.getFlowsByOrigin(child) != null) {
+				filteredFlows.addAll(flows.getFlowsByOrigin(child));
 			}
-			if (rules.getRulesByDestiny(child) != null) {
-				filteredRules.addAll(rules.getRulesByDestiny(child));
+			if (flows.getFlowsByDestiny(child) != null) {
+				filteredFlows.addAll(flows.getFlowsByDestiny(child));
 			}
 		}
 
 		// Get all elements with flow in or out of the selected elements
 		dependantElements = new HashSet<TreeObject>();
-		for (Rule filteredRule : filteredRules) {
-			if (!filteredElements.contains(filteredRule.getOrigin())) {
-				dependantElements.add(filteredRule.getOrigin());
+		for (Flow filteredFlow : filteredFlows) {
+			if (!filteredElements.contains(filteredFlow.getOrigin())) {
+				dependantElements.add(filteredFlow.getOrigin());
 			}
-			if (!filteredElements.contains(filteredRule.getDestiny())) {
-				dependantElements.add(filteredRule.getDestiny());
+			if (!filteredElements.contains(filteredFlow.getDestiny())) {
+				dependantElements.add(filteredFlow.getDestiny());
 			}
 		}
 
@@ -77,16 +77,16 @@ public class FilteredForm {
 		return filter;
 	}
 
-	public Set<Rule> getFilteredRules() {
-		return filteredRules;
+	public Set<Flow> getFilteredFlows() {
+		return filteredFlows;
 	}
 
-	public ComputedRuleView getRules() {
-		return rules;
+	public ComputedFlowView getFlows() {
+		return flows;
 	}
 
-	public void setRules(ComputedRuleView rules) {
-		this.rules = rules;
+	public void setFlows(ComputedFlowView flows) {
+		this.flows = flows;
 	}
 
 	public LinkedHashSet<TreeObject> getFilteredElements() {
@@ -98,12 +98,12 @@ public class FilteredForm {
 	}
 
 	public boolean hasStartAsDependency() {
-		return filteredElements != null && filteredElements.contains(rules.getFirstElement());
+		return filteredElements != null && filteredElements.contains(flows.getFirstElement());
 	}
 
 	public boolean hasEndAsDependency() {
-		for (Rule rule : filteredRules) {
-			if (rule.getRuleType() == RuleType.END_FORM) {
+		for (Flow flow : filteredFlows) {
+			if (flow.getFlowType() == FlowType.END_FORM) {
 				return true;
 			}
 		}

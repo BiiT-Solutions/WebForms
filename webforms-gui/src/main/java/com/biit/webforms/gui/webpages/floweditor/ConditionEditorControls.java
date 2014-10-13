@@ -137,7 +137,7 @@ public class ConditionEditorControls extends TabSheet {
 		insertLayout.removeAllComponents();
 		updateInsertValueLayout();
 		insertLayout.addComponent(insertValueLayout);
-		insertLayout.setComponentAlignment(insertValueLayout,Alignment.BOTTOM_CENTER);
+		insertLayout.setComponentAlignment(insertValueLayout, Alignment.BOTTOM_CENTER);
 	}
 
 	/**
@@ -168,12 +168,14 @@ public class ConditionEditorControls extends TabSheet {
 
 	private void updateDateValidatorAndInputPrompt() {
 		value.removeAllValidators();
-		if (dateFormatType.getValue() == null) {
-			value.setInputPrompt(getCurrentQuestion().getAnswerSubformat().getHint());
-			value.addValidator(new ValidatorPattern(getCurrentQuestion().getAnswerSubformat().getRegex()));
-		} else {
-			value.setInputPrompt(AnswerSubformat.NUMBER.getHint());
-			value.addValidator(new ValidatorPattern(AnswerSubformat.NUMBER.getRegex()));
+		if (getCurrentQuestion() != null && getCurrentQuestion().getAnswerSubformat() != null) {
+			if (dateFormatType.getValue() == null) {
+				value.setInputPrompt(getCurrentQuestion().getAnswerSubformat().getHint());
+				value.addValidator(new ValidatorPattern(getCurrentQuestion().getAnswerSubformat().getRegex()));
+			} else {
+				value.setInputPrompt(AnswerSubformat.NUMBER.getHint());
+				value.addValidator(new ValidatorPattern(AnswerSubformat.NUMBER.getRegex()));
+			}
 		}
 	}
 
@@ -342,8 +344,8 @@ public class ConditionEditorControls extends TabSheet {
 
 		root.addComponent(insertReferenceLayout);
 		root.addComponent(insertLayout);
-		root.setExpandRatio(insertReferenceLayout,EXPAND_RATIO_REFERENCE);
-		root.setExpandRatio(insertLayout,EXPAND_RATIO_INSERT_VALUE_OR_ANSWER);
+		root.setExpandRatio(insertReferenceLayout, EXPAND_RATIO_REFERENCE);
+		root.setExpandRatio(insertLayout, EXPAND_RATIO_INSERT_VALUE_OR_ANSWER);
 
 		return root;
 	}
@@ -359,7 +361,7 @@ public class ConditionEditorControls extends TabSheet {
 				if (value.isValid()) {
 					fireInsertTokenListeners(TokenComparationValue.getToken(type, getCurrentQuestion(),
 							getCurrentValueAnswerSubformat(), getCurrentValue()));
-				}else{
+				} else {
 					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_VALUE_HAS_WRONG_FORMAT);
 				}
 			}
@@ -371,7 +373,7 @@ public class ConditionEditorControls extends TabSheet {
 		if (dateFormatType.getValue() == null) {
 			return value.getValue();
 		} else {
-			return value.getValue()+((DateTypeUi)(dateFormatType.getValue())).getRepresentation();
+			return value.getValue() + ((DateTypeUi) (dateFormatType.getValue())).getRepresentation();
 		}
 	}
 

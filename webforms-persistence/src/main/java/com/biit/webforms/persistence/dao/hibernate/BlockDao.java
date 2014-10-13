@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
-import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.persistence.entity.Flow;
 import com.liferay.portal.model.Organization;
 
 @Repository
@@ -31,7 +31,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 		super.initializeSets(blocks);
 		for (Block block : blocks) {
 			// Initializes the sets for lazy-loading (within the same session)+
-			Hibernate.initialize(block.getRules());
+			Hibernate.initialize(block.getFlows());
 		}
 	}
 
@@ -138,12 +138,12 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	protected void sortChildren(Block block) {
 		super.sortChildren(block);
 
-		for (Rule rule : block.getRules()) {
+		for (Flow rule : block.getFlows()) {
 			sortChildren(rule);
 		}
 	}
 
-	private void sortChildren(Rule rule) {
+	private void sortChildren(Flow rule) {
 		if (rule != null) {
 			Collections.sort(rule.getCondition(), new TokenSort());
 		}
@@ -158,10 +158,10 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 		// with @Orderby or @OrderColumn we use our own order manager.
 
 		// Sort the rules
-		Set<Rule> rules = entity.getRules();
-		Iterator<Rule> ruleItr = rules.iterator();
+		Set<Flow> rules = entity.getFlows();
+		Iterator<Flow> ruleItr = rules.iterator();
 		while (ruleItr.hasNext()) {
-			Rule rule = ruleItr.next();
+			Flow rule = ruleItr.next();
 			rule.updateConditionSortSeq();
 		}
 

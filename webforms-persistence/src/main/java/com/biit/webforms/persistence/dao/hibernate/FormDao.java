@@ -23,7 +23,7 @@ import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.persistence.entity.Flow;
 import com.liferay.portal.model.Organization;
 
 @Repository
@@ -38,7 +38,7 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 		super.initializeSets(forms);
 		for (Form form : forms) {
 			// Initializes the sets for lazy-loading (within the same session)+
-			Hibernate.initialize(form.getRules());
+			Hibernate.initialize(form.getFlows());
 		}
 	}
 	
@@ -208,12 +208,12 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 	protected void sortChildren(Form form) {
 		super.sortChildren(form);
 
-		for (Rule rule : form.getRules()) {
+		for (Flow rule : form.getFlows()) {
 			sortChildren(rule);
 		}
 	}
 
-	private void sortChildren(Rule rule) {
+	private void sortChildren(Flow rule) {
 		if (rule != null) {
 			Collections.sort(rule.getCondition(), new TokenSort());
 		}
@@ -228,10 +228,10 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 		// with @Orderby or @OrderColumn we use our own order manager.
 
 		// Sort the rules
-		Set<Rule> rules = entity.getRules();
-		Iterator<Rule> ruleItr = rules.iterator();
+		Set<Flow> rules = entity.getFlows();
+		Iterator<Flow> ruleItr = rules.iterator();
 		while (ruleItr.hasNext()) {
-			Rule rule = ruleItr.next();
+			Flow rule = ruleItr.next();
 			rule.updateConditionSortSeq();
 		}
 

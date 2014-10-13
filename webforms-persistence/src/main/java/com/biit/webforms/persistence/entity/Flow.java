@@ -19,18 +19,18 @@ import javax.persistence.Table;
 import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
-import com.biit.webforms.enumerations.RuleType;
+import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
-import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
-import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.RuleWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 
 @Entity
-@Table(name = "rules")
-public class Rule extends StorableObject {
+@Table(name = "flow")
+public class Flow extends StorableObject {
 
 	// uniqueConstraints = { @UniqueConstraint(columnNames = { "origin_id",
 	// "destiny_id" }) }
@@ -47,7 +47,7 @@ public class Rule extends StorableObject {
 	private TreeObject origin;
 
 	@Enumerated(EnumType.STRING)
-	private RuleType ruleType;
+	private FlowType flowType;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "destiny_id")
@@ -55,15 +55,15 @@ public class Rule extends StorableObject {
 
 	private boolean others;
 
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "rule")
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "flow")
 	private List<Token> condition;
 
 	@ManyToOne
 	private Form form;
 
-	public Rule() {
+	public Flow() {
 		super();
-		ruleType = RuleType.NORMAL;
+		flowType = FlowType.NORMAL;
 		condition = new ArrayList<Token>();
 	}
 
@@ -75,12 +75,12 @@ public class Rule extends StorableObject {
 		this.origin = origin;
 	}
 
-	public RuleType getRuleType() {
-		return ruleType;
+	public FlowType getFlowType() {
+		return flowType;
 	}
 
-	protected void setRuleType(RuleType ruleType) {
-		this.ruleType = ruleType;
+	protected void setFlowType(FlowType flowType) {
+		this.flowType = flowType;
 	}
 
 	public TreeObject getDestiny() {
@@ -99,52 +99,52 @@ public class Rule extends StorableObject {
 		this.others = others;
 	}
 
-	public void setRuleContent(TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others,
-			List<Token> condition) throws BadRuleContentException, RuleWithoutSource,
-			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
-		checkRuleRestrictions(origin, ruleType, destiny, others, condition);
+	public void setContent(TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
+			List<Token> condition) throws BadFlowContentException, FlowWithoutSource,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+		checkFlowRestrictions(origin, flowType, destiny, others, condition);
 
 		this.origin = origin;
-		this.ruleType = ruleType;
+		this.flowType = flowType;
 		this.destiny = destiny;
 		this.others = others;
 		setCondition(condition);
 	}
 
-	public static void checkRuleRestrictions(TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others,
-			List<Token> condition) throws RuleWithoutSource, BadRuleContentException,
-			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
-		// No rule without source
+	public static void checkFlowRestrictions(TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
+			List<Token> condition) throws FlowWithoutSource, BadFlowContentException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+		// No flow without source
 		if (origin == null) {
-			throw new RuleWithoutSource();
+			throw new FlowWithoutSource();
 		}
-		// If rule type doesn't need destiny, destiny must be null and otherwise
-		if ((ruleType.isDestinyNull() && destiny != null) || (!ruleType.isDestinyNull() && destiny == null)) {
-			throw new RuleWithoutDestiny();
+		// If flow type doesn't need destiny, destiny must be null and otherwise
+		if ((flowType.isDestinyNull() && destiny != null) || (!flowType.isDestinyNull() && destiny == null)) {
+			throw new FlowWithoutDestiny();
 		}
 
 		if (others && (condition == null || !condition.isEmpty())) {
-			throw new BadRuleContentException("Rules with other must have empty condition");
+			throw new BadFlowContentException("Flows with other must have empty condition");
 		}
 		if (!others && condition == null) {
-			throw new BadRuleContentException("Rules that are not other must have a not null condition string.");
+			throw new BadFlowContentException("Flows that are not other must have a not null condition string.");
 		}
 
-		// Rule origin can't be destiny
+		// Flow origin can't be destiny
 		if (origin.equals(destiny)) {
-			throw new RuleSameOriginAndDestinyException();
+			throw new FlowSameOriginAndDestinyException();
 		}
-		// Rule destiny cannot be prior to origin.
-		if (!ruleType.isDestinyNull()) {
+		// Flow destiny cannot be prior to origin.
+		if (!flowType.isDestinyNull()) {
 			if (!(origin.compareTo(destiny) == -1)) {
-				throw new RuleDestinyIsBeforeOrigin();
+				throw new FlowDestinyIsBeforeOrigin();
 			}
 		}
 	}
 
 	/**
-	 * Returns a string view of the rule. If the rule hasn't been interpreted,
-	 * we do the parse of the current rule form the database string. If has been
+	 * Returns a string view of the flow. If the flow hasn't been interpreted,
+	 * we do the parse of the current flow form the database string. If has been
 	 * initialized, then we return the string view from the current
 	 * Interpretation status.
 	 * 
@@ -162,31 +162,31 @@ public class Rule extends StorableObject {
 
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		if (object instanceof Rule) {
+		if (object instanceof Flow) {
 			copyBasicInfo(object);
-			// Rule elements copy
-			Rule rule = (Rule) object;
+			// Flow elements copy
+			Flow flow = (Flow) object;
 			try {
-				setRuleContent(rule.getOrigin(), rule.getRuleType(), rule.getDestiny(), rule.isOthers(),
-						rule.generateCopyCondition());
-			} catch (BadRuleContentException | RuleWithoutSource | RuleSameOriginAndDestinyException
-					| RuleDestinyIsBeforeOrigin | RuleWithoutDestiny e) {
+				setContent(flow.getOrigin(), flow.getFlowType(), flow.getDestiny(), flow.isOthers(),
+						flow.generateCopyCondition());
+			} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
+					| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
 				// Impossible
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
-					+ Rule.class.getName());
+					+ Flow.class.getName());
 		}
 	}
 
 	/**
-	 * generates a new copy of the rule and its tokens.
+	 * generates a new copy of the flow and its tokens.
 	 * 
 	 * @return
 	 */
-	public Rule generateCopy() {
-		Rule newInstance = null;
+	public Flow generateCopy() {
+		Flow newInstance = null;
 
 		// Store object copy
 		try {
@@ -212,8 +212,8 @@ public class Rule extends StorableObject {
 	public Set<StorableObject> getAllInnerStorableObjects() {
 		// Return nothing
 		HashSet<StorableObject> innerStorableObjects = new HashSet<StorableObject>();
-		
-		for(Token token: getCondition()){
+
+		for (Token token : getCondition()) {
 			innerStorableObjects.add(token);
 		}
 		return innerStorableObjects;
@@ -235,7 +235,7 @@ public class Rule extends StorableObject {
 		this.condition.clear();
 		this.condition.addAll(condition);
 		for (Token token : this.condition) {
-			token.setRule(this);
+			token.setFlow(this);
 		}
 	}
 

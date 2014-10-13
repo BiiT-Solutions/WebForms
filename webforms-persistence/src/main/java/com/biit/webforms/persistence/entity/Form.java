@@ -30,7 +30,7 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
-import com.biit.webforms.computed.ComputedRuleView;
+import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToForm;
 import com.liferay.portal.model.Organization;
@@ -53,7 +53,7 @@ public class Form extends BaseForm {
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "form")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-	private Set<Rule> rules;
+	private Set<Flow> rules;
 
 	public Form() {
 		super();
@@ -77,7 +77,7 @@ public class Form extends BaseForm {
 	public void resetIds() {
 		// Overriden version to also reset ids of rules.
 		super.resetIds();
-		for (Rule rule : getRules()) {
+		for (Flow rule : getFlows()) {
 			rule.resetIds();
 		}
 	}
@@ -133,27 +133,27 @@ public class Form extends BaseForm {
 		this.status = status;
 	}
 
-	public void addRule(Rule rule) {
+	public void addFlow(Flow rule) {
 		this.rules.add(rule);
 		rule.setForm(this);
 	}
 
-	public boolean containsRule(Rule rule) {
+	public boolean containsFlow(Flow rule) {
 		return rules.contains(rule);
 	}
 
-	public Set<Rule> getRules() {
+	public Set<Flow> getFlows() {
 		return rules;
 	}
 
-	public void setRules(Set<Rule> rules) {
+	public void setRules(Set<Flow> rules) {
 		this.rules.clear();
-		addRules(rules);
+		addFlows(rules);
 	}
 
-	public void addRules(Set<Rule> rules) {
+	public void addFlows(Set<Flow> rules) {
 		this.rules.addAll(rules);
-		for (Rule rule : rules) {
+		for (Flow rule : rules) {
 			rule.setForm(this);
 		}
 	}
@@ -164,25 +164,25 @@ public class Form extends BaseForm {
 	 * 
 	 * @return
 	 */
-	public ComputedRuleView getComputedRuleView() {
+	public ComputedFlowView getComputedFlowsView() {
 		LinkedHashSet<TreeObject> allBaseQuestions = getAllChildrenInHierarchy(BaseQuestion.class);
-		ComputedRuleView computedView = new ComputedRuleView();
+		ComputedFlowView computedView = new ComputedFlowView();
 
 		if (!allBaseQuestions.isEmpty()) {
 			Object[] baseQuestions = allBaseQuestions.toArray();
 			computedView.setFirstElement((TreeObject) baseQuestions[0]);
-			computedView.addRules(rules);
+			computedView.addFlows(rules);
 
 			int numQuestions = baseQuestions.length - 1;
 
 			for (int i = 0; i < numQuestions; i++) {
-				if (computedView.getRulesByOrigin((TreeObject) baseQuestions[i]) == null) {
+				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
 					computedView
-							.addNewNextElementRule((TreeObject) baseQuestions[i], (TreeObject) baseQuestions[i + 1]);
+							.addNewNextElementFlow((TreeObject) baseQuestions[i], (TreeObject) baseQuestions[i + 1]);
 				}
 			}
-			if (computedView.getRulesByOrigin((TreeObject) baseQuestions[numQuestions]) == null) {
-				computedView.addNewEndFormRule((TreeObject) baseQuestions[numQuestions]);
+			if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[numQuestions]) == null) {
+				computedView.addNewEndFormFlow((TreeObject) baseQuestions[numQuestions]);
 			}
 		}
 		return computedView;
@@ -209,7 +209,7 @@ public class Form extends BaseForm {
 	public Set<StorableObject> getAllInnerStorableObjects() {
 		Set<StorableObject> innerStorableObjects = new HashSet<>();
 		innerStorableObjects.addAll(super.getAllInnerStorableObjects());
-		for (Rule rule : rules) {
+		for (Flow rule : rules) {
 			innerStorableObjects.add(rule);
 			innerStorableObjects.addAll(rule.getAllInnerStorableObjects());
 		}
@@ -263,8 +263,8 @@ public class Form extends BaseForm {
 			mappedElements.put(currentElement.getComparationId(), currentElement);
 		}
 
-		for (Rule rule : form.getRules()) {
-			Rule copiedRule = rule.generateCopy();
+		for (Flow rule : form.getFlows()) {
+			Flow copiedRule = rule.generateCopy();
 			// If rule origin is not in the list of current elements or it has
 			// destiny and is not in the list.
 			if (discard) {
@@ -274,7 +274,7 @@ public class Form extends BaseForm {
 					continue;
 				}
 			}
-			addRule(copiedRule);
+			addFlow(copiedRule);
 		}
 	}
 
@@ -284,12 +284,12 @@ public class Form extends BaseForm {
 		for (TreeObject currentElement : currentElements) {
 			mappedElements.put(currentElement.getComparationId(), currentElement);
 		}
-		for (Rule rule : getRules()) {
+		for (Flow rule : getFlows()) {
 			rule.updateReferences(mappedElements);
 		}
 	}
 
-	public void removeRule(Rule dbRule) {
+	public void removeRule(Flow dbRule) {
 		rules.remove(dbRule);
 	}
 }

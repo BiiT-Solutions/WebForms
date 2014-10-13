@@ -21,32 +21,31 @@ import com.biit.webforms.authentication.exception.SameOriginAndDestinationExcept
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.enumerations.FormWorkStatus;
-import com.biit.webforms.enumerations.RuleType;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
-import com.biit.webforms.gui.webpages.floweditor.WindowRule;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.Rule;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
+import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
-import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
-import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.RuleWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
@@ -510,7 +509,7 @@ public class ApplicationController {
 			block = createBlock(blockLabel, organization);
 			// And set the copied view content as the children
 			block.setChildren(copiedForm.getChildren());
-			block.addRules(copiedForm.getRules());
+			block.addFlows(copiedForm.getFlows());
 
 			block.setUpdatedBy(getUser());
 			block.setUpdateTime();
@@ -614,7 +613,6 @@ public class ApplicationController {
 	 * 
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
-	 * @throws ImpossibleSimplificationBrokenRuleException
 	 */
 	public void insertBlock(TreeObject element) throws CategoryWithSameNameAlreadyExistsInForm {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
@@ -633,7 +631,7 @@ public class ApplicationController {
 			copiedBlock.resetIds();
 
 			formInUse.addChildren(copiedBlock.getChildren());
-			formInUse.addRules(copiedBlock.getRules());
+			formInUse.addFlows(copiedBlock.getFlows());
 
 		} catch (NotValidStorableObjectException | NotValidChildException | CharacterNotAllowedException e) {
 			// Impossible.
@@ -685,114 +683,114 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Adds rule to a explicit form.
+	 * Adds flow to a explicit form.
 	 * 
-	 * @param newRule
+	 * @param flow
 	 * @param form
 	 */
-	public void addRuleToForm(Rule newRule, Form form) {
-		logInfoStart("addRuleToForm", newRule, form);
-		form.addRule(newRule);
-		logInfoEnd("addRuleToForm", newRule, form);
+	public void addFlowToForm(Flow flow, Form form) {
+		logInfoStart("addFlowToForm", flow, form);
+		form.addFlow(flow);
+		logInfoEnd("addFlowToForm", flow, form);
 	}
 
 	/**
-	 * Update rule content. This function currently is a direct call to the
-	 * structure function. If the rule is not on the form, it gets added.
+	 * Update flow content. This function currently is a direct call to the
+	 * structure function. If the flow is not on the form, it gets added.
 	 * 
-	 * @param rule
+	 * @param flow
 	 * @param origin
-	 * @param ruleType
+	 * @param flowType
 	 * @param destiny
 	 * @param conditionString
-	 * @throws BadRuleContentException
-	 * @throws RuleWithoutSource
-	 * @throws RuleSameOriginAndDestinyException
-	 * @throws RuleDestinyIsBeforeOrigin
-	 * @throws RuleWithoutDestiny
+	 * @throws BadFlowContentException
+	 * @throws FlowWithoutSource
+	 * @throws FlowSameOriginAndDestinyException
+	 * @throws FlowDestinyIsBeforeOrigin
+	 * @throws FlowWithoutDestiny
 	 */
-	public void updateRuleContent(Rule rule, TreeObject origin, RuleType ruleType, TreeObject destiny, boolean others,
-			List<Token> condition) throws BadRuleContentException, RuleWithoutSource,
-			RuleSameOriginAndDestinyException, RuleDestinyIsBeforeOrigin, RuleWithoutDestiny {
-		logInfoStart("updateRuleContent", rule, origin, ruleType, destiny, others, condition);
+	public void updateFlowContent(Flow flow, TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
+			List<Token> condition) throws BadFlowContentException, FlowWithoutSource,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+		logInfoStart("updateFlowContent", flow, origin, flowType, destiny, others, condition);
 
-		rule.setRuleContent(origin, ruleType, destiny, others, condition);
+		flow.setContent(origin, flowType, destiny, others, condition);
 
-		if (rule.getCreatedBy() == null) {
-			rule.setCreationTime();
-			rule.setCreatedBy(getUser());
+		if (flow.getCreatedBy() == null) {
+			flow.setCreationTime();
+			flow.setCreatedBy(getUser());
 		}
-		rule.setUpdateTime();
-		rule.setUpdatedBy(getUser());
+		flow.setUpdateTime();
+		flow.setUpdatedBy(getUser());
 
-		if (!getFormInUse().containsRule(rule)) {
-			addRuleToForm(rule, getFormInUse());
+		if (!getFormInUse().containsFlow(flow)) {
+			addFlowToForm(flow, getFormInUse());
 		}
-		logInfoEnd("updateRuleContent", rule, origin, ruleType, destiny, condition);
+		logInfoEnd("updateFlowContent", flow, origin, flowType, destiny, condition);
 	}
 
 	/**
-	 * Updates rule update time and updated by in rule. The content of the rule
-	 * was already modified by {@link WindowRule}
+	 * Updates flow update time and updated by in flow. The content of the flow
+	 * was already modified by {@link WindowFlow}
 	 * 
-	 * @param newRule
+	 * @param flow
 	 */
-	public void updateRule(Rule newRule) {
+	public void updateFlow(Flow flow) {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " updateRule " + newRule + " in " + getFormInUse() + "START");
-		newRule.setUpdateTime();
-		newRule.setUpdatedBy(getUser());
+				+ " updateFlow " + flow + " in " + getFormInUse() + "START");
+		flow.setUpdateTime();
+		flow.setUpdatedBy(getUser());
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " updateRule " + newRule + " in " + getFormInUse() + "END");
+				+ " updateFlow " + flow + " in " + getFormInUse() + "END");
 	}
 
 	/**
-	 * Clones rules.
+	 * Clones flows.
 	 * 
-	 * @param selectedRules
+	 * @param selectedFlowss
 	 */
-	public Set<Rule> cloneRules(Set<Rule> selectedRules) {
-		logInfoStart("cloneRules", selectedRules);
-		Set<Rule> clonedRules = new HashSet<Rule>();
-		for (Rule selectedRule : selectedRules) {
-			clonedRules.add(selectedRule.generateCopy());
+	public Set<Flow> cloneFlows(Set<Flow> selectedFlows) {
+		logInfoStart("cloneFlows", selectedFlows);
+		Set<Flow> clonedFlows = new HashSet<Flow>();
+		for (Flow selectedFlow : selectedFlows) {
+			clonedFlows.add(selectedFlow.generateCopy());
 		}
-		logInfoEnd("cloneRules", selectedRules);
-		return clonedRules;
+		logInfoEnd("cloneFlows", selectedFlows);
+		return clonedFlows;
 	}
 
 	/**
-	 * Clones a set of rules, reset Ids and inserts into form
+	 * Clones a set of flows, reset Ids and inserts into form
 	 * 
-	 * @param selectedRules
+	 * @param selectedFlows
 	 * @return
 	 */
-	public Set<Rule> cloneRulesAndInsertIntoForm(Set<Rule> selectedRules) {
-		logInfoStart("cloneRulesAndInsertIntoForm", selectedRules);
-		Set<Rule> clones = cloneRules(selectedRules);
-		for (Rule clone : clones) {
+	public Set<Flow> cloneFlowsAndInsertIntoForm(Set<Flow> selectedFlows) {
+		logInfoStart("cloneFlowsAndInsertIntoForm", selectedFlows);
+		Set<Flow> clones = cloneFlows(selectedFlows);
+		for (Flow clone : clones) {
 			clone.resetIds();
-			addRuleToForm(clone, UserSessionHandler.getController().getFormInUse());
+			addFlowToForm(clone, UserSessionHandler.getController().getFormInUse());
 		}
-		logInfoEnd("cloneRulesAndInsertIntoForm", selectedRules);
+		logInfoEnd("cloneFlowsAndInsertIntoForm", selectedFlows);
 		return clones;
 	}
 
 	/**
-	 * Removes a set of rules from current form.
+	 * Removes a set of flows from current form.
 	 * 
-	 * @param selectedRules
+	 * @param selectedFlows
 	 */
-	public void removeRules(Set<Rule> selectedRules) {
-		removeRules(getFormInUse(), selectedRules);
+	public void removeFlows(Set<Flow> selectedFlows) {
+		removeFlows(getFormInUse(), selectedFlows);
 	}
 
-	private void removeRules(Form form, Set<Rule> rules) {
-		logInfoStart("removeRules", form, rules);
-		for (Rule rule : rules) {
-			form.getRules().remove(rule);
+	private void removeFlows(Form form, Set<Flow> flows) {
+		logInfoStart("removeFlows", form, flows);
+		for (Flow flow : flows) {
+			form.getFlows().remove(flow);
 		}
-		logInfoEnd("removeRules", form, rules);
+		logInfoEnd("removeFlows", form, flows);
 	}
 
 	protected void logInfoStart(String functionName, Object... parameters) {
@@ -835,9 +833,9 @@ public class ApplicationController {
 		return functionInfo;
 	}
 
-	public Set<Rule> getFormInUseRules() {
-		logInfo("getFormInUseRules");
-		return getFormInUse().getRules();
+	public Set<Flow> getFormInUseFlows() {
+		logInfo("getFormInUseFlows");
+		return getFormInUse().getFlows();
 	}
 
 	public void logOut() {

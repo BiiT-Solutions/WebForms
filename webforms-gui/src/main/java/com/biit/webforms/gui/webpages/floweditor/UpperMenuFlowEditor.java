@@ -10,7 +10,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuFlowEditor extends UpperMenuWebforms {
 	private static final long serialVersionUID = 4521719649478606926L;
 
-	private IconButton saveButton, newRuleButton, editRuleButton, cloneRuleButton, removeRuleButton, printPdfButton,
+	private IconButton saveButton, newFlowButton, editFlowButton, cloneFlowButton, removeFlowButton, printPdfButton,
 			finishButton;
 
 	public UpperMenuFlowEditor() {
@@ -18,16 +18,16 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
 				LanguageCodes.COMMON_TOOLTIP_SAVE, IconSize.BIG);
 
-		newRuleButton = new IconButton(LanguageCodes.CAPTION_NEW_RULE, ThemeIcons.RULE_ADD,
+		newFlowButton = new IconButton(LanguageCodes.CAPTION_NEW_RULE, ThemeIcons.RULE_ADD,
 				LanguageCodes.TOOLTIP_NEW_RULE, IconSize.BIG);
 
-		editRuleButton = new IconButton(LanguageCodes.CAPTION_EDIT_RULE, ThemeIcons.RULE_EDIT,
+		editFlowButton = new IconButton(LanguageCodes.CAPTION_EDIT_RULE, ThemeIcons.RULE_EDIT,
 				LanguageCodes.TOOLTIP_EDIT_RULE, IconSize.BIG);
 
-		cloneRuleButton = new IconButton(LanguageCodes.CAPTION_CLONE_RULE, ThemeIcons.RULE_CLONE,
+		cloneFlowButton = new IconButton(LanguageCodes.CAPTION_CLONE_RULE, ThemeIcons.RULE_CLONE,
 				LanguageCodes.TOOLTIP_CLONE_RULE, IconSize.BIG);
 
-		removeRuleButton = new IconButton(LanguageCodes.CAPTION_REMOVE_RULE, ThemeIcons.RULE_REMOVE,
+		removeFlowButton = new IconButton(LanguageCodes.CAPTION_REMOVE_RULE, ThemeIcons.RULE_REMOVE,
 				LanguageCodes.TOOLTIP_REMOVE_RULE, IconSize.BIG);
 
 		printPdfButton = new IconButton(LanguageCodes.CAPTION_PRINT_FLOW, ThemeIcons.EXPORT_FORM_TO_PDF,
@@ -37,10 +37,10 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 
 		addIconButton(saveButton);
-		addIconButton(newRuleButton);
-		addIconButton(editRuleButton);
-		addIconButton(cloneRuleButton);
-		addIconButton(removeRuleButton);
+		addIconButton(newFlowButton);
+		addIconButton(editFlowButton);
+		addIconButton(cloneFlowButton);
+		addIconButton(removeFlowButton);
 		addIconButton(printPdfButton);
 		addIconButton(finishButton);
 		
@@ -55,20 +55,20 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		finishButton.addClickListener(listener);
 	}
 
-	public void addNewRuleButtonListener(ClickListener listener) {
-		newRuleButton.addClickListener(listener);
+	public void addNewFlowButtonListener(ClickListener listener) {
+		newFlowButton.addClickListener(listener);
 	}
 
-	public void addEditRuleButtonListener(ClickListener listener) {
-		editRuleButton.addClickListener(listener);
+	public void addEditFlowButtonListener(ClickListener listener) {
+		editFlowButton.addClickListener(listener);
 	}
 
-	public void addCloneRuleButtonListener(ClickListener listener) {
-		cloneRuleButton.addClickListener(listener);
+	public void addCloneFlowButtonListener(ClickListener listener) {
+		cloneFlowButton.addClickListener(listener);
 	}
 
-	public void addRemoveRuleButtonListener(ClickListener listener) {
-		removeRuleButton.addClickListener(listener);
+	public void addRemoveFlowButtonListener(ClickListener listener) {
+		removeFlowButton.addClickListener(listener);
 	}
 
 	public void addPrintPdfButtonListener(ClickListener listener) {
@@ -79,20 +79,20 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		return saveButton;
 	}
 
-	public IconButton getNewRuleButton() {
-		return newRuleButton;
+	public IconButton getNewFlowButton() {
+		return newFlowButton;
 	}
 
-	public IconButton getEditRuleButton() {
-		return editRuleButton;
+	public IconButton getEditFlowButton() {
+		return editFlowButton;
 	}
 
-	public IconButton getCloneRuleButton() {
-		return cloneRuleButton;
+	public IconButton getCloneFlowButton() {
+		return cloneFlowButton;
 	}
 
-	public IconButton getRemoveRuleButton() {
-		return removeRuleButton;
+	public IconButton getRemoveFlowButton() {
+		return removeFlowButton;
 	}
 
 	public IconButton getFinishButton() {

@@ -17,7 +17,7 @@ import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 
 /**
@@ -37,7 +37,7 @@ public class Token extends StorableObject {
 	private long sortSeq = 0;
 
 	@ManyToOne
-	private Rule rule;
+	private Flow flow;
 
 	protected Token() {
 
@@ -116,12 +116,12 @@ public class Token extends StorableObject {
 		return sortSeq;
 	}
 
-	public Rule getRule() {
-		return rule;
+	public Flow getFlow() {
+		return flow;
 	}
 
-	public void setRule(Rule rule) {
-		this.rule = rule;
+	public void setFlow(Flow flow) {
+		this.flow = flow;
 	}
 
 	public void setSortSeq(long sortSeq) {

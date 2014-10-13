@@ -1,25 +1,25 @@
 package com.biit.webforms.language;
 
-import com.biit.webforms.enumerations.RuleType;
+import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.gui.common.language.ILanguageCode;
 
 public enum RuleTypeUi {
 	
-	NORMAL(RuleType.NORMAL, LanguageCodes.CAPTION_RULE_TYPE_NORMAL),
+	NORMAL(FlowType.NORMAL, LanguageCodes.CAPTION_RULE_TYPE_NORMAL),
 
-	END_LOOP(RuleType.END_LOOP, LanguageCodes.CAPTION_RULE_TYPE_END_LOOP),
+	END_LOOP(FlowType.END_LOOP, LanguageCodes.CAPTION_RULE_TYPE_END_LOOP),
 
-	END_FORM(RuleType.END_FORM, LanguageCodes.CAPTION_RULE_TYPE_END_FORM), ;
+	END_FORM(FlowType.END_FORM, LanguageCodes.CAPTION_RULE_TYPE_END_FORM), ;
 
-	private RuleType type;
+	private FlowType type;
 	private ILanguageCode languageCode;
 	
-	private RuleTypeUi(RuleType type, ILanguageCode languageCode) {
+	private RuleTypeUi(FlowType type, ILanguageCode languageCode) {
 		this.type = type;
 		this.languageCode= languageCode;
 	}
 
-	public RuleType getType() {
+	public FlowType getType() {
 		return type;
 	}
 
@@ -27,7 +27,7 @@ public enum RuleTypeUi {
 		return languageCode;
 	}
 
-	public static String getTranslation(RuleType ruleType) {
+	public static String getTranslation(FlowType ruleType) {
 		for(RuleTypeUi type: values()){
 			if(type.type.equals(ruleType)){
 				return type.languageCode.translation();

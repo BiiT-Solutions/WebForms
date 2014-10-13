@@ -27,10 +27,10 @@ import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormFlowViewer;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
-import com.biit.webforms.gui.webpages.floweditor.TableRules;
-import com.biit.webforms.gui.webpages.floweditor.TableRules.NewItemAction;
+import com.biit.webforms.gui.webpages.floweditor.TableFlows;
+import com.biit.webforms.gui.webpages.floweditor.TableFlows.NewItemAction;
 import com.biit.webforms.gui.webpages.floweditor.UpperMenuFlowEditor;
-import com.biit.webforms.gui.webpages.floweditor.WindowRule;
+import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.gui.webpages.floweditor.listeners.EditItemAction;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -38,12 +38,12 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.Rule;
-import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
-import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
-import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.RuleWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
+import com.biit.webforms.persistence.entity.Flow;
+import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
@@ -52,6 +52,8 @@ import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -69,7 +71,7 @@ public class FlowEditor extends SecuredWebPage {
 	private static final double ZOOM_MAX_VALUE = 50.0f;
 
 	private UpperMenuFlowEditor upperMenu;
-	private TableRules tableRules;
+	private TableFlows tableFlows;
 	private FormFlowViewer formFlowViewer;
 	private SearchFormElementField tableFilterOrigin;
 	private SearchFormElementField tableFilterDestiny;
@@ -101,9 +103,9 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private void initializeContent() {
-		Set<Rule> rules = UserSessionHandler.getController().getFormInUseRules();
-		tableRules.addRows(rules);
-		tableRules.sortByUpdateDate(false);
+		Set<Flow> flows = UserSessionHandler.getController().getFormInUseFlows();
+		tableFlows.addRows(flows);
+		tableFlows.sortByUpdateDate(false);
 
 	}
 
@@ -113,24 +115,24 @@ public class FlowEditor extends SecuredWebPage {
 
 		Component tableFilterBar = createTableFilterBar();
 
-		tableRules = new TableRules();
-		tableRules.setMultiSelect(true);
-		tableRules.setSizeFull();
-		tableRules.addNewItemActionListener(new NewItemAction() {
+		tableFlows = new TableFlows();
+		tableFlows.setMultiSelect(true);
+		tableFlows.setSizeFull();
+		tableFlows.addNewItemActionListener(new NewItemAction() {
 
 			@Override
 			public void newItemAction() {
-				addNewRuleAction();
+				addNewFlowAction();
 			}
 		});
-		tableRules.addEditItemActionListener(new EditItemAction() {
+		tableFlows.addEditItemActionListener(new EditItemAction() {
 
 			@Override
-			public void editItemAction(Rule rule) {
-				editRuleAction(rule);
+			public void editItemAction(Flow flow) {
+				editFlowAction(flow);
 			}
 		});
-		tableRules.addValueChangeListener(new ValueChangeListener() {
+		tableFlows.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -4525037694598967266L;
 
 			@Override
@@ -138,10 +140,19 @@ public class FlowEditor extends SecuredWebPage {
 				updateUiState();
 			}
 		});
+		//Shortcut to remove flows with delete key.
+		tableFlows.addShortcutListener(new ShortcutListener("REMOVE_RULES",KeyCode.DELETE,null) {
+			private static final long serialVersionUID = -6749245457349356221L;
+
+			@Override
+			public void handleAction(Object sender, Object target) {
+				removeSelectedFlows();
+			}
+		});
 
 		i.addComponent(tableFilterBar);
-		i.addComponent(tableRules);
-		i.setExpandRatio(tableRules, 1.0f);
+		i.addComponent(tableFlows);
+		i.setExpandRatio(tableFlows, 1.0f);
 
 		return i;
 	}
@@ -150,12 +161,12 @@ public class FlowEditor extends SecuredWebPage {
 		private static final long serialVersionUID = -8541390160081477981L;
 
 		protected TreeObject filter;
-		protected Object newRule;
+		protected Object newFlow;
 
-		public OriginFilter(TreeObject filter, Object newRule) {
+		public OriginFilter(TreeObject filter, Object newFlow) {
 			super();
 			this.filter = filter;
-			this.newRule = newRule;
+			this.newFlow = newFlow;
 		}
 
 		public TreeObject getFilter() {
@@ -168,11 +179,11 @@ public class FlowEditor extends SecuredWebPage {
 
 		@Override
 		public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-			if (filter == null || (itemId != null && itemId.equals(newRule))) {
+			if (filter == null || (itemId != null && itemId.equals(newFlow))) {
 				return true;
 			}
-			Rule rule = (Rule) itemId;
-			return filter.equals(rule.getOrigin()) || filter.contains(rule.getOrigin());
+			Flow flow = (Flow) itemId;
+			return filter.equals(flow.getOrigin()) || filter.contains(flow.getOrigin());
 		}
 
 		@Override
@@ -185,17 +196,17 @@ public class FlowEditor extends SecuredWebPage {
 	public class DestinyFilter extends OriginFilter {
 		private static final long serialVersionUID = -7194892064324001003L;
 
-		public DestinyFilter(TreeObject filter, Object newRule) {
-			super(filter, newRule);
+		public DestinyFilter(TreeObject filter, Object newFlow) {
+			super(filter, newFlow);
 		}
 
 		@Override
 		public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-			if (filter == null || (itemId != null && itemId.equals(newRule))) {
+			if (filter == null || (itemId != null && itemId.equals(newFlow))) {
 				return true;
 			}
-			Rule rule = (Rule) itemId;
-			return filter.equals(rule.getDestiny()) || filter.contains(rule.getDestiny());
+			Flow flow = (Flow) itemId;
+			return filter.equals(flow.getDestiny()) || filter.contains(flow.getDestiny());
 		}
 	}
 
@@ -211,11 +222,11 @@ public class FlowEditor extends SecuredWebPage {
 
 			@Override
 			public void currentElement(Object object) {
-				Filterable f = (Filterable) tableRules.getContainerDataSource();
+				Filterable f = (Filterable) tableFlows.getContainerDataSource();
 				if (originFilter != null) {
 					f.removeContainerFilter(originFilter);
 				}
-				originFilter = new OriginFilter((TreeObject) tableFilterOrigin.getValue(), tableRules.getNewRuleId());
+				originFilter = new OriginFilter((TreeObject) tableFilterOrigin.getValue(), tableFlows.getNewFlowId());
 				f.addContainerFilter(originFilter);
 			}
 		});
@@ -225,11 +236,11 @@ public class FlowEditor extends SecuredWebPage {
 
 			@Override
 			public void currentElement(Object object) {
-				Filterable f = (Filterable) tableRules.getContainerDataSource();
+				Filterable f = (Filterable) tableFlows.getContainerDataSource();
 				if (destinyFilter != null) {
 					f.removeContainerFilter(destinyFilter);
 				}
-				destinyFilter = new DestinyFilter((TreeObject) tableFilterDestiny.getValue(), tableRules.getNewRuleId());
+				destinyFilter = new DestinyFilter((TreeObject) tableFilterDestiny.getValue(), tableFlows.getNewFlowId());
 				f.addContainerFilter(destinyFilter);
 			}
 		});
@@ -249,7 +260,7 @@ public class FlowEditor extends SecuredWebPage {
 		boolean somethingSelected = false;
 		boolean selectedNew = false;
 		@SuppressWarnings("unchecked")
-		Set<Object> itemIds = (Set<Object>) tableRules.getValue();
+		Set<Object> itemIds = (Set<Object>) tableFlows.getValue();
 		if(itemIds == null || itemIds.isEmpty()){
 			somethingSelected = false;
 		}else{
@@ -257,17 +268,17 @@ public class FlowEditor extends SecuredWebPage {
 		}
 		boolean multipleSelection = itemIds.size() > 1;
 		for (Object itemId : itemIds) {
-			selectedNew = itemId != null && itemId.equals(tableRules.getNewRuleId());
+			selectedNew = itemId != null && itemId.equals(tableFlows.getNewFlowId());
 		}
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 
 		// Top button state
 		upperMenu.getSaveButton().setEnabled(canEdit);
-		upperMenu.getNewRuleButton().setEnabled(canEdit);
-		upperMenu.getEditRuleButton().setEnabled(canEdit && !selectedNew && !multipleSelection && somethingSelected);
-		upperMenu.getCloneRuleButton().setEnabled(canEdit && !selectedNew && somethingSelected);
-		upperMenu.getRemoveRuleButton().setEnabled(canEdit && !selectedNew && somethingSelected);
+		upperMenu.getNewFlowButton().setEnabled(canEdit);
+		upperMenu.getEditFlowButton().setEnabled(canEdit && !selectedNew && !multipleSelection && somethingSelected);
+		upperMenu.getCloneFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected);
+		upperMenu.getRemoveFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected);
 		upperMenu.getFinishButton().setEnabled(canEdit);
 	}
 
@@ -390,66 +401,57 @@ public class FlowEditor extends SecuredWebPage {
 						LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
 			}
 		});
-		upperMenu.addNewRuleButtonListener(new ClickListener() {
+		upperMenu.addNewFlowButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 9116553626932253896L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				addNewRuleAction();
+				addNewFlowAction();
 			}
 		});
-		upperMenu.addEditRuleButtonListener(new ClickListener() {
+		upperMenu.addEditFlowButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 9116553626932253896L;
 
 			@SuppressWarnings("unchecked")
 			@Override
 			public void buttonClick(ClickEvent event) {
-				if (tableRules != null) {
-					Rule selectedRule = null;
-					if (tableRules.getValue() instanceof Rule) {
-						selectedRule = (Rule) tableRules.getValue();
+				if (tableFlows != null) {
+					Flow selectedFlow = null;
+					if (tableFlows.getValue() instanceof Flow) {
+						selectedFlow = (Flow) tableFlows.getValue();
 					}
-					if (tableRules.getValue() instanceof Set<?>) {
-						selectedRule = (Rule) ((Set<Object>) tableRules.getValue()).iterator().next();
+					if (tableFlows.getValue() instanceof Set<?>) {
+						selectedFlow = (Flow) ((Set<Object>) tableFlows.getValue()).iterator().next();
 					}
-					editRuleAction(selectedRule);
+					editFlowAction(selectedFlow);
 				}
 			}
 		});
-		upperMenu.addCloneRuleButtonListener(new ClickListener() {
+		upperMenu.addCloneFlowButtonListener(new ClickListener() {
 			private static final long serialVersionUID = -151662907240066702L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				@SuppressWarnings("unchecked")
-				Set<Object> selectedObjects = (Set<Object>) tableRules.getValue();
+				Set<Object> selectedObjects = (Set<Object>) tableFlows.getValue();
 				if (selectedObjects != null) {
-					Set<Rule> selectedRules = new HashSet<Rule>();
+					Set<Flow> selectedFlows = new HashSet<Flow>();
 					for (Object selectedObject : selectedObjects) {
-						if (selectedObject instanceof Rule) {
-							selectedRules.add((Rule) selectedObject);
+						if (selectedObject instanceof Flow) {
+							selectedFlows.add((Flow) selectedObject);
 						}
 					}
-					Set<Rule> clones = UserSessionHandler.getController().cloneRulesAndInsertIntoForm(selectedRules);
-					addOrUpdateRuleInTableAction(clones.toArray(new Rule[0]));
+					Set<Flow> clones = UserSessionHandler.getController().cloneFlowsAndInsertIntoForm(selectedFlows);
+					addOrUpdateFlowInTableAction(clones.toArray(new Flow[0]));
 				}
 			}
 		});
-		upperMenu.addRemoveRuleButtonListener(new ClickListener() {
+		upperMenu.addRemoveFlowButtonListener(new ClickListener() {
 			private static final long serialVersionUID = -5479947134511433646L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				@SuppressWarnings("unchecked")
-				Set<Object> selectedObjects = (Set<Object>) tableRules.getValue();
-				Set<Rule> selectedRules = new HashSet<Rule>();
-				for (Object selectedObject : selectedObjects) {
-					if (selectedObject instanceof Rule) {
-						selectedRules.add((Rule) selectedObject);
-					}
-				}
-				UserSessionHandler.getController().removeRules(selectedRules);
-				removeRulesFromTable(selectedRules);
+				removeSelectedFlows();
 			}
 		});
 		upperMenu.addFinishButtonListener(new ClickListener() {
@@ -471,84 +473,97 @@ public class FlowEditor extends SecuredWebPage {
 		return upperMenu;
 	}
 
+	protected void removeSelectedFlows() {
+		@SuppressWarnings("unchecked")
+		Set<Object> selectedObjects = (Set<Object>) tableFlows.getValue();
+		Set<Flow> flowsToDelete = new HashSet<Flow>();
+		for (Object selectedObject : selectedObjects) {
+			if (selectedObject instanceof Flow) {
+				flowsToDelete.add((Flow) selectedObject);
+			}
+		}
+		UserSessionHandler.getController().removeFlows(flowsToDelete);
+		removeFlowsFromTable(flowsToDelete);
+	}
+
 	/**
-	 * This method opens the new rule window
+	 * This method opens the new flow window
 	 */
-	protected void addNewRuleAction() {
+	protected void addNewFlowAction() {
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		if (canEdit) {
-			createRuleWindow(new Rule());
+			createFlowWindow(new Flow());
 		}
 	}
 
 	/**
-	 * This method takes a existing rule and opens rule window with the
-	 * parameters assigned in the rule to edit.
+	 * This method takes a existing flow and opens flow window with the
+	 * parameters assigned in the flow to edit.
 	 * 
-	 * @param rule
+	 * @param flow
 	 */
-	protected void editRuleAction(Rule rule) {
+	protected void editFlowAction(Flow flow) {
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		if (canEdit) {
-			createRuleWindow(rule);
+			createFlowWindow(flow);
 		}
 	}
 
 	/**
-	 * Opens the window to create a new rule and controls the return conditions.
+	 * Opens the window to create a new flow and controls the return conditions.
 	 * 
-	 * @param rule
+	 * @param flow
 	 */
-	private void createRuleWindow(final Rule rule) {
-		WindowRule window = new WindowRule();
+	private void createFlowWindow(final Flow flow) {
+		WindowFlow window = new WindowFlow();
 		window.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				try {
-					WindowRule windowRule = (WindowRule) window;
-					if (!windowRule.isConditionValid()) {
+					WindowFlow windowFlow = (WindowFlow) window;
+					if (!windowFlow.isConditionValid()) {
 						MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 								LanguageCodes.WARNING_DESCRIPTION_CONDITION_BAD_FORMED);
 					} else {
-						UserSessionHandler.getController().updateRuleContent(rule, windowRule.getOrigin(),
-								windowRule.getRuleType(), windowRule.getDestiny(), windowRule.isOthers(),
-								windowRule.getCondition());
-						addOrUpdateRuleInTableAction(rule);
+						UserSessionHandler.getController().updateFlowContent(flow, windowFlow.getOrigin(),
+								windowFlow.getFlowType(), windowFlow.getDestiny(), windowFlow.isOthers(),
+								windowFlow.getCondition());
+						addOrUpdateFlowInTableAction(flow);
 						window.close();
 					}
-				} catch (BadRuleContentException e) {
+				} catch (BadFlowContentException e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.WARNING_DESCRIPTION_RULE_BAD_FORMED);
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
-				} catch (RuleWithoutSource e) {
+				} catch (FlowWithoutSource e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.WARNING_DESCRIPTION_ORIGIN_IS_NULL);
-				} catch (RuleSameOriginAndDestinyException e) {
+				} catch (FlowSameOriginAndDestinyException e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN_AND_DESTINY);
-				} catch (RuleDestinyIsBeforeOrigin e) {
+				} catch (FlowDestinyIsBeforeOrigin e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN);
-				} catch (RuleWithoutDestiny e) {
+				} catch (FlowWithoutDestiny e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_NULL);
 				}
 			}
 		});
-		window.setRule(rule);
+		window.setFlow(flow);
 		window.showCentered();
 	}
 
-	private void addOrUpdateRuleInTableAction(Rule... newRules) {
-		tableRules.addOrUpdateRules(newRules);
+	private void addOrUpdateFlowInTableAction(Flow... newFlows) {
+		tableFlows.addOrUpdateFlows(newFlows);
 	}
 
-	private void removeRulesFromTable(Set<Rule> rules) {
-		for (Rule rule : rules) {
-			tableRules.removeItem(rule);
+	private void removeFlowsFromTable(Set<Flow> flows) {
+		for (Flow flow : flows) {
+			tableFlows.removeItem(flow);
 		}
 	}
 }

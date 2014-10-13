@@ -219,7 +219,7 @@ public class ConditionEditor extends CustomComponent {
 	}
 
 	public void delete() {
-		tokenDisplay.delete();
+		tokenDisplay.remove();
 	}
 
 	public void next() {

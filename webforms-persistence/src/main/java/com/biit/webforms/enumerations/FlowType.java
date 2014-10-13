@@ -1,6 +1,6 @@
 package com.biit.webforms.enumerations;
 
-public enum RuleType {
+public enum FlowType {
 
 	NORMAL(false,false),
 
@@ -11,7 +11,7 @@ public enum RuleType {
 	private final boolean destinyNull;
 	private final boolean onlyInRepeatableGroups;
 
-	RuleType(boolean destinyNull, boolean onlyInRepeatableGroups) {
+	FlowType(boolean destinyNull, boolean onlyInRepeatableGroups) {
 		this.destinyNull = destinyNull;
 		this.onlyInRepeatableGroups = onlyInRepeatableGroups;
 	}
@@ -24,7 +24,7 @@ public enum RuleType {
 		return onlyInRepeatableGroups;
 	}
 
-	public static RuleType getDefaultRuleType() {
+	public static FlowType getDefaultFlowType() {
 		return NORMAL;
 	}
 }

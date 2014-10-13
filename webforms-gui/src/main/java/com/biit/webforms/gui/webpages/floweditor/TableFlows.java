@@ -9,7 +9,7 @@ import com.biit.webforms.gui.common.components.StringToTimestampConverter;
 import com.biit.webforms.gui.webpages.floweditor.listeners.EditItemAction;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.language.RuleTypeUi;
-import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.persistence.entity.Flow;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.DefaultItemSorter;
 import com.vaadin.data.util.IndexedContainer;
@@ -17,7 +17,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Table;
 
-public class TableRules extends Table {
+public class TableFlows extends Table {
 	private static final long serialVersionUID = -296543725516584972L;
 	private static final String NEW_RULE_ID = "NEW_RULE";
 	private static final String EMPTY_TEXT = "--------";
@@ -33,11 +33,11 @@ public class TableRules extends Table {
 	private List<NewItemAction> newItemListeners;
 	private List<EditItemAction> editItemListeners;
 
-	public Object getNewRuleId() {
+	public Object getNewFlowId() {
 		return NEW_RULE_ID;
 	}
 
-	public TableRules() {
+	public TableFlows() {
 		super();
 		newItemListeners = new ArrayList<>();
 		editItemListeners = new ArrayList<>();
@@ -53,7 +53,7 @@ public class TableRules extends Table {
 					return;
 				}
 				if (!itemId.equals(NEW_RULE_ID) && event.isDoubleClick()) {
-					fireEditItemActionListener((Rule) event.getItemId());
+					fireEditItemActionListener((Flow) event.getItemId());
 					return;
 				}
 			}
@@ -72,7 +72,7 @@ public class TableRules extends Table {
 		}
 	}
 
-	protected void fireEditItemActionListener(Rule ruleToEdit) {
+	protected void fireEditItemActionListener(Flow ruleToEdit) {
 		for (EditItemAction listener : editItemListeners) {
 			listener.editItemAction(ruleToEdit);
 		}
@@ -129,8 +129,8 @@ public class TableRules extends Table {
 		((IndexedContainer) getContainerDataSource()).setItemSorter(new TableRulesSorter());
 	}
 
-	public void addRows(Set<Rule> rules) {
-		for (Rule rule : rules) {
+	public void addRows(Set<Flow> rules) {
+		for (Flow rule : rules) {
 			addRow(rule, false, false);
 		}
 		addCleanRow();
@@ -142,11 +142,11 @@ public class TableRules extends Table {
 	 * 
 	 * @param newRule
 	 */
-	public void addRow(Rule newRule) {
+	public void addRow(Flow newRule) {
 		addRow(newRule, true, true);
 	}
 
-	public void addRow(Rule newRule, boolean addCleanRow, boolean select) {
+	public void addRow(Flow newRule, boolean addCleanRow, boolean select) {
 		Item item = addItem(newRule);
 		if (item != null) {
 			setItemProperties(newRule, item);
@@ -159,11 +159,11 @@ public class TableRules extends Table {
 		}
 	}
 
-	public void addOrUpdateRules(Rule... newRules) {
+	public void addOrUpdateFlows(Flow... newRules) {
 		if (newRules == null || newRules.length == 0) {
 			return;
 		}
-		for (Rule newRule : newRules) {
+		for (Flow newRule : newRules) {
 			if (containsId(newRule)) {
 				updateRow(newRule);
 			} else {
@@ -181,10 +181,10 @@ public class TableRules extends Table {
 	 * @param item
 	 */
 	@SuppressWarnings("unchecked")
-	public void setItemProperties(Rule rule, Item item) {
+	public void setItemProperties(Flow rule, Item item) {
 		item.getItemProperty(TableRuleProperties.ORIGIN).setValue(rule.getOrigin().getPathName());
 
-		item.getItemProperty(TableRuleProperties.TYPE).setValue(RuleTypeUi.getTranslation(rule.getRuleType()));
+		item.getItemProperty(TableRuleProperties.TYPE).setValue(RuleTypeUi.getTranslation(rule.getFlowType()));
 
 		String destiny = "";
 		if (rule.getDestiny() != null) {
@@ -213,7 +213,7 @@ public class TableRules extends Table {
 	 * 
 	 * @param rule
 	 */
-	public void updateRow(Rule rule) {
+	public void updateRow(Flow rule) {
 		Item item = getItem(rule);
 		if (item != null) {
 			setItemProperties(rule, item);

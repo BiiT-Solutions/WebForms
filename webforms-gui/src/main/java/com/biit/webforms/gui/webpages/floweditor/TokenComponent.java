@@ -116,4 +116,11 @@ public class TokenComponent extends CustomComponent {
 	public void refresh() {
 		label.setValue(token.toString());
 	}
+	
+	public LineDisplay getLine(){
+		if(getParent()!=null && getParent().getParent()!=null){
+			return (LineDisplay) (getParent().getParent());
+		}
+		return null;
+	}
 }

@@ -269,7 +269,7 @@ public class FormFlowViewer extends Panel {
 	}
 
 	/**
-	 * Creates a default image for forms without flow rules.
+	 * Creates a default image for forms without flows.
 	 * 
 	 * @return
 	 */
@@ -277,7 +277,7 @@ public class FormFlowViewer extends Panel {
 	private byte[] createDefaultImage() {
 		int MIN_SIZE = 200;
 		ByteArrayOutputStream imagebuffer = null;
-		// No data (because there is not any flow rule).
+		// No data (because there is not any flow).
 		// HEIGHT discount the top margin of panel.
 		int width = (int) getWidth() < MIN_SIZE ? MIN_SIZE : (int) getWidth();
 		int height = (int) getHeight() < MIN_SIZE ? MIN_SIZE : (int) getHeight();

@@ -7,11 +7,11 @@ import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.persistence.entity.Flow;
 
 public abstract class ExporterDotFormBasic<T> extends ExporterDot<T> {
 
-	protected String generateDotRule(Rule rule) {
+	protected String generateDotRule(Flow rule) {
 		String dotRule = new String();
 		String origin = getDotId(rule.getOrigin());
 		String destiny = null;
@@ -23,7 +23,7 @@ public abstract class ExporterDotFormBasic<T> extends ExporterDot<T> {
 			label = filterDotLanguage(rule.getConditionString());
 		}
 		
-		switch (rule.getRuleType()) {
+		switch (rule.getFlowType()) {
 		case NORMAL:
 			destiny = getDotId(rule.getDestiny());
 			break;
