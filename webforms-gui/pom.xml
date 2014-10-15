@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.biit</groupId>
 		<artifactId>webforms</artifactId>
-		<version>2.1.0</version>
+		<version>2.1.2</version>
 	</parent>
 
 	<properties>
@@ -55,6 +55,13 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>webforms-core</artifactId>
 			<version>${project.version}</version>
+			<type>jar</type>
+		</dependency>
+		<!-- ABCD persistency -->
+		<dependency>
+			<groupId>com.biit</groupId>
+			<artifactId>abcd-persistence</artifactId>
+			<version>${abcd-persistance.version}</version>
 			<type>jar</type>
 		</dependency>
 		<!-- PDF generation -->

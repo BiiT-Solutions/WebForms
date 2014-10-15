@@ -12,7 +12,9 @@ import com.biit.form.BaseAnswer;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.FlowConditionScript;
 
 /**
@@ -53,10 +55,11 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 	protected List<Class<? extends TreeObject>> getAllowedChildren() {
 		return ALLOWED_CHILDREN;
 	}
-
+	
 	@Override
-	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof Answer) {
+			copyBasicInfo(object);
 			if (((Answer) object).getDescription() != null) {
 				description = new String(((Answer) object).getDescription());
 			}

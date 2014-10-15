@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.entity.condition;
 
+import java.util.HashMap;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -10,12 +11,13 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.transaction.NotSupportedException;
 
+import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 
 /**
@@ -35,7 +37,7 @@ public class Token extends StorableObject {
 	private long sortSeq = 0;
 
 	@ManyToOne
-	private Rule rule;
+	private Flow flow;
 
 	protected Token() {
 
@@ -85,9 +87,17 @@ public class Token extends StorableObject {
 		return null;
 	}
 
-	public void copyData(Token token) throws NotSupportedException {
-		this.type = token.type;
-		this.sortSeq = token.sortSeq;
+	@Override
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
+		if (object instanceof Token) {
+			copyBasicInfo(object);
+			Token token = (Token) object;
+			this.type = token.type;
+			this.sortSeq = token.sortSeq;
+		} else {
+			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
+					+ Token.class.getName());
+		}
 	}
 
 	public Token generateCopy() {
@@ -95,7 +105,7 @@ public class Token extends StorableObject {
 			Token newInstance = this.getClass().newInstance();
 			newInstance.copyData(this);
 			return newInstance;
-		} catch (InstantiationException | IllegalAccessException | NotSupportedException e) {
+		} catch (InstantiationException | IllegalAccessException | NotValidStorableObjectException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			return null;
@@ -106,12 +116,12 @@ public class Token extends StorableObject {
 		return sortSeq;
 	}
 
-	public Rule getRule() {
-		return rule;
+	public Flow getFlow() {
+		return flow;
 	}
 
-	public void setRule(Rule rule) {
-		this.rule = rule;
+	public void setFlow(Flow flow) {
+		this.flow = flow;
 	}
 
 	public void setSortSeq(long sortSeq) {
@@ -126,5 +136,9 @@ public class Token extends StorableObject {
 			WebformsLogger.errorMessage(Token.class.getName(), e);
 			return null;
 		}
+	}
+
+	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
+		//There are no references to update
 	}
 }

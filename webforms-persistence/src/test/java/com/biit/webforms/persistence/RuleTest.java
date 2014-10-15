@@ -19,23 +19,23 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
-import com.biit.webforms.enumerations.RuleType;
+import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.Rule;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
-import com.biit.webforms.persistence.entity.exceptions.BadRuleContentException;
+import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
-import com.biit.webforms.persistence.entity.exceptions.RuleDestinyIsBeforeOrigin;
-import com.biit.webforms.persistence.entity.exceptions.RuleSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.RuleWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.RuleWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContextTest.xml" })
@@ -49,6 +49,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 	private static final String QUESTION_W_ANSWERS = "question_w_answers";
 	private static final String ANSWER_1 = "answer1";
 	private static final String ANSWER_2 = "answer2";
+	private static final Long ORGANIZATION_ID = 0L;
 
 	@Autowired
 	private IFormDao formDao;
@@ -61,20 +62,20 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		formDao.makePersistent(form);
 		Assert.assertEquals(formDao.getRowCount(), 1);
 
-		Form dbForm = formDao.getForm(FORM_NAME);
+		Form dbForm = formDao.getForm(FORM_NAME,ORGANIZATION_ID);
 
-		Assert.assertTrue(!dbForm.getRules().isEmpty());
+		Assert.assertTrue(!dbForm.getFlows().isEmpty());
 
-		Rule dbRule = dbForm.getRules().iterator().next();
+		Flow dbRule = dbForm.getFlows().iterator().next();
 		Assert.assertTrue(!dbRule.getCondition().isEmpty());
 		
 		//Check that removing rule doesn't make disappear anything else.
 		Assert.assertTrue(dbForm.getAll(Question.class).size()==2);
 		dbForm.removeRule(dbRule);
 		formDao.makePersistent(dbForm);
-		dbForm = formDao.getForm(FORM_NAME);
+		dbForm = formDao.getForm(FORM_NAME,ORGANIZATION_ID);
 		Assert.assertTrue(dbForm.getAll(Question.class).size()==2);
-		Assert.assertTrue(dbForm.getRules().isEmpty());
+		Assert.assertTrue(dbForm.getFlows().isEmpty());
 
 		formDao.makeTransient(dbForm);
 	}
@@ -83,6 +84,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		try {
 			Form form = new Form();
 			form.setLabel(FORM_NAME);
+			form.setOrganizationId(ORGANIZATION_ID);
 
 			Category category = new Category();
 			category.setName(CATEGORY_ONE_NAME);
@@ -111,9 +113,9 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 
 			List<Token> condition = Arrays.asList(new Token[] { 
 					TokenComparationValue.getTokenEqual(question1,AnswerSubformat.TEXT,"test"), TokenComparationAnswer.getTokenEqual(question2,answer1)});
-			Rule rule1 = createRule(question1, RuleType.NORMAL, question2, false, condition);
+			Flow rule1 = createRule(question1, FlowType.NORMAL, question2, false, condition);
 
-			form.addRule(rule1);
+			form.addFlow(rule1);
 
 			return form;
 		} catch (FieldTooLongException | CharacterNotAllowedException | InvalidAnswerFormatException
@@ -123,15 +125,15 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		}
 	}
 
-	private Rule createRule(Question question1, RuleType ruletype, Question question2, boolean others,
+	private Flow createRule(Question question1, FlowType ruletype, Question question2, boolean others,
 			List<Token> condition) {
 
 		try {
-			Rule rule = new Rule();
-			rule.setRuleContent(question1, ruletype, question2, false, condition);
+			Flow rule = new Flow();
+			rule.setContent(question1, ruletype, question2, false, condition);
 			return rule;
-		} catch (BadRuleContentException | RuleWithoutSource | RuleSameOriginAndDestinyException
-				| RuleDestinyIsBeforeOrigin | RuleWithoutDestiny e) {
+		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
+				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
 			e.printStackTrace();
 			return null;
 		}

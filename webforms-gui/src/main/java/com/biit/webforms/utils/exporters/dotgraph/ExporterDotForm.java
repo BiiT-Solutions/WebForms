@@ -1,10 +1,10 @@
 package com.biit.webforms.utils.exporters.dotgraph;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.computed.ComputedRuleView;
+import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.persistence.entity.Flow;
 
 public class ExporterDotForm extends ExporterDotFormBasic<Form> {
 
@@ -39,12 +39,12 @@ public class ExporterDotForm extends ExporterDotFormBasic<Form> {
 	@Override
 	public String generateDotNodeFlow(Form form) {
 		String dotFlow = new String();
-		ComputedRuleView computedRuleView = form.getComputedRuleView();
+		ComputedFlowView computedRuleView = form.getComputedFlowsView();
 		if (computedRuleView.getFirstElement() != null) {
 			dotFlow += "\tstart -> " + getDotId(computedRuleView.getFirstElement()) + "[color=" + getLinkColor()
 					+ "];\n";
 		}
-		for (Rule rule : computedRuleView.getRules()) {
+		for (Flow rule : computedRuleView.getFlows()) {
 			dotFlow += generateDotRule(rule);
 		}
 

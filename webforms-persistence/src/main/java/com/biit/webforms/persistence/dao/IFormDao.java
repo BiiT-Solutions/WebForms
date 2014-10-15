@@ -19,11 +19,20 @@ public interface IFormDao extends IBaseFormDao<Form> {
 	public List<Form> getAll(Class<?> cls, Organization organization);
 
 	/**
-	 * Filtered version of getForm by organization
+	 * Filtered version of getForm by organization. Returns the latest version.
 	 * 
 	 * @param formLabel
 	 * @param organization
 	 * @return
 	 */
 	public Form getForm(String formLabel, Organization organization);
+	
+	/**
+	 * Get for by label, version and organization.
+	 * @param label
+	 * @param version
+	 * @param organization
+	 * @return
+	 */
+	public Form getForm(String label, Integer version, Organization organization);
 }

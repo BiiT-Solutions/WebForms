@@ -5,6 +5,7 @@ import com.biit.webforms.gui.common.language.ServerTranslate;
 
 public enum LanguageCodes implements ILanguageCode{
 	//Common
+	APPLICATION_NAME("application.name"),
 	COMMON_CAPTION_NAME("caption.name"),
 	COMMON_CAPTION_DESCRIPTION("caption.description"),
 	COMMON_CAPTION_EDIT_DESCRIPTION("caption.edit.description"),
@@ -34,6 +35,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_SETTINGS_CLOSE("caption.settings.close"),
 	CAPTION_SEARCH("caption.search"),
 	CAPTION_DOWNLOAD_FILE("caption.download.file"),
+	CAPTION_PROCEED_LOSE_DATA("caption.proceed.lose.data"),
 //	TOOLTIP_EDIT_FORM_DESIGN,
 //	TOOLTIP_EDIT_FORM_FLOW,
 //	TOOLTIP_VALIDATE_FORM,
@@ -69,6 +71,10 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_FORM_WORK_STATUS_DEVELOPMENT("caption.form.work.status.development"),
 	CAPTION_FORM_WORK_STATUS_TEST("caption.form.work.status.test"),
 	CAPTION_FORM_WORK_STATUS_PRODUCTION("caption.form.work.status.production"),
+	
+	CAPTION_YEAR("caption.year"),
+	CAPTION_MONTH("caption.month"),
+	CAPTION_DAY("caption.day"),
 	
 	CAPTION_CLOSE("caption.close"),
 	ABOUT_US_TITLE("about.us.title"),
@@ -112,9 +118,13 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_NEW_FORM("caption.new.form"),
 	CAPTION_NEW_FORM_VERSION("caption.new.form.version"),
 	CAPTION_READ_ONLY("caption.read.only"),
+	CAPTION_IMPORT_ABCD_FORM("caption.import.abcd.form"),
+	CAPTION_LINK_ABCD_FORM("caption.link.abcd.form"),
 	
 	TOOLTIP_NEW_FORM("tooltip.new.form"),
 	TOOLTIP_NEW_FORM_VERSION("tooltip.new.form.version"),
+	TOOLTIP_IMPORT_ABCD_FORM("tooltip.import.abcd.form"),
+	TOOLTIP_LINK_ABCD_FORM("tooltip.link.abcd.form"),
 	
 	NULL_VALUE_NEW_FORM("null.value.new.form"),
 	NULL_VALUE_NEW_BLOCK("null.value.new.block"),
@@ -262,12 +272,14 @@ public enum LanguageCodes implements ILanguageCode{
 	WARNING_DESCRIPTION_RULE_BAD_FORMED("warning.description.rule.bad.formed"),
 	WARNING_DESCRIPTION_CONDITION_BAD_FORMED("warning.description.condition.bad.formed"),
 	
+	INFO_MESSAGE_VALUE_HAS_WRONG_FORMAT("info.message.value.has.wrong.format"),
+	
 	VALIDATOR_ERROR_PATTERN("validator.error.pattern"),
 	
 	NULL_VALUE_SEARCH_ORIGIN("null.value.search.origin"),
 	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),
 	
-	ERROR_USER_SERVICE("error.userService"), 
+	ERROR_USER_SERVICE("error.userService"),
 	;
 
 	private String value;

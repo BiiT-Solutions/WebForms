@@ -31,6 +31,7 @@ public class FormTest extends AbstractTransactionalTestNGSpringContextTests {
 	private final static String OTHER_FORM = "Other Form";
 	private final static String CATEGORY_LABEL = "Category1";
 	// private final static String ACTION_EXPRESSION = "Score=3";
+	private static final Long ORGANIZATION_ID = 0L;
 
 	@Autowired
 	private IFormDao formDao;
@@ -39,12 +40,13 @@ public class FormTest extends AbstractTransactionalTestNGSpringContextTests {
 	public void storeDummyForm() throws FieldTooLongException {
 		Form form = new Form();
 		form.setLabel(DUMMY_FORM);
+		form.setOrganizationId(ORGANIZATION_ID);
 		formDao.makePersistent(form);
 		Assert.assertEquals(formDao.getRowCount(), 1);
-		Assert.assertEquals(formDao.getForm(DUMMY_FORM).getLabel(), DUMMY_FORM);
+		Assert.assertEquals(formDao.getForm(DUMMY_FORM,ORGANIZATION_ID).getLabel(), DUMMY_FORM);
 		formDao.makeTransient(form);
 		Assert.assertEquals(formDao.getRowCount(), 0);
-		Assert.assertNull(formDao.getForm(DUMMY_FORM));
+		Assert.assertNull(formDao.getForm(DUMMY_FORM,ORGANIZATION_ID));
 	}
 
 	@Test

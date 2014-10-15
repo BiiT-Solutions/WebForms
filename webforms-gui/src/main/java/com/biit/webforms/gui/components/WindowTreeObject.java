@@ -100,4 +100,8 @@ public class WindowTreeObject extends WindowAcceptCancel {
 		container.addContainerFilter(filter);
 	}
 
+	public void setValue(TreeObject value) {
+		formTable.setValue(value);
+	}
+
 }

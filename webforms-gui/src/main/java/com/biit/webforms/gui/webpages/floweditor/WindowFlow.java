@@ -3,8 +3,9 @@ package com.biit.webforms.gui.webpages.floweditor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
-import com.biit.webforms.enumerations.RuleType;
+import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.gui.common.components.FilterByTreeObjectOrderGreater;
 import com.biit.webforms.gui.common.components.FilterByTreeObjectOrderLessEqual;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -15,7 +16,7 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -37,10 +38,10 @@ import com.vaadin.ui.VerticalLayout;
  * condition depending of the rule type.
  * 
  */
-public class WindowRule extends WindowAcceptCancel {
+public class WindowFlow extends WindowAcceptCancel {
 	private static final long serialVersionUID = 5164868235165988674L;
 	private static final String width = "75%";
-	private static final String height = "90%";
+	private static final String height = "100%";
 	private static final String BAR_HEIGHT = "50px";
 
 	private SearchFormElementField searchOrigin;
@@ -51,13 +52,13 @@ public class WindowRule extends WindowAcceptCancel {
 	private FilterByTreeObjectOrderGreater filterByTreeObjectOrderGreater;
 	private FilterByTreeObjectOrderLessEqual filterByTreeObjectOrderLessEqual;
 
-	public WindowRule() {
+	public WindowFlow() {
 		super();
 		filterByTreeObjectOrderGreater = new FilterByTreeObjectOrderGreater();
 		filterByTreeObjectOrderLessEqual = new FilterByTreeObjectOrderLessEqual();
 		setContent(generateContent());
 		setResizable(false);
-		setDraggable(false);
+		setDraggable(true);
 		setClosable(true);
 		setModal(true);
 		setWidth(width);
@@ -67,7 +68,7 @@ public class WindowRule extends WindowAcceptCancel {
 	public Component generateContent() {
 		VerticalLayout rootLayout = new VerticalLayout();
 		rootLayout.setSizeFull();
-		rootLayout.setMargin(true);
+		rootLayout.setMargin(false);
 		rootLayout.setSpacing(true);
 
 		Component barLayout = generateControlBar();
@@ -112,9 +113,9 @@ public class WindowRule extends WindowAcceptCancel {
 		return barLayout;
 	}
 
-	private void updateControls(Rule rule) {
+	private void updateControls(Flow rule) {
 		searchOrigin.setTreeObject(rule.getOrigin());
-		ruleTypeSelector.setValue(rule.getRuleType());
+		ruleTypeSelector.setValue(rule.getFlowType());
 		searchDestiny.setTreeObject(rule.getDestiny());
 		others.setValue(rule.isOthers());
 		if (!rule.isOthers()) {
@@ -132,7 +133,7 @@ public class WindowRule extends WindowAcceptCancel {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				RuleType type = (RuleType) event.getProperty().getValue();
+				FlowType type = (FlowType) event.getProperty().getValue();
 				if (type == null || type.isDestinyNull()) {
 					searchDestiny.clear();
 				}
@@ -162,14 +163,14 @@ public class WindowRule extends WindowAcceptCancel {
 			ruleTypeSelector.removeAllItems();
 			ruleTypeSelector.setEnabled(false);
 		} else {
-			RuleType currentRuleType = (RuleType) ruleTypeSelector.getValue();
+			FlowType currentRuleType = (FlowType) ruleTypeSelector.getValue();
 			// If the selected ruleType requires repeatable group and current
 			// element is not in a repeatable group then, reset the type.
 			if (currentRuleType == null
 					|| (currentRuleType.isOnlyInRepeatableGroups() && !((Question) searchOrigin.getValue())
 							.isInRepeatableGroup())) {
 				// Reset currentRuleType
-				currentRuleType = RuleType.getDefaultRuleType();
+				currentRuleType = FlowType.getDefaultFlowType();
 			}
 
 			ruleTypeSelector.removeAllItems();
@@ -189,7 +190,7 @@ public class WindowRule extends WindowAcceptCancel {
 
 	protected void updateSearchDestinyEnabledState() {
 		if (searchOrigin.getValue() == null || ruleTypeSelector.getValue() == null
-				|| ((RuleType) ruleTypeSelector.getValue()).isDestinyNull()) {
+				|| ((FlowType) ruleTypeSelector.getValue()).isDestinyNull()) {
 			searchDestiny.setEnabled(false);
 		} else {
 			searchDestiny.setEnabled(true);
@@ -197,8 +198,8 @@ public class WindowRule extends WindowAcceptCancel {
 	}
 
 	private Component generateSearchOriginContent() {
-		searchOrigin = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
-		searchOrigin.setSelectableFilter(Question.class);
+		searchOrigin = new SearchFormElementField(Form.class, Category.class, Group.class, BaseQuestion.class);
+		searchOrigin.setSelectableFilter(BaseQuestion.class);
 		searchOrigin.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_ORIGIN);
 		searchOrigin.setCaption(LanguageCodes.CAPTION_FROM.translation());
 		searchOrigin.addValueChangeListener(new SearchFormElementChanged() {
@@ -230,8 +231,8 @@ public class WindowRule extends WindowAcceptCancel {
 	}
 
 	private Component generateSearchDestinyContent() {
-		searchDestiny = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
-		searchDestiny.setSelectableFilter(Question.class);
+		searchDestiny = new SearchFormElementField(Form.class, Category.class, Group.class, BaseQuestion.class);
+		searchDestiny.setSelectableFilter(BaseQuestion.class);
 		searchDestiny.setNullCaption(LanguageCodes.NULL_VALUE_SEARCH_DESTINY);
 		searchDestiny.setCaption(LanguageCodes.CAPTION_TO.translation());
 		searchDestiny.setEnabled(false);
@@ -257,7 +258,7 @@ public class WindowRule extends WindowAcceptCancel {
 		return others;
 	}
 
-	public void setRule(Rule rule) {
+	public void setFlow(Flow rule) {
 		updateControls(rule);
 	}
 
@@ -269,8 +270,8 @@ public class WindowRule extends WindowAcceptCancel {
 		return searchDestiny.getTreeObject();
 	}
 
-	public RuleType getRuleType() {
-		return (RuleType) ruleTypeSelector.getValue();
+	public FlowType getFlowType() {
+		return (FlowType) ruleTypeSelector.getValue();
 	}
 
 	public List<Token> getCondition() {

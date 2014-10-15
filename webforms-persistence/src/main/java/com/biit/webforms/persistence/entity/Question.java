@@ -15,7 +15,9 @@ import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.FlowConditionScript;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -45,7 +47,6 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 
 	public Question() {
 		super();
-
 		mandatory = DEFAULT_MANDATORY;
 		horizontal = DEFAULT_HORIZONTAL;
 		description = new String();
@@ -99,28 +100,32 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 		this.answerFormat = answerFormat;
 		this.answerSubformat = null;
 	}
-	
-	public AnswerSubformat getAnswerSubformat(){
+
+	public AnswerSubformat getAnswerSubformat() {
 		return answerSubformat;
 	}
-	
+
 	public void setAnswerSubformat(AnswerSubformat answerSubformat) throws InvalidAnswerSubformatException {
-		if(answerFormat ==null && answerSubformat!=null){
-			throw new InvalidAnswerSubformatException("Answer subformat can't be defined if the question doesn't have any format.");
+		if (answerFormat == null && answerSubformat != null) {
+			throw new InvalidAnswerSubformatException(
+					"Answer subformat can't be defined if the question doesn't have any format.");
 		}
-		if(answerFormat !=null && answerSubformat != null && !answerFormat.isSubformat(answerSubformat)){
-			throw new InvalidAnswerSubformatException("Answer subformat "+answerSubformat+" is not compatible with answer format "+answerFormat);
+		if (answerFormat != null && answerSubformat != null && !answerFormat.isSubformat(answerSubformat)) {
+			throw new InvalidAnswerSubformatException("Answer subformat " + answerSubformat
+					+ " is not compatible with answer format " + answerFormat);
 		}
-		if(answerFormat !=null && answerSubformat ==null){
+		if (answerFormat != null && answerSubformat == null) {
 			this.answerSubformat = answerFormat.getDefaultSubformat();
-		}else{
+		} else {
 			this.answerSubformat = answerSubformat;
 		}
 	}
 
 	@Override
-	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof Question) {
+			copyBasicInfo(object);
+
 			Question question = (Question) object;
 
 			setDescription(new String(question.getDescription()));
@@ -135,7 +140,6 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
 			setHorizontal(question.isHorizontal());
-
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy");
 		}
@@ -158,11 +162,19 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 	}
 
 	public String getDescription() {
-		return description;
+		if (description != null) {
+			return description;
+		} else {
+			return new String();
+		}
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		if (description == null) {
+			this.description = new String();
+		} else {
+			this.description = description;
+		}
 	}
 
 	@Override
@@ -191,24 +203,25 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 	}
 
 	public boolean isInRepeatableGroup() {
-		if(getRepeatableGroup()!=null){
+		if (getRepeatableGroup() != null) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
 
 	/**
-	 * Returns the first known ancestor repeatable group that is marked as such. 
+	 * Returns the first known ancestor repeatable group that is marked as such.
+	 * 
 	 * @return
 	 */
 	public BaseRepeatableGroup getRepeatableGroup() {
-		TreeObject ancestor = getAncestor(BaseRepeatableGroup.class,false);
-		while(ancestor!=null){
-			if(((BaseRepeatableGroup)ancestor).isRepeatable()){
+		TreeObject ancestor = getAncestor(BaseRepeatableGroup.class, false);
+		while (ancestor != null) {
+			if (((BaseRepeatableGroup) ancestor).isRepeatable()) {
 				return (BaseRepeatableGroup) ancestor;
 			}
-			ancestor = ancestor.getAncestor(BaseRepeatableGroup.class,false);
+			ancestor = ancestor.getAncestor(BaseRepeatableGroup.class, false);
 		}
 		return null;
 	}

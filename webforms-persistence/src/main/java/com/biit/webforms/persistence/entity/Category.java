@@ -13,7 +13,9 @@ import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 
 @Entity
 @Table(name = "tree_categories")
@@ -33,11 +35,12 @@ public class Category extends BaseCategory {
 	protected List<Class<? extends TreeObject>> getAllowedChildren() {
 		return ALLOWED_CHILDS;
 	}
-
+	
 	@Override
-	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof Category) {
-			//Nothing to copy
+			//Nothing to copy except basic information data.
+			copyBasicInfo(object);
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Category only supports the same type copy");
 		}

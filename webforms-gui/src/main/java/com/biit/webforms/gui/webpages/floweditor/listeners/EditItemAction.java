@@ -1,9 +1,9 @@
 package com.biit.webforms.gui.webpages.floweditor.listeners;
 
-import com.biit.webforms.persistence.entity.Rule;
+import com.biit.webforms.persistence.entity.Flow;
 
 public interface EditItemAction {
 
-	void editItemAction(Rule rule);
+	void editItemAction(Flow rule);
 
 }

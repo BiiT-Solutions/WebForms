@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 
 @Entity
 @Table(name = "tree_texts")
@@ -32,11 +34,13 @@ public class Text extends BaseQuestion {
 	protected List<Class<? extends TreeObject>> getAllowedChildren() {
 		return new ArrayList<Class<? extends TreeObject>>();
 	}
-
+	
 	@Override
-	protected void copyData(TreeObject object) throws NotValidTreeObjectException {
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof Text) {
-			description = new String(((Text) object).getDescription());
+			// Copy basic data and description
+			copyBasicInfo(object);
+			description = new String(((Text) object).getDescription());			
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Text only supports the same type copy");
 		}

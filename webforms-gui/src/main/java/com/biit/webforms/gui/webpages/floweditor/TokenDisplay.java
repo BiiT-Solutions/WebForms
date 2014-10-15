@@ -10,22 +10,19 @@ import com.biit.webforms.gui.webpages.floweditor.listeners.TokenSingleClickListe
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
 public class TokenDisplay extends CustomComponent {
 	private static final long serialVersionUID = 5091855550351857003L;
 	private static final String CLASSNAME = "token-display";
-	private static final String LINE_HEIGHT = "32px";
 	private static final String FULL = "100%";
 
-	private List<TokenComponent> tokenComponents;
-	private TokenComponent focusedComponent;
 	private VerticalLayout rootLayout;
-	private HorizontalLayout lastLine;
+
+	private TokenComponent focusedComponent;
+
 	private TokenSingleClickListener autoselectListener;
 	private List<TokenDoubleClickListener> tokenDoubleClickListeners;
 	private ShortcutListener deleteShotcut;
@@ -35,10 +32,12 @@ public class TokenDisplay extends CustomComponent {
 
 	public TokenDisplay() {
 		super();
-		tokenComponents = new ArrayList<>();
-		tokenDoubleClickListeners = new ArrayList<>();
 		setStyleName(CLASSNAME);
 		setSizeFull();
+
+		rootLayout = new VerticalLayout();
+		tokenDoubleClickListeners = new ArrayList<>();
+
 		defineShortcuts();
 		enableShortcuts();
 		setCompositionRoot(generateComposition());
@@ -46,7 +45,6 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	private Component generateComposition() {
-		rootLayout = new VerticalLayout();
 		rootLayout.setWidth(FULL);
 		rootLayout.setHeight(null);
 		rootLayout.setSpacing(true);
@@ -67,54 +65,69 @@ public class TokenDisplay extends CustomComponent {
 		};
 	}
 
-	public void addToken(Token newToken) {
-		addTokenUi(newToken);
-	}
-
-	private void addTokenUi(Token token) {
-		TokenComponent tokenUi = new TokenComponent(token);
-		tokenUi.addTokenSingleClick(autoselectListener);
+	public void addToken(Token token) {
+		TokenComponent tokenComponent = new TokenComponent(token);
+		tokenComponent.addTokenSingleClick(autoselectListener);
 		for (TokenDoubleClickListener listener : tokenDoubleClickListeners) {
-			tokenUi.addTokenDoubleClick(listener);
+			tokenComponent.addTokenDoubleClick(listener);
 		}
+		addToken(tokenComponent);
+	}
 
-		if (token.getType() == TokenTypes.RETURN) {
-			addLine();
-			addTokenUi(tokenUi, lastLine);
+	private void addToken(TokenComponent token) {
+		if (token.getToken().getType() == TokenTypes.RETURN) {
+			LineDisplay newLine = addLine();
+			newLine.addToken(token);
+			setFocused(token);
 		} else {
-			addTokenUi(tokenUi,null);
+			addToken(token, null);
 		}
 	}
 
-	private void addTokenUi(TokenComponent tokenUi, AbstractOrderedLayout line) {
-		tokenComponents.add(tokenUi);
-		if(line !=null){
-			line.addComponent(tokenUi);
-		}else{
-			if (focusedComponent == null) {
-				getLastLine().addComponent(tokenUi);
+	/**
+	 * Adds a TokenComponent to the end of a specific line or after the current
+	 * selected element or adds the element as the last selected element.
+	 * 
+	 * @param token
+	 * @param line
+	 */
+	private void addToken(TokenComponent token, LineDisplay line) {
+		// If a line is defined we add it to the end of the line
+		if (line != null) {
+			line.addToken(token);
+		} else {
+			// If not we add after the focused component or the last line.
+			if (focusedComponent != null) {
+				focusedComponent.getLine().addTokenAfter(token, focusedComponent);
 			} else {
-				AbstractOrderedLayout lineToInsert = getCurrentLine();
-				int index = lineToInsert.getComponentIndex(focusedComponent);
-				lineToInsert.addComponent(tokenUi, index + 1);
+				addToken(token, getCurrentLine());
 			}
 		}
-		setFocused(tokenUi);
+		setFocused(token);
 	}
 
-	private AbstractOrderedLayout getCurrentLine() {
-		if (focusedComponent == null) {
-			return getLastLine();
+	/**
+	 * Gets currently selected line for work. If a component is selected returns
+	 * its line, else returns the last line.
+	 * 
+	 * @return
+	 */
+	private LineDisplay getCurrentLine() {
+		if (rootLayout.getComponentCount() == 0) {
+			return null;
+		}
+		if (focusedComponent != null) {
+			return focusedComponent.getLine();
 		} else {
-			return (AbstractOrderedLayout) focusedComponent.getParent();
+			return (LineDisplay) rootLayout.getComponent(rootLayout.getComponentCount() - 1);
 		}
 	}
 
-	private void setFocused(TokenComponent tokenUi) {
+	private void setFocused(TokenComponent token) {
 		if (focusedComponent != null) {
 			focusedComponent.loseFocus();
 		}
-		focusedComponent = tokenUi;
+		focusedComponent = token;
 		if (focusedComponent != null) {
 			focusedComponent.focus();
 		}
@@ -130,23 +143,23 @@ public class TokenDisplay extends CustomComponent {
 		setFocused(previous);
 	}
 
-	public void delete() {
+	public void remove() {
 		if (focusedComponent != null) {
 			TokenComponent temp = focusedComponent;
 			previous();
 			if (focusedComponent == temp) {
 				focusedComponent = null;
 			}
-			deleteTokenComponent(temp);
+			remove(temp);
 		}
 	}
 
-	private void deleteTokenComponent(TokenComponent tokenComponent) {
-		if (tokenComponent.getToken().getType() == TokenTypes.RETURN) {
-			removeLine((AbstractOrderedLayout) tokenComponent.getParent());
+	private void remove(TokenComponent token) {
+		if (token.getToken().getType() == TokenTypes.RETURN) {
+			remove(token.getLine());
+		} else {
+			token.getLine().removeToken(token);
 		}
-		((AbstractOrderedLayout) tokenComponent.getParent()).removeComponent(tokenComponent);
-		tokenComponents.remove(tokenComponent);
 	}
 
 	/**
@@ -154,22 +167,18 @@ public class TokenDisplay extends CustomComponent {
 	 * 
 	 * @param line
 	 */
-	private void removeLine(AbstractOrderedLayout line) {
-		int index = rootLayout.getComponentIndex(line);
-		AbstractOrderedLayout previousLine = (AbstractOrderedLayout) rootLayout.getComponent(index - 1);
+	private void remove(LineDisplay line) {
+		List<TokenComponent> tokens = line.getTokens();
+		// Return token should always be the first element
+		tokens.remove(0);
 
-		List<Component> componentsToMove = new ArrayList<Component>();
-		Iterator<Component> componentItr = line.iterator();
-		while (componentItr.hasNext()) {
-			componentsToMove.add(componentItr.next());
-		}
-		line.removeAllComponents();
+		int previousLineIndex = rootLayout.getComponentIndex(line) - 1;
+		// First line can't be removed so we can assume we will always have one
+		// line.
+		LineDisplay previousLine = (LineDisplay) rootLayout.getComponent(previousLineIndex);
+		previousLine.addTokens(tokens);
 
-		for (Component componentToMove : componentsToMove) {
-			previousLine.addComponent(componentToMove);
-		}
 		rootLayout.removeComponent(line);
-		lastLine = (HorizontalLayout) rootLayout.getComponent(rootLayout.getComponentCount()-1);
 	}
 
 	/**
@@ -181,52 +190,88 @@ public class TokenDisplay extends CustomComponent {
 	 * @param position
 	 */
 	public TokenComponent getElementAhead(int numPosition) {
-		if (tokenComponents.isEmpty()) {
-			return null;
-		}
 		if (focusedComponent == null) {
 			if (numPosition > 0) {
-				return tokenComponents.get(0);
+				return getFirstToken();
 			} else {
-				return tokenComponents.get(tokenComponents.size() - 1);
+				return getLastToken();
 			}
 		} else {
-			int index = tokenComponents.indexOf(focusedComponent);
-			index += numPosition;
-			index %= tokenComponents.size();
-			return tokenComponents.get(Math.abs(index));
+			List<TokenComponent> tokens = getTokenComponents();
+			int elementIndex = (tokens.size() + (tokens.indexOf(focusedComponent) + numPosition)) % tokens.size();
+			return tokens.get(elementIndex);
 		}
+	}
+
+	private TokenComponent getLastToken() {
+		if (rootLayout.getComponentCount() == 0) {
+			return null;
+		}
+		return ((LineDisplay) rootLayout.getComponent(rootLayout.getComponentCount() - 1)).getLastToken();
+	}
+
+	private TokenComponent getFirstToken() {
+		if(rootLayout.getComponentCount()==0){
+			return null;
+		}
+		return ((LineDisplay) rootLayout.getComponent(0)).getFirstToken();
+	}
+
+	public int getTokenCount() {
+		int count = 0;
+		Iterator<Component> itr = rootLayout.iterator();
+		while (itr.hasNext()) {
+			LineDisplay line = (LineDisplay) itr.next();
+			count += line.getTokenCount();
+		}
+		return count;
 	}
 
 	List<Token> getTokens() {
 		List<Token> tokens = new ArrayList<>();
-		for (TokenComponent tokenComponent : tokenComponents) {
+		for (TokenComponent tokenComponent : getTokenComponents()) {
 			tokens.add(tokenComponent.getToken());
 		}
 		return tokens;
 	}
-
-	private HorizontalLayout addLine() {
-		HorizontalLayout newLine = new HorizontalLayout();
-		newLine.setWidth(null);
-		newLine.setHeight(LINE_HEIGHT);
-		newLine.setSpacing(true);
-
-		lastLine = newLine;
-		rootLayout.addComponent(newLine);
-
-		return newLine;
+	
+	List<TokenComponent> getTokenComponents(){
+		List<TokenComponent> tokens = new ArrayList<TokenComponent>();
+		Iterator<Component> itr = rootLayout.iterator();
+		while(itr.hasNext()){
+			LineDisplay line = (LineDisplay) itr.next();
+			tokens.addAll(line.getTokens());
+		}
+		return tokens;
 	}
 
-	private HorizontalLayout getLastLine() {
-		return lastLine;
+	private LineDisplay addLine() {
+		LineDisplay newLine = new LineDisplay();
+
+		if (getCurrentLine() == null) {
+			rootLayout.addComponent(newLine);
+			return newLine;
+		}
+
+		List<TokenComponent> tokens = getCurrentLine().getTokensAfter(focusedComponent);
+		//Remove tokens at the right side of the current selected element. Add them to the new line.
+		getCurrentLine().removeTokens(tokens);
+		newLine.addTokens(tokens);
+		
+		int insertIndex = rootLayout.getComponentIndex(getCurrentLine())+1;
+		if (insertIndex == rootLayout.getComponentCount()) {
+			rootLayout.addComponent(newLine);
+		} else {
+			rootLayout.addComponent(newLine, insertIndex);
+		}
+		return newLine;
 	}
 
 	public void addTokenDoubleClickListener(TokenDoubleClickListener listener) {
 		// Adds to the list for future tokens
 		tokenDoubleClickListeners.add(listener);
 		// And registres for the already existing tokens.
-		for (TokenComponent tokenComponent : tokenComponents) {
+		for (TokenComponent tokenComponent : getTokenComponents()) {
 			tokenComponent.addTokenDoubleClick(listener);
 		}
 	}
@@ -237,7 +282,7 @@ public class TokenDisplay extends CustomComponent {
 
 			@Override
 			public void handleAction(Object sender, Object target) {
-				delete();
+				remove();
 			}
 		};
 
@@ -284,8 +329,8 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	public void clean() {
-		for (TokenComponent tokenComponent : tokenComponents) {
-			deleteTokenComponent(tokenComponent);
-		}
+		focusedComponent = null;
+		rootLayout.removeAllComponents();
+		addLine();
 	}
 }

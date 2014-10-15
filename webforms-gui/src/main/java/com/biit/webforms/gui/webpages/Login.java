@@ -18,6 +18,7 @@ import com.biit.webforms.gui.common.components.WebPageComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.liferay.portal.model.User;
 import com.vaadin.event.ShortcutAction;
@@ -191,7 +192,7 @@ public class Login extends WebPageComponent {
 	}
 	
 	private Component createNameVersion() {
-		Label label = new Label("Agile Business sCenario Designer - v" + getVersion());
+		Label label = new Label(LanguageCodes.APPLICATION_NAME.translation()+" - v" + getVersion());
 		label.setWidth(null);
 		return label;
 	}

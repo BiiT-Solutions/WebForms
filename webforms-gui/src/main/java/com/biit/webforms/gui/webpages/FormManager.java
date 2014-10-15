@@ -7,10 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
@@ -30,6 +30,7 @@ import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
+import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForm;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
@@ -62,7 +63,7 @@ public class FormManager extends SecuredWebPage {
 		setUpperMenu(upperMenu);
 		setBottomMenu(bottomMenu);
 
-		formTable = new TreeTableFormVersion();
+		formTable = new TreeTableFormVersion(UserSessionHandler.getController().getWebformsFormDao());
 		formTable.setSizeFull();
 		formTable.addEditInfoListener(new EditInfoListener() {
 			@Override
@@ -104,6 +105,22 @@ public class FormManager extends SecuredWebPage {
 				newFormVersion();
 			}
 		});
+		upperMenu.addImportAbcdForm(new ClickListener() {
+			private static final long serialVersionUID = -2591404148252216954L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				importAbcdForm();
+			}
+		});
+		upperMenu.addLinkAbcdForm(new ClickListener() {
+			private static final long serialVersionUID = 2864457152577148777L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				linkAbcdForm();
+			}
+		});
 		upperMenu.addExportPdf(new ClickListener() {
 			private static final long serialVersionUID = 2864457152577148777L;
 
@@ -130,6 +147,25 @@ public class FormManager extends SecuredWebPage {
 		return upperMenu;
 	}
 
+	protected void importAbcdForm() {
+		WindowImportAbcdForm importAbcdForm = new WindowImportAbcdForm(UserSessionHandler.getController()
+				.getWebformsFormDaoAbcd());
+		importAbcdForm.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				formTable.refreshTableData();
+				window.close();
+			}
+		});
+		importAbcdForm.showCentered();
+	}
+
+	protected void linkAbcdForm() {
+		// TODO Auto-generated method stub
+
+	}
+
 	private FormEditBottomMenu createBottomMenu() {
 		FormEditBottomMenu bottomMenu = new FormEditBottomMenu();
 		bottomMenu.addLockFormListener(new LockFormListener() {
@@ -146,11 +182,11 @@ public class FormManager extends SecuredWebPage {
 		Form newForm;
 		try {
 			RootForm rootForm = formTable.getSelectedRootForm();
-			Form currentForm = rootForm.getLastFormVersion();
+			Form currentForm = (Form) rootForm.getLastFormVersion();
 
 			newForm = UserSessionHandler.getController().createNewFormVersion(currentForm);
 			addFormToTable(newForm);
-		} catch (NotValidTreeObjectException e) {
+		} catch (NotValidStorableObjectException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 		} catch (NewVersionWithoutFinalDesignException e) {
 			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED,
@@ -213,7 +249,7 @@ public class FormManager extends SecuredWebPage {
 
 	private void addFormToTable(Form form) {
 		formTable.addForm(form);
-		formTable.selectForm(form);
+		formTable.setValue(form);
 	}
 
 	@Override

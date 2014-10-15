@@ -17,6 +17,7 @@ public enum AnswerSubformat {
 
 	BSN("#9", WebformsConfigurationReader.getInstance().getRegexBsn()),
 
+	//Number subtypes
 	NUMBER("[0-9]+", WebformsConfigurationReader.getInstance().getRegexNumber()),
 
 	FLOAT("[0-9]+\\.[0-9]*", WebformsConfigurationReader.getInstance().getRegexFloat()),

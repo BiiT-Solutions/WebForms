@@ -63,6 +63,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(downButton);
 		addIconButton(deleteButton);
 		addIconButton(finishButton);
+		
+		setConfirmationNeeded(true);
 	}
 
 	public void addSaveButtonListener(ClickListener listener) {
