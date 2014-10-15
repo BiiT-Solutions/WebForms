@@ -22,47 +22,38 @@
 	<!-- Scans the classpath for annotated components that will be auto-registered 
 		as Spring beans. For example @Component, @Controller and @Service. Make sure 
 		to set the correct base-package -->
-	<context:component-scan base-package="com.biit.webforms, com.biit.form, com.biit.persistence" />
-	
-          <!-- Read any *.properties file -->
+	<context:component-scan base-package="com.biit.webforms" />
+
+	<!-- Read any *.properties file -->
 	<context:property-placeholder location="classpath*:*.properties" />
-	
-	<bean id="transactionManagerWebforms"
-		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-		<property name="sessionFactory" ref="sessionFactoryWebforms" />
-	</bean>
-<!-- 	<bean id="transactionManagerAbcd"
-		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-		<property name="sessionFactory" ref="sessionFactoryAbcd" />
-	</bean> -->
+
+
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+
 
 	<!-- Data Source -->
 	<bean id="dataSourceWebforms"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="${webforms.hibernate.connection.driver_class}" />
+		<property name="driverClassName"
+			value="${webforms.hibernate.connection.driver_class}" />
 		<property name="url" value="${webforms.hibernate.connection.url}" />
 		<property name="username" value="${webforms.hibernate.connection.username}" />
 		<property name="password" value="${webforms.hibernate.connection.password}" />
 	</bean>
-<!-- 	<bean id="dataSourceAbcd"
+	<bean id="dataSourceAbcd"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${abcd.hibernate.connection.driver_class}" />
 		<property name="url" value="${abcd.hibernate.connection.url}" />
 		<property name="username" value="${abcd.hibernate.connection.username}" />
 		<property name="password" value="${abcd.hibernate.connection.password}" />
 	</bean>
- -->
-	<!-- Hibernate session factory -->
-	<bean id="sessionFactoryWebforms"
+
+	<!-- Abstract Hibernate Session factory -->
+	<bean id="abstractSessionFactory" abstract="true"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-
-		<property name="dataSource">
-			<ref bean="dataSourceWebforms" />
-		</property>
-
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.dialect">${webforms.hibernate.dialect}</prop>
 				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
 				<!-- New ID creator -->
 				<prop key="hibernate.id.new_generator_mappings">${hibernate.id.new_generator_mappings}</prop>
@@ -74,16 +65,17 @@
 				<prop key="hibernate.use_identifier_rollback">${hibernate.use_identifier_rollback}</prop>
 				<prop key="hibernate.order_inserts">${hibernate.order_inserts}</prop>
 				<prop key="hibernate.order_updates">${hibernate.order_updates}</prop>
-				
-				<!-- Second Level Cache-->
+
+				<!-- Second Level Cache -->
 				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
 				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
 				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
-				<prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>				
+				<prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>
 				<prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop>
 				<prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
-				<prop key="hibernate.cache.provider_configuration_file_resource_path">${hibernate.cache.provider_configuration_file_resource_path}</prop>
-				
+				<prop key="hibernate.cache.provider_configuration_file_resource_path">${hibernate.cache.provider_configuration_file_resource_path}
+				</prop>
+
 				<!-- C3p0 -->
 				<prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>
 				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
@@ -99,66 +91,25 @@
 				<prop key="hibernate.c3p0.acquire_increment">${hibernate.c3p0.acquire_increment}</prop>
 			</props>
 		</property>
+	</bean>
 
+	<!-- Hibernate session factories -->
+	<bean id="sessionFactoryWebforms" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceWebforms" />
 		<property name="packagesToScan">
 			<list>
 				<value>com.biit.webforms.persistence**.*</value>
 			</list>
 		</property>
 	</bean>
-	<!-- <bean id="sessionFactoryAbcd"
-		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-
-		<property name="dataSource">
-			<ref bean="dataSourceAbcd" />
-		</property>
-
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">${abcd.hibernate.dialect}</prop>
-				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
-				New ID creator
-				<prop key="hibernate.id.new_generator_mappings">${hibernate.id.new_generator_mappings}</prop>
-				Create table if not exists
-				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
-				Unnecesary to open and close sessions
-				<prop key="hibernate.current_session_context_class">${hibernate.current_session_context_class}</prop>
-				When deleting an object, set ID to null
-				<prop key="hibernate.use_identifier_rollback">${hibernate.use_identifier_rollback}</prop>
-				<prop key="hibernate.order_inserts">${hibernate.order_inserts}</prop>
-				<prop key="hibernate.order_updates">${hibernate.order_updates}</prop>
-				
-				Second Level Cache
-				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
-				<prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
-				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
-				<prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>				
-				<prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop>
-				<prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
-				<prop key="hibernate.cache.provider_configuration_file_resource_path">${hibernate.cache.provider_configuration_file_resource_path}</prop>
-				
-				C3p0
-				<prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>
-				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
-				<prop key="hibernate.max_fetch_depth">${hibernate.max_fetch_depth}</prop>
-				<prop key="hibernate.proxool.pool_alias">PoolDb1</prop>
-				<prop key="hibernate.jdbc.batch_versioned_data">${hibernate.jdbc.batch_versioned_data}</prop>
-				<prop key="hibernate.jdbc.use_streams_for_binary">${hibernate.jdbc.use_streams_for_binary}</prop>
-				<prop key="hibernate.c3p0.max_size">${hibernate.c3p0.max_size}</prop>
-				<prop key="hibernate.c3p0.min_size">${hibernate.c3p0.min_size}</prop>
-				<prop key="hibernate.c3p0.timeout">${hibernate.c3p0.timeout}</prop>
-				<prop key="hibernate.c3p0.max_statements">${hibernate.c3p0.max_statements}</prop>
-				<prop key="hibernate.c3p0.idle_test_period">${hibernate.c3p0.idle_test_period}</prop>
-				<prop key="hibernate.c3p0.acquire_increment">${hibernate.c3p0.acquire_increment}</prop>
-			</props>
-		</property>
-
+	<bean id="sessionFactoryAbcd" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceAbcd" />
 		<property name="packagesToScan">
 			<list>
 				<value>com.biit.abcd.persistence**.*</value>
 			</list>
 		</property>
-	</bean> -->
+	</bean>
 
 	<!-- Enables Interceptors -->
 	<aop:aspectj-autoproxy />
@@ -166,7 +117,8 @@
 	<bean id="basicLogging" class="com.biit.webforms.logger.BasicLogging" />
 
 	<!-- Internationalization -->
-	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">
 			<util:list>
 				<value>languages/components/localization</value>
@@ -174,14 +126,20 @@
 				<value>languages/ui/localization</value>
 			</util:list>
 		</property>
-		<property name="defaultEncoding" value="UTF-8"/>
+		<property name="defaultEncoding" value="UTF-8" />
 		<property name="fallbackToSystemLocale" value="false"></property>
 	</bean>
-	
+
 	<!-- DAOS -->
-	<bean name="blockDao" class="com.biit.webforms.persistence.dao.hibernate.BlockDao"/>
-	<bean name="formDao" class="com.biit.webforms.persistence.dao.hibernate.FormDao"/>
-	
+	<bean name="blockDao" class="com.biit.webforms.persistence.dao.hibernate.BlockDao">
+		<property name="sessionFactory" ref="sessionFactoryWebforms" />
+	</bean>
+	<bean name="formDao" class="com.biit.webforms.persistence.dao.hibernate.FormDao">
+		<property name="sessionFactory" ref="sessionFactoryWebforms" />
+	</bean>
+	<bean name="formDaoAbcd" class="com.biit.abcd.persistence.dao.hibernate.FormDao">
+		<property name="sessionFactory" ref="sessionFactoryAbcd" />
+	</bean>
 	<!-- Liferay Services -->
 	<bean id="userService" class="com.biit.liferay.access.UserService" />
 

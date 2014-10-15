@@ -64,7 +64,10 @@ public enum ThemeIcons implements IThemeIcon{
 	RULE_DIAGRAM_REDRAW("flow.diagram.refresh.svg"),	
 	
 	CONDITION_HELPER_FORM_REFERENCE("flow.helper.form.svg"),
-	CONDITION_HELPER_CONTROLS("flow.helper.control.svg"),
+	CONDITION_HELPER_CONTROLS("flow.helper.control.svg"), 
+	
+	FORM_MANAGER_IMPORT_ABCD_FORM("alert.svg"), //TODO
+	FORM_MANAGER_LINK_ABCD_FORM("alert.svg"), //TODO
 		
 	;
 	

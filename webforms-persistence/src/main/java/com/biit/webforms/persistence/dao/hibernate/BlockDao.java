@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -10,9 +11,11 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.biit.form.BaseForm;
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
@@ -23,6 +26,10 @@ import com.liferay.portal.model.Organization;
 public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 
 	public BlockDao() {
+		super(Block.class);
+	}
+
+	public BlockDao(HibernateTransactionManager transactionManager) {
 		super(Block.class);
 	}
 
@@ -176,5 +183,23 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	@Override
 	public Block getForm(String label, Integer version, Long organizationId) {
 		throw new UnsupportedOperationException("Block dao doesn't allow a get by name, version and organization");
+	}
+
+	@Override
+	public Collection<? extends BaseForm> getAll(Long organizationId) {
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		try {
+			Criteria criteria = session.createCriteria(getType());
+			criteria.add(Restrictions.eq("organizationId", organizationId));
+			@SuppressWarnings("unchecked")
+			List<Block> results = criteria.list();
+			initializeSets(results);
+			session.getTransaction().commit();
+			return results;
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			throw e;
+		}
 	}
 }

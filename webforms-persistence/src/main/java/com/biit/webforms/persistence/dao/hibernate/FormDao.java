@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -16,20 +17,26 @@ import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.biit.form.BaseForm;
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
-import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Flow;
+import com.biit.webforms.persistence.entity.Form;
 import com.liferay.portal.model.Organization;
 
 @Repository
 public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 
 	public FormDao() {
+		super(Form.class);
+	}
+
+	public FormDao(HibernateTransactionManager transactionManager) {
 		super(Form.class);
 	}
 
@@ -41,7 +48,7 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			Hibernate.initialize(form.getFlows());
 		}
 	}
-	
+
 	@Override
 	public int getLastVersion(Form form) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -94,7 +101,7 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 
 	@Override
 	@Cacheable(value = "forms", key = "#label")
-	public Form getForm(String label,Long organizationId) {
+	public Form getForm(String label, Long organizationId) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
@@ -240,12 +247,12 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 
 	@Override
 	public boolean exists(String label, Long organizationId) {
-		return getForm(label,organizationId)!=null;
+		return getForm(label, organizationId) != null;
 	}
-	
-	public Form getForm(String label, Integer version, Organization organization){
-		 return getForm(label,version,organization.getOrganizationId());
-	 }
+
+	public Form getForm(String label, Integer version, Organization organization) {
+		return getForm(label, version, organization.getOrganizationId());
+	}
 
 	@Override
 	public Form getForm(String label, Integer version, Long organizationId) {
@@ -256,7 +263,7 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			criteria.add(Restrictions.eq("label", label));
 			criteria.add(Restrictions.eq("version", version));
 			criteria.add(Restrictions.eq("organizationId", organizationId));
-			
+
 			@SuppressWarnings("unchecked")
 			List<Form> results = criteria.list();
 			initializeSets(results);
@@ -274,5 +281,23 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 			throw e;
 		}
 		return null;
+	}
+
+	@Override
+	public Collection<? extends BaseForm> getAll(Long organizationId) {
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		try {
+			Criteria criteria = session.createCriteria(getType());
+			criteria.add(Restrictions.eq("organizationId", organizationId));
+			@SuppressWarnings("unchecked")
+			List<Form> results = criteria.list();
+			initializeSets(results);
+			session.getTransaction().commit();
+			return results;
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			throw e;
+		}
 	}
 }

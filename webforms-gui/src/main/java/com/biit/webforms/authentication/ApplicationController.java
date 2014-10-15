@@ -56,6 +56,7 @@ public class ApplicationController {
 
 	private IFormDao formDao;
 	private IBlockDao blockDao;
+	private com.biit.abcd.persistence.dao.IFormDao formDaoAbcd;
 
 	private Form lastEditedForm;
 	private Form formInUse;
@@ -65,6 +66,7 @@ public class ApplicationController {
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		formDao = (IFormDao) helper.getBean("formDao");
 		blockDao = (IBlockDao) helper.getBean("blockDao");
+		formDaoAbcd = (com.biit.abcd.persistence.dao.IFormDao) helper.getBean("formDaoAbcd");
 	}
 
 	/**
@@ -841,5 +843,17 @@ public class ApplicationController {
 		logInfo("logOut");
 		clearFormInUse();
 		ApplicationUi.navigateTo(WebMap.LOGIN_PAGE);
+	}
+
+	public IFormDao getWebformsFormDao() {
+		return formDao;
+	}
+	
+	public IBlockDao getWebformsBlockDao() {
+		return blockDao;
+	}
+	
+	public com.biit.abcd.persistence.dao.IFormDao getWebformsFormDaoAbcd() {
+		return formDaoAbcd;
 	}
 }
