@@ -1,6 +1,5 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -11,18 +10,15 @@ import javax.xml.bind.TypeConstraintException;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.biit.form.BaseForm;
-import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
+import com.biit.form.persistence.dao.hibernate.BaseFormDao;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Flow;
@@ -30,13 +26,9 @@ import com.biit.webforms.persistence.entity.Form;
 import com.liferay.portal.model.Organization;
 
 @Repository
-public class FormDao extends TreeObjectDao<Form> implements IFormDao {
+public class FormDao extends BaseFormDao<Form> implements IFormDao {
 
 	public FormDao() {
-		super(Form.class);
-	}
-
-	public FormDao(HibernateTransactionManager transactionManager) {
 		super(Form.class);
 	}
 
@@ -50,45 +42,12 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 	}
 
 	@Override
-	public int getLastVersion(Form form) {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		try {
-			Criteria criteria = session.createCriteria(Form.class);
-			criteria.setProjection(Projections.max("version"));
-			criteria.add(Restrictions.eq("label", form.getLabel()));
-			criteria.add(Restrictions.eq("organizationId", form.getOrganizationId()));
-			Integer maxVersion = (Integer) criteria.uniqueResult();
-			session.getTransaction().commit();
-			return maxVersion;
-		} catch (RuntimeException e) {
-			session.getTransaction().rollback();
-			throw e;
-		}
-	}
-
-	@Override
-	public int getLastVersion(String label, Long organizationId) {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		try {
-			Criteria criteria = session.createCriteria(Form.class);
-			criteria.setProjection(Projections.max("version"));
-			criteria.add(Restrictions.eq("label", label));
-			criteria.add(Restrictions.eq("organizationId", organizationId));
-			Integer maxVersion = (Integer) criteria.uniqueResult();
-			session.getTransaction().commit();
-			return maxVersion;
-		} catch (RuntimeException e) {
-			session.getTransaction().rollback();
-			throw e;
-		}
-	}
-
-	@Override
 	@Cacheable(value = "forms", key = "#id")
 	public Form read(Long id) {
-		return super.read(id);
+		WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
+		Form form = super.read(id);
+		WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
+		return form;
 	}
 
 	@Override
@@ -102,62 +61,12 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 	@Override
 	@Cacheable(value = "forms", key = "#label")
 	public Form getForm(String label, Long organizationId) {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		try {
-			Criteria criteria = session.createCriteria(Form.class);
-			criteria.add(Restrictions.eq("label", label));
-			criteria.add(Restrictions.eq("organizationId", organizationId));
-			@SuppressWarnings("unchecked")
-			List<Form> results = criteria.list();
-			initializeSets(results);
-			session.getTransaction().commit();
-			// For solving Hibernate bug
-			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
-			// list of children
-			// with @Orderby or @OrderColumn we use our own order manager.
-			sortChildren(results);
-			if (!results.isEmpty()) {
-				return (Form) results.get(0);
-			}
-		} catch (RuntimeException e) {
-			session.getTransaction().rollback();
-			throw e;
-		}
-		return null;
-	}
-
-	@Override
-	@Cacheable(value = "forms", key = "#label, #organization.id")
-	public Form getForm(String formLabel, Organization organization) {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		try {
-			Criteria criteria = session.createCriteria(Form.class);
-			criteria.add(Restrictions.eq("label", formLabel));
-			criteria.add(Restrictions.eq("organizationId", organization.getOrganizationId()));
-			@SuppressWarnings("unchecked")
-			List<Form> results = criteria.list();
-			initializeSets(results);
-			session.getTransaction().commit();
-			// For solving Hibernate bug
-			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
-			// list of children
-			// with @Orderby or @OrderColumn we use our own order manager.
-			sortChildren(results);
-			if (!results.isEmpty()) {
-				return (Form) results.get(0);
-			}
-		} catch (RuntimeException e) {
-			session.getTransaction().rollback();
-			throw e;
-		}
-		return null;
+		return super.getForm(label, organizationId);
 	}
 
 	/**
-	 * Filtered version of get All. Takes a Class argument and returns a list
-	 * with all the elements that match the class argument.
+	 * Filtered version of get All. Takes a Class argument and returns a list with all the elements that match the class
+	 * argument.
 	 * 
 	 * @param cls
 	 * @return
@@ -252,52 +161,5 @@ public class FormDao extends TreeObjectDao<Form> implements IFormDao {
 
 	public Form getForm(String label, Integer version, Organization organization) {
 		return getForm(label, version, organization.getOrganizationId());
-	}
-
-	@Override
-	public Form getForm(String label, Integer version, Long organizationId) {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		try {
-			Criteria criteria = session.createCriteria(Form.class);
-			criteria.add(Restrictions.eq("label", label));
-			criteria.add(Restrictions.eq("version", version));
-			criteria.add(Restrictions.eq("organizationId", organizationId));
-
-			@SuppressWarnings("unchecked")
-			List<Form> results = criteria.list();
-			initializeSets(results);
-			session.getTransaction().commit();
-			// For solving Hibernate bug
-			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
-			// list of children
-			// with @Orderby or @OrderColumn we use our own order manager.
-			sortChildren(results);
-			if (!results.isEmpty()) {
-				return (Form) results.get(0);
-			}
-		} catch (RuntimeException e) {
-			session.getTransaction().rollback();
-			throw e;
-		}
-		return null;
-	}
-
-	@Override
-	public Collection<? extends BaseForm> getAll(Long organizationId) {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		try {
-			Criteria criteria = session.createCriteria(getType());
-			criteria.add(Restrictions.eq("organizationId", organizationId));
-			@SuppressWarnings("unchecked")
-			List<Form> results = criteria.list();
-			initializeSets(results);
-			session.getTransaction().commit();
-			return results;
-		} catch (RuntimeException e) {
-			session.getTransaction().rollback();
-			throw e;
-		}
 	}
 }
