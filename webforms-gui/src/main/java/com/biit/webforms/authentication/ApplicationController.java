@@ -94,7 +94,7 @@ public class ApplicationController {
 		}
 
 		// Check if database contains a form with the same name.
-		if (formDao.getForm(formLabel, organization) != null) {
+		if (formDao.getForm(formLabel, organization.getOrganizationId()) != null) {
 			FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel
 					+ " already exists");
 			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()

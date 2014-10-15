@@ -53,7 +53,7 @@
 		<ehcache.version>2.6.9</ehcache.version>
 		<c3p0.version>0.9.1.2</c3p0.version>
 		<DES-encryption.version>1.0.0</DES-encryption.version>
-		<abcd-persistance.version>0.8.9</abcd-persistance.version>
+		<abcd-persistance.version>0.8.10</abcd-persistance.version>
 	</properties>
 
 	<dependencies>
