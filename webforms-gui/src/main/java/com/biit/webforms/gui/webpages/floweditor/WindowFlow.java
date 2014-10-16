@@ -13,10 +13,9 @@ import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFo
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.language.RuleTypeUi;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
-import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -167,7 +166,7 @@ public class WindowFlow extends WindowAcceptCancel {
 			// If the selected ruleType requires repeatable group and current
 			// element is not in a repeatable group then, reset the type.
 			if (currentRuleType == null
-					|| (currentRuleType.isOnlyInRepeatableGroups() && !((Question) searchOrigin.getValue())
+					|| (currentRuleType.isOnlyInRepeatableGroups() && !((BaseQuestion) searchOrigin.getValue())
 							.isInRepeatableGroup())) {
 				// Reset currentRuleType
 				currentRuleType = FlowType.getDefaultFlowType();
@@ -176,7 +175,7 @@ public class WindowFlow extends WindowAcceptCancel {
 			ruleTypeSelector.removeAllItems();
 			for (RuleTypeUi ruleType : RuleTypeUi.values()) {
 				if (ruleType.getType().isOnlyInRepeatableGroups()
-						&& (searchOrigin.getValue() == null || !((Question) searchOrigin.getValue())
+						&& (searchOrigin.getValue() == null || !((BaseQuestion) searchOrigin.getValue())
 								.isInRepeatableGroup())) {
 					continue;
 				}

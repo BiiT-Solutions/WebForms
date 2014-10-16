@@ -27,10 +27,8 @@
 	<!-- Read any *.properties file -->
 	<context:property-placeholder location="classpath*:*.properties" />
 
-
 	<bean
 		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
-
 
 	<!-- Data Source -->
 	<bean id="dataSourceWebforms"
@@ -142,5 +140,4 @@
 	</bean>
 	<!-- Liferay Services -->
 	<bean id="userService" class="com.biit.liferay.access.UserService" />
-
 </beans>

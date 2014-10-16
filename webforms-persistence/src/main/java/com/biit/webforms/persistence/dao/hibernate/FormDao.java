@@ -16,7 +16,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.biit.form.persistence.dao.hibernate.BaseFormDao;
 import com.biit.webforms.logger.WebformsLogger;
@@ -65,8 +64,8 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	/**
-	 * Filtered version of get All. Takes a Class argument and returns a list with all the elements that match the class
-	 * argument.
+	 * Filtered version of get All. Takes a Class argument and returns a list
+	 * with all the elements that match the class argument.
 	 * 
 	 * @param cls
 	 * @return
@@ -136,7 +135,6 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	@Transactional
 	public Form makePersistent(Form entity) {
 		// For solving Hibernate bug
 		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
