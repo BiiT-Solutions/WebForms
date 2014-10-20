@@ -143,6 +143,9 @@ public enum LanguageCodes implements ILanguageCode{
 	
 	WARNING_CAPTION_NOT_ALLOWED("warning.caption.not.allowed"),
 	WARNING_DESCRIPTION_NOT_ENOUGH_RIGHTS("warning.description.not.enough.rights"),
+	
+	WARNING_CAPTION_IMPORT_FAILED("warning.caption.import.failed"),
+	WARNING_DESCRIPTION_NOT_VALID_ABCD_FORM("warning.description.not.valid.abcd.form"),
 
 	//BlockManager
 	CAPTION_NEW_BLOCK("caption.new.block"),
@@ -184,6 +187,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_VALIDATE_DUPLICATE_NAME("caption.validate.duplicate.name"),
 	CAPTION_VALIDATE_DUPLICATE_ANSWER_VALUE("caption.validate.duplicate.answer.value"),
 	CAPTION_NAME_TOO_LARGE("caption.name.too.large"),
+	CAPTION_LINKED_FORM("caption.linked.form"),
 	
 	TOOLTIP_NEW_CATEGORY("tooltip.new.category"),
 	TOOLTIP_NEW_SUBCATEGORY("tooltip.new.subcategory"),

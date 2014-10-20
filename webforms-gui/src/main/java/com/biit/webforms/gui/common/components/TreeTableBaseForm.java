@@ -216,6 +216,18 @@ public class TreeTableBaseForm<T extends BaseForm> extends TreeTable {
 		}
 	}
 	
+	public BaseForm getForm(){
+		if(getValue()==null){
+			return null;
+		}
+		if (getValue() instanceof RootForm) {
+			RootForm rootForm = (RootForm) getValue();
+			return rootForm.getLastFormVersion();
+		}else{
+			return (BaseForm) getValue();
+		}
+	}
+	
 	public void refreshTableData() {
 		removeAllItems();
 		init();

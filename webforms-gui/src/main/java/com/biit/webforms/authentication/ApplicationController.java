@@ -12,11 +12,14 @@ import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.form.validators.ValidateBaseForm;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
+import com.biit.webforms.authentication.exception.NotValidAbcdForm;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -27,6 +30,7 @@ import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
+import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
@@ -150,6 +154,61 @@ public class ApplicationController {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createBlock " + blockName + " END");
 		return newBlock;
+	}
+
+	/**
+	 * Function to import abcd forms
+	 * 
+	 * @param abcdForm
+	 * @param importName
+	 * @param organization
+	 * @throws NotValidAbcdForm
+	 */
+	public void importAbcdForm(com.biit.abcd.persistence.entity.Form abcdForm, Object importName, Object organization)
+			throws NotValidAbcdForm {
+		logInfoStart("importAbcdForm", abcdForm, importName, organization);
+
+		// First validate original form.
+		ValidateBaseForm validator = new ValidateBaseForm();
+		ValidateReport report = new ValidateReport();
+		if (!validator.validate(abcdForm, report)) {
+			System.out.println(report.getReport());
+			throw new NotValidAbcdForm();
+		}
+		// TODO
+
+		logInfoEnd("importAbcdForm", abcdForm, importName, organization);
+	}
+
+	/**
+	 * Function to link abcd form to a normal form. Doesn't save the form and
+	 * doesn't check that currently are compatible.
+	 * 
+	 * @param form
+	 * @param abcdForm
+	 */
+	public void linkAbcdForm(Form form, com.biit.abcd.persistence.entity.Form abcdForm) {
+		logInfoStart("linkAbcdForm", form, abcdForm);
+
+		form.setLinkedFormLabel(abcdForm.getLabel());
+		form.setLinkedFormVersion(abcdForm.getVersion());
+		form.setLinkedFormOrganizationId(abcdForm.getOrganizationId());
+
+		logInfoEnd("linkAbcdForm", form, abcdForm);
+	}
+
+	/**
+	 * Returns the Abcd Form linked to a form or null value if it is not linked
+	 * or the link is wrong.
+	 * 
+	 * @param form
+	 * @return
+	 */
+	public com.biit.abcd.persistence.entity.Form getLinkedAbcdForm(Form form) {
+		if (form.getLabel() != null && form.getOrganizationId() != null) {
+			return formDaoAbcd.getForm(form.getLabel(), form.getVersion(), form.getOrganizationId());
+		}
+		return null;
 	}
 
 	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException,
@@ -848,11 +907,11 @@ public class ApplicationController {
 	public IFormDao getWebformsFormDao() {
 		return formDao;
 	}
-	
+
 	public IBlockDao getWebformsBlockDao() {
 		return blockDao;
 	}
-	
+
 	public com.biit.abcd.persistence.dao.IFormDao getWebformsFormDaoAbcd() {
 		return formDaoAbcd;
 	}

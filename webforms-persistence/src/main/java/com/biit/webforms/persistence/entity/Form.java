@@ -54,6 +54,12 @@ public class Form extends BaseForm {
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "form")
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<Flow> rules;
+	
+	private String linkedFormLabel;
+	
+	private int linkedFormVersion;
+	
+	private Long linkedFormOrganizationId;
 
 	public Form() {
 		super();
@@ -291,5 +297,29 @@ public class Form extends BaseForm {
 
 	public void removeRule(Flow dbRule) {
 		rules.remove(dbRule);
+	}
+
+	public String getLinkedFormLabel() {
+		return linkedFormLabel;
+	}
+
+	public void setLinkedFormLabel(String linkedFormLabel) {
+		this.linkedFormLabel = linkedFormLabel;
+	}
+
+	public int getLinkedFormVersion() {
+		return linkedFormVersion;
+	}
+
+	public void setLinkedFormVersion(int linkedFormVersion) {
+		this.linkedFormVersion = linkedFormVersion;
+	}
+
+	public Long getLinkedFormOrganizationId() {
+		return linkedFormOrganizationId;
+	}
+
+	public void setLinkedFormOrganizationId(Long linkedFormOrganizationId) {
+		this.linkedFormOrganizationId = linkedFormOrganizationId;
 	}
 }

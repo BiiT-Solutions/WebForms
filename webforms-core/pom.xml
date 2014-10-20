@@ -21,6 +21,13 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
+		<!-- ABCD persistency -->
+		<dependency>
+			<groupId>com.biit</groupId>
+			<artifactId>abcd-persistence</artifactId>
+			<version>${abcd-persistance.version}</version>
+			<type>jar</type>
+		</dependency>
 		<!-- For SpringContextHelper -->
 		<dependency>
 			<groupId>javax.servlet</groupId>

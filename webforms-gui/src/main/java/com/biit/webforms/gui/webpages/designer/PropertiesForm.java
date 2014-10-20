@@ -15,6 +15,7 @@ public class PropertiesForm extends StorableObjectProperties<Form> {
 
 	private TextField name, version;
 	private TextArea description;
+	private LinkedFormField linkedForm;
 
 	public PropertiesForm() {
 		super(Form.class);
@@ -40,6 +41,9 @@ public class PropertiesForm extends StorableObjectProperties<Form> {
 		description.setWidth(WIDTH);
 		description.setMaxLength(Form.MAX_DESCRIPTION_LENGTH);
 		description.setImmediate(true);
+		
+		linkedForm = new LinkedFormField(LanguageCodes.CAPTION_LINKED_FORM.translation());
+		linkedForm.setWidth(WIDTH);
 
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
@@ -47,6 +51,7 @@ public class PropertiesForm extends StorableObjectProperties<Form> {
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(version);
 		commonProperties.addComponent(description);
+		commonProperties.addComponent(linkedForm);
 
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());

@@ -63,8 +63,8 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 	}
 
 	/**
-	 * This setter sets AnswerType to specified format and resets the answer
-	 * format to Text or null.
+	 * This setter sets AnswerType and sets the answer format to the default
+	 * answer format for a type.
 	 * 
 	 * @param answerType
 	 */
@@ -86,6 +86,13 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 		return this.answerFormat;
 	}
 
+	/**
+	 * Setter of answer format. Sets the answer format and sets the default
+	 * answer subformat.
+	 * 
+	 * @param answerFormat
+	 * @throws InvalidAnswerFormatException
+	 */
 	public void setAnswerFormat(AnswerFormat answerFormat) throws InvalidAnswerFormatException {
 		if (answerType.isInputField()) {
 			if (answerFormat == null) {
@@ -97,7 +104,11 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 			}
 		}
 		this.answerFormat = answerFormat;
-		this.answerSubformat = null;
+		if (answerFormat != null) {
+			this.answerSubformat = answerFormat.getDefaultSubformat();
+		} else {
+			this.answerSubformat = null;
+		}
 	}
 
 	public AnswerSubformat getAnswerSubformat() {
