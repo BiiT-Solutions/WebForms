@@ -51,8 +51,9 @@ public class Form extends BaseForm {
 	@Lob
 	private String description;
 
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "form")
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "form")
+	//@JoinTable(joinColumns = @JoinColumn(name = "form_ID"), inverseJoinColumns = @JoinColumn(name = "rule_ID"), indexes = { @Index(columnList = "form_ID") })
+	//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<Flow> rules;
 
 	public Form() {
@@ -75,7 +76,7 @@ public class Form extends BaseForm {
 
 	@Override
 	public void resetIds() {
-		// Overriden version to also reset ids of rules.
+		// Overridden version to also reset ids of rules.
 		super.resetIds();
 		for (Flow rule : getFlows()) {
 			rule.resetIds();
@@ -159,8 +160,8 @@ public class Form extends BaseForm {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the
-	 * implicit rules (question without rule goes to the next element)
+	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
+	 * goes to the next element)
 	 * 
 	 * @return
 	 */
