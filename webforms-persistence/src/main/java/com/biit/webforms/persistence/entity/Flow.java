@@ -16,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
@@ -38,9 +40,8 @@ public class Flow extends StorableObject {
 	private static final String TOKEN_SEPARATOR = " ";
 
 	/*
-	 * Hibernate changes name of column when you use a many-to-one relationship.
-	 * If you want to add a constraint attached to that column, you have to
-	 * state the name.
+	 * Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
+	 * attached to that column, you have to state the name.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "origin_id")
@@ -56,6 +57,7 @@ public class Flow extends StorableObject {
 	private boolean others;
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "flow")
+	@BatchSize(size = 100)
 	private List<Token> condition;
 
 	@ManyToOne
@@ -143,10 +145,9 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * Returns a string view of the flow. If the flow hasn't been interpreted,
-	 * we do the parse of the current flow form the database string. If has been
-	 * initialized, then we return the string view from the current
-	 * Interpretation status.
+	 * Returns a string view of the flow. If the flow hasn't been interpreted, we do the parse of the current flow form
+	 * the database string. If has been initialized, then we return the string view from the current Interpretation
+	 * status.
 	 * 
 	 * @return
 	 */
@@ -246,8 +247,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * This functions updates references to question and answers If a reference
-	 * is missing it will throw a {@code UpdateNullReferenceException}
+	 * This functions updates references to question and answers If a reference is missing it will throw a
+	 * {@code UpdateNullReferenceException}
 	 * 
 	 * @param mappedCopiedQuestions
 	 * @param mappedCopiedAnswers
