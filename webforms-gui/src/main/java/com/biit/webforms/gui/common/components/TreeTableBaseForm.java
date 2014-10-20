@@ -6,10 +6,9 @@ import java.util.Collection;
 import java.util.List;
 
 import com.biit.form.BaseForm;
-import com.biit.form.persistence.dao.IBaseFormDao;
+import com.biit.form.interfaces.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.webforms.authentication.UserSessionHandler;
-import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.DateManager;
@@ -20,19 +19,25 @@ import com.liferay.portal.model.Organization;
 import com.vaadin.data.Item;
 import com.vaadin.ui.TreeTable;
 
-public class TreeTableBaseForm<T extends BaseForm> extends TreeTable {
+/**
+ * Base tree table. This generic table needs a dataProvider to initialize the
+ * data.
+ * 
+ * @param <T>
+ */
+public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 	private static final long serialVersionUID = -3992941497136685462L;
 
 	protected enum TreeTableBaseFormProperties {
 		FORM_LABEL, VERSION, ORGANIZATION, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
 	};
 
-	private final IBaseFormDao<T> baseFormDao;
+	private final TreeTableProvider<T> dataProvider;
 
-	public TreeTableBaseForm(IBaseFormDao<T> baseFormDao) {
+	public TreeTableBaseForm(TreeTableProvider<T> dataProvider) {
 		super();
 
-		this.baseFormDao = baseFormDao;
+		this.dataProvider = dataProvider;
 
 		configure();
 		configureContainerProperties();
@@ -93,7 +98,7 @@ public class TreeTableBaseForm<T extends BaseForm> extends TreeTable {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected Item addRow(BaseForm form) {
+	protected Item addRow(IBaseFormView form) {
 		if (form != null) {
 			Item item = addItem(form);
 			item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getLabel());
@@ -140,7 +145,7 @@ public class TreeTableBaseForm<T extends BaseForm> extends TreeTable {
 	 * @param form
 	 * @return
 	 */
-	public RootForm getFormRoot(BaseForm form) {
+	public RootForm getFormRoot(IBaseFormView form) {
 		for (Object item : getItemIds()) {
 			if (item instanceof RootForm) {
 				if (((RootForm) item).getName().equals(form.getLabel())
@@ -165,15 +170,11 @@ public class TreeTableBaseForm<T extends BaseForm> extends TreeTable {
 	}
 
 	private void init() {
-		List<BaseForm> forms = new ArrayList<>();
+		List<IBaseFormView> forms = new ArrayList<>();
 
-		List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
-				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
-		for (Organization organization : userOrganizations) {
-			forms.addAll(baseFormDao.getAll(organization.getOrganizationId()));
-		}
+		forms.addAll(dataProvider.getAll());
 
-		for (BaseForm form : forms) {
+		for (IBaseFormView form : forms) {
 			addForm(form);
 		}
 
@@ -182,11 +183,11 @@ public class TreeTableBaseForm<T extends BaseForm> extends TreeTable {
 		sort();
 	}
 
-	public void addForm(BaseForm form) {
+	public void addForm(IBaseFormView form) {
 		addForm(form, false);
 	}
 
-	public void addForm(BaseForm form, boolean sorted) {
+	public void addForm(IBaseFormView form, boolean sorted) {
 		RootForm parent = getFormRoot(form);
 		if (parent == null) {
 			parent = new RootForm(form.getLabel(), form.getOrganizationId());
@@ -207,7 +208,7 @@ public class TreeTableBaseForm<T extends BaseForm> extends TreeTable {
 			sort();
 		}
 	}
-	
+
 	public RootForm getSelectedRootForm() {
 		if (getValue() instanceof RootForm) {
 			return (RootForm) getValue();
@@ -215,19 +216,19 @@ public class TreeTableBaseForm<T extends BaseForm> extends TreeTable {
 			return (RootForm) getParent(getValue());
 		}
 	}
-	
-	public BaseForm getForm(){
-		if(getValue()==null){
+
+	public IBaseFormView getForm() {
+		if (getValue() == null) {
 			return null;
 		}
 		if (getValue() instanceof RootForm) {
 			RootForm rootForm = (RootForm) getValue();
 			return rootForm.getLastFormVersion();
-		}else{
+		} else {
 			return (BaseForm) getValue();
 		}
 	}
-	
+
 	public void refreshTableData() {
 		removeAllItems();
 		init();

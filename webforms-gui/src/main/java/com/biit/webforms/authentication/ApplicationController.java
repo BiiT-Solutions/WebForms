@@ -1,5 +1,7 @@
 package com.biit.webforms.authentication;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +30,7 @@ import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UiAccesser;
+import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
@@ -912,7 +915,44 @@ public class ApplicationController {
 		return blockDao;
 	}
 
-	public com.biit.abcd.persistence.dao.IFormDao getWebformsFormDaoAbcd() {
+	public com.biit.abcd.persistence.dao.IFormDao getFormDaoAbcd() {
 		return formDaoAbcd;
+	}
+
+	public TreeTableProvider<com.biit.abcd.persistence.entity.Form> getTreeTableAbcdFormsProvider() {
+		TreeTableProvider<com.biit.abcd.persistence.entity.Form> provider = new TreeTableProvider<com.biit.abcd.persistence.entity.Form>() {
+
+			@Override
+			public Collection<com.biit.abcd.persistence.entity.Form> getAll() {
+				List<com.biit.abcd.persistence.entity.Form> forms = new ArrayList<>();
+				
+				List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
+						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
+				for (Organization organization : userOrganizations) {
+					forms.addAll(getFormDaoAbcd().getAll(organization.getOrganizationId()));
+				}
+				return forms;
+			}
+		};
+
+		return provider;
+	}
+
+	public TreeTableProvider<Form> getTreeTableFormsProvider() {
+		TreeTableProvider<Form> provider = new TreeTableProvider<Form>() {
+			
+			@Override
+			public Collection<Form> getAll() {
+				List<Form> forms = new ArrayList<>();
+				
+				List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
+						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
+				for (Organization organization : userOrganizations) {
+					forms.addAll(getWebformsFormDao().getAll(organization.getOrganizationId()));
+				}
+				return forms;
+			}
+		};
+		return provider;
 	}
 }

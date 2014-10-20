@@ -3,17 +3,17 @@ package com.biit.webforms.gui.components.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.form.BaseForm;
+import com.biit.form.interfaces.IBaseFormView;
 import com.biit.webforms.persistence.entity.Form;
 
-public class RootForm extends Form{
+public class RootForm extends Form {
 
 	private String name;
-	private List<BaseForm> childForms;
+	private List<IBaseFormView> childForms;
 
 	public RootForm(String label, Long organizationId) {
 		this.name = label;
-		childForms = new ArrayList<BaseForm>();
+		childForms = new ArrayList<IBaseFormView>();
 		setOrganizationId(organizationId);
 	}
 
@@ -25,10 +25,10 @@ public class RootForm extends Form{
 		this.name = name;
 	}
 
-	public BaseForm getLastFormVersion() {
+	public IBaseFormView getLastFormVersion() {
 		int numVersion = 0;
-		BaseForm lastVersion = null;
-		for (BaseForm form : getChildForms()) {
+		IBaseFormView lastVersion = null;
+		for (IBaseFormView form : getChildForms()) {
 			if (form.getVersion() > numVersion) {
 				lastVersion = form;
 			}
@@ -36,11 +36,11 @@ public class RootForm extends Form{
 		return lastVersion;
 	}
 
-	public List<BaseForm> getChildForms() {
+	public List<IBaseFormView> getChildForms() {
 		return childForms;
 	}
 
-	public void addChildForm(BaseForm form) {
+	public void addChildForm(IBaseFormView form) {
 		childForms.add(form);
 	}
 }

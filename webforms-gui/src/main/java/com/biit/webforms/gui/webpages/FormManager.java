@@ -31,7 +31,7 @@ import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
-import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForm;
+import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
@@ -64,7 +64,7 @@ public class FormManager extends SecuredWebPage {
 		setUpperMenu(upperMenu);
 		setBottomMenu(bottomMenu);
 
-		formTable = new TreeTableFormVersion(UserSessionHandler.getController().getWebformsFormDao());
+		formTable = new TreeTableFormVersion(UserSessionHandler.getController().getTreeTableFormsProvider());
 		formTable.setSizeFull();
 		formTable.addEditInfoListener(new EditInfoListener() {
 			@Override
@@ -114,14 +114,6 @@ public class FormManager extends SecuredWebPage {
 				importAbcdForm();
 			}
 		});
-		upperMenu.addLinkAbcdForm(new ClickListener() {
-			private static final long serialVersionUID = 2864457152577148777L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				linkAbcdForm();
-			}
-		});
 		upperMenu.addExportPdf(new ClickListener() {
 			private static final long serialVersionUID = 2864457152577148777L;
 
@@ -149,29 +141,27 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	protected void importAbcdForm() {
-		final WindowImportAbcdForm importAbcdForm = new WindowImportAbcdForm(UserSessionHandler.getController()
-				.getWebformsFormDaoAbcd());
+		final WindowImportAbcdForms importAbcdForm = new WindowImportAbcdForms(UserSessionHandler.getController()
+				.getTreeTableAbcdFormsProvider());
 		importAbcdForm.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				try {
+					// TODO version?
 					com.biit.abcd.persistence.entity.Form abcdForm = importAbcdForm.getForm();
-					UserSessionHandler.getController().importAbcdForm(abcdForm,importAbcdForm.getImportName(),importAbcdForm.getOrganization());
+					UserSessionHandler.getController().importAbcdForm(abcdForm, importAbcdForm.getImportName(),
+							importAbcdForm.getOrganization());
 					formTable.refreshTableData();
 					window.close();
 				} catch (NotValidAbcdForm e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED, LanguageCodes.WARNING_DESCRIPTION_NOT_VALID_ABCD_FORM);
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
+							LanguageCodes.WARNING_DESCRIPTION_NOT_VALID_ABCD_FORM);
 				}
-				
+
 			}
 		});
 		importAbcdForm.showCentered();
-	}
-
-	protected void linkAbcdForm() {
-		// TODO Auto-generated method stub
-
 	}
 
 	private FormEditBottomMenu createBottomMenu() {

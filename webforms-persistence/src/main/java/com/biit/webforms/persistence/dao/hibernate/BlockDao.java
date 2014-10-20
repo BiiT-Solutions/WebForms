@@ -15,7 +15,6 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.biit.form.BaseForm;
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
@@ -186,7 +185,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	public Collection<? extends BaseForm> getAll(Long organizationId) {
+	public Collection<Block> getAll(Long organizationId) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {

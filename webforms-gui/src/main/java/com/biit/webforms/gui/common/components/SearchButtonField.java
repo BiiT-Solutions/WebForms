@@ -118,9 +118,11 @@ public class SearchButtonField extends CustomComponent {
 		this.value = value;
 		if (value != null) {
 			label.setValue(valueLabel);
+			label.setCaption(valueLabel);
 			removeButton.setEnabled(true);
 		} else {
 			label.setValue("");
+			label.setCaption("");
 			removeButton.setEnabled(false);
 		}
 		fireValueChangeListeners();

@@ -3,7 +3,7 @@ package com.biit.webforms.gui.webpages.formmanager;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.form.BaseForm;
+import com.biit.form.interfaces.IBaseFormView;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
@@ -11,12 +11,12 @@ import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.components.IconOnlyButton;
 import com.biit.webforms.gui.common.components.TreeTableBaseForm;
+import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.EditInfoListener;
 import com.biit.webforms.language.FormWorkStatusUi;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.theme.ThemeIcons;
 import com.liferay.portal.model.User;
@@ -35,8 +35,8 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 		INFO, ACCESS, USED_BY, STATUS;
 	};
 
-	public TreeTableFormVersion(IFormDao formDao) {
-		super(formDao);
+	public TreeTableFormVersion(TreeTableProvider<Form> formProvider) {
+		super(formProvider);
 		editInfoListeners = new ArrayList<EditInfoListener>();
 		configureContainerProperties();
 	}
@@ -83,7 +83,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Item addRow(BaseForm form) {
+	protected Item addRow(IBaseFormView form) {
 		Item item = super.addRow(form);
 		if (item != null) {
 			item.getItemProperty(TreeTableFormVersionProperties.INFO).setValue(createInfoButton((Form) form));
