@@ -8,6 +8,7 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.webpages.formmanager.WindowSimpleViewAbcdForms;
 
+@Deprecated
 public class LinkedFormField extends SearchButtonField {
 	private static final long serialVersionUID = -5545041774905086634L;
 

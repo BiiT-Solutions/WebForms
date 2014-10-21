@@ -646,21 +646,12 @@ public class ApplicationController {
 				+ " saveAsBlock " + formInUse + " " + element + " " + blockLabel + " END");
 	}
 
-	public void updateForm(Form form, String description, SimpleFormView simpleFormView) {
+	public void updateForm(Form form, String description) {
 		logInfoStart("updateForm", form, description);
 		try {
 			form.setDescription(description);
 			form.setUpdatedBy(UserSessionHandler.getUser());
 			form.setUpdateTime();
-			if (simpleFormView != null) {
-				form.setLinkedFormLabel(simpleFormView.getLabel());
-				form.setLinkedFormVersion(simpleFormView.getVersion());
-				form.setLinkedFormOrganizationId(simpleFormView.getOrganizationId());
-			} else {
-				form.setLinkedFormLabel(null);
-				form.setLinkedFormVersion(-1);
-				form.setLinkedFormOrganizationId(null);
-			}
 		} catch (FieldTooLongException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
