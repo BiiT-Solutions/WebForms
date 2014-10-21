@@ -4,6 +4,7 @@ import com.biit.abcd.persistence.entity.Category;
 import com.biit.abcd.persistence.entity.Form;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.logger.WebformsLogger;
 
 public class ConversorAbcdFormToForm extends ConversorTreeObject<Form, com.biit.webforms.persistence.entity.Form> {
@@ -18,7 +19,12 @@ public class ConversorAbcdFormToForm extends ConversorTreeObject<Form, com.biit.
 	@Override
 	public void copyData(Form origin, com.biit.webforms.persistence.entity.Form destiny) {
 		// Copy base data
-		super.copyData(origin, destiny);
+		try {
+			destiny.setLabel(origin.getLabel());
+		} catch (FieldTooLongException e) {
+			// Impossible
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
 
 		// Create copy of the childs and assign.
 		for (TreeObject child : origin.getChildren()) {

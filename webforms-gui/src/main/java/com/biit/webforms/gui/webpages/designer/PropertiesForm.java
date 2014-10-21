@@ -83,7 +83,6 @@ public class PropertiesForm extends StorableObjectProperties<Form> {
 	@Override
 	public void updateElement() {
 		UserSessionHandler.getController().updateForm(instance, description.getValue(), linkedForm.getValue());
-
 		super.updateElement();
 	}
 }

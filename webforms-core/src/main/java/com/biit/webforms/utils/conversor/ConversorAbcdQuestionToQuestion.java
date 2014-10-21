@@ -13,7 +13,7 @@ public class ConversorAbcdQuestionToQuestion extends
 	private ConversorAnswerTypeAbcdToAnswerType conversorAnswerType = new ConversorAnswerTypeAbcdToAnswerType();
 	private ConversorAnswerFormatAbcdToAnswerFormat conversorAnswerFormat = new ConversorAnswerFormatAbcdToAnswerFormat();
 	private ConversorBaseAnswerToAnswer conversorAnswer = new ConversorBaseAnswerToAnswer();
-	
+
 	@Override
 	public com.biit.webforms.persistence.entity.Question createDestinyInstance() {
 		return new com.biit.webforms.persistence.entity.Question();
@@ -21,10 +21,10 @@ public class ConversorAbcdQuestionToQuestion extends
 
 	@Override
 	public void copyData(Question origin, com.biit.webforms.persistence.entity.Question destiny) {
-		//Copy base data
+		// Copy base data
 		super.copyData(origin, destiny);
 
-		//Convert and copy answer type and format.
+		// Convert and copy answer type and format.
 		destiny.setAnswerType(conversorAnswerType.convert(origin.getAnswerType()));
 		try {
 			destiny.setAnswerFormat(conversorAnswerFormat.convert(origin.getAnswerFormat()));
@@ -32,10 +32,10 @@ public class ConversorAbcdQuestionToQuestion extends
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
-		
-		//Convert and assign children
-		for(TreeObject child: origin.getChildren()){
-			if(child instanceof BaseAnswer){
+
+		// Convert and assign children
+		for (TreeObject child : origin.getChildren()) {
+			if (child instanceof BaseAnswer) {
 				BaseAnswer convertedChild = conversorAnswer.convert((BaseAnswer) child);
 				try {
 					destiny.addChild(convertedChild);
@@ -43,7 +43,7 @@ public class ConversorAbcdQuestionToQuestion extends
 					// Impossible
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
-			}else{
+			} else {
 				WebformsLogger.errorMessage(this.getClass().getName(), new Throwable("Child type not expected"));
 			}
 		}

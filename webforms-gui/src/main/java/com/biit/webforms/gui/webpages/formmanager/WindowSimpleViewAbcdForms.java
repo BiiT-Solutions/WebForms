@@ -15,6 +15,10 @@ public class WindowSimpleViewAbcdForms extends WindowAcceptCancel {
 
 	private final TreeTableSimpleViewAbcdForm table;
 
+	protected TreeTableSimpleViewAbcdForm getTable() {
+		return table;
+	}
+
 	public WindowSimpleViewAbcdForms(TreeTableProvider<SimpleFormView> treeTableProvider) {
 		super();
 
@@ -42,7 +46,7 @@ public class WindowSimpleViewAbcdForms extends WindowAcceptCancel {
 		setResizable(false);
 	}
 
-	private Component generateContent() {
+	protected Component generateContent() {
 		VerticalLayout rootLayout = new VerticalLayout();
 		rootLayout.setSizeFull();
 

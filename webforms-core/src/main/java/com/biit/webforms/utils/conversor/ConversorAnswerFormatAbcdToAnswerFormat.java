@@ -8,6 +8,9 @@ public class ConversorAnswerFormatAbcdToAnswerFormat implements
 
 	@Override
 	public com.biit.webforms.enumerations.AnswerFormat convert(AnswerFormat origin) {
+		if(origin == null){
+			return null;
+		}
 		switch (origin) {
 		case DATE:
 			return com.biit.webforms.enumerations.AnswerFormat.DATE;

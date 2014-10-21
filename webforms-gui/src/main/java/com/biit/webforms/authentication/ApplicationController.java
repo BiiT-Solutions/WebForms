@@ -1,8 +1,10 @@
 package com.biit.webforms.authentication;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +19,8 @@ import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.validators.ValidateBaseForm;
+import com.biit.liferay.access.exceptions.AuthenticationRequired;
+import com.biit.liferay.security.IActivity;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.validation.ValidateReport;
@@ -55,6 +59,7 @@ import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyE
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+import com.biit.webforms.utils.conversor.ConversorAbcdFormToForm;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
@@ -81,8 +86,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form. Needs a unique name where name.length() <
-	 * 190 characters.
+	 * User action to create a form on memory no persistance is done. Needs a
+	 * unique name where name.length() < 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -91,8 +96,7 @@ public class ApplicationController {
 	 */
 	public Form createForm(String formLabel, Organization organization) throws FieldTooLongException,
 			FormWithSameNameException, CharacterNotAllowedException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " createForm " + formLabel + " START");
+		logInfoStart("createForm", formLabel, organization);
 
 		// Create new form
 		Form newform = null;
@@ -113,6 +117,26 @@ public class ApplicationController {
 			throw ex;
 		}
 
+		logInfoEnd("createForm", formLabel, organization);
+		return newform;
+	}
+
+	/**
+	 * User action to create a form. Needs a unique name where name.length() <
+	 * 190 characters.
+	 * 
+	 * @param formLabel
+	 * @return
+	 * @throws FieldTooLongException
+	 * @throws FormWithSameNameException
+	 */
+	public Form createFormAndPersist(String formLabel, Organization organization) throws FieldTooLongException,
+			FormWithSameNameException, CharacterNotAllowedException {
+		logInfoStart("createFormAndPersist", formLabel, organization);
+
+		// Create new form
+		Form newform = createForm(formLabel, organization);
+
 		// Persist form.
 		try {
 			formDao.makePersistent(newform);
@@ -121,8 +145,7 @@ public class ApplicationController {
 			throw cve;
 		}
 
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " createForm " + formLabel + " END");
+		logInfoEnd("createFormAndPersist", formLabel, organization);
 		return newform;
 	}
 
@@ -167,24 +190,49 @@ public class ApplicationController {
 	 * Function to import abcd forms
 	 * 
 	 * @param abcdForm
-	 * @param importName
+	 * @param importLabel
 	 * @param organization
+	 * @return 
 	 * @throws NotValidAbcdForm
+	 * @throws CharacterNotAllowedException
+	 * @throws FormWithSameNameException
+	 * @throws FieldTooLongException
 	 */
-	public void importAbcdForm(com.biit.abcd.persistence.entity.Form abcdForm, Object importName, Object organization)
-			throws NotValidAbcdForm {
-		logInfoStart("importAbcdForm", abcdForm, importName, organization);
+	public Form importAbcdForm(SimpleFormView simpleFormView, String importLabel, Organization organization)
+			throws NotValidAbcdForm, FieldTooLongException, FormWithSameNameException, CharacterNotAllowedException {
+		logInfoStart("importAbcdForm", simpleFormView, importLabel, organization);
 
-		// First validate original form.
+		// Try to create a new form with the name and the organization
+		Form webformsForm = createForm(importLabel, organization);
+
+		// Read the original form and validate.
+		com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.read(simpleFormView.getId());
 		ValidateBaseForm validator = new ValidateBaseForm();
 		ValidateReport report = new ValidateReport();
 		if (!validator.validate(abcdForm, report)) {
-			System.out.println(report.getReport());
+			WebformsLogger.warning(this.getClass().getName(), "Import from Abcd failed. - Form not validated");
+			WebformsLogger.warning(this.getClass().getName(), report.getReport());
 			throw new NotValidAbcdForm();
 		}
-		// TODO
 
-		logInfoEnd("importAbcdForm", abcdForm, importName, organization);
+		ConversorAbcdFormToForm conversor = new ConversorAbcdFormToForm();
+		Form webformsConvertedForm = conversor.convert(abcdForm);
+		try {
+			webformsForm.addChildren(webformsConvertedForm.getChildren());
+		} catch (NotValidChildException e) {
+			// Should not happen.
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		webformsForm.setLinkedFormLabel(simpleFormView.getLabel());
+		webformsForm.setLinkedFormVersion(simpleFormView.getVersion());
+		webformsForm.setLinkedFormOrganizationId(simpleFormView.getOrganizationId());
+
+		// Store on the database
+		formDao.makePersistent(webformsForm);
+
+		logInfoEnd("importAbcdForm", simpleFormView, importLabel, organization);
+		
+		return webformsForm;
 	}
 
 	/**
@@ -604,11 +652,11 @@ public class ApplicationController {
 			form.setDescription(description);
 			form.setUpdatedBy(UserSessionHandler.getUser());
 			form.setUpdateTime();
-			if(simpleFormView!=null){
+			if (simpleFormView != null) {
 				form.setLinkedFormLabel(simpleFormView.getLabel());
 				form.setLinkedFormVersion(simpleFormView.getVersion());
 				form.setLinkedFormOrganizationId(simpleFormView.getOrganizationId());
-			}else{
+			} else {
 				form.setLinkedFormLabel(null);
 				form.setLinkedFormVersion(-1);
 				form.setLinkedFormOrganizationId(null);
@@ -1012,5 +1060,36 @@ public class ApplicationController {
 	public void validateCompatibility(Form currentForm, SimpleFormView abcdForm) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * Returns all organizations where user has permission to do all the
+	 * activities in activitiesFilter.
+	 * 
+	 * @param activitiesFilter
+	 * @return
+	 */
+	public List<Organization> getOrganizatiosWhereUser(IActivity... activitiesFilter) {
+		try {
+			List<Organization> organizations = WebformsAuthorizationService.getInstance().getUserOrganizations(
+					UserSessionHandler.getUser());
+			Iterator<Organization> itr = organizations.iterator();
+			while (itr.hasNext()) {
+				Organization organization = itr.next();
+				for (IActivity activity : activitiesFilter) {
+					// If the user doesn't comply to all activities in the
+					// filter in the group, then exit
+					if (!WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+							organization, activity)) {
+						itr.remove();
+						break;
+					}
+				}
+			}
+			return organizations;
+		} catch (IOException | AuthenticationRequired e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		return new ArrayList<>();
 	}
 }

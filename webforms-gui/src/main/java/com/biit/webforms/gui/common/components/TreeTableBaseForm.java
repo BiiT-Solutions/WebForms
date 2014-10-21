@@ -176,17 +176,31 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		for (IBaseFormView form : forms) {
 			addForm(form);
 		}
-
-		setSortContainerPropertyId(TreeTableBaseFormProperties.FORM_LABEL);
-		setSortAscending(true);
+		
 		sort();
 	}
+	
+	/**
+	 * Overriden version of sort for this table. Sorts by name ascendenly and version descendenly.
+	 */
+	@Override
+	public void sort() {
+        sort(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION },
+                new boolean[] { true, false });
+    }
 
 	public void addForm(IBaseFormView form) {
 		addForm(form, false);
 	}
 
-	public void addForm(IBaseFormView form, boolean sorted) {
+	/**
+	 * Add a new element to the table. If sort is true, the table is reordered
+	 * after inserting the value.
+	 * 
+	 * @param form
+	 * @param sort
+	 */
+	public void addForm(IBaseFormView form, boolean sort) {
 		RootForm parent = getFormRoot(form);
 		if (parent == null) {
 			parent = new RootForm(form.getLabel(), form.getOrganizationId());
@@ -203,7 +217,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 			setChildrenAllowed(form, false);
 		}
 
-		if (sorted) {
+		if (sort) {
 			sort();
 		}
 	}

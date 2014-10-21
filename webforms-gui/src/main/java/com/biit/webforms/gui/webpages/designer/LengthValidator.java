@@ -12,7 +12,7 @@ public class LengthValidator implements Validator {
 	
 	@Override
 	public void validate(Object value) throws InvalidValueException {
-		if(((String)value).length()>length){
+		if(value!=null && ((String)value).length()>length){
 			throw new InvalidValueException("Max number of characters "+length);
 		}
 	}

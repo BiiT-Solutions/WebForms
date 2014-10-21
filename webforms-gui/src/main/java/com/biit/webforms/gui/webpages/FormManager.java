@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
@@ -16,6 +17,7 @@ import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
+import com.biit.webforms.authentication.exception.NotValidAbcdForm;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -36,6 +38,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
 import com.biit.webforms.persistence.entity.Form;
+import com.liferay.portal.model.Organization;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -146,19 +149,39 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
-				// try {
-				// TODO version?
-				// com.biit.abcd.persistence.entity.Form abcdForm =
-				// importAbcdForm.getForm();
-				// UserSessionHandler.getController().importAbcdForm(abcdForm,
-				// importAbcdForm.getImportName(),
-				// importAbcdForm.getOrganization());
-				// formTable.refreshTableData();
-				window.close();
-				// } catch (NotValidAbcdForm e) {
-				// MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
-				// LanguageCodes.WARNING_DESCRIPTION_NOT_VALID_ABCD_FORM);
-				// }
+
+				// Check name and organization
+				String newFormName = importAbcdForm.getImportName();
+				Organization newFormOrganization = importAbcdForm.getOrganization();
+
+				if (newFormName == null || newFormName.isEmpty()) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
+							LanguageCodes.WARNING_DESCRIPTION_NAME_NOT_VALID);
+					return;
+				}
+				if (newFormOrganization == null) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
+							LanguageCodes.WARNING_DESCRIPTION_NULL_ORGANIZATION);
+					return;
+				}
+
+				// Try to import the form.
+				try {
+					SimpleFormView abcdForm = importAbcdForm.getForm();
+					Form importedForm = UserSessionHandler.getController().importAbcdForm(abcdForm, newFormName, newFormOrganization);
+					formTable.addForm(importedForm, true);
+					formTable.setValue(importedForm);
+					window.close();
+				} catch (NotValidAbcdForm e) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
+							LanguageCodes.WARNING_DESCRIPTION_NOT_VALID_ABCD_FORM);
+				} catch (FieldTooLongException | CharacterNotAllowedException e) {
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
+							LanguageCodes.WARNING_DESCRIPTION_NAME_NOT_VALID);
+				}catch( FormWithSameNameException e){
+					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
+							LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
+				}
 
 			}
 		});
@@ -212,7 +235,7 @@ public class FormManager extends SecuredWebPage {
 					return;
 				}
 				try {
-					Form newForm = UserSessionHandler.getController().createForm(newFormWindow.getValue(),
+					Form newForm = UserSessionHandler.getController().createFormAndPersist(newFormWindow.getValue(),
 							newFormWindow.getOrganization());
 					addFormToTable(newForm);
 					newFormWindow.close();

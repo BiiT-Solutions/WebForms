@@ -11,7 +11,11 @@ public abstract class ConversorTreeObject<O extends TreeObject,D extends TreeObj
 	public void copyData(O origin, D destiny) {
 		try {
 			destiny.setName(origin.getName());
-			destiny.setLabel(origin.getLabel());
+			if(origin.getLabel() != null){
+				destiny.setLabel(origin.getLabel());
+			}else{
+				destiny.setLabel(origin.getName());
+			}
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
