@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import com.biit.form.BaseForm;
 import com.biit.form.interfaces.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.webforms.authentication.UserSessionHandler;
@@ -225,7 +224,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 			RootForm rootForm = (RootForm) getValue();
 			return rootForm.getLastFormVersion();
 		} else {
-			return (BaseForm) getValue();
+			return (IBaseFormView) getValue();
 		}
 	}
 

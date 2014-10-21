@@ -3,6 +3,7 @@ package com.biit.webforms.gui.webpages.designer;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.components.StorableObjectProperties;
+import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Form;
 import com.vaadin.ui.FormLayout;
@@ -41,9 +42,16 @@ public class PropertiesForm extends StorableObjectProperties<Form> {
 		description.setWidth(WIDTH);
 		description.setMaxLength(Form.MAX_DESCRIPTION_LENGTH);
 		description.setImmediate(true);
-		
+
 		linkedForm = new LinkedFormField(LanguageCodes.CAPTION_LINKED_FORM.translation());
 		linkedForm.setWidth(WIDTH);
+		linkedForm.addValueChangeListener(new SearchFormElementChanged() {
+
+			@Override
+			public void currentElement(Object object) {
+				updateElement();
+			}
+		});
 
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
@@ -69,12 +77,12 @@ public class PropertiesForm extends StorableObjectProperties<Form> {
 		name.setValue(instance.getName());
 		version.setValue("" + instance.getVersion());
 		description.setValue(instance.getDescription());
-
+		linkedForm.setValue(UserSessionHandler.getController().getLinkedSimpleAbcdForm(instance));
 	}
 
 	@Override
 	public void updateElement() {
-		UserSessionHandler.getController().updateForm(instance, description.getValue());
+		UserSessionHandler.getController().updateForm(instance, description.getValue(), linkedForm.getValue());
 
 		super.updateElement();
 	}

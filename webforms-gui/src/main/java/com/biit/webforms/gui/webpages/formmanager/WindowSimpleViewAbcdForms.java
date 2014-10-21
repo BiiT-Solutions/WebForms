@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import com.biit.abcd.persistence.entity.Form;
+import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -8,17 +8,17 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
-public class WindowAbcdForms extends WindowAcceptCancel {
+public class WindowSimpleViewAbcdForms extends WindowAcceptCancel {
 	private static final long serialVersionUID = 4894722469159293545L;
 	private static final String WINDOW_WIDTH = "60%";
 	private static final String WINDOW_HEIGHT = "80%";
 
-	private final TreeTableAbcdForm table;
+	private final TreeTableSimpleViewAbcdForm table;
 
-	public WindowAbcdForms(TreeTableProvider<Form> treeTableProvider) {
+	public WindowSimpleViewAbcdForms(TreeTableProvider<SimpleFormView> treeTableProvider) {
 		super();
 
-		table = new TreeTableAbcdForm(treeTableProvider);
+		table = new TreeTableSimpleViewAbcdForm(treeTableProvider);
 
 		configure();
 		setContent(generateContent());
@@ -60,7 +60,11 @@ public class WindowAbcdForms extends WindowAcceptCancel {
 		return rootLayout;
 	}
 
-	public com.biit.abcd.persistence.entity.Form getForm() {
-		return (Form) table.getForm();
+	public SimpleFormView getForm() {
+		return (SimpleFormView) table.getForm();
+	}
+
+	public void setValue(SimpleFormView linkedSimpleAbcdForm) {
+		table.setValue(linkedSimpleAbcdForm);
 	}
 }

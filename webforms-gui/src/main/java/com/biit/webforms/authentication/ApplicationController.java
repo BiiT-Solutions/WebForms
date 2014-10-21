@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.hibernate.exception.ConstraintViolationException;
 
+import com.biit.abcd.persistence.dao.ISimpleFormViewDao;
+import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
@@ -64,6 +66,7 @@ public class ApplicationController {
 	private IFormDao formDao;
 	private IBlockDao blockDao;
 	private com.biit.abcd.persistence.dao.IFormDao formDaoAbcd;
+	private ISimpleFormViewDao simpleFormDaoAbcd;
 
 	private Form lastEditedForm;
 	private Form formInUse;
@@ -74,6 +77,7 @@ public class ApplicationController {
 		formDao = (IFormDao) helper.getBean("formDao");
 		blockDao = (IBlockDao) helper.getBean("blockDao");
 		formDaoAbcd = (com.biit.abcd.persistence.dao.IFormDao) helper.getBean("formDaoAbcd");
+		simpleFormDaoAbcd = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoAbcd"));
 	}
 
 	/**
@@ -184,23 +188,6 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Function to link abcd form to a normal form. Doesn't save the form and
-	 * doesn't check that currently are compatible.
-	 * 
-	 * @param form
-	 * @param abcdForm
-	 */
-	public void linkAbcdForm(Form form, com.biit.abcd.persistence.entity.Form abcdForm) {
-		logInfoStart("linkAbcdForm", form, abcdForm);
-
-		form.setLinkedFormLabel(abcdForm.getLabel());
-		form.setLinkedFormVersion(abcdForm.getVersion());
-		form.setLinkedFormOrganizationId(abcdForm.getOrganizationId());
-
-		logInfoEnd("linkAbcdForm", form, abcdForm);
-	}
-
-	/**
 	 * Returns the Abcd Form linked to a form or null value if it is not linked
 	 * or the link is wrong.
 	 * 
@@ -211,6 +198,27 @@ public class ApplicationController {
 		if (form.getLabel() != null && form.getOrganizationId() != null) {
 			return formDaoAbcd.getForm(form.getLabel(), form.getVersion(), form.getOrganizationId());
 		}
+		return null;
+	}
+
+	/**
+	 * Returns abcd simple view form linked to a form vy it's name, version and
+	 * organizationId.
+	 * 
+	 * @param form
+	 * @return
+	 */
+	public SimpleFormView getLinkedSimpleAbcdForm(Form form) {
+		if (form.getLabel() != null && form.getOrganizationId() != null) {
+			List<SimpleFormView> views = simpleFormDaoAbcd.getSimpleFormViewByName(form.getLinkedFormLabel());
+			for (SimpleFormView view : views) {
+				if (view.getVersion().equals(form.getLinkedFormVersion())
+						&& view.getOrganizationId().equals(form.getLinkedFormOrganizationId())) {
+					return view;
+				}
+			}
+		}
+		System.out.println("Return: null");
 		return null;
 	}
 
@@ -590,12 +598,21 @@ public class ApplicationController {
 				+ " saveAsBlock " + formInUse + " " + element + " " + blockLabel + " END");
 	}
 
-	public void updateForm(Form form, String description) {
+	public void updateForm(Form form, String description, SimpleFormView simpleFormView) {
 		logInfoStart("updateForm", form, description);
 		try {
 			form.setDescription(description);
 			form.setUpdatedBy(UserSessionHandler.getUser());
 			form.setUpdateTime();
+			if(simpleFormView!=null){
+				form.setLinkedFormLabel(simpleFormView.getLabel());
+				form.setLinkedFormVersion(simpleFormView.getVersion());
+				form.setLinkedFormOrganizationId(simpleFormView.getOrganizationId());
+			}else{
+				form.setLinkedFormLabel(null);
+				form.setLinkedFormVersion(-1);
+				form.setLinkedFormOrganizationId(null);
+			}
 		} catch (FieldTooLongException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -925,7 +942,7 @@ public class ApplicationController {
 			@Override
 			public Collection<com.biit.abcd.persistence.entity.Form> getAll() {
 				List<com.biit.abcd.persistence.entity.Form> forms = new ArrayList<>();
-				
+
 				List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
 						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 				for (Organization organization : userOrganizations) {
@@ -940,11 +957,11 @@ public class ApplicationController {
 
 	public TreeTableProvider<Form> getTreeTableFormsProvider() {
 		TreeTableProvider<Form> provider = new TreeTableProvider<Form>() {
-			
+
 			@Override
 			public Collection<Form> getAll() {
 				List<Form> forms = new ArrayList<>();
-				
+
 				List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
 						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 				for (Organization organization : userOrganizations) {
@@ -954,5 +971,46 @@ public class ApplicationController {
 			}
 		};
 		return provider;
+	}
+
+	public TreeTableProvider<SimpleFormView> getTreeTableSimpleAbcdFormsProvider() {
+		TreeTableProvider<SimpleFormView> provider = new TreeTableProvider<SimpleFormView>() {
+
+			@Override
+			public Collection<SimpleFormView> getAll() {
+				List<SimpleFormView> forms = new ArrayList<>();
+
+				// Get all organizations where user has read permissions and
+				// store ids in a hash map.
+				List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
+						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
+				HashSet<Long> userOrganizationIds = new HashSet<Long>();
+				for (Organization organization : userOrganizations) {
+					userOrganizationIds.add(organization.getOrganizationId());
+				}
+
+				// Get all simple forms and add to the form list if their
+				// organization id is on the organization id map.
+				List<SimpleFormView> simpleForms = getSimpleFormDaoAbcd().getAll();
+				for (SimpleFormView simpleForm : simpleForms) {
+					if (userOrganizationIds.contains(simpleForm.getOrganizationId())) {
+						forms.add(simpleForm);
+					}
+				}
+
+				return forms;
+			}
+		};
+
+		return provider;
+	}
+
+	public ISimpleFormViewDao getSimpleFormDaoAbcd() {
+		return simpleFormDaoAbcd;
+	}
+
+	public void validateCompatibility(Form currentForm, SimpleFormView abcdForm) {
+		// TODO Auto-generated method stub
+
 	}
 }

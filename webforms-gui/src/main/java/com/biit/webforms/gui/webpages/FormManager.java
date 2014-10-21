@@ -16,7 +16,6 @@ import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
-import com.biit.webforms.authentication.exception.NotValidAbcdForm;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -142,22 +141,24 @@ public class FormManager extends SecuredWebPage {
 
 	protected void importAbcdForm() {
 		final WindowImportAbcdForms importAbcdForm = new WindowImportAbcdForms(UserSessionHandler.getController()
-				.getTreeTableAbcdFormsProvider());
+				.getTreeTableSimpleAbcdFormsProvider());
 		importAbcdForm.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
-				try {
-					// TODO version?
-					com.biit.abcd.persistence.entity.Form abcdForm = importAbcdForm.getForm();
-					UserSessionHandler.getController().importAbcdForm(abcdForm, importAbcdForm.getImportName(),
-							importAbcdForm.getOrganization());
-					formTable.refreshTableData();
-					window.close();
-				} catch (NotValidAbcdForm e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
-							LanguageCodes.WARNING_DESCRIPTION_NOT_VALID_ABCD_FORM);
-				}
+				// try {
+				// TODO version?
+				// com.biit.abcd.persistence.entity.Form abcdForm =
+				// importAbcdForm.getForm();
+				// UserSessionHandler.getController().importAbcdForm(abcdForm,
+				// importAbcdForm.getImportName(),
+				// importAbcdForm.getOrganization());
+				// formTable.refreshTableData();
+				window.close();
+				// } catch (NotValidAbcdForm e) {
+				// MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
+				// LanguageCodes.WARNING_DESCRIPTION_NOT_VALID_ABCD_FORM);
+				// }
 
 			}
 		});
