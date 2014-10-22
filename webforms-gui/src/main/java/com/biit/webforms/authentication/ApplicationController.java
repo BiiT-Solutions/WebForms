@@ -192,7 +192,7 @@ public class ApplicationController {
 	 * @param abcdForm
 	 * @param importLabel
 	 * @param organization
-	 * @return 
+	 * @return
 	 * @throws NotValidAbcdForm
 	 * @throws CharacterNotAllowedException
 	 * @throws FormWithSameNameException
@@ -224,14 +224,14 @@ public class ApplicationController {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 		webformsForm.setLinkedFormLabel(simpleFormView.getLabel());
-		webformsForm.setLinkedFormVersion(simpleFormView.getVersion());
+		webformsForm.addLinkedFormVersions(simpleFormView.getVersion());
 		webformsForm.setLinkedFormOrganizationId(simpleFormView.getOrganizationId());
 
 		// Store on the database
 		formDao.makePersistent(webformsForm);
 
 		logInfoEnd("importAbcdForm", simpleFormView, importLabel, organization);
-		
+
 		return webformsForm;
 	}
 
@@ -250,7 +250,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns abcd simple view form linked to a form vy it's name, version and
+	 * Returns abcd simpleViewForm linked to form using it's name, version and
 	 * organizationId.
 	 * 
 	 * @param form
@@ -260,7 +260,7 @@ public class ApplicationController {
 		if (form.getLabel() != null && form.getOrganizationId() != null) {
 			List<SimpleFormView> views = simpleFormDaoAbcd.getSimpleFormViewByName(form.getLinkedFormLabel());
 			for (SimpleFormView view : views) {
-				if (view.getVersion().equals(form.getLinkedFormVersion())
+				if (form.getLinkedFormVersions().contains(view.getVersion())
 						&& view.getOrganizationId().equals(form.getLinkedFormOrganizationId())) {
 					return view;
 				}

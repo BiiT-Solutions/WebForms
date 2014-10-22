@@ -9,11 +9,14 @@ import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -52,14 +55,18 @@ public class Form extends BaseForm {
 	private String description;
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "form")
-	//@JoinTable(joinColumns = @JoinColumn(name = "form_ID"), inverseJoinColumns = @JoinColumn(name = "rule_ID"), indexes = { @Index(columnList = "form_ID") })
-	//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	// @JoinTable(joinColumns = @JoinColumn(name = "form_ID"),
+	// inverseJoinColumns = @JoinColumn(name = "rule_ID"), indexes = {
+	// @Index(columnList = "form_ID") })
+	// @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<Flow> rules;
-	
+
 	private String linkedFormLabel;
-	
-	private int linkedFormVersion;
-	
+
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(joinColumns = @JoinColumn(name = "formId"), uniqueConstraints =  @UniqueConstraint(columnNames={"formId","linkedFormVersions"}))
+	private Set<Integer> linkedFormVersions;
+
 	private Long linkedFormOrganizationId;
 
 	public Form() {
@@ -67,6 +74,7 @@ public class Form extends BaseForm {
 		status = FormWorkStatus.DESIGN;
 		description = new String();
 		rules = new HashSet<>();
+		linkedFormVersions= new HashSet<>();
 	}
 
 	public Form(String label, User user, Organization organization) throws FieldTooLongException,
@@ -75,6 +83,7 @@ public class Form extends BaseForm {
 		status = FormWorkStatus.DESIGN;
 		description = new String();
 		rules = new HashSet<>();
+		linkedFormVersions = new HashSet<>();
 		setCreatedBy(user);
 		setUpdatedBy(user);
 		setOrganizationId(organization);
@@ -166,8 +175,8 @@ public class Form extends BaseForm {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
-	 * goes to the next element)
+	 * This method creates a ComputeRuleView with all the current rules and the
+	 * implicit rules (question without rule goes to the next element)
 	 * 
 	 * @return
 	 */
@@ -307,13 +316,22 @@ public class Form extends BaseForm {
 	public void setLinkedFormLabel(String linkedFormLabel) {
 		this.linkedFormLabel = linkedFormLabel;
 	}
-
-	public int getLinkedFormVersion() {
-		return linkedFormVersion;
+	
+	public Set<Integer> getLinkedFormVersions() {
+		return linkedFormVersions;
 	}
 
-	public void setLinkedFormVersion(int linkedFormVersion) {
-		this.linkedFormVersion = linkedFormVersion;
+	protected void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
+		this.linkedFormVersions.clear();
+		this.linkedFormVersions.addAll(linkedFormVersions);
+	}
+	
+	public void addLinkedFormVersions(Integer version) {
+		this.linkedFormVersions.add(version);
+	}
+	
+	public void removeLinkedFormVersions(Integer version) {
+		this.linkedFormVersions.remove(version);
 	}
 
 	public Long getLinkedFormOrganizationId() {

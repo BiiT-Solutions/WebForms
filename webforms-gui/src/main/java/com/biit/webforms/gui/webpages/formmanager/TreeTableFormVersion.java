@@ -105,7 +105,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 		}
 
 		item.getItemProperty(TreeTableFormVersionProperties.LINKED_VERSIONS).setValue(
-				((Form) form).getLinkedFormVersion()+"");
+				((Form) form).getLinkedFormVersions()+"");
 
 		return item;
 	}
