@@ -14,28 +14,38 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private IconButton newForm, newFormVersion, importAbcdForm, exportPdf;
+	private IconButton newForm, finish, newFormVersion, importAbcdForm, exportPdf, exportFlowPdf;
 
 	public UpperMenuProjectManager() {
 		super();
 
 		newForm = new IconButton(LanguageCodes.CAPTION_NEW_FORM, ThemeIcons.FORM_MANAGER_ADD_FORM,
 				LanguageCodes.TOOLTIP_NEW_FORM, IconSize.BIG);
+		finish = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
+				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 		newFormVersion = new IconButton(LanguageCodes.CAPTION_NEW_FORM_VERSION, ThemeIcons.FORM_MANAGER_NEW_VERSION,
 				LanguageCodes.TOOLTIP_NEW_FORM_VERSION, IconSize.BIG);
 		importAbcdForm = new IconButton(LanguageCodes.CAPTION_IMPORT_ABCD_FORM,
 				ThemeIcons.FORM_MANAGER_IMPORT_ABCD_FORM, LanguageCodes.TOOLTIP_IMPORT_ABCD_FORM, IconSize.BIG);
 		exportPdf = new IconButton(LanguageCodes.COMMON_CAPTION_EXPORT_TO_PDF, ThemeIcons.EXPORT_FORM_TO_PDF,
 				LanguageCodes.COMMON_TOOLTIP_EXPORT_TO_PDF, IconSize.BIG);
+		exportFlowPdf = new IconButton(LanguageCodes.CAPTION_PRINT_FLOW, ThemeIcons.EXPORT_FORM_TO_PDF,
+				LanguageCodes.TOOLTIP_PRINT_FLOW, IconSize.BIG);
 
 		addIconButton(newForm);
+		addIconButton(finish);
 		addIconButton(newFormVersion);
 		addIconButton(importAbcdForm);
 		addIconButton(exportPdf);
+		addIconButton(exportFlowPdf);		
 	}
 
 	public void addNewFormListener(ClickListener listener) {
 		newForm.addClickListener(listener);
+	}
+	
+	public void addFinishListener(ClickListener listener) {
+		finish.addClickListener(listener);
 	}
 
 	public void addNewFormVersionListener(ClickListener listener) {
@@ -49,9 +59,17 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	public void addExportPdf(ClickListener listener) {
 		exportPdf.addClickListener(listener);
 	}
+	
+	public void addExportFlowPdfListener(ClickListener listener) {
+		exportFlowPdf.addClickListener(listener);
+	}
 
 	public IconButton getNewForm() {
 		return newForm;
+	}
+	
+	public IconButton getFinish() {
+		return finish;
 	}
 
 	public IconButton getNewFormVersion() {
@@ -64,5 +82,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public IconButton getExportPdf() {
 		return exportPdf;
+	}
+	
+	public IconButton getExportFlowPdf(){
+		return exportFlowPdf;
 	}
 }

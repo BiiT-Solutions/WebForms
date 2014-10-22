@@ -20,12 +20,10 @@ import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
-import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
-import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.TableTreeObjectLabel;
@@ -153,21 +151,6 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				openInsertBlock();
-			}
-		});
-		upperMenu.addFinishButtonListener(new ClickListener() {
-			private static final long serialVersionUID = 8869180038869702710L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				new WindowProceedAction(LanguageCodes.TEXT_PROCEED_FORM_CLOSE, new AcceptActionListener() {
-
-					@Override
-					public void acceptAction(WindowAcceptCancel window) {
-						UserSessionHandler.getController().finishForm();
-						ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
-					}
-				});
 			}
 		});
 		upperMenu.addNewCategoryButtonListener(new ClickListener() {
@@ -348,8 +331,6 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
 			upperMenu.getDownButton().setEnabled(canEdit && !rowIsForm);
-			upperMenu.getFinishButton().setEnabled(canEdit);
-			upperMenu.getFinishButton().setVisible(!formIsBlock);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			// Disable everthing as a security measure.
@@ -366,8 +347,6 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getDeleteButton().setEnabled(false);
 			upperMenu.getUpButton().setEnabled(false);
 			upperMenu.getDownButton().setEnabled(false);
-			upperMenu.getFinishButton().setEnabled(false);
-			upperMenu.getFinishButton().setVisible(false);
 		}
 	}
 

@@ -604,13 +604,11 @@ public class ApplicationController {
 				+ " saveForm " + form + " END");
 	}
 
-	public void finishForm() {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " finishForm " + formInUse + " START");
-		formInUse.setStatus(FormWorkStatus.FINAL_DESIGN);
-		saveForm(formInUse);
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " finishForm " + formInUse + " END");
+	public void finishForm(Form form) {
+		logInfoStart("finishForm",form);
+		form.setStatus(FormWorkStatus.FINAL_DESIGN);
+		saveForm(form);
+		logInfoEnd("finishForm",form);
 	}
 
 	public void saveAsBlock(TreeObject element, String blockLabel, Organization organization)

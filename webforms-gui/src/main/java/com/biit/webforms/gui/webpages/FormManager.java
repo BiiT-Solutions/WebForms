@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.webpages;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
+import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
@@ -37,6 +39,8 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.utils.GraphvizApp;
+import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.liferay.portal.model.Organization;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -93,6 +97,21 @@ public class FormManager extends SecuredWebPage {
 				openNewFormWindow();
 			}
 		});
+		upperMenu.addFinishListener(new ClickListener() {
+			private static final long serialVersionUID = 8869180038869702710L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				new WindowProceedAction(LanguageCodes.TEXT_PROCEED_FORM_CLOSE, new AcceptActionListener() {
+
+					@Override
+					public void acceptAction(WindowAcceptCancel window) {
+						UserSessionHandler.getController().finishForm((Form) formTable.getForm());
+						formTable.refreshTableData();
+					}
+				});
+			}
+		});
 		upperMenu.addNewFormVersionListener(new ClickListener() {
 			private static final long serialVersionUID = 2014729211949601816L;
 
@@ -130,6 +149,29 @@ public class FormManager extends SecuredWebPage {
 				downloader.setIndeterminate(true);
 				downloader.setFilename(((Form) formTable.getValue()).getLabel() + ".pdf");
 				downloader.showCentered();
+			}
+		});
+		upperMenu.addExportFlowPdfListener(new ClickListener() {
+			private static final long serialVersionUID = -1790801212813909643L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
+
+					@Override
+					public InputStream getInputStream() {
+						try {
+							return new ByteArrayInputStream(GraphvizApp.generateImage((Form) formTable.getValue(),
+									null, ImgType.PDF));
+						} catch (IOException | InterruptedException e) {
+							WebformsLogger.errorMessage(this.getClass().getName(), e);
+							return null;
+						}
+					}
+				});
+				window.setIndeterminate(true);
+				window.setFilename(((Form) formTable.getValue()).getLabel() + ".pdf");
+				window.showCentered();
 			}
 		});
 		return upperMenu;
@@ -294,9 +336,12 @@ public class FormManager extends SecuredWebPage {
 			boolean canCreateNewVersion = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
 					UserSessionHandler.getUser(), selectedForm, WebformsActivity.FORM_NEW_VERSION);
 
+			upperMenu.setEnabled(true);
 			upperMenu.getNewForm().setEnabled(canCreateForms);
+			upperMenu.getFinish().setEnabled(rowNotNullAndForm && canCreateForms);
 			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion);
 			upperMenu.getExportPdf().setEnabled(rowNotNullAndForm);
+			upperMenu.getExportFlowPdf().setEnabled(rowNotNullAndForm);
 
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);
@@ -306,8 +351,7 @@ public class FormManager extends SecuredWebPage {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			// failsafe, disable everything.
-			upperMenu.getNewFormVersion().setEnabled(false);
-			upperMenu.getExportPdf().setEnabled(false);
+			upperMenu.setEnabled(false);
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(false);
 			bottomMenu.getEditFlowButton().setEnabled(false);

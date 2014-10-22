@@ -11,7 +11,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	private static final long serialVersionUID = -368255188051163986L;
 
-	private IconButton saveButton, saveAsBlockButton, insertBlockButton, finishButton, newCategoryButton,
+	private IconButton saveButton, saveAsBlockButton, insertBlockButton, newCategoryButton,
 			newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, moveButton,
 			deleteButton, upButton, downButton;
 
@@ -24,9 +24,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 		insertBlockButton = new IconButton(LanguageCodes.COMMON_CAPTION_INSERT_BLOCK, ThemeIcons.BUILDING_BLOCK_ADD,
 				LanguageCodes.COMMON_TOOLTIP_INSERT_BLOCK, IconSize.BIG);
-
-		finishButton = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
-				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 
 		newCategoryButton = new IconButton(LanguageCodes.CAPTION_NEW_CATEGORY, ThemeIcons.DESIGNER_NEW_CATEGORY,
 				LanguageCodes.TOOLTIP_NEW_CATEGORY);
@@ -62,7 +59,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(upButton);
 		addIconButton(downButton);
 		addIconButton(deleteButton);
-		addIconButton(finishButton);
 		
 		setConfirmationNeeded(true);
 	}
@@ -77,10 +73,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public void addInsertBlockButtonListener(ClickListener listener) {
 		insertBlockButton.addClickListener(listener);
-	}
-
-	public void addFinishButtonListener(ClickListener listener) {
-		finishButton.addClickListener(listener);
 	}
 
 	public void addNewCategoryButtonListener(ClickListener listener) {
@@ -133,10 +125,6 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public IconButton getInsertBlockButton() {
 		return insertBlockButton;
-	}
-
-	public IconButton getFinishButton() {
-		return finishButton;
 	}
 
 	public IconButton getNewCategoryButton() {
