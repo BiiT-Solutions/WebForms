@@ -140,6 +140,9 @@ public enum LanguageCodes implements ILanguageCode{
 	FORM_TABLE_COLUMN_MODIFIEDBY("caption.form.table.modifiedBy"),
 	FORM_TABLE_COLUMN_MODIFICATIONDATE("caption.form.table.modificationDate"),
 	FORM_TABLE_COLUMN_ORGANIZATION("caption.form.table.organization"),
+	FORM_TABLE_COLUMN_LINKED_FORM("caption.form.table.linked.form"),
+	FORM_TABLE_COLUMN_LINKED_ORGANIZATION("caption.form.table.linked.organization"),
+	FORM_TABLE_COLUMN_LINKED_VERSIONS("caption.form.table.linked.versions"),
 	
 	WARNING_CAPTION_NOT_ALLOWED("warning.caption.not.allowed"),
 	WARNING_CAPTION_IMPORT_FAILED("warning.caption.import.failed"),

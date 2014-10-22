@@ -25,7 +25,6 @@ import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
 import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.common.utils.MessageManager;
-import com.biit.webforms.gui.components.EditInfoListener;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
 import com.biit.webforms.gui.components.WindowNameGroup;
@@ -68,12 +67,6 @@ public class FormManager extends SecuredWebPage {
 
 		formTable = new TreeTableFormVersion(UserSessionHandler.getController().getTreeTableFormsProvider());
 		formTable.setSizeFull();
-		formTable.addEditInfoListener(new EditInfoListener() {
-			@Override
-			public void editInfo(Form form) {
-				openEditInfoWindow(form);
-			}
-		});
 		formTable.setValue(null);
 		formTable.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -8544416078101328528L;
@@ -168,7 +161,8 @@ public class FormManager extends SecuredWebPage {
 				// Try to import the form.
 				try {
 					SimpleFormView abcdForm = importAbcdForm.getForm();
-					Form importedForm = UserSessionHandler.getController().importAbcdForm(abcdForm, newFormName, newFormOrganization);
+					Form importedForm = UserSessionHandler.getController().importAbcdForm(abcdForm, newFormName,
+							newFormOrganization);
 					formTable.addForm(importedForm, true);
 					formTable.setValue(importedForm);
 					window.close();
@@ -178,7 +172,7 @@ public class FormManager extends SecuredWebPage {
 				} catch (FieldTooLongException | CharacterNotAllowedException e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
 							LanguageCodes.WARNING_DESCRIPTION_NAME_NOT_VALID);
-				}catch( FormWithSameNameException e){
+				} catch (FormWithSameNameException e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
 							LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
 				}
@@ -251,7 +245,7 @@ public class FormManager extends SecuredWebPage {
 		});
 	}
 
-	protected void openEditInfoWindow(final Form form) {
+	private void openEditInfoWindow(final Form form) {
 		final WindowTextArea textWindow = new WindowTextArea(LanguageCodes.COMMON_CAPTION_DESCRIPTION.translation());
 		textWindow.setCaption(LanguageCodes.COMMON_CAPTION_EDIT_DESCRIPTION.translation());
 		textWindow.setValue(form.getDescription());

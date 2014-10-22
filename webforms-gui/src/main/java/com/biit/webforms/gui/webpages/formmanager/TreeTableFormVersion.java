@@ -1,52 +1,39 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.form.interfaces.IBaseFormView;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.UiAccesser;
-import com.biit.webforms.gui.common.components.IconOnlyButton;
 import com.biit.webforms.gui.common.components.TreeTableBaseForm;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
-import com.biit.webforms.gui.components.EditInfoListener;
 import com.biit.webforms.language.FormWorkStatusUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.theme.ThemeIcons;
+import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.data.Item;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 
 public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 	private static final long serialVersionUID = -7776688515497328826L;
 
-	private List<EditInfoListener> editInfoListeners;
-
 	enum TreeTableFormVersionProperties {
-		INFO, ACCESS, USED_BY, STATUS;
+		ACCESS, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
 	};
 
 	public TreeTableFormVersion(TreeTableProvider<Form> formProvider) {
 		super(formProvider);
-		editInfoListeners = new ArrayList<EditInfoListener>();
 		configureContainerProperties();
 	}
 
 	@Override
 	protected void configureContainerProperties() {
 		super.configureContainerProperties();
-
-		addContainerProperty(TreeTableFormVersionProperties.INFO, IconOnlyButton.class, "",
-				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_INFO), null, Align.CENTER);
 
 		addContainerProperty(TreeTableFormVersionProperties.ACCESS, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ACCESS), null, Align.CENTER);
@@ -57,49 +44,69 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 		addContainerProperty(TreeTableFormVersionProperties.STATUS, ComboBox.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_STATUS), null, Align.CENTER);
 
-		setColumnCollapsible(TreeTableFormVersionProperties.INFO, false);
+		addContainerProperty(TreeTableFormVersionProperties.LINKED_FORM, String.class, "",
+				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_LINKED_FORM), null, Align.CENTER);
+
+		addContainerProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION, String.class, "",
+				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_LINKED_ORGANIZATION), null, Align.CENTER);
+
+		addContainerProperty(TreeTableFormVersionProperties.LINKED_VERSIONS, String.class, "",
+				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_LINKED_VERSIONS), null, Align.CENTER);
+
 		setColumnCollapsible(TreeTableFormVersionProperties.ACCESS, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.USED_BY, true);
 		setColumnCollapsible(TreeTableFormVersionProperties.STATUS, true);
+		setColumnCollapsible(TreeTableFormVersionProperties.LINKED_FORM, true);
+		setColumnCollapsible(TreeTableFormVersionProperties.LINKED_ORGANIZATION, true);
+		setColumnCollapsible(TreeTableFormVersionProperties.LINKED_VERSIONS, true);
 
 		setColumnExpandRatio(TreeTableFormVersionProperties.ACCESS, 1);
 		setColumnExpandRatio(TreeTableFormVersionProperties.USED_BY, 1);
 		setColumnExpandRatio(TreeTableFormVersionProperties.STATUS, 1.2f);
+		setColumnExpandRatio(TreeTableFormVersionProperties.LINKED_FORM, 1.2f);
+		setColumnExpandRatio(TreeTableFormVersionProperties.LINKED_VERSIONS, 1.0f);
+
+		setColumnCollapsed(TreeTableFormVersionProperties.LINKED_ORGANIZATION, true);
 
 		// Set new visibility order
 		setVisibleColumns(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION,
-				TreeTableFormVersionProperties.INFO, TreeTableFormVersionProperties.ACCESS,
 				TreeTableFormVersionProperties.USED_BY, TreeTableFormVersionProperties.STATUS,
-				TreeTableBaseFormProperties.ORGANIZATION, TreeTableBaseFormProperties.CREATED_BY,
-				TreeTableBaseFormProperties.CREATION_DATE, TreeTableBaseFormProperties.MODIFIED_BY,
-				TreeTableBaseFormProperties.MODIFICATION_DATE, });
+				TreeTableBaseFormProperties.ORGANIZATION, TreeTableFormVersionProperties.LINKED_FORM,
+				TreeTableFormVersionProperties.LINKED_ORGANIZATION, TreeTableFormVersionProperties.LINKED_VERSIONS,
+				TreeTableBaseFormProperties.CREATED_BY, TreeTableBaseFormProperties.CREATION_DATE,
+				TreeTableBaseFormProperties.MODIFIED_BY, TreeTableBaseFormProperties.MODIFICATION_DATE });
 	}
 
-	/**
-	 * This function adds a row to the table only if the list of forms is not
-	 * empty.
-	 * 
-	 * @param forms
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Item addRow(IBaseFormView form) {
-		Item item = super.addRow(form);
-		if (item != null) {
-			item.getItemProperty(TreeTableFormVersionProperties.INFO).setValue(createInfoButton((Form) form));
+	public Item updateRow(IBaseFormView form) {
+		Item item = super.updateRow(form);
+		item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag((Form) form));
 
-			item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag((Form) form));
-
-			User userOfForm = UiAccesser.getUserUsingForm((Form) form);
-			if (userOfForm != null) {
-				item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue(userOfForm.getEmailAddress());
-			} else {
-				item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue("");
-			}
-
-			// Status
-			item.getItemProperty(TreeTableFormVersionProperties.STATUS).setValue(generateStatusComboBox((Form) form));
+		User userOfForm = UiAccesser.getUserUsingForm((Form) form);
+		if (userOfForm != null) {
+			item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue(userOfForm.getEmailAddress());
+		} else {
+			item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue("");
 		}
+
+		// Status
+		item.getItemProperty(TreeTableFormVersionProperties.STATUS).setValue(generateStatusComboBox((Form) form));
+
+		// Linked parameters
+		item.getItemProperty(TreeTableFormVersionProperties.LINKED_FORM).setValue(((Form) form).getLinkedFormLabel());
+
+		if (((Form) form).getLinkedFormOrganizationId() != null) {
+			Organization linkedOrganization = WebformsAuthorizationService.getInstance().getOrganization(
+					UserSessionHandler.getUser(), ((Form) form).getLinkedFormOrganizationId());
+			if (linkedOrganization != null) {
+				item.getItemProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION).setValue(linkedOrganization.getName());
+			}
+		}
+
+		item.getItemProperty(TreeTableFormVersionProperties.LINKED_VERSIONS).setValue(
+				((Form) form).getLinkedFormVersion()+"");
+
 		return item;
 	}
 
@@ -152,25 +159,6 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 		return statusComboBox;
 	}
 
-	private IconOnlyButton createInfoButton(final Form form) {
-		IconOnlyButton icon = new IconOnlyButton(ThemeIcons.ELEMENT_EDIT.getThemeResource());
-		icon.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 896514404248078435L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				fireEditInfo(form);
-			}
-		});
-		return icon;
-	}
-
-	protected void fireEditInfo(Form value) {
-		for (EditInfoListener listener : editInfoListeners) {
-			listener.editInfo(value);
-		}
-	}
-
 	/**
 	 * This function selects the last form used by the user or the first.
 	 */
@@ -203,13 +191,5 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 			permissions = LanguageCodes.CAPTION_READ_ONLY.translation();
 		}
 		return permissions;
-	}
-
-	public void addEditInfoListener(EditInfoListener listener) {
-		editInfoListeners.add(listener);
-	}
-
-	public void removeEditInfoListener(EditInfoListener listener) {
-		editInfoListeners.remove(listener);
 	}
 }

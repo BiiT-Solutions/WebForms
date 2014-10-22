@@ -96,46 +96,59 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		setColumnExpandRatio(TreeTableBaseFormProperties.MODIFICATION_DATE, 1);
 	}
 
-	@SuppressWarnings("unchecked")
 	protected Item addRow(IBaseFormView form) {
 		if (form != null) {
 			Item item = addItem(form);
-			item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getLabel());
-			item.getItemProperty(TreeTableBaseFormProperties.VERSION).setValue(form.getVersion() + "");
-
-			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
-					UserSessionHandler.getUser(), form.getOrganizationId());
-			if (organization != null) {
-				item.getItemProperty(TreeTableBaseFormProperties.ORGANIZATION).setValue(organization.getName());
-			}
-
-			try {
-				item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue(
-						LiferayServiceAccess.getInstance().getUserById(form.getCreatedBy()).getEmailAddress());
-			} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException e) {
-				item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue("");
-			}
-			item.getItemProperty(TreeTableBaseFormProperties.CREATION_DATE).setValue(
-					(DateManager.convertDateToString(form.getCreationTime())));
-			try {
-				item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue(
-						LiferayServiceAccess.getInstance().getUserById(form.getUpdatedBy()).getEmailAddress());
-			} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException e) {
-				item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue("");
-			}
-			item.getItemProperty(TreeTableBaseFormProperties.MODIFICATION_DATE).setValue(
-					(DateManager.convertDateToString(form.getUpdateTime())));
+			updateRow(form);
 			return item;
 		}
 		return null;
 	}
-
-	@SuppressWarnings("unchecked")
-	protected void addRow(RootForm form) {
+	
+	protected Item addRow(RootForm form) {
 		if (form != null) {
 			Item item = addItem(form);
-			item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getName());
+			updateRow(form);
+			return item;
 		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Item updateRow(IBaseFormView form){
+		Item item = getItem(form);
+		item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getLabel());
+		item.getItemProperty(TreeTableBaseFormProperties.VERSION).setValue(form.getVersion() + "");
+
+		Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+				UserSessionHandler.getUser(), form.getOrganizationId());
+		if (organization != null) {
+			item.getItemProperty(TreeTableBaseFormProperties.ORGANIZATION).setValue(organization.getName());
+		}
+
+		try {
+			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue(
+					LiferayServiceAccess.getInstance().getUserById(form.getCreatedBy()).getEmailAddress());
+		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException e) {
+			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue("");
+		}
+		item.getItemProperty(TreeTableBaseFormProperties.CREATION_DATE).setValue(
+				(DateManager.convertDateToString(form.getCreationTime())));
+		try {
+			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue(
+					LiferayServiceAccess.getInstance().getUserById(form.getUpdatedBy()).getEmailAddress());
+		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException e) {
+			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue("");
+		}
+		item.getItemProperty(TreeTableBaseFormProperties.MODIFICATION_DATE).setValue(
+				(DateManager.convertDateToString(form.getUpdateTime())));
+		return item;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void updateRow(RootForm form){
+		Item item = getItem(form);
+		item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getName());
 	}
 
 	/**
