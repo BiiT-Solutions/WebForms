@@ -7,7 +7,7 @@
 	<groupId>com.biit</groupId>
 	<artifactId>webforms</artifactId>
 	<packaging>pom</packaging>
-	<version>2.1.4</version>
+	<version>2.1.5</version>
 	<name>Pilot Agile Testing for WebForms</name>
 	<description>Form Designer</description>
 
@@ -53,7 +53,7 @@
 		<ehcache.version>2.6.9</ehcache.version>
 		<c3p0.version>0.9.2.1</c3p0.version>
 		<DES-encryption.version>1.0.0</DES-encryption.version>
-		<abcd-persistance.version>0.9.0</abcd-persistance.version>
+		<abcd-persistance.version>0.9.1</abcd-persistance.version>
 	</properties>
 
 	<dependencies>
