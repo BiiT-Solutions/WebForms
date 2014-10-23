@@ -870,5 +870,13 @@ $open-sans-pathPrefix: "./fonts/";
 	.v-reduced-layout-margin.v-vertical.v-margin-bottom, .v-reduced-layout-margin.v-horizontal.v-margin-bottom{
 		padding-bottom: 5px !important;
 	}
-		
+	
+	/* boxed list */
+	.v-boxed-list {
+		border: 1px;
+		border-style: solid;
+		border-color: #c2c3c4;
+		overflow: auto;
+		padding: 6px;
+	}	
 }

@@ -14,7 +14,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private IconButton newForm, finish, newFormVersion, importAbcdForm, exportPdf, exportFlowPdf;
+	private IconButton newForm, finish, newFormVersion, importAbcdForm, linkAbcdForm, exportPdf, exportFlowPdf;
 
 	public UpperMenuProjectManager() {
 		super();
@@ -27,6 +27,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_NEW_FORM_VERSION, IconSize.BIG);
 		importAbcdForm = new IconButton(LanguageCodes.CAPTION_IMPORT_ABCD_FORM,
 				ThemeIcons.FORM_MANAGER_IMPORT_ABCD_FORM, LanguageCodes.TOOLTIP_IMPORT_ABCD_FORM, IconSize.BIG);
+		linkAbcdForm = new IconButton(LanguageCodes.CAPTION_LINK_ABCD_FORM,
+				ThemeIcons.FORM_MANAGER_LINK_ABCD_FORM, LanguageCodes.TOOLTIP_LINK_ABCD_FORM, IconSize.BIG);
 		exportPdf = new IconButton(LanguageCodes.COMMON_CAPTION_EXPORT_TO_PDF, ThemeIcons.EXPORT_FORM_TO_PDF,
 				LanguageCodes.COMMON_TOOLTIP_EXPORT_TO_PDF, IconSize.BIG);
 		exportFlowPdf = new IconButton(LanguageCodes.CAPTION_PRINT_FLOW, ThemeIcons.EXPORT_FORM_TO_PDF,
@@ -36,6 +38,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		addIconButton(finish);
 		addIconButton(newFormVersion);
 		addIconButton(importAbcdForm);
+		addIconButton(linkAbcdForm);
 		addIconButton(exportPdf);
 		addIconButton(exportFlowPdf);		
 	}
@@ -54,6 +57,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	
 	public void addImportAbcdForm(ClickListener listener){
 		importAbcdForm.addClickListener(listener);
+	}
+	
+	public void addLinkAbcdForm(ClickListener listener){
+		linkAbcdForm.addClickListener(listener);
 	}
 
 	public void addExportPdf(ClickListener listener) {
@@ -78,6 +85,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	
 	public IconButton getImportAbcdForm() {
 		return importAbcdForm;
+	}
+	
+	public IconButton getLinkAbcdForm() {
+		return linkAbcdForm;
 	}
 
 	public IconButton getExportPdf() {
