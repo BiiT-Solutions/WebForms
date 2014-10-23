@@ -247,7 +247,27 @@ public class Designer extends SecuredWebPage {
 				}
 			}
 		});
+		upperMenu.addNewSubanswerButtonListener(new ClickListener() {
+			private static final long serialVersionUID = -4159824066373029540L;
 
+			@Override
+			public void buttonClick(ClickEvent event) {
+				TreeObject selectedRow = table.getSelectedRow();
+				if (selectedRow instanceof BaseAnswer) {
+					try {
+						Answer newAnswer;
+						if (!((Answer) selectedRow).isSubanswer()) {
+							newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow);
+						}else{
+							newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow.getParent());
+						}
+						table.addRow(newAnswer, newAnswer.getParent());
+					} catch (NotValidChildException e) {
+						MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
+					}
+				}
+			}
+		});
 		upperMenu.addDeleteButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 9107418811326944058L;
 
@@ -316,6 +336,8 @@ public class Designer extends SecuredWebPage {
 					UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 			boolean canStoreBlock = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
+			boolean selectedRowIsAnswer = (table.getSelectedRow() != null)
+					&& (table.getSelectedRow() instanceof Answer);
 
 			upperMenu.getSaveButton().setEnabled(canEdit);
 			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock && !rowIsForm);
@@ -327,6 +349,8 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getNewSystemFieldButton().setEnabled(canEdit && selectedRowHierarchyAllows(SystemField.class));
 			upperMenu.getNewTextButton().setEnabled(canEdit && selectedRowHierarchyAllows(Text.class));
 			upperMenu.getNewAnswerButton().setEnabled(canEdit && selectedRowHierarchyAllows(Answer.class));
+			upperMenu.getNewSubanswerButton().setEnabled(
+					canEdit && selectedRowIsAnswer && selectedRowHierarchyAllows(Answer.class));
 			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);

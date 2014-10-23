@@ -164,6 +164,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_NEW_TEXT("caption.new.text"),
 	CAPTION_NEW_SYSTEM_FIELD("caption.new.systemField"),
 	CAPTION_NEW_ANSWER("caption.new.answer"),
+	CAPTION_NEW_SUBANSWER("caption.new.subanswer"),
 	CAPTION_NAME("caption.name"),
 	CAPTION_VALUE("caption.value"),
 	CAPTION_LABEL("caption.label"),
@@ -201,6 +202,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_NEW_TEXT("tooltip.new.text"),
 	TOOLTIP_NEW_SYSTEM_FIELD("tooltip.new.systemField"),
 	TOOLTIP_NEW_ANSWER("tooltip.new.answer"),
+	TOOLTIP_NEW_SUBANSWER("tooltip.new.subanswer"),
 	TOOLTIP_SAVE_AS_BLOCK("tooltip.save.as.block"),
 	
 	ERROR_SUBCATEGORY_NOT_INSERTED("error.subcategory.not.inserted"),

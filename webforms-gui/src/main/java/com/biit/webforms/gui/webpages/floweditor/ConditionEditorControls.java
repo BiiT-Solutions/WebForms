@@ -39,6 +39,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
 
 public class ConditionEditorControls extends TabSheet {
 	private static final long serialVersionUID = 105765485106857208L;
@@ -49,8 +50,8 @@ public class ConditionEditorControls extends TabSheet {
 	protected static final TokenTypes DEFAULT_ANSWER_REFERENCE_TOKEN = TokenTypes.EQ;
 	private static final int VALUE_BUTTON_COLS = 3;
 	private static final int VALUE_BUTTON_ROWS = 2;
-	private static final float EXPAND_RATIO_REFERENCE = 0.7f;
-	private static final float EXPAND_RATIO_INSERT_VALUE_OR_ANSWER = 0.3f;
+	private static final float EXPAND_RATIO_REFERENCE = 60.0f;
+	private static final String REDUCED_LAYOUT_MARGIN = "v-reduced-layout-margin";
 
 	private TableTreeObject treeObjectTable;
 	private TableTreeObject answerTable;
@@ -93,7 +94,6 @@ public class ConditionEditorControls extends TabSheet {
 				Category.class, Group.class, Question.class);
 		treeObjectTable.setValue(null);
 		updateInsertAnswerLayout();
-
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class ConditionEditorControls extends TabSheet {
 			for (TreeObject child : question.getChildren()) {
 				answerTable.loadTreeObject(child, null);
 			}
-			answerTable.setValue(question.getChildren().get(0));
+			answerTable.setValue(null);
 		}
 		insertEqAnswer.setEnabled(answerTable.getValue() != null);
 		insertNeAnswer.setEnabled(answerTable.getValue() != null);
@@ -226,6 +226,18 @@ public class ConditionEditorControls extends TabSheet {
 		answerTable.setNullSelectionAllowed(false);
 		answerTable.setImmediate(true);
 		answerTable.setSelectable(true);
+		answerTable.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = -6634125293095182977L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				if(event.getProperty().getValue()!=null && event.getProperty().getValue() instanceof Answer){
+					boolean isFinalAnswer = ((Answer)event.getProperty().getValue()).getChildren().isEmpty();
+					insertEqAnswer.setEnabled(isFinalAnswer);					
+					insertNeAnswer.setEnabled(isFinalAnswer);
+				}
+			}
+		});
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setWidth(FULL);
@@ -326,13 +338,11 @@ public class ConditionEditorControls extends TabSheet {
 	}
 
 	private Component generateReferenceTab() {
-		VerticalLayout root = new VerticalLayout();
+		VerticalSplitPanel root = new VerticalSplitPanel();
 		root.setWidth(FULL);
 		root.setHeight(FULL);
-		root.setSpacing(true);
-		root.setMargin(true);
 
-		Component insertReferenceLayout = generateTreeTableSearch();
+		Component insertReference = generateTreeTableSearch();
 		// Generate comparation answer and value layout.
 		generateInsertComparationAnswerLayout();
 		generateInsertComparationValueLayout();
@@ -341,11 +351,18 @@ public class ConditionEditorControls extends TabSheet {
 		// problems in component
 		insertLayout = new VerticalLayout();
 		insertLayout.setSizeFull();
+		insertLayout.setMargin(true);
+		insertLayout.addStyleName(REDUCED_LAYOUT_MARGIN);
+		
+		VerticalLayout insertReferenceLayout = new VerticalLayout();
+		insertReferenceLayout.setSizeFull();
+		insertReferenceLayout.setMargin(true);
+		insertReferenceLayout.addComponent(insertReference);
+		insertReferenceLayout.addStyleName(REDUCED_LAYOUT_MARGIN);
 
-		root.addComponent(insertReferenceLayout);
-		root.addComponent(insertLayout);
-		root.setExpandRatio(insertReferenceLayout, EXPAND_RATIO_REFERENCE);
-		root.setExpandRatio(insertLayout, EXPAND_RATIO_INSERT_VALUE_OR_ANSWER);
+		root.setFirstComponent(insertReferenceLayout);
+		root.setSecondComponent(insertLayout);
+		root.setSplitPosition(EXPAND_RATIO_REFERENCE);
 
 		return root;
 	}

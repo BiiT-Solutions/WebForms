@@ -12,7 +12,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	private static final long serialVersionUID = -368255188051163986L;
 
 	private IconButton saveButton, saveAsBlockButton, insertBlockButton, newCategoryButton,
-			newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, moveButton,
+			newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, newSubanswerButton, moveButton,
 			deleteButton, upButton, downButton;
 
 	public UpperMenuDesigner() {
@@ -33,6 +33,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_NEW_QUESTION);
 		newAnswerButton = new IconButton(LanguageCodes.CAPTION_NEW_ANSWER, ThemeIcons.DESIGNER_NEW_ANSWER,
 				LanguageCodes.TOOLTIP_NEW_ANSWER);
+		newSubanswerButton = new IconButton(LanguageCodes.CAPTION_NEW_SUBANSWER, ThemeIcons.DESIGNER_NEW_SUBANSWER,
+				LanguageCodes.TOOLTIP_NEW_SUBANSWER);
 		newTextButton = new IconButton(LanguageCodes.CAPTION_NEW_TEXT, ThemeIcons.DESIGNER_NEW_INFOTEXT,
 				LanguageCodes.TOOLTIP_NEW_TEXT);
 		newSystemFieldButton = new IconButton(LanguageCodes.CAPTION_NEW_SYSTEM_FIELD,
@@ -53,6 +55,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(newGroupButton);
 		addIconButton(newQuestionButton);
 		addIconButton(newAnswerButton);
+		addIconButton(newSubanswerButton);
 		addIconButton(newTextButton);
 		addIconButton(newSystemFieldButton);
 		addIconButton(moveButton);
@@ -97,6 +100,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public void addNewAnswerButtonListener(ClickListener listener) {
 		newAnswerButton.addClickListener(listener);
+	}
+	
+	public void addNewSubanswerButtonListener(ClickListener listener) {
+		newSubanswerButton.addClickListener(listener);
 	}
 
 	public void addMoveButtonListener(ClickListener listener) {
@@ -149,6 +156,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public IconButton getNewAnswerButton() {
 		return newAnswerButton;
+	}
+	
+	public IconButton getNewSubanswerButton() {
+		return newSubanswerButton;
 	}
 
 	public IconButton getMoveButton() {

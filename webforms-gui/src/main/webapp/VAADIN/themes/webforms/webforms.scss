@@ -855,5 +855,20 @@ $open-sans-pathPrefix: "./fonts/";
 		border-color: #c2c3c4;
 		border-radius: 3px 3px;
 		overflow: hidden;
-	}	
+	}
+	
+	/* reduced layout margins */
+	.v-reduced-layout-margin.v-vertical.v-margin-left, .v-reduced-layout-margin.v-horizontal.v-margin-left{
+		padding-left: 5px !important;
+	}
+	.v-reduced-layout-margin.v-vertical.v-margin-right, .v-reduced-layout-margin.v-horizontal.v-margin-rigth{
+		padding-right: 5px !important;
+	}
+	.v-reduced-layout-margin.v-vertical.v-margin-top, .v-reduced-layout-margin.v-horizontal.v-margin-top{
+		padding-top: 5px !important;
+	}
+	.v-reduced-layout-margin.v-vertical.v-margin-bottom, .v-reduced-layout-margin.v-horizontal.v-margin-bottom{
+		padding-bottom: 5px !important;
+	}
+		
 }

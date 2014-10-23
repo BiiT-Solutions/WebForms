@@ -40,8 +40,9 @@ public class Flow extends StorableObject {
 	private static final String TOKEN_SEPARATOR = " ";
 
 	/*
-	 * Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
-	 * attached to that column, you have to state the name.
+	 * Hibernate changes name of column when you use a many-to-one relationship.
+	 * If you want to add a constraint attached to that column, you have to
+	 * state the name.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "origin_id")
@@ -145,9 +146,10 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * Returns a string view of the flow. If the flow hasn't been interpreted, we do the parse of the current flow form
-	 * the database string. If has been initialized, then we return the string view from the current Interpretation
-	 * status.
+	 * Returns a string view of the flow. If the flow hasn't been interpreted,
+	 * we do the parse of the current flow form the database string. If has been
+	 * initialized, then we return the string view from the current
+	 * Interpretation status.
 	 * 
 	 * @return
 	 */
@@ -167,14 +169,12 @@ public class Flow extends StorableObject {
 			copyBasicInfo(object);
 			// Flow elements copy
 			Flow flow = (Flow) object;
-			try {
-				setContent(flow.getOrigin(), flow.getFlowType(), flow.getDestiny(), flow.isOthers(),
-						flow.generateCopyCondition());
-			} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
-					| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
-				// Impossible
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			}
+			//Do not use setContent to avoid checks.
+			this.setOrigin(flow.getOrigin());
+			this.setFlowType(flow.getFlowType());
+			this.setDestiny(flow.getDestiny());
+			this.setOthers(flow.isOthers());
+			this.setCondition(flow.generateCopyCondition());
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
 					+ Flow.class.getName());
@@ -247,8 +247,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * This functions updates references to question and answers If a reference is missing it will throw a
-	 * {@code UpdateNullReferenceException}
+	 * This functions updates references to question and answers If a reference
+	 * is missing it will throw a {@code UpdateNullReferenceException}
 	 * 
 	 * @param mappedCopiedQuestions
 	 * @param mappedCopiedAnswers
