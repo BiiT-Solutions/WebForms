@@ -2,23 +2,30 @@ package com.biit.webforms.gui.webpages.floweditor;
 
 import com.biit.form.TreeObject;
 import com.biit.webforms.enumerations.TokenTypes;
+import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
 public class WindowTokenOperationAnswer extends WindowAcceptCancel {
 	private static final long serialVersionUID = 697691525922280194L;
-	private static final String WIDTH = "650px";
-	private static final String HEIGHT = "250px";
+	private static final String WIDTH = "550px";
+	private static final String HEIGHT = "450px";
+	private static final String TABLE_HEIGHT = "224px";
+	private static final String TABLE_WIDTH = "350px";
+	private static final String LABEL_HEIGTH = "30px";
+	private static final String OPERATOR_HEIGTH = "30px";
 
 	private Label treeElementLabel;
 	private ComboBox operator;
-	private ComboBox answer;
+	private TableTreeObject answer;
 	private TokenComparationAnswer token;
 
 	public WindowTokenOperationAnswer() {
@@ -37,7 +44,7 @@ public class WindowTokenOperationAnswer extends WindowAcceptCancel {
 	}
 
 	private Component generate() {
-		HorizontalLayout rootLayout = new HorizontalLayout();
+		VerticalLayout rootLayout = new VerticalLayout();
 		rootLayout.setSizeFull();
 		rootLayout.setMargin(true);
 		rootLayout.setSpacing(true);
@@ -45,13 +52,31 @@ public class WindowTokenOperationAnswer extends WindowAcceptCancel {
 		treeElementLabel = new Label("null-content");
 		treeElementLabel.setImmediate(true);
 		treeElementLabel.setWidth(null);
+		treeElementLabel.setHeight(LABEL_HEIGTH);
 
 		operator = new ComboBox();
 		operator.setNullSelectionAllowed(false);
+		operator.setHeight(OPERATOR_HEIGTH);
 
-		answer = new ComboBox();
+		answer = new TableTreeObject();
 		answer.setNullSelectionAllowed(false);
 		answer.setImmediate(true);
+		answer.setHeight(TABLE_HEIGHT);
+		answer.setWidth(TABLE_WIDTH);
+		answer.setSelectable(true);
+		answer.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = -3716751101306526511L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				if(event.getProperty().getValue()==null || !(event.getProperty().getValue() instanceof Answer)){
+					getAcceptButton().setEnabled(false);
+				}else{
+					Answer answer = (Answer)event.getProperty().getValue();
+					getAcceptButton().setEnabled(answer.getChildren()==null || answer.getChildren().isEmpty());
+				}
+			}
+		});
 
 		rootLayout.addComponent(treeElementLabel);
 		rootLayout.addComponent(operator);
@@ -60,6 +85,8 @@ public class WindowTokenOperationAnswer extends WindowAcceptCancel {
 		rootLayout.setComponentAlignment(treeElementLabel, Alignment.MIDDLE_CENTER);
 		rootLayout.setComponentAlignment(operator, Alignment.MIDDLE_CENTER);
 		rootLayout.setComponentAlignment(answer, Alignment.MIDDLE_CENTER);
+
+		rootLayout.setExpandRatio(answer, 1.00f);
 
 		return rootLayout;
 	}
@@ -88,11 +115,7 @@ public class WindowTokenOperationAnswer extends WindowAcceptCancel {
 	}
 
 	private void addAnswerElement(Answer answerElement) {
-		answer.addItem(answerElement);
-		answer.setItemCaption(answerElement, answerElement.getPathAnswerValue());
-		for (TreeObject child : answerElement.getChildren()) {
-			addAnswerElement((Answer) child);
-		}
+		answer.loadTreeObject(answerElement, null);
 	}
 
 	private void addTokenType(TokenTypes type) {
