@@ -32,7 +32,6 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
-import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
@@ -223,7 +222,7 @@ public class FlowEditor extends SecuredWebPage {
 				f.addContainerFilter(originFilter);
 			}
 		});
-		tableFilterDestiny = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
+		tableFilterDestiny = new SearchFormElementField(Form.class, Category.class, Group.class, BaseQuestion.class);
 		tableFilterDestiny.setCaption(LanguageCodes.CAPTION_FILTER_DESTINY.translation());
 		tableFilterDestiny.addValueChangeListener(new SearchFormElementChanged() {
 
