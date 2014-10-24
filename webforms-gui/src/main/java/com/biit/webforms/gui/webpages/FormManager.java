@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.form.interfaces.IBaseFormView;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -197,7 +196,7 @@ public class FormManager extends SecuredWebPage {
 	 * Opens window to link form with abcd form and version.
 	 */
 	protected void linkAbcdForm() {
-		final Form form = (Form)formTable.getForm();
+		final Form form = (Form) formTable.getForm();
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
 		for (SimpleFormView simpleFormView : UserSessionHandler.getController().getSimpleFormDaoAbcd().getAll()) {
 			linkAbcdForm.add(simpleFormView);
@@ -208,12 +207,12 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				WindowLinkAbcdForm linkWindow = (WindowLinkAbcdForm) window;
-				
+
 				form.setLinkedForms(linkWindow.getValue());
 				UserSessionHandler.getController().saveForm(form);
 				formTable.refreshTableData();
 				formTable.setValue(form);
-				
+
 				window.close();
 			}
 		});

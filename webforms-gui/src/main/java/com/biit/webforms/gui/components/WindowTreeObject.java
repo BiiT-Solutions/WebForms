@@ -9,6 +9,8 @@ import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.ui.Component;
 
 /**
@@ -23,6 +25,7 @@ public class WindowTreeObject extends WindowAcceptCancel {
 	private static final String width = "640px";
 	private static final String height = "480px";
 	private TableTreeObjectLabel formTable;
+	private TableWithSearch tableWithSearch;
 	private Class<?>[] selectFilters;
 
 	public WindowTreeObject(ILanguageCode code, Form form, Class<?>... loadfilter) {
@@ -35,6 +38,14 @@ public class WindowTreeObject extends WindowAcceptCancel {
 		setModal(true);
 		setWidth(width);
 		setHeight(height);
+		addFocusListener(new FocusListener() {
+			private static final long serialVersionUID = 8456604937045435061L;
+
+			@Override
+			public void focus(FocusEvent event) {
+				tableWithSearch.focus();
+			}
+		});
 	}
 
 	private Component generateContent(Form form, Class<?>... loadFilter) {
@@ -51,7 +62,7 @@ public class WindowTreeObject extends WindowAcceptCancel {
 			}
 		});
 
-		TableWithSearch tableWithSearch = new TableWithSearch(formTable, new FilterTreeObjectTableContainsNameLabel());
+		tableWithSearch = new TableWithSearch(formTable, new FilterTreeObjectTableContainsNameLabel());
 		tableWithSearch.setSizeFull();
 
 		return tableWithSearch;
@@ -104,4 +115,10 @@ public class WindowTreeObject extends WindowAcceptCancel {
 		formTable.setValue(value);
 	}
 
+	@Override
+	public void showCentered() {
+		super.showCentered();
+		focus();
+
+	}
 }

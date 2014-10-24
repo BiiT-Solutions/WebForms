@@ -41,7 +41,7 @@ public class TableWithSearch extends CustomComponent {
 
 	private void configureRootLayout(boolean captionAtLeft) {
 		rootLayout.removeAllComponents();
-		
+
 		searchField = new TextField();
 		searchField.setWidth(FULL);
 		searchField.addTextChangeListener(new TextChangeListener() {
@@ -61,14 +61,14 @@ public class TableWithSearch extends CustomComponent {
 			HorizontalLayout fieldWithCaptionAtLeft = new HorizontalLayout();
 			fieldWithCaptionAtLeft.setWidth(FULL);
 			fieldWithCaptionAtLeft.setSpacing(true);
-			
+
 			Label captionLabel = new Label(LanguageCodes.CAPTION_SEARCH.translation());
 			captionLabel.setWidth(null);
-			
+
 			fieldWithCaptionAtLeft.addComponent(captionLabel);
 			fieldWithCaptionAtLeft.addComponent(searchField);
 			fieldWithCaptionAtLeft.setExpandRatio(searchField, 1.0f);
-			
+
 			rootLayout.addComponent(fieldWithCaptionAtLeft);
 		} else {
 			searchField.setCaption(LanguageCodes.CAPTION_SEARCH.translation());
@@ -95,4 +95,7 @@ public class TableWithSearch extends CustomComponent {
 		return table;
 	}
 
+	public void focus() {
+		searchField.focus();
+	}
 }
