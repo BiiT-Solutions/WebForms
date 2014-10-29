@@ -3,11 +3,13 @@
 	<test name="AbcdTest" enabled="true" preserve-order="true">
 		<groups>
 			<run>
-				
+				<include name="testDomain" />
+				<include name="testFlowDomain" />
 			</run>
 		</groups>
 		<classes>
-			
+			<class name="com.biit.webforms.utils.math.domain.TestDomain" />
+			<class name="com.biit.webforms.utils.math.domain.TestFlowDomain" />
 		</classes>
 	</test>
 </suite>

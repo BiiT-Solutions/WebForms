@@ -168,6 +168,26 @@ public class Form extends BaseForm {
 	public Set<Flow> getFlows() {
 		return rules;
 	}
+	
+	public Set<Flow> getFlowsFrom(BaseQuestion from){
+		Set<Flow> flows = new HashSet<Flow>();
+		for(Flow flow: getFlows()){
+			if(from!=null && from.equals(flow.getOrigin())){
+				flows.add(flow);
+			}
+		}
+		return flows;
+	}
+	
+	public Set<Flow> getFlowTo(BaseQuestion to){
+		Set<Flow> flows = new HashSet<Flow>();
+		for(Flow flow: getFlows()){
+			if(to!=null && flow.getDestiny()!=null && to.equals(flow.getDestiny())){
+				flows.add(flow);
+			}
+		}
+		return flows;
+	}
 
 	public void setRules(Set<Flow> rules) {
 		this.rules.clear();

@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -210,5 +211,33 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 			representation = "<" + parents.get(i).getName() + ">" + representation;
 		}
 		return representation;
+	}
+
+	public LinkedHashSet<Answer> getFinalAnswers() {
+		LinkedHashSet<TreeObject> childAnswers = getAllChildrenInHierarchy(Answer.class);
+		LinkedHashSet<Answer> finalAnswers = new LinkedHashSet<>();
+		for (TreeObject childAnswer : childAnswers) {
+			Answer answer = (Answer) childAnswer;
+			if (answer.getChildren() == null || answer.getChildren().isEmpty()) {
+				finalAnswers.add(answer);
+			}
+		}
+		return finalAnswers;
+	}
+
+	/**
+	 * Returns the answer with value == @answerValue otherwise returns null.
+	 * 
+	 * @param answerValue
+	 * @return
+	 */
+	public Answer getAnswer(String answerValue) {
+		LinkedHashSet<Answer> answers = getFinalAnswers();
+		for (Answer answer : answers) {
+			if (answer.getValue().equals(answerValue)) {
+				return answer;
+			}
+		}
+		return null;
 	}
 }

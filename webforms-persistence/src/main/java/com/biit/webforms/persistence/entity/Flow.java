@@ -273,4 +273,18 @@ public class Flow extends StorableObject {
 			token.resetIds();
 		}
 	}
+	
+	@Override
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(origin.getName());
+		sb.append("->");
+		if(flowType== FlowType.END_FORM){
+			sb.append("END_FORM");
+		}else{
+			sb.append(destiny.getName());
+		}
+		sb.append(condition);
+		return sb.toString();
+	}
 }

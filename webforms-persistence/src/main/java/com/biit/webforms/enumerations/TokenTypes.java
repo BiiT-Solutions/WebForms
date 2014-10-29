@@ -2,7 +2,7 @@ package com.biit.webforms.enumerations;
 
 import java.util.regex.Pattern;
 
-import com.biit.webforms.condition.parser.ITokenType;
+import com.biit.webforms.utils.parser.ITokenType;
 
 public enum TokenTypes implements ITokenType {
 
@@ -69,5 +69,14 @@ public enum TokenTypes implements ITokenType {
 	@Override
 	public String toString() {
 		return stringForm;
+	}
+	
+	public static TokenTypes fromString(String string){
+		for(TokenTypes value: values()){
+			if(value.stringForm.equals(string)){
+				return value;
+			}
+		}
+		return null;
 	}
 }
