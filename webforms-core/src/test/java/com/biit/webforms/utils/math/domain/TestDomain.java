@@ -62,10 +62,10 @@ public class TestDomain {
 		testDomainABC.addValue(answerB);
 		testDomainABC.addValue(answerC);
 		
-		Assert.assertTrue(testDomainA.join(testDomainBCD).isComplete());
+		Assert.assertTrue(testDomainA.union(testDomainBCD).isComplete());
 		Assert.assertTrue(testDomainA.intersect(testDomainBCD).isEmpty());
-		Assert.assertFalse(testDomainA.join(testDomainABC).isComplete());
-		Assert.assertTrue(testDomainA.join(testDomainABC).getValue().size()==3);
+		Assert.assertFalse(testDomainA.union(testDomainABC).isComplete());
+		Assert.assertTrue(testDomainA.union(testDomainABC).getValue().size()==3);
 		Assert.assertFalse(testDomainA.intersect(testDomainABC).isEmpty());
 		Assert.assertTrue(testDomainA.intersect(testDomainABC).getValue().size()==1);
 	}

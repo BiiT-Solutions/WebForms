@@ -17,10 +17,10 @@ public class DiscreteSet<T> {
 	public DiscreteSet() {
 		domainMembers = new HashSet<>();
 	}
-	
+
 	@SafeVarargs
-	public final void add(T ... elements){
-		for(T element: elements){
+	public final void add(T... elements) {
+		for (T element : elements) {
 			domainMembers.add(element);
 		}
 	}
@@ -30,10 +30,13 @@ public class DiscreteSet<T> {
 	}
 
 	public DiscreteSet<T> union(DiscreteSet<T> domain) {
-		DiscreteSet<T> unionDomain = new DiscreteSet<T>();
-		Set<T> members = domain.getDomainMembers();
+		return union(domain.getDomainMembers());
+	}
 
-		for (T member : members) {
+	public DiscreteSet<T> union(Set<T> domain) {
+		DiscreteSet<T> unionDomain = new DiscreteSet<T>();
+
+		for (T member : domain) {
 			unionDomain.add(member);
 		}
 		for (T member : domainMembers) {
@@ -44,16 +47,40 @@ public class DiscreteSet<T> {
 	}
 
 	public DiscreteSet<T> intersection(DiscreteSet<T> domain) {
-		DiscreteSet<T> intersectionDomain = new DiscreteSet<T>();
-		Set<T> members = domain.getDomainMembers();
+		return intersection(domain.getDomainMembers());
+	}
 
-		for (T member : members) {
+	public DiscreteSet<T> intersection(Set<T> domain) {
+		DiscreteSet<T> intersectionDomain = new DiscreteSet<T>();
+
+		for (T member : domain) {
 			if (contains(member)) {
 				intersectionDomain.add(member);
 			}
 		}
 
 		return intersectionDomain;
+	}
+
+	public DiscreteSet<T> difference(DiscreteSet<T> set) {
+		return difference(set.getDomainMembers());
+	}
+
+	public DiscreteSet<T> difference(Set<T> elements) {
+		DiscreteSet<T> differenceSet = new DiscreteSet<T>();
+
+		for (T element : elements) {
+			if (!contains(element)) {
+				differenceSet.add(element);
+			}
+		}
+		for (T element : domainMembers) {
+			if (!elements.contains(element)) {
+				differenceSet.add(element);
+			}
+		}
+
+		return differenceSet;
 	}
 
 	public Set<T> getDomainMembers() {
@@ -87,16 +114,16 @@ public class DiscreteSet<T> {
 	}
 
 	@Override
-	public String toString(){
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		Iterator<T> itr = domainMembers.iterator();
-		while(itr.hasNext()){
+		while (itr.hasNext()) {
 			T next = itr.next();
 			sb.append("{");
 			sb.append(next.toString());
 			sb.append("}");
-			if(itr.hasNext()){
+			if (itr.hasNext()) {
 				sb.append(",");
 			}
 		}
@@ -107,5 +134,5 @@ public class DiscreteSet<T> {
 	public boolean isEmpty() {
 		return domainMembers.isEmpty();
 	}
-	
+
 }

@@ -53,6 +53,43 @@ public class FormTestUtilities {
 		return form;
 	}
 
+	/**
+	 * Generates a form test similar to the first one except this one has one
+	 * others missing causing a situation of incomplete logic.
+	 * 
+	 * @return
+	 * @throws FieldTooLongException
+	 * @throws NotValidChildException
+	 * @throws CharacterNotAllowedException
+	 * @throws BadFlowContentException
+	 * @throws FlowWithoutSource
+	 * @throws FlowSameOriginAndDestinyException
+	 * @throws FlowDestinyIsBeforeOrigin
+	 * @throws FlowWithoutDestiny
+	 */
+	public static Form createFormTest2() throws FieldTooLongException, NotValidChildException,
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+		// Structure
+		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
+		Question qu2 = createQuestionAnswer("qu2", "d", "e");
+		Question qu3 = createQuestionAnswer("qu3", "f", "g");
+
+		Category cat1 = createCategory("cat1", qu1, qu2, qu3);
+		Form form = createForm("test1", cat1);
+
+		// Flow
+		Flow flow1 = createNormalFlow(qu1, qu2, false, token(qu1, "==", "a"));
+		Flow flow3 = createNormalFlow(qu2, qu3, false, token(qu2, "==", "d"));
+		Flow flow4 = createEndFlow(qu2, true);
+
+		form.addFlow(flow1);
+		form.addFlow(flow3);
+		form.addFlow(flow4);
+
+		return form;
+	}
+
 	public static Form createForm(String name, Category... categories) throws FieldTooLongException,
 			NotValidChildException {
 		Form form = new Form();
@@ -88,7 +125,7 @@ public class FormTestUtilities {
 		return question;
 	}
 
-	public static Flow createNormalFlow(BaseQuestion origin, BaseQuestion destiny, boolean others, Token ... tokens)
+	public static Flow createNormalFlow(BaseQuestion origin, BaseQuestion destiny, boolean others, Token... tokens)
 			throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException,
 			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
 		List<Token> condition = new ArrayList<Token>();
@@ -98,7 +135,7 @@ public class FormTestUtilities {
 		return flow;
 	}
 
-	public static Flow createEndFlow(BaseQuestion origin, boolean others, Token ... tokens)
+	public static Flow createEndFlow(BaseQuestion origin, boolean others, Token... tokens)
 			throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException,
 			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
 		List<Token> condition = new ArrayList<Token>();
@@ -119,4 +156,5 @@ public class FormTestUtilities {
 	public static Token token(Question question, String type, String answer) {
 		return TokenComparationAnswer.getToken(question, TokenTypes.fromString(type), question.getAnswer(answer));
 	}
+
 }

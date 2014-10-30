@@ -4,20 +4,30 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 
 public class QuestionAnswerDomain {
 
 	private final Question question;
 	private final DiscreteSet<Answer> completeDomain;
-	private final DiscreteSet<Answer> value;
+	private DiscreteSet<Answer> value;
 
 	public QuestionAnswerDomain(Question question) {
 		this.question = question;
 		this.completeDomain = new DiscreteSet<>();
 		this.value = new DiscreteSet<>();
 		initializeCompleteDomain(question);
+	}
+
+	public QuestionAnswerDomain(TokenComparationAnswer tokenQuestionAnswer) {
+		this.question = tokenQuestionAnswer.getQuestion();
+		this.completeDomain = new DiscreteSet<>();
+		this.value = new DiscreteSet<>();
+		initializeCompleteDomain(question);
+		setValue(tokenQuestionAnswer);
 	}
 
 	private void initializeCompleteDomain(Question question) {
@@ -34,6 +44,23 @@ public class QuestionAnswerDomain {
 
 	public void addValue(Answer answer) {
 		value.add(answer);
+	}
+
+	public void setValue(DiscreteSet<Answer> value) {
+		this.value = value;
+	}
+
+	private void setValue(TokenComparationAnswer tokenQuestionAnswer) {
+		if (tokenQuestionAnswer.getType() == TokenTypes.EQ) {
+			// EQ
+			addValue(tokenQuestionAnswer.getAnswer());
+		} else {
+			// NE
+			Set<Answer> answers = new HashSet<>();
+			answers.add(tokenQuestionAnswer.getAnswer());
+
+			setValue(completeDomain.difference(answers));
+		}
 	}
 
 	public Set<Answer> getValue() {
@@ -96,7 +123,7 @@ public class QuestionAnswerDomain {
 	 * @param domain
 	 * @return
 	 */
-	public QuestionAnswerDomain join(QuestionAnswerDomain domain) {
+	public QuestionAnswerDomain union(QuestionAnswerDomain domain) {
 		QuestionAnswerDomain newDomain = new QuestionAnswerDomain(question);
 
 		for (Answer answer : getValue()) {
@@ -132,4 +159,9 @@ public class QuestionAnswerDomain {
 
 		return newDomain;
 	}
+
+	public Question getQuestion() {
+		return question;
+	}
+	
 }
