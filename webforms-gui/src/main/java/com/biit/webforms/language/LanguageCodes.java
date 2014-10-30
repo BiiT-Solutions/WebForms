@@ -290,7 +290,22 @@ public enum LanguageCodes implements ILanguageCode{
 	NULL_VALUE_SEARCH_ORIGIN("null.value.search.origin"),
 	NULL_VALUE_SEARCH_DESTINY("null.value.search.destiny"),
 	
-	ERROR_USER_SERVICE("error.userService"),
+	ERROR_USER_SERVICE("error.userService"), 
+	
+	//Validation
+	CAPTION_COMPLETE_VALIDATION("caption.complete.validation"),
+	CAPTION_VALIDATE_STRUCTURE("caption.validation.structure"),
+	CAPTION_VALIDATE_FLOW("caption.validation.flow"),
+	CAPTION_VALIDATE_ABCD_LINK("caption.validation.abcd.link"),
+	
+	TOOLTIP_COMPLETE_VALIDATION("caption.complete.validation"),
+	TOOLTIP_VALIDATE_STRUCTURE("caption.validation.structure"),
+	TOOLTIP_VALIDATE_FLOW("caption.validation.flow"),
+	TOOLTIP_VALIDATE_ABCD_LINK("caption.validation.abcd.link"), 
+	
+	MESSAGE_VALIDATION_FINISHED_CORRECTLY("message.validation.finished.correctly"), 
+	MESSAGE_VALIDATION_NO_ABCD_FORMS_LINKED("message.validation.no.abcd.forms.linked"), 
+	MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT("message.validation.all.linked.forms.correct"),
 	;
 
 	private String value;

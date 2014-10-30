@@ -68,7 +68,12 @@ public enum ThemeIcons implements IThemeIcon{
 	CONDITION_HELPER_CONTROLS("flow.helper.control.svg"), 
 	
 	FORM_MANAGER_IMPORT_ABCD_FORM("alert.svg"), //TODO
-	FORM_MANAGER_LINK_ABCD_FORM("alert.svg"),  //TODO
+	FORM_MANAGER_LINK_ABCD_FORM("alert.svg"), //TODO
+	
+	COMPLETE_VALIDATION("alert.svg"),//TODO
+	VALIDATE_STRUCTURE("alert.svg"), //TODO
+	VALIDATE_FLOW("alert.svg"), //TODO
+	VALIDATE_ABCD_LINK("alert.svg"),  //TODO
 		
 	;
 	

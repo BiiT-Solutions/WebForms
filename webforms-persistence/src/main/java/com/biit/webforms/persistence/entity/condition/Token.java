@@ -141,4 +141,62 @@ public class Token extends StorableObject {
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		//There are no references to update
 	}
+	
+	public static Token not(){
+		return getToken(TokenTypes.NOT);
+	}
+	
+	public static Token leftPar(){
+		return getToken(TokenTypes.LEFT_PAR);
+	}
+	
+	public static Token rigthPar(){
+		return getToken(TokenTypes.RIGHT_PAR);
+	}
+	
+	public static Token and(){
+		return getToken(TokenTypes.AND);
+	}
+	
+	public static Token or(){
+		return getToken(TokenTypes.OR);
+	}
+	
+	/**
+	 * Returns a copy with the inverse of the current token comparation.
+	 * 
+	 * @return
+	 */
+	public Token inverse() {
+		try {
+			Token copiedToken = generateCopy();	
+			switch (getType()) {
+			case LT:
+				copiedToken.setType(TokenTypes.GE);
+				break;
+			case LE:
+				copiedToken.setType(TokenTypes.GT);
+				break;
+			case GT:
+				copiedToken.setType(TokenTypes.LE);
+				break;
+			case GE:
+				copiedToken.setType(TokenTypes.LT);
+				break;
+			case EQ:
+				copiedToken.setType(TokenTypes.NE);
+				break;
+			case NE:
+				copiedToken.setType(TokenTypes.EQ);
+				break;
+			default:
+				return null;
+			}
+			
+			return copiedToken;
+		} catch (NotValidTokenType e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		return null;
+	}
 }

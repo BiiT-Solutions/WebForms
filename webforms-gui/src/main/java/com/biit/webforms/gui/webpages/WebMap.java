@@ -10,7 +10,9 @@ public enum WebMap {
 	
 	DESIGNER_EDITOR(Designer.class),
 	
-	FLOW_EDITOR(FlowEditor.class);
+	FLOW_EDITOR(FlowEditor.class), 
+	
+	VALIDATION(Validation.class);
 	
 
 	private static WebMap loginPage = WebMap.LOGIN_PAGE;

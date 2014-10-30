@@ -238,17 +238,21 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns the Abcd Form linked to a form or null value if it is not linked
-	 * or the link is wrong.
+	 * Returns the List of Abcd Forms linked to a form or empty list if there
+	 * are no links.
 	 * 
 	 * @param form
 	 * @return
 	 */
-	public com.biit.abcd.persistence.entity.Form getLinkedAbcdForm(Form form) {
-		if (form.getLabel() != null && form.getOrganizationId() != null) {
-			return formDaoAbcd.getForm(form.getLabel(), form.getVersion(), form.getOrganizationId());
+	public List<com.biit.abcd.persistence.entity.Form> getLinkedAbcdForm(Form form) {
+		List<com.biit.abcd.persistence.entity.Form> linkedForms = new ArrayList<>();
+		if (form.getLinkedFormLabel() != null && form.getLinkedFormOrganizationId() != null) {
+			for (Integer version : form.getLinkedFormVersions()) {
+				linkedForms.add(formDaoAbcd.getForm(form.getLinkedFormLabel(), version,
+						form.getLinkedFormOrganizationId()));
+			}
 		}
-		return null;
+		return linkedForms;
 	}
 
 	/**

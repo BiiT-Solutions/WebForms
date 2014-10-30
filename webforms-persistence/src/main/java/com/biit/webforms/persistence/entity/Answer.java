@@ -131,4 +131,12 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 	public String toString(){
 		return getValue();
 	}
+	
+	/**
+	 * A final answer is an answer that doesn't contain childs
+	 * @return
+	 */
+	public boolean isFinalAnswer(){
+		return getChildren().isEmpty();
+	}
 }
