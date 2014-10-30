@@ -22,15 +22,17 @@ public class AllQuestionAnswerValueUseFinalAnswer extends SimpleValidator<Flow> 
 	}
 
 	@Override
-	protected void validateImplementation(Flow flow) {	
-		Iterator<Token> itr =flow.getCondition().iterator();
-		
-		while(itr.hasNext()){
-			Token token = itr.next();
-			if(token instanceof TokenComparationAnswer){
-				assertTrue(((TokenComparationAnswer) token).getAnswer().isFinalAnswer(),new TokenUsesNonFinalAnswer(flow,(TokenComparationAnswer) token));
+	protected void validateImplementation(Flow flow) {
+		if (!flow.isOthers()) {
+			Iterator<Token> itr = flow.getCondition().iterator();
+
+			while (itr.hasNext()) {
+				Token token = itr.next();
+				if (token instanceof TokenComparationAnswer) {
+					assertTrue(((TokenComparationAnswer) token).getAnswer().isFinalAnswer(),
+							new TokenUsesNonFinalAnswer(flow, (TokenComparationAnswer) token));
+				}
 			}
 		}
-		
 	}
 }
