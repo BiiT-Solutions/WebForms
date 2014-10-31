@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 
 public class QuestionValueDomain {
 
@@ -16,6 +17,33 @@ public class QuestionValueDomain {
 		this.question = question;
 		this.completeDomain = new RealRange();
 		this.values = new ArrayList<RealRange>();
+	}
+
+	public QuestionValueDomain(TokenComparationValue token) {
+		this.question = token.getQuestion();
+		this.completeDomain = new RealRange();
+		this.values = generateValues(token);
+	}
+
+	private List<RealRange> generateValues(TokenComparationValue token) {
+		switch (token.getType()) {
+		case EQ:
+			break;
+		case NE:
+			break;
+		case GT:
+			break;
+		case GE:
+			break;
+		case LT:
+			break;
+		case LE:
+			break;
+		default:
+			//Unexpected
+			return null;
+		}
+		return null;
 	}
 
 	public boolean add(RealRange range) {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.utils.math.domain.FlowDomain;
 import com.biit.webforms.utils.parser.Expression;
 import com.biit.webforms.utils.parser.ITokenType;
 
@@ -14,7 +15,7 @@ import com.biit.webforms.utils.parser.ITokenType;
  * @author joriz_000
  * 
  */
-public class BinaryOperator extends Expression {
+public class BinaryOperator extends Expression implements WebformsExpression{
 
 	private Expression left;
 	private TokenTypes type;
@@ -72,6 +73,18 @@ public class BinaryOperator extends Expression {
 		retrieved.addAll(right.getAllTokens(arg0));
 		
 		return retrieved;
+	}
+
+	@Override
+	public FlowDomain getDomain() {
+		FlowDomain leftDomain = ((WebformsExpression)left).getDomain();
+		FlowDomain rightDomain = ((WebformsExpression)right).getDomain();
+		
+		if(type == TokenTypes.AND){
+			return leftDomain.intersection(rightDomain);
+		}else{
+			return leftDomain.union(rightDomain);
+		}
 	}
 
 }

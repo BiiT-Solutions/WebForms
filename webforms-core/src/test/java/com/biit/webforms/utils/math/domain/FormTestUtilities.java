@@ -7,8 +7,11 @@ import java.util.List;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.enumerations.TokenTypes;
@@ -19,11 +22,13 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
 public class FormTestUtilities {
 
@@ -90,6 +95,88 @@ public class FormTestUtilities {
 		return form;
 	}
 
+	public static Form createFormTest3() throws FieldTooLongException, NotValidChildException,
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+		// Structure
+		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
+		Question qu2 = createQuestionAnswer("qu2", "d", "e");
+		Question qu3 = createQuestionAnswer("qu3", "f", "g");
+
+		Category cat1 = createCategory("cat1", qu1, qu2, qu3);
+		Form form = createForm("test1", cat1);
+
+		// Flow
+		Flow flow1 = createNormalFlow(qu1, qu2, false, token(qu1, "==", "a"), or(), token(qu1, "!=", "a"));
+		Flow flow3 = createNormalFlow(qu2, qu3, false, token(qu2, "==", "d"));
+		Flow flow4 = createEndFlow(qu2, true);
+
+		form.addFlow(flow1);
+		form.addFlow(flow3);
+		form.addFlow(flow4);
+
+		return form;
+	}
+
+	public static Form createFormTest4() throws FieldTooLongException, NotValidChildException,
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+
+		// Structure
+		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
+		Question qu2 = createQuestionAnswer("qu2", "d", "e");
+		Question qu3 = createQuestionAnswer("qu3", "f", "g");
+
+		Category cat1 = createCategory("cat1", qu1, qu2, qu3);
+		Form form = createForm("test1", cat1);
+
+		// Flow
+		Flow flow1 = createNormalFlow(qu1, qu2, false, token(qu1, "==", "a"));
+		Flow flow1rep = createNormalFlow(qu1, qu2, false, token(qu1, "==", "a"), or(), token(qu1, "!=", "c"));
+		Flow flow2 = createEndFlow(qu1, true);
+		Flow flow3 = createNormalFlow(qu2, qu3, false, token(qu2, "==", "d"));
+		Flow flow4 = createEndFlow(qu2, true);
+
+		form.addFlow(flow1);
+		form.addFlow(flow1rep);
+		form.addFlow(flow2);
+		form.addFlow(flow3);
+		form.addFlow(flow4);
+
+		return form;
+	}
+
+	public static Form createFormTest5() throws FieldTooLongException, NotValidChildException,
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny,
+			InvalidAnswerFormatException, InvalidAnswerSubformatException {
+
+		// Structure
+		Question qu1 = createQuestionValue("qu1", AnswerFormat.NUMBER, AnswerSubformat.FLOAT);
+		Question qu2 = createQuestionValue("qu2", AnswerFormat.NUMBER, AnswerSubformat.NUMBER);
+		Question qu3 = createQuestionAnswer("qu3", "f", "g");
+
+		Category cat1 = createCategory("cat1", qu1, qu2, qu3);
+		Form form = createForm("test1", cat1);
+
+		// Flow
+		Flow flow1 = createNormalFlow(qu1, qu2, false, token(qu1, "<", AnswerSubformat.FLOAT, "2.0"));
+		Flow flow2 = createEndFlow(qu1, true);
+		Flow flow3 = createNormalFlow(qu2, qu3, false, token(qu2, ">=", AnswerSubformat.NUMBER, "5"));
+		Flow flow4 = createEndFlow(qu2, true);
+
+		form.addFlow(flow1);
+		form.addFlow(flow2);
+		form.addFlow(flow3);
+		form.addFlow(flow4);
+
+		return form;
+	}
+
+	private static Token or() {
+		return Token.or();
+	}
+
 	public static Form createForm(String name, Category... categories) throws FieldTooLongException,
 			NotValidChildException {
 		Form form = new Form();
@@ -125,6 +212,16 @@ public class FormTestUtilities {
 		return question;
 	}
 
+	public static Question createQuestionValue(String name, AnswerFormat answerFormat, AnswerSubformat answerSubformat)
+			throws FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
+			InvalidAnswerSubformatException {
+		Question question = new Question(name);
+		question.setAnswerType(AnswerType.INPUT);
+		question.setAnswerFormat(answerFormat);
+		question.setAnswerSubformat(answerSubformat);
+		return question;
+	}
+
 	public static Flow createNormalFlow(BaseQuestion origin, BaseQuestion destiny, boolean others, Token... tokens)
 			throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException,
 			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
@@ -155,6 +252,10 @@ public class FormTestUtilities {
 
 	public static Token token(Question question, String type, String answer) {
 		return TokenComparationAnswer.getToken(question, TokenTypes.fromString(type), question.getAnswer(answer));
+	}
+
+	public static Token token(Question question, String type, AnswerSubformat subformat, String value) {
+		return TokenComparationValue.getToken(TokenTypes.fromString(type), question, subformat, value);
 	}
 
 }

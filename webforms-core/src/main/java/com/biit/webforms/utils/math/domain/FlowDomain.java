@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.biit.form.BaseQuestion;
 import com.biit.webforms.condition.parser.WebformsParser;
-import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.condition.parser.expressions.WebformsExpression;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
@@ -24,23 +24,27 @@ import com.biit.webforms.utils.parser.exceptions.ParseException;
 public class FlowDomain {
 
 	private final HashMap<BaseQuestion, QuestionAnswerDomain> dominions;
-	
-	public FlowDomain(){
+
+	public FlowDomain() {
 		dominions = new HashMap<>();
 	}
 
-	public FlowDomain(Flow flow) throws BadFormedExpressions {
-		dominions = new HashMap<>();
-		
-		WebformsParser parser = new WebformsParser(flow.getCondition().iterator());
+	public static FlowDomain flowDomain(Flow flow) throws BadFormedExpressions {
+
 		try {
+			WebformsParser parser = new WebformsParser(flow.getCondition().iterator());
 			Expression expression = parser.parseExpression();
-			initializeDomain(expression.flatten());
+			if (expression == null) {
+				return new FlowDomain();
+			}
+
+			return ((WebformsExpression) expression).getDomain();
+
 		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException | IncompleteBinaryOperatorException
 				| MissingParenthesisException | EmptyParenthesisException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			throw new BadFormedExpressions();
 		}
+
 	}
 
 	private void initializeDomain(Expression expression) {
@@ -55,11 +59,11 @@ public class FlowDomain {
 		// TODO Auto-generated method stub
 		System.out.println("Answer: " + tokensQuestionAnswer);
 		for (Token token : tokensQuestionAnswer) {
-			TokenComparationAnswer tokenQuestionAnswer= (TokenComparationAnswer) token;
-			
+			TokenComparationAnswer tokenQuestionAnswer = (TokenComparationAnswer) token;
+
 			QuestionAnswerDomain domain = new QuestionAnswerDomain(tokenQuestionAnswer);
 			dominions.put(tokenQuestionAnswer.getQuestion(), domain);
-			
+
 			System.out.println("Domain: " + domain);
 		}
 	}
@@ -69,43 +73,99 @@ public class FlowDomain {
 		System.out.println("Values: " + tokenQuestionValue);
 	}
 
-	public boolean isComplete(){
-		for(QuestionAnswerDomain dominion: dominions.values()){
-			if(!dominion.isComplete()){
+	public boolean isComplete() {
+		for (QuestionAnswerDomain dominion : dominions.values()) {
+			if (!dominion.isComplete()) {
 				return false;
 			}
 		}
 		return true;
 	}
-	
-	public void put(QuestionAnswerDomain domain){
+
+	public boolean isEmpty() {
+		return dominions.isEmpty();
+	}
+
+	public void put(QuestionAnswerDomain domain) {
 		dominions.put(domain.getQuestion(), domain);
+	}
+
+	public void put(Token token) {
+		if (token instanceof TokenComparationAnswer) {
+			put(new QuestionAnswerDomain((TokenComparationAnswer) token));
+			return;
+		}
+		if (token instanceof TokenComparationValue) {
+			new QuestionValueDomain((TokenComparationValue) token);
+			// TODO
+			System.out.println("Not implemented");
+			return;
+		}
 	}
 
 	public FlowDomain union(FlowDomain flowDomain) {
 		FlowDomain union = new FlowDomain();
-		
+
 		Set<BaseQuestion> questions = new HashSet<>();
 		questions.addAll(getAllQuestions());
 		questions.addAll(flowDomain.getAllQuestions());
-		
-		for(BaseQuestion question: questions){
-			
+
+		for (BaseQuestion question : questions) {
+
 			QuestionAnswerDomain domainA = dominions.get(question);
 			QuestionAnswerDomain domainB = flowDomain.dominions.get(question);
-			
-			if(domainA == null){
+
+			if (domainA == null) {
 				domainA = new QuestionAnswerDomain(domainB.getQuestion());
 			}
-			if(domainB == null){
+			if (domainB == null) {
 				domainB = new QuestionAnswerDomain(domainA.getQuestion());
 			}
 			union.put(domainA.union(domainB));
 		}
-		return union;		
+		return union;
 	}
 
 	private Set<BaseQuestion> getAllQuestions() {
 		return dominions.keySet();
+	}
+
+	public FlowDomain intersection(FlowDomain flowDomain) {
+		FlowDomain intersection = new FlowDomain();
+
+		Set<BaseQuestion> questions = new HashSet<>();
+		questions.addAll(getAllQuestions());
+		questions.addAll(flowDomain.getAllQuestions());
+
+		for (BaseQuestion question : questions) {
+
+			QuestionAnswerDomain domainA = dominions.get(question);
+			QuestionAnswerDomain domainB = flowDomain.dominions.get(question);
+
+			// TODO check if this holds true.
+
+			if (domainA != null && domainB != null) {
+				QuestionAnswerDomain domainIntersection = domainA.intersect(domainB);
+				if (!domainIntersection.isEmpty()) {
+					intersection.put(domainIntersection);
+				}
+			}
+		}
+		return intersection;
+	}
+
+	public FlowDomain inverse() {
+		FlowDomain inverse = new FlowDomain();
+
+		for (QuestionAnswerDomain domain : dominions.values()) {
+			inverse.put(domain.inverse());
+		}
+
+		return inverse;
+	}
+
+	@Override
+	public String toString() {
+		return "FlowDomain: " + dominions.values().toString();
 	}
 }
