@@ -12,6 +12,14 @@ public class WebformsConfigurationReader {
 
 	private static final String DEFAULT_REGEX_EMAIL = "[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]+(\\.[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]|[a-zA-Z!#$%&'*+\\-/=?^_`{|}~])*@[a-zA-Z0-9](\\.[a-zA-Z0-9-]|[a-zA-Z0-9-])*[a-zA-Z0-9]";
 
+	private static final String REGEX_AMOUNT = "regexAmount";
+
+	private static final String DEFAULT_REGEX_AMOUNT = "[0-9]+\\.[0-9]*€";
+
+	private static final String REGEX_DATE_BIRTHDAY = "regexDateBirthday";
+
+	private static final String DEFAULT_REGEX_BIRTHDAY = "([0-9]{1,2}[-/]){1,2}[0-9]{4}";
+
 	private final String DATABASE_CONFIG_FILE = "settings.conf";
 
 	private final String GRAPHVIZ_TAG = "graphvizBinPath";
@@ -82,6 +90,10 @@ public class WebformsConfigurationReader {
 
 	private String issueManagerUrl;
 
+	private String regexAmount;
+
+	private String regexDateBirthday;
+
 	private static WebformsConfigurationReader instance;
 
 	private WebformsConfigurationReader() {
@@ -118,6 +130,8 @@ public class WebformsConfigurationReader {
 			regexDatePeriod = prop.getProperty(REGEX_DATE_PERIOD, DEFAULT_REGEX_DATE_PERIOD);
 			regexNumber = prop.getProperty(REGEX_NUMBER, DEFAULT_REGEX_NUMBER);
 			regexFloat = prop.getProperty(REGEX_FLOAT, DEFAULT_REGEX_FLOAT);
+			regexAmount = prop.getProperty(REGEX_AMOUNT, DEFAULT_REGEX_AMOUNT);
+			regexDateBirthday = prop.getProperty(REGEX_DATE_BIRTHDAY, DEFAULT_REGEX_BIRTHDAY);
 			issueManagerUrl = prop.getProperty(ISSUE_MANAGER_URL, DEFAULT_ISSUE_MANAGER_URL);
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -170,6 +184,14 @@ public class WebformsConfigurationReader {
 
 	public String getIssueManagerUrl() {
 		return issueManagerUrl;
+	}
+
+	public String getRegexAmount() {
+		return regexAmount;
+	}
+
+	public String getRegexDateBirthday() {
+		return regexDateBirthday;
 	}
 
 }

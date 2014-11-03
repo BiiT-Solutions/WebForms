@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.webpages;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
+import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
@@ -32,11 +34,14 @@ import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
+import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.utils.GraphvizApp;
+import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.liferay.portal.model.Organization;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -93,6 +98,14 @@ public class FormManager extends SecuredWebPage {
 				openNewFormWindow();
 			}
 		});
+		upperMenu.addFinishListener(new ClickListener() {
+			private static final long serialVersionUID = 8869180038869702710L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				finishForm();
+			}
+		});
 		upperMenu.addNewFormVersionListener(new ClickListener() {
 			private static final long serialVersionUID = 2014729211949601816L;
 
@@ -107,6 +120,14 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				importAbcdForm();
+			}
+		});
+		upperMenu.addLinkAbcdForm(new ClickListener() {
+			private static final long serialVersionUID = 2864457152577148777L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				linkAbcdForm();
 			}
 		});
 		upperMenu.addExportPdf(new ClickListener() {
@@ -132,7 +153,70 @@ public class FormManager extends SecuredWebPage {
 				downloader.showCentered();
 			}
 		});
+		upperMenu.addExportFlowPdfListener(new ClickListener() {
+			private static final long serialVersionUID = -1790801212813909643L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
+
+					@Override
+					public InputStream getInputStream() {
+						try {
+							return new ByteArrayInputStream(GraphvizApp.generateImage((Form) formTable.getValue(),
+									null, ImgType.PDF));
+						} catch (IOException | InterruptedException e) {
+							WebformsLogger.errorMessage(this.getClass().getName(), e);
+							return null;
+						}
+					}
+				});
+				window.setIndeterminate(true);
+				window.setFilename(((Form) formTable.getValue()).getLabel() + ".pdf");
+				window.showCentered();
+			}
+		});
 		return upperMenu;
+	}
+
+	protected void finishForm() {
+		final Form form = (Form) formTable.getForm();
+		new WindowProceedAction(LanguageCodes.TEXT_PROCEED_FORM_CLOSE, new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				UserSessionHandler.getController().finishForm(form);
+				formTable.refreshTableData();
+				formTable.setValue(form);
+			}
+		});
+	}
+
+	/**
+	 * Opens window to link form with abcd form and version.
+	 */
+	protected void linkAbcdForm() {
+		final Form form = (Form) formTable.getForm();
+		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
+		for (SimpleFormView simpleFormView : UserSessionHandler.getController().getSimpleFormDaoAbcd().getAll()) {
+			linkAbcdForm.add(simpleFormView);
+		}
+		linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleAbcdForms(form));
+		linkAbcdForm.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				WindowLinkAbcdForm linkWindow = (WindowLinkAbcdForm) window;
+
+				form.setLinkedForms(linkWindow.getValue());
+				UserSessionHandler.getController().saveForm(form);
+				formTable.refreshTableData();
+				formTable.setValue(form);
+
+				window.close();
+			}
+		});
+		linkAbcdForm.showCentered();
 	}
 
 	protected void importAbcdForm() {
@@ -202,6 +286,7 @@ public class FormManager extends SecuredWebPage {
 
 			newForm = UserSessionHandler.getController().createNewFormVersion(currentForm);
 			addFormToTable(newForm);
+			formTable.defaultSort();
 		} catch (NotValidStorableObjectException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 		} catch (NewVersionWithoutFinalDesignException e) {
@@ -293,10 +378,16 @@ public class FormManager extends SecuredWebPage {
 					UserSessionHandler.getUser(), WebformsActivity.FORM_EDITING);
 			boolean canCreateNewVersion = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
 					UserSessionHandler.getUser(), selectedForm, WebformsActivity.FORM_NEW_VERSION);
+			boolean canLinkVersion = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+					UserSessionHandler.getUser(), selectedForm, WebformsActivity.FORM_EDITING);
 
+			upperMenu.setEnabled(true);
 			upperMenu.getNewForm().setEnabled(canCreateForms);
+			upperMenu.getFinish().setEnabled(rowNotNullAndForm && canCreateForms);
 			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion);
+			upperMenu.getLinkAbcdForm().setEnabled(rowNotNullAndForm && canLinkVersion);
 			upperMenu.getExportPdf().setEnabled(rowNotNullAndForm);
+			upperMenu.getExportFlowPdf().setEnabled(rowNotNullAndForm);
 
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);
@@ -306,8 +397,7 @@ public class FormManager extends SecuredWebPage {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			// failsafe, disable everything.
-			upperMenu.getNewFormVersion().setEnabled(false);
-			upperMenu.getExportPdf().setEnabled(false);
+			upperMenu.setEnabled(false);
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(false);
 			bottomMenu.getEditFlowButton().setEnabled(false);

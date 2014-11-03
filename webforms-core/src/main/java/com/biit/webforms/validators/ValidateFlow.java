@@ -9,6 +9,7 @@ public class ValidateFlow extends CompositeValidator<Flow> {
 		super(Flow.class);
 		add(NoFlowBackwardValidator.class);
 		add(NoFlowFromOptionalElementValidator.class);
+		add(AllQuestionAnswerValueUseFinalAnswer.class);
 	}
 
 }

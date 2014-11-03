@@ -1,0 +1,170 @@
+package com.biit.webforms.gui.webpages;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import com.biit.abcd.persistence.entity.Form;
+import com.biit.form.validators.ValidateBaseForm;
+import com.biit.liferay.security.IActivity;
+import com.biit.utils.validation.ValidateReport;
+import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.authentication.WebformsActivity;
+import com.biit.webforms.gui.common.components.SecuredWebPage;
+import com.biit.webforms.gui.components.FormEditBottomMenu;
+import com.biit.webforms.gui.webpages.validation.ValidationUpperMenu;
+import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
+import com.biit.webforms.validators.ValidateFormComplete;
+import com.biit.webforms.validators.ValidateFormFlows;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.VerticalLayout;
+
+public class Validation extends SecuredWebPage {
+	private static final long serialVersionUID = 3991819645036921442L;
+	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
+			Arrays.asList(WebformsActivity.READ));
+
+	private ValidationUpperMenu upperMenu;
+	private TextArea textArea;
+
+	@Override
+	protected void initContent() {
+
+		setCentralPanelAsWorkingArea();
+		upperMenu = createUpperMenu();
+		setUpperMenu(upperMenu);
+		setBottomMenu(new FormEditBottomMenu());
+
+		VerticalLayout rootLayout = new VerticalLayout();
+		rootLayout.setSizeFull();
+		rootLayout.setMargin(true);
+
+		textArea = new TextArea();
+		textArea.setSizeFull();
+
+		rootLayout.addComponent(textArea);
+		getWorkingArea().addComponent(rootLayout);
+	}
+
+	private ValidationUpperMenu createUpperMenu() {
+		ValidationUpperMenu upperMenu = new ValidationUpperMenu();
+
+		upperMenu.addCompleteValidationListener(new ClickListener() {
+			private static final long serialVersionUID = -3292908759875065150L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				completeValidation();
+			}
+		});
+		upperMenu.addValidateStructureValidationListener(new ClickListener() {
+			private static final long serialVersionUID = 1689353001966500222L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				validateStructure();
+			}
+		});
+		upperMenu.addValidateFlowListener(new ClickListener() {
+			private static final long serialVersionUID = -3892060791990799778L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				validateFlow();
+			}
+		});
+		upperMenu.addValidateAbcdLinkListener(new ClickListener() {
+			private static final long serialVersionUID = 6979359279501389211L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				validateAbcdLink();
+			}
+		});
+
+		return upperMenu;
+	}
+
+	protected void validateAbcdLink() {
+		List<Form> linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
+				UserSessionHandler.getController().getFormInUse());
+		if (linkedForms.isEmpty()) {
+			setNoLinkedFormsMessage();
+		} else {
+			ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(UserSessionHandler
+					.getController().getFormInUse());
+			ValidateReport report = new ValidateReport();
+			validator.validate(linkedForms, report);
+			if (report.isValid()) {
+				setLinkedFormsCorrectMessage();
+			} else {
+				setValidationReport(report);
+			}
+		}
+	}
+
+	protected void validateFlow() {
+		ValidateFormFlows validator = new ValidateFormFlows();
+		ValidateReport report = new ValidateReport();
+		validator.validate(UserSessionHandler.getController().getFormInUse(), report);
+		if (report.isValid()) {
+			setValidationPassedMessage();
+		} else {
+			setValidationReport(report);
+		}
+	}
+
+	protected void validateStructure() {
+		ValidateBaseForm validator = new ValidateBaseForm();
+		ValidateReport report = new ValidateReport();
+		validator.validate(UserSessionHandler.getController().getFormInUse(), report);
+		if (report.isValid()) {
+			setValidationPassedMessage();
+		} else {
+			setValidationReport(report);
+		}
+	}
+
+	protected void completeValidation() {
+		ValidateFormComplete validator = new ValidateFormComplete();
+		ValidateReport report = new ValidateReport();
+		validator.validate(UserSessionHandler.getController().getFormInUse(), report);
+
+		List<Form> linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
+				UserSessionHandler.getController().getFormInUse());
+		ValidateFormAbcdCompatibility validatorLink = new ValidateFormAbcdCompatibility(UserSessionHandler
+				.getController().getFormInUse());
+		validatorLink.validate(linkedForms, report);
+
+		if (report.isValid()) {
+			setValidationPassedMessage();
+		} else {
+			setValidationReport(report);
+		}
+	}
+
+	private void setValidationReport(ValidateReport report) {
+		textArea.setValue(report.getReport());
+	}
+
+	private void setValidationPassedMessage() {
+		textArea.setValue(LanguageCodes.MESSAGE_VALIDATION_FINISHED_CORRECTLY.translation());
+	}
+
+	private void setNoLinkedFormsMessage() {
+		textArea.setValue(LanguageCodes.MESSAGE_VALIDATION_NO_ABCD_FORMS_LINKED.translation());
+	}
+
+	private void setLinkedFormsCorrectMessage() {
+		textArea.setValue(LanguageCodes.MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT.translation());
+	}
+
+	@Override
+	public List<IActivity> accessAuthorizationsRequired() {
+		return activityPermissions;
+	}
+
+}

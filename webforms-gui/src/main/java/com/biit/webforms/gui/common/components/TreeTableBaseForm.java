@@ -190,14 +190,13 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 			addForm(form);
 		}
 		
-		sort();
+		defaultSort();
 	}
 	
 	/**
 	 * Overriden version of sort for this table. Sorts by name ascendenly and version descendenly.
 	 */
-	@Override
-	public void sort() {
+	public void defaultSort() {
         sort(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION },
                 new boolean[] { true, false });
     }

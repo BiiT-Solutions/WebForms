@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
@@ -11,7 +12,6 @@ import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Question;
 
 public class FilteredForm {
 
@@ -27,7 +27,7 @@ public class FilteredForm {
 		this.originalForm = originalForm;
 		this.filter = filter;
 
-		filteredElements = filter.getAllChildrenInHierarchy(Question.class);
+		filteredElements = filter.getAllChildrenInHierarchy(BaseQuestion.class);
 
 		flows = originalForm.getComputedFlowsView();
 

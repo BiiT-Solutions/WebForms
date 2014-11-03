@@ -48,6 +48,7 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 
 	public Answer(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		super(name);
+		setValue(name);
 		description = new String();
 	}
 
@@ -124,5 +125,18 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 		}else{
 			return getParent().getPathName()+TreeObject.DEFAULT_PATH_SEPARATOR+getValue();
 		}
+	}
+	
+	@Override
+	public String toString(){
+		return getValue();
+	}
+	
+	/**
+	 * A final answer is an answer that doesn't contain childs
+	 * @return
+	 */
+	public boolean isFinalAnswer(){
+		return getChildren().isEmpty();
 	}
 }

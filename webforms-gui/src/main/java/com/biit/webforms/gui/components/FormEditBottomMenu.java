@@ -50,7 +50,15 @@ public class FormEditBottomMenu extends BottomMenu {
 				ApplicationUi.navigateTo(WebMap.FLOW_EDITOR);
 			}
 		});
-		validateForm.setEnabled(false);
+		validateForm.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = -4309381087569767156L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				lockForm();
+				ApplicationUi.navigateTo(WebMap.VALIDATION);
+			}
+		});
 		impactAnalisys.setEnabled(false);
 		
 		addIconButton(editFormButton);

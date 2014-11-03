@@ -3,6 +3,7 @@ package com.biit.webforms.persistence.entity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.BatchSize;
 
+import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
@@ -40,8 +42,9 @@ public class Flow extends StorableObject {
 	private static final String TOKEN_SEPARATOR = " ";
 
 	/*
-	 * Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
-	 * attached to that column, you have to state the name.
+	 * Hibernate changes name of column when you use a many-to-one relationship.
+	 * If you want to add a constraint attached to that column, you have to
+	 * state the name.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "origin_id")
@@ -144,21 +147,19 @@ public class Flow extends StorableObject {
 		}
 	}
 
-	/**
-	 * Returns a string view of the flow. If the flow hasn't been interpreted, we do the parse of the current flow form
-	 * the database string. If has been initialized, then we return the string view from the current Interpretation
-	 * status.
-	 * 
-	 * @return
-	 */
 	public String getConditionString() {
-		String conditionString = new String();
+		StringBuilder sb = new StringBuilder();
 
-		for (Token token : condition) {
-			conditionString += token + TOKEN_SEPARATOR;
+		Iterator<Token> itr= getCondition().iterator();
+		
+		while(itr.hasNext()){
+			sb.append(itr.next());
+			if(itr.hasNext()){
+				sb.append(TOKEN_SEPARATOR);
+			}
 		}
 
-		return conditionString;
+		return sb.toString();
 	}
 
 	@Override
@@ -167,14 +168,12 @@ public class Flow extends StorableObject {
 			copyBasicInfo(object);
 			// Flow elements copy
 			Flow flow = (Flow) object;
-			try {
-				setContent(flow.getOrigin(), flow.getFlowType(), flow.getDestiny(), flow.isOthers(),
-						flow.generateCopyCondition());
-			} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
-					| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
-				// Impossible
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			}
+			// Do not use setContent to avoid checks.
+			this.setOrigin(flow.getOrigin());
+			this.setFlowType(flow.getFlowType());
+			this.setDestiny(flow.getDestiny());
+			this.setOthers(flow.isOthers());
+			this.setCondition(flow.generateCopyCondition());
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
 					+ Flow.class.getName());
@@ -214,9 +213,12 @@ public class Flow extends StorableObject {
 		// Return nothing
 		HashSet<StorableObject> innerStorableObjects = new HashSet<StorableObject>();
 
-		for (Token token : getCondition()) {
-			innerStorableObjects.add(token);
+		if (!isOthers()) {
+			for (Token token : getCondition()) {
+				innerStorableObjects.add(token);
+			}
 		}
+
 		return innerStorableObjects;
 	}
 
@@ -228,8 +230,36 @@ public class Flow extends StorableObject {
 		return form;
 	}
 
-	public List<Token> getCondition() {
-		return condition;
+	public List<Token> getCondition() {		
+		if (isOthers()) {
+			List<Token> otherCondition = new ArrayList<>();
+
+			Iterator<Flow> itr = getForm().getFlowsFrom((BaseQuestion) origin).iterator();
+			//Generate inverse of other flow conditions.
+			
+			while (itr.hasNext()) {
+				Flow flow = itr.next();
+				if (flow.equals(this)) {
+					// This element, pass
+					continue;
+				}
+				if (flow.isOthers()) {
+					// Two others in the same unit of flow is forbidden. This is
+					// to avoid exceptions.
+					return condition;
+				}
+				otherCondition.add(Token.not());
+				otherCondition.add(Token.leftPar());
+				otherCondition.addAll(flow.getCondition());
+				otherCondition.add(Token.rigthPar());
+				if (itr.hasNext()) {
+					otherCondition.add(Token.and());
+				}
+			}
+			return otherCondition;
+		} else {
+			return condition;
+		}
 	}
 
 	protected void setCondition(List<Token> condition) {
@@ -247,8 +277,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * This functions updates references to question and answers If a reference is missing it will throw a
-	 * {@code UpdateNullReferenceException}
+	 * This functions updates references to question and answers If a reference
+	 * is missing it will throw a {@code UpdateNullReferenceException}
 	 * 
 	 * @param mappedCopiedQuestions
 	 * @param mappedCopiedAnswers
@@ -272,5 +302,21 @@ public class Flow extends StorableObject {
 		for (Token token : getCondition()) {
 			token.resetIds();
 		}
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(origin);
+		sb.append("->");
+		if (flowType == FlowType.END_FORM) {
+			sb.append("END_FORM");
+		} else {
+			sb.append(destiny);
+		}
+		sb.append(" '");
+		sb.append(getConditionString());
+		sb.append("'");
+		return sb.toString();
 	}
 }

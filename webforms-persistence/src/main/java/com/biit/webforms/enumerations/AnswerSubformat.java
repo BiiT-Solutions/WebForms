@@ -21,6 +21,8 @@ public enum AnswerSubformat {
 	NUMBER("[0-9]+", WebformsConfigurationReader.getInstance().getRegexNumber()),
 
 	FLOAT("[0-9]+\\.[0-9]*", WebformsConfigurationReader.getInstance().getRegexFloat()),
+	
+	AMOUNT("[0-9]+\\.[0-9]*", WebformsConfigurationReader.getInstance().getRegexAmount()),
 
 	// Date subtypes
 	DATE("dd-mm-yyyy", WebformsConfigurationReader.getInstance().getRegexDate()),
@@ -30,6 +32,8 @@ public enum AnswerSubformat {
 	DATE_FUTURE("dd-mm-yyyy", WebformsConfigurationReader.getInstance().getRegexDate()),
 
 	DATE_PERIOD("[0-9]+[DMY]", WebformsConfigurationReader.getInstance().getRegexDatePeriod()),
+	
+	DATE_BIRTHDAY("dd-mm-yyyy", WebformsConfigurationReader.getInstance().getRegexDateBirthday()),
 
 	// Postal code
 	POSTAL_CODE("NNNNAA", WebformsConfigurationReader.getInstance().getRegexPostalCode())

@@ -103,7 +103,7 @@ public class TokenComparationAnswer extends Token {
 					+ TokenComparationAnswer.class.getName());
 		}
 	}
-	
+
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		question = (Question) mappedElements.get(question.getComparationId());

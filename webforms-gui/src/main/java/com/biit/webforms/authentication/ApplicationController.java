@@ -18,6 +18,7 @@ import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.form.interfaces.IBaseFormView;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
@@ -223,9 +224,10 @@ public class ApplicationController {
 			// Should not happen.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
-		webformsForm.setLinkedFormLabel(simpleFormView.getLabel());
-		webformsForm.addLinkedFormVersions(simpleFormView.getVersion());
-		webformsForm.setLinkedFormOrganizationId(simpleFormView.getOrganizationId());
+
+		Set<IBaseFormView> linkedForms = new HashSet<IBaseFormView>();
+		linkedForms.add(simpleFormView);
+		webformsForm.setLinkedForms(linkedForms);
 
 		// Store on the database
 		formDao.makePersistent(webformsForm);
@@ -236,17 +238,21 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns the Abcd Form linked to a form or null value if it is not linked
-	 * or the link is wrong.
+	 * Returns the List of Abcd Forms linked to a form or empty list if there
+	 * are no links.
 	 * 
 	 * @param form
 	 * @return
 	 */
-	public com.biit.abcd.persistence.entity.Form getLinkedAbcdForm(Form form) {
-		if (form.getLabel() != null && form.getOrganizationId() != null) {
-			return formDaoAbcd.getForm(form.getLabel(), form.getVersion(), form.getOrganizationId());
+	public List<com.biit.abcd.persistence.entity.Form> getLinkedAbcdForm(Form form) {
+		List<com.biit.abcd.persistence.entity.Form> linkedForms = new ArrayList<>();
+		if (form.getLinkedFormLabel() != null && form.getLinkedFormOrganizationId() != null) {
+			for (Integer version : form.getLinkedFormVersions()) {
+				linkedForms.add(formDaoAbcd.getForm(form.getLinkedFormLabel(), version,
+						form.getLinkedFormOrganizationId()));
+			}
 		}
-		return null;
+		return linkedForms;
 	}
 
 	/**
@@ -256,18 +262,18 @@ public class ApplicationController {
 	 * @param form
 	 * @return
 	 */
-	public SimpleFormView getLinkedSimpleAbcdForm(Form form) {
+	public List<SimpleFormView> getLinkedSimpleAbcdForms(Form form) {
+		List<SimpleFormView> linkedSimpleAbcdForms = new ArrayList<SimpleFormView>();
 		if (form.getLabel() != null && form.getOrganizationId() != null) {
 			List<SimpleFormView> views = simpleFormDaoAbcd.getSimpleFormViewByName(form.getLinkedFormLabel());
 			for (SimpleFormView view : views) {
 				if (form.getLinkedFormVersions().contains(view.getVersion())
 						&& view.getOrganizationId().equals(form.getLinkedFormOrganizationId())) {
-					return view;
+					linkedSimpleAbcdForms.add(view);
 				}
 			}
 		}
-		System.out.println("Return: null");
-		return null;
+		return linkedSimpleAbcdForms;
 	}
 
 	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException,
@@ -581,42 +587,35 @@ public class ApplicationController {
 	}
 
 	public void saveForm() {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " saveForm " + formInUse + " START");
+		logInfoStart("saveForm");
 
 		formInUse.setUpdatedBy(getUser());
 		formInUse.setUpdateTime();
 		formDao.makePersistent(formInUse);
 
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " saveForm " + formInUse + " END");
+		logInfoEnd("saveForm");
 	}
 
 	public void saveForm(Form form) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " saveForm " + form + " START");
+		logInfoStart("saveForm", form);
 
 		form.setUpdatedBy(getUser());
 		form.setUpdateTime();
 		formDao.makePersistent(form);
 
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " saveForm " + form + " END");
+		logInfoEnd("saveForm", form);
 	}
 
-	public void finishForm() {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " finishForm " + formInUse + " START");
-		formInUse.setStatus(FormWorkStatus.FINAL_DESIGN);
-		saveForm(formInUse);
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " finishForm " + formInUse + " END");
+	public void finishForm(Form form) {
+		logInfoStart("finishForm", form);
+		form.setStatus(FormWorkStatus.FINAL_DESIGN);
+		saveForm(form);
+		logInfoEnd("finishForm", form);
 	}
 
 	public void saveAsBlock(TreeObject element, String blockLabel, Organization organization)
 			throws FieldTooLongException, FormWithSameNameException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " saveAsBlock " + formInUse + " " + element + " " + blockLabel + " START");
+		logInfoStart("saveAsBlock ", element, blockLabel, organization);
 
 		Block block = null;
 		try {
@@ -642,8 +641,7 @@ public class ApplicationController {
 			}
 		}
 
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
-				+ " saveAsBlock " + formInUse + " " + element + " " + blockLabel + " END");
+		logInfoEnd("saveAsBlock ", element, blockLabel, organization);
 	}
 
 	public void updateForm(Form form, String description) {

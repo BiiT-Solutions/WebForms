@@ -30,6 +30,7 @@ import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.form.interfaces.IBaseFormView;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
@@ -64,7 +65,8 @@ public class Form extends BaseForm {
 	private String linkedFormLabel;
 
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(joinColumns = @JoinColumn(name = "formId"), uniqueConstraints =  @UniqueConstraint(columnNames={"formId","linkedFormVersions"}))
+	@CollectionTable(joinColumns = @JoinColumn(name = "formId"), uniqueConstraints = @UniqueConstraint(columnNames = {
+			"formId", "linkedFormVersions" }))
 	private Set<Integer> linkedFormVersions;
 
 	private Long linkedFormOrganizationId;
@@ -74,7 +76,7 @@ public class Form extends BaseForm {
 		status = FormWorkStatus.DESIGN;
 		description = new String();
 		rules = new HashSet<>();
-		linkedFormVersions= new HashSet<>();
+		linkedFormVersions = new HashSet<>();
 	}
 
 	public Form(String label, User user, Organization organization) throws FieldTooLongException,
@@ -104,6 +106,11 @@ public class Form extends BaseForm {
 		if (object instanceof Form) {
 			description = new String(((Form) object).getDescription());
 			status = ((Form) object).getStatus();
+
+			linkedFormLabel = ((Form) object).getLinkedFormLabel();
+			setLinkedFormVersions(((Form) object).getLinkedFormVersions());
+			linkedFormOrganizationId = ((Form) object).getLinkedFormOrganizationId();
+
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Form only supports the same type copy");
 		}
@@ -160,6 +167,26 @@ public class Form extends BaseForm {
 
 	public Set<Flow> getFlows() {
 		return rules;
+	}
+	
+	public Set<Flow> getFlowsFrom(BaseQuestion from){
+		Set<Flow> flows = new HashSet<Flow>();
+		for(Flow flow: getFlows()){
+			if(from!=null && from.equals(flow.getOrigin())){
+				flows.add(flow);
+			}
+		}
+		return flows;
+	}
+	
+	public Set<Flow> getFlowTo(BaseQuestion to){
+		Set<Flow> flows = new HashSet<Flow>();
+		for(Flow flow: getFlows()){
+			if(to!=null && flow.getDestiny()!=null && to.equals(flow.getDestiny())){
+				flows.add(flow);
+			}
+		}
+		return flows;
 	}
 
 	public void setRules(Set<Flow> rules) {
@@ -309,36 +336,58 @@ public class Form extends BaseForm {
 		rules.remove(dbRule);
 	}
 
+	/**
+	 * This is the only function that has to be used to link forms. This
+	 * controls that the linked element and versions are present at the same
+	 * time or not when modifying data. It is assumed that all linked forms have
+	 * the same name and organization.
+	 * 
+	 * @param linkedForms
+	 */
+	public void setLinkedForms(Set<IBaseFormView> linkedForms) {
+		if (linkedForms == null || linkedForms.isEmpty()) {
+			setLinkedFormLabel(null);
+			setLinkedFormVersions(null);
+			setLinkedFormOrganizationId(null);
+		}else{
+			Set<Integer> versionNumbers = new HashSet<Integer>();
+			for(IBaseFormView linkedForm: linkedForms){
+				setLinkedFormLabel(linkedForm.getLabel());
+				versionNumbers.add(linkedForm.getVersion());
+				setLinkedFormOrganizationId(linkedForm.getOrganizationId());
+			}
+			setLinkedFormVersions(versionNumbers);
+		}
+	}
+
 	public String getLinkedFormLabel() {
 		return linkedFormLabel;
 	}
 
-	public void setLinkedFormLabel(String linkedFormLabel) {
-		this.linkedFormLabel = linkedFormLabel;
-	}
-	
 	public Set<Integer> getLinkedFormVersions() {
 		return linkedFormVersions;
 	}
-
-	protected void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
-		this.linkedFormVersions.clear();
-		this.linkedFormVersions.addAll(linkedFormVersions);
-	}
 	
-	public void addLinkedFormVersions(Integer version) {
-		this.linkedFormVersions.add(version);
-	}
-	
-	public void removeLinkedFormVersions(Integer version) {
-		this.linkedFormVersions.remove(version);
+	public void addLinkedFormVersion(Integer versionNumber){
+		getLinkedFormVersions().add(versionNumber);
 	}
 
 	public Long getLinkedFormOrganizationId() {
 		return linkedFormOrganizationId;
 	}
 
-	public void setLinkedFormOrganizationId(Long linkedFormOrganizationId) {
+	protected void setLinkedFormLabel(String linkedFormLabel) {
+		this.linkedFormLabel = linkedFormLabel;
+	}
+
+	protected void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
+		this.linkedFormVersions.clear();
+		if (linkedFormVersions != null) {
+			this.linkedFormVersions.addAll(linkedFormVersions);
+		}
+	}
+
+	protected void setLinkedFormOrganizationId(Long linkedFormOrganizationId) {
 		this.linkedFormOrganizationId = linkedFormOrganizationId;
 	}
 }
