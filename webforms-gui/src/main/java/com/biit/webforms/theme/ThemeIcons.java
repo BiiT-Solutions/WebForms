@@ -48,6 +48,7 @@ public enum ThemeIcons implements IThemeIcon{
 	DESIGNER_MOVE("element.move.svg"),
 	
 	EXPORT_FORM_TO_PDF("file.pdf.svg"), 
+	EXPORT_FORM_TO_XFORMS("form.xforms.svg"),
 	
 	EDIT_FORM_DESIGN("page.form.edit.svg"),
 	EDIT_FORM_FLOW("page.flow.editor.svg"),
@@ -74,7 +75,7 @@ public enum ThemeIcons implements IThemeIcon{
 	VALIDATE_STRUCTURE("alert.svg"), //TODO
 	VALIDATE_FLOW("alert.svg"), //TODO
 	VALIDATE_ABCD_LINK("alert.svg"),  //TODO
-		
+	
 	;
 	
 	private String value;

@@ -261,6 +261,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_OK_VALID_EXPRESSION("caption.ok.valid.expression"),
 	CAPTION_OPERATORS("caption.operators"),
 	CAPTION_PRINT_FLOW("caption.print.flow"),
+	CAPTION_TO_XFORMS("caption.export.xforms"),
 	
 	TOOLTIP_NEW_RULE("tooltip.new.rule"),
 	TOOLTIP_EDIT_RULE("tooltip.edit.rule"),
@@ -271,6 +272,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_INSERT_QUESTION_REFENCE("tooltip.insert.question.reference"),
 	TOOLTIP_INSERT_ANSWER_REFENCE("tooltip.insert.answer.reference"),
 	TOOLTIP_PRINT_FLOW("tooltip.print.flow"),
+	TOOLTIP_TO_XFORMS("tooltip.export.xforms"),
 	
 	WARNING_CAPTION_RULE_ORIGIN_INVALID("warning.caption.rule.origin.invalid"),
 	WARNING_CAPTION_RULE_NOT_CORRECT("warning.caption.rule.not.correct"),

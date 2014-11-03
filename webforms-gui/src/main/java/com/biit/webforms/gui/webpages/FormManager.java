@@ -131,7 +131,7 @@ public class FormManager extends SecuredWebPage {
 			}
 		});
 		upperMenu.addExportPdf(new ClickListener() {
-			private static final long serialVersionUID = 2864457152577148777L;
+			private static final long serialVersionUID = -3028644296823936596L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -174,6 +174,14 @@ public class FormManager extends SecuredWebPage {
 				window.setIndeterminate(true);
 				window.setFilename(((Form) formTable.getValue()).getLabel() + ".pdf");
 				window.showCentered();
+			}
+		});
+		upperMenu.addExportXFormsListener(new ClickListener() {
+			private static final long serialVersionUID = -4167515599696676260L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+
 			}
 		});
 		return upperMenu;
