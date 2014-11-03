@@ -3,6 +3,7 @@ package com.biit.webforms.gui.webpages.designer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
@@ -42,7 +43,7 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 	}
 
 	private void initializeBlockTable() {
-		List<Organization> organizations = WebformsAuthorizationService.getInstance()
+		Set<Organization> organizations = WebformsAuthorizationService.getInstance()
 				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 		List<Block> blocks = new ArrayList<>();
 		for (Organization organization : organizations) {

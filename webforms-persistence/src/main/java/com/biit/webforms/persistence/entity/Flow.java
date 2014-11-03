@@ -15,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.BatchSize;
@@ -61,6 +62,7 @@ public class Flow extends StorableObject {
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "flow")
 	@BatchSize(size = 100)
+	@OrderBy(value = "sortSeq ASC")
 	private List<Token> condition;
 
 	@ManyToOne

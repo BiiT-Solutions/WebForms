@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.common.utils;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.AuthorizationService;
@@ -31,7 +31,7 @@ public class WebpageAuthorizationService extends AuthorizationService {
 	}
 
 	@Override
-	public List<IActivity> getRoleActivities(Role arg0) {
+	public Set<IActivity> getRoleActivities(Role arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}

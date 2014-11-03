@@ -1,6 +1,7 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import java.util.List;
+import java.util.Iterator;
+import java.util.Set;
 
 import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.form.interfaces.IBaseFormView;
@@ -47,14 +48,15 @@ public class WindowImportAbcdForms extends WindowSimpleViewAbcdForms {
 
 		organizationField = new ComboBox(LanguageCodes.CAPTION_ORGANIZATION.translation());
 		organizationField.setNullSelectionAllowed(false);
-		List<Organization> organizations = UserSessionHandler.getController().getOrganizatiosWhereUser(
+		Set<Organization> organizations = UserSessionHandler.getController().getOrganizatiosWhereUser(
 				WebformsActivity.FORM_EDITING);
 		for (Organization organization : organizations) {
 			organizationField.addItem(organization);
 			organizationField.setItemCaption(organization, organization.getName());
 		}
-		if(!organizations.isEmpty()){
-			organizationField.setValue(organizations.get(0));
+		if (!organizations.isEmpty()) {
+			Iterator<Organization> iteratorOrganization = organizations.iterator();
+			organizationField.setValue(iteratorOrganization.next());
 		}
 		organizationField.setWidth(ORGANIZATION_WIDTH);
 
@@ -65,7 +67,7 @@ public class WindowImportAbcdForms extends WindowSimpleViewAbcdForms {
 		component.addComponent(nameOrganizationLayout);
 
 		component.setExpandRatio(getTable(), 1.0f);
-		
+
 		getTable().addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -3971685162057144466L;
 
@@ -79,8 +81,10 @@ public class WindowImportAbcdForms extends WindowSimpleViewAbcdForms {
 	}
 
 	protected void updateName() {
-		IBaseFormView element = getTable().getForm();
-		importNameField.setValue(element.getLabel());
+		if (getTable().getForm() != null) {
+			IBaseFormView element = getTable().getForm();
+			importNameField.setValue(element.getLabel());
+		}
 	}
 
 	public String getImportName() {

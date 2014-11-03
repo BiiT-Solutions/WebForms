@@ -3,6 +3,7 @@ package com.biit.webforms.gui.webpages.blockmanager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.webforms.authentication.UserSessionHandler;
@@ -45,7 +46,7 @@ public class TableBlock extends Table {
 	private void initializeBlockTable() {
 		List<Block> blocks = new ArrayList<>();
 
-		List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
+		Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
 				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 		for (Organization organization : userOrganizations) {
 			blocks.addAll(blockDao.getAll(organization));
@@ -99,8 +100,7 @@ public class TableBlock extends Table {
 	}
 
 	/**
-	 * This function returns an string with read only if the form can't be
-	 * edited by the user
+	 * This function returns an string with read only if the form can't be edited by the user
 	 * 
 	 * @param form
 	 * @return

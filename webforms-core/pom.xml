@@ -24,8 +24,8 @@
 		<!-- ABCD persistency -->
 		<dependency>
 			<groupId>com.biit</groupId>
-			<artifactId>abcd-persistence</artifactId>
-			<version>${abcd-persistance.version}</version>
+			<artifactId>abcd-core</artifactId>
+			<version>${abcd.version}</version>
 			<type>jar</type>
 		</dependency>
 		<!-- For SpringContextHelper -->

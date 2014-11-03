@@ -93,8 +93,8 @@ public class WebformsAuthorizationService extends AuthorizationService {
 	 * Get activities associated to a role that has been assigned to the user.
 	 */
 	@Override
-	public List<IActivity> getRoleActivities(Role role) {
-		List<IActivity> activities = new ArrayList<IActivity>();
+	public Set<IActivity> getRoleActivities(Role role) {
+		Set<IActivity> activities = new HashSet<IActivity>();
 		WebformsRoles webFormRole = WebformsRoles.parseTag(role.getName());
 		switch (webFormRole) {
 		case ADMIN:
@@ -136,7 +136,7 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		}
 
 		// Get all organizations of user
-		List<Organization> organizations = getUserOrganizations(user);
+		Set<Organization> organizations = getUserOrganizations(user);
 		for (Organization organization : organizations) {
 			if (isAuthorizedActivity(user, organization, activity)) {
 				return true;
@@ -164,7 +164,7 @@ public class WebformsAuthorizationService extends AuthorizationService {
 
 	public Organization getOrganization(User user, Long organizationId) {
 		try {
-			List<Organization> organizations = getUserOrganizations(user);
+			Set<Organization> organizations = getUserOrganizations(user);
 			for (Organization organization : organizations) {
 				if (organization.getOrganizationId() == organizationId) {
 					return organization;
@@ -177,8 +177,8 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		return null;
 	}
 
-	public List<Organization> getUserOrganizationsWhereIsAuthorized(User user, IActivity activity) {
-		List<Organization> organizations = new ArrayList<>();
+	public Set<Organization> getUserOrganizationsWhereIsAuthorized(User user, IActivity activity) {
+		Set<Organization> organizations = new HashSet<>();
 		try {
 			organizations = getUserOrganizations(user);
 			Iterator<Organization> itr = organizations.iterator();

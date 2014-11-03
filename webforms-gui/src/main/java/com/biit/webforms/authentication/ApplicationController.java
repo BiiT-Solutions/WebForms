@@ -12,6 +12,8 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import com.biit.abcd.persistence.dao.ISimpleFormViewDao;
 import com.biit.abcd.persistence.entity.SimpleFormView;
+import com.biit.abcd.security.AbcdActivity;
+import com.biit.abcd.security.AbcdAuthorizationService;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
@@ -87,8 +89,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form on memory no persistance is done. Needs a
-	 * unique name where name.length() < 190 characters.
+	 * User action to create a form on memory no persistance is done. Needs a unique name where name.length() < 190
+	 * characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -123,8 +125,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form. Needs a unique name where name.length() <
-	 * 190 characters.
+	 * User action to create a form. Needs a unique name where name.length() < 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -238,8 +239,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns the List of Abcd Forms linked to a form or empty list if there
-	 * are no links.
+	 * Returns the List of Abcd Forms linked to a form or empty list if there are no links.
 	 * 
 	 * @param form
 	 * @return
@@ -256,8 +256,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns abcd simpleViewForm linked to form using it's name, version and
-	 * organizationId.
+	 * Returns abcd simpleViewForm linked to form using it's name, version and organizationId.
 	 * 
 	 * @param form
 	 * @return
@@ -455,8 +454,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Creates any kind of TreeObject descendant with @name and inserts into
-	 * parent if possible.
+	 * Creates any kind of TreeObject descendant with @name and inserts into parent if possible.
 	 * 
 	 * @param classType
 	 * @param parent
@@ -724,9 +722,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone
-	 * of the block using the element as hierarchy seed and introduces to
-	 * current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
+	 * hierarchy seed and introduces to current form as a new category.
 	 * 
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
@@ -792,8 +789,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * This function is called when the ui has expired. The implementation needs
-	 * to free any "locked" resources
+	 * This function is called when the ui has expired. The implementation needs to free any "locked" resources
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
@@ -812,8 +808,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Update flow content. This function currently is a direct call to the
-	 * structure function. If the flow is not on the form, it gets added.
+	 * Update flow content. This function currently is a direct call to the structure function. If the flow is not on
+	 * the form, it gets added.
 	 * 
 	 * @param flow
 	 * @param origin
@@ -847,8 +843,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Updates flow update time and updated by in flow. The content of the flow
-	 * was already modified by {@link WindowFlow}
+	 * Updates flow update time and updated by in flow. The content of the flow was already modified by
+	 * {@link WindowFlow}
 	 * 
 	 * @param flow
 	 */
@@ -980,7 +976,7 @@ public class ApplicationController {
 			public Collection<com.biit.abcd.persistence.entity.Form> getAll() {
 				List<com.biit.abcd.persistence.entity.Form> forms = new ArrayList<>();
 
-				List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
+				Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
 						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 				for (Organization organization : userOrganizations) {
 					forms.addAll(getFormDaoAbcd().getAll(organization.getOrganizationId()));
@@ -999,7 +995,7 @@ public class ApplicationController {
 			public Collection<Form> getAll() {
 				List<Form> forms = new ArrayList<>();
 
-				List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
+				Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
 						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 				for (Organization organization : userOrganizations) {
 					forms.addAll(getWebformsFormDao().getAll(organization.getOrganizationId()));
@@ -1019,8 +1015,8 @@ public class ApplicationController {
 
 				// Get all organizations where user has read permissions and
 				// store ids in a hash map.
-				List<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
-						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
+				Set<Organization> userOrganizations = AbcdAuthorizationService.getInstance()
+						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), AbcdActivity.READ);
 				HashSet<Long> userOrganizationIds = new HashSet<Long>();
 				for (Organization organization : userOrganizations) {
 					userOrganizationIds.add(organization.getOrganizationId());
@@ -1052,15 +1048,14 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns all organizations where user has permission to do all the
-	 * activities in activitiesFilter.
+	 * Returns all organizations where user has permission to do all the activities in activitiesFilter.
 	 * 
 	 * @param activitiesFilter
 	 * @return
 	 */
-	public List<Organization> getOrganizatiosWhereUser(IActivity... activitiesFilter) {
+	public Set<Organization> getOrganizatiosWhereUser(IActivity... activitiesFilter) {
 		try {
-			List<Organization> organizations = WebformsAuthorizationService.getInstance().getUserOrganizations(
+			Set<Organization> organizations = WebformsAuthorizationService.getInstance().getUserOrganizations(
 					UserSessionHandler.getUser());
 			Iterator<Organization> itr = organizations.iterator();
 			while (itr.hasNext()) {
@@ -1079,6 +1074,6 @@ public class ApplicationController {
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
-		return new ArrayList<>();
+		return new HashSet<>();
 	}
 }

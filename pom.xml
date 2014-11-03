@@ -45,7 +45,7 @@
 		<slf4j-log4j12.version>1.7.7</slf4j-log4j12.version>
 		<hibernate.version>4.3.6.Final</hibernate.version>
 		<liferay-service-common.version>0.4.0</liferay-service-common.version>
-		<liferay-authentication-client.version>0.5.0</liferay-authentication-client.version>
+		<liferay-authentication-client.version>0.5.4</liferay-authentication-client.version>
 		<form-structure.version>0.1.8</form-structure.version>
 		<root.directory>${project.basedir}</root.directory>
 		<itext.version>2.1.7</itext.version>
@@ -53,7 +53,7 @@
 		<ehcache.version>2.6.9</ehcache.version>
 		<c3p0.version>0.9.2.1</c3p0.version>
 		<DES-encryption.version>1.0.0</DES-encryption.version>
-		<abcd-persistance.version>0.9.1</abcd-persistance.version>
+		<abcd.version>1.0.0</abcd.version>
 	</properties>
 
 	<dependencies>

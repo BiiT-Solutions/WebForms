@@ -1,6 +1,5 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -100,11 +99,6 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 			}
 			initializeSets(result);
 			session.getTransaction().commit();
-			// For solving Hibernate bug
-			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
-			// list of children
-			// with @Orderby or @OrderColumn we use our own order manager.
-			sortChildren(result);
 			return result;
 		} catch (RuntimeException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -113,26 +107,6 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 		}
 	}
 
-	@Override
-	protected void sortChildren(List<Form> forms) {
-		for (Form form : forms) {
-			sortChildren(form);
-		}
-	}
-
-	protected void sortChildren(Form form) {
-		super.sortChildren(form);
-
-		for (Flow rule : form.getFlows()) {
-			sortChildren(rule);
-		}
-	}
-
-	private void sortChildren(Flow rule) {
-		if (rule != null) {
-			Collections.sort(rule.getCondition(), new TokenSort());
-		}
-	}
 
 	@Override
 	public Form makePersistent(Form entity) {

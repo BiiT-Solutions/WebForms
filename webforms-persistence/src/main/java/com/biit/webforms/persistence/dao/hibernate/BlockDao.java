@@ -1,7 +1,6 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -63,11 +62,6 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			List<Block> results = criteria.list();
 			initializeSets(results);
 			session.getTransaction().commit();
-			// For solving Hibernate bug
-			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
-			// list of children
-			// with @Orderby or @OrderColumn we use our own order manager.
-			sortChildren(results);
 			if (!results.isEmpty()) {
 				return (Block) results.get(0);
 			}
@@ -90,11 +84,6 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			List<Block> results = criteria.list();
 			initializeSets(results);
 			session.getTransaction().commit();
-			// For solving Hibernate bug
-			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
-			// list of children
-			// with @Orderby or @OrderColumn we use our own order manager.
-			sortChildren(results);
 			if (!results.isEmpty()) {
 				return (Block) results.get(0);
 			}
@@ -122,36 +111,10 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			List<Block> result = criteria.list();
 			initializeSets(result);
 			session.getTransaction().commit();
-			// For solving Hibernate bug
-			// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
-			// list of children
-			// with @Orderby or @OrderColumn we use our own order manager.
-			sortChildren(result);
 			return result;
 		} catch (RuntimeException e) {
 			session.getTransaction().rollback();
 			throw e;
-		}
-	}
-
-	@Override
-	protected void sortChildren(List<Block> blocks) {
-		for (Block block : blocks) {
-			sortChildren(block);
-		}
-	}
-
-	protected void sortChildren(Block block) {
-		super.sortChildren(block);
-
-		for (Flow rule : block.getFlows()) {
-			sortChildren(rule);
-		}
-	}
-
-	private void sortChildren(Flow rule) {
-		if (rule != null) {
-			Collections.sort(rule.getCondition(), new TokenSort());
 		}
 	}
 

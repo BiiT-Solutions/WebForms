@@ -2,7 +2,7 @@ package com.biit.webforms.gui.components;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
@@ -61,25 +61,27 @@ public class WindowNameGroup extends WindowAcceptCancel {
 		organizationField.setNullSelectionAllowed(false);
 		organizationField.setWidth("100%");
 		try {
-			List<Organization> organizations = WebformsAuthorizationService.getInstance().getUserOrganizations(
+			Set<Organization> organizations = WebformsAuthorizationService.getInstance().getUserOrganizations(
 					UserSessionHandler.getUser());
 			Iterator<Organization> itr = organizations.iterator();
-			while(itr.hasNext()){
+			while (itr.hasNext()) {
 				Organization organization = itr.next();
-				for(IActivity activity: exclusivePermissionFilter){
-					//If the user doesn't comply to all activities in the filter in the group, then exit  
-					if(!WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(), organization, activity)){
+				for (IActivity activity : exclusivePermissionFilter) {
+					// If the user doesn't comply to all activities in the filter in the group, then exit
+					if (!WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+							organization, activity)) {
 						itr.remove();
 						break;
 					}
-				}				
+				}
 			}
 			for (Organization organization : organizations) {
 				organizationField.addItem(organization);
 				organizationField.setItemCaption(organization, organization.getName());
 			}
 			if (!organizations.isEmpty()) {
-				organizationField.setValue(organizations.get(0));
+				Iterator<Organization> organizationsIterator = organizations.iterator();
+				organizationField.setValue(organizationsIterator.next());
 			}
 			if (organizations.size() <= 1) {
 				organizationField.setEnabled(false);
