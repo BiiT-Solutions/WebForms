@@ -8,8 +8,10 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.biit.webforms.utils.math.domain.exceptions.DifferentDomainQuestionOperationException;
+import com.biit.webforms.utils.math.domain.exceptions.IncompatibleDomainException;
 
-public class QuestionAnswerDomain {
+public class QuestionAnswerDomain implements IDomain{
 
 	private final Question question;
 	private final DiscreteSet<Answer> completeDomain;
@@ -122,14 +124,25 @@ public class QuestionAnswerDomain {
 	 * 
 	 * @param domain
 	 * @return
+	 * @throws IncompatibleDomainException 
+	 * @throws DifferentDomainQuestionOperationException 
 	 */
-	public QuestionAnswerDomain union(QuestionAnswerDomain domain) {
+	@Override
+	public IDomain union(IDomain domain) throws IncompatibleDomainException, DifferentDomainQuestionOperationException {
+		if(!(domain instanceof QuestionAnswerDomain)){
+			throw new IncompatibleDomainException();
+		}
+		QuestionAnswerDomain domainB = (QuestionAnswerDomain) domain;
+		if (domainB.question == null || this.question == null || (!question.equals(domainB.question))) {
+			throw new DifferentDomainQuestionOperationException();
+		}
+		
 		QuestionAnswerDomain newDomain = new QuestionAnswerDomain(question);
 
 		for (Answer answer : getValue()) {
 			newDomain.addValue(answer);
 		}
-		for (Answer answer : domain.getValue()) {
+		for (Answer answer : domainB.getValue()) {
 			newDomain.addValue(answer);
 		}
 
@@ -143,15 +156,22 @@ public class QuestionAnswerDomain {
 	 * 
 	 * @param domain
 	 * @return
+	 * @throws DifferentDomainQuestionOperationException 
+	 * @throws IncompatibleDomainException 
 	 */
-	public QuestionAnswerDomain intersect(QuestionAnswerDomain domain) {
-		if (domain.question == null || this.question == null || (!question.equals(domain.question))) {
-			return null;
+	public IDomain intersect(IDomain domain) throws DifferentDomainQuestionOperationException, IncompatibleDomainException {
+		if(!(domain instanceof QuestionAnswerDomain)){
+			throw new IncompatibleDomainException();
+		}
+		
+		QuestionAnswerDomain domainB = (QuestionAnswerDomain) domain;
+		if (domainB.question == null || this.question == null || (!question.equals(domainB.question))) {
+			throw new DifferentDomainQuestionOperationException();
 		}
 
 		QuestionAnswerDomain newDomain = new QuestionAnswerDomain(question);
 
-		for (Answer answer : domain.getValue()) {
+		for (Answer answer : domainB.getValue()) {
 			if (contains(answer)) {
 				newDomain.addValue(answer);
 			}
