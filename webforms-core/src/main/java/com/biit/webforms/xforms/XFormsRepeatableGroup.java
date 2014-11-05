@@ -1,6 +1,5 @@
 package com.biit.webforms.xforms;
 
-import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.persistence.entity.Group;
@@ -9,23 +8,39 @@ import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
-/**
- * Groups are represented as a nested Sections in Orbeon.
- * 
- */
-public class XFormsGroup extends XFormsObject {
+public class XFormsRepeatableGroup extends XFormsObject {
 
-	public XFormsGroup(Group group) throws NotValidTreeObjectException, NotValidChildException {
+	public XFormsRepeatableGroup(Group group) throws NotValidTreeObjectException, NotValidChildException {
 		super(group);
 	}
 
+	/**
+	 * Nested grids are not allowed in orbeon. Only first group is added.
+	 */
 	@Override
-	protected void setSource(TreeObject treeObject) throws NotValidTreeObjectException {
-		if (treeObject instanceof Group) {
-			super.setSource(treeObject);
-		} else {
-			throw new NotValidTreeObjectException("Invalid source!");
+	protected String getSectionBody() {
+		String section = "<fr:grid>";
+		for (XFormsObject child : getChildren()) {
+			section += child.getSectionBody();
 		}
+		section += "</fr:grid>";
+		return section;
+	}
+
+	/**
+	 * Groups has no labels in resources section. Only add its children.
+	 */
+	@Override
+	protected String getResources() throws NotExistingDynamicFieldException {
+		String resource = "<" + getControlName() + ">";
+
+		for (XFormsObject child : getChildren()) {
+			resource += child.getResources();
+		}
+
+		resource += "</" + getControlName() + ">";
+
+		return resource;
 	}
 
 	@Override
@@ -41,18 +56,4 @@ public class XFormsGroup extends XFormsObject {
 		return elementBinding;
 	}
 
-	@Override
-	public String getSectionBody() {
-		String section = "";
-		section += "<fr:section id=\"" + getSectionControlName() + "\" bind=\"" + getBindingName() + "\">";
-		section += getBodyLabel();
-		section += getBodyHint();
-		section += getBodyAlert();
-		section += getBodyHelp();
-		for (XFormsObject child : getChildren()) {
-			section += child.getSectionBody();
-		}
-		section += "</fr:section>";
-		return section;
-	}
 }

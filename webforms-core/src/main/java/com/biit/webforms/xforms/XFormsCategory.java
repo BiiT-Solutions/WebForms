@@ -9,6 +9,10 @@ import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
+/**
+ * Categories are Sections in Orbeon.
+ * 
+ */
 public class XFormsCategory extends XFormsObject {
 
 	public XFormsCategory(Category category) throws NotValidTreeObjectException, NotValidChildException {

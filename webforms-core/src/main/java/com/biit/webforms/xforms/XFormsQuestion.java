@@ -262,24 +262,4 @@ public class XFormsQuestion extends XFormsObject {
 		return "<hint/>";
 	}
 
-	/**
-	 * Questions add answers inside its definition.
-	 */
-	@Override
-	protected String getResources() throws NotExistingDynamicFieldException {
-		String resource = "<" + getControlName() + ">";
-		resource += getLabel();
-		resource += getHint();
-		resource += getAlert();
-		resource += getHelp();
-
-		for (XFormsObject child : getChildren()) {
-			resource += child.getResources();
-		}
-
-		resource += "</" + getControlName() + ">";
-
-		return resource;
-	}
-
 }

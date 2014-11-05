@@ -20,6 +20,8 @@ public abstract class XFormsObject {
 
 	private List<XFormsObject> children;
 
+	private XFormsObject parent;
+
 	public XFormsObject(TreeObject treeObject) throws NotValidTreeObjectException, NotValidChildException {
 		setSource(treeObject);
 		children = new ArrayList<>();
@@ -47,6 +49,7 @@ public abstract class XFormsObject {
 				// Forms cannot be a valid child.
 				throw new NotValidChildException("Inserted child '" + child + "' is not valid. ");
 			}
+			newChild.setParent(this);
 			children.add(newChild);
 		} catch (NotValidTreeObjectException e) {
 			throw new NotValidChildException("Inserted child '" + child + "' is not valid. ");
@@ -128,12 +131,12 @@ public abstract class XFormsObject {
 		resource += getHint();
 		resource += getAlert();
 		resource += getHelp();
-		resource += "</" + getControlName() + ">";
 
 		for (XFormsObject child : getChildren()) {
 			resource += child.getResources();
 		}
 
+		resource += "</" + getControlName() + ">";
 		return resource;
 	}
 
@@ -153,6 +156,14 @@ public abstract class XFormsObject {
 		}
 		section += "</" + getControlName() + ">";
 		return section;
+	}
+
+	public XFormsObject getParent() {
+		return parent;
+	}
+
+	public void setParent(XFormsObject parent) {
+		this.parent = parent;
 	}
 
 }
