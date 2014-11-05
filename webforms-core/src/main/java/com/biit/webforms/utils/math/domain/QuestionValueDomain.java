@@ -1,9 +1,6 @@
 package com.biit.webforms.utils.math.domain;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.utils.math.domain.exceptions.DifferentDomainQuestionOperationException;
@@ -12,41 +9,54 @@ import com.biit.webforms.utils.math.domain.exceptions.IncompatibleDomainExceptio
 public class QuestionValueDomain implements IDomain {
 
 	private final Question question;
-	private final RealRange completeDomain;
-	private final List<RealRange> ranges;
+	private final RealLimitPair completeDomain;
+	private final RealRange value;
 
-	public QuestionValueDomain(Question question, RealRange completeDomain) {
+	public QuestionValueDomain(Question question, RealLimitPair completeDomain) {
 		this.question = question;
 		this.completeDomain = completeDomain;
-		this.ranges = new ArrayList<RealRange>();
+		this.value = RealRange.empty();
+	}
+	
+	public QuestionValueDomain(Question question, RealLimitPair completeDomain, RealRange value) {
+		this.question = question;
+		this.completeDomain = completeDomain;
+		this.value = value;
 	}
 
 	public QuestionValueDomain(TokenComparationValue token) {
 		this.question = token.getQuestion();
-		this.completeDomain = new RealRange();
-		this.ranges = generateValues(token);
+		this.completeDomain = generateDomain(token.getQuestion());
+		this.value = generateValues(token);
 	}
 
-	private List<RealRange> generateValues(TokenComparationValue token) {
-		List<RealRange> values = new ArrayList<>();
+	private RealLimitPair generateDomain(Question question) {
+		switch (question.getAnswerFormat()){
+		case DATE:
+		case NUMBER:
+			return RealLimitPair.realRange();
+		case POSTAL_CODE:
+		case TEXT:
+			WebformsLogger.errorMessage(this.getClass().getName(), new RuntimeException("Not implemented"));
+			return RealLimitPair.realRange();
+		}
+		return null;
+	}
 
+	private RealRange generateValues(TokenComparationValue token) {
 		switch (token.getType()) {
 		case EQ:
-			throw new RuntimeException("Not implemented");
+			return RealRange.eq(getValueConverted(token));
 		case NE:
-			throw new RuntimeException("Not implemented");
+			return RealRange.ne(getValueConverted(token));
 		case GT:
-			values.add(RealRange.gt(getValueConverted(token)));
-			return values;
+			return RealRange.gt(getValueConverted(token));
 		case GE:
-			values.add(RealRange.ge(getValueConverted(token)));
-			return values;
+			return RealRange.ge(getValueConverted(token));
 		case LT:
-			values.add(RealRange.lt(getValueConverted(token)));
-			return values;
+			return RealRange.lt(getValueConverted(token));
 		case LE:
-			values.add(RealRange.le(getValueConverted(token)));
-			return values;
+			return RealRange.le(getValueConverted(token));
 		default:
 			// Unexpected
 			throw new RuntimeException("Unexpected default action at switch");
@@ -63,29 +73,14 @@ public class QuestionValueDomain implements IDomain {
 		}
 	}
 
-	public boolean add(RealRange range) {
-		throw new RuntimeException("Not implemented");
-//		if (completeDomain.contains(range)) {
-//			for (RealRange value : ranges) {
-//				if (value.compareTo(range) == 0) {
-//					// Intersects
-//					return false;
-//				}
-//			}
-//			ranges.add(range);
-//			Collections.sort(ranges);
-//			return true;
-//		}
-//		return false;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Complete Domain: ");
+		sb.append("Domain '");
 		sb.append(completeDomain);
-		sb.append(" Current value: ");
-		sb.append(ranges);
+		sb.append("' value '");
+		sb.append(value);
+		sb.append("'");
 		return sb.toString();
 	}
 
@@ -107,33 +102,16 @@ public class QuestionValueDomain implements IDomain {
 
 	@Override
 	public IDomain inverse() {
-		QuestionValueDomain inverse = new QuestionValueDomain(question,completeDomain);
-		
-		if(ranges.isEmpty()){
-			inverse.add(completeDomain);
-			return inverse;
-		}
-		
-		List<RealRange> inverseRanges = new ArrayList<RealRange>();
-		RealRange lastCreatedRange = null;
-		
-		//Create first element		
-//		List<Float> limitList 
-//		
-//		
-//		for(RealRange range: ranges){
-//			if()
-//		}
-		throw new RuntimeException("Not implemented");
+		return new QuestionValueDomain(question,completeDomain,value.inverse(completeDomain));
 	}
 	
 	@Override
 	public boolean isComplete() {
-		throw new RuntimeException("Not implemented");
+		return value.isComplete(completeDomain);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		throw new RuntimeException("Not implemented");
+		return value.isEmpty();
 	}
 }

@@ -32,6 +32,8 @@ public class TestDomain {
 	private static final String TEST_15 = "[[3.0,3.0]]";
 	private static final Object TEST_16 = "[]";
 	private static final String TEST_17 = "[[0.0,3.0)(3.0,4.0][7.0,8.0]]";
+	private static final Object TEST_18 = "[[3.0,3.0](5.0,6.0)(9.0,Infinity)]";
+	private static final Object TEST_19 = "[(-Infinity,0.0)(4.0,7.0)(8.0,20.0)[Infinity,Infinity)]";
 
 	@Test
 	public void testRealRangeGeneration() {
@@ -163,6 +165,35 @@ public class TestDomain {
 		RealRange rangeB = rangB1.union(rangB2).union(rangB3);
 
 		Assert.assertEquals(rangeA.intersection(rangeB).toString(), TEST_17);
+
+	}
+	
+	@Test()
+	public void testInverse() throws LimitInsertionException {
+
+		// (-Inf,3)
+		RealRange rang1 = RealRange.lt(3.0f);
+		// (3,5]
+		RealRange rang2 = new RealRange(Closure.EXCLUSIVE, 3.0f, 5.0f,
+				Closure.INCLUSIVE);
+		// [6,9]
+		RealRange rang3 = new RealRange(Closure.INCLUSIVE, 6.0f, 9.0f,
+				Closure.INCLUSIVE);
+
+		RealRange rangeAinv = rang1.union(rang2).union(rang3).inverse(RealLimitPair.realRange());
+		Assert.assertEquals(rangeAinv.toString(), TEST_18);
+
+		// [0,4]
+		RealRange rangB1 = new RealRange(Closure.INCLUSIVE, 0.0f, 4.0f,
+				Closure.INCLUSIVE);
+		// [7,8]
+		RealRange rangB2 = new RealRange(Closure.INCLUSIVE, 7.0f, 8.0f,
+				Closure.INCLUSIVE);
+		// [20,+inf)
+		RealRange rangB3 = RealRange.ge(20.0f);
+
+		RealRange rangeBinv = rangB1.union(rangB2).union(rangB3).inverse(RealLimitPair.realRange());
+		Assert.assertEquals(rangeBinv.toString(), TEST_19);	
 
 	}
 

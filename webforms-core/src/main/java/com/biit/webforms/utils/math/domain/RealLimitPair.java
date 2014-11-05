@@ -161,4 +161,8 @@ public class RealLimitPair implements Comparable<RealLimitPair>{
 	public static RealLimitPair ge(Float value){
 		return new RealLimitPair(new RealLimit(value, Closure.INCLUSIVE), RealLimit.positiveInfinity());
 	}
+	
+	public static RealLimitPair realRange(){
+		return new RealLimitPair(RealLimit.negativeInfinity(), RealLimit.positiveInfinity());
+	}
 }
