@@ -1,43 +1,67 @@
 package com.biit.webforms.utils.math.domain;
 
-import com.biit.webforms.utils.math.domain.exceptions.DisjoiedRangesCantBeJoined;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
 
 /**
  * This class defines a range of real numbers. Basic mathematic operations are
  * supported.
  * 
  */
-public class RealRange implements Comparable<RealRange>{
+public class RealRange {
 
-	private RangeClosure leftClosure;
-	private Float left;
-	private Float right;
-	private RangeClosure rightClosure;
+	private final List<RealLimitPair> limits;
 
 	public RealRange() {
-		setValue(RangeClosure.EXCLUSIVE, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, RangeClosure.EXCLUSIVE);
+		this.limits = new ArrayList<>();
 	}
 
-	public RealRange(RangeClosure leftClosure, Float left, Float right, RangeClosure rightClosure) {
+	public RealRange(List<RealLimitPair> limits) {
+		this.limits = new ArrayList<RealLimitPair>(limits);
+	}
+
+	public RealRange(Closure leftClosure, Float left, Float right, Closure rightClosure) throws LimitInsertionException {
+		this.limits = new ArrayList<>();
 		setValue(leftClosure, left, right, rightClosure);
 	}
 
+	public RealRange(RealLimit leftLimit, RealLimit rightLimit) throws LimitInsertionException {
+		this.limits = new ArrayList<>();
+		addLimit(new RealLimitPair(leftLimit, rightLimit));
+	}
+
+	private void setRealRange() {
+		setEmpty();
+		addLimit(new RealLimitPair(RealLimit.negativeInfinity(), RealLimit.positiveInfinity()));
+	}
+
+	private void addLimit(RealLimitPair limit) {
+		limits.add(limit);
+	}
+
 	private void setEmpty() {
-		setValue(RangeClosure.EXCLUSIVE, 0.0f, 0.0f, RangeClosure.EXCLUSIVE);
+		limits.clear();
 	}
 
 	private void setValue(Float value) {
-		setValue(RangeClosure.INCLUSIVE, value, value, RangeClosure.INCLUSIVE);
+		// try {
+		// addLimit(new RealLimit(value, Closure.SINGLE_VALUE));
+		// } catch (LimitInsertionException e) {
+		// WebformsLogger.errorMessage(this.getClass().getName(), e);
+		// }
 	}
 
-	private void setValue(RangeClosure leftClosure, Float left, Float right, RangeClosure rightClosure) {
+	private void setValue(Closure leftClosure, Float left, Float right, Closure rightClosure)
+			throws LimitInsertionException {
 		if (leftClosure == null || left == null || right == null || rightClosure == null) {
 			throw new NullPointerException("Real range can't use null as a limit value");
 		}
-		this.leftClosure = leftClosure;
-		this.left = left;
-		this.right = right;
-		this.rightClosure = rightClosure;
+		addLimit(new RealLimitPair(new RealLimit(left, leftClosure), new RealLimit(right, rightClosure)));
 	}
 
 	public static RealRange empty() {
@@ -56,8 +80,12 @@ public class RealRange implements Comparable<RealRange>{
 		if (value == null) {
 			throw new NullPointerException("Real range can't use null as a limit value");
 		}
-		RealRange range = new RealRange();
-		range.right = value;
+		RealRange range = null;
+		try {
+			range = new RealRange(RealLimit.negativeInfinity(), new RealLimit(value, Closure.EXCLUSIVE));
+		} catch (LimitInsertionException e) {
+			WebformsLogger.errorMessage(RealRange.class.getName(), e);
+		}
 		return range;
 	}
 
@@ -65,9 +93,12 @@ public class RealRange implements Comparable<RealRange>{
 		if (value == null) {
 			throw new NullPointerException("Real range can't use null as a limit value");
 		}
-		RealRange range = new RealRange();
-		range.right = value;
-		range.rightClosure = RangeClosure.INCLUSIVE;
+		RealRange range = null;
+		try {
+			range = new RealRange(RealLimit.negativeInfinity(), new RealLimit(value, Closure.INCLUSIVE));
+		} catch (LimitInsertionException e) {
+			WebformsLogger.errorMessage(RealRange.class.getName(), e);
+		}
 		return range;
 	}
 
@@ -75,8 +106,12 @@ public class RealRange implements Comparable<RealRange>{
 		if (value == null) {
 			throw new NullPointerException("Real range can't use null as a limit value");
 		}
-		RealRange range = new RealRange();
-		range.left = value;
+		RealRange range = null;
+		try {
+			range = new RealRange(new RealLimit(value, Closure.EXCLUSIVE), RealLimit.positiveInfinity());
+		} catch (LimitInsertionException e) {
+			WebformsLogger.errorMessage(RealRange.class.getName(), e);
+		}
 		return range;
 	}
 
@@ -84,200 +119,103 @@ public class RealRange implements Comparable<RealRange>{
 		if (value == null) {
 			throw new NullPointerException("Real range can't use null as a limit value");
 		}
-		RealRange range = new RealRange();
-		range.left = value;
-		range.leftClosure = RangeClosure.INCLUSIVE;
+		RealRange range = null;
+		try {
+			range = new RealRange(new RealLimit(value, Closure.INCLUSIVE), RealLimit.positiveInfinity());
+		} catch (LimitInsertionException e) {
+			WebformsLogger.errorMessage(RealRange.class.getName(), e);
+		}
 		return range;
 	}
 
-	private boolean isContainedFromLeft(Float value) {
-		if (leftClosure == RangeClosure.INCLUSIVE) {
-			return left <= value;
-		} else {
-			return left < value;
+	public RealRange union(RealRange range) {
+		if(range.isEmpty()){
+			return new RealRange(limits);
 		}
-	}
-
-	private boolean isContainedFromRight(Float value) {
-		if (rightClosure == RangeClosure.INCLUSIVE) {
-			return value <= right;
-		} else {
-			return value < right;
-		}
-	}
-
-	public boolean contains(Float value) {
-		return isContainedFromLeft(value) && isContainedFromRight(value);
-	}
-
-	private boolean isContainedFromLeft(RealRange value) {
-		if (left < value.left) {
-			return true;
-		} else {
-			if (left.equals(value.left) && leftClosure==RangeClosure.INCLUSIVE) {
-				return true;
+		
+		List<RealLimitPair> allPairs = new ArrayList<>();
+		allPairs.addAll(limits);
+		allPairs.addAll(range.limits);
+		
+		Collections.sort(allPairs);
+		
+		List<RealLimitPair> unionPairs = new ArrayList<RealLimitPair>();
+		RealLimitPair accum = null;
+		for(int i=0;i<allPairs.size();i++){
+			if(accum==null){
+				accum = allPairs.get(i);
+				continue;
+			}
+			
+			RealLimitPair nextAccum = accum.union(allPairs.get(i));
+			if(nextAccum==null){
+				unionPairs.add(accum);
+				accum = allPairs.get(i);
+			}else{
+				accum = nextAccum;
 			}
 		}
-		return false;
-	}
-	private boolean isContainedFromRight(RealRange value) {
-		if (right > value.right) {
-			return true;
-		} else {
-			if (right.equals(value.right) && rightClosure==RangeClosure.INCLUSIVE) {
-				return true;
-			}
+		
+		if(accum!=null){
+			unionPairs.add(accum);
 		}
-		return false;
-	}
-
-	public boolean contains(RealRange value){
-		return isContainedFromLeft(value)&& isContainedFromRight(value);
-	}
-
-	public boolean overlap(RealRange range) {
-		if (contains(range.getLeft()) || contains(range.getRight()) || range.contains(getLeft())) {
-			return true;
-		}
-		return false;
-	}
-
-	public RealRange union(RealRange range) throws DisjoiedRangesCantBeJoined {
-		if (overlap(range)) {
-			RealRange newRange = new RealRange();
-			if (getLeft() < range.getLeft()) {
-				// this < than range
-				newRange.left = getLeft();
-				newRange.leftClosure = leftClosure;
-			} else {
-				if (range.getLeft() < getLeft()) {
-					// range less than this
-					newRange.left = range.getLeft();
-					newRange.leftClosure = range.leftClosure;
-				} else {
-					// equals
-					newRange.left = range.getLeft();
-					if (leftClosure == RangeClosure.INCLUSIVE || range.leftClosure == RangeClosure.INCLUSIVE) {
-						newRange.leftClosure = RangeClosure.INCLUSIVE;
-					} else {
-						newRange.leftClosure = RangeClosure.EXCLUSIVE;
-					}
-				}
-			}
-			if (getRight() > range.getRight()) {
-				// this < than range
-				newRange.right = getRight();
-				newRange.rightClosure = rightClosure;
-			} else {
-				if (range.getRight() > getRight()) {
-					// range less than this
-					newRange.right = range.getRight();
-					newRange.rightClosure = range.rightClosure;
-				} else {
-					// equals
-					newRange.right = range.getRight();
-					if (rightClosure == RangeClosure.INCLUSIVE || range.rightClosure == RangeClosure.INCLUSIVE) {
-						newRange.rightClosure = RangeClosure.INCLUSIVE;
-					} else {
-						newRange.rightClosure = RangeClosure.EXCLUSIVE;
-					}
-				}
-			}
-			return newRange;
-		} else {
-			throw new DisjoiedRangesCantBeJoined();
-		}
+		
+		return new RealRange(unionPairs);
 	}
 
 	public RealRange intersection(RealRange range) {
-		if (overlap(range)) {
-			RealRange newRange = new RealRange();
-			// Left
-			if (getLeft() > range.getLeft()) {
-				newRange.left = getLeft();
-				newRange.leftClosure = leftClosure;
-			} else {
-				if (range.getLeft() > getLeft()) {
-					newRange.left = range.getLeft();
-					newRange.leftClosure = range.leftClosure;
-				} else {
-					// equals
-					newRange.left = range.getLeft();
-					if (leftClosure == RangeClosure.EXCLUSIVE || range.leftClosure == RangeClosure.EXCLUSIVE) {
-						newRange.leftClosure = RangeClosure.EXCLUSIVE;
-					} else {
-						newRange.leftClosure = RangeClosure.INCLUSIVE;
-					}
-				}
-			}
-			// Right
-			if (getRight() < range.getRight()) {
-				newRange.right = getRight();
-				newRange.rightClosure = rightClosure;
-			} else {
-				if (range.getRight() > getRight()) {
-					newRange.right = range.getRight();
-					newRange.rightClosure = range.rightClosure;
-				} else {
-					// equals
-					newRange.right = range.getRight();
-					if (rightClosure == RangeClosure.EXCLUSIVE || range.rightClosure == RangeClosure.EXCLUSIVE) {
-						newRange.rightClosure = RangeClosure.EXCLUSIVE;
-					} else {
-						newRange.rightClosure = RangeClosure.INCLUSIVE;
-					}
-				}
-			}
-			return newRange;
-		} else {
-			return empty();
+		if(range.isEmpty()){
+			return new RealRange(limits);
 		}
+		
+		List<RealLimitPair> allPairs = new ArrayList<>();
+		allPairs.addAll(limits);
+		allPairs.addAll(range.limits);
+		
+		Collections.sort(allPairs);
+		
+		//TODO
+		//DRAGONS BE HERE
+		
+		List<RealLimitPair> intersectionPairs = new ArrayList<RealLimitPair>();
+		RealLimitPair accum = null;
+		for(int i=0;i<allPairs.size();i++){
+			if(accum==null){
+				accum = allPairs.get(i);
+				continue;
+			}
+			
+			RealLimitPair currentIntersec = accum.intersection(allPairs.get(i));
+			if(currentIntersec==null){
+				accum = allPairs.get(i);
+			}else{
+				intersectionPairs.add(accum);
+				accum = currentIntersec;
+			}
+		}
+		
+		return new RealRange(intersectionPairs);
 	}
 
-	private Float getRight() {
-		return right;
-	}
-
-	private Float getLeft() {
-		return left;
-	}
-	
 	@Override
-	public String toString(){
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		if(leftClosure==RangeClosure.INCLUSIVE){
-			sb.append("[");
-		}else{
-			sb.append("(");
+		sb.append("Range: [");
+		Iterator<RealLimitPair> itr = limits.iterator();
+		while (itr.hasNext()) {
+			sb.append(itr.next().toString());
 		}
-		sb.append(left);
-		sb.append(",");
-		sb.append(right);
-		if(rightClosure==RangeClosure.INCLUSIVE){
-			sb.append("]");
-		}else{
-			sb.append(")");
-		}
+		sb.append("]");
 		return sb.toString();
 	}
 
-	@Override
-	public int compareTo(RealRange o) {
-		if(left>o.left){
-			return -(o.compareTo(this));
-		}
-		
-		if(left>o.right || (left.equals(o.right) && (leftClosure==RangeClosure.EXCLUSIVE || leftClosure!=o.rightClosure))){
-			return 1;
-		}
-		
-		if(right<o.left || (right.equals(o.left) && (rightClosure==RangeClosure.EXCLUSIVE || rightClosure!=o.leftClosure))){
-			return -1;
-		}
-		return 0;
+	public boolean isEmpty() {
+		return limits.isEmpty();
 	}
 
-	public boolean isEmpty() {
-		return left.equals(right) && (leftClosure==RangeClosure.EXCLUSIVE || rightClosure==RangeClosure.EXCLUSIVE);
+	public static RealRange realRange() {
+		RealRange realRange = new RealRange();
+		realRange.setRealRange();
+		return realRange;
 	}
 }

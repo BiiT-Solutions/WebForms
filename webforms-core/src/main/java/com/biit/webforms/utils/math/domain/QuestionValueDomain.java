@@ -6,59 +6,134 @@ import java.util.List;
 
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.utils.math.domain.exceptions.DifferentDomainQuestionOperationException;
+import com.biit.webforms.utils.math.domain.exceptions.IncompatibleDomainException;
 
-public class QuestionValueDomain {
+public class QuestionValueDomain implements IDomain {
 
 	private final Question question;
 	private final RealRange completeDomain;
-	private final List<RealRange> values;
+	private final List<RealRange> ranges;
 
-	public QuestionValueDomain(Question question) {
+	public QuestionValueDomain(Question question, RealRange completeDomain) {
 		this.question = question;
-		this.completeDomain = new RealRange();
-		this.values = new ArrayList<RealRange>();
+		this.completeDomain = completeDomain;
+		this.ranges = new ArrayList<RealRange>();
 	}
 
 	public QuestionValueDomain(TokenComparationValue token) {
 		this.question = token.getQuestion();
 		this.completeDomain = new RealRange();
-		this.values = generateValues(token);
+		this.ranges = generateValues(token);
 	}
 
 	private List<RealRange> generateValues(TokenComparationValue token) {
+		List<RealRange> values = new ArrayList<>();
+
 		switch (token.getType()) {
 		case EQ:
-			break;
+			throw new RuntimeException("Not implemented");
 		case NE:
-			break;
+			throw new RuntimeException("Not implemented");
 		case GT:
-			break;
+			values.add(RealRange.gt(getValueConverted(token)));
+			return values;
 		case GE:
-			break;
+			values.add(RealRange.ge(getValueConverted(token)));
+			return values;
 		case LT:
-			break;
+			values.add(RealRange.lt(getValueConverted(token)));
+			return values;
 		case LE:
-			break;
+			values.add(RealRange.le(getValueConverted(token)));
+			return values;
 		default:
-			//Unexpected
-			return null;
+			// Unexpected
+			throw new RuntimeException("Unexpected default action at switch");
 		}
-		return null;
+	}
+
+	private Float getValueConverted(TokenComparationValue token) {
+		switch (token.getSubformat()) {
+		case FLOAT:
+		case NUMBER:
+			return Float.parseFloat(token.getValue());
+		default:
+			throw new RuntimeException("Not implemented");
+		}
 	}
 
 	public boolean add(RealRange range) {
-		if (completeDomain.contains(range)) {
-			for (RealRange value : values) {
-				if (value.compareTo(range) == 0) {
-					// Intersects
-					return false;
-				}
-			}
-			values.add(range);
-			Collections.sort(values);
-			return true;
+		throw new RuntimeException("Not implemented");
+//		if (completeDomain.contains(range)) {
+//			for (RealRange value : ranges) {
+//				if (value.compareTo(range) == 0) {
+//					// Intersects
+//					return false;
+//				}
+//			}
+//			ranges.add(range);
+//			Collections.sort(ranges);
+//			return true;
+//		}
+//		return false;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Complete Domain: ");
+		sb.append(completeDomain);
+		sb.append(" Current value: ");
+		sb.append(ranges);
+		return sb.toString();
+	}
+
+	@Override
+	public Question getQuestion() {
+		return question;
+	}
+
+	@Override
+	public IDomain union(IDomain domain) throws IncompatibleDomainException, DifferentDomainQuestionOperationException {
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public IDomain intersect(IDomain domain) throws DifferentDomainQuestionOperationException,
+			IncompatibleDomainException {
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public IDomain inverse() {
+		QuestionValueDomain inverse = new QuestionValueDomain(question,completeDomain);
+		
+		if(ranges.isEmpty()){
+			inverse.add(completeDomain);
+			return inverse;
 		}
-		return false;
+		
+		List<RealRange> inverseRanges = new ArrayList<RealRange>();
+		RealRange lastCreatedRange = null;
+		
+		//Create first element		
+//		List<Float> limitList 
+//		
+//		
+//		for(RealRange range: ranges){
+//			if()
+//		}
+		throw new RuntimeException("Not implemented");
 	}
 	
+	@Override
+	public boolean isComplete() {
+		throw new RuntimeException("Not implemented");
+	}
+
+	@Override
+	public boolean isEmpty() {
+		throw new RuntimeException("Not implemented");
+	}
 }

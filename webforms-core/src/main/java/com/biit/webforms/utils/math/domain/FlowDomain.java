@@ -8,11 +8,14 @@ import java.util.Set;
 import com.biit.form.BaseQuestion;
 import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.condition.parser.expressions.WebformsExpression;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.utils.math.domain.exceptions.BadFormedExpressions;
+import com.biit.webforms.utils.math.domain.exceptions.DifferentDomainQuestionOperationException;
+import com.biit.webforms.utils.math.domain.exceptions.IncompatibleDomainException;
 import com.biit.webforms.utils.parser.Expression;
 import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.ExpectedTokenNotFound;
@@ -23,7 +26,7 @@ import com.biit.webforms.utils.parser.exceptions.ParseException;
 
 public class FlowDomain {
 
-	private final HashMap<BaseQuestion, QuestionAnswerDomain> dominions;
+	private final HashMap<BaseQuestion, IDomain> dominions;
 
 	public FlowDomain() {
 		dominions = new HashMap<>();
@@ -74,7 +77,7 @@ public class FlowDomain {
 	}
 
 	public boolean isComplete() {
-		for (QuestionAnswerDomain dominion : dominions.values()) {
+		for (IDomain dominion : dominions.values()) {
 			if (!dominion.isComplete()) {
 				return false;
 			}
@@ -86,7 +89,7 @@ public class FlowDomain {
 		return dominions.isEmpty();
 	}
 
-	public void put(QuestionAnswerDomain domain) {
+	public void put(IDomain domain) {
 		dominions.put(domain.getQuestion(), domain);
 	}
 
@@ -96,9 +99,9 @@ public class FlowDomain {
 			return;
 		}
 		if (token instanceof TokenComparationValue) {
-			new QuestionValueDomain((TokenComparationValue) token);
-			// TODO
-			System.out.println("Not implemented");
+			QuestionValueDomain domain = new QuestionValueDomain((TokenComparationValue) token);
+			System.out.println("Domain: " + domain);
+			put(new QuestionValueDomain((TokenComparationValue) token));
 			return;
 		}
 	}
@@ -112,8 +115,8 @@ public class FlowDomain {
 
 		for (BaseQuestion question : questions) {
 
-			QuestionAnswerDomain domainA = dominions.get(question);
-			QuestionAnswerDomain domainB = flowDomain.dominions.get(question);
+			IDomain domainA = dominions.get(question);
+			IDomain domainB = flowDomain.dominions.get(question);
 
 			if (domainA == null) {
 				domainA = new QuestionAnswerDomain(domainB.getQuestion());
@@ -121,7 +124,12 @@ public class FlowDomain {
 			if (domainB == null) {
 				domainB = new QuestionAnswerDomain(domainA.getQuestion());
 			}
-			union.put(domainA.union(domainB));
+			try {
+				union.put(domainA.union(domainB));
+			} catch (IncompatibleDomainException | DifferentDomainQuestionOperationException e) {
+				//Impossible
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
 		}
 		return union;
 	}
@@ -139,15 +147,21 @@ public class FlowDomain {
 
 		for (BaseQuestion question : questions) {
 
-			QuestionAnswerDomain domainA = dominions.get(question);
-			QuestionAnswerDomain domainB = flowDomain.dominions.get(question);
+			IDomain domainA = dominions.get(question);
+			IDomain domainB = flowDomain.dominions.get(question);
 
 			// TODO check if this holds true.
 
 			if (domainA != null && domainB != null) {
-				QuestionAnswerDomain domainIntersection = domainA.intersect(domainB);
-				if (!domainIntersection.isEmpty()) {
-					intersection.put(domainIntersection);
+				IDomain domainIntersection;
+				try {
+					domainIntersection = domainA.intersect(domainB);
+					if (!domainIntersection.isEmpty()) {
+						intersection.put(domainIntersection);
+					}
+				} catch (DifferentDomainQuestionOperationException | IncompatibleDomainException e) {
+					// Impossible
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		}
@@ -157,7 +171,7 @@ public class FlowDomain {
 	public FlowDomain inverse() {
 		FlowDomain inverse = new FlowDomain();
 
-		for (QuestionAnswerDomain domain : dominions.values()) {
+		for (IDomain domain : dominions.values()) {
 			inverse.put(domain.inverse());
 		}
 
