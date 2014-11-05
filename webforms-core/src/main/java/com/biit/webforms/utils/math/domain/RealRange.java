@@ -183,4 +183,18 @@ public class RealRange {
 		realRange.setRealRange();
 		return realRange;
 	}
+
+	public static RealRange eq(Float value) {
+		try {
+			return new RealRange(Closure.INCLUSIVE,value,value,Closure.INCLUSIVE);
+		} catch (LimitInsertionException e) {
+			// Impossible
+			WebformsLogger.errorMessage(RealRange.class.getName(), e);
+		}
+		return null;
+	}
+
+	public static RealRange ne(Float value) {
+		return lt(value).union(gt(value));
+	}
 }
