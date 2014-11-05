@@ -1,6 +1,7 @@
 package com.biit.webforms.utils.math.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -19,6 +20,10 @@ public class RealRange {
 
 	public RealRange() {
 		this.limits = new ArrayList<>();
+	}
+	
+	public RealRange(RealLimitPair ... limits){
+		this.limits = Arrays.asList(limits);
 	}
 
 	public RealRange(List<RealLimitPair> limits) {
@@ -80,52 +85,28 @@ public class RealRange {
 		if (value == null) {
 			throw new NullPointerException("Real range can't use null as a limit value");
 		}
-		RealRange range = null;
-		try {
-			range = new RealRange(RealLimit.negativeInfinity(), new RealLimit(value, Closure.EXCLUSIVE));
-		} catch (LimitInsertionException e) {
-			WebformsLogger.errorMessage(RealRange.class.getName(), e);
-		}
-		return range;
+		return new RealRange(RealLimitPair.lt(value));
 	}
 
 	public static RealRange le(Float value) {
 		if (value == null) {
 			throw new NullPointerException("Real range can't use null as a limit value");
 		}
-		RealRange range = null;
-		try {
-			range = new RealRange(RealLimit.negativeInfinity(), new RealLimit(value, Closure.INCLUSIVE));
-		} catch (LimitInsertionException e) {
-			WebformsLogger.errorMessage(RealRange.class.getName(), e);
-		}
-		return range;
+		return new RealRange(RealLimitPair.le(value));
 	}
 
 	public static RealRange gt(Float value) {
 		if (value == null) {
 			throw new NullPointerException("Real range can't use null as a limit value");
 		}
-		RealRange range = null;
-		try {
-			range = new RealRange(new RealLimit(value, Closure.EXCLUSIVE), RealLimit.positiveInfinity());
-		} catch (LimitInsertionException e) {
-			WebformsLogger.errorMessage(RealRange.class.getName(), e);
-		}
-		return range;
+		return new RealRange(RealLimitPair.gt(value));
 	}
 
 	public static RealRange ge(Float value) {
 		if (value == null) {
 			throw new NullPointerException("Real range can't use null as a limit value");
 		}
-		RealRange range = null;
-		try {
-			range = new RealRange(new RealLimit(value, Closure.INCLUSIVE), RealLimit.positiveInfinity());
-		} catch (LimitInsertionException e) {
-			WebformsLogger.errorMessage(RealRange.class.getName(), e);
-		}
-		return range;
+		return new RealRange(RealLimitPair.ge(value));
 	}
 
 	public RealRange union(RealRange range) {
@@ -167,30 +148,14 @@ public class RealRange {
 		if(range.isEmpty()){
 			return new RealRange(limits);
 		}
-		
-		List<RealLimitPair> allPairs = new ArrayList<>();
-		allPairs.addAll(limits);
-		allPairs.addAll(range.limits);
-		
-		Collections.sort(allPairs);
-		
-		//TODO
-		//DRAGONS BE HERE
-		
-		List<RealLimitPair> intersectionPairs = new ArrayList<RealLimitPair>();
-		RealLimitPair accum = null;
-		for(int i=0;i<allPairs.size();i++){
-			if(accum==null){
-				accum = allPairs.get(i);
-				continue;
-			}
 			
-			RealLimitPair currentIntersec = accum.intersection(allPairs.get(i));
-			if(currentIntersec==null){
-				accum = allPairs.get(i);
-			}else{
-				intersectionPairs.add(accum);
-				accum = currentIntersec;
+		List<RealLimitPair> intersectionPairs = new ArrayList<RealLimitPair>();
+		for(RealLimitPair limit: limits){
+			for(RealLimitPair rangeLimit: range.limits){
+				RealLimitPair intersection = limit.intersection(rangeLimit);
+				if(intersection != null){
+					intersectionPairs.add(intersection);
+				}
 			}
 		}
 		
@@ -200,7 +165,7 @@ public class RealRange {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Range: [");
+		sb.append("[");
 		Iterator<RealLimitPair> itr = limits.iterator();
 		while (itr.hasNext()) {
 			sb.append(itr.next().toString());
