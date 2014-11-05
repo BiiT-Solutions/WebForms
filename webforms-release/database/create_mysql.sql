@@ -1,222 +1,316 @@
 
-    create table BaseAnswer (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
-        label varchar(255),
-        name varchar(185),
-        sortSeq bigint not null,
-        parent_ID bigint,
-        primary key (ID)
+    create table Form_linkedFormVersions (
+        formId bigint not null,
+        linkedFormVersions integer
     );
 
-    create table BaseCategory (
+    create table blocks (
         ID bigint not null,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
         updateTime datetime,
         updatedBy DOUBLE,
-        label varchar(255),
-        name varchar(185),
+        label varchar(1000),
+        name varchar(190),
+        originalReference varchar(190) not null,
         sortSeq bigint not null,
         parent_ID bigint,
-        primary key (ID)
-    );
-
-    create table BaseForm (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
-        label varchar(255),
-        name varchar(185),
-        sortSeq bigint not null,
-        parent_ID bigint,
+        organizationId DOUBLE not null,
         version integer,
+        description longtext,
+        linkedFormLabel varchar(255),
+        linkedFormOrganizationId bigint,
+        status varchar(255),
         primary key (ID)
     );
 
-    create table BaseGroup (
+    create table flow (
         ID bigint not null,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
         updateTime datetime,
         updatedBy DOUBLE,
-        label varchar(255),
-        name varchar(185),
-        sortSeq bigint not null,
-        parent_ID bigint,
-        repetable bit not null,
+        flowType varchar(255),
+        others bit not null,
+        destiny_id bigint,
+        form_ID bigint,
+        origin_id bigint,
         primary key (ID)
     );
 
-    create table BaseQuestion (
+    create table token (
         ID bigint not null,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
         updateTime datetime,
         updatedBy DOUBLE,
-        label varchar(255),
-        name varchar(185),
         sortSeq bigint not null,
-        parent_ID bigint,
+        type varchar(255) not null,
+        flow_ID bigint,
         primary key (ID)
     );
 
-    create table PARENT_OF_CHILDREN (
-        TreeObject_ID bigint not null,
-        children_ID bigint not null
-    );
-
-    create table TREE_ANSWERS (
+    create table token_comparation_answer (
         ID bigint not null,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
         updateTime datetime,
         updatedBy DOUBLE,
-        label varchar(255),
-        name varchar(185),
         sortSeq bigint not null,
-        parent_ID bigint,
+        type varchar(255) not null,
+        flow_ID bigint,
+        answer_ID bigint,
+        question_ID bigint,
         primary key (ID)
     );
 
-    create table TREE_CATEGORIES (
+    create table token_comparation_value (
         ID bigint not null,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
         updateTime datetime,
         updatedBy DOUBLE,
-        label varchar(255),
-        name varchar(185),
         sortSeq bigint not null,
-        parent_ID bigint,
+        type varchar(255) not null,
+        flow_ID bigint,
+        subformat varchar(255) not null,
+        value varchar(255),
+        question_ID bigint,
         primary key (ID)
     );
 
-    create table TREE_FORMS (
+    create table tree_answers (
         ID bigint not null,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
         updateTime datetime,
         updatedBy DOUBLE,
-        label varchar(255),
-        name varchar(185),
+        label varchar(1000),
+        name varchar(190),
+        originalReference varchar(190) not null,
         sortSeq bigint not null,
         parent_ID bigint,
+        description longtext,
+        primary key (ID)
+    );
+
+    create table tree_categories (
+        ID bigint not null,
+        comparationId varchar(190) not null,
+        createdBy DOUBLE,
+        creationTime datetime not null,
+        updateTime datetime,
+        updatedBy DOUBLE,
+        label varchar(1000),
+        name varchar(190),
+        originalReference varchar(190) not null,
+        sortSeq bigint not null,
+        parent_ID bigint,
+        primary key (ID)
+    );
+
+    create table tree_forms (
+        ID bigint not null,
+        comparationId varchar(190) not null,
+        createdBy DOUBLE,
+        creationTime datetime not null,
+        updateTime datetime,
+        updatedBy DOUBLE,
+        label varchar(1000),
+        name varchar(190),
+        originalReference varchar(190) not null,
+        sortSeq bigint not null,
+        parent_ID bigint,
+        organizationId DOUBLE not null,
         version integer,
-        availableFrom datetime not null,
-        availableTo datetime,
+        description longtext,
+        linkedFormLabel varchar(255),
+        linkedFormOrganizationId bigint,
+        status varchar(255),
         primary key (ID)
     );
 
-    create table TREE_GROUPS (
+    create table tree_groups (
         ID bigint not null,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
         updateTime datetime,
         updatedBy DOUBLE,
-        label varchar(255),
-        name varchar(185),
+        label varchar(1000),
+        name varchar(190),
+        originalReference varchar(190) not null,
         sortSeq bigint not null,
         parent_ID bigint,
-        repetable bit not null,
+        repeatable bit not null,
         primary key (ID)
     );
 
-    create table TREE_QUESTIONS (
+    create table tree_questions (
         ID bigint not null,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
         updateTime datetime,
         updatedBy DOUBLE,
-        label varchar(255),
-        name varchar(185),
+        label varchar(1000),
+        name varchar(190),
+        originalReference varchar(190) not null,
         sortSeq bigint not null,
         parent_ID bigint,
         answerFormat varchar(255),
+        answerSubformat varchar(255),
         answerType varchar(255),
+        description longtext,
+        horizontal bit not null,
+        mandatory bit not null,
         primary key (ID)
     );
 
-    alter table BaseAnswer 
-        add constraint UK_76lq0gmnjriqwvt0axvjt4h8s  unique (ID);
+    create table tree_system_fields (
+        ID bigint not null,
+        comparationId varchar(190) not null,
+        createdBy DOUBLE,
+        creationTime datetime not null,
+        updateTime datetime,
+        updatedBy DOUBLE,
+        label varchar(1000),
+        name varchar(190),
+        originalReference varchar(190) not null,
+        sortSeq bigint not null,
+        parent_ID bigint,
+        primary key (ID)
+    );
 
-    alter table BaseAnswer 
-        add constraint UK_djol5d7vg4wvgutb2l6cj5p3y  unique (comparationId);
+    create table tree_texts (
+        ID bigint not null,
+        comparationId varchar(190) not null,
+        createdBy DOUBLE,
+        creationTime datetime not null,
+        updateTime datetime,
+        updatedBy DOUBLE,
+        label varchar(1000),
+        name varchar(190),
+        originalReference varchar(190) not null,
+        sortSeq bigint not null,
+        parent_ID bigint,
+        description longtext,
+        primary key (ID)
+    );
 
-    alter table BaseCategory 
-        add constraint UK_ey647aoo30r3uqxirrm3v7jwa  unique (ID);
+    alter table Form_linkedFormVersions 
+        add constraint UK_cowsjgfpillahk6b5hqar7dj9  unique (formId, linkedFormVersions);
 
-    alter table BaseCategory 
-        add constraint UK_l6dm3qlnaolwpi2k56utdasqr  unique (comparationId);
+    alter table blocks 
+        add constraint UK_rck6ivx9k603vtmqrho99c513  unique (ID);
 
-    alter table BaseForm 
-        add constraint UK_3n8x6f9irekyp7of2b7gibpio  unique (name, version);
+    alter table blocks 
+        add constraint UK_qbcom2re4ae9p345o6ony3akm  unique (comparationId);
 
-    alter table BaseForm 
-        add constraint UK_9mtlfju71ni1foihstunmc72e  unique (ID);
+    alter table blocks 
+        add constraint UK_9lhm5k7n0wsmbrxcsmdci938s  unique (label, version, organizationId);
 
-    alter table BaseForm 
-        add constraint UK_g7segt6l5tegemkbp78vk02bc  unique (comparationId);
+    alter table flow 
+        add constraint UK_kffbghchm5cku772ng2gmaofa  unique (ID);
 
-    alter table BaseGroup 
-        add constraint UK_2jv9tjr1cl5ijdaueliw7ye25  unique (ID);
+    alter table flow 
+        add constraint UK_ncm3pmigu960w0cbnc8cpi9ip  unique (comparationId);
 
-    alter table BaseGroup 
-        add constraint UK_2ps7c6cq37l6c3672phkxkhc1  unique (comparationId);
+    alter table token 
+        add constraint UK_cw25p7uvbd3f5kb07q97haaho  unique (ID);
 
-    alter table BaseQuestion 
-        add constraint UK_45n10petyj45qbfliy3nruklb  unique (ID);
+    alter table token 
+        add constraint UK_7adviq7imnx5f4hfitaywu9ba  unique (comparationId);
 
-    alter table BaseQuestion 
-        add constraint UK_3m9ci7rb0u3owmafk0xh5w8bp  unique (comparationId);
+    alter table token_comparation_answer 
+        add constraint UK_n8snmhcqi2j07dp4sonrmnwv7  unique (ID);
 
-    alter table PARENT_OF_CHILDREN 
-        add constraint UK_oj9m32v898q47n973v4c4hmgi  unique (children_ID);
+    alter table token_comparation_answer 
+        add constraint UK_k8hfe94svgroao3ro57m60ptl  unique (comparationId);
 
-    alter table TREE_ANSWERS 
-        add constraint UK_l02x1dnxdw4gm1tdlnrtxc6h4  unique (ID);
+    alter table token_comparation_value 
+        add constraint UK_bh6lvajnm5h8vhj2ef632fbct  unique (ID);
 
-    alter table TREE_ANSWERS 
-        add constraint UK_nsvxs27d466w94yohh36oasrb  unique (comparationId);
+    alter table token_comparation_value 
+        add constraint UK_6jhrnt7aar8o5gycyy2hr91dk  unique (comparationId);
 
-    alter table TREE_CATEGORIES 
-        add constraint UK_qx48maxgp7r9qkh11jalq0794  unique (ID);
+    alter table tree_answers 
+        add constraint UK_413vxa542h86uqy4uvcnv6y2x  unique (ID);
 
-    alter table TREE_CATEGORIES 
-        add constraint UK_lxhltjmdib7s0qhylpqagu3qm  unique (comparationId);
+    alter table tree_answers 
+        add constraint UK_5xuj3de6ide6evpo4sijpqa4o  unique (comparationId);
 
-    alter table TREE_FORMS 
-        add constraint UK_sqmslpiklr6yoh5mdndj1xqy4  unique (ID);
+    alter table tree_categories 
+        add constraint UK_ec3bvy7lletc6jmyvyfwuroqv  unique (ID);
 
-    alter table TREE_FORMS 
-        add constraint UK_t7shqct5neaftl77sb3o2dw3b  unique (comparationId);
+    alter table tree_categories 
+        add constraint UK_gtcyh8mle277igwtb5dvhjkr1  unique (comparationId);
 
-    alter table TREE_FORMS 
-        add constraint UK_59cv8u9v3kckrnbt63cdxya75  unique (name, version);
+    alter table tree_forms 
+        add constraint UK_gyfbqpo5jwnsoftogc0bs77k0  unique (label, version, organizationId);
 
-    alter table TREE_GROUPS 
-        add constraint UK_l8g7b24ir43unomkfe55fcimo  unique (ID);
+    alter table tree_forms 
+        add constraint UK_plkq2e2pj19uak2ncrgf1ft6v  unique (ID);
 
-    alter table TREE_GROUPS 
-        add constraint UK_hwgdl270ks71y5qt3p3gvnqq9  unique (comparationId);
+    alter table tree_forms 
+        add constraint UK_k9mhkly9g8lqwf1m9esm50y6m  unique (comparationId);
 
-    alter table TREE_QUESTIONS 
-        add constraint UK_fkqtw0jhv95ld1t98wsn6ul2u  unique (ID);
+    alter table tree_groups 
+        add constraint UK_sfdvxxi1k3p9pqsjl5nhmgdp  unique (ID);
 
-    alter table TREE_QUESTIONS 
-        add constraint UK_7t4bn32ohjfi0my4tsxuswh3v  unique (comparationId);
+    alter table tree_groups 
+        add constraint UK_sno2xl7o9nxmt3xh48ywus36u  unique (comparationId);
+
+    alter table tree_questions 
+        add constraint UK_9lkt55st6up2vyh38lrmu0dc5  unique (ID);
+
+    alter table tree_questions 
+        add constraint UK_nu1epukynjltak450rhyp6eu0  unique (comparationId);
+
+    alter table tree_system_fields 
+        add constraint UK_4qh5vx93d0480hg3j76p7oexr  unique (ID);
+
+    alter table tree_system_fields 
+        add constraint UK_r0il4g95ge6177s84s50icaui  unique (comparationId);
+
+    alter table tree_texts 
+        add constraint UK_gh4f3qqt3q8ak4wvj0kptc7x2  unique (ID);
+
+    alter table tree_texts 
+        add constraint UK_qe6275omm38jd6s7q9frwpdet  unique (comparationId);
+
+    alter table token 
+        add constraint FK_1jkae8phlxx6soqblc3rk1s04 
+        foreign key (flow_ID) 
+        references flow (ID);
+
+    alter table token_comparation_answer 
+        add constraint FK_6y1oe55eikigt0ncjjeh6kueo 
+        foreign key (answer_ID) 
+        references tree_answers (ID);
+
+    alter table token_comparation_answer 
+        add constraint FK_9l6aua9xkdoc2m5uve59k84kp 
+        foreign key (question_ID) 
+        references tree_questions (ID);
+
+    alter table token_comparation_answer 
+        add constraint FK_qjip50m8a6wkqu9wdqw828a9l 
+        foreign key (flow_ID) 
+        references flow (ID);
+
+    alter table token_comparation_value 
+        add constraint FK_8p15e0dwtviut3r9rikqme7xq 
+        foreign key (question_ID) 
+        references tree_questions (ID);
+
+    alter table token_comparation_value 
+        add constraint FK_m1g8tiej2sbbgy2y4xoyw6g7x 
+        foreign key (flow_ID) 
+        references flow (ID);
