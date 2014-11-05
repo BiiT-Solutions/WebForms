@@ -27,13 +27,11 @@ public class XFormsAnswer extends XFormsObject {
 	@Override
 	public String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getSectionBody() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

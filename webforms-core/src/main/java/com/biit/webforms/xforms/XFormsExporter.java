@@ -70,7 +70,17 @@ public class XFormsExporter {
 
 	private String generateXFormsForm() throws NotExistingDynamicFieldException, InvalidDateException,
 			StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		String xforms = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><xh:html xmlns:xh=\"http://www.w3.org/1999/xhtml\" xmlns:xxi=\"http://orbeon.org/oxf/xml/xinclude\" xmlns:xxf=\"http://orbeon.org/oxf/xml/xforms\" xmlns:exf=\"http://www.exforms.org/exf/1-0\" xmlns:fr=\"http://orbeon.org/oxf/xml/form-runner\" xmlns:saxon=\"http://saxon.sf.net/\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:fb=\"http://orbeon.org/oxf/xml/form-builder\" xmlns:oxf=\"http://www.orbeon.com/oxf/processors\" xmlns:sql=\"http://orbeon.org/oxf/xml/sql\" xmlns:ev=\"http://www.w3.org/2001/xml-events\" xmlns:xi=\"http://www.w3.org/2001/XInclude\" xmlns:p=\"http://www.orbeon.com/oxf/pipeline\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:odt=\"http://orbeon.org/oxf/xml/datatypes\" xmlns:xf=\"http://www.w3.org/2002/xforms\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xpl=\"java:org.orbeon.oxf.pipeline.api.FunctionLibrary\">";
+		String xforms = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
+				+ "<xh:html xmlns:xh=\"http://www.w3.org/1999/xhtml\" " + "xmlns:xf=\"http://www.w3.org/2002/xforms\" "
+				+ "xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" "
+				+ "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+				+ "xmlns:ev=\"http://www.w3.org/2001/xml-events\" " + "xmlns:xi=\"http://www.w3.org/2001/XInclude\" "
+				+ "xmlns:xxi=\"http://orbeon.org/oxf/xml/xinclude\" "
+				+ "xmlns:xxf=\"http://orbeon.org/oxf/xml/xforms\" " + "xmlns:exf=\"http://www.exforms.org/exf/1-0\" "
+				+ "xmlns:fr=\"http://orbeon.org/oxf/xml/form-runner\" " + "xmlns:saxon=\"http://saxon.sf.net/\" "
+				+ "xmlns:sql=\"http://orbeon.org/oxf/xml/sql\"  "
+				+ "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" "
+				+ "xmlns:fb=\"http://orbeon.org/oxf/xml/form-builder\">";
 		xforms += getHeader();
 		xforms += getBody();
 		xforms += "</xh:html>";
@@ -139,7 +149,7 @@ public class XFormsExporter {
 	 */
 	private String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
-		String dataModel = "<xf:bind xmlns:dataModel=\"java:org.orbeon.oxf.fb.DataModel\" id=\"fr-form-binds\" ref=\"instance('fr-form-instance')\">";
+		String dataModel = "<xf:bind id=\"fr-form-binds\" ref=\"instance('fr-form-instance')\">";
 
 		// Add hidden email field.
 		dataModel += XFormsHiddenEmailField.getBinding();

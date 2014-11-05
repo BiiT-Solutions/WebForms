@@ -8,6 +8,7 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
@@ -36,8 +37,8 @@ public abstract class XFormsObject {
 			XFormsObject newChild;
 			if (child instanceof Category) {
 				newChild = new XFormsCategory((Category) child);
-				// } else if (child instanceof Group) {
-				// newChild = new XFormsGroup((Group) child);
+			} else if (child instanceof Group) {
+				newChild = new XFormsGroup((Group) child);
 			} else if (child instanceof Question) {
 				newChild = new XFormsQuestion((Question) child);
 			} else if (child instanceof Answer) {

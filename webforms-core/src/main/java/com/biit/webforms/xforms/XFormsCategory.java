@@ -27,7 +27,6 @@ public class XFormsCategory extends XFormsObject {
 	@Override
 	public String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
-		// Subcategory is a label.
 		String elementBinding = "<xf:bind id=\"" + getBindingName() + "\" name=\"" + getControlName() + "\""
 				+ getRelevantStructure() + " ref=\"" + getControlName() + "\" >";
 		// Add also children.
