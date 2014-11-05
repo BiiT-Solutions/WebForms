@@ -112,7 +112,7 @@ public class WindowDownloader extends Window {
 		downloadButton = new Button();
 		downloadButton.setCaption(LanguageCodes.CAPTION_DOWNLOAD_FILE.translation());
 		downloadButton.setDescription(LanguageCodes.TOOLTIP_DOWNLOAD_FILE.translation());
-		downloadButton.setIcon(CommonThemeIcon.SAVE.getThemeResource());
+		downloadButton.setIcon(CommonThemeIcon.FILE_DOWNLOAD.getThemeResource());
 
 		downloader.extend(downloadButton);
 

@@ -10,13 +10,12 @@ public enum AnswerFormat {
 			AnswerSubformat.PHONE, AnswerSubformat.IBAN, AnswerSubformat.BSN }, new TokenTypes[] { TokenTypes.EQ,
 			TokenTypes.NE }),
 
-	NUMBER(
-			AnswerSubformat.NUMBER,
+	NUMBER(AnswerSubformat.NUMBER,
 			new AnswerSubformat[] { AnswerSubformat.NUMBER, AnswerSubformat.FLOAT },
 			new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE }),
 
 	DATE(AnswerSubformat.DATE, new AnswerSubformat[] { AnswerSubformat.DATE, AnswerSubformat.DATE_PAST,
-			AnswerSubformat.DATE_FUTURE, AnswerSubformat.DATE_PERIOD }, new TokenTypes[] { TokenTypes.EQ,
+			AnswerSubformat.DATE_FUTURE, AnswerSubformat.DATE_PERIOD, AnswerSubformat.DATE_BIRTHDAY }, new TokenTypes[] { TokenTypes.EQ,
 			TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE }),
 
 	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, new AnswerSubformat[] { AnswerSubformat.POSTAL_CODE }, new TokenTypes[] {
