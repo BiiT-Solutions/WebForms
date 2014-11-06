@@ -24,19 +24,6 @@ public class XFormsRepeatableGroup extends XFormsObject {
 	 * Add also a dummy section definition.
 	 */
 	@Override
-	protected String getDefinition() {
-		String section = "<" + getControlName() + ">";
-		for (XFormsObject child : getChildren()) {
-			section += child.getDefinition();
-		}
-		section += "</" + getControlName() + ">";
-		return section;
-	}
-
-	/**
-	 * Add also a dummy section definition.
-	 */
-	@Override
 	protected String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
 		String elementBinding = "<xf:bind id=\"" + getBindingName() + "\" name=\"" + getControlName() + "\""
@@ -49,26 +36,6 @@ public class XFormsRepeatableGroup extends XFormsObject {
 		return elementBinding;
 	}
 
-	/**
-	 * Loops has labels in the section resources section. Only add its children.
-	 */
-	@Override
-	protected String getResources() throws NotExistingDynamicFieldException {
-		String resource = "<" + getControlName() + ">";
-		resource += getLabel();
-		resource += getHint();
-		resource += getAlert();
-		resource += getHelp();
-
-		for (XFormsObject child : getChildren()) {
-			resource += child.getResources();
-		}
-
-		resource += "</" + getControlName() + ">";
-
-		return resource;
-	}
-
 	private String getSectionControlNameOfDummySection() {
 		return getControlName() + "-section-control";
 	}
@@ -79,12 +46,14 @@ public class XFormsRepeatableGroup extends XFormsObject {
 	@Override
 	protected String getSectionBody() {
 		String section = "";
+		//Dummy section
 		section += "<fr:section id=\"" + getSectionControlNameOfDummySection() + "\" bind=\"" + getBindingName()
 				+ "\">";
 		section += getBodyLabel();
 		section += getBodyHint();
 		section += getBodyAlert();
 		section += getBodyHelp();
+		//Loop
 		section += getLoopHeaderTags(MIN_REPEATS, MAX_REPEATS);
 		for (XFormsObject child : getChildren()) {
 			section += child.getSectionBody();
