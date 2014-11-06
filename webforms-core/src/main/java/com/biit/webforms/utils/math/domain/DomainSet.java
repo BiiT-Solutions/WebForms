@@ -1,19 +1,49 @@
 package com.biit.webforms.utils.math.domain;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
-public abstract class DomainSet implements IDomain{
+import com.biit.webforms.persistence.entity.Question;
 
-	private final HashSet<IDomain> domains;
+public abstract class DomainSet implements IDomain {
+
+	protected final HashMap<Question, IDomainQuestion> questionDomains;
+	protected final HashSet<DomainSet> domainSets;
 
 	public DomainSet() {
-		domains = new HashSet<IDomain>();
+		questionDomains = new HashMap<Question, IDomainQuestion>();
+		domainSets = new HashSet<DomainSet>();
+	}
+	
+	public DomainSet(HashSet<IDomainQuestion> questionDomains, HashSet<DomainSet> domainSets) {
+		this.questionDomains = new HashMap<>(); 
+		this.domainSets = domainSets;
+		for(IDomainQuestion questionDomain: questionDomains){
+			add(questionDomain);
+		}
+	}
+	
+	protected void add(IDomainQuestion questionDomain){
+		questionDomains.put(questionDomain.getQuestion(), questionDomain);
+	}
+	
+	protected void add(DomainSet domainSet){
+		domainSets.add(domainSet);
+	}
+	
+	protected void add(HashSet<DomainSet> domainSets){
+		domainSets.addAll(domainSets);
 	}
 
 	@Override
 	public boolean isComplete() {
-		for(IDomain domain: domains){
-			if(!domain.isComplete()){
+		for (IDomainQuestion questionDomain : questionDomains.values()) {
+			if (!questionDomain.isComplete()) {
+				return false;
+			}
+		}
+		for (DomainSet domainSet : domainSets){
+			if(!domainSet.isComplete()){
 				return false;
 			}
 		}
@@ -22,18 +52,32 @@ public abstract class DomainSet implements IDomain{
 
 	@Override
 	public boolean isEmpty() {
-		return domains.isEmpty();
+		for (IDomainQuestion questionDomain : questionDomains.values()) {
+			if (!questionDomain.isEmpty()) {
+				return false;
+			}
+		}
+		for (DomainSet domainSet : domainSets){
+			if(!domainSet.isEmpty()){
+				return false;
+			}
+		}
+		return true;
 	}
 	
-	public void add(IDomainQuestion domain){
-		domains.add(domain);
+	protected HashSet<IDomainQuestion> getInverseQuestionDomains(){
+		HashSet<IDomainQuestion> inverseQuestionDomains = new HashSet<IDomainQuestion>();
+		for(IDomainQuestion questionDomain: questionDomains.values()){
+			inverseQuestionDomains.add((IDomainQuestion)questionDomain.inverse());
+		}
+		return inverseQuestionDomains;
 	}
 	
-	public void add(HashSet<IDomain> domains) {
-		domains.addAll(domains);
-	}
-
-	public HashSet<IDomain> getDomains() {
-		return domains;
+	protected HashSet<DomainSet> getInverseDomainSets(){
+		HashSet<DomainSet> inverseDomainSets = new HashSet<>();
+		for(DomainSet domainSet: domainSets){
+			inverseDomainSets.add((DomainSet) domainSet.inverse());
+		}
+		return inverseDomainSets;
 	}
 }
