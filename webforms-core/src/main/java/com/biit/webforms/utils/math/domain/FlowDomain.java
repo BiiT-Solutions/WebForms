@@ -90,7 +90,7 @@ public class FlowDomain {
 	}
 
 	public void put(IDomain domain) {
-		dominions.put(domain.getQuestion(), domain);
+//		dominions.put(domain.getQuestion(), domain);
 	}
 
 	public void put(Token token) {
@@ -118,12 +118,12 @@ public class FlowDomain {
 			IDomain domainA = dominions.get(question);
 			IDomain domainB = flowDomain.dominions.get(question);
 
-			if (domainA == null) {
-				domainA = new QuestionAnswerDomain(domainB.getQuestion());
-			}
-			if (domainB == null) {
-				domainB = new QuestionAnswerDomain(domainA.getQuestion());
-			}
+//			if (domainA == null) {
+//				domainA = new QuestionAnswerDomain(domainB.getQuestion());
+//			}
+//			if (domainB == null) {
+//				domainB = new QuestionAnswerDomain(domainA.getQuestion());
+//			}
 			try {
 				union.put(domainA.union(domainB));
 			} catch (IncompatibleDomainException | DifferentDomainQuestionOperationException e) {

@@ -11,7 +11,7 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.utils.math.domain.exceptions.DifferentDomainQuestionOperationException;
 import com.biit.webforms.utils.math.domain.exceptions.IncompatibleDomainException;
 
-public class QuestionAnswerDomain implements IDomain{
+public class QuestionAnswerDomain implements IDomainQuestion{
 
 	private final Question question;
 	private final DiscreteSet<Answer> completeDomain;
