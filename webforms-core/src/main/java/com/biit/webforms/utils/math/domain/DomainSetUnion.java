@@ -1,77 +1,120 @@
 package com.biit.webforms.utils.math.domain;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.utils.math.domain.exceptions.DifferentDomainQuestionOperationException;
-import com.biit.webforms.utils.math.domain.exceptions.IncompatibleDomainException;
 
 public class DomainSetUnion extends DomainSet {
 
-	public DomainSetUnion(HashSet<IDomainQuestion> questionDomains, HashSet<DomainSet> domainSets) {
-		super(questionDomains, domainSets);
+	public DomainSetUnion(HashMap<Question, IDomainQuestion> inverseDomainQuestions, HashSet<DomainSet> inverseDomainSet) {
+		super(inverseDomainQuestions, inverseDomainSet);
+	}
+
+	public DomainSetUnion(IDomainQuestion... domains) {
+		super(domains);
 	}
 
 	@Override
-	public IDomain union(IDomain domain) throws IncompatibleDomainException, DifferentDomainQuestionOperationException {
+	public IDomain union(IDomain domain) {
 
 		if (domain instanceof IDomainQuestion) {
 			return unionDomainQuestion((IDomainQuestion) domain);
 		}
 		if (domain instanceof DomainSetUnion) {
-			return unionDomainSet((DomainSet) domain);
+			return unionDomainSet((DomainSetUnion) domain);
 		}
 		if (domain instanceof DomainSetIntersection) {
-			return unionDomainIntersection((DomainSetIntersection) domain);
+			add(domain);
 		}
-		
+
 		return null;
 	}
 
-	private IDomain unionDomainIntersection(DomainSetIntersection domain) {
-		// Union of the question domains is the union of the repeated elements
-		// and the joining of question elements not contained
-		for (Question question : domain.questionDomains.keySet()) {
-			if (questionDomains.containsKey(question)) {
-				IDomainQuestion unionOfQuestion;
-				try {
-					unionOfQuestion = (IDomainQuestion) questionDomains.get(question).union(
-							domain.questionDomains.get(question));
-					questionDomains.put(question, unionOfQuestion);
-				} catch (IncompatibleDomainException | DifferentDomainQuestionOperationException e) {
-					// Impossible
-					WebformsLogger.errorMessage(this.getClass().getName(), e);
-				}
-			} else {
-				add(domain.questionDomains.get(question));
-			}
+	private IDomain unionDomainSet(DomainSetUnion domain) {
+		for (IDomainQuestion domainQuestion : domain.domainQuestions.values()) {
+			unionDomainQuestion(domainQuestion);
 		}
-		//Union of the sub sets. its the sum of both sub sets
-		add(domain.domainSets);
-		
-		return this;
-	}
-	
-	@Override
-	public IDomain intersect(IDomain domain) throws DifferentDomainQuestionOperationException,
-			IncompatibleDomainException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private IDomain unionDomainSet(DomainSet domain) {
-		domainSets.add(domain);
+		for (DomainSet domainSet : domain.domainSets) {
+			domainSet.add(domainSet);
+		}
 		return this;
 	}
 
 	private IDomain unionDomainQuestion(IDomainQuestion domain) {
-		add(domain);
+		if (domainQuestions.containsKey(domain.getQuestion())) {
+			domainQuestions.put(domain.getQuestion(), (IDomainQuestion) domainQuestions.get(domain.getQuestion())
+					.union(domain));
+		} else {
+			domainQuestions.put(domain.getQuestion(), domain);
+		}
 		return this;
 	}
 
 	@Override
 	public IDomain inverse() {
-		return new DomainSetIntersection(getInverseQuestionDomains(), getInverseDomainSets());
+		return new DomainSetIntersection(getInverseDomainQuestions(), getInverseDomainSet());
+	}
+
+	@Override
+	public boolean isComplete() {
+		for (IDomain domain : domainQuestions.values()) {
+			if (!domain.isComplete()) {
+				return false;
+			}
+		}
+		for (IDomain domain : domainSets) {
+			if (!domain.isComplete()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		for (IDomain domain : domainQuestions.values()) {
+			if (!domain.isEmpty()) {
+				return false;
+			}
+		}
+		for (IDomain domain : domainSets) {
+			if (!domain.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public IDomain intersect(IDomain domain) {
+		System.out.println("Here1");
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		Iterator<IDomainQuestion> itr1 = domainQuestions.values().iterator();
+		if (itr1.hasNext()) {
+			sb.append(itr1.next().toString());
+		}
+		while (itr1.hasNext()) {
+			sb.append(" || ");
+			sb.append(itr1.next().toString());
+		}
+		Iterator<DomainSet> itr2 = domainSets.iterator();
+		if (itr2.hasNext()) {
+			sb.append(itr2.next().toString());
+		}
+		while (itr2.hasNext()) {
+			sb.append(" || ");
+			sb.append(itr2.next().toString());
+		}
+		sb.append(")");
+		return sb.toString();
 	}
 }

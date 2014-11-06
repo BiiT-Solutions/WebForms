@@ -2,82 +2,79 @@ package com.biit.webforms.utils.math.domain;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import com.biit.webforms.persistence.entity.Question;
 
 public abstract class DomainSet implements IDomain {
 
-	protected final HashMap<Question, IDomainQuestion> questionDomains;
+	protected final HashMap<Question, IDomainQuestion> domainQuestions;
 	protected final HashSet<DomainSet> domainSets;
 
 	public DomainSet() {
-		questionDomains = new HashMap<Question, IDomainQuestion>();
-		domainSets = new HashSet<DomainSet>();
+		domainQuestions = new HashMap<>();
+		domainSets = new HashSet<>();
 	}
-	
-	public DomainSet(HashSet<IDomainQuestion> questionDomains, HashSet<DomainSet> domainSets) {
-		this.questionDomains = new HashMap<>(); 
+
+	public DomainSet(HashMap<Question, IDomainQuestion> domainQuestions, HashSet<DomainSet> domainSets) {
+		this.domainQuestions = domainQuestions;
 		this.domainSets = domainSets;
-		for(IDomainQuestion questionDomain: questionDomains){
-			add(questionDomain);
-		}
-	}
-	
-	protected void add(IDomainQuestion questionDomain){
-		questionDomains.put(questionDomain.getQuestion(), questionDomain);
-	}
-	
-	protected void add(DomainSet domainSet){
-		domainSets.add(domainSet);
-	}
-	
-	protected void add(HashSet<DomainSet> domainSets){
-		domainSets.addAll(domainSets);
 	}
 
-	@Override
-	public boolean isComplete() {
-		for (IDomainQuestion questionDomain : questionDomains.values()) {
-			if (!questionDomain.isComplete()) {
-				return false;
-			}
+	public DomainSet(IDomainQuestion ... domains) {
+		domainQuestions = new HashMap<>();
+		domainSets = new HashSet<>();
+		for(IDomainQuestion domain: domains){
+			add(domain);
 		}
-		for (DomainSet domainSet : domainSets){
-			if(!domainSet.isComplete()){
-				return false;
-			}
-		}
-		return true;
 	}
 
-	@Override
-	public boolean isEmpty() {
-		for (IDomainQuestion questionDomain : questionDomains.values()) {
-			if (!questionDomain.isEmpty()) {
-				return false;
-			}
+	public void add(IDomain domain) {
+		if (domain instanceof IDomainQuestion) {
+			domainQuestions.put(((IDomainQuestion) domain).getQuestion(), (IDomainQuestion) domain);
+		}else{
+			domainSets.add((DomainSet) domain);
 		}
-		for (DomainSet domainSet : domainSets){
-			if(!domainSet.isEmpty()){
-				return false;
-			}
-		}
-		return true;
 	}
 	
-	protected HashSet<IDomainQuestion> getInverseQuestionDomains(){
-		HashSet<IDomainQuestion> inverseQuestionDomains = new HashSet<IDomainQuestion>();
-		for(IDomainQuestion questionDomain: questionDomains.values()){
-			inverseQuestionDomains.add((IDomainQuestion)questionDomain.inverse());
-		}
-		return inverseQuestionDomains;
+	public Set<IDomain> getDomains(){
+		Set<IDomain> allDomains = new HashSet<>();
+		allDomains.addAll(domainQuestions.values());
+		allDomains.addAll(domainSets);
+		return allDomains;
 	}
 	
-	protected HashSet<DomainSet> getInverseDomainSets(){
-		HashSet<DomainSet> inverseDomainSets = new HashSet<>();
-		for(DomainSet domainSet: domainSets){
-			inverseDomainSets.add((DomainSet) domainSet.inverse());
+
+	// public DomainSet(HashSet<IDomain> domainSets) {
+	// this.domains = domainSets;
+	// }
+	//
+	// public DomainSet(IDomain... domains) {
+	// this.domains = new HashSet<>();
+	// add(Arrays.asList(domains));
+	// }
+	//
+	// protected void add(IDomain domain) {
+	// this.domains.add(domain);
+	// }
+	//
+	// protected void add(Collection<IDomain> domains) {
+	// this.domains.addAll(domains);
+	// }
+	
+	protected HashMap<Question, IDomainQuestion> getInverseDomainQuestions(){
+		HashMap<Question, IDomainQuestion> inverseDomainQuestions = new HashMap<>();
+		for(IDomainQuestion domain : domainQuestions.values()){
+			inverseDomainQuestions.put(domain.getQuestion(), domain);
 		}
-		return inverseDomainSets;
+		return inverseDomainQuestions;
+	}
+
+	protected HashSet<DomainSet> getInverseDomainSet() {
+		HashSet<DomainSet> inverseDomains = new HashSet<DomainSet>();
+		for (DomainSet domain : domainSets) {
+			inverseDomains.add((DomainSet) domain.inverse());
+		}
+		return inverseDomains;
 	}
 }

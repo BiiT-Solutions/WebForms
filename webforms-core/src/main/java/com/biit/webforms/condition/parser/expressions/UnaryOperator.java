@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.utils.math.domain.FlowDomain;
+import com.biit.webforms.utils.math.domain.IDomain;
 import com.biit.webforms.utils.parser.Expression;
 import com.biit.webforms.utils.parser.ITokenType;
 
@@ -82,9 +82,18 @@ public class UnaryOperator extends Expression implements WebformsExpression {
 		return retrieved;
 	}
 
+	// @Override
+	// public FlowDomain getDomain() {
+	// FlowDomain domain = ((WebformsExpression) expression).getDomain();
+	// if (type == TokenTypes.NOT) {
+	// domain = domain.inverse();
+	// }
+	// return domain;
+	// }
+
 	@Override
-	public FlowDomain getDomain() {
-		FlowDomain domain = ((WebformsExpression) expression).getDomain();
+	public IDomain getDomain() {
+		IDomain domain = ((WebformsExpression) expression).getDomain();
 		if (type == TokenTypes.NOT) {
 			domain = domain.inverse();
 		}

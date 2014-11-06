@@ -11,7 +11,7 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.utils.math.domain.exceptions.DifferentDomainQuestionOperationException;
 import com.biit.webforms.utils.math.domain.exceptions.IncompatibleDomainException;
 
-public class QuestionAnswerDomain implements IDomainQuestion{
+public class QuestionAnswerDomain implements IDomainQuestion {
 
 	private final Question question;
 	private final DiscreteSet<Answer> completeDomain;
@@ -118,34 +118,39 @@ public class QuestionAnswerDomain implements IDomainQuestion{
 	}
 
 	/**
-	 * Joins two QuestionAnswerDomains and returs a new QuestionAnswerDomain
+	 * Joins two QuestionAnswerDomains and returns a new QuestionAnswerDomain
 	 * with the result of the operation. If the domains are not compatible (Not
 	 * the same question) a null value is returned.
 	 * 
 	 * @param domain
 	 * @return
-	 * @throws IncompatibleDomainException 
-	 * @throws DifferentDomainQuestionOperationException 
+	 * @throws IncompatibleDomainException
+	 * @throws DifferentDomainQuestionOperationException
 	 */
 	@Override
-	public IDomain union(IDomain domain) throws IncompatibleDomainException, DifferentDomainQuestionOperationException {
-		if(!(domain instanceof QuestionAnswerDomain)){
-			throw new IncompatibleDomainException();
+	public IDomain union(IDomain domain) {
+		if (domain instanceof IDomainQuestion) {
+			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
+				return unionSameQuestion((QuestionAnswerDomain) domain);				
+			}else{
+				return new DomainSetUnion(this, (IDomainQuestion)domain);
+			}
 		}
-		QuestionAnswerDomain domainB = (QuestionAnswerDomain) domain;
-		if (domainB.question == null || this.question == null || (!question.equals(domainB.question))) {
-			throw new DifferentDomainQuestionOperationException();
+		if (domain instanceof DomainSet) {
+			return domain.union(this);
 		}
-		
-		QuestionAnswerDomain newDomain = new QuestionAnswerDomain(question);
+		return null;
+	}
 
+	public IDomain unionSameQuestion(QuestionAnswerDomain domain) {
+		QuestionAnswerDomain newDomain = new QuestionAnswerDomain(question);
 		for (Answer answer : getValue()) {
 			newDomain.addValue(answer);
+
 		}
-		for (Answer answer : domainB.getValue()) {
+		for (Answer answer : domain.getValue()) {
 			newDomain.addValue(answer);
 		}
-
 		return newDomain;
 	}
 
@@ -156,32 +161,36 @@ public class QuestionAnswerDomain implements IDomainQuestion{
 	 * 
 	 * @param domain
 	 * @return
-	 * @throws DifferentDomainQuestionOperationException 
-	 * @throws IncompatibleDomainException 
+	 * @throws DifferentDomainQuestionOperationException
+	 * @throws IncompatibleDomainException
 	 */
-	public IDomain intersect(IDomain domain) throws DifferentDomainQuestionOperationException, IncompatibleDomainException {
-		if(!(domain instanceof QuestionAnswerDomain)){
-			throw new IncompatibleDomainException();
+	public IDomain intersect(IDomain domain){
+		if (domain instanceof IDomainQuestion) {
+			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
+				return intersectSameQuestion((QuestionAnswerDomain) domain);				
+			}else{
+				return new DomainSetIntersection(this, (IDomainQuestion)domain);
+			}
 		}
-		
-		QuestionAnswerDomain domainB = (QuestionAnswerDomain) domain;
-		if (domainB.question == null || this.question == null || (!question.equals(domainB.question))) {
-			throw new DifferentDomainQuestionOperationException();
+		if (domain instanceof DomainSet) {
+			return domain.intersect(this);
 		}
-
+		return null;
+	}
+	
+	public IDomain intersectSameQuestion(QuestionAnswerDomain domain) {
 		QuestionAnswerDomain newDomain = new QuestionAnswerDomain(question);
 
-		for (Answer answer : domainB.getValue()) {
+		for (Answer answer : domain.getValue()) {
 			if (contains(answer)) {
 				newDomain.addValue(answer);
 			}
 		}
-
 		return newDomain;
 	}
 
 	public Question getQuestion() {
 		return question;
 	}
-	
+
 }

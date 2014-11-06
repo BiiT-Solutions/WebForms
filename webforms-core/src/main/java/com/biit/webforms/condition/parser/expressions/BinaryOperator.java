@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.utils.math.domain.FlowDomain;
+import com.biit.webforms.utils.math.domain.IDomain;
 import com.biit.webforms.utils.parser.Expression;
 import com.biit.webforms.utils.parser.ITokenType;
 
@@ -15,7 +15,7 @@ import com.biit.webforms.utils.parser.ITokenType;
  * @author joriz_000
  * 
  */
-public class BinaryOperator extends Expression implements WebformsExpression{
+public class BinaryOperator extends Expression implements WebformsExpression {
 
 	private Expression left;
 	private TokenTypes type;
@@ -57,34 +57,48 @@ public class BinaryOperator extends Expression implements WebformsExpression{
 	@Override
 	public List<Expression> getAll(Class<?> arg0) {
 		List<Expression> retrieved = new ArrayList<Expression>();
-		if(arg0.isInstance(this)){
+		if (arg0.isInstance(this)) {
 			retrieved.add(this);
 		}
 		retrieved.addAll(left.getAll(arg0));
 		retrieved.addAll(right.getAll(arg0));
 		return retrieved;
 	}
-	
+
 	@Override
 	public List<Token> getAllTokens(Class<? extends Token> arg0) {
 		List<Token> retrieved = new ArrayList<Token>();
-			
+
 		retrieved.addAll(left.getAllTokens(arg0));
 		retrieved.addAll(right.getAllTokens(arg0));
-		
+
 		return retrieved;
 	}
 
+	// @Override
+	// public FlowDomain getDomain() {
+	// FlowDomain leftDomain = ((WebformsExpression)left).getDomain();
+	// FlowDomain rightDomain = ((WebformsExpression)right).getDomain();
+	//
+	// if(type == TokenTypes.AND){
+	// return leftDomain.intersection(rightDomain);
+	// }else{
+	// return leftDomain.union(rightDomain);
+	// }
+	// }
+
 	@Override
-	public FlowDomain getDomain() {
-		FlowDomain leftDomain = ((WebformsExpression)left).getDomain();
-		FlowDomain rightDomain = ((WebformsExpression)right).getDomain();
-		
-		if(type == TokenTypes.AND){
-			return leftDomain.intersection(rightDomain);
-		}else{
+	public IDomain getDomain() {
+		IDomain leftDomain = ((WebformsExpression) left).getDomain();
+		IDomain rightDomain = ((WebformsExpression) right).getDomain();
+		System.out.println("Binary operator, left :"+leftDomain+" right:"+rightDomain); 
+
+		if (type == TokenTypes.AND) {
+			System.out.println("Intersec: "+leftDomain.intersect(rightDomain));
+			return leftDomain.intersect(rightDomain);
+		} else {
+			System.out.println("Union: "+leftDomain.union(rightDomain));
 			return leftDomain.union(rightDomain);
 		}
 	}
-
 }
