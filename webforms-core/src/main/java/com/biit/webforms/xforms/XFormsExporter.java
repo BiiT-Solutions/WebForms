@@ -183,10 +183,18 @@ public class XFormsExporter {
 		header += getAttachments();
 		header += getResources();
 		header += getInstances();
-		// header += getTemplatesOfLoop();
+		header += getTemplatesOfLoops();
 		header += "</xf:model>";
 		header += "</xh:head>";
 		return header;
+	}
+
+	private String getTemplatesOfLoops() {
+		String templates = "";
+		for (XFormsCategory xFormsCategory : xFormsCategories) {
+			templates += xFormsCategory.getTemplates();
+		}
+		return templates;
 	}
 
 	/**

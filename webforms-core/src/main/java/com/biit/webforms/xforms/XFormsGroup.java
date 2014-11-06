@@ -41,6 +41,9 @@ public class XFormsGroup extends XFormsObject {
 		return elementBinding;
 	}
 
+	/**
+	 * Groups are represented as sections.
+	 */
 	@Override
 	public String getSectionBody() {
 		String section = "";

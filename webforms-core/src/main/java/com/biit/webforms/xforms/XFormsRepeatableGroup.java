@@ -8,31 +8,57 @@ import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
+/**
+ * Repeated groups are represented as a section (called dummy section) + repeatable grid in Orbeon.
+ * 
+ */
 public class XFormsRepeatableGroup extends XFormsObject {
+	private final static int MIN_REPEATS = 1;
+	private final static int MAX_REPEATS = 100;
 
 	public XFormsRepeatableGroup(Group group) throws NotValidTreeObjectException, NotValidChildException {
 		super(group);
 	}
 
 	/**
-	 * Nested grids are not allowed in orbeon. Only first group is added.
+	 * Add also a dummy section definition.
 	 */
 	@Override
-	protected String getSectionBody() {
-		String section = "<fr:grid>";
+	protected String getDefinition() {
+		String section = "<" + getControlName() + ">";
 		for (XFormsObject child : getChildren()) {
-			section += child.getSectionBody();
+			section += child.getDefinition();
 		}
-		section += "</fr:grid>";
+		section += "</" + getControlName() + ">";
 		return section;
 	}
 
 	/**
-	 * Groups has no labels in resources section. Only add its children.
+	 * Add also a dummy section definition.
+	 */
+	@Override
+	protected String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
+		String elementBinding = "<xf:bind id=\"" + getBindingName() + "\" name=\"" + getControlName() + "\""
+				+ getRelevantStructure() + " ref=\"" + getControlName() + "\" >";
+		// Add also children.
+		for (XFormsObject child : getChildren()) {
+			elementBinding += child.getBinding();
+		}
+		elementBinding += "</xf:bind>";
+		return elementBinding;
+	}
+
+	/**
+	 * Loops has labels in the section resources section. Only add its children.
 	 */
 	@Override
 	protected String getResources() throws NotExistingDynamicFieldException {
 		String resource = "<" + getControlName() + ">";
+		resource += getLabel();
+		resource += getHint();
+		resource += getAlert();
+		resource += getHelp();
 
 		for (XFormsObject child : getChildren()) {
 			resource += child.getResources();
@@ -43,17 +69,69 @@ public class XFormsRepeatableGroup extends XFormsObject {
 		return resource;
 	}
 
+	private String getSectionControlNameOfDummySection() {
+		return getControlName() + "-section-control";
+	}
+
+	/**
+	 * We add a grid in a section to allow loops.
+	 */
 	@Override
-	public String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-		String elementBinding = "<xf:bind id=\"" + getBindingName() + "\" name=\"" + getControlName() + "\""
-				+ getRelevantStructure() + " ref=\"" + getControlName() + "\" >";
-		// Add also children.
+	protected String getSectionBody() {
+		String section = "";
+		section += "<fr:section id=\"" + getSectionControlNameOfDummySection() + "\" bind=\"" + getBindingName()
+				+ "\">";
+		section += getBodyLabel();
+		section += getBodyHint();
+		section += getBodyAlert();
+		section += getBodyHelp();
+		section += getLoopHeaderTags(MIN_REPEATS, MAX_REPEATS);
 		for (XFormsObject child : getChildren()) {
-			elementBinding += child.getBinding();
+			section += child.getSectionBody();
 		}
-		elementBinding += "</xf:bind>";
-		return elementBinding;
+		section += "</fr:grid>";
+		section += "</fr:section>";
+		return section;
+	}
+
+	private String getLoopHeaderTags(int minRepeats, int maxRepeats) {
+		String maxRepeatsTag = "";
+		String minRepeatsTag = "";
+		if (maxRepeats > 0) {
+			maxRepeatsTag = " max=\"" + maxRepeats + "\" ";
+		}
+		if (minRepeats > 0) {
+			minRepeatsTag = " min=\"" + minRepeats + "\" ";
+		}
+
+		String group = "<fr:grid id=\"" + getSectionControlName() + "\" repeat=\"true\" bind=\"" + getBindingName()
+				+ "\" origin=\"instance('" + getTemplateName() + "')\" " + minRepeatsTag + maxRepeatsTag + ">";
+
+		return group;
+	}
+
+	private String getTemplateName() {
+		return getControlName() + "-template";
+	}
+
+	/**
+	 * Only loops uses templates
+	 * 
+	 * @return
+	 */
+	@Override
+	protected String getTemplates() {
+		String template = "";
+		template += "<xf:instance xxf:readonly=\"true\" id=\"" + getTemplateName() + "\">";
+
+		template += "<" + getControlName() + ">";
+		for (XFormsObject child : getChildren()) {
+			template += child.getDefinition();
+		}
+		template += "</" + getControlName() + ">";
+
+		template += "</xf:instance>";
+		return template;
 	}
 
 }
