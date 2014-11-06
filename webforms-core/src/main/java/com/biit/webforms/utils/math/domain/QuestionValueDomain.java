@@ -6,7 +6,7 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.utils.math.domain.exceptions.DifferentDomainQuestionOperationException;
 import com.biit.webforms.utils.math.domain.exceptions.IncompatibleDomainException;
 
-public class QuestionValueDomain implements IDomain {
+public class QuestionValueDomain implements IDomainQuestion {
 
 	private final Question question;
 	private final RealLimitPair completeDomain;
