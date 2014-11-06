@@ -69,9 +69,23 @@ public class RealLimitPair implements Comparable<RealLimitPair>{
 		}
 		return null;
 	}
+	
+	/**
+	 * Check if overlapping is strict.
+	 * @param pair
+	 * @return
+	 */
+	private boolean isOverlapStrict(RealLimitPair pair) {
+		if(right.getLimit().equals(pair.getLeft().getLimit())){
+			if(right.getClosure()!=Closure.INCLUSIVE || pair.getLeft().getClosure()!=Closure.INCLUSIVE){
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public RealLimitPair intersection(RealLimitPair pair) {
-		if (overlap(pair)) {
+		if (overlap(pair) && isOverlapStrict(pair)) {
 			RealLimit newLeft;
 			RealLimit newRight;
 			// Left
@@ -88,7 +102,7 @@ public class RealLimitPair implements Comparable<RealLimitPair>{
 				newRight = pair.getRight();
 			} else {
 				// range less than this
-				newRight = pair.getRight();
+				newRight = getRight();
 			}
 			return new RealLimitPair(newLeft, newRight);
 		}
@@ -130,5 +144,25 @@ public class RealLimitPair implements Comparable<RealLimitPair>{
 			return 0;
 		}
 		return left.compareTo(o.left);
+	}
+	
+	public static RealLimitPair lt(Float value){
+		return new RealLimitPair(RealLimit.negativeInfinity(), new RealLimit(value, Closure.EXCLUSIVE));
+	}
+	
+	public static RealLimitPair le(Float value){
+		return new RealLimitPair(RealLimit.negativeInfinity(), new RealLimit(value, Closure.INCLUSIVE));
+	}
+	
+	public static RealLimitPair gt(Float value){
+		return new RealLimitPair(new RealLimit(value, Closure.EXCLUSIVE), RealLimit.positiveInfinity());
+	}
+	
+	public static RealLimitPair ge(Float value){
+		return new RealLimitPair(new RealLimit(value, Closure.INCLUSIVE), RealLimit.positiveInfinity());
+	}
+	
+	public static RealLimitPair realRange(){
+		return new RealLimitPair(RealLimit.negativeInfinity(), RealLimit.positiveInfinity());
 	}
 }

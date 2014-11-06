@@ -18,7 +18,9 @@ public enum CommonThemeIcon implements IThemeIcon {
 	
 	REMOVE("remove.svg"), 
 	
-	SAVE("save.svg");
+	SAVE_FORM("form.save.svg"),
+	
+	FILE_DOWNLOAD("file.download.svg");
 
 	private String value;
 

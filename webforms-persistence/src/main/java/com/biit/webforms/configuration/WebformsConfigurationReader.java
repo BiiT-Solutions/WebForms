@@ -20,51 +20,51 @@ public class WebformsConfigurationReader {
 
 	private static final String DEFAULT_REGEX_BIRTHDAY = "([0-9]{1,2}[-/]){1,2}[0-9]{4}";
 
-	private final String DATABASE_CONFIG_FILE = "settings.conf";
+	private static final String DATABASE_CONFIG_FILE = "settings.conf";
 
-	private final String GRAPHVIZ_TAG = "graphvizBinPath";
+	private static final String GRAPHVIZ_TAG = "graphvizBinPath";
 
-	private final String DEFAULT_GRAPHVIZ_VALUE = "/usr/bin/dot";
+	private static final String DEFAULT_GRAPHVIZ_VALUE = "/usr/bin/dot";
 
-	private final String REGEX_TEXT = "regexText";
+	private static final String REGEX_TEXT = "regexText";
 
-	private final String DEFAULT_REGEX_TEXT = "[\\u0000-\\uFFFF]*";
+	private static final String DEFAULT_REGEX_TEXT = "[\\u0000-\\uFFFF]*";
 
-	private final String REGEX_PHONE = "regexPhone";
+	private static final String REGEX_PHONE = "regexPhone";
 
-	private final String DEFAULT_REGEX_PHONE = "\\(\\+[0-9]{2}\\)( *[0-9]{3}){3}";
+	private static final String DEFAULT_REGEX_PHONE = "\\(\\+[0-9]{2}\\)( *[0-9]{3}){3}";
 
-	private final String REGEX_IBAN = "regexIban";
+	private static final String REGEX_IBAN = "regexIban";
 
-	private final String DEFAULT_REGEX_IBAN = "[A-Z]{2}[0-9]{2}( *[0-9A-Z]){1,34}";
+	private static final String DEFAULT_REGEX_IBAN = "[A-Z]{2}[0-9]{2}( *[0-9A-Z]){1,34}";
 
-	private final String REGEX_BSN = "regexBsn";
+	private static final String REGEX_BSN = "regexBsn";
 
-	private final String DEFAULT_REGEX_BSN = "[0-9]{9}";
+	private static final String DEFAULT_REGEX_BSN = "[0-9]{9}";
 
-	private final String REGEX_DATE = "regexDate";
+	private static final String REGEX_DATE = "regexDate";
 
-	private final String DEFAULT_REGEX_DATE = "([0-9]{1,2}[-/]){1,2}[0-9]{4}";
+	private static final String DEFAULT_REGEX_DATE = "([0-9]{1,2}[-/]){1,2}[0-9]{4}";
 	
-	private final String REGEX_DATE_PERIOD = "regexDatePeriod";
+	private static final String REGEX_DATE_PERIOD = "regexDatePeriod";
 	
-	private final String DEFAULT_REGEX_DATE_PERIOD = "[0-9]+[DMY]";
+	private static final String DEFAULT_REGEX_DATE_PERIOD = "[0-9]+[DMY]";
 	
-	private final String REGEX_NUMBER = "regexNumber";
+	private static final String REGEX_NUMBER = "regexNumber";
 	
-	private final String DEFAULT_REGEX_NUMBER = "[0-9]+";
+	private static final String DEFAULT_REGEX_NUMBER = "[0-9]+";
 	
-	private final String REGEX_FLOAT = "regexFloat";
+	private static final String REGEX_FLOAT = "regexFloat";
 	
-	private final String DEFAULT_REGEX_FLOAT = "[0-9]+\\.[0-9]*";
+	private static final String DEFAULT_REGEX_FLOAT = "[0-9]+\\.[0-9]*";
 
-	private final String REGEX_POSTAL_CODE = "regexPostalCode";
+	private static final String REGEX_POSTAL_CODE = "regexPostalCode";
 
-	private final String DEFAULT_REGEX_POSTAL_CODE = "[0-9]{4}[a-zA-Z]{2}";
+	private static final String DEFAULT_REGEX_POSTAL_CODE = "[0-9]{4}[a-zA-Z]{2}";
 
-	private final String ISSUE_MANAGER_URL = "issueManagerUrl";
+	private static final String ISSUE_MANAGER_URL = "issueManagerUrl";
 
-	private final String DEFAULT_ISSUE_MANAGER_URL = null;
+	private static final String DEFAULT_ISSUE_MANAGER_URL = null;
 
 	private String graphvizBinPath;
 

@@ -27,16 +27,16 @@ public enum AnswerSubformat {
 	// Date subtypes
 	DATE("dd-mm-yyyy", WebformsConfigurationReader.getInstance().getRegexDate()),
 
-	DATE_PAST("dd-mm-yyyy", WebformsConfigurationReader.getInstance().getRegexDate()),
+	DATE_PAST("31/12/2000", WebformsConfigurationReader.getInstance().getRegexDate()),
 
-	DATE_FUTURE("dd-mm-yyyy", WebformsConfigurationReader.getInstance().getRegexDate()),
+	DATE_FUTURE("31/12/2000", WebformsConfigurationReader.getInstance().getRegexDate()),
 
-	DATE_PERIOD("[0-9]+[DMY]", WebformsConfigurationReader.getInstance().getRegexDatePeriod()),
+	DATE_PERIOD("10D", WebformsConfigurationReader.getInstance().getRegexDatePeriod()),
 	
-	DATE_BIRTHDAY("dd-mm-yyyy", WebformsConfigurationReader.getInstance().getRegexDateBirthday()),
+	DATE_BIRTHDAY("31/12/2000", WebformsConfigurationReader.getInstance().getRegexDateBirthday()),
 
 	// Postal code
-	POSTAL_CODE("NNNNAA", WebformsConfigurationReader.getInstance().getRegexPostalCode())
+	POSTAL_CODE("0000AA", WebformsConfigurationReader.getInstance().getRegexPostalCode())
 
 	;
 
