@@ -40,7 +40,19 @@ public abstract class XFormsObject {
 			if (child instanceof Category) {
 				newChild = new XFormsCategory((Category) child);
 			} else if (child instanceof Group) {
-				newChild = new XFormsGroup((Group) child);
+				if (!child.isInsideALoop()) {
+					if (((Group) child).isRepeatable()) {
+						newChild = new XFormsRepeatableGroup((Group) child);
+					} else {
+						newChild = new XFormsGroup((Group) child);
+					}
+				} else {
+					if (((Group) child).isRepeatable()) {
+						newChild = new XFormsRepeatableGroupInRepeatableGroup((Group) child);
+					} else {
+						newChild = new XFormsGroupInRepeatableGroup((Group) child);
+					}
+				}
 			} else if (child instanceof Question) {
 				newChild = new XFormsQuestion((Question) child);
 			} else if (child instanceof Answer) {
@@ -92,12 +104,24 @@ public abstract class XFormsObject {
 	 * @throws InvalidFlowInForm
 	 */
 	protected String getBodyStructure(String structure, boolean html) {
-		String text = "<xf:" + structure + " ref=\"$form-resources/" + getControlName() + "/" + structure + "\"";
+		String text = "<xf:" + structure + " ref=\"$form-resources/" + getPath() + "/" + structure + "\"";
 		if (html) {
 			text += " mediatype=\"text/html\" ";
 		}
 		text += " />";
 		return text;
+	}
+
+	/**
+	 * Return the complete path of the element.
+	 * 
+	 * @return
+	 */
+	protected String getPath() {
+		if (getParent() != null) {
+			return getParent().getPath() + "/" + getControlName();
+		}
+		return getControlName();
 	}
 
 	protected List<XFormsObject> getChildren() {
@@ -158,12 +182,25 @@ public abstract class XFormsObject {
 		return section;
 	}
 
-	public XFormsObject getParent() {
+	protected XFormsObject getParent() {
 		return parent;
 	}
 
-	public void setParent(XFormsObject parent) {
+	protected void setParent(XFormsObject parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * Only loops uses templates. Search in childs.
+	 * 
+	 * @return
+	 */
+	protected String getTemplates() {
+		String templates = "";
+		for (XFormsObject child : getChildren()) {
+			templates += child.getTemplates();
+		}
+		return templates;
 	}
 
 }

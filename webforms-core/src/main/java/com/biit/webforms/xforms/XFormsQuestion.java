@@ -230,7 +230,7 @@ public class XFormsQuestion extends XFormsObject {
 				row += "<xf:item><xf:label>[Select...]</xf:label><xf:value/></xf:item>";
 			}
 			row += "<xf:itemset ref=\"$form-resources/";
-			row += getControlName() + "/item\">";
+			row += getPath() + "/item\">";
 			row += "<xf:label ref=\"label\" " + isHtmlText() + " />";
 			row += "<xf:value ref=\"value\"/>";
 			row += "<xf:hint ref=\"hint\"/>";
