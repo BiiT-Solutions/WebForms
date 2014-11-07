@@ -96,6 +96,7 @@ public class UnaryOperator extends Expression implements WebformsExpression {
 		IDomain domain = ((WebformsExpression) expression).getDomain();
 		if (type == TokenTypes.NOT) {
 			domain = domain.inverse();
+			System.out.println("Inverse "+domain);
 		}
 		return domain;
 	}

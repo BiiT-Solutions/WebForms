@@ -41,7 +41,7 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 
 	@Override
 	public String toString() {
-		return question + " D:" + completeDomain + " V: " + value;
+		return question + " " + value;
 	}
 
 	public void addValue(Answer answer) {

@@ -2,6 +2,7 @@ package com.biit.webforms.utils.math.domain;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.biit.webforms.persistence.entity.Question;
@@ -21,10 +22,18 @@ public abstract class DomainSet implements IDomain {
 		this.domainSets = domainSets;
 	}
 
-	public DomainSet(IDomainQuestion ... domains) {
+	public DomainSet(IDomain ... domains) {
 		domainQuestions = new HashMap<>();
 		domainSets = new HashSet<>();
-		for(IDomainQuestion domain: domains){
+		for(IDomain domain: domains){
+			add(domain);
+		}
+	}
+
+	public DomainSet(List<IDomain> domains) {
+		domainQuestions = new HashMap<>();
+		domainSets = new HashSet<>();
+		for(IDomain domain: domains){
 			add(domain);
 		}
 	}
@@ -65,7 +74,7 @@ public abstract class DomainSet implements IDomain {
 	protected HashMap<Question, IDomainQuestion> getInverseDomainQuestions(){
 		HashMap<Question, IDomainQuestion> inverseDomainQuestions = new HashMap<>();
 		for(IDomainQuestion domain : domainQuestions.values()){
-			inverseDomainQuestions.put(domain.getQuestion(), domain);
+			inverseDomainQuestions.put(domain.getQuestion(), (IDomainQuestion) domain.inverse());
 		}
 		return inverseDomainQuestions;
 	}

@@ -94,7 +94,7 @@ public class BinaryOperator extends Expression implements WebformsExpression {
 		System.out.println("Binary operator, left :"+leftDomain+" right:"+rightDomain); 
 
 		if (type == TokenTypes.AND) {
-			System.out.println("Intersec: "+leftDomain.intersect(rightDomain));
+			System.out.println("Intersec: "+leftDomain.intersect(rightDomain)+ leftDomain.intersect(rightDomain).getClass().getName());
 			return leftDomain.intersect(rightDomain);
 		} else {
 			System.out.println("Union: "+leftDomain.union(rightDomain));
