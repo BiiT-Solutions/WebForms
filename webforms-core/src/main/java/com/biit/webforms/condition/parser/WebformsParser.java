@@ -1,5 +1,6 @@
 package com.biit.webforms.condition.parser;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import com.biit.webforms.condition.parser.parselets.BinaryOperationParselet;
@@ -12,9 +13,17 @@ import com.biit.webforms.utils.parser.Parser;
 
 public class WebformsParser extends Parser {
 
+	public WebformsParser(Token token) {
+		super(Arrays.asList(new Token[]{token}).iterator());
+		configure();
+	}
+	
 	public WebformsParser(Iterator<Token> tokens) {
 		super(tokens);
+		configure();
+	}
 
+	private void configure() {
 		// Configure the parser
 		// Register prefix parselets
 		register(TokenTypes.NOT, new PrefixOperatorParselet(Precedence.PREFIX));
@@ -27,7 +36,7 @@ public class WebformsParser extends Parser {
 		register(TokenTypes.NE, new ComparationClusterParselet());
 		// Grouping
 		register(TokenTypes.LEFT_PAR, new ParenthesisParselet());
-		
+
 		// Register infix parselets
 		// LOGIC
 		register(TokenTypes.AND, new BinaryOperationParselet(Precedence.AND, false));

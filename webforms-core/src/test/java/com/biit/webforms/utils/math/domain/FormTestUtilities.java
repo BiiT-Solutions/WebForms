@@ -20,6 +20,7 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
@@ -29,6 +30,7 @@ import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyE
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+import com.biit.webforms.validators.reports.FlowOriginIsNotMandatory;
 
 public class FormTestUtilities {
 
@@ -173,8 +175,38 @@ public class FormTestUtilities {
 		return form;
 	}
 
+	public static Form createFormTest6()throws FieldTooLongException, NotValidChildException,
+	CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
+	FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny,
+	InvalidAnswerFormatException, InvalidAnswerSubformatException  {
+		// Structure
+		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
+		Question qu2 = createQuestionAnswer("qu2", "d", "e");
+		Question qu3 = createQuestionAnswer("qu3", "f", "g");
+		Text info1 = createText("text1","test text");
+		
+		Category cat1 = createCategory("cat1", qu1, qu2, qu3, info1);
+		Form form = createForm("test1", cat1);
+		
+		// Flow
+		Flow flow = createNormalFlow(qu3, info1, false, token(qu1,"==","a"),Token.or(),Token.leftPar(),token(qu2,"==","d"),Token.and(),token(qu3,"==","f"),Token.rigthPar());
+		Flow flowOthers = createEndFlow(qu3, true);
+		
+		form.addFlow(flow);
+		form.addFlow(flowOthers);
+		
+		return form;
+	}
+
 	private static Token or() {
 		return Token.or();
+	}
+	
+	private static Text createText(String name, String value) throws FieldTooLongException, CharacterNotAllowedException {
+		Text text= new Text();
+		text.setName(name);
+		text.setLabel(value);
+		return text;
 	}
 
 	public static Form createForm(String name, Category... categories) throws FieldTooLongException,

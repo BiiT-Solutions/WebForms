@@ -1,16 +1,32 @@
 package com.biit.webforms.utils.math.domain;
 
+import java.util.Set;
+
 import junit.framework.Assert;
 
 import org.testng.annotations.Test;
 
+import com.biit.form.BaseQuestion;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.webforms.enumerations.AnswerType;
-import com.biit.webforms.persistence.entity.Answer;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.condition.parser.WebformsParser;
+import com.biit.webforms.condition.parser.expressions.WebformsExpression;
+import com.biit.webforms.persistence.entity.Flow;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
+import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
+import com.biit.webforms.utils.parser.exceptions.ExpectedTokenNotFound;
+import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
+import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
+import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
+import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
+import com.biit.webforms.utils.parser.exceptions.ParseException;
 
 @Test(groups = { "testDomain" })
 public class TestDomain {
@@ -55,38 +71,29 @@ public class TestDomain {
 
 	@Test
 	public void testRealRangeGenerationComposition() {
-		RealRange composedRange = new RealRange(RealLimitPair.lt(3.0f),
-				RealLimitPair.gt(3.0f));
+		RealRange composedRange = new RealRange(RealLimitPair.lt(3.0f), RealLimitPair.gt(3.0f));
 		Assert.assertEquals(composedRange.toString(), TEST_07);
 	}
 
 	@Test
 	public void testUnion() throws LimitInsertionException {
 
-		RealRange range2to3 = new RealRange(Closure.INCLUSIVE, 2.0f, 3.0f,
-				Closure.INCLUSIVE);
-		RealRange range3to4 = new RealRange(Closure.INCLUSIVE, 3.0f, 4.0f,
-				Closure.INCLUSIVE);
+		RealRange range2to3 = new RealRange(Closure.INCLUSIVE, 2.0f, 3.0f, Closure.INCLUSIVE);
+		RealRange range3to4 = new RealRange(Closure.INCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
 
 		Assert.assertEquals(range2to3.union(range3to4).toString(), TEST_08);
 
-		RealRange range3to4OpenLeft = new RealRange(Closure.EXCLUSIVE, 3.0f,
-				4.0f, Closure.INCLUSIVE);
+		RealRange range3to4OpenLeft = new RealRange(Closure.EXCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
 
-		Assert.assertEquals(range2to3.union(range3to4OpenLeft).toString(),
-				TEST_09);
+		Assert.assertEquals(range2to3.union(range3to4OpenLeft).toString(), TEST_09);
 
-		RealRange range2to3OpenRight = new RealRange(Closure.INCLUSIVE, 2.0f,
-				3.0f, Closure.EXCLUSIVE);
+		RealRange range2to3OpenRight = new RealRange(Closure.INCLUSIVE, 2.0f, 3.0f, Closure.EXCLUSIVE);
 
-		Assert.assertEquals(range2to3OpenRight.union(range3to4OpenLeft)
-				.toString(), TEST_10);
+		Assert.assertEquals(range2to3OpenRight.union(range3to4OpenLeft).toString(), TEST_10);
 
-		RealRange range3 = new RealRange(Closure.INCLUSIVE, 3.0f, 3.0f,
-				Closure.INCLUSIVE);
+		RealRange range3 = new RealRange(Closure.INCLUSIVE, 3.0f, 3.0f, Closure.INCLUSIVE);
 
-		Assert.assertEquals(range2to3OpenRight.union(range3).toString(),
-				TEST_11);
+		Assert.assertEquals(range2to3OpenRight.union(range3).toString(), TEST_11);
 
 	}
 
@@ -96,21 +103,17 @@ public class TestDomain {
 		// (-Inf,3)
 		RealRange rang1 = RealRange.lt(3.0f);
 		// (3,5]
-		RealRange rang2 = new RealRange(Closure.EXCLUSIVE, 3.0f, 5.0f,
-				Closure.INCLUSIVE);
+		RealRange rang2 = new RealRange(Closure.EXCLUSIVE, 3.0f, 5.0f, Closure.INCLUSIVE);
 		// [6,9]
-		RealRange rang3 = new RealRange(Closure.INCLUSIVE, 6.0f, 9.0f,
-				Closure.INCLUSIVE);
+		RealRange rang3 = new RealRange(Closure.INCLUSIVE, 6.0f, 9.0f, Closure.INCLUSIVE);
 
 		RealRange rangeA = rang1.union(rang2).union(rang3);
 		Assert.assertEquals(rangeA.toString(), TEST_12);
 
 		// [0,4]
-		RealRange rangB1 = new RealRange(Closure.INCLUSIVE, 0.0f, 4.0f,
-				Closure.INCLUSIVE);
+		RealRange rangB1 = new RealRange(Closure.INCLUSIVE, 0.0f, 4.0f, Closure.INCLUSIVE);
 		// [7,8]
-		RealRange rangB2 = new RealRange(Closure.INCLUSIVE, 7.0f, 8.0f,
-				Closure.INCLUSIVE);
+		RealRange rangB2 = new RealRange(Closure.INCLUSIVE, 7.0f, 8.0f, Closure.INCLUSIVE);
 		// [20,+inf)
 		RealRange rangB3 = RealRange.ge(20.0f);
 
@@ -123,19 +126,14 @@ public class TestDomain {
 	@Test
 	public void testIntersection() throws LimitInsertionException {
 
-		RealRange range2to3 = new RealRange(Closure.INCLUSIVE, 2.0f, 3.0f,
-				Closure.INCLUSIVE);
-		RealRange range3to4 = new RealRange(Closure.INCLUSIVE, 3.0f, 4.0f,
-				Closure.INCLUSIVE);
+		RealRange range2to3 = new RealRange(Closure.INCLUSIVE, 2.0f, 3.0f, Closure.INCLUSIVE);
+		RealRange range3to4 = new RealRange(Closure.INCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
 
-		Assert.assertEquals(range2to3.intersection(range3to4).toString(),
-				TEST_15);
+		Assert.assertEquals(range2to3.intersection(range3to4).toString(), TEST_15);
 
-		RealRange range3to4LeftOpen = new RealRange(Closure.EXCLUSIVE, 3.0f,
-				4.0f, Closure.INCLUSIVE);
+		RealRange range3to4LeftOpen = new RealRange(Closure.EXCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
 
-		Assert.assertEquals(range2to3.intersection(range3to4LeftOpen)
-				.toString(), TEST_16);
+		Assert.assertEquals(range2to3.intersection(range3to4LeftOpen).toString(), TEST_16);
 
 	}
 
@@ -145,20 +143,16 @@ public class TestDomain {
 		// (-Inf,3)
 		RealRange rang1 = RealRange.lt(3.0f);
 		// (3,5]
-		RealRange rang2 = new RealRange(Closure.EXCLUSIVE, 3.0f, 5.0f,
-				Closure.INCLUSIVE);
+		RealRange rang2 = new RealRange(Closure.EXCLUSIVE, 3.0f, 5.0f, Closure.INCLUSIVE);
 		// [6,9]
-		RealRange rang3 = new RealRange(Closure.INCLUSIVE, 6.0f, 9.0f,
-				Closure.INCLUSIVE);
+		RealRange rang3 = new RealRange(Closure.INCLUSIVE, 6.0f, 9.0f, Closure.INCLUSIVE);
 
 		RealRange rangeA = rang1.union(rang2).union(rang3);
 
 		// [0,4]
-		RealRange rangB1 = new RealRange(Closure.INCLUSIVE, 0.0f, 4.0f,
-				Closure.INCLUSIVE);
+		RealRange rangB1 = new RealRange(Closure.INCLUSIVE, 0.0f, 4.0f, Closure.INCLUSIVE);
 		// [7,8]
-		RealRange rangB2 = new RealRange(Closure.INCLUSIVE, 7.0f, 8.0f,
-				Closure.INCLUSIVE);
+		RealRange rangB2 = new RealRange(Closure.INCLUSIVE, 7.0f, 8.0f, Closure.INCLUSIVE);
 		// [20,+inf)
 		RealRange rangB3 = RealRange.ge(20.0f);
 
@@ -167,47 +161,63 @@ public class TestDomain {
 		Assert.assertEquals(rangeA.intersection(rangeB).toString(), TEST_17);
 
 	}
-	
+
 	@Test()
 	public void testInverse() throws LimitInsertionException {
 
 		// (-Inf,3)
 		RealRange rang1 = RealRange.lt(3.0f);
 		// (3,5]
-		RealRange rang2 = new RealRange(Closure.EXCLUSIVE, 3.0f, 5.0f,
-				Closure.INCLUSIVE);
+		RealRange rang2 = new RealRange(Closure.EXCLUSIVE, 3.0f, 5.0f, Closure.INCLUSIVE);
 		// [6,9]
-		RealRange rang3 = new RealRange(Closure.INCLUSIVE, 6.0f, 9.0f,
-				Closure.INCLUSIVE);
+		RealRange rang3 = new RealRange(Closure.INCLUSIVE, 6.0f, 9.0f, Closure.INCLUSIVE);
 
 		RealRange rangeAinv = rang1.union(rang2).union(rang3).inverse(RealLimitPair.realRange());
 		Assert.assertEquals(rangeAinv.toString(), TEST_18);
 
 		// [0,4]
-		RealRange rangB1 = new RealRange(Closure.INCLUSIVE, 0.0f, 4.0f,
-				Closure.INCLUSIVE);
+		RealRange rangB1 = new RealRange(Closure.INCLUSIVE, 0.0f, 4.0f, Closure.INCLUSIVE);
 		// [7,8]
-		RealRange rangB2 = new RealRange(Closure.INCLUSIVE, 7.0f, 8.0f,
-				Closure.INCLUSIVE);
+		RealRange rangB2 = new RealRange(Closure.INCLUSIVE, 7.0f, 8.0f, Closure.INCLUSIVE);
 		// [20,+inf)
 		RealRange rangB3 = RealRange.ge(20.0f);
 
 		RealRange rangeBinv = rangB1.union(rangB2).union(rangB3).inverse(RealLimitPair.realRange());
-		Assert.assertEquals(rangeBinv.toString(), TEST_19);	
+		Assert.assertEquals(rangeBinv.toString(), TEST_19);
 
 	}
 
-	private static Question createQuestionAnswers(String questionName,
-			String... answerNames) throws FieldTooLongException,
-			CharacterNotAllowedException, NotValidChildException {
-		Question question = new Question(questionName);
-		question.setAnswerType(AnswerType.SINGLE_SELECTION_RADIO);
-
-		for (String answerName : answerNames) {
-			Answer answer = new Answer(answerName);
-			question.addChild(answer);
-		}
-
-		return question;
-	}
+//	@Test()
+//	public void testDomainSet() throws FieldTooLongException, CharacterNotAllowedException, NotValidChildException,
+//			ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException,
+//			MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException,
+//			BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+//
+//		Form form = FormTestUtilities.createFormTest1();
+//
+//		Set<Flow> flows1 = form.getFlowsFrom((BaseQuestion) form.getChild("cat1","qu1"));
+//		
+//		IDomain accumDomain = null;
+//		for(Flow flow: flows1){
+//			System.out.println(flow.getCondition());
+//			WebformsParser parser = new WebformsParser(flow.getCondition().iterator());
+//			WebformsExpression webformsExpression = (WebformsExpression) parser.parseCompleteExpression();
+//			IDomain domain = webformsExpression.getDomain();
+//			if(accumDomain ==null){
+//				accumDomain = domain;
+//			}else{
+//				accumDomain = accumDomain.union(domain);
+//			}
+//			System.out.println("Domain: "+flow.getCondition());
+//			
+//		}
+//		
+//		System.out.println("Accumulated Domain: "+accumDomain);
+//		System.out.println("Accumulated Complete: "+accumDomain.isComplete());
+//		System.out.println("Accumulated Empty: "+accumDomain.isEmpty());
+//		
+//		
+//
+//		
+//	}
 }

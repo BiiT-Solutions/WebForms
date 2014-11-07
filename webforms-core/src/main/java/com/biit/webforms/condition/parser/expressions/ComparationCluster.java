@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.utils.math.domain.FlowDomain;
+import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.utils.math.domain.IDomain;
+import com.biit.webforms.utils.math.domain.QuestionAnswerDomain;
+import com.biit.webforms.utils.math.domain.QuestionValueDomain;
 import com.biit.webforms.utils.parser.Expression;
 
 public class ComparationCluster extends Expression implements WebformsExpression {
@@ -50,10 +54,21 @@ public class ComparationCluster extends Expression implements WebformsExpression
 		return retrieved;
 	}
 
+	// @Override
+	// public FlowDomain getDomain() {
+	// FlowDomain flowDomain = new FlowDomain();
+	// flowDomain.put(token);
+	// return flowDomain;
+	// }
+
 	@Override
-	public FlowDomain getDomain() {
-		FlowDomain flowDomain = new FlowDomain();
-		flowDomain.put(token);
-		return flowDomain;
+	public IDomain getDomain() {
+		if (token instanceof TokenComparationAnswer) {
+			return new QuestionAnswerDomain((TokenComparationAnswer) token);
+		}
+		if (token instanceof TokenComparationValue) {
+			return new QuestionValueDomain((TokenComparationValue) token);
+		}
+		return null;
 	}
 }

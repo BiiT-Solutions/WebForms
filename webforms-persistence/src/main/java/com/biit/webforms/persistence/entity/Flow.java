@@ -236,9 +236,12 @@ public class Flow extends StorableObject {
 		if (isOthers()) {
 			List<Token> otherCondition = new ArrayList<>();
 
-			Iterator<Flow> itr = getForm().getFlowsFrom((BaseQuestion) origin).iterator();
-			//Generate inverse of other flow conditions.
+			Set<Flow> otherFlows = getForm().getFlowsFrom((BaseQuestion) origin);
+			otherFlows.remove(this);
 			
+			Iterator<Flow> itr = otherFlows.iterator();
+			
+			//Generate inverse of other flow conditions.
 			while (itr.hasNext()) {
 				Flow flow = itr.next();
 				if (flow.equals(this)) {
