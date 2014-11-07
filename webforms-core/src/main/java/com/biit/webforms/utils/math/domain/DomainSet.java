@@ -63,23 +63,6 @@ public abstract class DomainSet implements IDomain {
 		return domainSets;
 	}
 
-	// public DomainSet(HashSet<IDomain> domainSets) {
-	// this.domains = domainSets;
-	// }
-	//
-	// public DomainSet(IDomain... domains) {
-	// this.domains = new HashSet<>();
-	// add(Arrays.asList(domains));
-	// }
-	//
-	// protected void add(IDomain domain) {
-	// this.domains.add(domain);
-	// }
-	//
-	// protected void add(Collection<IDomain> domains) {
-	// this.domains.addAll(domains);
-	// }
-
 	protected HashMap<Question, IDomainQuestion> getInverseDomainQuestions() {
 		HashMap<Question, IDomainQuestion> inverseDomainQuestions = new HashMap<>();
 		for (IDomainQuestion domain : domainQuestions.values()) {
@@ -99,10 +82,10 @@ public abstract class DomainSet implements IDomain {
 	protected static DomainSet intersection(DomainSetIntersection domainA, IDomainQuestion domainB) {
 		DomainSetIntersection temp = new DomainSetIntersection(domainA.getDomains());
 
-		if(!domainA.contains(domainB.getQuestion())){
-			//Doesn't contain, just add
+		if (!domainA.contains(domainB.getQuestion())) {
+			// Doesn't contain, just add
 			temp.add(domainB);
-		}else{
+		} else {
 			if (domainA.domainQuestions.containsKey(domainB.getQuestion())) {
 				temp.add(domainA.domainQuestions.get(domainB.getQuestion()).intersect(domainB));
 			} else {
@@ -118,37 +101,30 @@ public abstract class DomainSet implements IDomain {
 						temp.domainSets.remove(domain);
 						temp.domainSets.add(newDomain);
 						break;
-					}	
+					}
 				}
 			}
 		}
 		return temp;
 	}
 
-	private static DomainSet intersection(DomainSetUnion domainA, IDomainQuestion domainB) {
-		
+	protected static DomainSet intersection(DomainSetUnion domainA, IDomainQuestion domainB) {
 		List<IDomain> tempDomains = new ArrayList<IDomain>();
-		for(IDomainQuestion domainQuestion:domainA.getDomainQuestions()){
+		for (IDomainQuestion domainQuestion : domainA.getDomainQuestions()) {
 			tempDomains.add(domainQuestion.intersect(domainB));
 		}
-		for(DomainSet domainSet: domainA.getDomainsets()){
-			if(domainSet instanceof DomainSetUnion){
-				tempDomains.add(intersection((DomainSetUnion)domainSet, domainB));
-			}else{
-				tempDomains.add(intersection((DomainSetIntersection)domainSet, domainB));
+		for (DomainSet domainSet : domainA.getDomainsets()) {
+			if (domainSet instanceof DomainSetUnion) {
+				tempDomains.add(intersection((DomainSetUnion) domainSet, domainB));
+			} else {
+				tempDomains.add(intersection((DomainSetIntersection) domainSet, domainB));
 			}
 		}
-				
+
 		return new DomainSetUnion(tempDomains);
 	}
 
-	protected static DomainSet union(DomainSetIntersection domainA, DomainSetUnion domainB) {
-		System.out.println("Here1");
-		return null;
-	}
-
 	protected static DomainSet intersection(DomainSetIntersection domainA, DomainSetIntersection domainB) {
-		System.out.println("Intersection I-I dA" + domainA + " dB" + domainB);
 		DomainSet intersectionDomain = new DomainSetIntersection(domainA.getDomains());
 		for (IDomainQuestion domain : domainB.getDomainQuestions()) {
 			intersectionDomain = intersection((DomainSetIntersection) intersectionDomain, domain);
@@ -156,16 +132,14 @@ public abstract class DomainSet implements IDomain {
 		for (DomainSet domain : domainB.getDomainsets()) {
 			intersectionDomain = (DomainSet) intersectionDomain.intersect(domain);
 		}
-		System.out.println("Result Intersection I-I " + intersectionDomain);
 		return intersectionDomain;
 	}
 
 	protected static DomainSet intersection(DomainSetIntersection domainA, DomainSetUnion domainB) {
-		System.out.println("Test-1 dA" + domainA + " dB" + domainB);
+		System.out.println("intersection Intesection and Union");
 		List<IDomain> domains = new ArrayList<IDomain>();
 		for (IDomainQuestion domainQuestion : domainB.getDomainQuestions()) {
 			IDomain temp = intersection(domainA, domainQuestion);
-			System.out.println("Temp-1:" + temp);
 			domains.add(temp);
 		}
 		for (DomainSet domainSet : domainB.getDomainsets()) {
@@ -175,24 +149,93 @@ public abstract class DomainSet implements IDomain {
 			} else {
 				temp = intersection(domainA, (DomainSetUnion) domainSet);
 			}
-			System.out.println("Temp-2: " + temp);
 			domains.add(temp);
 		}
 		DomainSetUnion unionOfIntersections = new DomainSetUnion(domains);
-		System.out.println("Temp-3: " + unionOfIntersections);
+		
+		System.out.println("Result: "+unionOfIntersections);
 		return unionOfIntersections;
 	}
 
-	protected boolean contains(Question question) {
-		if(domainQuestions.containsKey(question)){
-			return true;
+	protected static DomainSet intersection(DomainSetUnion domainA, DomainSetUnion domain) {
+		System.out.println("Intersection U-U not implemented yet");
+		throw new NullPointerException();
+		// TODO Auto-generated method stub
+	}
+
+	protected static DomainSet intersection(DomainSetUnion domainA, DomainSetIntersection domainB) {
+		return intersection(domainB, domainA);
+	}
+
+	protected static DomainSet union(DomainSetIntersection domainA, IDomainQuestion domainB) {
+		List<IDomain> unionDomains = new ArrayList<>();
+
+		for (IDomain domain : domainA.getDomains()) {
+			unionDomains.add(domain.union(domainB));
+		}
+
+		return new DomainSetIntersection(unionDomains);
+	}
+
+	protected static DomainSet union(DomainSetUnion domainA, IDomainQuestion domainB) {
+		DomainSetUnion union = new DomainSetUnion(domainA.getDomains());
+		
+		if(!domainA.contains(domainB.getQuestion())){
+			union.add(domainB);
 		}else{
-			for(DomainSet domain: domainSets){
-				if(domain.contains(question)){
+			union.add(union.getDomainQuestion(domainB.getQuestion()).union(domainB));
+		}
+		return union;
+	}
+
+	protected static DomainSet union(DomainSetIntersection domainA, DomainSetUnion domainB) {
+		List<IDomain> unionDomains = new ArrayList<>();
+
+		for (IDomain domain : domainA.getDomains()) {
+			unionDomains.add(domain.union(domainB));
+		}
+
+		return new DomainSetIntersection(unionDomains);
+	}
+
+	protected static DomainSet union(DomainSetIntersection domainA, DomainSetIntersection domainB) {
+		List<IDomain> unionDomain = new ArrayList<IDomain>();
+		
+		for(IDomain iDomain: domainA.getDomains()){
+			for(IDomain jDomain: domainB.getDomains()){
+				unionDomain.add(iDomain.union(jDomain));
+			}
+		}
+		return new DomainSetIntersection(unionDomain);
+	}
+
+	protected static DomainSet union(DomainSetUnion domainA, DomainSetIntersection domainB) {
+		return union(domainB, domainA);
+	}
+
+	protected static DomainSet union(DomainSetUnion domainA, DomainSetUnion domainB) {
+		IDomain unionDomain = domainA;
+		for(IDomain domain: domainB.getDomains()){
+			unionDomain = unionDomain.union(domain);
+		}
+		
+		return (DomainSet)unionDomain;
+	}
+
+	protected boolean contains(Question question) {
+		if (domainQuestions.containsKey(question)) {
+			return true;
+		} else {
+			for (DomainSet domain : domainSets) {
+				if (domain.contains(question)) {
 					return true;
 				}
 			}
 			return false;
 		}
+	}
+	
+	protected IDomainQuestion getDomainQuestion(Question question){
+		return domainQuestions.get(question);
 	}
 }

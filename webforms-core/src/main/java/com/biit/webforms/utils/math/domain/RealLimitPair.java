@@ -22,8 +22,6 @@ public class RealLimitPair implements Comparable<RealLimitPair>{
 	}
 
 	private boolean isContainedFromRight(RealLimit value) {
-		//TODO remove
-//		System.out.println(right +" isContainedFromRight "+value+" "+(right.getLimit() > value.getLimit())+" "+(right.compareTo(value) >= 0));
 		if (right.getLimit() > value.getLimit()) {
 			return true;
 		} else {
@@ -39,8 +37,6 @@ public class RealLimitPair implements Comparable<RealLimitPair>{
 	}
 
 	public boolean overlap(RealLimitPair pair) {
-		//TODO
-//		System.out.println(this+" Overlap "+pair+" "+isContained(pair.getLeft()) +" "+ isContained(pair.getRight()) +" "+ pair.isContained(getLeft()));
 		if (isContained(pair.getLeft()) || isContained(pair.getRight()) || pair.isContained(getLeft())) {
 			return true;
 		}

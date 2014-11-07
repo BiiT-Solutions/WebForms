@@ -82,21 +82,11 @@ public class UnaryOperator extends Expression implements WebformsExpression {
 		return retrieved;
 	}
 
-	// @Override
-	// public FlowDomain getDomain() {
-	// FlowDomain domain = ((WebformsExpression) expression).getDomain();
-	// if (type == TokenTypes.NOT) {
-	// domain = domain.inverse();
-	// }
-	// return domain;
-	// }
-
 	@Override
 	public IDomain getDomain() {
 		IDomain domain = ((WebformsExpression) expression).getDomain();
 		if (type == TokenTypes.NOT) {
 			domain = domain.inverse();
-			System.out.println("Inverse "+domain);
 		}
 		return domain;
 	}

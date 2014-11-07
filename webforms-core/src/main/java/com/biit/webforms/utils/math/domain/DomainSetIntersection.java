@@ -23,55 +23,60 @@ public class DomainSetIntersection extends DomainSet {
 
 	@Override
 	public IDomain union(IDomain domain) {
-		System.out.println("Domain set Intersection union... ");
+		System.out.println("DomainIntersect union");
 		if (domain instanceof IDomainQuestion) {
-			return new DomainSetUnion(this, domain);
+			return union(this, (IDomainQuestion)domain);
+		} else {
+			if (domain instanceof DomainSetUnion) {
+				return union(this, (DomainSetUnion) domain);
+			} else {
+				return union(this, (DomainSetIntersection)domain);
+			}
 		}
-		if (domain instanceof DomainSetUnion) {
-			return union(this, (DomainSetUnion) domain);
-		}
-		if (domain instanceof DomainSetIntersection) {
-			return new DomainSetUnion(this, domain);
-		}
-		return null;
 	}
 
 	@Override
 	public IDomain intersect(IDomain domain) {
-		System.out.println("Domain set Intersection intersection... ");
+		System.out.println("DomainIntersect intersect");
 		if (domain instanceof IDomainQuestion) {
-			System.out.println("A "+domain);
-			return intersection(this,(IDomainQuestion) domain);
+			return intersection(this, (IDomainQuestion) domain);
 		} else {
 			if (domain instanceof DomainSetUnion) {
-				System.out.println("B");
 				return intersection(this, (DomainSetUnion) domain);
-			}else{
-				System.out.println("C");
-				return intersection(this,(DomainSetIntersection) domain);
+			} else {
+				return intersection(this, (DomainSetIntersection) domain);
 			}
 		}
 	}
 
 	@Override
 	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return false;
+		for (IDomain domain : domainQuestions.values()) {
+			if (!domain.isComplete()) {
+				return false;
+			}
+		}
+		for (IDomain domain : domainSets) {
+			if (domain.isComplete()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		for(IDomainQuestion domainQuestion: domainQuestions.values()){
-			if(domainQuestion.isEmpty()){
-				return true;
+		for (IDomainQuestion domainQuestion : domainQuestions.values()) {
+			if (!domainQuestion.isEmpty()) {
+				return false;
 			}
 		}
-		for(DomainSet domainSet: domainSets){
-			if(domainSet.isEmpty()){
-				return true;
+		for (DomainSet domainSet : domainSets) {
+			if (!domainSet.isEmpty()) {
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	@Override

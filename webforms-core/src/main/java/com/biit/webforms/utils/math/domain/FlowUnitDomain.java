@@ -32,7 +32,13 @@ public class FlowUnitDomain {
 		System.out.println("****************************************");
 		System.out.println(flowQ1);
 		List<IDomain> domains = getFlowDomains(flowQ1);
+		System.out.println("****************************************");
+		System.out.println("Unicity test");
+		System.out.println("****************************************");
 		checkUnicity(domains);
+		System.out.println("****************************************");
+		System.out.println("Completeness test");
+		System.out.println("****************************************");
 		checkCompleteness(domains);
 
 	}

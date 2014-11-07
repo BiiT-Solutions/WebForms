@@ -75,29 +75,14 @@ public class BinaryOperator extends Expression implements WebformsExpression {
 		return retrieved;
 	}
 
-	// @Override
-	// public FlowDomain getDomain() {
-	// FlowDomain leftDomain = ((WebformsExpression)left).getDomain();
-	// FlowDomain rightDomain = ((WebformsExpression)right).getDomain();
-	//
-	// if(type == TokenTypes.AND){
-	// return leftDomain.intersection(rightDomain);
-	// }else{
-	// return leftDomain.union(rightDomain);
-	// }
-	// }
-
 	@Override
 	public IDomain getDomain() {
 		IDomain leftDomain = ((WebformsExpression) left).getDomain();
-		IDomain rightDomain = ((WebformsExpression) right).getDomain();
-		System.out.println("Binary operator, left :"+leftDomain+" right:"+rightDomain); 
+		IDomain rightDomain = ((WebformsExpression) right).getDomain(); 
 
 		if (type == TokenTypes.AND) {
-			System.out.println("Intersec: "+leftDomain.intersect(rightDomain)+ leftDomain.intersect(rightDomain).getClass().getName());
 			return leftDomain.intersect(rightDomain);
 		} else {
-			System.out.println("Union: "+leftDomain.union(rightDomain));
 			return leftDomain.union(rightDomain);
 		}
 	}

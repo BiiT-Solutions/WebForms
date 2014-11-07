@@ -1,6 +1,5 @@
 package com.biit.webforms.utils.math.domain;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -10,9 +9,7 @@ import com.biit.webforms.persistence.entity.Question;
 
 public class DomainSetUnion extends DomainSet {
 
-	public DomainSetUnion(
-			HashMap<Question, IDomainQuestion> inverseDomainQuestions,
-			HashSet<DomainSet> inverseDomainSet) {
+	public DomainSetUnion(HashMap<Question, IDomainQuestion> inverseDomainQuestions, HashSet<DomainSet> inverseDomainSet) {
 		super(inverseDomainQuestions, inverseDomainSet);
 	}
 
@@ -26,113 +23,65 @@ public class DomainSetUnion extends DomainSet {
 
 	@Override
 	public IDomain intersect(IDomain domain) {
+		System.out.println("DomainUnion intersect");
 		if (domain instanceof IDomainQuestion) {
-			return intersectDomain(domain);
-		}
-		if (domain instanceof DomainSetUnion) {
-			return intersectDomain(domain);
-		}
-		if (domain instanceof DomainSetIntersection) {
-			intersectDomainWithIntersection((DomainSetIntersection) domain);
-		}
-		return null;
-	}
-
-	public IDomain intersectDomainWithIntersection(DomainSetIntersection domain) {
-
-		List<IDomain> intersectDomain = new ArrayList<IDomain>();
-		intersectDomain.addAll(getDomains());
-
-		for (IDomain iDomain : domain.getDomains()) {
-			List<IDomain> accumDomain = new ArrayList<IDomain>();
-			for (IDomain jDomain : intersectDomain) {
-				accumDomain.add(jDomain.intersect(iDomain));
-			}
-			intersectDomain = accumDomain;
-		}
-		return new DomainSetUnion(intersectDomain);
-	}
-
-	public IDomain intersectDomain(IDomain... domain) {
-		List<IDomain> intersectDomains = new ArrayList<>();
-		for (IDomain iDomain : getDomains()) {
-			for (IDomain jDomain : getDomains()) {
-				intersectDomains.add(iDomain.intersect(jDomain));
+			return intersection(this, (IDomainQuestion) domain);
+		} else {
+			if (domain instanceof DomainSetUnion) {
+				return intersection(this, (DomainSetUnion) domain);
+			} else {
+				return intersection(this, (DomainSetIntersection) domain);
 			}
 		}
-
-		return new DomainSetUnion(intersectDomains);
 	}
 
 	@Override
 	public IDomain union(IDomain domain) {
+		System.out.println("DomainUnion union");
 		if (domain instanceof IDomainQuestion) {
-			return unionDomainQuestion((IDomainQuestion) domain);
-		}
-		if (domain instanceof DomainSetUnion) {
-			return unionDomainSet((DomainSetUnion) domain);
-		}
-		if (domain instanceof DomainSetIntersection) {
-			add(domain);
-		}
-		return null;
-	}
-
-	private IDomain unionDomainSet(DomainSetUnion domain) {
-		for (IDomainQuestion domainQuestion : domain.domainQuestions.values()) {
-			unionDomainQuestion(domainQuestion);
-		}
-		for (DomainSet domainSet : domain.domainSets) {
-			domainSet.add(domainSet);
-		}
-		return this;
-	}
-
-	private IDomain unionDomainQuestion(IDomainQuestion domain) {
-		if (domainQuestions.containsKey(domain.getQuestion())) {
-			domainQuestions.put(domain.getQuestion(),
-					(IDomainQuestion) domainQuestions.get(domain.getQuestion())
-							.union(domain));
+			return union(this, (IDomainQuestion) domain);
 		} else {
-			domainQuestions.put(domain.getQuestion(), domain);
+			if (domain instanceof DomainSetUnion) {
+				return union(this, (DomainSetUnion) domain);
+			} else {
+				return union(this, (DomainSetIntersection) domain);
+			}
 		}
-		return this;
 	}
 
 	@Override
 	public IDomain inverse() {
-		return new DomainSetIntersection(getInverseDomainQuestions(),
-				getInverseDomainSet());
+		return new DomainSetIntersection(getInverseDomainQuestions(), getInverseDomainSet());
 	}
 
 	@Override
 	public boolean isComplete() {
 		for (IDomain domain : domainQuestions.values()) {
-			if (!domain.isComplete()) {
-				return false;
+			if (domain.isComplete()) {
+				return true;
 			}
 		}
 		for (IDomain domain : domainSets) {
-			if (!domain.isComplete()) {
-				return false;
+			if (domain.isComplete()) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean isEmpty() {
 		for (IDomain domain : domainQuestions.values()) {
-			if (!domain.isEmpty()) {
-				return false;
+			if (domain.isEmpty()) {
+				return true;
 			}
 		}
 		for (IDomain domain : domainSets) {
-			if (!domain.isEmpty()) {
-				return false;
+			if (domain.isEmpty()) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	@Override
