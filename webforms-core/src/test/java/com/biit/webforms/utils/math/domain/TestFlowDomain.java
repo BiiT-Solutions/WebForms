@@ -59,25 +59,20 @@ public class TestFlowDomain {
 			IncompleteLogic, RedundantLogic {
 
 		Form form = FormTestUtilities.createFormTest4();
-		System.out.println(form.getFlows());
-
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu1"));
 	}
 
-//	@Test(dependsOnMethods = { "testFlowDomainOverlappedLogicQuestionAnswer" })
-//	// @Test
-//	public void testAndOrQuestionAnswer() throws FieldTooLongException, NotValidChildException,
-//			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-//			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny, BadFormedExpressions,
-//			IncompleteLogic, RedundantLogic, InvalidAnswerFormatException, InvalidAnswerSubformatException {
-//
-//		for (int i = 0; i < 1000; i++) {
-//			Form form = FormTestUtilities.createFormTest6();
-//			System.out.println(form.getFlows());
-//
-//			new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu3"));
-//		}
-//	}
+	@Test(dependsOnMethods = { "testFlowDomainOverlappedLogicQuestionAnswer" })
+	public void testAndOrQuestionAnswer() throws FieldTooLongException, NotValidChildException,
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny, BadFormedExpressions,
+			IncompleteLogic, RedundantLogic, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+
+		for (int i = 0; i < 1000000; i++) {
+			Form form = FormTestUtilities.createFormTest6();
+			new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu3"));
+		}
+	}
 
 	// @Test(expectedExceptions = { RedundantLogic.class })
 	// public void testFlowDomainOverlappedLogicQuestionAnswer() throws

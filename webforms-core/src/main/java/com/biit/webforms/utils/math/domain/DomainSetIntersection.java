@@ -23,7 +23,6 @@ public class DomainSetIntersection extends DomainSet {
 
 	@Override
 	public IDomain union(IDomain domain) {
-		System.out.println("DomainIntersect union");
 		if (domain instanceof IDomainQuestion) {
 			return union(this, (IDomainQuestion)domain);
 		} else {
@@ -37,7 +36,6 @@ public class DomainSetIntersection extends DomainSet {
 
 	@Override
 	public IDomain intersect(IDomain domain) {
-		System.out.println("DomainIntersect intersect");
 		if (domain instanceof IDomainQuestion) {
 			return intersection(this, (IDomainQuestion) domain);
 		} else {
@@ -67,16 +65,16 @@ public class DomainSetIntersection extends DomainSet {
 	@Override
 	public boolean isEmpty() {
 		for (IDomainQuestion domainQuestion : domainQuestions.values()) {
-			if (!domainQuestion.isEmpty()) {
-				return false;
+			if (domainQuestion.isEmpty()) {
+				return true;
 			}
 		}
 		for (DomainSet domainSet : domainSets) {
-			if (!domainSet.isEmpty()) {
-				return false;
+			if (domainSet.isEmpty()) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	@Override

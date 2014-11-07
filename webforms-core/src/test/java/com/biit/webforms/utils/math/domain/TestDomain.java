@@ -1,32 +1,10 @@
 package com.biit.webforms.utils.math.domain;
 
-import java.util.Set;
-
 import junit.framework.Assert;
 
 import org.testng.annotations.Test;
 
-import com.biit.form.BaseQuestion;
-import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.form.exceptions.NotValidChildException;
-import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.webforms.condition.parser.WebformsParser;
-import com.biit.webforms.condition.parser.expressions.WebformsExpression;
-import com.biit.webforms.persistence.entity.Flow;
-import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
-import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
-import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
-import com.biit.webforms.utils.parser.exceptions.ExpectedTokenNotFound;
-import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
-import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
-import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
-import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
-import com.biit.webforms.utils.parser.exceptions.ParseException;
 
 @Test(groups = { "testDomain" })
 public class TestDomain {
@@ -186,38 +164,4 @@ public class TestDomain {
 		Assert.assertEquals(rangeBinv.toString(), TEST_19);
 
 	}
-
-//	@Test()
-//	public void testDomainSet() throws FieldTooLongException, CharacterNotAllowedException, NotValidChildException,
-//			ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException,
-//			MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException,
-//			BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
-//
-//		Form form = FormTestUtilities.createFormTest1();
-//
-//		Set<Flow> flows1 = form.getFlowsFrom((BaseQuestion) form.getChild("cat1","qu1"));
-//		
-//		IDomain accumDomain = null;
-//		for(Flow flow: flows1){
-//			System.out.println(flow.getCondition());
-//			WebformsParser parser = new WebformsParser(flow.getCondition().iterator());
-//			WebformsExpression webformsExpression = (WebformsExpression) parser.parseCompleteExpression();
-//			IDomain domain = webformsExpression.getDomain();
-//			if(accumDomain ==null){
-//				accumDomain = domain;
-//			}else{
-//				accumDomain = accumDomain.union(domain);
-//			}
-//			System.out.println("Domain: "+flow.getCondition());
-//			
-//		}
-//		
-//		System.out.println("Accumulated Domain: "+accumDomain);
-//		System.out.println("Accumulated Complete: "+accumDomain.isComplete());
-//		System.out.println("Accumulated Empty: "+accumDomain.isEmpty());
-//		
-//		
-//
-//		
-//	}
 }
