@@ -40,18 +40,10 @@ public abstract class XFormsObject {
 			if (child instanceof Category) {
 				newChild = new XFormsCategory((Category) child);
 			} else if (child instanceof Group) {
-				if (!child.isInsideALoop()) {
-					if (((Group) child).isRepeatable()) {
-						newChild = new XFormsRepeatableGroup((Group) child);
-					} else {
-						newChild = new XFormsGroup((Group) child);
-					}
+				if (((Group) child).isRepeatable()) {
+					newChild = new XFormsRepeatableGroup((Group) child);
 				} else {
-					if (((Group) child).isRepeatable()) {
-						newChild = new XFormsRepeatableGroupInRepeatableGroup((Group) child);
-					} else {
-						newChild = new XFormsGroupInRepeatableGroup((Group) child);
-					}
+					newChild = new XFormsGroup((Group) child);
 				}
 			} else if (child instanceof Question) {
 				newChild = new XFormsQuestion((Question) child);
