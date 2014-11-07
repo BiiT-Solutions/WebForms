@@ -73,7 +73,7 @@ public class TestFlowDomain {
 		Form form = FormTestUtilities.createFormTest6();
 		System.out.println(form.getFlows());
 
-//		FlowUnitDomain flowUnitDomain = new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu3"));
+		FlowUnitDomain flowUnitDomain = new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu3"));
 	}
 	
 //	@Test(expectedExceptions = { RedundantLogic.class })
