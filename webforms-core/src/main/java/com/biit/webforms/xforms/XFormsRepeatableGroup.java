@@ -9,7 +9,7 @@ import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
 /**
- * Repeated groups are represented as a section (called dummy section) + repeatable grid in Orbeon.
+ * Repeated groups are represented as a section + section iteration in Orbeon.
  * 
  */
 public class XFormsRepeatableGroup extends XFormsObject {
@@ -21,23 +21,47 @@ public class XFormsRepeatableGroup extends XFormsObject {
 	}
 
 	/**
-	 * Add also a dummy section definition.
+	 * Add section and section-iteration
+	 */
+	@Override
+	protected String getDefinition() {
+		String section = "<" + getControlName() + ">";
+		section += "<" + getIteratorControlName() + ">";
+
+		for (XFormsObject child : getChildren()) {
+			section += child.getDefinition();
+		}
+
+		section += "</" + getIteratorControlName() + ">";
+		section += "</" + getControlName() + ">";
+		return section;
+	}
+
+	private String getIteratorControlName() {
+		return getControlName() + "-iterator";
+	}
+
+	private String getIteratorBindingName() {
+		return getIteratorControlName() + "-bind";
+	}
+
+	/**
+	 * Add also a dummy section iteration.
 	 */
 	@Override
 	protected String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
 		String elementBinding = "<xf:bind id=\"" + getBindingName() + "\" name=\"" + getControlName() + "\""
 				+ getRelevantStructure() + " ref=\"" + getControlName() + "\" >";
+		elementBinding += "<xf:bind id=\"" + getIteratorBindingName() + "\" name=\"" + getIteratorControlName() + "\""
+				+ getRelevantStructure() + " ref=\"" + getIteratorControlName() + "\" >";
 		// Add also children.
 		for (XFormsObject child : getChildren()) {
 			elementBinding += child.getBinding();
 		}
 		elementBinding += "</xf:bind>";
+		elementBinding += "</xf:bind>";
 		return elementBinding;
-	}
-
-	private String getSectionControlNameOfDummySection() {
-		return getControlName() + "-section-control";
 	}
 
 	/**
@@ -47,18 +71,16 @@ public class XFormsRepeatableGroup extends XFormsObject {
 	protected String getSectionBody() {
 		String section = "";
 		// Dummy section
-		section += "<fr:section id=\"" + getSectionControlNameOfDummySection() + "\" bind=\"" + getBindingName()
-				+ "\">";
+		section += "<fr:section id=\"" + getSectionControlName() + "\" bind=\"" + getBindingName()
+				+ "\" repeat=\"true\" min=\"" + MIN_REPEATS + "\" max=\"" + MAX_REPEATS + "\" template=\"instance('"
+				+ getTemplateName() + "')\" >";
 		section += getBodyLabel();
 		section += getBodyHint();
 		section += getBodyAlert();
 		section += getBodyHelp();
-		// Loop
-		section += getLoopHeaderTags(MIN_REPEATS, MAX_REPEATS);
 		for (XFormsObject child : getChildren()) {
 			section += child.getSectionBody();
 		}
-		section += "</fr:grid>";
 		section += "</fr:section>";
 		return section;
 	}
@@ -93,13 +115,18 @@ public class XFormsRepeatableGroup extends XFormsObject {
 		String template = "";
 		template += "<xf:instance xxf:readonly=\"true\" id=\"" + getTemplateName() + "\">";
 
-		template += "<" + getControlName() + ">";
+		template += "<" + getIteratorControlName() + ">";
 		for (XFormsObject child : getChildren()) {
 			template += child.getDefinition();
 		}
-		template += "</" + getControlName() + ">";
+		template += "</" + getIteratorControlName() + ">";
 
 		template += "</xf:instance>";
+
+		// Add templates of nested loops.
+		for (XFormsObject child : getChildren()) {
+			template += child.getTemplates();
+		}
 		return template;
 	}
 
