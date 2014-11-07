@@ -12,8 +12,8 @@ public class DomainSetIntersection extends DomainSet {
 	public DomainSetIntersection(HashMap<Question, IDomainQuestion> domainQuestions, HashSet<DomainSet> domainSet) {
 		super(domainQuestions, domainSet);
 	}
-	
-	public DomainSetIntersection(List<IDomain> domains){
+
+	public DomainSetIntersection(List<IDomain> domains) {
 		super(domains);
 	}
 
@@ -27,8 +27,8 @@ public class DomainSetIntersection extends DomainSet {
 		if (domain instanceof IDomainQuestion) {
 			return new DomainSetUnion(this, domain);
 		}
-		if( domain instanceof DomainSetUnion){
-			return new DomainSetUnion(this, domain);
+		if (domain instanceof DomainSetUnion) {
+			return union(this, (DomainSetUnion) domain);
 		}
 		if (domain instanceof DomainSetIntersection) {
 			return new DomainSetUnion(this, domain);
@@ -39,37 +39,18 @@ public class DomainSetIntersection extends DomainSet {
 	@Override
 	public IDomain intersect(IDomain domain) {
 		System.out.println("Domain set Intersection intersection... ");
-		if(domain instanceof IDomainQuestion){
-			intersectDomainQuestion((IDomainQuestion) domain);
-			return this;
+		if (domain instanceof IDomainQuestion) {
+			System.out.println("A "+domain);
+			return intersection(this,(IDomainQuestion) domain);
+		} else {
+			if (domain instanceof DomainSetUnion) {
+				System.out.println("B");
+				return intersection(this, (DomainSetUnion) domain);
+			}else{
+				System.out.println("C");
+				return intersection(this,(DomainSetIntersection) domain);
+			}
 		}
-		if(domain instanceof DomainSetUnion){
-			add(domain);
-			return this;
-		}
-		if(domain instanceof DomainSetIntersection){
-			return intersectionDomainSet((DomainSetIntersection) domain);
-		}
-		return null;
-	}
-	
-	private IDomain intersectionDomainSet(DomainSetIntersection domain) {
-		for (IDomainQuestion domainQuestion : domain.domainQuestions.values()) {
-			intersectDomainQuestion(domainQuestion);
-		}
-		for (DomainSet domainSet : domain.domainSets) {
-			domainSet.add(domainSet);
-		}
-		return this;
-	}
-	
-	private IDomain intersectDomainQuestion(IDomainQuestion domain) {
-		if(domainQuestions.containsKey(domain.getQuestion())){
-			domainQuestions.put(domain.getQuestion(), (IDomainQuestion) domainQuestions.get(domain).intersect(domain));
-		}else{
-			domainQuestions.put(domain.getQuestion(), domain);
-		}
-		return this;
 	}
 
 	@Override
@@ -80,7 +61,16 @@ public class DomainSetIntersection extends DomainSet {
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
+		for(IDomainQuestion domainQuestion: domainQuestions.values()){
+			if(domainQuestion.isEmpty()){
+				return true;
+			}
+		}
+		for(DomainSet domainSet: domainSets){
+			if(domainSet.isEmpty()){
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -101,11 +91,11 @@ public class DomainSetIntersection extends DomainSet {
 			sb.append(" && ");
 			sb.append(itr1.next().toString());
 		}
-		
-		if(!domainQuestions.isEmpty() && !domainSets.isEmpty()){
+
+		if (!domainQuestions.isEmpty() && !domainSets.isEmpty()) {
 			sb.append(" && ");
 		}
-		
+
 		Iterator<DomainSet> itr2 = domainSets.iterator();
 		if (itr2.hasNext()) {
 			sb.append(itr2.next().toString());
