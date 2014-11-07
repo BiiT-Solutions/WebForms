@@ -71,10 +71,10 @@ public enum ThemeIcons implements IThemeIcon{
 	FORM_MANAGER_IMPORT_ABCD_FORM("form.import.svg"),
 	FORM_MANAGER_LINK_ABCD_FORM("form.link.svg"),
 	
-	COMPLETE_VALIDATION("alert.svg"),//TODO
-	VALIDATE_STRUCTURE("alert.svg"), //TODO
-	VALIDATE_FLOW("alert.svg"), //TODO
-	VALIDATE_ABCD_LINK("alert.svg"),  //TODO
+	COMPLETE_VALIDATION("validate.all.svg"),//TODO
+	VALIDATE_STRUCTURE("validate.structure.svg"), //TODO
+	VALIDATE_FLOW("validate.flow.svg"), //TODO
+	VALIDATE_ABCD_LINK("validate.link.svg"),  //TODO
 	
 	;
 	
