@@ -23,7 +23,7 @@ public class DomainSetUnion extends DomainSet {
 
 	@Override
 	public IDomain intersect(IDomain domain) {
-		System.out.println("Domain set Union intersection... ");
+		System.out.println("DomainUnion intersect");
 		if (domain instanceof IDomainQuestion) {
 			return intersection(this, (IDomainQuestion) domain);
 		} else {
@@ -37,8 +37,7 @@ public class DomainSetUnion extends DomainSet {
 
 	@Override
 	public IDomain union(IDomain domain) {
-		System.out.println("Domain set Union union... ");
-		System.out.println("this: "+this+" domain: "+domain);
+		System.out.println("DomainUnion union");
 		if (domain instanceof IDomainQuestion) {
 			return union(this, (IDomainQuestion) domain);
 		} else {

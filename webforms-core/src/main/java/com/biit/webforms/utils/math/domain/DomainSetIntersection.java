@@ -23,16 +23,13 @@ public class DomainSetIntersection extends DomainSet {
 
 	@Override
 	public IDomain union(IDomain domain) {
-		System.out.println("Domain set Intersection union... ");
-		System.out.println("this: "+this+" domain: "+domain);
+		System.out.println("DomainIntersect union");
 		if (domain instanceof IDomainQuestion) {
 			return union(this, (IDomainQuestion)domain);
 		} else {
 			if (domain instanceof DomainSetUnion) {
-				System.out.println("kiwi-1");
 				return union(this, (DomainSetUnion) domain);
 			} else {
-				System.out.println("kiwi-2");
 				return union(this, (DomainSetIntersection)domain);
 			}
 		}
@@ -40,16 +37,13 @@ public class DomainSetIntersection extends DomainSet {
 
 	@Override
 	public IDomain intersect(IDomain domain) {
-		System.out.println("Domain set Intersection intersection... ");
+		System.out.println("DomainIntersect intersect");
 		if (domain instanceof IDomainQuestion) {
-			System.out.println("A " + domain);
 			return intersection(this, (IDomainQuestion) domain);
 		} else {
 			if (domain instanceof DomainSetUnion) {
-				System.out.println("B");
 				return intersection(this, (DomainSetUnion) domain);
 			} else {
-				System.out.println("C");
 				return intersection(this, (DomainSetIntersection) domain);
 			}
 		}
@@ -73,16 +67,16 @@ public class DomainSetIntersection extends DomainSet {
 	@Override
 	public boolean isEmpty() {
 		for (IDomainQuestion domainQuestion : domainQuestions.values()) {
-			if (domainQuestion.isEmpty()) {
-				return true;
+			if (!domainQuestion.isEmpty()) {
+				return false;
 			}
 		}
 		for (DomainSet domainSet : domainSets) {
-			if (domainSet.isEmpty()) {
-				return true;
+			if (!domainSet.isEmpty()) {
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	@Override

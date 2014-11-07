@@ -63,23 +63,6 @@ public abstract class DomainSet implements IDomain {
 		return domainSets;
 	}
 
-	// public DomainSet(HashSet<IDomain> domainSets) {
-	// this.domains = domainSets;
-	// }
-	//
-	// public DomainSet(IDomain... domains) {
-	// this.domains = new HashSet<>();
-	// add(Arrays.asList(domains));
-	// }
-	//
-	// protected void add(IDomain domain) {
-	// this.domains.add(domain);
-	// }
-	//
-	// protected void add(Collection<IDomain> domains) {
-	// this.domains.addAll(domains);
-	// }
-
 	protected HashMap<Question, IDomainQuestion> getInverseDomainQuestions() {
 		HashMap<Question, IDomainQuestion> inverseDomainQuestions = new HashMap<>();
 		for (IDomainQuestion domain : domainQuestions.values()) {
@@ -126,7 +109,6 @@ public abstract class DomainSet implements IDomain {
 	}
 
 	protected static DomainSet intersection(DomainSetUnion domainA, IDomainQuestion domainB) {
-
 		List<IDomain> tempDomains = new ArrayList<IDomain>();
 		for (IDomainQuestion domainQuestion : domainA.getDomainQuestions()) {
 			tempDomains.add(domainQuestion.intersect(domainB));
@@ -143,7 +125,6 @@ public abstract class DomainSet implements IDomain {
 	}
 
 	protected static DomainSet intersection(DomainSetIntersection domainA, DomainSetIntersection domainB) {
-		System.out.println("Intersection I-I dA" + domainA + " dB" + domainB);
 		DomainSet intersectionDomain = new DomainSetIntersection(domainA.getDomains());
 		for (IDomainQuestion domain : domainB.getDomainQuestions()) {
 			intersectionDomain = intersection((DomainSetIntersection) intersectionDomain, domain);
@@ -151,16 +132,14 @@ public abstract class DomainSet implements IDomain {
 		for (DomainSet domain : domainB.getDomainsets()) {
 			intersectionDomain = (DomainSet) intersectionDomain.intersect(domain);
 		}
-		System.out.println("Result Intersection I-I " + intersectionDomain);
 		return intersectionDomain;
 	}
 
 	protected static DomainSet intersection(DomainSetIntersection domainA, DomainSetUnion domainB) {
-		System.out.println("Test-1 dA" + domainA + " dB" + domainB);
+		System.out.println("intersection Intesection and Union");
 		List<IDomain> domains = new ArrayList<IDomain>();
 		for (IDomainQuestion domainQuestion : domainB.getDomainQuestions()) {
 			IDomain temp = intersection(domainA, domainQuestion);
-			System.out.println("Temp-1:" + temp);
 			domains.add(temp);
 		}
 		for (DomainSet domainSet : domainB.getDomainsets()) {
@@ -170,18 +149,18 @@ public abstract class DomainSet implements IDomain {
 			} else {
 				temp = intersection(domainA, (DomainSetUnion) domainSet);
 			}
-			System.out.println("Temp-2: " + temp);
 			domains.add(temp);
 		}
 		DomainSetUnion unionOfIntersections = new DomainSetUnion(domains);
-		System.out.println("Temp-3: " + unionOfIntersections);
+		
+		System.out.println("Result: "+unionOfIntersections);
 		return unionOfIntersections;
 	}
 
 	protected static DomainSet intersection(DomainSetUnion domainA, DomainSetUnion domain) {
 		System.out.println("Intersection U-U not implemented yet");
+		throw new NullPointerException();
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	protected static DomainSet intersection(DomainSetUnion domainA, DomainSetIntersection domainB) {
@@ -189,7 +168,6 @@ public abstract class DomainSet implements IDomain {
 	}
 
 	protected static DomainSet union(DomainSetIntersection domainA, IDomainQuestion domainB) {
-		System.out.println("Union I-Q");
 		List<IDomain> unionDomains = new ArrayList<>();
 
 		for (IDomain domain : domainA.getDomains()) {
@@ -218,28 +196,9 @@ public abstract class DomainSet implements IDomain {
 		}
 
 		return new DomainSetIntersection(unionDomains);
-
-		// DomainSet accumulation = new
-		// DomainSetIntersection(domainA.getDomains());
-		// for (IDomainQuestion domainQuestion : domainB.getDomainQuestions()) {
-		// if (accumulation instanceof DomainSetUnion) {
-		// accumulation = union((DomainSetUnion) accumulation, domainQuestion);
-		// } else {
-		// accumulation = union((DomainSetIntersection) accumulation,
-		// domainQuestion);
-		// }
-		// }
-		// for(DomainSet domainSet: domainB.getDomainsets()){
-		// //TODO check later if this has to change to something more complex.
-		// accumulation.add(domainSet);
-		// }
-		//
-		// return accumulation;
 	}
 
 	protected static DomainSet union(DomainSetIntersection domainA, DomainSetIntersection domainB) {
-		System.out.println("Union I-I");
-		
 		List<IDomain> unionDomain = new ArrayList<IDomain>();
 		
 		for(IDomain iDomain: domainA.getDomains()){
@@ -251,18 +210,15 @@ public abstract class DomainSet implements IDomain {
 	}
 
 	protected static DomainSet union(DomainSetUnion domainA, DomainSetIntersection domainB) {
-		System.out.println("Union U-I");
 		return union(domainB, domainA);
 	}
 
 	protected static DomainSet union(DomainSetUnion domainA, DomainSetUnion domainB) {
-		System.out.println("Union U-U");
 		IDomain unionDomain = domainA;
 		for(IDomain domain: domainB.getDomains()){
 			unionDomain = unionDomain.union(domain);
 		}
 		
-		System.out.println("Result "+unionDomain);
 		return (DomainSet)unionDomain;
 	}
 
