@@ -68,10 +68,9 @@ public class TestFlowDomain {
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny, BadFormedExpressions,
 			IncompleteLogic, RedundantLogic, InvalidAnswerFormatException, InvalidAnswerSubformatException {
 
-		for (int i = 0; i < 1000000; i++) {
 			Form form = FormTestUtilities.createFormTest6();
 			new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu3"));
-		}
+		
 	}
 
 	// @Test(expectedExceptions = { RedundantLogic.class })
