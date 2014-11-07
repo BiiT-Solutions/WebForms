@@ -13,8 +13,8 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
  * 
  */
 public class XFormsRepeatableGroup extends XFormsObject {
-	private final static int MIN_REPEATS = 1;
-	private final static int MAX_REPEATS = 100;
+	protected final static int MIN_REPEATS = 1;
+	protected final static int MAX_REPEATS = 100;
 
 	public XFormsRepeatableGroup(Group group) throws NotValidTreeObjectException, NotValidChildException {
 		super(group);
@@ -46,14 +46,14 @@ public class XFormsRepeatableGroup extends XFormsObject {
 	@Override
 	protected String getSectionBody() {
 		String section = "";
-		//Dummy section
+		// Dummy section
 		section += "<fr:section id=\"" + getSectionControlNameOfDummySection() + "\" bind=\"" + getBindingName()
 				+ "\">";
 		section += getBodyLabel();
 		section += getBodyHint();
 		section += getBodyAlert();
 		section += getBodyHelp();
-		//Loop
+		// Loop
 		section += getLoopHeaderTags(MIN_REPEATS, MAX_REPEATS);
 		for (XFormsObject child : getChildren()) {
 			section += child.getSectionBody();
@@ -63,7 +63,7 @@ public class XFormsRepeatableGroup extends XFormsObject {
 		return section;
 	}
 
-	private String getLoopHeaderTags(int minRepeats, int maxRepeats) {
+	protected String getLoopHeaderTags(int minRepeats, int maxRepeats) {
 		String maxRepeatsTag = "";
 		String minRepeatsTag = "";
 		if (maxRepeats > 0) {
