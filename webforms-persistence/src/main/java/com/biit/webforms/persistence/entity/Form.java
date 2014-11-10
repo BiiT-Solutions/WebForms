@@ -26,6 +26,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.biit.form.BaseForm;
+import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
@@ -168,21 +169,31 @@ public class Form extends BaseForm {
 	public Set<Flow> getFlows() {
 		return rules;
 	}
-	
-	public Set<Flow> getFlowsFrom(BaseQuestion from){
+
+	public Set<Flow> getFlowsFrom(BaseQuestion from) {
 		Set<Flow> flows = new HashSet<Flow>();
-		for(Flow flow: getFlows()){
-			if(from!=null && from.equals(flow.getOrigin())){
+		for (Flow flow : getFlows()) {
+			if (from != null && from.equals(flow.getOrigin())) {
 				flows.add(flow);
 			}
 		}
 		return flows;
 	}
-	
-	public Set<Flow> getFlowTo(BaseQuestion to){
+
+	public Set<Flow> getFlowsTo(BaseGroup to) {
 		Set<Flow> flows = new HashSet<Flow>();
-		for(Flow flow: getFlows()){
-			if(to!=null && flow.getDestiny()!=null && to.equals(flow.getDestiny())){
+		if (to != null) {
+			for (TreeObject children : to.getAllChildrenInHierarchy(BaseQuestion.class)) {
+				flows.addAll(getFlowsTo((BaseQuestion) children));
+			}
+		}
+		return flows;
+	}
+
+	public Set<Flow> getFlowsTo(BaseQuestion to) {
+		Set<Flow> flows = new HashSet<Flow>();
+		for (Flow flow : getFlows()) {
+			if (to != null && flow.getDestiny() != null && to.equals(flow.getDestiny())) {
 				flows.add(flow);
 			}
 		}
@@ -202,8 +213,8 @@ public class Form extends BaseForm {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the
-	 * implicit rules (question without rule goes to the next element)
+	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
+	 * goes to the next element)
 	 * 
 	 * @return
 	 */
@@ -337,10 +348,9 @@ public class Form extends BaseForm {
 	}
 
 	/**
-	 * This is the only function that has to be used to link forms. This
-	 * controls that the linked element and versions are present at the same
-	 * time or not when modifying data. It is assumed that all linked forms have
-	 * the same name and organization.
+	 * This is the only function that has to be used to link forms. This controls that the linked element and versions
+	 * are present at the same time or not when modifying data. It is assumed that all linked forms have the same name
+	 * and organization.
 	 * 
 	 * @param linkedForms
 	 */
@@ -349,9 +359,9 @@ public class Form extends BaseForm {
 			setLinkedFormLabel(null);
 			setLinkedFormVersions(null);
 			setLinkedFormOrganizationId(null);
-		}else{
+		} else {
 			Set<Integer> versionNumbers = new HashSet<Integer>();
-			for(IBaseFormView linkedForm: linkedForms){
+			for (IBaseFormView linkedForm : linkedForms) {
 				setLinkedFormLabel(linkedForm.getLabel());
 				versionNumbers.add(linkedForm.getVersion());
 				setLinkedFormOrganizationId(linkedForm.getOrganizationId());
@@ -367,8 +377,8 @@ public class Form extends BaseForm {
 	public Set<Integer> getLinkedFormVersions() {
 		return linkedFormVersions;
 	}
-	
-	public void addLinkedFormVersion(Integer versionNumber){
+
+	public void addLinkedFormVersion(Integer versionNumber) {
 		getLinkedFormVersions().add(versionNumber);
 	}
 

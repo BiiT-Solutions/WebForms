@@ -264,10 +264,10 @@ public class ApplicationController {
 	public List<SimpleFormView> getLinkedSimpleAbcdForms(Form form) {
 		List<SimpleFormView> linkedSimpleAbcdForms = new ArrayList<SimpleFormView>();
 		if (form.getLabel() != null && form.getOrganizationId() != null) {
-			List<SimpleFormView> views = simpleFormDaoAbcd.getSimpleFormViewByName(form.getLinkedFormLabel());
+			List<SimpleFormView> views = simpleFormDaoAbcd.getSimpleFormViewByLabelAndOrganization(
+					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
 			for (SimpleFormView view : views) {
-				if (form.getLinkedFormVersions().contains(view.getVersion())
-						&& view.getOrganizationId().equals(form.getLinkedFormOrganizationId())) {
+				if (form.getLinkedFormVersions().contains(view.getVersion())) {
 					linkedSimpleAbcdForms.add(view);
 				}
 			}

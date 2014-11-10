@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.biit.abcd.persistence.entity.SimpleFormView;
+import com.biit.abcd.security.AbcdActivity;
+import com.biit.abcd.security.AbcdAuthorizationService;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -228,8 +230,26 @@ public class FormManager extends SecuredWebPage {
 	protected void linkAbcdForm() {
 		final Form form = (Form) formTable.getForm();
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
-		for (SimpleFormView simpleFormView : UserSessionHandler.getController().getSimpleFormDaoAbcd().getAll()) {
-			linkAbcdForm.add(simpleFormView);
+		if (form.getLinkedFormLabel() == null) {
+			// Not linked yet. Show all available forms.
+			for (SimpleFormView simpleFormView : UserSessionHandler.getController().getSimpleFormDaoAbcd().getAll()) {
+				if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+						simpleFormView.getOrganizationId(), AbcdActivity.READ)) {
+					linkAbcdForm.add(simpleFormView);
+				}
+			}
+		} else {
+			// Already linked form, show only the versions of this form.
+			for (SimpleFormView simpleFormView : UserSessionHandler
+					.getController()
+					.getSimpleFormDaoAbcd()
+					.getSimpleFormViewByLabelAndOrganization(form.getLinkedFormLabel(),
+							form.getLinkedFormOrganizationId())) {
+				if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+						simpleFormView.getOrganizationId(), AbcdActivity.READ)) {
+					linkAbcdForm.add(simpleFormView);
+				}
+			}
 		}
 		linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleAbcdForms(form));
 		linkAbcdForm.addAcceptActionListener(new AcceptActionListener() {

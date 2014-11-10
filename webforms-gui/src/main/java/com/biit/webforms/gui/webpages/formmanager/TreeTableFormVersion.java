@@ -100,12 +100,13 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 			Organization linkedOrganization = WebformsAuthorizationService.getInstance().getOrganization(
 					UserSessionHandler.getUser(), ((Form) form).getLinkedFormOrganizationId());
 			if (linkedOrganization != null) {
-				item.getItemProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION).setValue(linkedOrganization.getName());
+				item.getItemProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION).setValue(
+						linkedOrganization.getName());
 			}
 		}
 
 		item.getItemProperty(TreeTableFormVersionProperties.LINKED_VERSIONS).setValue(
-				((Form) form).getLinkedFormVersions()+"");
+				((Form) form).getLinkedFormVersions().toString().replace("[", "").replace("]", ""));
 
 		return item;
 	}
@@ -178,8 +179,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 	}
 
 	/**
-	 * This function returns an string with read only if the form can't be
-	 * edited by the user
+	 * This function returns an string with read only if the form can't be edited by the user
 	 * 
 	 * @param form
 	 * @return
