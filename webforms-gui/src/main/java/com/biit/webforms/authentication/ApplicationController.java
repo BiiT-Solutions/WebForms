@@ -97,14 +97,14 @@ public class ApplicationController {
 	 * @throws FieldTooLongException
 	 * @throws FormWithSameNameException
 	 */
-	public Form createForm(String formLabel, Organization organization) throws FieldTooLongException,
+	public Form createForm(String formLabel, Long organizationId) throws FieldTooLongException,
 			FormWithSameNameException, CharacterNotAllowedException {
-		logInfoStart("createForm", formLabel, organization);
+		logInfoStart("createForm", formLabel, organizationId);
 
 		// Create new form
 		Form newform = null;
 		try {
-			newform = new Form(formLabel, getUser(), organization);
+			newform = new Form(formLabel, getUser(), organizationId);
 		} catch (FieldTooLongException | CharacterNotAllowedException ex) {
 			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " createForm " + ex.getMessage());
@@ -112,7 +112,7 @@ public class ApplicationController {
 		}
 
 		// Check if database contains a form with the same name.
-		if (formDao.getForm(formLabel, organization.getOrganizationId()) != null) {
+		if (formDao.getForm(formLabel, organizationId) != null) {
 			FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel
 					+ " already exists");
 			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
@@ -120,7 +120,7 @@ public class ApplicationController {
 			throw ex;
 		}
 
-		logInfoEnd("createForm", formLabel, organization);
+		logInfoEnd("createForm", formLabel, organizationId);
 		return newform;
 	}
 
@@ -132,12 +132,12 @@ public class ApplicationController {
 	 * @throws FieldTooLongException
 	 * @throws FormWithSameNameException
 	 */
-	public Form createFormAndPersist(String formLabel, Organization organization) throws FieldTooLongException,
+	public Form createFormAndPersist(String formLabel, Long organizationId) throws FieldTooLongException,
 			FormWithSameNameException, CharacterNotAllowedException {
-		logInfoStart("createFormAndPersist", formLabel, organization);
+		logInfoStart("createFormAndPersist", formLabel, organizationId);
 
 		// Create new form
-		Form newform = createForm(formLabel, organization);
+		Form newform = createForm(formLabel, organizationId);
 
 		// Persist form.
 		try {
@@ -147,11 +147,11 @@ public class ApplicationController {
 			throw cve;
 		}
 
-		logInfoEnd("createFormAndPersist", formLabel, organization);
+		logInfoEnd("createFormAndPersist", formLabel, organizationId);
 		return newform;
 	}
 
-	public Block createBlock(String blockName, Organization organization) throws FieldTooLongException,
+	public Block createBlock(String blockName, Long organizationId) throws FieldTooLongException,
 			CharacterNotAllowedException, FormWithSameNameException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 				+ " createBlock " + blockName + " START");
@@ -159,7 +159,7 @@ public class ApplicationController {
 		// Create new block
 		Block newBlock = null;
 		try {
-			newBlock = new Block(blockName, getUser(), organization);
+			newBlock = new Block(blockName, getUser(), organizationId);
 		} catch (FieldTooLongException | CharacterNotAllowedException ex) {
 			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
 					+ " createBlock " + ex.getMessage());
@@ -167,7 +167,7 @@ public class ApplicationController {
 		}
 
 		// Check if database contains a form with the same name.
-		if (blockDao.getBlock(blockName, organization) != null) {
+		if (blockDao.getBlock(blockName, organizationId) != null) {
 			FormWithSameNameException ex = new FormWithSameNameException("Block with name: " + blockName
 					+ " already exists");
 			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUser().getEmailAddress()
@@ -200,12 +200,12 @@ public class ApplicationController {
 	 * @throws FormWithSameNameException
 	 * @throws FieldTooLongException
 	 */
-	public Form importAbcdForm(SimpleFormView simpleFormView, String importLabel, Organization organization)
+	public Form importAbcdForm(SimpleFormView simpleFormView, String importLabel, Long organizationId)
 			throws NotValidAbcdForm, FieldTooLongException, FormWithSameNameException, CharacterNotAllowedException {
-		logInfoStart("importAbcdForm", simpleFormView, importLabel, organization);
+		logInfoStart("importAbcdForm", simpleFormView, importLabel, organizationId);
 
 		// Try to create a new form with the name and the organization
-		Form webformsForm = createForm(importLabel, organization);
+		Form webformsForm = createForm(importLabel, organizationId);
 
 		// Read the original form and validate.
 		com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.read(simpleFormView.getId());
@@ -233,7 +233,7 @@ public class ApplicationController {
 		// Store on the database
 		formDao.makePersistent(webformsForm);
 
-		logInfoEnd("importAbcdForm", simpleFormView, importLabel, organization);
+		logInfoEnd("importAbcdForm", simpleFormView, importLabel, organizationId);
 
 		return webformsForm;
 	}
@@ -611,9 +611,9 @@ public class ApplicationController {
 		logInfoEnd("finishForm", form);
 	}
 
-	public void saveAsBlock(TreeObject element, String blockLabel, Organization organization)
-			throws FieldTooLongException, FormWithSameNameException {
-		logInfoStart("saveAsBlock ", element, blockLabel, organization);
+	public void saveAsBlock(TreeObject element, String blockLabel, Long organizationId) throws FieldTooLongException,
+			FormWithSameNameException {
+		logInfoStart("saveAsBlock ", element, blockLabel, organizationId);
 
 		Block block = null;
 		try {
@@ -623,7 +623,7 @@ public class ApplicationController {
 			copiedForm.resetIds();
 
 			// Now we create the new block
-			block = createBlock(blockLabel, organization);
+			block = createBlock(blockLabel, organizationId);
 			// And set the copied view content as the children
 			block.setChildren(copiedForm.getChildren());
 			block.addFlows(copiedForm.getFlows());
@@ -639,7 +639,7 @@ public class ApplicationController {
 			}
 		}
 
-		logInfoEnd("saveAsBlock ", element, blockLabel, organization);
+		logInfoEnd("saveAsBlock ", element, blockLabel, organizationId);
 	}
 
 	public void updateForm(Form form, String description) {
@@ -1006,6 +1006,10 @@ public class ApplicationController {
 		return provider;
 	}
 
+	/**
+	 * Get all forms where the user has READ permission in ABCD and EDIT permissions in Webforms. 
+	 * @return
+	 */
 	public TreeTableProvider<SimpleFormView> getTreeTableSimpleAbcdFormsProvider() {
 		TreeTableProvider<SimpleFormView> provider = new TreeTableProvider<SimpleFormView>() {
 
@@ -1014,19 +1018,28 @@ public class ApplicationController {
 				List<SimpleFormView> forms = new ArrayList<>();
 
 				// Get all organizations where user has read permissions and
-				// store ids in a hash map.
-				Set<Organization> userOrganizations = AbcdAuthorizationService.getInstance()
+				// store ids in a hash map. User must be in the same organizations in both ABCD and WebForms.
+				Set<Organization> userOrganizationsFromAbcd = AbcdAuthorizationService.getInstance()
 						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), AbcdActivity.READ);
-				HashSet<Long> userOrganizationIds = new HashSet<Long>();
-				for (Organization organization : userOrganizations) {
-					userOrganizationIds.add(organization.getOrganizationId());
+				HashSet<Long> userAbcdOrganizationIds = new HashSet<Long>();
+				for (Organization organization : userOrganizationsFromAbcd) {
+					userAbcdOrganizationIds.add(organization.getOrganizationId());
+				}
+
+				Set<Organization> userOrganizationsFromWebforms = WebformsAuthorizationService.getInstance()
+						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(),
+								WebformsActivity.FORM_EDITING);
+				HashSet<Long> userWebformsOrganizationIds = new HashSet<Long>();
+				for (Organization organization : userOrganizationsFromWebforms) {
+					userWebformsOrganizationIds.add(organization.getOrganizationId());
 				}
 
 				// Get all simple forms and add to the form list if their
 				// organization id is on the organization id map.
 				List<SimpleFormView> simpleForms = getSimpleFormDaoAbcd().getAll();
 				for (SimpleFormView simpleForm : simpleForms) {
-					if (userOrganizationIds.contains(simpleForm.getOrganizationId())) {
+					if (userAbcdOrganizationIds.contains(simpleForm.getOrganizationId())
+							&& userWebformsOrganizationIds.contains(simpleForm.getOrganizationId())) {
 						forms.add(simpleForm);
 					}
 				}

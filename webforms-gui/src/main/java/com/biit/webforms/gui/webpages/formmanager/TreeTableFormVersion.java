@@ -147,8 +147,8 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 						// If you can't downgrade nor user is admin then, reset
 						// comboBox to previous value, throw a warning and exit.
 						statusComboBox.setValue(form.getStatus());
-						MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED,
-								LanguageCodes.WARNING_DESCRIPTION_NOT_ENOUGH_RIGHTS);
+						MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
+								LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
 						return;
 					}
 				}

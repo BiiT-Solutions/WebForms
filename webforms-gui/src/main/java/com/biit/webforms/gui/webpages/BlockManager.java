@@ -46,7 +46,7 @@ public class BlockManager extends SecuredWebPage {
 		setCentralPanelAsWorkingArea();
 		upperMenu = createUpperMenu();
 		bottomMenu = createBottomMenu();
-		
+
 		setUpperMenu(upperMenu);
 		setBottomMenu(bottomMenu);
 
@@ -138,15 +138,17 @@ public class BlockManager extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				if (newBlockWindow.getValue() == null || newBlockWindow.getValue().isEmpty()) {
-					MessageManager.showWarning(LanguageCodes.COMMON_WARNING_TITLE_BLOCK_NOT_CREATED,
+					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_BLOCK_NOT_CREATED,
 							LanguageCodes.COMMON_WARNING_DESCRIPTION_BLOCK_NEEDS_NAME);
 					return;
 				}
 				try {
-					Block newBlock = UserSessionHandler.getController().createBlock(newBlockWindow.getValue(),
-							newBlockWindow.getOrganization());
-					addBlockToTable(newBlock);
-					newBlockWindow.close();
+					if (newBlockWindow.getOrganization() != null) {
+						Block newBlock = UserSessionHandler.getController().createBlock(newBlockWindow.getValue(),
+								newBlockWindow.getOrganization().getOrganizationId());
+						addBlockToTable(newBlock);
+						newBlockWindow.close();
+					}
 				} catch (FieldTooLongException e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 				} catch (FormWithSameNameException e) {

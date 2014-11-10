@@ -80,7 +80,7 @@ public class Form extends BaseForm {
 		linkedFormVersions = new HashSet<>();
 	}
 
-	public Form(String label, User user, Organization organization) throws FieldTooLongException,
+	public Form(String label, User user, Long organizationId) throws FieldTooLongException,
 			CharacterNotAllowedException {
 		super(label);
 		status = FormWorkStatus.DESIGN;
@@ -89,7 +89,7 @@ public class Form extends BaseForm {
 		linkedFormVersions = new HashSet<>();
 		setCreatedBy(user);
 		setUpdatedBy(user);
-		setOrganizationId(organization);
+		setOrganizationId(organizationId);
 	}
 
 	@Override
@@ -143,10 +143,6 @@ public class Form extends BaseForm {
 		} else {
 			return description;
 		}
-	}
-
-	public void setOrganizationId(Organization organization) {
-		setOrganizationId(organization.getOrganizationId());
 	}
 
 	public FormWorkStatus getStatus() {

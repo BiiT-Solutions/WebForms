@@ -400,7 +400,7 @@ public class Designer extends SecuredWebPage {
 				}
 				try {
 					UserSessionHandler.getController().saveAsBlock(table.getSelectedRow(), newBlockWindow.getValue(),
-							newBlockWindow.getOrganization());
+							newBlockWindow.getOrganization().getOrganizationId());
 					newBlockWindow.close();
 
 					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE,
@@ -431,7 +431,7 @@ public class Designer extends SecuredWebPage {
 					clearAndUpdateFormTable();
 					window.close();
 				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED,
+					MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
 							LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
 				}
 			}

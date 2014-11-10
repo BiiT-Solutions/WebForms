@@ -144,13 +144,13 @@ public enum LanguageCodes implements ILanguageCode{
 	FORM_TABLE_COLUMN_LINKED_ORGANIZATION("caption.form.table.linked.organization"),
 	FORM_TABLE_COLUMN_LINKED_VERSIONS("caption.form.table.linked.versions"),
 	
-	WARNING_CAPTION_NOT_ALLOWED("warning.caption.not.allowed"),
-	WARNING_CAPTION_IMPORT_FAILED("warning.caption.import.failed"),
+	ERROR_CAPTION_NOT_ALLOWED("error.caption.not.allowed"),
+	ERROR_CAPTION_IMPORT_FAILED("error.caption.import.failed"),
 	
-	WARNING_DESCRIPTION_NOT_ENOUGH_RIGHTS("warning.description.not.enough.rights"),
-	WARNING_DESCRIPTION_NOT_VALID_ABCD_FORM("warning.description.not.valid.abcd.form"),	
-	WARNING_DESCRIPTION_NAME_NOT_VALID("warning.description.name.not.valid"), 
-	WARNING_DESCRIPTION_NULL_ORGANIZATION("warning.description.null.organization"),
+	ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS("error.description.not.enough.rights"),
+	ERROR_DESCRIPTION_NOT_VALID_ABCD_FORM("error.description.not.valid.abcd.form"),	
+	ERROR_DESCRIPTION_NAME_NOT_VALID("error.description.name.not.valid"), 
+	ERROR_DESCRIPTION_NULL_ORGANIZATION("error.description.null.organization"),
 
 	//BlockManager
 	CAPTION_NEW_BLOCK("caption.new.block"),

@@ -5,7 +5,6 @@ import javax.persistence.Table;
 
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 
 @Entity
@@ -16,8 +15,9 @@ public class Block extends Form {
 		super();
 	}
 
-	public Block(String name, User user, Organization organization) throws FieldTooLongException, CharacterNotAllowedException {
-		super(name, user, organization);
+	public Block(String name, User user, Long organizationId) throws FieldTooLongException,
+			CharacterNotAllowedException {
+		super(name, user, organizationId);
 	}
 
 }

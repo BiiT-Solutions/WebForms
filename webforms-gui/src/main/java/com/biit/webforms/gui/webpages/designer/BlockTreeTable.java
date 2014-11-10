@@ -47,7 +47,7 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 		List<Block> blocks = new ArrayList<>();
 		for (Organization organization : organizations) {
-			blocks.addAll(blockDao.getAll(organization));
+			blocks.addAll(blockDao.getAll(organization.getOrganizationId()));
 		}
 		Collections.sort(blocks, new TreeObjectUpdateDateComparator());
 

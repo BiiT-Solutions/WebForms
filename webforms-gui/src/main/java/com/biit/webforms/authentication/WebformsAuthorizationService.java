@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.biit.abcd.logger.AbcdLogger;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.AuthorizationService;
 import com.biit.liferay.security.IActivity;
@@ -149,14 +150,21 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		if (form == null || form.getOrganizationId() == null) {
 			return false;
 		}
-		Organization organization = getOrganization(user, form.getOrganizationId());
+		return isAuthorizedActivity(user, form.getOrganizationId(), activity);
+	}
+
+	public boolean isAuthorizedActivity(User user, Long organizationId, IActivity activity) {
+		if (organizationId == null) {
+			return false;
+		}
+		Organization organization = getOrganization(user, organizationId);
 		if (organization == null) {
 			return false;
 		}
 		try {
 			return isAuthorizedActivity(user, organization, activity);
 		} catch (IOException | AuthenticationRequired e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			AbcdLogger.errorMessage(this.getClass().getName(), e);
 			// For security
 			return false;
 		}

@@ -49,7 +49,7 @@ public class TableBlock extends Table {
 		Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
 				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 		for (Organization organization : userOrganizations) {
-			blocks.addAll(blockDao.getAll(organization));
+			blocks.addAll(blockDao.getAll(organization.getOrganizationId()));
 		}
 
 		Collections.sort(blocks, new TreeObjectUpdateDateComparator());

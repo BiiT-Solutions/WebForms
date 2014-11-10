@@ -1,19 +1,12 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.form.interfaces.IBaseFormView;
-import com.biit.webforms.authentication.UserSessionHandler;
-import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Form;
-import com.liferay.portal.model.Organization;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
@@ -22,10 +15,7 @@ import com.vaadin.ui.VerticalLayout;
 public class WindowImportAbcdForms extends WindowSimpleViewAbcdForms {
 	private static final long serialVersionUID = -3270709862406747626L;
 
-	private static final String ORGANIZATION_WIDTH = "250px";
-
 	private TextField importNameField;
-	private ComboBox organizationField;
 
 	public WindowImportAbcdForms(TreeTableProvider<SimpleFormView> formProvider) {
 		super(formProvider);
@@ -46,22 +36,7 @@ public class WindowImportAbcdForms extends WindowSimpleViewAbcdForms {
 		importNameField.setMaxLength(Form.MAX_LABEL_LENGTH);
 		importNameField.setWidth("100%");
 
-		organizationField = new ComboBox(LanguageCodes.CAPTION_ORGANIZATION.translation());
-		organizationField.setNullSelectionAllowed(false);
-		Set<Organization> organizations = UserSessionHandler.getController().getOrganizatiosWhereUser(
-				WebformsActivity.FORM_EDITING);
-		for (Organization organization : organizations) {
-			organizationField.addItem(organization);
-			organizationField.setItemCaption(organization, organization.getName());
-		}
-		if (!organizations.isEmpty()) {
-			Iterator<Organization> iteratorOrganization = organizations.iterator();
-			organizationField.setValue(iteratorOrganization.next());
-		}
-		organizationField.setWidth(ORGANIZATION_WIDTH);
-
 		nameOrganizationLayout.addComponent(importNameField);
-		nameOrganizationLayout.addComponent(organizationField);
 		nameOrganizationLayout.setExpandRatio(importNameField, 1.0f);
 
 		component.addComponent(nameOrganizationLayout);
@@ -89,10 +64,6 @@ public class WindowImportAbcdForms extends WindowSimpleViewAbcdForms {
 
 	public String getImportName() {
 		return importNameField.getValue();
-	}
-
-	public Organization getOrganization() {
-		return (Organization) organizationField.getValue();
 	}
 
 }

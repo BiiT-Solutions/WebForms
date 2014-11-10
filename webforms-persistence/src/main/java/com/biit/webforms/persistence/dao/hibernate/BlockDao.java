@@ -1,6 +1,5 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +17,6 @@ import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Flow;
-import com.liferay.portal.model.Organization;
 
 @Repository
 public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
@@ -51,13 +49,13 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	public Block getBlock(String blockLabel, Organization organization) {
+	public Block getBlock(String blockLabel, Long organizationId) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
 			Criteria criteria = session.createCriteria(Block.class);
 			criteria.add(Restrictions.eq("label", blockLabel));
-			criteria.add(Restrictions.eq("organizationId", organization.getOrganizationId()));
+			criteria.add(Restrictions.eq("organizationId", organizationId));
 			@SuppressWarnings("unchecked")
 			List<Block> results = criteria.list();
 			initializeSets(results);
@@ -95,7 +93,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	public List<Block> getAll(Organization organization) {
+	public List<Block> getAll(Long organizationId) {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
@@ -106,7 +104,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			Criteria criteria = session.createCriteria(getType());
 			// This is executed in java side.
 			criteria.setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE);
-			criteria.add(Restrictions.eq("organizationId", organization.getOrganizationId()));
+			criteria.add(Restrictions.eq("organizationId", organizationId));
 			@SuppressWarnings("unchecked")
 			List<Block> result = criteria.list();
 			initializeSets(result);
@@ -145,23 +143,5 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	@Override
 	public Block getForm(String label, Integer version, Long organizationId) {
 		throw new UnsupportedOperationException("Block dao doesn't allow a get by name, version and organization");
-	}
-
-	@Override
-	public Collection<Block> getAll(Long organizationId) {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		try {
-			Criteria criteria = session.createCriteria(getType());
-			criteria.add(Restrictions.eq("organizationId", organizationId));
-			@SuppressWarnings("unchecked")
-			List<Block> results = criteria.list();
-			initializeSets(results);
-			session.getTransaction().commit();
-			return results;
-		} catch (RuntimeException e) {
-			session.getTransaction().rollback();
-			throw e;
-		}
 	}
 }

@@ -50,7 +50,8 @@ public abstract class SecuredWebPage extends WebPage {
 								WebformsLogger.debug(this.getClass().getName(), "User: "
 										+ UserSessionHandler.getUser().getEmailAddress()
 										+ " tried to access application without appropiate roles.");
-								MessageManager.showError(CommonComponentsLanguageCodes.ERROR_CONTACT);
+								MessageManager.showError(CommonComponentsLanguageCodes.ERROR_NOT_AUTHORIZED,
+										CommonComponentsLanguageCodes.ERROR_CONTACT);
 								ApplicationUi.navigateTo(WebMap.getLoginPage());
 								return;
 							}

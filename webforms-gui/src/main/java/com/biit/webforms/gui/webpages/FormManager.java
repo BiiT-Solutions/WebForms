@@ -51,7 +51,6 @@ import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
-import com.liferay.portal.model.Organization;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -230,27 +229,29 @@ public class FormManager extends SecuredWebPage {
 	protected void linkAbcdForm() {
 		final Form form = (Form) formTable.getForm();
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
+		List<SimpleFormView> availableForms;
 		if (form.getLinkedFormLabel() == null) {
 			// Not linked yet. Show all available forms.
-			for (SimpleFormView simpleFormView : UserSessionHandler.getController().getSimpleFormDaoAbcd().getAll()) {
-				if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-						simpleFormView.getOrganizationId(), AbcdActivity.READ)) {
-					linkAbcdForm.add(simpleFormView);
-				}
-			}
+			availableForms = UserSessionHandler.getController().getSimpleFormDaoAbcd().getAll();
 		} else {
 			// Already linked form, show only the versions of this form.
-			for (SimpleFormView simpleFormView : UserSessionHandler
+			availableForms = UserSessionHandler
 					.getController()
 					.getSimpleFormDaoAbcd()
 					.getSimpleFormViewByLabelAndOrganization(form.getLinkedFormLabel(),
-							form.getLinkedFormOrganizationId())) {
-				if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-						simpleFormView.getOrganizationId(), AbcdActivity.READ)) {
-					linkAbcdForm.add(simpleFormView);
-				}
+							form.getLinkedFormOrganizationId());
+		}
+
+		// Not linked yet. Show all available forms.
+		for (SimpleFormView simpleFormView : availableForms) {
+			if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+					simpleFormView.getOrganizationId(), AbcdActivity.READ)
+					&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+							simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
+				linkAbcdForm.add(simpleFormView);
 			}
 		}
+
 		linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleAbcdForms(form));
 		linkAbcdForm.addAcceptActionListener(new AcceptActionListener() {
 
@@ -279,16 +280,10 @@ public class FormManager extends SecuredWebPage {
 
 				// Check name and organization
 				String newFormName = importAbcdForm.getImportName();
-				Organization newFormOrganization = importAbcdForm.getOrganization();
 
 				if (newFormName == null || newFormName.isEmpty()) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
-							LanguageCodes.WARNING_DESCRIPTION_NAME_NOT_VALID);
-					return;
-				}
-				if (newFormOrganization == null) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
-							LanguageCodes.WARNING_DESCRIPTION_NULL_ORGANIZATION);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
+							LanguageCodes.ERROR_DESCRIPTION_NAME_NOT_VALID);
 					return;
 				}
 
@@ -296,18 +291,18 @@ public class FormManager extends SecuredWebPage {
 				try {
 					SimpleFormView abcdForm = importAbcdForm.getForm();
 					Form importedForm = UserSessionHandler.getController().importAbcdForm(abcdForm, newFormName,
-							newFormOrganization);
+							abcdForm.getOrganizationId());
 					formTable.addForm(importedForm, true);
 					formTable.setValue(importedForm);
 					window.close();
 				} catch (NotValidAbcdForm e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
-							LanguageCodes.WARNING_DESCRIPTION_NOT_VALID_ABCD_FORM);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
+							LanguageCodes.ERROR_DESCRIPTION_NOT_VALID_ABCD_FORM);
 				} catch (FieldTooLongException | CharacterNotAllowedException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
-							LanguageCodes.WARNING_DESCRIPTION_NAME_NOT_VALID);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
+							LanguageCodes.ERROR_DESCRIPTION_NAME_NOT_VALID);
 				} catch (FormWithSameNameException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_IMPORT_FAILED,
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
 							LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
 				}
 
@@ -340,7 +335,7 @@ public class FormManager extends SecuredWebPage {
 		} catch (NotValidStorableObjectException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 		} catch (NewVersionWithoutFinalDesignException e) {
-			MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_ALLOWED,
+			MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
 					LanguageCodes.WARNING_DESCRIPTION_NEW_VERSION_WHEN_DESIGN);
 		} catch (CharacterNotAllowedException e) {
 			// Impossible
@@ -359,15 +354,17 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				if (newFormWindow.getValue() == null || newFormWindow.getValue().isEmpty()) {
-					MessageManager.showWarning(LanguageCodes.COMMON_WARNING_TITLE_FORM_NOT_CREATED,
+					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_FORM_NOT_CREATED,
 							LanguageCodes.COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME);
 					return;
 				}
 				try {
-					Form newForm = UserSessionHandler.getController().createFormAndPersist(newFormWindow.getValue(),
-							newFormWindow.getOrganization());
-					addFormToTable(newForm);
-					newFormWindow.close();
+					if (newFormWindow.getOrganization() != null) {
+						Form newForm = UserSessionHandler.getController().createFormAndPersist(
+								newFormWindow.getValue(), newFormWindow.getOrganization().getOrganizationId());
+						addFormToTable(newForm);
+						newFormWindow.close();
+					}
 				} catch (FieldTooLongException e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 				} catch (FormWithSameNameException e) {

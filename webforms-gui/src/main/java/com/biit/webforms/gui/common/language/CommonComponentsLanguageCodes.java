@@ -14,6 +14,7 @@ public enum CommonComponentsLanguageCodes implements ILanguageCode {
 	LOGIN_ERROR_MESSAGE_ENCRYPTINGPASSWORD("login.errorMessage.password"),
 	ERROR_UNEXPECTED_ERROR("securedWebPageComponent.errorMessage.unexpectedError"),
 	ERROR_CONTACT("commonComponent.errorMessage.errorContact"),
+	ERROR_NOT_AUTHORIZED("error.user.not.authorized"),
 	ACCEPT_CANCEL_WINDOW_CAPTION_ACCEPT("accept.cancel.windo.caption.accept"),
 	ACCEPT_CANCEL_WINDOW_CAPTION_CANCEL("accept.cancel.windo.caption.cancel"),
 	ACCEPT_CANCEL_WINDOW_TOOLTIP_ACCEPT("accept.cancel.windo.tooltip.accept"),
