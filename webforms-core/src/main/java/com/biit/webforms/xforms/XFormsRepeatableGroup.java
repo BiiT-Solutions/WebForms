@@ -52,9 +52,10 @@ public class XFormsRepeatableGroup extends XFormsObject {
 	protected String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
 		String elementBinding = "<xf:bind id=\"" + getBindingName() + "\" name=\"" + getControlName() + "\""
-				+ getRelevantStructure() + " ref=\"" + getControlName() + "\" >";
+				+ getRelevantStructure() + " ref=\"" + getControlName() + "\" relevant=\"" + getRelevantRule() + "\" >";
 		elementBinding += "<xf:bind id=\"" + getIteratorBindingName() + "\" name=\"" + getIteratorControlName() + "\""
-				+ getRelevantStructure() + " ref=\"" + getIteratorControlName() + "\" >";
+				+ getRelevantStructure() + " ref=\"" + getIteratorControlName() + "\" relevant=\"" + getRelevantRule()
+				+ "\" >";
 		// Add also children.
 		for (XFormsObject child : getChildren()) {
 			elementBinding += child.getBinding();
@@ -128,6 +129,12 @@ public class XFormsRepeatableGroup extends XFormsObject {
 			template += child.getTemplates();
 		}
 		return template;
+	}
+
+	@Override
+	protected String getFlowVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

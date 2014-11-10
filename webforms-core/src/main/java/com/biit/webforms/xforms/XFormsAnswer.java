@@ -69,4 +69,10 @@ public class XFormsAnswer extends XFormsObject {
 		resource += "</item>";
 		return resource;
 	}
+
+	@Override
+	protected String getFlowVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -23,6 +23,16 @@ import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 import com.biit.webforms.xml.XmlUtils;
 
+/**
+ * Export the form in XForms language to be use with Orbeon. <br>
+ * The obtained string will have different sections: <br>
+ * - Metadata. Different information about the form and xforms language.<br>
+ * - Model. The basic structure of the form. <br>
+ * - Binding. Used to link the model with some behaviour of the component, such as relevancy.<br>
+ * - Resources. Defines the visualization for each component: label, hint, help. <br>
+ * - Templates. This is for loops only <br>
+ * - Body. Relation all previous data. <br>
+ */
 public class XFormsExporter {
 	public final static String APP_NAME = "WebForms";
 	private Form form;

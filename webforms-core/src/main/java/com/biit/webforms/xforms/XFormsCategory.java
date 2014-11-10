@@ -32,7 +32,7 @@ public class XFormsCategory extends XFormsObject {
 	public String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
 		String elementBinding = "<xf:bind id=\"" + getBindingName() + "\" name=\"" + getControlName() + "\""
-				+ getRelevantStructure() + " ref=\"" + getControlName() + "\" >";
+				+ getRelevantStructure() + " ref=\"" + getControlName() + "\" relevant=\"" + getRelevantRule() + "\" >";
 		// Add also children.
 		for (XFormsObject child : getChildren()) {
 			elementBinding += child.getBinding();
@@ -54,6 +54,12 @@ public class XFormsCategory extends XFormsObject {
 		}
 		section += "</fr:section>";
 		return section;
+	}
+
+	@Override
+	protected String getFlowVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

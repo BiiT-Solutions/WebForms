@@ -3,13 +3,13 @@ package com.biit.webforms.xforms;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Group;
-import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -45,8 +45,8 @@ public abstract class XFormsObject {
 				} else {
 					newChild = new XFormsGroup((Group) child);
 				}
-			} else if (child instanceof Question) {
-				newChild = new XFormsQuestion((Question) child);
+			} else if (child instanceof BaseQuestion) {
+				newChild = new XFormsQuestion((BaseQuestion) child);
 			} else if (child instanceof Answer) {
 				newChild = new XFormsAnswer((Answer) child);
 			} else {
@@ -138,8 +138,15 @@ public abstract class XFormsObject {
 	}
 
 	protected String getRelevantStructure() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		String flow = getFlowVisibility();
+		if (flow != null && flow.length() > 0) {
+			return " relevant=\"" + flow + "\"";
+		}
 		return "";
 	}
+
+	protected abstract String getFlowVisibility() throws InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError;
 
 	protected String getResources() throws NotExistingDynamicFieldException {
 		String resource = "<" + getControlName() + ">";
@@ -193,6 +200,10 @@ public abstract class XFormsObject {
 			templates += child.getTemplates();
 		}
 		return templates;
+	}
+
+	protected String getRelevantRule() {
+		return "true";
 	}
 
 }

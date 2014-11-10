@@ -1,5 +1,6 @@
 package com.biit.webforms.xforms;
 
+import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -15,7 +16,7 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 public class XFormsQuestion extends XFormsObject {
 	private final static int MAX_YEARS_BIRTHDAY = 120;
 
-	public XFormsQuestion(Question question) throws NotValidTreeObjectException, NotValidChildException {
+	public XFormsQuestion(BaseQuestion question) throws NotValidTreeObjectException, NotValidChildException {
 		super(question);
 	}
 
@@ -50,7 +51,7 @@ public class XFormsQuestion extends XFormsObject {
 			PostCodeRuleSyntaxError {
 		return "<xf:bind id=\"" + getBindingName() + "\"  name=\"" + getSource().getName() + "\" ref=\""
 				+ getControlName() + "\" " + getXFormsType() + " " + isMandatory() + " " + getConstraints() + " "
-				+ getRelevantStructure() + " />";
+				+ getRelevantStructure() + " relevant=\"" + getRelevantRule() + "\" >";
 	}
 
 	private String isMandatory() {
@@ -260,6 +261,12 @@ public class XFormsQuestion extends XFormsObject {
 			return "<hint><![CDATA[" + ((Question) getSource()).getDescription() + "]]></hint>";
 		}
 		return "<hint/>";
+	}
+
+	@Override
+	protected String getFlowVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		//Set<Flow> flows = ((Form) getSource().getAncestor(Form.class)).getFlowsTo((BaseQuestion) getSource());
+		return null;
 	}
 
 }
