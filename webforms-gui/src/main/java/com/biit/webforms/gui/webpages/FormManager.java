@@ -37,6 +37,7 @@ import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
+import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderXsd;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
 import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
 import com.biit.webforms.language.LanguageCodes;
@@ -205,6 +206,14 @@ public class FormManager extends SecuredWebPage {
 				window.setIndeterminate(true);
 				window.setFilename(((Form) formTable.getValue()).getLabel() + ".txt");
 				window.showCentered();
+			}
+		});
+		upperMenu.addExportXsdListener(new ClickListener() {
+			private static final long serialVersionUID = -2359606371849802798L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				new WindowDownloaderXsd((Form) formTable.getValue(), ((Form) formTable.getValue()).getLabel() + ".xsd");
 			}
 		});
 		return upperMenu;

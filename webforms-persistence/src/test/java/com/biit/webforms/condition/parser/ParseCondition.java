@@ -7,6 +7,5 @@ public class ParseCondition {
 
 	@Test
 	public void testParseCondition() {
-		System.out.println("testParseCondition");
 	}
 }

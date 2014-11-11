@@ -1,4 +1,5 @@
 package com.biit.webforms.xsd;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import com.biit.webforms.xml.XmlParam;
 public abstract class XsdNodeWithChilds extends XmlNodeProducer {
 
 	private static final String PARAMETER_NAME = "name";
-	
+
 	private final HashMap<String, String> parameters;
 	private final List<XmlNodeProducer> childs;
 
@@ -20,16 +21,18 @@ public abstract class XsdNodeWithChilds extends XmlNodeProducer {
 		this.childs = new ArrayList<XmlNodeProducer>();
 		this.childs.addAll(Arrays.asList(childs));
 	}
-	
-	public void putParameter(String name, String value){
-		parameters.put(name,value);
-	}
-	
-	public String getParameter(String parameterName){
-		return parameters.get(parameterName);
+
+	public void addChild(XmlNodeProducer child) {
+		childs.add(child);
 	}
 
-	protected abstract String getNodeName();
+	public void putParameter(String name, String value) {
+		parameters.put(name, value);
+	}
+
+	public String getParameter(String parameterName) {
+		return parameters.get(parameterName);
+	}
 
 	@Override
 	public void appendXml(StringBuilder sb) {
@@ -41,14 +44,14 @@ public abstract class XsdNodeWithChilds extends XmlNodeProducer {
 		for (Entry<String, String> entry : parameters.entrySet()) {
 			xmlParameters.add(new XmlParam(entry.getKey(), entry.getValue()));
 		}
-		return xmlParameters.toArray(new XmlParam[]{});
+		return xmlParameters.toArray(new XmlParam[] {});
 	}
-	
-	public void putName(String name){
+
+	public void putName(String name) {
 		putParameter(PARAMETER_NAME, name);
 	}
-	
-	public String getName(){
+
+	public String getName() {
 		return getParameter(PARAMETER_NAME);
 	}
 }

@@ -1,8 +1,14 @@
 package com.biit.webforms.xsd;
 
-public class XsdChoice extends XsdNodeWithChilds{
-	
+import com.biit.webforms.xml.XmlNodeProducer;
+
+public class XsdChoice extends XsdNodeWithChilds {
+
 	private static final String XSD_CHOICE = "xs:choice";
+
+	public XsdChoice(XmlNodeProducer ... childs) {
+		super(childs);
+	}
 
 	@Override
 	protected String getNodeName() {

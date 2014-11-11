@@ -36,7 +36,6 @@ public class ApplicationUi extends UI {
 
 	@Override
 	public void detach() {
-		System.out.println("Detach!");
 		if (UserSessionHandler.getUser() != null) {
 			// Log user ui expired.
 			WebformsLogger.info(this.getClass().getName(), UserSessionHandler.getUser().getEmailAddress()

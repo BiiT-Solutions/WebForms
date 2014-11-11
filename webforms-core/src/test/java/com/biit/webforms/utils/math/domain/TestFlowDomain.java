@@ -25,8 +25,6 @@ public class TestFlowDomain {
 	public void testFlowDomain() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
 			BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin,
 			FlowWithoutDestiny, BadFormedExpressions, IncompleteLogic, RedundantLogic {
-		System.out.println("testDiscreteDomain");
-
 		Form form = FormTestUtilities.createFormTest1();
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu1"));
 
@@ -72,35 +70,4 @@ public class TestFlowDomain {
 			new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu3"));
 		
 	}
-
-	// @Test(expectedExceptions = { RedundantLogic.class })
-	// public void testFlowDomainOverlappedLogicQuestionAnswer() throws
-	// FieldTooLongException, NotValidChildException,
-	// CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-	// FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin,
-	// FlowWithoutDestiny, BadFormedExpressions,
-	// IncompleteLogic, RedundantLogic {
-	//
-	// Form form = FormTestUtilities.createFormTest4();
-	// System.out.println(form.getFlows());
-	//
-	// FlowUnitDomain flowUnitDomain = new FlowUnitDomain(form, (BaseQuestion)
-	// form.getChild("cat1", "qu1"));
-	// }
-
-	// @Test()
-	// public void testFlowDomainOverlappedLogicQuestionAnswer() throws
-	// FieldTooLongException, NotValidChildException,
-	// CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-	// FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin,
-	// FlowWithoutDestiny, BadFormedExpressions,
-	// IncompleteLogic, RedundantLogic, InvalidAnswerFormatException,
-	// InvalidAnswerSubformatException {
-	//
-	// Form form = FormTestUtilities.createFormTest5();
-	// System.out.println(form.getFlows());
-	//
-	// FlowUnitDomain flowUnitDomain = new FlowUnitDomain(form, (BaseQuestion)
-	// form.getChild("cat1", "qu1"));
-	// }
 }

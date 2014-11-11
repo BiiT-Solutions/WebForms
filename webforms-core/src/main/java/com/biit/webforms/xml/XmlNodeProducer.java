@@ -4,11 +4,13 @@ import java.util.List;
 
 public abstract class XmlNodeProducer {
 
+	protected abstract String getNodeName();
+	
 	public abstract void appendXml(StringBuilder sb);
 	
 	protected void appendXmlTag(StringBuilder sb, String tagName, List<XmlNodeProducer> childs, XmlParam ... params){
 		sb.append("<");
-		sb.append("tagName");
+		sb.append(getNodeName());
 		
 		for(int i=0; i<params.length; i++){
 			sb.append(" ");
@@ -25,7 +27,7 @@ public abstract class XmlNodeProducer {
 			}
 			
 			sb.append("</");
-			sb.append("tagName");
+			sb.append(getNodeName());
 			sb.append(">");
 		}
 	}
@@ -34,4 +36,10 @@ public abstract class XmlNodeProducer {
 		appendXmlTag(sb, tagName, null, params);		
 	}
 
+	@Override
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		appendXml(sb);
+		return sb.toString();
+	}
 }

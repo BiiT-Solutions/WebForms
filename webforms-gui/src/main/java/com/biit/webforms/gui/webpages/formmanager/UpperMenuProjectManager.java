@@ -15,7 +15,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
 	private IconButton newForm, finish, newFormVersion, importAbcdForm, linkAbcdForm, exportXForms, exportPdf,
-			exportFlowPdf;
+			exportFlowPdf, exportXsd;
 
 	public UpperMenuProjectManager() {
 		super();
@@ -37,6 +37,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 		exportXForms = new IconButton(LanguageCodes.CAPTION_TO_XFORMS, ThemeIcons.EXPORT_FORM_TO_XFORMS,
 				LanguageCodes.TOOLTIP_TO_XFORMS, IconSize.BIG);
+		
+		exportXsd = new IconButton(LanguageCodes.CAPTION_EXPORT_XSD, ThemeIcons.EXPORT_XSD,
+				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
 
 		addIconButton(newForm);
 		addIconButton(finish);
@@ -46,6 +49,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		addIconButton(exportPdf);
 		addIconButton(exportFlowPdf);
 		addIconButton(exportXForms);
+		addIconButton(exportXsd);
 	}
 
 	public void addNewFormListener(ClickListener listener) {
@@ -79,6 +83,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	public void addExportXFormsListener(ClickListener listener) {
 		exportXForms.addClickListener(listener);
 	}
+	
+	public void addExportXsdListener(ClickListener listener) {
+		exportXsd.addClickListener(listener);
+	}
 
 	public IconButton getNewForm() {
 		return newForm;
@@ -110,5 +118,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public IconButton getExportXForms() {
 		return exportXForms;
+	}
+	
+	public IconButton getExportXsd() {
+		return exportXsd;
 	}
 }

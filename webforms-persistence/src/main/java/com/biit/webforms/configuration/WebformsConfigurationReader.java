@@ -65,6 +65,14 @@ public class WebformsConfigurationReader {
 	private static final String ISSUE_MANAGER_URL = "issueManagerUrl";
 
 	private static final String DEFAULT_ISSUE_MANAGER_URL = null;
+	
+	private static final String XSD_XMLNS = "xsdXmlns";
+	
+	private static final String DEFAULT_XSD_XMLNS = "http://schemas.biit.com/";
+	
+	private static final String XSD_NAMESPACE = "xsdNamespace";
+
+	private static final String DEFAULT_XSD_NAMESPACE = "http://schemas.biit.com/";
 
 	private String graphvizBinPath;
 
@@ -93,6 +101,10 @@ public class WebformsConfigurationReader {
 	private String regexAmount;
 
 	private String regexDateBirthday;
+
+	private String xsdXmlns;
+
+	private String xsdNamespace;
 
 	private static WebformsConfigurationReader instance;
 
@@ -133,6 +145,8 @@ public class WebformsConfigurationReader {
 			regexAmount = prop.getProperty(REGEX_AMOUNT, DEFAULT_REGEX_AMOUNT);
 			regexDateBirthday = prop.getProperty(REGEX_DATE_BIRTHDAY, DEFAULT_REGEX_BIRTHDAY);
 			issueManagerUrl = prop.getProperty(ISSUE_MANAGER_URL, DEFAULT_ISSUE_MANAGER_URL);
+			xsdXmlns = prop.getProperty(XSD_XMLNS, DEFAULT_XSD_XMLNS);
+			xsdNamespace = prop.getProperty(XSD_NAMESPACE, DEFAULT_XSD_NAMESPACE);
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -192,6 +206,14 @@ public class WebformsConfigurationReader {
 
 	public String getRegexDateBirthday() {
 		return regexDateBirthday;
+	}
+
+	public String getXsdXmlns() {
+		return xsdXmlns;
+	}
+
+	public String getXsdNamespace() {
+		return xsdNamespace;
 	}
 
 }

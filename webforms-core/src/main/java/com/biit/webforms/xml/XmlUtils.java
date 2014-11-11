@@ -17,7 +17,7 @@ import org.xml.sax.SAXParseException;
 public class XmlUtils {
 	public static final String XML_CODIFICATION = "UTF-8";
 
-	public static String format(String xml) {
+	public static StringWriter formatToStringWriter(String xml) {
 		try {
 			final InputStream src = new ByteArrayInputStream(xml.getBytes(XML_CODIFICATION));
 			final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(src)
@@ -37,12 +37,21 @@ public class XmlUtils {
 
 			// Create data
 			t.transform(ds, new StreamResult(result));
-			return result.toString();
+			return result;
 		} catch (SAXParseException e) {
 			throw new RuntimeException(e);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static String format(String xml) {
+		return formatToStringWriter(xml).toString();
+	}
+
+	public static InputStream formatToInputStream(String xml) {
+		StringWriter result = formatToStringWriter(xml);
+		return new ByteArrayInputStream(result.getBuffer().toString().getBytes());
 	}
 
 	public static String normalizeNodeName(String originalString) {
