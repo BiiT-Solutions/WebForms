@@ -45,7 +45,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		addIconButton(linkAbcdForm);
 		addIconButton(exportPdf);
 		addIconButton(exportFlowPdf);
-		addIconButton(exportXForms);
+		//addIconButton(exportXForms);
 	}
 
 	public void addNewFormListener(ClickListener listener) {

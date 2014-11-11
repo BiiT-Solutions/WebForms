@@ -8,7 +8,7 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.liferay.portal.model.User;
 
 @Entity
-@Table(name = "blocks")
+@Table(name = "tree_blocks")
 public class Block extends Form {
 
 	public Block() {

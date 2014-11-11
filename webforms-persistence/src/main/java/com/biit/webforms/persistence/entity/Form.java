@@ -65,7 +65,7 @@ public class Form extends BaseForm {
 	private String linkedFormLabel;
 
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(joinColumns = @JoinColumn(name = "formId"), uniqueConstraints = @UniqueConstraint(columnNames = {
+	@CollectionTable(name="linked_form_versions", joinColumns = @JoinColumn(name = "formId"), uniqueConstraints = @UniqueConstraint(columnNames = {
 			"formId", "linkedFormVersions" }))
 	private Set<Integer> linkedFormVersions;
 

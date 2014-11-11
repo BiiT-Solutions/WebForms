@@ -1,30 +1,4 @@
 
-    create table Form_linkedFormVersions (
-        formId bigint not null,
-        linkedFormVersions integer
-    );
-
-    create table blocks (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
-        label varchar(1000),
-        name varchar(190),
-        originalReference varchar(190) not null,
-        sortSeq bigint not null,
-        parent_ID bigint,
-        organizationId DOUBLE not null,
-        version integer,
-        description longtext,
-        linkedFormLabel varchar(255),
-        linkedFormOrganizationId bigint,
-        status varchar(255),
-        primary key (ID)
-    );
-
     create table flow (
         ID bigint not null,
         comparationId varchar(190) not null,
@@ -38,6 +12,11 @@
         form_ID bigint,
         origin_id bigint not null,
         primary key (ID)
+    );
+
+    create table linked_form_versions (
+        formId bigint not null,
+        linkedFormVersions integer
     );
 
     create table token (
@@ -97,6 +76,27 @@
         sortSeq bigint not null,
         parent_ID bigint,
         description varchar(10000),
+        primary key (ID)
+    );
+
+    create table tree_blocks (
+        ID bigint not null,
+        comparationId varchar(190) not null,
+        createdBy DOUBLE,
+        creationTime datetime not null,
+        updateTime datetime,
+        updatedBy DOUBLE,
+        label varchar(1000),
+        name varchar(190),
+        originalReference varchar(190) not null,
+        sortSeq bigint not null,
+        parent_ID bigint,
+        organizationId DOUBLE not null,
+        version integer,
+        description longtext,
+        linkedFormLabel varchar(255),
+        linkedFormOrganizationId bigint,
+        status varchar(255),
         primary key (ID)
     );
 
@@ -204,23 +204,14 @@
         primary key (ID)
     );
 
-    alter table Form_linkedFormVersions 
-        add constraint UK_cowsjgfpillahk6b5hqar7dj9  unique (formId, linkedFormVersions);
-
-    alter table blocks 
-        add constraint UK_rck6ivx9k603vtmqrho99c513  unique (ID);
-
-    alter table blocks 
-        add constraint UK_qbcom2re4ae9p345o6ony3akm  unique (comparationId);
-
-    alter table blocks 
-        add constraint UK_9lhm5k7n0wsmbrxcsmdci938s  unique (label, version, organizationId);
-
     alter table flow 
         add constraint UK_kffbghchm5cku772ng2gmaofa  unique (ID);
 
     alter table flow 
         add constraint UK_ncm3pmigu960w0cbnc8cpi9ip  unique (comparationId);
+
+    alter table linked_form_versions 
+        add constraint UK_c87p50fduqtda2111ese0s580  unique (formId, linkedFormVersions);
 
     alter table token 
         add constraint UK_cw25p7uvbd3f5kb07q97haaho  unique (ID);
@@ -245,6 +236,15 @@
 
     alter table tree_answers 
         add constraint UK_5xuj3de6ide6evpo4sijpqa4o  unique (comparationId);
+
+    alter table tree_blocks 
+        add constraint UK_f965i4ecegx997gfv8w2tij8t  unique (ID);
+
+    alter table tree_blocks 
+        add constraint UK_5yv2t9uoy5skfid1s6p1i6tay  unique (comparationId);
+
+    alter table tree_blocks 
+        add constraint UK_r7xwfhjrx5jwbwhtd8kyp563s  unique (label, version, organizationId);
 
     alter table tree_categories 
         add constraint UK_ec3bvy7lletc6jmyvyfwuroqv  unique (ID);

@@ -20,6 +20,10 @@ public class MessageManager {
 		showWarning(ServerTranslate.translate(caption), ServerTranslate.translate(description));
 	}
 
+	public static void showWarning(ILanguageCode caption) {
+		showWarning(ServerTranslate.translate(caption), "");
+	}
+
 	private static void showError(String caption, String description) {
 		showMessage(caption, description, Notification.Type.ERROR_MESSAGE, Position.TOP_CENTER);
 	}
