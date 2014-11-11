@@ -36,7 +36,7 @@
         others bit not null,
         destiny_id bigint,
         form_ID bigint,
-        origin_id bigint,
+        origin_id bigint not null,
         primary key (ID)
     );
 

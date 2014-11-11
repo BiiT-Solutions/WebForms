@@ -43,12 +43,11 @@ public class Flow extends StorableObject {
 	private static final String TOKEN_SEPARATOR = " ";
 
 	/*
-	 * Hibernate changes name of column when you use a many-to-one relationship.
-	 * If you want to add a constraint attached to that column, you have to
-	 * state the name.
+	 * Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
+	 * attached to that column, you have to state the name.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "origin_id")
+	@JoinColumn(name = "origin_id", nullable = false)
 	private TreeObject origin;
 
 	@Enumerated(EnumType.STRING)
@@ -152,11 +151,11 @@ public class Flow extends StorableObject {
 	public String getConditionString() {
 		StringBuilder sb = new StringBuilder();
 
-		Iterator<Token> itr= getCondition().iterator();
-		
-		while(itr.hasNext()){
+		Iterator<Token> itr = getCondition().iterator();
+
+		while (itr.hasNext()) {
 			sb.append(itr.next());
-			if(itr.hasNext()){
+			if (itr.hasNext()) {
 				sb.append(TOKEN_SEPARATOR);
 			}
 		}
@@ -232,16 +231,16 @@ public class Flow extends StorableObject {
 		return form;
 	}
 
-	public List<Token> getCondition() {		
+	public List<Token> getCondition() {
 		if (isOthers()) {
 			List<Token> otherCondition = new ArrayList<>();
 
 			Set<Flow> otherFlows = getForm().getFlowsFrom((BaseQuestion) origin);
 			otherFlows.remove(this);
-			
+
 			Iterator<Flow> itr = otherFlows.iterator();
-			
-			//Generate inverse of other flow conditions.
+
+			// Generate inverse of other flow conditions.
 			while (itr.hasNext()) {
 				Flow flow = itr.next();
 				if (flow.equals(this)) {
@@ -282,8 +281,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * This functions updates references to question and answers If a reference
-	 * is missing it will throw a {@code UpdateNullReferenceException}
+	 * This functions updates references to question and answers If a reference is missing it will throw a
+	 * {@code UpdateNullReferenceException}
 	 * 
 	 * @param mappedCopiedQuestions
 	 * @param mappedCopiedAnswers
