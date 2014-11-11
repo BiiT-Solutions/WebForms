@@ -45,17 +45,17 @@ public class WebformsConfigurationReader {
 	private static final String REGEX_DATE = "regexDate";
 
 	private static final String DEFAULT_REGEX_DATE = "([0-9]{1,2}[-/]){1,2}[0-9]{4}";
-	
+
 	private static final String REGEX_DATE_PERIOD = "regexDatePeriod";
-	
+
 	private static final String DEFAULT_REGEX_DATE_PERIOD = "[0-9]+[DMY]";
-	
+
 	private static final String REGEX_NUMBER = "regexNumber";
-	
+
 	private static final String DEFAULT_REGEX_NUMBER = "[0-9]+";
-	
+
 	private static final String REGEX_FLOAT = "regexFloat";
-	
+
 	private static final String DEFAULT_REGEX_FLOAT = "[0-9]+\\.[0-9]*";
 
 	private static final String REGEX_POSTAL_CODE = "regexPostalCode";
@@ -65,6 +65,10 @@ public class WebformsConfigurationReader {
 	private static final String ISSUE_MANAGER_URL = "issueManagerUrl";
 
 	private static final String DEFAULT_ISSUE_MANAGER_URL = null;
+
+	private static final String DATE_PATTERN = "dd/MM/yyyy";
+
+	private static final String DEFAULT_DATE_PATTERN = "dd/MM/yyyy";
 
 	private String graphvizBinPath;
 
@@ -81,11 +85,11 @@ public class WebformsConfigurationReader {
 	private String regexPostalCode;
 
 	private String regexEmail;
-	
+
 	private String regexDatePeriod;
-	
+
 	private String regexNumber;
-	
+
 	private String regexFloat;
 
 	private String issueManagerUrl;
@@ -93,6 +97,8 @@ public class WebformsConfigurationReader {
 	private String regexAmount;
 
 	private String regexDateBirthday;
+
+	private String datePattern;
 
 	private static WebformsConfigurationReader instance;
 
@@ -112,8 +118,7 @@ public class WebformsConfigurationReader {
 	}
 
 	/**
-	 * Read database config from resource and update default connection
-	 * parameters.
+	 * Read database config from resource and update default connection parameters.
 	 */
 	private void readConfig() {
 		Properties prop = new Properties();
@@ -133,6 +138,7 @@ public class WebformsConfigurationReader {
 			regexAmount = prop.getProperty(REGEX_AMOUNT, DEFAULT_REGEX_AMOUNT);
 			regexDateBirthday = prop.getProperty(REGEX_DATE_BIRTHDAY, DEFAULT_REGEX_BIRTHDAY);
 			issueManagerUrl = prop.getProperty(ISSUE_MANAGER_URL, DEFAULT_ISSUE_MANAGER_URL);
+			datePattern = prop.getProperty(DATE_PATTERN, DEFAULT_DATE_PATTERN);
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -169,16 +175,16 @@ public class WebformsConfigurationReader {
 	public String getRegexEmail() {
 		return regexEmail;
 	}
-	
-	public String getRegexDatePeriod(){
+
+	public String getRegexDatePeriod() {
 		return regexDatePeriod;
 	}
-	
-	public String getRegexNumber(){
+
+	public String getRegexNumber() {
 		return regexNumber;
 	}
-	
-	public String getRegexFloat(){
+
+	public String getRegexFloat() {
 		return regexFloat;
 	}
 
@@ -192,6 +198,10 @@ public class WebformsConfigurationReader {
 
 	public String getRegexDateBirthday() {
 		return regexDateBirthday;
+	}
+
+	public String getDatePattern() {
+		return datePattern;
 	}
 
 }
