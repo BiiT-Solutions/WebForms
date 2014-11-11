@@ -38,13 +38,13 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToForm;
-import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 
 @Entity
 @Table(name = "tree_forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "label", "version",
 		"organizationId" }) })
-@AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH))
+@AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
+		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
 @Cache(region = "forms", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Form extends BaseForm {
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
@@ -52,7 +52,6 @@ public class Form extends BaseForm {
 	@Enumerated(EnumType.STRING)
 	private FormWorkStatus status;
 
-	@Column(length = MAX_DESCRIPTION_LENGTH)
 	@Lob
 	private String description;
 

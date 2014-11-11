@@ -35,7 +35,7 @@ public class Question extends BaseQuestion implements FlowConditionScript {
 	private boolean mandatory;
 	private boolean horizontal;
 
-	@Column(length = MAX_DESCRIPTION_LENGTH)
+	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
 	private String description;
 
 	@Enumerated(EnumType.STRING)

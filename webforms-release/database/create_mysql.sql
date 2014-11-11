@@ -96,7 +96,7 @@
         originalReference varchar(190) not null,
         sortSeq bigint not null,
         parent_ID bigint,
-        description longtext,
+        description varchar(10000),
         primary key (ID)
     );
 
@@ -167,7 +167,7 @@
         answerFormat varchar(255),
         answerSubformat varchar(255),
         answerType varchar(255),
-        description longtext,
+        description varchar(10000),
         horizontal bit not null,
         mandatory bit not null,
         primary key (ID)
@@ -200,7 +200,7 @@
         originalReference varchar(190) not null,
         sortSeq bigint not null,
         parent_ID bigint,
-        description longtext,
+        description varchar(10000),
         primary key (ID)
     );
 
@@ -314,3 +314,8 @@
         add constraint FK_m1g8tiej2sbbgy2y4xoyw6g7x 
         foreign key (flow_ID) 
         references flow (ID);
+
+	CREATE TABLE `hibernate_sequence` (
+		`next_val` bigint(20) DEFAULT NULL
+	);
+

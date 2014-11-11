@@ -38,7 +38,7 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 			Arrays.asList(Answer.class));
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 
-	@Column(length = MAX_DESCRIPTION_LENGTH)
+	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
 	private String description;
 
 	public Answer() {
