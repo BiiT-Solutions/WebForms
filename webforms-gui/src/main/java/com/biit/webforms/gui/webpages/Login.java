@@ -65,6 +65,7 @@ public class Login extends WebPageComponent {
 		
 		rootLayout.addComponent(loginLayout);
 		rootLayout.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
+		usernameField.focus();
 	}
 
 	@Override
@@ -82,7 +83,6 @@ public class Login extends WebPageComponent {
 		usernameField.setRequired(true);
 		usernameField.setRequiredError(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_ERROR_EMAIL));
 		usernameField.setWidth(FIELD_SIZE);
-		usernameField.focus();
 
 		passwordField = new PasswordField(
 				ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_PASSWORD));

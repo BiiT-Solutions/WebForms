@@ -75,6 +75,11 @@ public class FlowEditor extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
+		if (!WebformsAuthorizationService.getInstance().isFormEditable(
+				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
+		}
+
 		setCentralPanelAsWorkingArea();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
@@ -98,7 +103,6 @@ public class FlowEditor extends SecuredWebPage {
 		Set<Flow> flows = UserSessionHandler.getController().getFormInUseFlows();
 		tableFlows.addRows(flows);
 		tableFlows.sortByUpdateDate(false);
-
 	}
 
 	private Component createLeftComponent() {
@@ -451,8 +455,7 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	/**
-	 * This method takes a existing flow and opens flow window with the
-	 * parameters assigned in the flow to edit.
+	 * This method takes a existing flow and opens flow window with the parameters assigned in the flow to edit.
 	 * 
 	 * @param flow
 	 */

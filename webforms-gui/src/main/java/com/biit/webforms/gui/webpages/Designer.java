@@ -64,7 +64,7 @@ public class Designer extends SecuredWebPage {
 	protected void initContent() {
 		if (!WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
-			MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
+			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
 		setCentralPanelAsWorkingArea();
