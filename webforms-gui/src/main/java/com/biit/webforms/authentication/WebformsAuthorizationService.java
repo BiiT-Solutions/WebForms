@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.biit.abcd.logger.AbcdLogger;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.AuthorizationService;
 import com.biit.liferay.security.IActivity;
@@ -54,7 +53,16 @@ public class WebformsAuthorizationService extends AuthorizationService {
 
 	WebformsActivity.FORM_STATUS_DOWNGRADE,
 
-	WebformsActivity.ADMIN_RIGHTS,
+	WebformsActivity.ADMIN_RIGHTS
+
+	};
+
+	/**
+	 * Manage general application options.
+	 */
+	private static final WebformsActivity[] APPLICATION_ADMINISTRATOR = {
+
+	WebformsActivity.EVICT_CACHE
 
 	};
 
@@ -62,6 +70,7 @@ public class WebformsAuthorizationService extends AuthorizationService {
 	private static List<IActivity> formManagerPermissions = new ArrayList<IActivity>();
 	private static List<IActivity> readOnlyPermissions = new ArrayList<IActivity>();
 	private static List<IActivity> formAdministratorPermissions = new ArrayList<IActivity>();
+	private static List<IActivity> applicationAdministratorPermissions = new ArrayList<IActivity>();
 
 	private static WebformsAuthorizationService instance = new WebformsAuthorizationService();
 
@@ -79,6 +88,9 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		}
 		for (IActivity activity : WEBFORMS_ADMINISTRATOR_EXTRA_PERMISSIONS) {
 			formAdministratorPermissions.add(activity);
+		}
+		for (IActivity activity : APPLICATION_ADMINISTRATOR) {
+			applicationAdministratorPermissions.add(activity);
 		}
 	}
 
@@ -114,6 +126,10 @@ public class WebformsAuthorizationService extends AuthorizationService {
 			break;
 		case READ:
 			activities.addAll(readOnlyPermissions);
+			break;
+		case APPLICATION_ADMIN:
+			activities.addAll(readOnlyPermissions);
+			activities.addAll(applicationAdministratorPermissions);
 			break;
 		case NULL:
 			break;
@@ -164,7 +180,7 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		try {
 			return isAuthorizedActivity(user, organization, activity);
 		} catch (IOException | AuthenticationRequired e) {
-			AbcdLogger.errorMessage(this.getClass().getName(), e);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			// For security
 			return false;
 		}

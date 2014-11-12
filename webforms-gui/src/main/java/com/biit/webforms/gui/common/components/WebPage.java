@@ -59,22 +59,22 @@ public abstract class WebPage extends WebPageComponent {
 			getRootLayout().setComponentAlignment(bottomMenu, Alignment.BOTTOM_CENTER);
 		}
 	}
-	
-	protected int calculateElementPosition(WebPageElements element){
-		int position =0;
+
+	protected int calculateElementPosition(WebPageElements element) {
+		int position = 0;
 		switch (element) {
 		case UPPER_MENU:
 			return 0;
 		case CENTRAL_AREA:
-			if(upperMenu!=null){
+			if (upperMenu != null) {
 				position++;
 			}
 			return position;
 		case BOTTOM_MENU:
-			if(upperMenu!=null){
+			if (upperMenu != null) {
 				position++;
 			}
-			if(centralPanel!=null){
+			if (centralPanel != null) {
 				position++;
 			}
 			return position;

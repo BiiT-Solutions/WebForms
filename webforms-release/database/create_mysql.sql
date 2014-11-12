@@ -42,8 +42,8 @@
         sortSeq bigint not null,
         type varchar(255) not null,
         flow_ID bigint,
-        answer_ID bigint,
-        question_ID bigint,
+        answer_ID bigint not null,
+        question_ID bigint not null,
         primary key (ID)
     );
 

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -23,9 +24,11 @@ public class TokenComparationAnswer extends Token {
 	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE };
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(nullable = false)
 	private Question question;
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(nullable = false)
 	private Answer answer;
 
 	public TokenComparationAnswer() {
@@ -106,7 +109,11 @@ public class TokenComparationAnswer extends Token {
 
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
-		question = (Question) mappedElements.get(question.getComparationId());
-		answer = (Answer) mappedElements.get(answer.getComparationId());
+		if (question != null) {
+			question = (Question) mappedElements.get(question.getComparationId());
+			if (answer != null) {
+				answer = (Answer) mappedElements.get(answer.getComparationId());
+			}
+		}
 	}
 }

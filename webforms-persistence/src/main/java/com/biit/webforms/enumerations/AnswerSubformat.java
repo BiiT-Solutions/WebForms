@@ -25,7 +25,7 @@ public enum AnswerSubformat {
 	AMOUNT("[0-9]+\\.[0-9]*", WebformsConfigurationReader.getInstance().getRegexAmount()),
 
 	// Date subtypes
-	DATE("dd-mm-yyyy", WebformsConfigurationReader.getInstance().getRegexDate()),
+	DATE("dd/mm/yyyy", WebformsConfigurationReader.getInstance().getRegexDate()),
 
 	DATE_PAST("31/12/2000", WebformsConfigurationReader.getInstance().getRegexDate()),
 

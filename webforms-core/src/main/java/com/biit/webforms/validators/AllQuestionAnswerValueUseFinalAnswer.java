@@ -9,9 +9,8 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.validators.reports.TokenUsesNonFinalAnswer;
 
 /**
- * This validator checks that all the flows that use Q=A tokens do not use
- * answer that are not final. A final answer is one that doesn't have sub
- * answers or any kind of child.
+ * This validator checks that all the flows that use Q=A tokens do not use answer that are not final. A final answer is
+ * one that doesn't have sub answers or any kind of child.
  * 
  * 
  */
@@ -29,8 +28,12 @@ public class AllQuestionAnswerValueUseFinalAnswer extends SimpleValidator<Flow> 
 			while (itr.hasNext()) {
 				Token token = itr.next();
 				if (token instanceof TokenComparationAnswer) {
-					assertTrue(((TokenComparationAnswer) token).getAnswer().isFinalAnswer(),
-							new TokenUsesNonFinalAnswer(flow, (TokenComparationAnswer) token));
+					if (((TokenComparationAnswer) token).getAnswer() != null) {
+						assertTrue(((TokenComparationAnswer) token).getAnswer().isFinalAnswer(),
+								new TokenUsesNonFinalAnswer(flow, (TokenComparationAnswer) token));
+					} else {
+						assertTrue(false, new TokenUsesNonFinalAnswer(flow, (TokenComparationAnswer) token));
+					}
 				}
 			}
 		}

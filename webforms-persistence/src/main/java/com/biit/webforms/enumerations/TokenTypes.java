@@ -6,44 +6,46 @@ import com.biit.webforms.utils.parser.ITokenType;
 
 public enum TokenTypes implements ITokenType {
 
-	WHITESPACE("\\s+|\\n+", 0, " "),
+	WHITESPACE("\\s+|\\n+", 0, " ", ""),
 	// Only for UI consistency.
-	RETURN("\\n", 0, "\n"),
+	RETURN("\\n", 0, "\n", ""),
 
-	LEFT_PAR("\\(", 1, "("),
+	LEFT_PAR("\\(", 1, "(", "("),
 
-	RIGHT_PAR("\\)", 1, ")"),
+	RIGHT_PAR("\\)", 1, ")", ")"),
 
-	AND("AND|and|&&", 1, "AND"),
+	AND("AND|and|&&", 1, "AND", "and"),
 
-	OR("OR|or|\\|\\|", 1, "OR"),
+	OR("OR|or|\\|\\|", 1, "OR", "or"),
 
-	NOT("NOT|not|!", 1, "NOT"),
+	NOT("NOT|not|!", 1, "NOT", "not"),
 
-	GT(">", 1, ">"),
+	GT(">", 1, ">", "&gt;"),
 
-	LT("<", 1, "<"),
+	LT("<", 1, "<", "&lt;"),
 
-	GE(">=", 1, ">="),
+	GE(">=", 1, ">=", "&gt;="),
 
-	LE("<=", 1, "<="),
+	LE("<=", 1, "<=", "&lt;="),
 
-	EQ("==", 1, "=="),
+	EQ("==", 1, "==", "="),
 
-	NE("!=", 1, "!="),
+	NE("!=", 1, "!=", "!="),
 
-	BETWEEN("BETWEEN|between", 1, "BETWEEN"),
+	BETWEEN("BETWEEN|between", 1, "BETWEEN", "between"),
 
 	;
 
 	private Pattern regexFilter;
 	private int preference;
 	private String stringForm;
+	private String orbeonRepresentation;
 
-	TokenTypes(String regexFilter, int precedence, String stringForm) {
+	TokenTypes(String regexFilter, int precedence, String stringForm, String orbeonRepresentation) {
 		this.regexFilter = Pattern.compile(regexFilter);
 		this.preference = precedence;
 		this.stringForm = stringForm;
+		this.orbeonRepresentation = orbeonRepresentation;
 	}
 
 	@Override
@@ -70,13 +72,17 @@ public enum TokenTypes implements ITokenType {
 	public String toString() {
 		return stringForm;
 	}
-	
-	public static TokenTypes fromString(String string){
-		for(TokenTypes value: values()){
-			if(value.stringForm.equals(string)){
+
+	public static TokenTypes fromString(String string) {
+		for (TokenTypes value : values()) {
+			if (value.stringForm.equals(string)) {
 				return value;
 			}
 		}
 		return null;
+	}
+
+	public String getOrbeonRepresentation() {
+		return orbeonRepresentation;
 	}
 }

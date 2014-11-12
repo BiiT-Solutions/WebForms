@@ -13,7 +13,7 @@ public enum WebformsRoles {
 	
 	ADMIN("webforms2_manage-forms_administration"),
 	
-	;
+	APPLICATION_ADMIN("webforms2_application-administration");
 	
 	private String stringTag;
 	

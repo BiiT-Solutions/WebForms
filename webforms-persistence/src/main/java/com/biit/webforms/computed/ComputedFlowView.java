@@ -3,7 +3,6 @@ package com.biit.webforms.computed;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.biit.form.TreeObject;
@@ -19,7 +18,6 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 
 public class ComputedFlowView {
 
-	private static final List<Token> NEXT_ELEMENT_CONDITION = new ArrayList<>();
 	private TreeObject firstElement;
 	private Set<Flow> flows;
 	private HashMap<TreeObject, Set<Flow>> flowsByOrigin;
@@ -86,7 +84,7 @@ public class ComputedFlowView {
 	public void addNewNextElementFlow(TreeObject origin, TreeObject destiny) {
 		Flow flow = new Flow();
 		try {
-			flow.setContent(origin, FlowType.NORMAL, destiny, false, NEXT_ELEMENT_CONDITION);
+			flow.setContent(origin, FlowType.NORMAL, destiny, false, new ArrayList<Token>());
 			addFlow(flow);
 		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
 				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
@@ -98,7 +96,7 @@ public class ComputedFlowView {
 	public void addNewEndFormFlow(TreeObject origin) {
 		Flow flow = new Flow();
 		try {
-			flow.setContent(origin, FlowType.END_FORM, null, false, NEXT_ELEMENT_CONDITION);
+			flow.setContent(origin, FlowType.END_FORM, null, false, new ArrayList<Token>());
 			addFlow(flow);
 		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
 				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
