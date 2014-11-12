@@ -44,7 +44,7 @@ public enum ThemeIcons implements IThemeIcon{
 	DESIGNER_NEW_SYSTEM_FIELD("form.systemfield.add.svg"),
 	DESIGNER_NEW_INFOTEXT("form.infotext.add.svg"),
 	DESIGNER_NEW_ANSWER("form.answer.add.svg"),
-	DESIGNER_NEW_SUBANSWER("alert.svg"), //TODO
+	DESIGNER_NEW_SUBANSWER("form.subanswer.add.svg"), //TODO
 	DESIGNER_MOVE("element.move.svg"),
 	
 	EXPORT_FORM_TO_PDF("file.pdf.svg"), 
@@ -76,7 +76,9 @@ public enum ThemeIcons implements IThemeIcon{
 	VALIDATE_FLOW("validate.flow.svg"),
 	VALIDATE_ABCD_LINK("validate.link.svg"), 
 	
-	EXPORT_XSD("alert.svg"),  //TODO
+	EXPORT_XSD("form.xsd.svg"),
+	
+	EXPORT_XML("form.xml.svg"),  
 	
 	;
 	
