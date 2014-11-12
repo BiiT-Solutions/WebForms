@@ -1,6 +1,5 @@
 package com.biit.webforms.xforms;
 
-import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.persistence.entity.Answer;
@@ -9,19 +8,11 @@ import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
-public class XFormsAnswer extends XFormsObject {
+public class XFormsAnswer extends XFormsObject<Answer> {
 
-	public XFormsAnswer(Answer answer) throws NotValidTreeObjectException, NotValidChildException {
-		super(answer);
-	}
-
-	@Override
-	protected void setSource(TreeObject treeObject) throws NotValidTreeObjectException {
-		if (treeObject instanceof Answer) {
-			super.setSource(treeObject);
-		} else {
-			throw new NotValidTreeObjectException("Invalid source!");
-		}
+	public XFormsAnswer(XFormsHelper xFormsHelper, Answer answer) throws NotValidTreeObjectException,
+			NotValidChildException {
+		super(xFormsHelper, answer);
 	}
 
 	@Override
@@ -71,7 +62,14 @@ public class XFormsAnswer extends XFormsObject {
 	}
 
 	@Override
-	protected String getFlowVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// TODO Auto-generated method stub
 		return null;
 	}

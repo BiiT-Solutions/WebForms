@@ -28,7 +28,7 @@ import com.biit.webforms.xml.XmlUtils;
  * The obtained string will have different sections: <br>
  * - Metadata. Different information about the form and xforms language.<br>
  * - Model. The basic structure of the form. <br>
- * - Binding. Used to link the model with some behaviour of the component, such as relevancy.<br>
+ * - Binding. Used to link the model with some behavior of the component, such as relevance.<br>
  * - Resources. Defines the visualization for each component: label, hint, help. <br>
  * - Templates. This is for loops only <br>
  * - Body. Relation all previous data. <br>
@@ -36,17 +36,19 @@ import com.biit.webforms.xml.XmlUtils;
 public class XFormsExporter {
 	public final static String APP_NAME = "WebForms";
 	private Form form;
+	private XFormsHelper xFormsHelper;
 	private List<XFormsCategory> xFormsCategories;
 
 	public XFormsExporter(Form form) throws NotValidTreeObjectException, NotValidChildException {
 		this.form = form;
+		xFormsHelper = new XFormsHelper(form);
 		createXFormObjectsStructure();
 	}
 
 	private void createXFormObjectsStructure() throws NotValidTreeObjectException, NotValidChildException {
 		xFormsCategories = new ArrayList<>();
 		for (TreeObject child : form.getChildren()) {
-			XFormsCategory xFormsCategory = new XFormsCategory((Category) child);
+			XFormsCategory xFormsCategory = new XFormsCategory(xFormsHelper, (Category) child);
 			xFormsCategories.add(xFormsCategory);
 		}
 	}

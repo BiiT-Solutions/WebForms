@@ -232,7 +232,7 @@ public class Flow extends StorableObject {
 	}
 
 	public List<Token> getCondition() {
-		if (isOthers()) {
+		if (isOthers() && getForm() != null) {
 			List<Token> otherCondition = new ArrayList<>();
 
 			Set<Flow> otherFlows = getForm().getFlowsFrom((BaseQuestion) origin);

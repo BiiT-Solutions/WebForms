@@ -1,5 +1,8 @@
 package com.biit.webforms.xforms;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
@@ -7,26 +10,28 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.enumerations.FlowType;
+import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
-public class XFormsQuestion extends XFormsObject {
+public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	private final static int MAX_YEARS_BIRTHDAY = 120;
+	private Set<Flow> flowsTo;
 
-	public XFormsQuestion(BaseQuestion question) throws NotValidTreeObjectException, NotValidChildException {
-		super(question);
-	}
-
-	@Override
-	protected void setSource(TreeObject treeObject) throws NotValidTreeObjectException {
-		if (treeObject instanceof Question) {
-			super.setSource(treeObject);
-		} else {
-			throw new NotValidTreeObjectException("Invalid source!");
-		}
+	public XFormsQuestion(XFormsHelper xFormsHelper, BaseQuestion question) throws NotValidTreeObjectException,
+			NotValidChildException {
+		super(xFormsHelper, question);
 	}
 
 	@Override
@@ -51,7 +56,7 @@ public class XFormsQuestion extends XFormsObject {
 			PostCodeRuleSyntaxError {
 		return "<xf:bind id=\"" + getBindingName() + "\"  name=\"" + getSource().getName() + "\" ref=\""
 				+ getControlName() + "\" " + getXFormsType() + " " + isMandatory() + " " + getConstraints() + " "
-				+ getRelevantStructure() + " relevant=\"" + getRelevantRule() + "\" >";
+				+ getRelevantStructure() + " />";
 	}
 
 	private String isMandatory() {
@@ -264,9 +269,62 @@ public class XFormsQuestion extends XFormsObject {
 	}
 
 	@Override
-	protected String getFlowVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		//Set<Flow> flows = ((Form) getSource().getAncestor(Form.class)).getFlowsTo((BaseQuestion) getSource());
-		return null;
+	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
+		// Load stored visibility if exists.
+		if (getXFormsHelper().getVisibilityOfQuestion(getSource()) != null) {
+			return getXFormsHelper().getVisibilityOfQuestion(getSource());
+		}
+
+		String visibility = "";
+		flowsTo = getXFormsHelper().getFlowsWithDestiny(getSource());
+
+		if (flowsTo.isEmpty()) {
+			visibility = getDefaultVisibility();
+		} else {
+			for (Flow flow : flowsTo) {
+				// returns the expression or the 'others' rule.
+				for (Token token : flow.getCondition()) {
+					String conditionVisibility = convertTokenToXForms(token);
+					visibility += conditionVisibility + " ";
+				}
+
+				// Others rules need that source must select an answer.
+				visibility += othersSourceMustBeFilledUp(flow);
+			}
+
+		}
+
+		// Store calculated visibility
+		getXFormsHelper().addVisibilityOfQuestion(getSource(), visibility);
+		return visibility;
+	}
+
+	@Override
+	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		// First element always visible.
+		if (getXFormsHelper().isFirstQuestion(getSource())) {
+			return "";
+		}
+		// Other elements uses the previous element visibility.
+		return getXFormsHelper().getVisibilityOfQuestion(getXFormsHelper().getPreviousQuestion(getSource()));
+	}
+
+	/**
+	 * Creates a new computed go to next element Flow. Type normal, condition = '' -> true
+	 * 
+	 * @param origin
+	 * @param destiny
+	 */
+	public static void addNewNextElementFlow(TreeObject origin, TreeObject destiny) {
+		Flow flow = new Flow();
+		try {
+			flow.setContent(origin, FlowType.NORMAL, destiny, false, new ArrayList<Token>());
+		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
+				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
+			// Impossible
+			WebformsLogger.errorMessage(XFormsQuestion.class.getName(), e);
+		}
 	}
 
 }
