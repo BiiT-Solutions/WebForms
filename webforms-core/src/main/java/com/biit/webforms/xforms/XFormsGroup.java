@@ -28,7 +28,7 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 	}
 
 	@Override
-	public String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+	protected String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
 		String elementBinding = "<xf:bind id=\"" + getBindingName() + "\" name=\"" + getControlName() + "\""
 				+ getRelevantStructure() + " ref=\"" + getControlName() + "\" >";
@@ -44,7 +44,7 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 	 * Groups are represented as sections.
 	 */
 	@Override
-	public String getSectionBody() {
+	protected String getSectionBody() {
 		String section = "";
 		section += "<fr:section id=\"" + getSectionControlName() + "\" bind=\"" + getBindingName() + "\">";
 		section += getBodyLabel();

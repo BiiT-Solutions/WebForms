@@ -13,7 +13,7 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
  * Repeated groups are represented as a section + section iteration in Orbeon.
  * 
  */
-public class XFormsRepeatableGroup extends XFormsObject<BaseRepeatableGroup> {
+public class XFormsRepeatableGroup extends XFormsGroup {
 	protected final static int MIN_REPEATS = 1;
 	protected final static int MAX_REPEATS = 100;
 
@@ -130,19 +130,6 @@ public class XFormsRepeatableGroup extends XFormsObject<BaseRepeatableGroup> {
 			template += child.getTemplates();
 		}
 		return template;
-	}
-
-	@Override
-	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
