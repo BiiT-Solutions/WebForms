@@ -17,6 +17,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 
 import com.biit.form.persistence.dao.hibernate.BaseFormDao;
+import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Flow;
@@ -41,7 +42,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 
 	@Override
 	@Cacheable(value = "forms", key = "#id")
-	public Form read(Long id) {
+	public Form read(Long id) throws UnexpectedDatabaseException {
 		WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
 		Form form = super.read(id);
 		WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
@@ -52,25 +53,26 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.label"),
 			@CacheEvict(value = "forms", key = "#form.id"),
 			@CacheEvict(value = "forms", key = "#form.label, #form.organizationId") })
-	public void makeTransient(Form form) {
+	public void makeTransient(Form form) throws UnexpectedDatabaseException {
 		super.makeTransient(form);
 	}
 
 	@Override
 	@Cacheable(value = "forms", key = "#label")
-	public Form getForm(String label, Long organizationId) {
+	public Form getForm(String label, Long organizationId) throws UnexpectedDatabaseException {
 		return super.getForm(label, organizationId);
 	}
 
 	/**
-	 * Filtered version of get All. Takes a Class argument and returns a list
-	 * with all the elements that match the class argument.
+	 * Filtered version of get All. Takes a Class argument and returns a list with all the elements that match the class
+	 * argument.
 	 * 
 	 * @param cls
 	 * @return
+	 * @throws UnexpectedDatabaseException
 	 */
 	@Cacheable(value = "forms")
-	public List<Form> getAll(Class<?> cls, Organization organization) {
+	public List<Form> getAll(Class<?> cls, Organization organization) throws UnexpectedDatabaseException {
 		if (!Form.class.isAssignableFrom(cls)) {
 			throw new TypeConstraintException("FormDao can only filter subclasses of " + Form.class.getName());
 		}
@@ -103,13 +105,12 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 		} catch (RuntimeException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			session.getTransaction().rollback();
-			throw e;
+			throw new UnexpectedDatabaseException(e.getMessage(), e);
 		}
 	}
 
-
 	@Override
-	public Form makePersistent(Form entity) {
+	public Form makePersistent(Form entity) throws UnexpectedDatabaseException {
 		// For solving Hibernate bug
 		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
 		// list of children
@@ -127,11 +128,12 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	public boolean exists(String label, Long organizationId) {
+	public boolean exists(String label, Long organizationId) throws UnexpectedDatabaseException {
 		return getForm(label, organizationId) != null;
 	}
 
-	public Form getForm(String label, Integer version, Organization organization) {
+	@Override
+	public Form getForm(String label, Integer version, Organization organization) throws UnexpectedDatabaseException {
 		return getForm(label, version, organization.getOrganizationId());
 	}
 }

@@ -7,10 +7,12 @@ import java.util.List;
 import com.biit.abcd.persistence.entity.Form;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.webpages.validation.ValidationUpperMenu;
 import com.biit.webforms.language.LanguageCodes;
@@ -89,20 +91,27 @@ public class Validation extends SecuredWebPage {
 	}
 
 	protected void validateAbcdLink() {
-		List<Form> linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
-				UserSessionHandler.getController().getFormInUse());
-		if (linkedForms.isEmpty()) {
-			setNoLinkedFormsMessage();
-		} else {
-			ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(UserSessionHandler
-					.getController().getFormInUse());
-			ValidateReport report = new ValidateReport();
-			validator.validate(linkedForms, report);
-			if (report.isValid()) {
-				setLinkedFormsCorrectMessage();
+		List<Form> linkedForms;
+		try {
+			linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
+					UserSessionHandler.getController().getFormInUse());
+
+			if (linkedForms.isEmpty()) {
+				setNoLinkedFormsMessage();
 			} else {
-				setValidationReport(report);
+				ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(UserSessionHandler
+						.getController().getFormInUse());
+				ValidateReport report = new ValidateReport();
+				validator.validate(linkedForms, report);
+				if (report.isValid()) {
+					setLinkedFormsCorrectMessage();
+				} else {
+					setValidationReport(report);
+				}
 			}
+		} catch (UnexpectedDatabaseException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
 	}
 
@@ -133,16 +142,22 @@ public class Validation extends SecuredWebPage {
 		ValidateReport report = new ValidateReport();
 		validator.validate(UserSessionHandler.getController().getFormInUse(), report);
 
-		List<Form> linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
-				UserSessionHandler.getController().getFormInUse());
-		ValidateFormAbcdCompatibility validatorLink = new ValidateFormAbcdCompatibility(UserSessionHandler
-				.getController().getFormInUse());
-		validatorLink.validate(linkedForms, report);
+		List<Form> linkedForms;
+		try {
+			linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
+					UserSessionHandler.getController().getFormInUse());
+			ValidateFormAbcdCompatibility validatorLink = new ValidateFormAbcdCompatibility(UserSessionHandler
+					.getController().getFormInUse());
+			validatorLink.validate(linkedForms, report);
 
-		if (report.isValid()) {
-			setValidationPassedMessage();
-		} else {
-			setValidationReport(report);
+			if (report.isValid()) {
+				setValidationPassedMessage();
+			} else {
+				setValidationReport(report);
+			}
+		} catch (UnexpectedDatabaseException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
 	}
 

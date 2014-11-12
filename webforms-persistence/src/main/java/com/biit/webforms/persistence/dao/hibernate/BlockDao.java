@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
+import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Flow;
@@ -49,7 +50,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	public Block getBlock(String blockLabel, Long organizationId) {
+	public Block getBlock(String blockLabel, Long organizationId) throws UnexpectedDatabaseException {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
@@ -65,13 +66,13 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			}
 		} catch (RuntimeException e) {
 			session.getTransaction().rollback();
-			throw e;
+			throw new UnexpectedDatabaseException(e.getMessage(), e);
 		}
 		return null;
 	}
 
 	@Override
-	public Block getForm(String label, Long organizationId) {
+	public Block getForm(String label, Long organizationId) throws UnexpectedDatabaseException {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
@@ -87,13 +88,13 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			}
 		} catch (RuntimeException e) {
 			session.getTransaction().rollback();
-			throw e;
+			throw new UnexpectedDatabaseException(e.getMessage(), e);
 		}
 		return null;
 	}
 
 	@Override
-	public List<Block> getAll(Long organizationId) {
+	public List<Block> getAll(Long organizationId) throws UnexpectedDatabaseException {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		try {
@@ -112,13 +113,13 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 			return result;
 		} catch (RuntimeException e) {
 			session.getTransaction().rollback();
-			throw e;
+			throw new UnexpectedDatabaseException(e.getMessage(), e);
 		}
 	}
 
 	@Override
 	@Transactional
-	public Block makePersistent(Block entity) {
+	public Block makePersistent(Block entity) throws UnexpectedDatabaseException {
 		// For solving Hibernate bug
 		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
 		// list of children
@@ -136,7 +137,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	public boolean exists(String label, Long organizationId) {
+	public boolean exists(String label, Long organizationId) throws UnexpectedDatabaseException {
 		return getForm(label, organizationId) != null;
 	}
 

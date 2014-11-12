@@ -156,6 +156,9 @@ public enum LanguageCodes implements ILanguageCode{
 	ERROR_DESCRIPTION_NOT_VALID_ABCD_FORM("error.description.not.valid.abcd.form"),	
 	ERROR_DESCRIPTION_NAME_NOT_VALID("error.description.name.not.valid"), 
 	ERROR_DESCRIPTION_NULL_ORGANIZATION("error.description.null.organization"),
+	
+	ERROR_ACCESSING_DATABASE("error.database.access"),
+	ERROR_ACCESSING_DATABASE_DESCRIPTION("error.database.description"),
 
 	//BlockManager
 	CAPTION_NEW_BLOCK("caption.new.block"),

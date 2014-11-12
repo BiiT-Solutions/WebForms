@@ -15,6 +15,7 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.authentication.FormWithSameNameException;
@@ -225,9 +226,14 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
-				UserSessionHandler.getController().finishForm(form);
-				formTable.refreshTableData();
-				formTable.setValue(form);
+				try {
+					UserSessionHandler.getController().finishForm(form);
+					formTable.refreshTableData();
+					formTable.setValue(form);
+				} catch (UnexpectedDatabaseException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				}
 			}
 		});
 	}
@@ -269,11 +275,15 @@ public class FormManager extends SecuredWebPage {
 				WindowLinkAbcdForm linkWindow = (WindowLinkAbcdForm) window;
 
 				form.setLinkedForms(linkWindow.getValue());
-				UserSessionHandler.getController().saveForm(form);
-				formTable.refreshTableData();
-				formTable.setValue(form);
-
-				window.close();
+				try {
+					UserSessionHandler.getController().saveForm(form);
+					formTable.refreshTableData();
+					formTable.setValue(form);
+					window.close();
+				} catch (UnexpectedDatabaseException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				}
 			}
 		});
 		linkAbcdForm.showCentered();
@@ -313,6 +323,9 @@ public class FormManager extends SecuredWebPage {
 				} catch (FormWithSameNameException e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
 							LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
+				} catch (UnexpectedDatabaseException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				}
 
 			}
@@ -349,6 +362,9 @@ public class FormManager extends SecuredWebPage {
 		} catch (CharacterNotAllowedException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		} catch (UnexpectedDatabaseException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
 	}
 
@@ -381,6 +397,9 @@ public class FormManager extends SecuredWebPage {
 				} catch (CharacterNotAllowedException e) {
 					// Impossible
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				} catch (UnexpectedDatabaseException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				}
 			}
 		});
@@ -399,6 +418,9 @@ public class FormManager extends SecuredWebPage {
 					textWindow.close();
 				} catch (FieldTooLongException e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
+				} catch (UnexpectedDatabaseException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				}
 			}
 		});

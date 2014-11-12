@@ -9,6 +9,7 @@ import java.util.Set;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
@@ -368,9 +369,15 @@ public class FlowEditor extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				UserSessionHandler.getController().saveForm();
-				MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE,
-						LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
+				try {
+					UserSessionHandler.getController().saveForm();
+					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE,
+							LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
+				} catch (UnexpectedDatabaseException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				}
+
 			}
 		});
 		upperMenu.addNewFlowButtonListener(new ClickListener() {

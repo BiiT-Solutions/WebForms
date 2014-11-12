@@ -9,6 +9,7 @@ import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.TableTreeObjectLabel;
 import com.biit.webforms.gui.webpages.blockmanager.TreeObjectUpdateDateComparator;
@@ -46,14 +47,19 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 		Set<Organization> organizations = WebformsAuthorizationService.getInstance()
 				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 		List<Block> blocks = new ArrayList<>();
-		for (Organization organization : organizations) {
-			blocks.addAll(blockDao.getAll(organization.getOrganizationId()));
-		}
-		Collections.sort(blocks, new TreeObjectUpdateDateComparator());
+		try {
+			for (Organization organization : organizations) {
+				blocks.addAll(blockDao.getAll(organization.getOrganizationId()));
+			}
+			Collections.sort(blocks, new TreeObjectUpdateDateComparator());
 
-		for (Block block : blocks) {
-			loadTreeObject(block, null);
-			setCollapsed(block, true);
+			for (Block block : blocks) {
+				loadTreeObject(block, null);
+				setCollapsed(block, true);
+			}
+		} catch (Exception e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
 	}
 

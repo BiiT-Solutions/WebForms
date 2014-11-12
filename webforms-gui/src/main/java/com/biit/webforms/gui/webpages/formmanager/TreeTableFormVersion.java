@@ -1,6 +1,7 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
 import com.biit.form.interfaces.IBaseFormView;
+import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
@@ -153,7 +154,12 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 					}
 				}
 				form.setStatus((FormWorkStatus) statusComboBox.getValue());
-				UserSessionHandler.getController().saveForm(form);
+				try {
+					UserSessionHandler.getController().saveForm(form);
+				} catch (UnexpectedDatabaseException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				}
 			}
 		});
 

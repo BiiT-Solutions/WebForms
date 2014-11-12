@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -56,25 +57,25 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 
 	@Test
 	public void testRule() throws FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
-			InvalidAnswerSubformatException, NotValidChildException {
+			InvalidAnswerSubformatException, NotValidChildException, UnexpectedDatabaseException {
 		Form form = createForm();
 
 		formDao.makePersistent(form);
 		Assert.assertEquals(formDao.getRowCount(), 1);
 
-		Form dbForm = formDao.getForm(FORM_NAME,ORGANIZATION_ID);
+		Form dbForm = formDao.getForm(FORM_NAME, ORGANIZATION_ID);
 
 		Assert.assertTrue(!dbForm.getFlows().isEmpty());
 
 		Flow dbRule = dbForm.getFlows().iterator().next();
 		Assert.assertTrue(!dbRule.getCondition().isEmpty());
-		
-		//Check that removing rule doesn't make disappear anything else.
-		Assert.assertTrue(dbForm.getAll(Question.class).size()==2);
+
+		// Check that removing rule doesn't make disappear anything else.
+		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
 		dbForm.removeRule(dbRule);
 		formDao.makePersistent(dbForm);
-		dbForm = formDao.getForm(FORM_NAME,ORGANIZATION_ID);
-		Assert.assertTrue(dbForm.getAll(Question.class).size()==2);
+		dbForm = formDao.getForm(FORM_NAME, ORGANIZATION_ID);
+		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
 		Assert.assertTrue(dbForm.getFlows().isEmpty());
 
 		formDao.makeTransient(dbForm);
@@ -111,8 +112,9 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 			category.addChild(group);
 			form.addChild(category);
 
-			List<Token> condition = Arrays.asList(new Token[] { 
-					TokenComparationValue.getTokenEqual(question1,AnswerSubformat.TEXT,"test"), TokenComparationAnswer.getTokenEqual(question2,answer1)});
+			List<Token> condition = Arrays.asList(new Token[] {
+					TokenComparationValue.getTokenEqual(question1, AnswerSubformat.TEXT, "test"),
+					TokenComparationAnswer.getTokenEqual(question2, answer1) });
 			Flow rule1 = createRule(question1, FlowType.NORMAL, question2, false, condition);
 
 			form.addFlow(rule1);

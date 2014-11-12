@@ -156,6 +156,9 @@ public class BlockManager extends SecuredWebPage {
 				} catch (CharacterNotAllowedException e) {
 					// Impossible
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				} catch (Exception e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				}
 			}
 		});

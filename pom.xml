@@ -46,7 +46,7 @@
 		<hibernate.version>4.3.6.Final</hibernate.version>
 		<liferay-service-common.version>0.4.0</liferay-service-common.version>
 		<liferay-authentication-client.version>0.5.4</liferay-authentication-client.version>
-		<form-structure.version>0.1.8</form-structure.version>
+		<form-structure.version>0.1.9</form-structure.version>
 		<root.directory>${project.basedir}</root.directory>
 		<itext.version>2.1.7</itext.version>
 		<h2.version>1.4.181</h2.version>

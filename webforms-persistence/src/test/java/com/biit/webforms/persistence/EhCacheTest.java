@@ -9,6 +9,7 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
@@ -25,7 +26,7 @@ public class EhCacheTest extends AbstractTransactionalTestNGSpringContextTests {
 	private IFormDao formDao;
 
 	@Test
-	public void testSecondLevelCache() throws FieldTooLongException {
+	public void testSecondLevelCache() throws FieldTooLongException, UnexpectedDatabaseException {
 		Form form = new Form();
 		form.setLabel(DUMMY_FORM);
 		form.setOrganizationId(ORGANIZATION_ID);

@@ -13,6 +13,7 @@ import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.DateManager;
 import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.IBlockDao;
@@ -48,14 +49,19 @@ public class TableBlock extends Table {
 
 		Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
 				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
-		for (Organization organization : userOrganizations) {
-			blocks.addAll(blockDao.getAll(organization.getOrganizationId()));
-		}
+		try {
+			for (Organization organization : userOrganizations) {
+				blocks.addAll(blockDao.getAll(organization.getOrganizationId()));
+			}
 
-		Collections.sort(blocks, new TreeObjectUpdateDateComparator());
+			Collections.sort(blocks, new TreeObjectUpdateDateComparator());
 
-		for (Block block : blocks) {
-			addRow(block);
+			for (Block block : blocks) {
+				addRow(block);
+			}
+		} catch (Exception e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
 	}
 

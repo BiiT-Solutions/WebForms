@@ -7,11 +7,13 @@ import java.util.List;
 
 import com.biit.form.interfaces.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
+import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.DateManager;
 import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.language.LanguageCodes;
 import com.liferay.portal.model.Organization;
@@ -19,8 +21,7 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.TreeTable;
 
 /**
- * Base tree table. This generic table needs a dataProvider to initialize the
- * data.
+ * Base tree table. This generic table needs a dataProvider to initialize the data.
  * 
  * @param <T>
  */
@@ -104,7 +105,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		}
 		return null;
 	}
-	
+
 	protected Item addRow(RootForm form) {
 		if (form != null) {
 			Item item = addItem(form);
@@ -113,9 +114,9 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		}
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public Item updateRow(IBaseFormView form){
+	public Item updateRow(IBaseFormView form) {
 		Item item = getItem(form);
 		item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getLabel());
 		item.getItemProperty(TreeTableBaseFormProperties.VERSION).setValue(form.getVersion() + "");
@@ -144,9 +145,9 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 				(DateManager.convertDateToString(form.getUpdateTime())));
 		return item;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public void updateRow(RootForm form){
+	public void updateRow(RootForm form) {
 		Item item = getItem(form);
 		item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getName());
 	}
@@ -184,30 +185,34 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 	private void init() {
 		List<IBaseFormView> forms = new ArrayList<>();
 
-		forms.addAll(dataProvider.getAll());
+		try {
+			forms.addAll(dataProvider.getAll());
 
-		for (IBaseFormView form : forms) {
-			addForm(form);
+			for (IBaseFormView form : forms) {
+				addForm(form);
+			}
+
+			defaultSort();
+		} catch (UnexpectedDatabaseException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
-		
-		defaultSort();
 	}
-	
+
 	/**
 	 * Overridden version of sort for this table. Sorts by name ascendenly and version descendenly.
 	 */
 	public void defaultSort() {
-        sort(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION },
-                new boolean[] { true, false });
-    }
+		sort(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION },
+				new boolean[] { true, false });
+	}
 
 	public void addForm(IBaseFormView form) {
 		addForm(form, false);
 	}
 
 	/**
-	 * Add a new element to the table. If sort is true, the table is reordered
-	 * after inserting the value.
+	 * Add a new element to the table. If sort is true, the table is reordered after inserting the value.
 	 * 
 	 * @param form
 	 * @param sort

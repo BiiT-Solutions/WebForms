@@ -12,6 +12,7 @@ import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
@@ -132,9 +133,14 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				UserSessionHandler.getController().saveForm();
-				MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE,
-						LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
+				try {
+					UserSessionHandler.getController().saveForm();
+					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE,
+							LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
+				} catch (UnexpectedDatabaseException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				}
 			}
 		});
 		upperMenu.addSaveAsBlockButtonListener(new ClickListener() {
@@ -258,7 +264,7 @@ public class Designer extends SecuredWebPage {
 						Answer newAnswer;
 						if (!((Answer) selectedRow).isSubanswer()) {
 							newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow);
-						}else{
+						} else {
 							newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow.getParent());
 						}
 						table.addRow(newAnswer, newAnswer.getParent());
@@ -410,6 +416,9 @@ public class Designer extends SecuredWebPage {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 				} catch (FormWithSameNameException e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
+				} catch (Exception e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				}
 			}
 		});
