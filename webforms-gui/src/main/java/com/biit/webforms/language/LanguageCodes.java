@@ -123,11 +123,13 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_READ_ONLY("caption.read.only"),
 	CAPTION_IMPORT_ABCD_FORM("caption.import.abcd.form"),
 	CAPTION_LINK_ABCD_FORM("caption.link.abcd.form"),
+	CAPTION_EXPORT_XSD("caption.link.export.xsd"),
 	
 	TOOLTIP_NEW_FORM("tooltip.new.form"),
 	TOOLTIP_NEW_FORM_VERSION("tooltip.new.form.version"),
 	TOOLTIP_IMPORT_ABCD_FORM("tooltip.import.abcd.form"),
 	TOOLTIP_LINK_ABCD_FORM("tooltip.link.abcd.form"),
+	TOOLTIP_EXPORT_XSD("caption.link.export.xsd"),
 	
 	NULL_VALUE_NEW_FORM("null.value.new.form"),
 	NULL_VALUE_NEW_BLOCK("null.value.new.block"),
