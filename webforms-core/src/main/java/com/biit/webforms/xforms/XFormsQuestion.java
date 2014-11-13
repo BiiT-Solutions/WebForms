@@ -27,7 +27,6 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
 public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	private final static int MAX_YEARS_BIRTHDAY = 120;
-	private Set<Flow> flowsTo;
 
 	public XFormsQuestion(XFormsHelper xFormsHelper, BaseQuestion question) throws NotValidTreeObjectException,
 			NotValidChildException {
@@ -274,35 +273,9 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			return getXFormsHelper().getVisibilityOfQuestion(getSource());
 		}
 
-		String visibility = "";
-		flowsTo = getXFormsHelper().getFlowsWithDestiny(getSource());
+		Set<Flow> flowsTo = getXFormsHelper().getFlowsWithDestiny(getSource());
 
-		for (Flow flow : flowsTo) {
-			if (visibility.length() > 0) {
-				visibility += " or ";
-			}
-
-			// Add previous visibility
-			String previousVisibility = getXFormsHelper().getVisibilityOfQuestion(flow.getOrigin());
-			if (!flow.getCondition().isEmpty() && previousVisibility.length() > 1) {
-				previousVisibility += " and";
-			}
-
-			String flowvisibility = "";
-			// returns the expression or the 'others' rule.
-			for (Token token : flow.getCondition()) {
-				String conditionVisibility = convertTokenToXForms(token);
-				flowvisibility += conditionVisibility.trim() + " ";
-			}
-
-			// 'Others' rules need that source must select an answer.
-			flowvisibility += othersSourceMustBeFilledUp(flow);
-
-			flowvisibility = flowvisibility.trim();
-			if (flowvisibility.length() > 0 || previousVisibility.length() > 0) {
-				visibility += "(" + (previousVisibility + " " + flowvisibility).trim() + ")";
-			}
-		}
+		String visibility = getRelevantByFlows(flowsTo);
 
 		// Store calculated visibility
 		getXFormsHelper().addVisibilityOfQuestion(getSource(), visibility);

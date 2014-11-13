@@ -54,7 +54,6 @@ class XFormsHelper {
 				flow.setOrigin(questions.get(i));
 				flow.setDestiny(questions.get(i + 1));
 				addFlow(flow);
-				System.out.println(flow);
 			}
 		}
 	}

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +20,7 @@ import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
@@ -67,6 +69,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 			} else if (child instanceof BaseQuestion) {
 				if (child instanceof Text) {
 					newChild = new XFormsText(xFormsHelper, (Text) child);
+				} else if (child instanceof SystemField) {
+					newChild = new XFormsSystemField(xFormsHelper, (SystemField) child);
 				} else {
 					newChild = new XFormsQuestion(xFormsHelper, (BaseQuestion) child);
 				}
@@ -442,6 +446,45 @@ public abstract class XFormsObject<T extends TreeObject> {
 					+ ")>0 ";
 		}
 		return "";
+	}
+
+	/**
+	 * Obtains the relevant calculation obtained from a set of flows.
+	 * 
+	 * @param flows
+	 * @return
+	 * @throws InvalidDateException
+	 */
+	protected String getRelevantByFlows(Set<Flow> flows) throws InvalidDateException {
+		String visibility = "";
+		for (Flow flow : flows) {
+			if (visibility.length() > 0) {
+				visibility += " or ";
+			}
+
+			// Add previous visibility.
+			String previousVisibility = "";
+			previousVisibility = getXFormsHelper().getVisibilityOfQuestion(flow.getOrigin());
+			if (!flow.getCondition().isEmpty() && previousVisibility != null && previousVisibility.length() > 1) {
+				previousVisibility = "(" + previousVisibility + ") and";
+			}
+
+			String flowvisibility = "";
+			// returns the condition or the 'others' rule.
+			for (Token token : flow.getCondition()) {
+				String conditionVisibility = convertTokenToXForms(token);
+				flowvisibility += conditionVisibility.trim() + " ";
+			}
+
+			// 'Others' rules need that source must select an answer.
+			flowvisibility += othersSourceMustBeFilledUp(flow);
+
+			flowvisibility = flowvisibility.trim();
+			if (flowvisibility.length() > 0 || (previousVisibility != null && previousVisibility.length() > 0)) {
+				visibility += "(" + (previousVisibility + " " + flowvisibility).trim() + ")";
+			}
+		}
+		return visibility;
 	}
 
 }
