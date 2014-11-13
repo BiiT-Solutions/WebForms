@@ -59,7 +59,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 				+ getRelevantStructure() + " />";
 	}
 
-	private String isMandatory() {
+	protected String isMandatory() {
 		return ((Question) getSource()).isMandatory() ? " required=\"true()\" " : "";
 	}
 
@@ -68,7 +68,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * 
 	 * @return
 	 */
-	private String getConstraints() {
+	protected String getConstraints() {
 		if (((Question) getSource()).getAnswerFormat() != null) {
 			if (((Question) getSource()).getAnswerFormat().equals(AnswerSubformat.DATE_PAST)) {
 				return " constraint=\". &lt;= current-date()\" ";
@@ -179,10 +179,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * @param element
 	 * @return
 	 */
-	private String getElementFormDefinition() {
+	protected String getElementFormDefinition() {
 		switch (((Question) getSource()).getAnswerType()) {
-		// case NULL:
-		// return "output ";
 		case INPUT:
 			return "input";
 		case TEXT_AREA:
@@ -194,7 +192,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		case MULTIPLE_SELECTION:
 			return "select";
 		}
-		return " ";
+		return "";
 	}
 
 	/**
@@ -203,7 +201,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * @param element
 	 * @return
 	 */
-	private String getApparence() {
+	protected String getApparence() {
 		switch (((Question) getSource()).getAnswerType()) {
 		// case NULL:
 		// return "";
@@ -227,7 +225,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * @param element
 	 * @return
 	 */
-	private String createElementAnswersItems() {
+	protected String createElementAnswersItems() {
 		String row = "";
 		if (!getChildren().isEmpty()) {
 			// Combobox has a dummy element selected as default. Is added before
@@ -251,7 +249,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * @param element
 	 * @return
 	 */
-	private String isHtmlText() {
+	protected String isHtmlText() {
 		switch (((Question) getSource()).getAnswerType()) {
 		case MULTIPLE_SELECTION:
 			return "mediatype=\"text/html\"";
@@ -296,7 +294,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 				String conditionVisibility = convertTokenToXForms(token);
 				flowvisibility += conditionVisibility.trim() + " ";
 			}
-			
+
 			// 'Others' rules need that source must select an answer.
 			flowvisibility += othersSourceMustBeFilledUp(flow);
 

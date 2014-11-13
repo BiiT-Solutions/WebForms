@@ -19,6 +19,7 @@ import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
@@ -64,7 +65,11 @@ public abstract class XFormsObject<T extends TreeObject> {
 					newChild = new XFormsGroup(xFormsHelper, (Group) child);
 				}
 			} else if (child instanceof BaseQuestion) {
-				newChild = new XFormsQuestion(xFormsHelper, (BaseQuestion) child);
+				if (child instanceof Text) {
+					newChild = new XFormsText(xFormsHelper, (Text) child);
+				} else {
+					newChild = new XFormsQuestion(xFormsHelper, (BaseQuestion) child);
+				}
 				xFormsHelper.addXFormsQuestion((XFormsQuestion) newChild);
 			} else if (child instanceof Answer) {
 				newChild = new XFormsAnswer(xFormsHelper, (Answer) child);
