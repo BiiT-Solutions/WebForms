@@ -279,20 +279,31 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		String visibility = "";
 		flowsTo = getXFormsHelper().getFlowsWithDestiny(getSource());
 
-		if (flowsTo.isEmpty()) {
-			visibility = getDefaultVisibility();
-		} else {
-			for (Flow flow : flowsTo) {
-				// returns the expression or the 'others' rule.
-				for (Token token : flow.getCondition()) {
-					String conditionVisibility = convertTokenToXForms(token);
-					visibility += conditionVisibility + " ";
-				}
-
-				// Others rules need that source must select an answer.
-				visibility += othersSourceMustBeFilledUp(flow);
+		for (Flow flow : flowsTo) {
+			if (visibility.length() > 0) {
+				visibility += " or ";
 			}
 
+			// Add previous visibility
+			String previousVisibility = getXFormsHelper().getVisibilityOfQuestion(flow.getOrigin());
+			if (!flow.getCondition().isEmpty() && previousVisibility.length() > 1) {
+				previousVisibility += " and";
+			}
+
+			String flowvisibility = "";
+			// returns the expression or the 'others' rule.
+			for (Token token : flow.getCondition()) {
+				String conditionVisibility = convertTokenToXForms(token);
+				flowvisibility += conditionVisibility.trim() + " ";
+			}
+			
+			// 'Others' rules need that source must select an answer.
+			flowvisibility += othersSourceMustBeFilledUp(flow);
+
+			flowvisibility = flowvisibility.trim();
+			if (flowvisibility.length() > 0 || previousVisibility.length() > 0) {
+				visibility += "(" + (previousVisibility + " " + flowvisibility).trim() + ")";
+			}
 		}
 
 		// Store calculated visibility

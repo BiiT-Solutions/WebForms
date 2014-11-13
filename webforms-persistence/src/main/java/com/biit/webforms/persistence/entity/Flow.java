@@ -77,7 +77,7 @@ public class Flow extends StorableObject {
 		return origin;
 	}
 
-	protected void setOrigin(TreeObject origin) {
+	public void setOrigin(TreeObject origin) {
 		this.origin = origin;
 	}
 
@@ -85,7 +85,7 @@ public class Flow extends StorableObject {
 		return flowType;
 	}
 
-	protected void setFlowType(FlowType flowType) {
+	public void setFlowType(FlowType flowType) {
 		this.flowType = flowType;
 	}
 
@@ -93,7 +93,7 @@ public class Flow extends StorableObject {
 		return destiny;
 	}
 
-	protected void setDestiny(TreeObject destiny) {
+	public void setDestiny(TreeObject destiny) {
 		this.destiny = destiny;
 	}
 
@@ -101,7 +101,7 @@ public class Flow extends StorableObject {
 		return others;
 	}
 
-	protected void setOthers(boolean others) {
+	public void setOthers(boolean others) {
 		this.others = others;
 	}
 

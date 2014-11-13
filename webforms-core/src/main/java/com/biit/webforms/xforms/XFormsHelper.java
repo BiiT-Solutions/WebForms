@@ -43,17 +43,33 @@ class XFormsHelper {
 
 		// Set flows.
 		for (Flow flow : form.getFlows()) {
-			flows.add(flow);
-			if (!flowsByOrigin.containsKey(flow.getOrigin())) {
-				flowsByOrigin.put(flow.getOrigin(), new HashSet<Flow>());
+			addFlow(flow);
+		}
+
+		// Set default flows.
+		for (int i = 0; i < questions.size() - 1; i++) {
+			// No flow defined, use default flow.
+			if (flowsByOrigin.get(questions.get(i)) == null) {
+				Flow flow = new Flow();
+				flow.setOrigin(questions.get(i));
+				flow.setDestiny(questions.get(i + 1));
+				addFlow(flow);
+				System.out.println(flow);
 			}
-			flowsByOrigin.get(flow.getOrigin()).add(flow);
-			if (flow.getDestiny() != null) {
-				if (!flowsByDestiny.containsKey(flow.getDestiny())) {
-					flowsByDestiny.put(flow.getDestiny(), new HashSet<Flow>());
-				}
-				flowsByDestiny.get(flow.getDestiny()).add(flow);
+		}
+	}
+
+	private void addFlow(Flow flow) {
+		flows.add(flow);
+		if (!flowsByOrigin.containsKey(flow.getOrigin())) {
+			flowsByOrigin.put(flow.getOrigin(), new HashSet<Flow>());
+		}
+		flowsByOrigin.get(flow.getOrigin()).add(flow);
+		if (flow.getDestiny() != null) {
+			if (!flowsByDestiny.containsKey(flow.getDestiny())) {
+				flowsByDestiny.put(flow.getDestiny(), new HashSet<Flow>());
 			}
+			flowsByDestiny.get(flow.getDestiny()).add(flow);
 		}
 	}
 
