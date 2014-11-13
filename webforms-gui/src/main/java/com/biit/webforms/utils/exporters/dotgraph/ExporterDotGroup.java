@@ -6,6 +6,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Group;
 
 public class ExporterDotGroup extends ExporterDot<Group> {
+	private final static String BOX_STYLE = "dashed";
 
 	@Override
 	public String export(Group structure) {
@@ -36,6 +37,7 @@ public class ExporterDotGroup extends ExporterDot<Group> {
 		cluster += "\t\tcolor=" + getShapeColor() + ";\n";
 		cluster += "\t\tfontcolor=" + getFontColor() + ";\n";
 		cluster += "\t\tpenwidth=" + getPenWidth() + ";\n";
+		cluster += "\t\tstyle=" + BOX_STYLE + ";\n";
 		cluster += "\t\t}\n";
 		
 		return cluster;
