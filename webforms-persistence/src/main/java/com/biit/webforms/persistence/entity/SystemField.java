@@ -12,6 +12,7 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 @Table(name = "tree_system_fields")
 public class SystemField extends BaseQuestion {
 
+	@Override
 	public String getLabel() {
 		return "<" + super.getLabel() + ">";
 	}
