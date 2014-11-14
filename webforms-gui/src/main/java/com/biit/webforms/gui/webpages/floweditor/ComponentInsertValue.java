@@ -37,6 +37,7 @@ public class ComponentInsertValue extends CustomComponent {
 
 	private static final int VALUE_BUTTON_COLS = 3;
 	private static final int VALUE_BUTTON_ROWS = 2;
+	private static final DatePeriodUnit DATE_FORMAT_DEFAULT_DATE_PERIOD = DatePeriodUnit.YEAR;
 
 	private Question currentQuestion;
 
@@ -126,16 +127,22 @@ public class ComponentInsertValue extends CustomComponent {
 		value.removeAllValidators();
 		value.setValue("");
 
-		if (question.getAnswerFormat() == AnswerFormat.DATE
-				&& question.getAnswerSubformat() != AnswerSubformat.DATE_PERIOD) {
-			dateFormatType.setValue(null);
-			dateFormatType.setEnabled(true);
+		insertValueLayout.removeComponent(dateFormatType);
+		if (question.getAnswerFormat() == AnswerFormat.DATE) {
+			insertValueLayout.addComponentAsFirst(dateFormatType);
+			if (question.getAnswerSubformat() == AnswerSubformat.DATE_PERIOD) {
+				dateFormatType.setNullSelectionAllowed(false);
+				dateFormatType.setValue(DATE_FORMAT_DEFAULT_DATE_PERIOD);
+			} else {
+				dateFormatType.setNullSelectionAllowed(true);
+				dateFormatType.setValue(null);
+			}
 			updateDateValidatorAndInputPrompt();
 		} else {
+			dateFormatType.setNullSelectionAllowed(true);
+			dateFormatType.setValue(null);
 			value.setInputPrompt(question.getAnswerSubformat().getHint());
 			value.addValidator(new ValidatorPattern(question.getAnswerSubformat().getRegex()));
-			dateFormatType.setValue(null);
-			dateFormatType.setEnabled(false);
 		}
 
 		insertEqValue.setEnabled(question.getAnswerFormat().isValidTokenType(TokenTypes.EQ));
@@ -182,8 +189,8 @@ public class ComponentInsertValue extends CustomComponent {
 				value.setInputPrompt(currentQuestion.getAnswerSubformat().getHint());
 				value.addValidator(new ValidatorPattern(currentQuestion.getAnswerSubformat().getRegex()));
 			} else {
-				value.setInputPrompt(AnswerSubformat.NUMBER.getHint());
-				value.addValidator(new ValidatorPattern(AnswerSubformat.NUMBER.getRegex()));
+				value.setInputPrompt(AnswerSubformat.DATE_PERIOD.getHint());
+				value.addValidator(new ValidatorPattern(AnswerSubformat.DATE_PERIOD.getRegex()));
 			}
 		}
 	}

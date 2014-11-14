@@ -48,7 +48,7 @@ public class WebformsConfigurationReader {
 
 	private static final String REGEX_DATE_PERIOD = "regexDatePeriod";
 
-	private static final String DEFAULT_REGEX_DATE_PERIOD = "[0-9]+[DMY]";
+	private static final String DEFAULT_REGEX_DATE_PERIOD = "[0-9]+";
 
 	private static final String REGEX_NUMBER = "regexNumber";
 

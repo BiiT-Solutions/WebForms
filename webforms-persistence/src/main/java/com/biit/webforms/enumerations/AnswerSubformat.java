@@ -31,7 +31,7 @@ public enum AnswerSubformat {
 
 	DATE_FUTURE("31/12/2000", WebformsConfigurationReader.getInstance().getRegexDate()),
 
-	DATE_PERIOD("10D", WebformsConfigurationReader.getInstance().getRegexDatePeriod()),
+	DATE_PERIOD("N", WebformsConfigurationReader.getInstance().getRegexDatePeriod()),
 	
 	DATE_BIRTHDAY("31/12/2000", WebformsConfigurationReader.getInstance().getRegexDateBirthday()),
 
