@@ -115,7 +115,7 @@ public class TokenComparationValue extends Token {
 	public String getExpressionSimplifierRepresentation() {
 		String referenceString = null;
 		if (question != null) {
-			referenceString = question.getPathName();
+			referenceString = question.getPathName().replaceAll("[^A-Za-z0-9_.]", "_");
 		}
 
 		if (subformat == AnswerSubformat.DATE_PERIOD) {

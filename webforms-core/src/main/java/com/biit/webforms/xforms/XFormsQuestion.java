@@ -1,7 +1,6 @@
 package com.biit.webforms.xforms;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import com.biit.form.BaseQuestion;
@@ -274,41 +273,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			return getXFormsHelper().getVisibilityOfQuestion(getSource());
 		}
 
-		Set<Flow> flowsTo = getXFormsHelper().getFlowsWithDestiny(getSource());
-
-		// String visibility = getRelevantByFlows(flowsTo);
-		String visibility = "";
-		// Get all visibility rule as tokens.
-		List<Token> visibilityAsToken = getRelevantByFlowsAsTokens(flowsTo);
-		if(visibilityAsToken.isEmpty()){
-			return "";
-		}
-		// Simplify the visibility expression
-		BooleanExpressionSimplifier simplifier = new BooleanExpressionSimplifier(visibilityAsToken);
-		System.out.println("Visibility: "+ visibilityAsToken.toString());
-		List<Token> simplifiedVisibility = simplifier.getSimplified();
-		System.out.println("Simplified: " + simplifiedVisibility.toString());
-
-		// Store for future reuse.
-		getXFormsHelper().addVisibilityOfQuestionAsToken(getSource(), simplifiedVisibility);
-
-		//Convert to String.
-		String flowvisibility = "";
-		// returns the condition or the 'others' rule.
-		for (Token token : simplifiedVisibility) {
-			System.out.println(token);
-			String conditionVisibility = convertTokenToXForms(token);
-
-			// 'not' rules need that source must select an answer.
-			// conditionVisibility += othersSourceMustBeFilledUp(flow);
-
-			flowvisibility += conditionVisibility.trim() + " ";
-		}
-
-		flowvisibility = flowvisibility.trim();
-		if (flowvisibility.length() > 0) {
-			visibility += "(" + (flowvisibility).trim() + ")";
-		}
+		Set<Flow> flowsTo = getXFormsHelper().getFlowsWithDestiny(getSource());		
+		String visibility = getRelevantByFlows(flowsTo);
 
 		// Store calculated visibility as string
 		getXFormsHelper().addVisibilityOfQuestion(getSource(), visibility);

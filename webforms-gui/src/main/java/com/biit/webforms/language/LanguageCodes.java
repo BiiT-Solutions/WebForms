@@ -220,6 +220,9 @@ public enum LanguageCodes implements ILanguageCode{
 	ERROR_ANSWER_NOT_INSERTED("error.answer.not.inserted"),
 	ERROR_SYSTEM_FIELD_NOT_INSERTED("error.system.field.not.inserted"),
 	
+	ERROR_FORM_NOT_VALID("error.form.not.valid"),
+	VALIDATE_FORM("validate.form"),
+	
 	INFO_MESSAGE_CAPTION_SAVE("info.message.caption.save"),
 	INFO_MESSAGE_DESCRIPTION_SAVE("info.message.description.save"),
 	INFO_MESSAGE_FORM_IS_READ_ONLY("info.message.form.is.read.only"),

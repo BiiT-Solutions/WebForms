@@ -45,7 +45,7 @@ public class TokenAnswerNeeded extends Token {
 	public String getExpressionSimplifierRepresentation() {
 		String referenceString = null;
 		if (question != null) {
-			referenceString = question.getPathName();
+			referenceString = question.getPathName().replaceAll("[^A-Za-z0-9_.]", "_");
 		}
 
 		return "answer[" + referenceString + "]";

@@ -77,4 +77,12 @@ public class BooleanExpressionTest {
 		Assert.assertEquals("true", simplified.toString());
 	}
 
+//	@Test
+//	public void ruleWithOrbeonNames2() {
+//		Expression<String> parsedExpression = ExprParser.parse("((B|C) & !(A)) | ((B|C) & A)");
+//		Expression<String> simplified = RuleSet.simplify(parsedExpression);
+//		System.out.println(simplified);
+//		Assert.assertEquals("true", simplified.toString());
+//		
+//	}
 }

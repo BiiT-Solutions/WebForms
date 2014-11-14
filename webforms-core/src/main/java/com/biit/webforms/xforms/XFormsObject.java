@@ -454,41 +454,49 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Obtains the relevant calculation obtained from a set of flows.
+	 * Obtains the relevant rule calculation obtained from a set of flows.
 	 * 
 	 * @param flows
 	 * @return
 	 * @throws InvalidDateException
 	 */
 	protected String getRelevantByFlows(Set<Flow> flows) throws InvalidDateException {
+		// String visibility = getRelevantByFlows(flowsTo);
 		String visibility = "";
-		for (Flow flow : flows) {
-			if (visibility.length() > 0) {
-				visibility += " or ";
-			}
-
-			// Add previous visibility.
-			String previousVisibility = "";
-			previousVisibility = getXFormsHelper().getVisibilityOfQuestion(flow.getOrigin());
-			if (!flow.getCondition().isEmpty() && previousVisibility != null && previousVisibility.length() > 1) {
-				previousVisibility = "(" + previousVisibility + ") and";
-			}
-
-			String flowvisibility = "";
-			// returns the condition or the 'others' rule.
-			for (Token token : flow.getCondition()) {
-				String conditionVisibility = convertTokenToXForms(token);
-				flowvisibility += conditionVisibility.trim() + " ";
-			}
-
-			// 'Others' rules need that source must select an answer.
-			flowvisibility += othersSourceMustBeFilledUp(flow);
-
-			flowvisibility = flowvisibility.trim();
-			if (flowvisibility.length() > 0 || (previousVisibility != null && previousVisibility.length() > 0)) {
-				visibility += "(" + (previousVisibility + " " + flowvisibility).trim() + ")";
-			}
+		// Get all visibility rule as tokens.
+		List<Token> visibilityAsToken = getRelevantByFlowsAsTokens(flows);
+		if (visibilityAsToken.isEmpty()) {
+			return "";
 		}
+		// Simplify the visibility expression
+		List<Token> simplifiedVisibility;
+		if (WebformsConfigurationReader.getInstance().isBooleanSimplificationEnabled()) {
+			BooleanExpressionSimplifier simplifier = new BooleanExpressionSimplifier(visibilityAsToken);
+			simplifiedVisibility = simplifier.getSimplified();
+		} else {
+			simplifiedVisibility = visibilityAsToken;
+		}
+
+		// Store for future reuse.
+		getXFormsHelper().addVisibilityOfQuestionAsToken(getSource(), simplifiedVisibility);
+
+		// Convert to String.
+		String flowvisibility = "";
+		// returns the condition or the 'others' rule.
+		for (Token token : simplifiedVisibility) {
+			String conditionVisibility = convertTokenToXForms(token);
+
+			// 'not' rules need that source must select an answer.
+			// conditionVisibility += othersSourceMustBeFilledUp(flow);
+
+			flowvisibility += conditionVisibility.trim() + " ";
+		}
+
+		flowvisibility = flowvisibility.trim();
+		if (flowvisibility.length() > 0) {
+			visibility += "(" + flowvisibility.trim() + ")";
+		}
+
 		return visibility;
 	}
 

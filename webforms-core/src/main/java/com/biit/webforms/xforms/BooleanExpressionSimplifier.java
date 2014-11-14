@@ -57,7 +57,7 @@ public class BooleanExpressionSimplifier {
 			// Recover token.
 			Token token = tokens.get(newTokens[i]);
 			result.add(token);
-			// 'not' parenthesis are removed when simplifying, but are needed to orbeon. Add it again.
+			// 'not' parenthesis are removed when simplifying, but are needed in orbeon. Add it again.
 			if (token.getType().equals(TokenTypes.NOT)) {
 				result.add(Token.leftPar());
 				leftParenthesisAdded++;

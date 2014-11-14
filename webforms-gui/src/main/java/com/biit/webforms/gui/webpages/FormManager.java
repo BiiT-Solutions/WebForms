@@ -18,6 +18,7 @@ import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
@@ -48,6 +49,7 @@ import com.biit.webforms.pdfgenerator.FormPdfGenerator;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
+import com.biit.webforms.validators.ValidateFormComplete;
 import com.biit.webforms.xforms.XFormsExporter;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
@@ -191,22 +193,35 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
+				// Xforms only can be uses with valid forms.
+				ValidateFormComplete validator = new ValidateFormComplete();
+				validator.setStopOnFail(true);
 
-					@Override
-					public InputStream getInputStream() {
-						try {
-							return new XFormsExporter((Form) formTable.getValue()).generateXFormsLanguage();
-						} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
-								| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException e) {
-							WebformsLogger.errorMessage(this.getClass().getName(), e);
-							return null;
+				ValidateReport report = new ValidateReport();
+				validator.validate(((Form) formTable.getValue()), report);
+				if (report.isValid()) {
+					WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
+
+						@Override
+						public InputStream getInputStream() {
+							try {
+
+								return new XFormsExporter((Form) formTable.getValue()).generateXFormsLanguage();
+
+							} catch (NotValidTreeObjectException | NotExistingDynamicFieldException
+									| InvalidDateException | StringRuleSyntaxError | PostCodeRuleSyntaxError
+									| NotValidChildException e) {
+								WebformsLogger.errorMessage(this.getClass().getName(), e);
+								return null;
+							}
 						}
-					}
-				});
-				window.setIndeterminate(true);
-				window.setFilename(((Form) formTable.getValue()).getLabel() + ".txt");
-				window.showCentered();
+					});
+					window.setIndeterminate(true);
+					window.setFilename(((Form) formTable.getValue()).getLabel() + ".txt");
+					window.showCentered();
+				} else {
+					MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
+				}
 			}
 		});
 		upperMenu.addExportXsdListener(new ClickListener() {
