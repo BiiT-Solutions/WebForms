@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.common.components;
 
+import com.biit.form.BaseForm;
 import com.biit.form.TreeObject;
 
 public class ComponentCellTreeObject extends ComponentCell {
@@ -13,7 +14,11 @@ public class ComponentCellTreeObject extends ComponentCell {
 
 	public void update(TreeObject treeObject) {
 		clear();
-		addLabel(treeObject.getName());
+		if (treeObject instanceof BaseForm) {
+			addLabel(treeObject.getLabel());
+		} else {
+			addLabel(treeObject.getName());
+		}
 		addIcon(iconProvider.getIcon(treeObject));
 	}
 

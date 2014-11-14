@@ -11,6 +11,7 @@ import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.condition.Token;
 
 /**
  * Stores some basic data and perform basic and generic methods.
@@ -19,6 +20,9 @@ class XFormsHelper {
 	private List<TreeObject> questions;
 	// Stores already calculated visibility to avoid recalculation.
 	private HashMap<TreeObject, String> visibilityOfQuestions;
+	// Stores already calculated visibility to avoid recalculation.
+	private HashMap<TreeObject, List<Token>> visibilityOfQuestionsAsTokens;
+
 	// Links a treeObject with its XForms object.
 	private HashMap<TreeObject, XFormsObject<? extends TreeObject>> xformsFromTreeObject;
 	private List<XFormsQuestion> xFormsQuestions;
@@ -31,6 +35,7 @@ class XFormsHelper {
 		xFormsQuestions = new ArrayList<>();
 		xformsFromTreeObject = new HashMap<>();
 		visibilityOfQuestions = new HashMap<>();
+		visibilityOfQuestionsAsTokens = new HashMap<>();
 		flows = new HashSet<Flow>();
 		flowsByOrigin = new HashMap<>();
 		flowsByDestiny = new HashMap<>();
@@ -131,6 +136,14 @@ class XFormsHelper {
 
 	public void addVisibilityOfQuestion(TreeObject treeObject, String visibility) {
 		visibilityOfQuestions.put(treeObject, visibility);
+	}
+
+	public List<Token> getVisibilityOfQuestionAsToken(TreeObject treeObject) {
+		return visibilityOfQuestionsAsTokens.get(treeObject);
+	}
+
+	public void addVisibilityOfQuestionAsToken(TreeObject treeObject, List<Token> visibility) {
+		visibilityOfQuestionsAsTokens.put(treeObject, visibility);
 	}
 
 	public XFormsObject<? extends TreeObject> getXFormsObject(TreeObject treeObject) {

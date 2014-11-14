@@ -20,6 +20,7 @@ import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.condition.Token;
@@ -292,6 +293,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 		} else if (token instanceof TokenComparationValue) {
 			// $control-name=1
 			visibility += getInputFieldVisibility((TokenComparationValue) token);
+		} else if (token instanceof TokenAnswerNeeded) {
+			visibility += "string-length($"
+					+ getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getControlName()
+					+ ")>0";
 		} else {
 			// An operator 'and', 'or', ...
 			visibility += token.getType().getOrbeonRepresentation();
@@ -449,42 +454,95 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Obtains the relevant calculation obtained from a set of flows.
+	 * Obtains the relevant rule calculation obtained from a set of flows.
 	 * 
 	 * @param flows
 	 * @return
 	 * @throws InvalidDateException
 	 */
 	protected String getRelevantByFlows(Set<Flow> flows) throws InvalidDateException {
+		// String visibility = getRelevantByFlows(flowsTo);
 		String visibility = "";
+		// Get all visibility rule as tokens.
+		List<Token> visibilityAsToken = getRelevantByFlowsAsTokens(flows);
+		if (visibilityAsToken.isEmpty()) {
+			return "";
+		}
+		// Simplify the visibility expression
+		List<Token> simplifiedVisibility;
+		if (WebformsConfigurationReader.getInstance().isBooleanSimplificationEnabled()) {
+			BooleanExpressionSimplifier simplifier = new BooleanExpressionSimplifier(visibilityAsToken);
+			simplifiedVisibility = simplifier.getSimplified();
+		} else {
+			simplifiedVisibility = visibilityAsToken;
+		}
+
+		// Store for future reuse.
+		getXFormsHelper().addVisibilityOfQuestionAsToken(getSource(), simplifiedVisibility);
+
+		// Convert to String.
+		String flowvisibility = "";
+		// returns the condition or the 'others' rule.
+		for (Token token : simplifiedVisibility) {
+			String conditionVisibility = convertTokenToXForms(token);
+
+			// 'not' rules need that source must select an answer.
+			// conditionVisibility += othersSourceMustBeFilledUp(flow);
+
+			flowvisibility += conditionVisibility.trim() + " ";
+		}
+
+		flowvisibility = flowvisibility.trim();
+		if (flowvisibility.length() > 0) {
+			visibility += "(" + flowvisibility.trim() + ")";
+		}
+
+		return visibility;
+	}
+
+	/**
+	 * Includes previous question visibility.
+	 * 
+	 * @param flows
+	 * @return
+	 * @throws InvalidDateException
+	 */
+	protected List<Token> getRelevantByFlowsAsTokens(Set<Flow> flows) throws InvalidDateException {
+		List<Token> visibility = new ArrayList<>();
 		for (Flow flow : flows) {
-			if (visibility.length() > 0) {
-				visibility += " or ";
-			}
-
 			// Add previous visibility.
-			String previousVisibility = "";
-			previousVisibility = getXFormsHelper().getVisibilityOfQuestion(flow.getOrigin());
-			if (!flow.getCondition().isEmpty() && previousVisibility != null && previousVisibility.length() > 1) {
-				previousVisibility = "(" + previousVisibility + ") and";
+			List<Token> previousVisibility = new ArrayList<>();
+			previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(flow.getOrigin());
+			if (!flow.getCondition().isEmpty() && previousVisibility != null && previousVisibility.size() > 1) {
+				previousVisibility.add(0, Token.leftPar());
+				previousVisibility.add(Token.rigthPar());
 			}
 
-			String flowvisibility = "";
-			// returns the condition or the 'others' rule.
-			for (Token token : flow.getCondition()) {
-				String conditionVisibility = convertTokenToXForms(token);
-				flowvisibility += conditionVisibility.trim() + " ";
+			List<Token> flowvisibility = flow.getCondition();
+
+			if (flow.isOthers()) {
+				flowvisibility.add(Token.and());
+				flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin()));
 			}
 
-			// 'Others' rules need that source must select an answer.
-			flowvisibility += othersSourceMustBeFilledUp(flow);
+			if (!flowvisibility.isEmpty() || (previousVisibility != null && !previousVisibility.isEmpty())) {
+				// Connector with previous rule if exists.
+				if (!visibility.isEmpty()) {
+					visibility.add(Token.or());
+				}
 
-			flowvisibility = flowvisibility.trim();
-			if (flowvisibility.length() > 0 || (previousVisibility != null && previousVisibility.length() > 0)) {
-				visibility += "(" + (previousVisibility + " " + flowvisibility).trim() + ")";
+				visibility.add(Token.leftPar());
+				if (previousVisibility != null && !previousVisibility.isEmpty()) {
+					visibility.addAll(previousVisibility);
+					if (!flowvisibility.isEmpty()) {
+						visibility.add(Token.and());
+					}
+				}
+
+				visibility.addAll(flowvisibility);
+				visibility.add(Token.rigthPar());
 			}
 		}
 		return visibility;
 	}
-
 }

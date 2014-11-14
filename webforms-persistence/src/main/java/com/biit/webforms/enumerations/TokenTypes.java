@@ -6,33 +6,33 @@ import com.biit.webforms.utils.parser.ITokenType;
 
 public enum TokenTypes implements ITokenType {
 
-	WHITESPACE("\\s+|\\n+", 0, " ", ""),
+	WHITESPACE("\\s+|\\n+", 0, " ", "", ""),
 	// Only for UI consistency.
-	RETURN("\\n", 0, "\n", ""),
+	RETURN("\\n", 0, "\n", "", ""),
 
-	LEFT_PAR("\\(", 1, "(", "("),
+	LEFT_PAR("\\(", 1, "(", "(", "("),
 
-	RIGHT_PAR("\\)", 1, ")", ")"),
+	RIGHT_PAR("\\)", 1, ")", ")", ")"),
 
-	AND("AND|and|&&", 1, "AND", "and"),
+	AND("AND|and|&&", 1, "AND", "and", "&"),
 
-	OR("OR|or|\\|\\|", 1, "OR", "or"),
+	OR("OR|or|\\|\\|", 1, "OR", "or", "|"),
 
-	NOT("NOT|not|!", 1, "NOT", "not"),
+	NOT("NOT|not|!", 1, "NOT", "not", "!"),
 
-	GT(">", 1, ">", "&gt;"),
+	GT(">", 1, ">", "&gt;", "gt"),
 
-	LT("<", 1, "<", "&lt;"),
+	LT("<", 1, "<", "&lt;", "lt"),
 
-	GE(">=", 1, ">=", "&gt;="),
+	GE(">=", 1, ">=", "&gt;=", "gt="),
 
-	LE("<=", 1, "<=", "&lt;="),
+	LE("<=", 1, "<=", "&lt;=", "lt="),
 
-	EQ("==", 1, "==", "="),
+	EQ("==", 1, "==", "=", "="),
 
-	NE("!=", 1, "!=", "!="),
+	NE("!=", 1, "!=", "!=", "!="),
 
-	BETWEEN("BETWEEN|between", 1, "BETWEEN", "between"),
+	BETWEEN("BETWEEN|between", 1, "BETWEEN", "between", "between"),
 
 	;
 
@@ -40,12 +40,15 @@ public enum TokenTypes implements ITokenType {
 	private int preference;
 	private String stringForm;
 	private String orbeonRepresentation;
+	private String expressionSimplifierRepresentation;
 
-	TokenTypes(String regexFilter, int precedence, String stringForm, String orbeonRepresentation) {
+	TokenTypes(String regexFilter, int precedence, String stringForm, String orbeonRepresentation,
+			String expressionSimplifierRepresentation) {
 		this.regexFilter = Pattern.compile(regexFilter);
 		this.preference = precedence;
 		this.stringForm = stringForm;
 		this.orbeonRepresentation = orbeonRepresentation;
+		this.expressionSimplifierRepresentation = expressionSimplifierRepresentation;
 	}
 
 	@Override
@@ -84,5 +87,18 @@ public enum TokenTypes implements ITokenType {
 
 	public String getOrbeonRepresentation() {
 		return orbeonRepresentation;
+	}
+
+	public String getExpressionSimplifierRepresentation() {
+		return expressionSimplifierRepresentation;
+	}
+
+	public static TokenTypes getFromExpressionSimplifierRepresentation(String representation) {
+		for (TokenTypes tokenTypes : TokenTypes.values()) {
+			if (tokenTypes.getExpressionSimplifierRepresentation().equals(representation)) {
+				return tokenTypes;
+			}
+		}
+		return null;
 	}
 }

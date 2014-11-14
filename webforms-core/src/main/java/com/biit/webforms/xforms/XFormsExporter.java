@@ -187,7 +187,7 @@ public class XFormsExporter {
 	private String getHeader() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
 		String header = "<xh:head>";
-		header += "<xh:title>" + form.getName() + "</xh:title>";
+		header += "<xh:title>" + form.getLabel() + "</xh:title>";
 		header += "<xf:model id=\"fr-form-model\" xxf:expose-xpath-types=\"true\">";
 		header += getMetaData();
 		header += getModel();
@@ -221,7 +221,7 @@ public class XFormsExporter {
 
 		metadata += "<application-name>" + APP_NAME + "</application-name>";
 		metadata += "<form-name>" + formatFormName(form) + "</form-name>";
-		metadata += "<title xml:lang=\"en\">" + form.getName() + "</title>";
+		metadata += "<title xml:lang=\"en\">" + form.getLabel() + "</title>";
 		metadata += "<description xml:lang=\"en\">" + createFormDescription(form) + "</description>";
 
 		metadata += "</metadata>";

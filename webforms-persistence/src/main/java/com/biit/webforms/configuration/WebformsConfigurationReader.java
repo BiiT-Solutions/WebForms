@@ -78,6 +78,10 @@ public class WebformsConfigurationReader {
 
 	private static final String DEFAULT_DATE_PATTERN = "dd/MM/yyyy";
 
+	private static final String BOOLEAN_SIMPLIFICATION_ENABLED = "booleanSimplificationEnabled";
+
+	private static final String DEFAULT_BOOLEAN_SIMPLIFICATION_ENABLED = "false";
+
 	private String graphvizBinPath;
 
 	private String regexText;
@@ -111,6 +115,8 @@ public class WebformsConfigurationReader {
 	private String xsdXmlns;
 
 	private String xsdNamespace;
+
+	private boolean booleanSimplificationEnabled;
 
 	private static WebformsConfigurationReader instance;
 
@@ -153,6 +159,8 @@ public class WebformsConfigurationReader {
 			datePattern = prop.getProperty(DATE_PATTERN, DEFAULT_DATE_PATTERN);
 			xsdXmlns = prop.getProperty(XSD_XMLNS, DEFAULT_XSD_XMLNS);
 			xsdNamespace = prop.getProperty(XSD_NAMESPACE, DEFAULT_XSD_NAMESPACE);
+			booleanSimplificationEnabled = Boolean.parseBoolean(prop.getProperty(BOOLEAN_SIMPLIFICATION_ENABLED,
+					DEFAULT_BOOLEAN_SIMPLIFICATION_ENABLED));
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -224,6 +232,15 @@ public class WebformsConfigurationReader {
 
 	public String getXsdNamespace() {
 		return xsdNamespace;
+	}
+
+	/**
+	 * Enable or disable the boolean simplification for reduce the length of Orbeon relevant rules.
+	 * 
+	 * @return
+	 */
+	public boolean isBooleanSimplificationEnabled() {
+		return booleanSimplificationEnabled;
 	}
 
 }

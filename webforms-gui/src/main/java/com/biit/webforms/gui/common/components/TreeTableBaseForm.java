@@ -149,7 +149,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 	@SuppressWarnings("unchecked")
 	public void updateRow(RootForm form) {
 		Item item = getItem(form);
-		item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getName());
+		item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getLabel());
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 	public RootForm getFormRoot(IBaseFormView form) {
 		for (Object item : getItemIds()) {
 			if (item instanceof RootForm) {
-				if (((RootForm) item).getName().equals(form.getLabel())
+				if (((RootForm) item).getLabel().equals(form.getLabel())
 						&& ((RootForm) item).getOrganizationId().equals(form.getOrganizationId())) {
 					return (RootForm) item;
 				}

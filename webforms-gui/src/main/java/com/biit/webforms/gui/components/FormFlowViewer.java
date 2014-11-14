@@ -89,7 +89,7 @@ public class FormFlowViewer extends Panel {
 		// Time stamp is used on image to force a reload on the client
 		// browser.
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-		return form.getName() + "_" + df.format(new Date()) + "." + imgType.getType();
+		return form.getLabel() + "_" + df.format(new Date()) + "." + imgType.getType();
 	}
 
 	public void redraw() {

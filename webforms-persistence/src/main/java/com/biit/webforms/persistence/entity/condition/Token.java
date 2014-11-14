@@ -139,29 +139,29 @@ public class Token extends StorableObject {
 	}
 
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
-		//There are no references to update
+		// There are no references to update
 	}
-	
-	public static Token not(){
+
+	public static Token not() {
 		return getToken(TokenTypes.NOT);
 	}
-	
-	public static Token leftPar(){
+
+	public static Token leftPar() {
 		return getToken(TokenTypes.LEFT_PAR);
 	}
-	
-	public static Token rigthPar(){
+
+	public static Token rigthPar() {
 		return getToken(TokenTypes.RIGHT_PAR);
 	}
-	
-	public static Token and(){
+
+	public static Token and() {
 		return getToken(TokenTypes.AND);
 	}
-	
-	public static Token or(){
+
+	public static Token or() {
 		return getToken(TokenTypes.OR);
 	}
-	
+
 	/**
 	 * Returns a copy with the inverse of the current token comparation.
 	 * 
@@ -169,7 +169,7 @@ public class Token extends StorableObject {
 	 */
 	public Token inverse() {
 		try {
-			Token copiedToken = generateCopy();	
+			Token copiedToken = generateCopy();
 			switch (getType()) {
 			case LT:
 				copiedToken.setType(TokenTypes.GE);
@@ -192,11 +192,23 @@ public class Token extends StorableObject {
 			default:
 				return null;
 			}
-			
+
 			return copiedToken;
 		} catch (NotValidTokenType e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 		return null;
+	}
+
+	public String getExpressionSimplifierRepresentation() {
+		return type.getExpressionSimplifierRepresentation();
+	}
+
+	public static Token getFromSimplifierRepresentation(String representation) {
+		TokenTypes tokenTypes = TokenTypes.getFromExpressionSimplifierRepresentation(representation);
+		if (tokenTypes == null) {
+			return null;
+		}
+		return getToken(tokenTypes);
 	}
 }

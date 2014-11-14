@@ -273,11 +273,10 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			return getXFormsHelper().getVisibilityOfQuestion(getSource());
 		}
 
-		Set<Flow> flowsTo = getXFormsHelper().getFlowsWithDestiny(getSource());
-
+		Set<Flow> flowsTo = getXFormsHelper().getFlowsWithDestiny(getSource());		
 		String visibility = getRelevantByFlows(flowsTo);
 
-		// Store calculated visibility
+		// Store calculated visibility as string
 		getXFormsHelper().addVisibilityOfQuestion(getSource(), visibility);
 		return visibility;
 	}
