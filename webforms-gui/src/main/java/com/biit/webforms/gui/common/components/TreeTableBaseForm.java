@@ -161,7 +161,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 	public RootForm getFormRoot(IBaseFormView form) {
 		for (Object item : getItemIds()) {
 			if (item instanceof RootForm) {
-				if (((RootForm) item).getName().equals(form.getLabel())
+				if (((RootForm) item).getLabel().equals(form.getLabel())
 						&& ((RootForm) item).getOrganizationId().equals(form.getOrganizationId())) {
 					return (RootForm) item;
 				}

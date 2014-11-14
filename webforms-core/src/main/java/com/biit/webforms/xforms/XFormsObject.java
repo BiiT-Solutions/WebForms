@@ -20,6 +20,7 @@ import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.condition.Token;
@@ -292,6 +293,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 		} else if (token instanceof TokenComparationValue) {
 			// $control-name=1
 			visibility += getInputFieldVisibility((TokenComparationValue) token);
+		} else if (token instanceof TokenAnswerNeeded) {
+			visibility += "string-length($"
+					+ getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getControlName()
+					+ ")>0";
 		} else {
 			// An operator 'and', 'or', ...
 			visibility += token.getType().getOrbeonRepresentation();
@@ -487,4 +492,49 @@ public abstract class XFormsObject<T extends TreeObject> {
 		return visibility;
 	}
 
+	/**
+	 * Includes previous question visibility.
+	 * 
+	 * @param flows
+	 * @return
+	 * @throws InvalidDateException
+	 */
+	protected List<Token> getRelevantByFlowsAsTokens(Set<Flow> flows) throws InvalidDateException {
+		List<Token> visibility = new ArrayList<>();
+		for (Flow flow : flows) {
+			// Add previous visibility.
+			List<Token> previousVisibility = new ArrayList<>();
+			previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(flow.getOrigin());
+			if (!flow.getCondition().isEmpty() && previousVisibility != null && previousVisibility.size() > 1) {
+				previousVisibility.add(0, Token.leftPar());
+				previousVisibility.add(Token.rigthPar());
+			}
+
+			List<Token> flowvisibility = flow.getCondition();
+
+			if (flow.isOthers()) {
+				flowvisibility.add(Token.and());
+				flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin()));
+			}
+
+			if (!flowvisibility.isEmpty() || (previousVisibility != null && !previousVisibility.isEmpty())) {
+				// Connector with previous rule if exists.
+				if (!visibility.isEmpty()) {
+					visibility.add(Token.or());
+				}
+
+				visibility.add(Token.leftPar());
+				if (previousVisibility != null && !previousVisibility.isEmpty()) {
+					visibility.addAll(previousVisibility);
+					if (!flowvisibility.isEmpty()) {
+						visibility.add(Token.and());
+					}
+				}
+
+				visibility.addAll(flowvisibility);
+				visibility.add(Token.rigthPar());
+			}
+		}
+		return visibility;
+	}
 }
