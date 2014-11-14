@@ -16,6 +16,7 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
@@ -376,14 +377,40 @@ public abstract class XFormsObject<T extends TreeObject> {
 				} catch (ParseException e) {
 					throw new InvalidDateException(e.getMessage());
 				}
+				break;
 			case DATE_PERIOD:
-				// TODO when flow has correctly defined the units.
+				visibility += translateDatePeriod(token);
+				break;
 			default:
 				break;
 			}
 			break;
 		}
 		return visibility;
+	}
+
+	private String translateDatePeriod(TokenComparationValue token) {
+		String xPathOperation = "";
+		switch (token.getDatePeriodUnit()) {
+		case YEAR:
+			xPathOperation = "yearMonthDuration";
+			break;
+		case MONTH:
+			xPathOperation = "yearMonthDuration";
+			break;
+		case DAY:
+			xPathOperation = "dayTimeDuration";
+			break;
+		}
+		// Symbols for '>', '<' are the opposite in the orbeon operator.
+		if (getOrbeonDatesOpposite(token.getType()) != null) {
+			return "xs:date($" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + ") "
+					+ getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation() + " current-date() - xs:"
+					+ xPathOperation + "('P" + token.getValue() + token.getDatePeriodUnit().getAbbreviature() + "')";
+		}
+		return "xs:date($" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + ") "
+				+ token.getType().getOrbeonRepresentation() + " current-date() - xs:" + xPathOperation + "('P"
+				+ token.getValue() + token.getDatePeriodUnit().getAbbreviature() + "')";
 	}
 
 	/**
@@ -544,5 +571,25 @@ public abstract class XFormsObject<T extends TreeObject> {
 			}
 		}
 		return visibility;
+	}
+
+	/**
+	 * Returns the opposite value used in Orbeon. Note: <= the opposite is >=. The equals is mantained.
+	 * 
+	 * @return
+	 */
+	public TokenTypes getOrbeonDatesOpposite(TokenTypes type) {
+		switch (type) {
+		case GT:
+			return TokenTypes.LT;
+		case LT:
+			return TokenTypes.GT;
+		case GE:
+			return TokenTypes.LE;
+		case LE:
+			return TokenTypes.GE;
+		default:
+			return null;
+		}
 	}
 }
