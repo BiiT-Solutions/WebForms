@@ -8,21 +8,23 @@ import com.biit.webforms.persistence.entity.Form;
 
 public class RootForm extends Form {
 
-	private String name;
+	private String label;
 	private List<IBaseFormView> childForms;
 
 	public RootForm(String label, Long organizationId) {
-		this.name = label;
+		this.label = label;
 		childForms = new ArrayList<IBaseFormView>();
 		setOrganizationId(organizationId);
 	}
 
-	public String getName() {
-		return name;
+	@Override
+	public String getLabel() {
+		return label;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	@Override
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public IBaseFormView getLastFormVersion() {
