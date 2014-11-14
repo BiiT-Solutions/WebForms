@@ -3,7 +3,7 @@ package com.biit.webforms.gui.webpages.floweditor;
 import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.language.LanguageCodes;
 
-public enum DateTypeUi {
+public enum DatePeriodUnitUi {
 
 	YEAR(DatePeriodUnit.YEAR, LanguageCodes.CAPTION_YEAR, "Y"),
 
@@ -15,7 +15,7 @@ public enum DateTypeUi {
 	private LanguageCodes code;
 	private String representation;
 
-	DateTypeUi(DatePeriodUnit datePeriodUnit, LanguageCodes code, String representation) {
+	DatePeriodUnitUi(DatePeriodUnit datePeriodUnit, LanguageCodes code, String representation) {
 		this.datePeriodUnit = datePeriodUnit;
 		this.code = code;
 		this.representation = representation;
@@ -33,8 +33,8 @@ public enum DateTypeUi {
 		return representation;
 	}
 
-	public static DateTypeUi get(DatePeriodUnit datePeriodUnit) {
-		for (DateTypeUi value : values()) {
+	public static DatePeriodUnitUi get(DatePeriodUnit datePeriodUnit) {
+		for (DatePeriodUnitUi value : values()) {
 			if (value.getDatePeriodUnit().equals(datePeriodUnit)) {
 				return value;
 			}

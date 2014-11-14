@@ -70,7 +70,7 @@ public class ComponentInsertValue extends CustomComponent {
 		dateFormatType.setItemCaption("null", LanguageCodes.CAPTION_DATE_PERIOD_NULL.translation());
 		dateFormatType.setNullSelectionItemId("null");
 		//
-		for (DateTypeUi dateType : DateTypeUi.values()) {
+		for (DatePeriodUnitUi dateType : DatePeriodUnitUi.values()) {
 			dateFormatType.addItem(dateType.getDatePeriodUnit());
 			dateFormatType.setItemCaption(dateType.getDatePeriodUnit(), dateType.getTranslation());
 		}

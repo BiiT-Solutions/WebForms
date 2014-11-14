@@ -116,7 +116,7 @@ public class TokenComponent extends CustomComponent {
 
 	public void refresh() {
 		if (token instanceof TokenComparationValue && ((TokenComparationValue) token).getDatePeriodUnit() != null) {
-			String unitLocalization = DateTypeUi.get(((TokenComparationValue) token).getDatePeriodUnit())
+			String unitLocalization = DatePeriodUnitUi.get(((TokenComparationValue) token).getDatePeriodUnit())
 					.getRepresentation();
 
 			label.setValue(((TokenComparationValue) token).getLocalizedString(unitLocalization));
