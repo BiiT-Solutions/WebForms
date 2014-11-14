@@ -5,15 +5,11 @@ import java.util.List;
 
 import com.biit.form.TreeObject;
 import com.biit.webforms.authentication.UserSessionHandler;
-import com.biit.webforms.enumerations.AnswerFormat;
-import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
-import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.FilterTreeObjectTableContainsName;
 import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.gui.common.components.TableWithSearch;
-import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.floweditor.listeners.InsertTokenListener;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
@@ -23,7 +19,6 @@ import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
-import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.theme.ThemeIcons;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
@@ -33,7 +28,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -49,8 +43,7 @@ public class ConditionEditorControls extends TabSheet {
 	private static final int NUM_BUTTON_COLUMNS = 3;
 	private static final int NUM_BUTTON_ROWS = 2;
 	protected static final TokenTypes DEFAULT_ANSWER_REFERENCE_TOKEN = TokenTypes.EQ;
-	private static final int VALUE_BUTTON_COLS = 3;
-	private static final int VALUE_BUTTON_ROWS = 2;
+
 	private static final float EXPAND_RATIO_REFERENCE = 60.0f;
 	private static final String REDUCED_LAYOUT_MARGIN = "v-reduced-layout-margin";
 
@@ -60,8 +53,7 @@ public class ConditionEditorControls extends TabSheet {
 	private Button insertNeAnswer;
 	private VerticalLayout insertLayout;
 	private VerticalLayout insertAnswerLayout;
-	private VerticalLayout insertValueLayout;
-	private ComboBox dateFormatType;
+	private ComponentInsertValue insertValue;
 
 	// Logic
 	private Button and, or, not;
@@ -69,9 +61,6 @@ public class ConditionEditorControls extends TabSheet {
 	private Button leftPar, rightPar;
 	// Oher
 	private Button carry;
-
-	private TextField value;
-	private Button insertEqValue, insertNeValue, insertLtValue, insertGtValue, insertLeValue, insertGeValue;
 
 	private List<InsertTokenListener> insertTokenListeners;
 
@@ -118,7 +107,7 @@ public class ConditionEditorControls extends TabSheet {
 				} else {
 					AnswerType answerType = ((Question) treeObjectTable.getValue()).getAnswerType();
 					if (answerType == AnswerType.INPUT) {
-						showInsertValueLayout();
+						showInsertValue();
 					} else {
 						showInsertAnswerLayout();
 					}
@@ -134,59 +123,26 @@ public class ConditionEditorControls extends TabSheet {
 		return tableWithSearch;
 	}
 
-	protected void showInsertValueLayout() {
+	/**
+	 * Shows the insert value component
+	 */
+	protected void showInsertValue() {
 		insertLayout.removeAllComponents();
-		updateInsertValueLayout();
-		insertLayout.addComponent(insertValueLayout);
-		insertLayout.setComponentAlignment(insertValueLayout, Alignment.BOTTOM_CENTER);
+		insertValue.setCurrentQuestion(getCurrentQuestion());
+		insertLayout.addComponent(insertValue);
+		insertLayout.setComponentAlignment(insertValue, Alignment.BOTTOM_CENTER);
 	}
 
 	/**
-	 * Updates insert value hint, prompt and validator.
+	 * Shows the insert answer component
 	 */
-	private void updateInsertValueLayout() {
-		value.removeAllValidators();
-		value.setValue("");
-		if (getCurrentQuestion().getAnswerFormat() == AnswerFormat.DATE
-				&& getCurrentQuestion().getAnswerSubformat() != AnswerSubformat.DATE_PERIOD) {
-			dateFormatType.setValue(null);
-			dateFormatType.setEnabled(true);
-			updateDateValidatorAndInputPrompt();
-		} else {
-			value.setInputPrompt(getCurrentQuestion().getAnswerSubformat().getHint());
-			value.addValidator(new ValidatorPattern(getCurrentQuestion().getAnswerSubformat().getRegex()));
-			dateFormatType.setValue(null);
-			dateFormatType.setEnabled(false);
-		}
-
-		insertEqValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.EQ));
-		insertNeValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.NE));
-		insertLeValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.LE));
-		insertGeValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.GE));
-		insertLtValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.LT));
-		insertGtValue.setEnabled(getCurrentQuestion().getAnswerFormat().isValidTokenType(TokenTypes.GT));
-	}
-
-	private void updateDateValidatorAndInputPrompt() {
-		value.removeAllValidators();
-		if (getCurrentQuestion() != null && getCurrentQuestion().getAnswerSubformat() != null) {
-			if (dateFormatType.getValue() == null) {
-				value.setInputPrompt(getCurrentQuestion().getAnswerSubformat().getHint());
-				value.addValidator(new ValidatorPattern(getCurrentQuestion().getAnswerSubformat().getRegex()));
-			} else {
-				value.setInputPrompt(AnswerSubformat.NUMBER.getHint());
-				value.addValidator(new ValidatorPattern(AnswerSubformat.NUMBER.getRegex()));
-			}
-		}
+	protected void showInsertAnswerLayout() {
+		insertLayout.removeAllComponents();
+		insertLayout.addComponent(insertAnswerLayout);
 	}
 
 	private Question getCurrentQuestion() {
 		return (Question) treeObjectTable.getValue();
-	}
-
-	protected void showInsertAnswerLayout() {
-		insertLayout.removeAllComponents();
-		insertLayout.addComponent(insertAnswerLayout);
 	}
 
 	/**
@@ -277,71 +233,6 @@ public class ConditionEditorControls extends TabSheet {
 		return insertAnswerLayout;
 	}
 
-	/**
-	 * Layout with textField and button to insert Q=Value
-	 * 
-	 * @return
-	 */
-	private Component generateInsertComparationValueLayout() {
-		insertValueLayout = new VerticalLayout();
-		insertValueLayout.setSpacing(true);
-		insertValueLayout.setWidth(FULL);
-		insertValueLayout.setHeight(EXPAND);
-		insertValueLayout.setSpacing(true);
-
-		dateFormatType = new ComboBox();
-		dateFormatType.setWidth(FULL);
-		for (DateTypeUi dateType : DateTypeUi.values()) {
-			dateFormatType.addItem(dateType.getDatePeriodUnit());
-			dateFormatType.setItemCaption(dateType.getDatePeriodUnit(), dateType.getTranslation());
-		}
-		//Test
-		dateFormatType.setNullSelectionItemId(null);
-		dateFormatType.setItemCaption(null, LanguageCodes.CAPTION_DATE_PERIOD_NULL.translation());
-		//
-		dateFormatType.addValueChangeListener(new ValueChangeListener() {
-			private static final long serialVersionUID = -333682134124174959L;
-
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				updateDateValidatorAndInputPrompt();
-			}
-		});
-
-		value = new TextField();
-		value.setWidth(FULL);
-		value.setRequired(true);
-		value.setImmediate(true);
-		value.addValueChangeListener(new ValueChangeListener() {
-			private static final long serialVersionUID = -5155837781711968901L;
-
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				value.isValid();
-			}
-		});
-
-		insertEqValue = createTokenComparationValueButton(TokenTypes.EQ.toString(), TokenTypes.EQ);
-		insertNeValue = createTokenComparationValueButton(TokenTypes.NE.toString(), TokenTypes.NE);
-		insertLtValue = createTokenComparationValueButton(TokenTypes.LE.toString(), TokenTypes.LE);
-		insertGtValue = createTokenComparationValueButton(TokenTypes.GE.toString(), TokenTypes.GE);
-		insertLeValue = createTokenComparationValueButton(TokenTypes.LT.toString(), TokenTypes.LT);
-		insertGeValue = createTokenComparationValueButton(TokenTypes.GT.toString(), TokenTypes.GT);
-
-		GridLayout buttonLayout = new GridLayout(VALUE_BUTTON_COLS, VALUE_BUTTON_ROWS, insertEqValue, insertLeValue,
-				insertLtValue, insertNeValue, insertGeValue, insertGtValue);
-		buttonLayout.setWidth(FULL);
-
-		insertValueLayout.addComponent(dateFormatType);
-		insertValueLayout.addComponent(value);
-		insertValueLayout.addComponent(buttonLayout);
-
-		insertValueLayout.setComponentAlignment(value, Alignment.BOTTOM_CENTER);
-		insertValueLayout.setComponentAlignment(buttonLayout, Alignment.BOTTOM_CENTER);
-
-		return insertValueLayout;
-	}
-
 	private Component generateReferenceTab() {
 		VerticalSplitPanel root = new VerticalSplitPanel();
 		root.setWidth(FULL);
@@ -350,7 +241,7 @@ public class ConditionEditorControls extends TabSheet {
 		Component insertReference = generateTreeTableSearch();
 		// Generate comparation answer and value layout.
 		generateInsertComparationAnswerLayout();
-		generateInsertComparationValueLayout();
+		insertValue = new ComponentInsertValue();
 
 		// Layout where we will change elements. Is needed to avoid resizing
 		// problems in component
@@ -372,33 +263,6 @@ public class ConditionEditorControls extends TabSheet {
 		return root;
 	}
 
-	private Button createTokenComparationValueButton(String caption, final TokenTypes type) {
-		Button button = new Button(caption);
-		button.setWidth(FULL);
-		button.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 150904421483217498L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				if (value.isValid()) {
-					fireInsertTokenListeners(TokenComparationValue.getToken(type, getCurrentQuestion(),
-							getCurrentValueAnswerSubformat(), getCurrentDatePeriod(), getCurrentValue()));
-				} else {
-					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_VALUE_HAS_WRONG_FORMAT);
-				}
-			}
-		});
-		return button;
-	}
-
-	protected DatePeriodUnit getCurrentDatePeriod() {
-		return (DatePeriodUnit) dateFormatType.getValue();
-	}
-
-	protected String getCurrentValue() {
-		return value.getValue();
-	}
-
 	private Button createTokenButton(String string, final TokenTypes tokenType) {
 		Button button = new Button(string);
 		button.setWidth(FULL);
@@ -411,19 +275,6 @@ public class ConditionEditorControls extends TabSheet {
 			}
 		});
 		return button;
-	}
-
-	protected AnswerSubformat getCurrentValueAnswerSubformat() {
-		if (getCurrentQuestion().getAnswerFormat() == AnswerFormat.DATE
-				&& getCurrentQuestion().getAnswerSubformat() != AnswerSubformat.DATE_PERIOD) {
-			if (dateFormatType.getValue() == null) {
-				// There is no dateFormat defined (normal date)
-				return getCurrentQuestion().getAnswerSubformat();
-			} else {
-				return AnswerSubformat.DATE_PERIOD;
-			}
-		}
-		return getCurrentQuestion().getAnswerSubformat();
 	}
 
 	private Component generateOperationButtons() {
@@ -461,6 +312,7 @@ public class ConditionEditorControls extends TabSheet {
 
 	public void addInsertTokenListener(InsertTokenListener listener) {
 		insertTokenListeners.add(listener);
+		insertValue.addInsertTokenListener(listener);
 	}
 
 	protected void fireInsertTokenListeners(Token token) {
@@ -487,15 +339,15 @@ public class ConditionEditorControls extends TabSheet {
 		treeObjectTable.setValue(treeObject);
 	}
 
-	public TextField getValueField() {
-		return value;
-	}
-
 	public void addFilter(Filter filter) {
 		((Filterable) treeObjectTable.getContainerDataSource()).addContainerFilter(filter);
 	}
 
 	public void removeFilter(Filter filter) {
 		((Filterable) treeObjectTable.getContainerDataSource()).removeContainerFilter(filter);
+	}
+
+	public TextField getValueField() {
+		return insertValue.getValueField();
 	}
 }

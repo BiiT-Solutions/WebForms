@@ -36,8 +36,10 @@ import com.biit.webforms.authentication.exception.SameOriginAndDestinationExcept
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
@@ -57,6 +59,7 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
@@ -90,8 +93,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form on memory no persistance is done. Needs a unique name where name.length() < 190
-	 * characters.
+	 * User action to create a form on memory no persistance is done. Needs a
+	 * unique name where name.length() < 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -132,7 +135,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form. Needs a unique name where name.length() < 190 characters.
+	 * User action to create a form. Needs a unique name where name.length() <
+	 * 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -270,7 +274,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns the List of Abcd Forms linked to a form or empty list if there are no links.
+	 * Returns the List of Abcd Forms linked to a form or empty list if there
+	 * are no links.
 	 * 
 	 * @param form
 	 * @return
@@ -294,7 +299,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns abcd simpleViewForm linked to form using it's name, version and organizationId.
+	 * Returns abcd simpleViewForm linked to form using it's name, version and
+	 * organizationId.
 	 * 
 	 * @param form
 	 * @return
@@ -498,7 +504,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Creates any kind of TreeObject descendant with @name and inserts into parent if possible.
+	 * Creates any kind of TreeObject descendant with @name and inserts into
+	 * parent if possible.
 	 * 
 	 * @param classType
 	 * @param parent
@@ -770,8 +777,9 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
-	 * hierarchy seed and introduces to current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone
+	 * of the block using the element as hierarchy seed and introduces to
+	 * current form as a new category.
 	 * 
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
@@ -837,7 +845,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * This function is called when the ui has expired. The implementation needs to free any "locked" resources
+	 * This function is called when the ui has expired. The implementation needs
+	 * to free any "locked" resources
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
@@ -856,8 +865,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Update flow content. This function currently is a direct call to the structure function. If the flow is not on
-	 * the form, it gets added.
+	 * Update flow content. This function currently is a direct call to the
+	 * structure function. If the flow is not on the form, it gets added.
 	 * 
 	 * @param flow
 	 * @param origin
@@ -891,8 +900,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Updates flow update time and updated by in flow. The content of the flow was already modified by
-	 * {@link WindowFlow}
+	 * Updates flow update time and updated by in flow. The content of the flow
+	 * was already modified by {@link WindowFlow}
 	 * 
 	 * @param flow
 	 */
@@ -935,6 +944,25 @@ public class ApplicationController {
 		}
 		logInfoEnd("cloneFlowsAndInsertIntoForm", selectedFlows);
 		return clones;
+	}
+
+	/**
+	 * Creates a Token where Q = Value
+	 * 
+	 * @param type
+	 * @param question
+	 * @param valueAnswerSubformat
+	 * @param datePeriodUnit
+	 * @param value
+	 * @return
+	 */
+	public Token createTokenComparationValue(TokenTypes type, Question question, AnswerSubformat valueAnswerSubformat,
+			DatePeriodUnit datePeriodUnit, String value) {
+		Token token = TokenComparationValue.getToken(type, question, valueAnswerSubformat, datePeriodUnit, value);
+		token.setCreatedBy(UserSessionHandler.getUser());
+		token.setUpdatedBy(UserSessionHandler.getUser());
+		token.setUpdateTime();
+		return token;
 	}
 
 	/**
@@ -1055,7 +1083,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Get all forms where the user has READ permission in ABCD and EDIT permissions in Webforms.
+	 * Get all forms where the user has READ permission in ABCD and EDIT
+	 * permissions in Webforms.
 	 * 
 	 * @return
 	 */
@@ -1067,7 +1096,8 @@ public class ApplicationController {
 				List<SimpleFormView> forms = new ArrayList<>();
 
 				// Get all organizations where user has read permissions and
-				// store ids in a hash map. User must be in the same organizations in both ABCD and WebForms.
+				// store ids in a hash map. User must be in the same
+				// organizations in both ABCD and WebForms.
 				Set<Organization> userOrganizationsFromAbcd = AbcdAuthorizationService.getInstance()
 						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), AbcdActivity.READ);
 				HashSet<Long> userAbcdOrganizationIds = new HashSet<Long>();
@@ -1110,7 +1140,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns all organizations where user has permission to do all the activities in activitiesFilter.
+	 * Returns all organizations where user has permission to do all the
+	 * activities in activitiesFilter.
 	 * 
 	 * @param activitiesFilter
 	 * @return

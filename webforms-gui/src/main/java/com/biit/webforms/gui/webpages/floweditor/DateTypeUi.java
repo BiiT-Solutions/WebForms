@@ -5,11 +5,11 @@ import com.biit.webforms.language.LanguageCodes;
 
 public enum DateTypeUi {
 
-	YEAR(DatePeriodUnit.YEAR, LanguageCodes.CAPTION_YEAR,"Y"),
+	YEAR(DatePeriodUnit.YEAR, LanguageCodes.CAPTION_YEAR, "Y"),
 
-	MONTH(DatePeriodUnit.MONTH, LanguageCodes.CAPTION_MONTH,"M"),
+	MONTH(DatePeriodUnit.MONTH, LanguageCodes.CAPTION_MONTH, "M"),
 
-	DAY(DatePeriodUnit.DAY, LanguageCodes.CAPTION_DAY,"D");
+	DAY(DatePeriodUnit.DAY, LanguageCodes.CAPTION_DAY, "D");
 
 	private DatePeriodUnit datePeriodUnit;
 	private LanguageCodes code;
@@ -20,8 +20,8 @@ public enum DateTypeUi {
 		this.code = code;
 		this.representation = representation;
 	}
-	
-	public DatePeriodUnit getDatePeriodUnit(){
+
+	public DatePeriodUnit getDatePeriodUnit() {
 		return datePeriodUnit;
 	}
 
@@ -31,5 +31,14 @@ public enum DateTypeUi {
 
 	public String getRepresentation() {
 		return representation;
+	}
+
+	public static DateTypeUi get(DatePeriodUnit datePeriodUnit) {
+		for (DateTypeUi value : values()) {
+			if (value.getDatePeriodUnit().equals(datePeriodUnit)) {
+				return value;
+			}
+		}
+		return null;
 	}
 }

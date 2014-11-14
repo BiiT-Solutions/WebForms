@@ -40,7 +40,7 @@ public class Token extends StorableObject {
 	private Flow flow;
 
 	protected Token() {
-
+		super();
 	}
 
 	public Token(TokenTypes tokenType) throws NotValidTokenType {

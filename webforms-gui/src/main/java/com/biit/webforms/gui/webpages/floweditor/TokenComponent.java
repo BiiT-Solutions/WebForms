@@ -6,6 +6,7 @@ import java.util.List;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenDoubleClickListener;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenSingleClickListener;
 import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Component;
@@ -59,10 +60,10 @@ public class TokenComponent extends CustomComponent {
 				}
 			}
 		});
-		
+
 		label = new Label();
 		label.setImmediate(true);
-		
+
 		rootLayout.addComponent(label);
 
 		return rootLayout;
@@ -114,11 +115,18 @@ public class TokenComponent extends CustomComponent {
 	}
 
 	public void refresh() {
-		label.setValue(token.toString());
+		if (token instanceof TokenComparationValue && ((TokenComparationValue) token).getDatePeriodUnit() != null) {
+			String unitLocalization = DateTypeUi.get(((TokenComparationValue) token).getDatePeriodUnit())
+					.getRepresentation();
+
+			label.setValue(((TokenComparationValue) token).getLocalizedString(unitLocalization));
+		} else {
+			label.setValue(token.toString());
+		}
 	}
-	
-	public LineDisplay getLine(){
-		if(getParent()!=null && getParent().getParent()!=null){
+
+	public LineDisplay getLine() {
+		if (getParent() != null && getParent().getParent() != null) {
 			return (LineDisplay) (getParent().getParent());
 		}
 		return null;

@@ -110,8 +110,22 @@ public class TokenComparationValue extends Token {
 		}
 
 		if (subformat == AnswerSubformat.DATE_PERIOD) {
-			return referenceString + " (" + value.substring(value.length() - 1) + ")" + getType()
-					+ value.substring(0, value.length() - 1);
+			return referenceString + " (" + datePeriodUnit + ")" + getType()
+					+ value.substring(0, value.length());
+		}
+
+		return referenceString + getType() + value;
+	}
+	
+	public String getLocalizedString(String localizedDatePeriodUnit){
+		String referenceString = null;
+		if (question != null) {
+			referenceString = question.getPathName();
+		}
+		
+		if (subformat == AnswerSubformat.DATE_PERIOD) {
+			return referenceString + " (" + localizedDatePeriodUnit + ")" + getType()
+					+ value.substring(0, value.length());
 		}
 
 		return referenceString + getType() + value;
@@ -128,6 +142,10 @@ public class TokenComparationValue extends Token {
 	public AnswerSubformat getSubformat() {
 		return subformat;
 	}
+	
+	public DatePeriodUnit getDatePeriodUnit(){
+		return datePeriodUnit;
+	}
 
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
@@ -136,6 +154,7 @@ public class TokenComparationValue extends Token {
 			TokenComparationValue token = (TokenComparationValue) object;
 			question = token.getQuestion();
 			subformat = token.getSubformat();
+			datePeriodUnit = token.getDatePeriodUnit();
 			value = token.getValue();
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
