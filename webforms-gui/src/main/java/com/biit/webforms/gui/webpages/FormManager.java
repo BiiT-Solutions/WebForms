@@ -205,9 +205,7 @@ public class FormManager extends SecuredWebPage {
 						@Override
 						public InputStream getInputStream() {
 							try {
-
 								return new XFormsExporter((Form) formTable.getValue()).generateXFormsLanguage();
-
 							} catch (NotValidTreeObjectException | NotExistingDynamicFieldException
 									| InvalidDateException | StringRuleSyntaxError | PostCodeRuleSyntaxError
 									| NotValidChildException e) {

@@ -101,4 +101,5 @@ public enum TokenTypes implements ITokenType {
 		}
 		return null;
 	}
+
 }
