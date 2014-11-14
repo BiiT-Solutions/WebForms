@@ -14,6 +14,7 @@ import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Question;
@@ -31,9 +32,12 @@ public class TokenComparationValue extends Token {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	public AnswerSubformat subformat;
+	private AnswerSubformat subformat;
 
-	public String value;
+	@Enumerated(EnumType.STRING)
+	private DatePeriodUnit datePeriodUnit;
+
+	private String value;
 
 	public TokenComparationValue() {
 		super();
@@ -48,23 +52,25 @@ public class TokenComparationValue extends Token {
 		return tokenTypes;
 	}
 
-	public void setContent(Question reference, TokenTypes tokenType, AnswerSubformat subformat, String value)
-			throws NotValidTokenType {
+	public void setContent(Question reference, TokenTypes tokenType, AnswerSubformat subformat,
+			DatePeriodUnit datePeriodUnit, String value) throws NotValidTokenType {
 		this.setType(tokenType);
 		this.question = reference;
 		this.subformat = subformat;
+		this.datePeriodUnit = datePeriodUnit;
 		this.value = value;
 	}
 
-	public void setContent(TokenTypes tokenType, AnswerSubformat subformat, String value) throws NotValidTokenType {
-		setContent(this.question, tokenType, subformat, value);
+	public void setContent(TokenTypes tokenType, AnswerSubformat subformat, DatePeriodUnit datePeriodUnit, String value)
+			throws NotValidTokenType {
+		setContent(this.question, tokenType, subformat, datePeriodUnit, value);
 	}
 
 	public static TokenComparationValue getToken(TokenTypes tokenType, Question reference, AnswerSubformat subformat,
-			String value) {
+			DatePeriodUnit datePeriodUnit, String value) {
 		try {
 			TokenComparationValue token = new TokenComparationValue();
-			token.setContent(reference, tokenType, subformat, value);
+			token.setContent(reference, tokenType, subformat, datePeriodUnit, value);
 			return token;
 		} catch (NotValidTokenType e) {
 			WebformsLogger.errorMessage(TokenComparationValue.class.getName(), e);
@@ -72,28 +78,28 @@ public class TokenComparationValue extends Token {
 		}
 	}
 
-	public static TokenComparationValue getTokenEqual(Question reference, AnswerSubformat subformat, String value) {
-		return getToken(TokenTypes.EQ, reference, subformat, value);
+	public static TokenComparationValue getTokenEqual(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+		return getToken(TokenTypes.EQ, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenNotEqual(Question reference, AnswerSubformat subformat, String value) {
-		return getToken(TokenTypes.NE, reference, subformat, value);
+	public static TokenComparationValue getTokenNotEqual(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+		return getToken(TokenTypes.NE, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenLessThan(Question reference, AnswerSubformat subformat, String value) {
-		return getToken(TokenTypes.LT, reference, subformat, value);
+	public static TokenComparationValue getTokenLessThan(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+		return getToken(TokenTypes.LT, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenGreaterThan(Question reference, AnswerSubformat subformat, String value) {
-		return getToken(TokenTypes.GT, reference, subformat, value);
+	public static TokenComparationValue getTokenGreaterThan(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+		return getToken(TokenTypes.GT, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenLessEqual(Question reference, AnswerSubformat subformat, String value) {
-		return getToken(TokenTypes.LE, reference, subformat, value);
+	public static TokenComparationValue getTokenLessEqual(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+		return getToken(TokenTypes.LE, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenGreaterEqual(Question reference, AnswerSubformat subformat, String value) {
-		return getToken(TokenTypes.LE, reference, subformat, value);
+	public static TokenComparationValue getTokenGreaterEqual(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+		return getToken(TokenTypes.LE, reference, subformat, datePeriodUnit, value);
 	}
 
 	@Override

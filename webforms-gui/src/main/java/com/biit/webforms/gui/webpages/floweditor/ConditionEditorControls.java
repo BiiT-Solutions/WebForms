@@ -8,6 +8,7 @@ import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.FilterTreeObjectTableContainsName;
 import com.biit.webforms.gui.common.components.TableTreeObject;
@@ -231,9 +232,9 @@ public class ConditionEditorControls extends TabSheet {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				if(event.getProperty().getValue()!=null && event.getProperty().getValue() instanceof Answer){
-					boolean isFinalAnswer = ((Answer)event.getProperty().getValue()).getChildren().isEmpty();
-					insertEqAnswer.setEnabled(isFinalAnswer);					
+				if (event.getProperty().getValue() != null && event.getProperty().getValue() instanceof Answer) {
+					boolean isFinalAnswer = ((Answer) event.getProperty().getValue()).getChildren().isEmpty();
+					insertEqAnswer.setEnabled(isFinalAnswer);
 					insertNeAnswer.setEnabled(isFinalAnswer);
 				}
 			}
@@ -291,9 +292,13 @@ public class ConditionEditorControls extends TabSheet {
 		dateFormatType = new ComboBox();
 		dateFormatType.setWidth(FULL);
 		for (DateTypeUi dateType : DateTypeUi.values()) {
-			dateFormatType.addItem(dateType);
-			dateFormatType.setItemCaption(dateType, dateType.getTranslation());
+			dateFormatType.addItem(dateType.getDatePeriodUnit());
+			dateFormatType.setItemCaption(dateType.getDatePeriodUnit(), dateType.getTranslation());
 		}
+		//Test
+		dateFormatType.setNullSelectionItemId(null);
+		dateFormatType.setItemCaption(null, LanguageCodes.CAPTION_DATE_PERIOD_NULL.translation());
+		//
 		dateFormatType.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -333682134124174959L;
 
@@ -353,7 +358,7 @@ public class ConditionEditorControls extends TabSheet {
 		insertLayout.setSizeFull();
 		insertLayout.setMargin(true);
 		insertLayout.addStyleName(REDUCED_LAYOUT_MARGIN);
-		
+
 		VerticalLayout insertReferenceLayout = new VerticalLayout();
 		insertReferenceLayout.setSizeFull();
 		insertReferenceLayout.setMargin(true);
@@ -377,7 +382,7 @@ public class ConditionEditorControls extends TabSheet {
 			public void buttonClick(ClickEvent event) {
 				if (value.isValid()) {
 					fireInsertTokenListeners(TokenComparationValue.getToken(type, getCurrentQuestion(),
-							getCurrentValueAnswerSubformat(), getCurrentValue()));
+							getCurrentValueAnswerSubformat(), getCurrentDatePeriod(), getCurrentValue()));
 				} else {
 					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_VALUE_HAS_WRONG_FORMAT);
 				}
@@ -386,12 +391,12 @@ public class ConditionEditorControls extends TabSheet {
 		return button;
 	}
 
+	protected DatePeriodUnit getCurrentDatePeriod() {
+		return (DatePeriodUnit) dateFormatType.getValue();
+	}
+
 	protected String getCurrentValue() {
-		if (dateFormatType.getValue() == null) {
-			return value.getValue();
-		} else {
-			return value.getValue() + ((DateTypeUi) (dateFormatType.getValue())).getRepresentation();
-		}
+		return value.getValue();
 	}
 
 	private Button createTokenButton(String string, final TokenTypes tokenType) {

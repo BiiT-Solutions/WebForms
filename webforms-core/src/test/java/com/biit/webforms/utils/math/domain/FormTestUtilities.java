@@ -287,7 +287,7 @@ public class FormTestUtilities {
 	}
 
 	public static Token token(Question question, String type, AnswerSubformat subformat, String value) {
-		return TokenComparationValue.getToken(TokenTypes.fromString(type), question, subformat, value);
+		return TokenComparationValue.getToken(TokenTypes.fromString(type), question, subformat, null, value);
 	}
 
 }

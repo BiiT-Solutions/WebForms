@@ -57,6 +57,7 @@
         sortSeq bigint not null,
         type varchar(255) not null,
         flow_ID bigint,
+        datePeriodUnit varchar(255),
         subformat varchar(255) not null,
         value varchar(255),
         question_ID bigint,

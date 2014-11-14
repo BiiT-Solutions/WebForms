@@ -113,7 +113,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 			form.addChild(category);
 
 			List<Token> condition = Arrays.asList(new Token[] {
-					TokenComparationValue.getTokenEqual(question1, AnswerSubformat.TEXT, "test"),
+					TokenComparationValue.getTokenEqual(question1, AnswerSubformat.TEXT,null, "test"),
 					TokenComparationAnswer.getTokenEqual(question2, answer1) });
 			Flow rule1 = createRule(question1, FlowType.NORMAL, question2, false, condition);
 

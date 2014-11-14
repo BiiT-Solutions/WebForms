@@ -270,6 +270,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_OPERATORS("caption.operators"),
 	CAPTION_PRINT_FLOW("caption.print.flow"),
 	CAPTION_TO_XFORMS("caption.export.xforms"),
+	CAPTION_DATE_PERIOD_NULL("caption.date.period.null"),
 	
 	TOOLTIP_NEW_RULE("tooltip.new.rule"),
 	TOOLTIP_EDIT_RULE("tooltip.edit.rule"),
@@ -315,7 +316,7 @@ public enum LanguageCodes implements ILanguageCode{
 	
 	MESSAGE_VALIDATION_FINISHED_CORRECTLY("message.validation.finished.correctly"), 
 	MESSAGE_VALIDATION_NO_ABCD_FORMS_LINKED("message.validation.no.abcd.forms.linked"), 
-	MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT("message.validation.all.linked.forms.correct"),
+	MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT("message.validation.all.linked.forms.correct"), 
 	;
 
 	private String value;

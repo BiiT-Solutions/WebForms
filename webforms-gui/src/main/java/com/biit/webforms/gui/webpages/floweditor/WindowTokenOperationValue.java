@@ -2,6 +2,7 @@ package com.biit.webforms.gui.webpages.floweditor;
 
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
@@ -133,5 +134,10 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 	private void addTokenType(TokenTypes type) {
 		operator.addItem(type);
 		operator.setItemCaption(type, type.toString());
+	}
+
+	public DatePeriodUnit getDatePeriod() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

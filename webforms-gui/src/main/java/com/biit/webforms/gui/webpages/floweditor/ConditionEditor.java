@@ -139,7 +139,7 @@ public class ConditionEditor extends CustomComponent {
 				try {
 					WindowTokenOperationValue thisWindow = (WindowTokenOperationValue) window;
 					((TokenComparationValue) tokenComponent.getToken()).setContent(thisWindow.getOperator(),
-							thisWindow.getAnswerSubformat(), thisWindow.getValue());
+							thisWindow.getAnswerSubformat(), thisWindow.getDatePeriod(), thisWindow.getValue());
 					tokenComponent.refresh();
 				} catch (NotValidTokenType e) {
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
