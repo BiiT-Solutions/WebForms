@@ -149,7 +149,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 	@SuppressWarnings("unchecked")
 	public void updateRow(RootForm form) {
 		Item item = getItem(form);
-		item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getName());
+		item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getLabel());
 	}
 
 	/**

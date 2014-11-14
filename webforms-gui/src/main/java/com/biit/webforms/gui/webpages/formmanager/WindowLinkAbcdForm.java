@@ -39,12 +39,12 @@ public class WindowLinkAbcdForm extends WindowAcceptCancel {
 	}
 
 	public void add(IBaseFormView form) {
-		if (!abcdForms.containsKey(form.getName(), form.getOrganizationId())) {
+		if (!abcdForms.containsKey(form.getLabel(), form.getOrganizationId())) {
 			// Add to table and initialize a new list
 			abcdFormsTable.add(form);
-			abcdForms.put(form.getName(), form.getOrganizationId(), new ArrayList<IBaseFormView>());
+			abcdForms.put(form.getLabel(), form.getOrganizationId(), new ArrayList<IBaseFormView>());
 		}
-		abcdForms.get(form.getName(), form.getOrganizationId()).add(form);
+		abcdForms.get(form.getLabel(), form.getOrganizationId()).add(form);
 	}
 	
 	public void setValue(List<SimpleFormView> linkedSimpleAbcdForms) {
