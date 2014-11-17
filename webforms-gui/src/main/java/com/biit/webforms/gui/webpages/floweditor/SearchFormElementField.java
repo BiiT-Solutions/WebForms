@@ -30,7 +30,7 @@ public class SearchFormElementField extends SearchButtonField {
 		this.filterClasses = filterClases;
 		filters = new ArrayList<>();
 		addOpenSearchComponentListener(new OpenSearchComponentListener() {
-			
+
 			@Override
 			public void openSearchComponent(Object value) {
 				openSearchFormElementWindow((TreeObject) value);
@@ -39,9 +39,8 @@ public class SearchFormElementField extends SearchButtonField {
 	}
 
 	/**
-	 * This function configures the select treeObject window to enable accept
-	 * button only when the selected element is from any class contained in the
-	 * filter.
+	 * This function configures the select treeObject window to enable accept button only when the selected element is
+	 * from any class contained in the filter.
 	 * 
 	 * @param selectfilter
 	 */
@@ -64,8 +63,10 @@ public class SearchFormElementField extends SearchButtonField {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				TreeObject reference = windowTreeObject.getSelectedTreeObject();
-				setValue(reference, reference.getPathName());
-				windowTreeObject.close();
+				if (reference != null) {
+					setValue(reference, reference.getPathName());
+					windowTreeObject.close();
+				}
 			}
 		});
 		windowTreeObject.showCentered();
