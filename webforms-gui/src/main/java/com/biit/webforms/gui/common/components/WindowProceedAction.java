@@ -34,6 +34,28 @@ public class WindowProceedAction extends WindowAcceptCancel{
 		});
 		showCentered();
 	}
+	
+	public WindowProceedAction(LanguageCodes code, final AcceptActionListener acceptListener, final CancelActionListener cancelListener){
+		super();
+		setContent(generateContent(code.translation()));
+		setResizable(false);
+		setDraggable(false);
+		setClosable(false);
+		setModal(true);
+		setWidth(width);
+		setHeight(height);
+		
+		addAcceptActionListener(new AcceptActionListener() {
+			
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				acceptListener.acceptAction(window);
+				window.close();
+			}
+		});
+		addCancelActionListener(cancelListener);
+		showCentered();
+	}
 
 	private Component generateContent(String text) {
 		
