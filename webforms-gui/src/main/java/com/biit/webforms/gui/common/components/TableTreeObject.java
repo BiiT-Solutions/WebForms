@@ -166,10 +166,15 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	public void removeRow(TreeObject element) {
+		if(getChildren(getParent(element)).size()==1){
+			setChildrenAllowed(getParent(element), false);
+		}
+		
 		for (TreeObject child : element.getChildren()) {
 			removeRow(child);
 		}
 		removeItem(element);
+		
 	}
 
 	/**

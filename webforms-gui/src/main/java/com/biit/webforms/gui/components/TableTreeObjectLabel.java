@@ -47,4 +47,15 @@ public class TableTreeObjectLabel extends TableTreeObject {
 		}
 		item.getItemProperty(TreeObjectTableDesignerProperties.ELEMENT_LABEL).setValue(label);
 	}
+
+	/**
+	 * Expands the tree until treeObject
+	 * @param whereToMove
+	 */
+	public void expand(TreeObject treeObject) {
+		if(treeObject.getParent()!=null){
+			expand(treeObject.getParent());
+		}
+		setCollapsed(treeObject, false);
+	}
 }

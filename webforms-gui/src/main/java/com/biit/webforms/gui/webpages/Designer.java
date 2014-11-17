@@ -49,10 +49,6 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Tree.CollapseEvent;
-import com.vaadin.ui.Tree.CollapseListener;
-import com.vaadin.ui.Tree.ExpandEvent;
-import com.vaadin.ui.Tree.ExpandListener;
 
 public class Designer extends SecuredWebPage {
 	private static final long serialVersionUID = 9161313025929535348L;
@@ -469,7 +465,11 @@ public class Designer extends SecuredWebPage {
 					TreeObject whereToMove = moveWindow.getSelectedTreeObject();
 					UserSessionHandler.getController().moveTo(whatToMove, whereToMove);
 					window.close();
-					clearAndUpdateFormTable();
+					table.setValue(null);
+					table.removeRow(whatToMove);
+					table.loadTreeObject(whatToMove, whereToMove,false);
+					table.expand(whereToMove);
+					table.setValue(null);
 					table.setValue(whatToMove);
 				} catch (NotValidChildException e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_VALID,
