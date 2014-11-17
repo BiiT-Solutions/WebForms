@@ -5,7 +5,7 @@ public enum AnswerType {
 
 	SINGLE_SELECTION_LIST(null, true, false, true, false),
 
-	MULTIPLE_SELECTION(null, true, null, null, true),
+	MULTIPLE_SELECTION(null, true, null, true, true),
 
 	// Uses answer format.
 	INPUT(AnswerFormat.TEXT, false, null, true, false),

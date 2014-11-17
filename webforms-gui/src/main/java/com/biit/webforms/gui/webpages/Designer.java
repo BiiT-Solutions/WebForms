@@ -74,6 +74,7 @@ public class Designer extends SecuredWebPage {
 		setBottomMenu(new FormEditBottomMenu());
 
 		table = new TableTreeObjectLabel();
+		table.setPageLength(0);
 		table.setIconProvider(new IconProviderTreeObjectWebforms());
 		table.setSizeFull();
 		table.setSelectable(true);
