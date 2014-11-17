@@ -27,6 +27,8 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
@@ -43,8 +45,9 @@ public class Flow extends StorableObject {
 	private static final String TOKEN_SEPARATOR = " ";
 
 	/*
-	 * Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
-	 * attached to that column, you have to state the name.
+	 * Hibernate changes name of column when you use a many-to-one relationship.
+	 * If you want to add a constraint attached to that column, you have to
+	 * state the name.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "origin_id", nullable = false)
@@ -281,8 +284,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * This functions updates references to question and answers If a reference is missing it will throw a
-	 * {@code UpdateNullReferenceException}
+	 * This functions updates references to question and answers If a reference
+	 * is missing it will throw a {@code UpdateNullReferenceException}
 	 * 
 	 * @param mappedCopiedQuestions
 	 * @param mappedCopiedAnswers
@@ -322,5 +325,29 @@ public class Flow extends StorableObject {
 		sb.append(getConditionString());
 		sb.append("'");
 		return sb.toString();
+	}
+
+	public boolean isDependent(TreeObject treeObject) {
+		if(origin.equals(treeObject) || (destiny!=null && destiny.equals(treeObject))){
+			return true;
+		}
+		if(treeObject instanceof Question){
+			Question question = (Question) treeObject;
+			for(Token token: condition){
+				if(token instanceof TokenComparationAnswer){
+					if(((TokenComparationAnswer) token).getQuestion().equals(question)){
+						return true;
+					}
+					continue;
+				}
+				if(token instanceof TokenComparationValue){
+					if(((TokenComparationValue) token).getQuestion().equals(question)){
+						return true;
+					}
+					continue;
+				}				
+			}
+		}
+		return false;
 	}
 }

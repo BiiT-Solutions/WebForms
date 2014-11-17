@@ -61,7 +61,7 @@ public class PropertiesForm extends StorableObjectProperties<Form> {
 	protected void initValues() {
 		super.initValues();
 
-		name.setValue(instance.getName());
+		name.setValue(instance.getLabel());
 		version.setValue("" + instance.getVersion());
 		description.setValue(instance.getDescription());
 	}

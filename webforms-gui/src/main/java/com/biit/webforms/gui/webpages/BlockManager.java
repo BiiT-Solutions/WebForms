@@ -79,6 +79,7 @@ public class BlockManager extends SecuredWebPage {
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(blockNotNull);
 			bottomMenu.getEditFlowButton().setEnabled(blockNotNull);
+			bottomMenu.getValidateForm().setEnabled(blockNotNull);
 
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

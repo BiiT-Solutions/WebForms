@@ -9,6 +9,7 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -33,6 +34,7 @@ public class WindowDownloader extends Window {
 	private boolean resourceGenerated;
 	private ProgressBar progressBar;
 	private final WindowDownloaderProcess process;
+	private Label messageLabel;
 
 	public WindowDownloader(WindowDownloaderProcess process) {
 		super();
@@ -82,6 +84,10 @@ public class WindowDownloader extends Window {
 		center();
 		UI.getCurrent().addWindow(this);
 	}
+	
+	public void setMessage(String value){
+		this.messageLabel.setValue(value);
+	}
 
 	/**
 	 * Makes visualization of progress bar as a undetermined clock.
@@ -98,9 +104,18 @@ public class WindowDownloader extends Window {
 
 	protected void process() {
 		VerticalLayout rootLayout = new VerticalLayout();
+		rootLayout.setMargin(true);
 		rootLayout.setSizeFull();
+		
+		messageLabel = new Label();
+		messageLabel.setWidth(null);
+		rootLayout.addComponent(messageLabel);
+		rootLayout.setComponentAlignment(messageLabel, Alignment.MIDDLE_CENTER);
+		rootLayout.setExpandRatio(messageLabel, 0.20f);
+		
 		rootLayout.addComponent(progressBar);
 		rootLayout.setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
+		rootLayout.setExpandRatio(progressBar, 0.80f);
 
 		setContent(rootLayout);
 	}

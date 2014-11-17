@@ -1,4 +1,4 @@
-package com.biit.webforms.gui.common.utils;
+package com.biit.webforms.utils;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;

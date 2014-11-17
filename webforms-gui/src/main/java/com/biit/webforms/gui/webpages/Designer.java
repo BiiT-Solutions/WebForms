@@ -281,13 +281,14 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
 				TreeObject parent = row.getParent();
-				table.selectPreviousRow();
 				try {
+					table.selectPreviousRow();
 					UserSessionHandler.getController().removeTreeObject(row);
+					table.updateRow(parent);
 				} catch (DependencyExistException e) {
-					MessageManager.showError(LanguageCodes.CAPTION_ANSWER_FORMAT_DATE);
+					table.setValue(row);
+					MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
 				}
-				table.updateRow(parent);
 			}
 		});
 

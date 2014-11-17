@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
+import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.xml.XmlUtils;
 import com.biit.webforms.xsd.WebformsXsdForm;
@@ -20,6 +21,7 @@ public class WindowDownloaderXsd extends WindowDownloader {
 				return XmlUtils.formatToInputStream(new WebformsXsdForm(form).toString());
 			}
 		});
+		setMessage(LanguageCodes.CAPTION_GENERATING_FILE.translation());
 		setIndeterminate(true);
 		setFilename(filename);
 		showCentered();

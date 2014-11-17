@@ -30,7 +30,8 @@ public enum AnswerSubformatUi {
 
 	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_POSTAL_CODE),
 	
-	DATE_PERIOD(AnswerSubformat.DATE_PERIOD, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE_PERIOD),
+	//Date period is only an internal unit and is not used in Ui.
+	//	DATE_PERIOD(AnswerSubformat.DATE_PERIOD, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE_PERIOD),
 	
 	;
 

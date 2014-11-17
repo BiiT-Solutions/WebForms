@@ -160,6 +160,7 @@ public class FormManager extends SecuredWebPage {
 						return null;
 					}
 				});
+				downloader.setMessage(LanguageCodes.CAPTION_GENERATING_FILE.translation());
 				downloader.setIndeterminate(true);
 				downloader.setFilename(((Form) formTable.getValue()).getLabel() + ".pdf");
 				downloader.showCentered();
@@ -183,6 +184,7 @@ public class FormManager extends SecuredWebPage {
 						}
 					}
 				});
+				window.setMessage(LanguageCodes.CAPTION_GENERATING_FILE.translation());
 				window.setIndeterminate(true);
 				window.setFilename(((Form) formTable.getValue()).getLabel() + ".pdf");
 				window.showCentered();
@@ -214,6 +216,7 @@ public class FormManager extends SecuredWebPage {
 							}
 						}
 					});
+					window.setMessage(LanguageCodes.CAPTION_GENERATING_FILE.translation());
 					window.setIndeterminate(true);
 					window.setFilename(((Form) formTable.getValue()).getLabel() + ".txt");
 					window.showCentered();
@@ -227,7 +230,17 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				new WindowDownloaderXsd((Form) formTable.getValue(), ((Form) formTable.getValue()).getLabel() + ".xsd");
+				ValidateFormComplete validator = new ValidateFormComplete();
+				validator.setStopOnFail(true);
+
+				ValidateReport report = new ValidateReport();
+				validator.validate(((Form) formTable.getValue()), report);
+				if (report.isValid()) {
+					new WindowDownloaderXsd((Form) formTable.getValue(), ((Form) formTable.getValue()).getLabel()
+							+ ".xsd");
+				}else{
+					MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
+				}
 			}
 		});
 		return upperMenu;
@@ -479,10 +492,12 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.getLinkAbcdForm().setEnabled(rowNotNullAndForm && canLinkVersion);
 			upperMenu.getExportPdf().setEnabled(rowNotNullAndForm);
 			upperMenu.getExportFlowPdf().setEnabled(rowNotNullAndForm);
+			upperMenu.getExportXsd().setEnabled(rowNotNullAndForm);
 
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);
 			bottomMenu.getEditFlowButton().setEnabled(rowNotNullAndForm);
+			bottomMenu.getValidateForm().setEnabled(rowNotNullAndForm);
 
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

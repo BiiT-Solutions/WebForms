@@ -3,8 +3,8 @@ package com.biit.webforms.pdfgenerator;
 import java.util.Arrays;
 import java.util.List;
 
-import com.biit.webforms.gui.common.utils.DateManager;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.utils.DateManager;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;

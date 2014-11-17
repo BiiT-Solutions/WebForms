@@ -3,14 +3,13 @@ package com.biit.webforms.persistence.entity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.biit.form.BaseQuestion;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 
 @Entity
 @Table(name = "tree_system_fields")
-public class SystemField extends BaseQuestion {
+public class SystemField extends WebformsBaseQuestion {
 
 	@Override
 	public String getLabel() {
