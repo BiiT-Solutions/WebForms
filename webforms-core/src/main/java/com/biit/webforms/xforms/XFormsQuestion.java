@@ -69,12 +69,15 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 */
 	protected String getConstraints() {
 		if (((Question) getSource()).getAnswerFormat() != null) {
-			if (((Question) getSource()).getAnswerFormat().equals(AnswerSubformat.DATE_PAST)) {
-				return " constraint=\". &lt;= current-date()\" ";
+			// adjust-date-to-timezone is used to remove timestamp
+			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
+			// adjust-date-to-timezone(current-date(), ())"
+			if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_PAST)) {
+				return " constraint=\". &lt;= adjust-date-to-timezone(current-date(), ())\" ";
 			} else if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE)) {
-				return " constraint=\". &gt;= current-date()\" ";
+				return " constraint=\". &gt;= adjust-date-to-timezone(current-date(), ())\" ";
 			} else if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_BIRTHDAY)) {
-				return " constraint=\". &lt;= current-date() and (year-from-date(current-date()) - year-from-date(.) &lt;= "
+				return " constraint=\". &lt;= adjust-date-to-timezone(current-date(), ()) and (year-from-date(current-date()) - year-from-date(.) &lt;= "
 						+ MAX_YEARS_BIRTHDAY + ")\"";
 			}
 		}
@@ -273,7 +276,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			return getXFormsHelper().getVisibilityOfQuestion(getSource());
 		}
 
-		Set<Flow> flowsTo = getXFormsHelper().getFlowsWithDestiny(getSource());		
+		Set<Flow> flowsTo = getXFormsHelper().getFlowsWithDestiny(getSource());
 		String visibility = getRelevantByFlows(flowsTo);
 
 		// Store calculated visibility as string
