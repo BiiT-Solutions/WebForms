@@ -10,7 +10,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
-import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
@@ -27,7 +26,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatExc
 
 @Entity
 @Table(name = "tree_questions")
-public class Question extends BaseQuestion implements FlowConditionScript {
+public class Question extends WebformsBaseQuestion implements FlowConditionScript {
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 	public static final boolean DEFAULT_HORIZONTAL = false;
 	public static final boolean DEFAULT_MANDATORY = true;
