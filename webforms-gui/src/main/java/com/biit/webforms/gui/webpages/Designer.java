@@ -21,9 +21,11 @@ import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
@@ -325,8 +327,30 @@ public class Designer extends SecuredWebPage {
 				openMoveWindow();
 			}
 		});
+		upperMenu.addFinishListener(new ClickListener() {
+			private static final long serialVersionUID = 8869180038869702710L;
 
+			@Override
+			public void buttonClick(ClickEvent event) {
+				finishForm();
+			}
+		});
 		return upperMenu;
+	}
+
+	protected void finishForm() {
+		new WindowProceedAction(LanguageCodes.TEXT_PROCEED_FORM_CLOSE, new AcceptActionListener() {
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				try {
+					UserSessionHandler.getController().finishForm(UserSessionHandler.getController().getFormInUse());
+					ApplicationUi.navigateTo(WebMap.getMainPage());
+				} catch (UnexpectedDatabaseException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				}
+			}
+		});
 	}
 
 	/**

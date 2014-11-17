@@ -97,7 +97,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	protected String getAlert() {
-		return "<alert>" + "</alert>";
+		return "<alert/>";
 	}
 
 	protected String getBindingName() {

@@ -24,6 +24,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Polymorphism;
+import org.hibernate.annotations.PolymorphismType;
 
 import com.biit.form.BaseForm;
 import com.biit.form.BaseGroup;
@@ -46,6 +48,7 @@ import com.liferay.portal.model.User;
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
 		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
 @Cache(region = "forms", usage = CacheConcurrencyStrategy.READ_WRITE)
+@Polymorphism(type = PolymorphismType.EXPLICIT)
 public class Form extends BaseForm {
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 

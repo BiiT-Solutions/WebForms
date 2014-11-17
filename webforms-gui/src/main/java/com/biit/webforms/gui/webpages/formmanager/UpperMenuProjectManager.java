@@ -42,7 +42,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
 
 		addIconButton(newForm);
-		addIconButton(finish);
+		//addIconButton(finish);
 		addIconButton(newFormVersion);
 		addIconButton(importAbcdForm);
 		addIconButton(linkAbcdForm);

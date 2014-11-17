@@ -322,7 +322,16 @@ public enum LanguageCodes implements ILanguageCode{
 	MESSAGE_VALIDATION_FINISHED_CORRECTLY("message.validation.finished.correctly"), 
 	MESSAGE_VALIDATION_NO_ABCD_FORMS_LINKED("message.validation.no.abcd.forms.linked"), 
 	MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT("message.validation.all.linked.forms.correct"), 
-	;
+	
+	//Orbeon
+	ORBEON_INVALID_FORMAT_EMAIL("orbeon.invalid.format.email"),
+	ORBEON_INVALID_FORMAT_PHONE("orbeon.invalid.format.phone"),
+	ORBEON_INVALID_FORMAT_POSTALCODE("orbeon.invalid.format.postalcode"),
+	ORBEON_INVALID_FORMAT_IBAN("orbeon.invalid.format.iban"),
+	ORBEON_INVALID_FORMAT_BSN("orbeon.invalid.format.bsn"),
+	ORBEON_INVALID_FORMAT_DATE_PAST("orbeon.invalid.format.date.past"),
+	ORBEON_INVALID_FORMAT_DATE_FUTURE("orbeon.invalid.format.date.future"),
+	ORBEON_INVALID_FORMAT_DATE_BIRTHDAY("orbeon.invalid.format.date.birthday");
 
 	private String value;
 

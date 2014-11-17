@@ -11,9 +11,9 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	private static final long serialVersionUID = -368255188051163986L;
 
-	private IconButton saveButton, saveAsBlockButton, insertBlockButton, newCategoryButton,
-			newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, newSubanswerButton, moveButton,
-			deleteButton, upButton, downButton;
+	private IconButton saveButton, saveAsBlockButton, insertBlockButton, newCategoryButton, newGroupButton,
+			newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, newSubanswerButton, moveButton,
+			deleteButton, upButton, downButton, finish;
 
 	public UpperMenuDesigner() {
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
@@ -47,6 +47,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				LanguageCodes.COMMON_TOOLTIP_DOWN);
 		deleteButton = new IconButton(LanguageCodes.COMMON_CAPTION_DELETE, ThemeIcons.ELEMENT_DELETE,
 				LanguageCodes.COMMON_TOOLTIP_DELETE);
+		finish = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
+				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 
 		addIconButton(saveButton);
 		addIconButton(saveAsBlockButton);
@@ -62,7 +64,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(upButton);
 		addIconButton(downButton);
 		addIconButton(deleteButton);
-		
+		addIconButton(finish);
 		setConfirmationNeeded(true);
 	}
 
@@ -101,7 +103,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public void addNewAnswerButtonListener(ClickListener listener) {
 		newAnswerButton.addClickListener(listener);
 	}
-	
+
 	public void addNewSubanswerButtonListener(ClickListener listener) {
 		newSubanswerButton.addClickListener(listener);
 	}
@@ -157,7 +159,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public IconButton getNewAnswerButton() {
 		return newAnswerButton;
 	}
-	
+
 	public IconButton getNewSubanswerButton() {
 		return newSubanswerButton;
 	}
@@ -176,5 +178,9 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public IconButton getDownButton() {
 		return downButton;
+	}
+
+	public void addFinishListener(ClickListener clickListener) {
+		finish.addClickListener(clickListener);
 	}
 }
