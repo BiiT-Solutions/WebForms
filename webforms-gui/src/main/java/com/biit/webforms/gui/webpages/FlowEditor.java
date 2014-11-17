@@ -296,10 +296,10 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private Component createFlowViewerControlBar() {
-		HorizontalLayout i = new HorizontalLayout();
-		i.setMargin(true);
-		i.setSpacing(true);
-		i.setWidth("100%");
+		HorizontalLayout horizontalLayout = new HorizontalLayout();
+		horizontalLayout.setMargin(true);
+		horizontalLayout.setSpacing(true);
+		horizontalLayout.setWidth("100%");
 
 		flowViewerFilter = new SearchFormElementField(Form.class, Category.class, Group.class);
 		flowViewerFilter.setCaption(LanguageCodes.CAPTION_FILTER.translation());
@@ -340,16 +340,16 @@ public class FlowEditor extends SecuredWebPage {
 			}
 		});
 
-		i.addComponent(flowViewerFilter);
-		i.addComponent(redrawButton);
-		i.addComponent(zoomSlider);
-		i.setExpandRatio(flowViewerFilter, 0.4f);
-		i.setExpandRatio(zoomSlider, 0.4f);
-		i.setComponentAlignment(flowViewerFilter, Alignment.MIDDLE_LEFT);
-		i.setComponentAlignment(redrawButton, Alignment.BOTTOM_CENTER);
-		i.setComponentAlignment(zoomSlider, Alignment.MIDDLE_RIGHT);
+		horizontalLayout.addComponent(flowViewerFilter);
+		horizontalLayout.addComponent(redrawButton);
+		horizontalLayout.addComponent(zoomSlider);
+		horizontalLayout.setExpandRatio(flowViewerFilter, 0.4f);
+		horizontalLayout.setExpandRatio(zoomSlider, 0.4f);
+		horizontalLayout.setComponentAlignment(flowViewerFilter, Alignment.MIDDLE_LEFT);
+		horizontalLayout.setComponentAlignment(redrawButton, Alignment.BOTTOM_CENTER);
+		horizontalLayout.setComponentAlignment(zoomSlider, Alignment.MIDDLE_RIGHT);
 
-		return i;
+		return horizontalLayout;
 	}
 
 	protected void filterFlowDiagram(TreeObject filter) {

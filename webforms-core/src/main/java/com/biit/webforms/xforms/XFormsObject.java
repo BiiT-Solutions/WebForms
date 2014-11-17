@@ -358,7 +358,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 			case POSTAL_CODE:
 				visibility += "$" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName();
 				visibility += " " + token.getType().getOrbeonRepresentation();
-				visibility += " " + token.getValue();
+				visibility += " '" + token.getValue() + "'";
 				break;
 			case DATE:
 				switch (token.getSubformat()) {
