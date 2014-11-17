@@ -24,7 +24,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 	private static final long serialVersionUID = -7776688515497328826L;
 
 	enum TreeTableFormVersionProperties {
-		ACCESS, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
+		ACCESS, READ_ONLY, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
 	};
 
 	public TreeTableFormVersion(TreeTableProvider<Form> formProvider) {
@@ -38,7 +38,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 
 		addContainerProperty(TreeTableFormVersionProperties.ACCESS, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ACCESS), null, Align.CENTER);
-
+		
 		addContainerProperty(TreeTableFormVersionProperties.USED_BY, String.class, "",
 				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_USEDBY), null, Align.CENTER);
 
@@ -71,6 +71,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 
 		// Set new visibility order
 		setVisibleColumns(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION,
+				TreeTableFormVersionProperties.ACCESS,
 				TreeTableFormVersionProperties.USED_BY, TreeTableFormVersionProperties.STATUS,
 				TreeTableBaseFormProperties.ORGANIZATION, TreeTableFormVersionProperties.LINKED_FORM,
 				TreeTableFormVersionProperties.LINKED_ORGANIZATION, TreeTableFormVersionProperties.LINKED_VERSIONS,
