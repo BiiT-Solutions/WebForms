@@ -299,7 +299,7 @@ public enum LanguageCodes implements ILanguageCode{
 	WARNING_DESCRIPTION_RULE_BAD_FORMED("warning.description.rule.bad.formed"),
 	WARNING_DESCRIPTION_CONDITION_BAD_FORMED("warning.description.condition.bad.formed"),
 	
-	INFO_MESSAGE_VALUE_HAS_WRONG_FORMAT("info.message.value.has.wrong.format"),
+	ERROR_MESSAGE_VALUE_HAS_WRONG_FORMAT("info.message.value.has.wrong.format"),
 	
 	VALIDATOR_ERROR_PATTERN("validator.error.pattern"),
 	

@@ -208,7 +208,7 @@ public class ComponentInsertValue extends CustomComponent {
 							getCurrentQuestion(), getCurrentValueAnswerSubformat(), getDatePeriodUnit(), getValue());
 					fireInsertTokenListeners(token);
 				} else {
-					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_VALUE_HAS_WRONG_FORMAT);
+					MessageManager.showError(LanguageCodes.ERROR_MESSAGE_VALUE_HAS_WRONG_FORMAT);
 				}
 			}
 

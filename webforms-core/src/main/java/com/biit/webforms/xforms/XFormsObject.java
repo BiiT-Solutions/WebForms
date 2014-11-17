@@ -15,6 +15,8 @@ import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
@@ -344,47 +346,50 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 */
 	private String getInputFieldVisibility(TokenComparationValue token) throws InvalidDateException {
 		String visibility = "";
-		switch (token.getQuestion().getAnswerFormat()) {
-		case NUMBER:
-			visibility += "number($" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + ")";
-			visibility += " " + token.getType().getOrbeonRepresentation();
-			visibility += " " + token.getValue();
-			break;
-		case TEXT:
-		case POSTAL_CODE:
-			visibility += "$" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName();
-			visibility += " " + token.getType().getOrbeonRepresentation();
-			visibility += " " + token.getValue();
-			break;
-		case DATE:
-			switch (token.getSubformat()) {
+		if (token.getQuestion().getAnswerFormat() != null) {
+			switch (token.getQuestion().getAnswerFormat()) {
+			case NUMBER:
+				visibility += "number($" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName()
+						+ ")";
+				visibility += " " + token.getType().getOrbeonRepresentation();
+				visibility += " " + token.getValue();
+				break;
+			case TEXT:
+			case POSTAL_CODE:
+				visibility += "$" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName();
+				visibility += " " + token.getType().getOrbeonRepresentation();
+				visibility += " '" + token.getValue() + "'";
+				break;
 			case DATE:
-			case DATE_BIRTHDAY:
-			case DATE_FUTURE:
-			case DATE_PAST:
-				SimpleDateFormat formatter = new SimpleDateFormat();
-				// Convert String to date.
-				formatter.applyPattern(WebformsConfigurationReader.getInstance().getDatePattern());
-				Date date;
-				try {
-					date = formatter.parse(token.getValue());
-					// Convert date to Orbeon string format.
-					formatter.applyPattern(XPATH_DATE_FORMAT);
-					visibility += "xs:date($" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName()
-							+ ")";
-					visibility += " " + token.getType().getOrbeonRepresentation();
-					visibility += " xs:date('" + formatter.format(date) + "')";
-				} catch (ParseException e) {
-					throw new InvalidDateException(e.getMessage());
+				switch (token.getSubformat()) {
+				case DATE:
+				case DATE_BIRTHDAY:
+				case DATE_FUTURE:
+				case DATE_PAST:
+					SimpleDateFormat formatter = new SimpleDateFormat();
+					// Convert String to date.
+					formatter.applyPattern(WebformsConfigurationReader.getInstance().getDatePattern());
+					Date date;
+					try {
+						date = formatter.parse(token.getValue());
+						// Convert date to Orbeon string format.
+						formatter.applyPattern(XPATH_DATE_FORMAT);
+						visibility += "xs:date($"
+								+ getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + ")";
+						visibility += " " + token.getType().getOrbeonRepresentation();
+						visibility += " xs:date('" + formatter.format(date) + "')";
+					} catch (ParseException e) {
+						throw new InvalidDateException(e.getMessage());
+					}
+					break;
+				case DATE_PERIOD:
+					visibility += translateDatePeriod(token);
+					break;
+				default:
+					break;
 				}
 				break;
-			case DATE_PERIOD:
-				visibility += translateDatePeriod(token);
-				break;
-			default:
-				break;
 			}
-			break;
 		}
 		return visibility;
 	}
@@ -403,14 +408,18 @@ public abstract class XFormsObject<T extends TreeObject> {
 			break;
 		}
 		// Symbols for '>', '<' are the opposite in the orbeon operator.
-		if (getOrbeonDatesOpposite(token.getType()) != null) {
+		if (!token.getQuestion().getAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE)) {
+			// adjust-date-to-timezone is used to remove timestamp
+			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
+			// adjust-date-to-timezone(current-date(), ())"
 			return "xs:date($" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + ") "
-					+ getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation() + " current-date() - xs:"
-					+ xPathOperation + "('P" + token.getValue() + token.getDatePeriodUnit().getAbbreviature() + "')";
+					+ getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation()
+					+ " adjust-date-to-timezone(current-date(), ()) - xs:" + xPathOperation + "('P" + token.getValue()
+					+ token.getDatePeriodUnit().getAbbreviature() + "')";
 		}
 		return "xs:date($" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + ") "
-				+ token.getType().getOrbeonRepresentation() + " current-date() - xs:" + xPathOperation + "('P"
-				+ token.getValue() + token.getDatePeriodUnit().getAbbreviature() + "')";
+				+ token.getType().getOrbeonRepresentation() + " adjust-date-to-timezone(current-date(), ()) + xs:"
+				+ xPathOperation + "('P" + token.getValue() + token.getDatePeriodUnit().getAbbreviature() + "')";
 	}
 
 	/**
@@ -463,21 +472,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 				+ firstInterval + "' and " + "$"
 				+ getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + " &lt;= '" + secondInterval
 				+ "' ";
-	}
-
-	/**
-	 * 'Others' rules is the negation of the existing flows. But also is needed that the user has choose one answer, if
-	 * not, the others is always shown despite the user has not answer yet the question.
-	 * 
-	 * @param flow
-	 * @return
-	 */
-	protected String othersSourceMustBeFilledUp(Flow flow) {
-		if (flow.isOthers()) {
-			return "and string-length($" + getXFormsHelper().getXFormsObject(flow.getOrigin()).getControlName()
-					+ ")>0 ";
-		}
-		return "";
 	}
 
 	/**
@@ -548,8 +542,12 @@ public abstract class XFormsObject<T extends TreeObject> {
 			List<Token> flowvisibility = flow.getCondition();
 
 			if (flow.isOthers()) {
-				flowvisibility.add(Token.and());
-				flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin()));
+				// Dates does not need this extra instruction (string-length($date)>0 is always false).
+				if (!(flow.getOrigin() instanceof Question) || ((Question) flow.getOrigin()).getAnswerFormat() == null
+						|| !((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)) {
+					flowvisibility.add(Token.and());
+					flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin()));
+				}
 			}
 
 			if (!flowvisibility.isEmpty() || (previousVisibility != null && !previousVisibility.isEmpty())) {
@@ -558,6 +556,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 					visibility.add(Token.or());
 				}
 
+				// Add visibility of previous element.
 				visibility.add(Token.leftPar());
 				if (previousVisibility != null && !previousVisibility.isEmpty()) {
 					visibility.addAll(previousVisibility);
@@ -589,7 +588,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 		case LE:
 			return TokenTypes.GE;
 		default:
-			return null;
+			return type;
 		}
 	}
 }
