@@ -1,7 +1,6 @@
 package com.biit.webforms.pdfgenerator;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.gui.common.utils.DateManager;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.biit.webforms.persistence.entity.Category;
@@ -10,6 +9,7 @@ import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.utils.DateManager;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfPTable;
