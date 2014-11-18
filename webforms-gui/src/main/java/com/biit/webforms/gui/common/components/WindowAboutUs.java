@@ -27,9 +27,9 @@ import com.vaadin.ui.Window;
 
 public class WindowAboutUs extends Window {
 	private static final long serialVersionUID = -3852811369262597168L;
-	private static final String width = "500px";
+	private static final String width = "400px";
 	// Height is mandatory to delimit the position of the elements
-	private static final String height = "500px";
+	private static final String height = "410px";
 	private static final String LOGIN_PARAM = "param1";
 	private static final String PASSWORD_PARAM = "param2";
 
@@ -79,7 +79,9 @@ public class WindowAboutUs extends Window {
 				+ "<center><p align=\"justify\">" + LanguageCodes.ABOUT_US_TOOL_PURPOUSE.translation()
 				+ "</p></center>", ContentMode.HTML);
 		nameLabel.setWidth("100%");
-		Label versionLabel = new Label("Version: " + version);
+		Label versionLabel = new Label("<center><p align=\"center\">Version: " + version + "</p></center>",
+				ContentMode.HTML);
+		versionLabel.setWidth("100%");
 		Label textLabel = new Label("<center><p align=\"justify\">" + LanguageCodes.ABOUT_US_BIIT.translation()
 				+ "</p></center>", ContentMode.HTML);
 		textLabel.setWidth("100%");
@@ -98,7 +100,6 @@ public class WindowAboutUs extends Window {
 
 		rootLayout.addComponent(nameLabel);
 		rootLayout.setComponentAlignment(nameLabel, Alignment.MIDDLE_CENTER);
-		versionLabel.setSizeUndefined();
 		rootLayout.addComponent(versionLabel);
 		rootLayout.setComponentAlignment(versionLabel, Alignment.MIDDLE_CENTER);
 		rootLayout.addComponent(textLabel);
