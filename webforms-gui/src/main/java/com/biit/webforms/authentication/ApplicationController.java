@@ -697,16 +697,17 @@ public class ApplicationController {
 		logInfoEnd("saveAsBlock ", element, blockLabel, organizationId);
 	}
 
-	public void updateForm(Form form, String description) {
-		logInfoStart("updateForm", form, description);
+	public void updateForm(Form form, String label, String description) {
+		logInfoStart("updateForm", form, label, description);
 		try {
 			form.setDescription(description);
+			form.setLabel(label);
 			form.setUpdatedBy(UserSessionHandler.getUser());
 			form.setUpdateTime();
 		} catch (FieldTooLongException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
-		logInfoEnd("updateForm", form, description);
+		logInfoEnd("updateForm", form, label, description);
 	}
 
 	public void updateAnswer(Answer answer, String value, String label, String description) {
@@ -988,7 +989,7 @@ public class ApplicationController {
 	}
 
 	protected void logInfoEnd(String functionName, Object... parameters) {
-		WebformsLogger.info(ApplicationController.class.getName(),
+		WebformsLogger.debug(ApplicationController.class.getName(),
 				getUserInfo() + " " + getFunctionInfo(functionName, parameters) + " END");
 	}
 

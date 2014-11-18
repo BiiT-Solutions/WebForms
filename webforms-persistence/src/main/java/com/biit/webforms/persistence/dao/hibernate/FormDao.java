@@ -128,11 +128,6 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	public boolean exists(String label, Long organizationId) throws UnexpectedDatabaseException {
-		return getForm(label, organizationId) != null;
-	}
-
-	@Override
 	public Form getForm(String label, Integer version, Organization organization) throws UnexpectedDatabaseException {
 		return getForm(label, version, organization.getOrganizationId());
 	}

@@ -7,6 +7,7 @@ import java.util.Set;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -138,11 +139,44 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 
 	@Override
 	public boolean exists(String label, Long organizationId) throws UnexpectedDatabaseException {
-		return getForm(label, organizationId) != null;
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		try {
+			Criteria criteria = session.createCriteria(getType());
+			criteria.setProjection(Projections.rowCount());
+			criteria.add(Restrictions.eq("label", label));
+			criteria.add(Restrictions.eq("organizationId", organizationId));
+			int rows = ((Long) criteria.uniqueResult()).intValue();
+			session.getTransaction().commit();
+			return rows > 0;
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			throw new UnexpectedDatabaseException(e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public boolean exists(String label, Integer version, Long organizationId) throws UnexpectedDatabaseException {
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		try {
+			Criteria criteria = session.createCriteria(getType());
+			criteria.setProjection(Projections.rowCount());
+			criteria.add(Restrictions.eq("label", label));
+			criteria.add(Restrictions.eq("organizationId", organizationId));
+			criteria.add(Restrictions.eq("version", version));
+			int rows = ((Long) criteria.uniqueResult()).intValue();
+			session.getTransaction().commit();
+			return rows > 0;
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			throw new UnexpectedDatabaseException(e.getMessage(), e);
+		}
 	}
 
 	@Override
 	public Block getForm(String label, Integer version, Long organizationId) {
 		throw new UnsupportedOperationException("Block dao doesn't allow a get by name, version and organization");
 	}
+
 }
