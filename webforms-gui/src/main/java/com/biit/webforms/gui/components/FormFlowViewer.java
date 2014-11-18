@@ -16,6 +16,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import com.biit.form.TreeObject;
+import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.GraphvizApp;
@@ -36,8 +38,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * A layout that contains an image representing the flow of a form.
  * 
- * Extends panel to allow the use of the {@link Scrollable} interface to allow
- * the move through the image.
+ * Extends panel to allow the use of the {@link Scrollable} interface to allow the move through the image.
  */
 public class FormFlowViewer extends Panel {
 	private final static long serialVersionUID = -4866123421361857895L;
@@ -249,6 +250,9 @@ public class FormFlowViewer extends Panel {
 					inputStream = new ByteArrayInputStream(imageData);
 				}
 				return inputStream;
+			} catch (IOException ioe) {
+				MessageManager.showError(LanguageCodes.GRAPHVIZ_EXEC_NOT_FOUND,
+						LanguageCodes.GRAPHVIZ_EXEC_NOT_FOUND_DESCRIPTION);
 			} catch (Exception e) {
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
