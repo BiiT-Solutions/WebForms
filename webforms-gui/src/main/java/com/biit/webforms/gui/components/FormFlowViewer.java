@@ -300,6 +300,7 @@ public class FormFlowViewer extends Panel {
 			// Return a stream from the buffer.
 			return imagebuffer.toByteArray();
 		} catch (IOException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			return null;
 		}
 	}
