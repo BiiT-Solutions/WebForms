@@ -160,7 +160,6 @@ public class FormManager extends SecuredWebPage {
 						return null;
 					}
 				});
-				downloader.setMessage(LanguageCodes.CAPTION_GENERATING_FILE.translation());
 				downloader.setIndeterminate(true);
 				downloader.setFilename(((Form) formTable.getValue()).getLabel() + ".pdf");
 				downloader.showCentered();
@@ -184,7 +183,6 @@ public class FormManager extends SecuredWebPage {
 						}
 					}
 				});
-				window.setMessage(LanguageCodes.CAPTION_GENERATING_FILE.translation());
 				window.setIndeterminate(true);
 				window.setFilename(((Form) formTable.getValue()).getLabel() + ".pdf");
 				window.showCentered();
@@ -216,7 +214,6 @@ public class FormManager extends SecuredWebPage {
 							}
 						}
 					});
-					window.setMessage(LanguageCodes.CAPTION_GENERATING_FILE.translation());
 					window.setIndeterminate(true);
 					window.setFilename(((Form) formTable.getValue()).getLabel() + ".txt");
 					window.showCentered();

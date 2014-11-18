@@ -184,6 +184,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 			}
 		}
 		form.setStatus(value);
+		updateRow(form);
 		try {
 			UserSessionHandler.getController().saveForm(form);
 		} catch (UnexpectedDatabaseException e) {

@@ -128,6 +128,8 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_LINK_ABCD_FORM("caption.link.abcd.form"),
 	CAPTION_EXPORT_XSD("caption.link.export.xsd"),
 	CAPTION_GENERATING_FILE("caption.generating.file"),
+	CAPTION_GENERATED_FILE("caption.generated.file"),
+	TITLE_DOWNLOAD_FILE("title.download.file"),
 	
 	TOOLTIP_NEW_FORM("tooltip.new.form"),
 	TOOLTIP_NEW_FORM_VERSION("tooltip.new.form.version"),
