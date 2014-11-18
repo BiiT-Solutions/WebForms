@@ -15,6 +15,10 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.Tree.CollapseEvent;
+import com.vaadin.ui.Tree.CollapseListener;
+import com.vaadin.ui.Tree.ExpandEvent;
+import com.vaadin.ui.Tree.ExpandListener;
 
 /**
  * TreeObjectTable component
@@ -33,6 +37,25 @@ public class TableTreeObject extends TreeTable {
 	public TableTreeObject() {
 		initContainerProperties();
 		setImmediate(true);
+		
+		// Quick and dirty fix to jumping around table bug
+		addExpandListener(new ExpandListener() {
+			private static final long serialVersionUID = -6212747624453604935L;
+
+			@Override
+			public void nodeExpand(ExpandEvent event) {
+				setValue(event.getItemId());
+			}
+		});
+		addCollapseListener(new CollapseListener() {
+			private static final long serialVersionUID = 8688330729095127848L;
+
+			@Override
+			public void nodeCollapse(CollapseEvent event) {
+				setValue(event.getItemId());
+			}
+		});
+		// End of dirty little nasty fix.
 	}
 
 	protected void initContainerProperties() {
@@ -143,10 +166,15 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	public void removeRow(TreeObject element) {
+		if(getChildren(getParent(element)).size()==1){
+			setChildrenAllowed(getParent(element), false);
+		}
+		
 		for (TreeObject child : element.getChildren()) {
 			removeRow(child);
 		}
 		removeItem(element);
+		
 	}
 
 	/**

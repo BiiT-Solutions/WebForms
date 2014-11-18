@@ -9,6 +9,10 @@ import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.components.TreeTableBaseForm;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel.CancelActionListener;
+import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.FormWorkStatusUi;
@@ -24,7 +28,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 	private static final long serialVersionUID = -7776688515497328826L;
 
 	enum TreeTableFormVersionProperties {
-		ACCESS, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
+		ACCESS, READ_ONLY, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
 	};
 
 	public TreeTableFormVersion(TreeTableProvider<Form> formProvider) {
@@ -71,11 +75,12 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 
 		// Set new visibility order
 		setVisibleColumns(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION,
-				TreeTableFormVersionProperties.USED_BY, TreeTableFormVersionProperties.STATUS,
-				TreeTableBaseFormProperties.ORGANIZATION, TreeTableFormVersionProperties.LINKED_FORM,
-				TreeTableFormVersionProperties.LINKED_ORGANIZATION, TreeTableFormVersionProperties.LINKED_VERSIONS,
-				TreeTableBaseFormProperties.CREATED_BY, TreeTableBaseFormProperties.CREATION_DATE,
-				TreeTableBaseFormProperties.MODIFIED_BY, TreeTableBaseFormProperties.MODIFICATION_DATE });
+				TreeTableFormVersionProperties.ACCESS, TreeTableFormVersionProperties.USED_BY,
+				TreeTableFormVersionProperties.STATUS, TreeTableBaseFormProperties.ORGANIZATION,
+				TreeTableFormVersionProperties.LINKED_FORM, TreeTableFormVersionProperties.LINKED_ORGANIZATION,
+				TreeTableFormVersionProperties.LINKED_VERSIONS, TreeTableBaseFormProperties.CREATED_BY,
+				TreeTableBaseFormProperties.CREATION_DATE, TreeTableBaseFormProperties.MODIFIED_BY,
+				TreeTableBaseFormProperties.MODIFICATION_DATE });
 	}
 
 	@SuppressWarnings("unchecked")
@@ -143,27 +148,48 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 					// Its the same status. Don't do anything.
 					return;
 				}
-				if (!form.getStatus().isMovingForward((FormWorkStatus) statusComboBox.getValue())) {
-					if (!(userCanDowngradeStatus || userIsAdmin)) {
-						// If you can't downgrade nor user is admin then, reset
-						// comboBox to previous value, throw a warning and exit.
-						statusComboBox.setValue(form.getStatus());
-						MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
-								LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
-						return;
+
+				new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_MODIFY_STATUS, new AcceptActionListener() {
+
+					@Override
+					public void acceptAction(WindowAcceptCancel window) {
+						changeStatus(form, statusComboBox, (FormWorkStatus) statusComboBox.getValue(),
+								userCanDowngradeStatus, userIsAdmin);
 					}
-				}
-				form.setStatus((FormWorkStatus) statusComboBox.getValue());
-				try {
-					UserSessionHandler.getController().saveForm(form);
-				} catch (UnexpectedDatabaseException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-				}
+				},new CancelActionListener() {
+					
+					@Override
+					public void cancelAction(WindowAcceptCancel window) {
+						statusComboBox.setValue(form.getStatus());
+					}
+				});
+				
+
 			}
 		});
 
 		return statusComboBox;
+	}
+
+	private void changeStatus(Form form, ComboBox statusComboBox, FormWorkStatus value, boolean userCanDowngradeStatus,
+			boolean userIsAdmin) {
+		if (!form.getStatus().isMovingForward(value)) {
+			if (!(userCanDowngradeStatus || userIsAdmin)) {
+				// If you can't downgrade nor user is admin then, reset
+				// comboBox to previous value, throw a warning and exit.
+				statusComboBox.setValue(form.getStatus());
+				MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
+						LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
+				return;
+			}
+		}
+		form.setStatus(value);
+		try {
+			UserSessionHandler.getController().saveForm(form);
+		} catch (UnexpectedDatabaseException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+		}
 	}
 
 	/**
@@ -185,7 +211,8 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 	}
 
 	/**
-	 * This function returns an string with read only if the form can't be edited by the user
+	 * This function returns an string with read only if the form can't be
+	 * edited by the user
 	 * 
 	 * @param form
 	 * @return

@@ -489,7 +489,12 @@ public class Designer extends SecuredWebPage {
 					TreeObject whereToMove = moveWindow.getSelectedTreeObject();
 					UserSessionHandler.getController().moveTo(whatToMove, whereToMove);
 					window.close();
-					clearAndUpdateFormTable();
+					table.setValue(null);
+					table.removeRow(whatToMove);
+					table.loadTreeObject(whatToMove, whereToMove,false);
+					table.expand(whereToMove);
+					// FIX to force a jump to this point in table. 
+					table.setValue(null);
 					table.setValue(whatToMove);
 				} catch (NotValidChildException e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_VALID,
