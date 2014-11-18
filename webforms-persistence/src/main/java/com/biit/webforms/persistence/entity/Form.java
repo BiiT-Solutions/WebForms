@@ -49,7 +49,7 @@ import com.liferay.portal.model.User;
 		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
 @Cache(region = "forms", usage = CacheConcurrencyStrategy.READ_WRITE)
 @Polymorphism(type = PolymorphismType.EXPLICIT)
-public class Form extends BaseForm {
+public class Form extends BaseForm implements IWebformsFormView{
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
 	@Enumerated(EnumType.STRING)

@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.biit.form.interfaces.IBaseFormView;
 import com.biit.webforms.authentication.ApplicationController;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.liferay.portal.model.User;
 
 public class UiAccesser {
@@ -64,11 +66,11 @@ public class UiAccesser {
 		return formsInUseData;
 	}
 	
-	public static synchronized boolean isUserUserUsingForm(User user, Form form){
+	public static synchronized boolean isUserUserUsingForm(User user, IWebformsFormView form){
 		return formsInUse.get(form)!=null && formsInUse.get(form).equals(user);
 	}
 	
-	public static synchronized User getUserUsingForm(Form form){
+	public static synchronized User getUserUsingForm(IBaseFormView form){
 		return formsInUse.get(form);
 	}
 	

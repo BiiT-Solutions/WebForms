@@ -1,7 +1,6 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
 import com.biit.form.interfaces.IBaseFormView;
-import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
@@ -14,24 +13,24 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.CancelActionListener;
 import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.language.ServerTranslate;
-import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.FormWorkStatusUi;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.IWebformsFormView;
+import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.data.Item;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 
-public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
+public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	private static final long serialVersionUID = -7776688515497328826L;
 
 	enum TreeTableFormVersionProperties {
-		ACCESS, READ_ONLY, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
+		ACCESS, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
 	};
 
-	public TreeTableFormVersion(TreeTableProvider<Form> formProvider) {
+	public TreeTableFormVersion(TreeTableProvider<SimpleFormView> formProvider) {
 		super(formProvider);
 		configureContainerProperties();
 	}
@@ -87,9 +86,10 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 	@Override
 	public Item updateRow(IBaseFormView form) {
 		Item item = super.updateRow(form);
-		item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag((Form) form));
+		item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(
+				getFormPermissionsTag((SimpleFormView) form));
 
-		User userOfForm = UiAccesser.getUserUsingForm((Form) form);
+		User userOfForm = UiAccesser.getUserUsingForm((IWebformsFormView) form);
 		if (userOfForm != null) {
 			item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue(userOfForm.getEmailAddress());
 		} else {
@@ -97,14 +97,16 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 		}
 
 		// Status
-		item.getItemProperty(TreeTableFormVersionProperties.STATUS).setValue(generateStatusComboBox((Form) form));
+		item.getItemProperty(TreeTableFormVersionProperties.STATUS).setValue(
+				generateStatusComboBox((IWebformsFormView) form));
 
 		// Linked parameters
-		item.getItemProperty(TreeTableFormVersionProperties.LINKED_FORM).setValue(((Form) form).getLinkedFormLabel());
+		item.getItemProperty(TreeTableFormVersionProperties.LINKED_FORM).setValue(
+				((IWebformsFormView) form).getLinkedFormLabel());
 
-		if (((Form) form).getLinkedFormOrganizationId() != null) {
+		if (((IWebformsFormView) form).getLinkedFormOrganizationId() != null) {
 			Organization linkedOrganization = WebformsAuthorizationService.getInstance().getOrganization(
-					UserSessionHandler.getUser(), ((Form) form).getLinkedFormOrganizationId());
+					UserSessionHandler.getUser(), ((IWebformsFormView) form).getLinkedFormOrganizationId());
 			if (linkedOrganization != null) {
 				item.getItemProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION).setValue(
 						linkedOrganization.getName());
@@ -112,12 +114,12 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 		}
 
 		item.getItemProperty(TreeTableFormVersionProperties.LINKED_VERSIONS).setValue(
-				((Form) form).getLinkedFormVersions().toString().replace("[", "").replace("]", ""));
+				((IWebformsFormView) form).getLinkedFormVersions().toString().replace("[", "").replace("]", ""));
 
 		return item;
 	}
 
-	private Component generateStatusComboBox(final Form form) {
+	private Component generateStatusComboBox(final IWebformsFormView form) {
 		final ComboBox statusComboBox = new ComboBox();
 		statusComboBox.setNullSelectionAllowed(false);
 		for (FormWorkStatusUi formStatus : FormWorkStatusUi.values()) {
@@ -156,14 +158,13 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 						changeStatus(form, statusComboBox, (FormWorkStatus) statusComboBox.getValue(),
 								userCanDowngradeStatus, userIsAdmin);
 					}
-				},new CancelActionListener() {
-					
+				}, new CancelActionListener() {
+
 					@Override
 					public void cancelAction(WindowAcceptCancel window) {
 						statusComboBox.setValue(form.getStatus());
 					}
 				});
-				
 
 			}
 		});
@@ -171,25 +172,26 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 		return statusComboBox;
 	}
 
-	private void changeStatus(Form form, ComboBox statusComboBox, FormWorkStatus value, boolean userCanDowngradeStatus,
-			boolean userIsAdmin) {
-		if (!form.getStatus().isMovingForward(value)) {
-			if (!(userCanDowngradeStatus || userIsAdmin)) {
-				// If you can't downgrade nor user is admin then, reset
-				// comboBox to previous value, throw a warning and exit.
-				statusComboBox.setValue(form.getStatus());
-				MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
-						LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
-				return;
-			}
-		}
-		form.setStatus(value);
-		try {
-			UserSessionHandler.getController().saveForm(form);
-		} catch (UnexpectedDatabaseException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-		}
+	private void changeStatus(IWebformsFormView form, ComboBox statusComboBox, FormWorkStatus value,
+			boolean userCanDowngradeStatus, boolean userIsAdmin) {
+		// TODO not implemented
+		// if (!form.getStatus().isMovingForward(value)) {
+		// if (!(userCanDowngradeStatus || userIsAdmin)) {
+		// // If you can't downgrade nor user is admin then, reset
+		// // comboBox to previous value, throw a warning and exit.
+		// statusComboBox.setValue(form.getStatus());
+		// MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
+		// LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
+		// return;
+		// }
+		// }
+		// form.setStatus(value);
+		// try {
+		// UserSessionHandler.getController().saveForm(form);
+		// } catch (UnexpectedDatabaseException e) {
+		// MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+		// LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+		// }
 	}
 
 	/**
@@ -217,7 +219,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<Form> {
 	 * @param form
 	 * @return
 	 */
-	private String getFormPermissionsTag(Form form) {
+	private String getFormPermissionsTag(SimpleFormView form) {
 		String permissions = "";
 
 		if (WebformsAuthorizationService.getInstance().isFormReadOnly(form, UserSessionHandler.getUser())) {

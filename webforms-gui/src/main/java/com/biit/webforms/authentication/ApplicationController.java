@@ -55,6 +55,7 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
@@ -79,6 +80,7 @@ public class ApplicationController {
 	private IBlockDao blockDao;
 	private com.biit.abcd.persistence.dao.IFormDao formDaoAbcd;
 	private ISimpleFormViewDao simpleFormDaoAbcd;
+	private com.biit.webforms.persistence.dao.ISimpleFormViewDao simpleFormDaoWebforms;
 
 	private Form lastEditedForm;
 	private Form formInUse;
@@ -90,6 +92,8 @@ public class ApplicationController {
 		blockDao = (IBlockDao) helper.getBean("blockDao");
 		formDaoAbcd = (com.biit.abcd.persistence.dao.IFormDao) helper.getBean("formDaoAbcd");
 		simpleFormDaoAbcd = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoAbcd"));
+		simpleFormDaoWebforms = ((com.biit.webforms.persistence.dao.ISimpleFormViewDao) helper
+				.getBean("simpleFormDaoWebforms"));
 	}
 
 	/**
@@ -1065,19 +1069,28 @@ public class ApplicationController {
 		return provider;
 	}
 
-	public TreeTableProvider<Form> getTreeTableFormsProvider() {
-		TreeTableProvider<Form> provider = new TreeTableProvider<Form>() {
+	public TreeTableProvider<com.biit.webforms.persistence.entity.SimpleFormView> getTreeTableFormsProvider() {
+		TreeTableProvider<com.biit.webforms.persistence.entity.SimpleFormView> provider = new TreeTableProvider<com.biit.webforms.persistence.entity.SimpleFormView>() {
 
 			@Override
-			public Collection<Form> getAll() throws UnexpectedDatabaseException {
-				List<Form> forms = new ArrayList<>();
+			public Collection<com.biit.webforms.persistence.entity.SimpleFormView> getAll()
+					throws UnexpectedDatabaseException {
+				List<com.biit.webforms.persistence.entity.SimpleFormView> userForms = new ArrayList<>();
+
+				List<com.biit.webforms.persistence.entity.SimpleFormView> simpleForms = simpleFormDaoWebforms.getAll();
 
 				Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
 						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
-				for (Organization organization : userOrganizations) {
-					forms.addAll(getWebformsFormDao().getAll(organization.getOrganizationId()));
+
+				for (com.biit.webforms.persistence.entity.SimpleFormView form : simpleForms) {
+					for (Organization organization : userOrganizations) {
+						if (form.getOrganizationId().equals(organization.getOrganizationId())) {
+							userForms.add(form);
+						}
+					}
 				}
-				return forms;
+
+				return userForms;
 			}
 		};
 		return provider;
@@ -1169,5 +1182,18 @@ public class ApplicationController {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 		return new HashSet<>();
+	}
+
+	public com.biit.webforms.persistence.dao.ISimpleFormViewDao getSimpleFormDaoWebforms() {
+		return simpleFormDaoWebforms;
+	}
+
+	public Form loadForm(IWebformsFormView formView) {
+		try {
+			return formDao.read(formView.getId());
+		} catch (UnexpectedDatabaseException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		return null;
 	}
 }
