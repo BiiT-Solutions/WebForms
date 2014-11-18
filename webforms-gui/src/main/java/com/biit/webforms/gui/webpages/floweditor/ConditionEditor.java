@@ -52,7 +52,6 @@ public class ConditionEditor extends CustomComponent {
 		super();
 		setSizeFull();
 		setCompositionRoot(generate());
-		initialize();
 	}
 
 	private Component generate() {
@@ -210,14 +209,6 @@ public class ConditionEditor extends CustomComponent {
 		return tokenDisplay.getTokens();
 	}
 
-	/**
-	 * Initialize composition default values
-	 */
-	private void initialize() {
-		// TODO
-		// clean();
-	}
-
 	public void delete() {
 		tokenDisplay.remove();
 	}
@@ -248,5 +239,11 @@ public class ConditionEditor extends CustomComponent {
 
 	public void addFilter(Filter filter) {
 		controls.addFilter(filter);
+	}
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		controls.setEnabled(enabled);
 	}
 }
