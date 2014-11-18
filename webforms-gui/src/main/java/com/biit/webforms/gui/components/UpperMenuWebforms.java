@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.components;
 
+import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
@@ -34,7 +35,7 @@ public class UpperMenuWebforms extends UpperMenu {
 
 					@Override
 					public void buttonClick(ClickEvent event) {
-						if (confirmationNeeded) {
+						if (confirmationNeeded && UserSessionHandler.getController().existsUnsavedFormChanges()) {
 							new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_LOSE_DATA,
 									new AcceptActionListener() {
 
