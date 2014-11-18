@@ -16,14 +16,13 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 /**
- * This is a window for generate/download new elements it has a default generate
- * view until the component is generated. The generation view can have a
- * progress bar with determined values or undetermined.
+ * This is a window for generate/download new elements it has a default generate view until the component is generated.
+ * The generation view can have a progress bar with determined values or undetermined.
  * 
  */
 public class WindowDownloader extends Window {
 	private static final long serialVersionUID = -4779913287589899589L;
-	private static final String WIDTH = "300px";
+	private static final String WIDTH = "310px";
 	private static final String HEIGHT = "150px";
 	private static final String DEFAULT_FILENAME = "filename";
 
@@ -34,7 +33,6 @@ public class WindowDownloader extends Window {
 	private boolean resourceGenerated;
 	private ProgressBar progressBar;
 	private final WindowDownloaderProcess process;
-	private Label messageLabel;
 
 	public WindowDownloader(WindowDownloaderProcess process) {
 		super();
@@ -52,6 +50,7 @@ public class WindowDownloader extends Window {
 		progressBar = new ProgressBar();
 		configure();
 		process();
+		setCaption(LanguageCodes.TITLE_DOWNLOAD_FILE.translation());
 	}
 
 	private void configure() {
@@ -84,10 +83,6 @@ public class WindowDownloader extends Window {
 		center();
 		UI.getCurrent().addWindow(this);
 	}
-	
-	public void setMessage(String value){
-		this.messageLabel.setValue(value);
-	}
 
 	/**
 	 * Makes visualization of progress bar as a undetermined clock.
@@ -106,13 +101,14 @@ public class WindowDownloader extends Window {
 		VerticalLayout rootLayout = new VerticalLayout();
 		rootLayout.setMargin(true);
 		rootLayout.setSizeFull();
-		
-		messageLabel = new Label();
+
+		Label messageLabel = new Label();
 		messageLabel.setWidth(null);
+		messageLabel.setValue(LanguageCodes.CAPTION_GENERATING_FILE.translation());
 		rootLayout.addComponent(messageLabel);
-		rootLayout.setComponentAlignment(messageLabel, Alignment.MIDDLE_CENTER);
+		rootLayout.setComponentAlignment(messageLabel, Alignment.MIDDLE_LEFT);
 		rootLayout.setExpandRatio(messageLabel, 0.20f);
-		
+
 		rootLayout.addComponent(progressBar);
 		rootLayout.setComponentAlignment(progressBar, Alignment.MIDDLE_CENTER);
 		rootLayout.setExpandRatio(progressBar, 0.80f);
@@ -122,7 +118,15 @@ public class WindowDownloader extends Window {
 
 	protected void showDownload() {
 		VerticalLayout rootLayout = new VerticalLayout();
+		rootLayout.setMargin(true);
 		rootLayout.setSizeFull();
+
+		Label messageLabel = new Label();
+		messageLabel.setWidth(null);
+		messageLabel.setValue(LanguageCodes.CAPTION_GENERATED_FILE.translation());
+		rootLayout.addComponent(messageLabel);
+		rootLayout.setComponentAlignment(messageLabel, Alignment.MIDDLE_LEFT);
+		rootLayout.setExpandRatio(messageLabel, 0.20f);
 
 		downloadButton = new Button();
 		downloadButton.setCaption(LanguageCodes.CAPTION_DOWNLOAD_FILE.translation());
@@ -133,6 +137,7 @@ public class WindowDownloader extends Window {
 
 		rootLayout.addComponent(downloadButton);
 		rootLayout.setComponentAlignment(downloadButton, Alignment.MIDDLE_CENTER);
+		rootLayout.setExpandRatio(downloadButton, 0.80f);
 
 		setContent(rootLayout);
 	}
@@ -168,8 +173,7 @@ public class WindowDownloader extends Window {
 	}
 
 	/**
-	 * This work manages all the inner work of the component to work off Ui and
-	 * update when finished
+	 * This work manages all the inner work of the component to work off Ui and update when finished
 	 * 
 	 */
 	class WorkThread extends Thread {

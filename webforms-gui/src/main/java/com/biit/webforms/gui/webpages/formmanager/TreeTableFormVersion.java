@@ -174,6 +174,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	}
 
 	private void changeStatus(IWebformsFormView form, ComboBox statusComboBox, FormWorkStatus value) {
+		updateRow(form);
 		try {
 			UserSessionHandler.getController().changeFormStatus(form, value);
 		} catch (NotEnoghRightsToChangeStatus e) {
