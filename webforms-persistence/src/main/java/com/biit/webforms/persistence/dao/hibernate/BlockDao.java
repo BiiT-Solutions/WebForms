@@ -175,6 +175,27 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
+	public boolean exists(String label, Integer version, Long organizationId, Long differentFormId)
+			throws UnexpectedDatabaseException {
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		try {
+			Criteria criteria = session.createCriteria(getType());
+			criteria.setProjection(Projections.rowCount());
+			criteria.add(Restrictions.eq("label", label));
+			criteria.add(Restrictions.eq("organizationId", organizationId));
+			criteria.add(Restrictions.eq("version", version));
+			criteria.add(Restrictions.ne("id", differentFormId));
+			int rows = ((Long) criteria.uniqueResult()).intValue();
+			session.getTransaction().commit();
+			return rows > 0;
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			throw new UnexpectedDatabaseException(e.getMessage(), e);
+		}
+	}
+
+	@Override
 	public Block getForm(String label, Integer version, Long organizationId) {
 		throw new UnsupportedOperationException("Block dao doesn't allow a get by name, version and organization");
 	}
