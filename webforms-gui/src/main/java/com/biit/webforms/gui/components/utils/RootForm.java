@@ -33,6 +33,7 @@ public class RootForm extends Form {
 		for (IBaseFormView form : getChildForms()) {
 			if (form.getVersion() > numVersion) {
 				lastVersion = form;
+				numVersion = form.getVersion();
 			}
 		}
 		return lastVersion;

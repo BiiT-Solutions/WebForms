@@ -31,6 +31,7 @@ import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
+import com.biit.webforms.authentication.exception.NotEnoghRightsToChangeStatus;
 import com.biit.webforms.authentication.exception.NotValidAbcdForm;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.enumerations.AnswerFormat;
@@ -43,9 +44,11 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
+import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
@@ -99,8 +102,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form on memory no persistance is done. Needs a unique name where name.length() < 190
-	 * characters.
+	 * User action to create a form on memory no persistance is done. Needs a
+	 * unique name where name.length() < 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -140,7 +143,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form. Needs a unique name where name.length() < 190 characters.
+	 * User action to create a form. Needs a unique name where name.length() <
+	 * 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -274,7 +278,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns the List of Abcd Forms linked to a form or empty list if there are no links.
+	 * Returns the List of Abcd Forms linked to a form or empty list if there
+	 * are no links.
 	 * 
 	 * @param form
 	 * @return
@@ -298,7 +303,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns abcd simpleViewForm linked to form using it's name, version and organizationId.
+	 * Returns abcd simpleViewForm linked to form using it's name, version and
+	 * organizationId.
 	 * 
 	 * @param form
 	 * @return
@@ -504,7 +510,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Creates any kind of TreeObject descendant with @name and inserts into parent if possible.
+	 * Creates any kind of TreeObject descendant with @name and inserts into
+	 * parent if possible.
 	 * 
 	 * @param classType
 	 * @param parent
@@ -776,8 +783,9 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
-	 * hierarchy seed and introduces to current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone
+	 * of the block using the element as hierarchy seed and introduces to
+	 * current form as a new category.
 	 * 
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
@@ -839,7 +847,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * This function is called when the ui has expired. The implementation needs to free any "locked" resources
+	 * This function is called when the ui has expired. The implementation needs
+	 * to free any "locked" resources
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
@@ -858,8 +867,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Update flow content. This function currently is a direct call to the structure function. If the flow is not on
-	 * the form, it gets added.
+	 * Update flow content. This function currently is a direct call to the
+	 * structure function. If the flow is not on the form, it gets added.
 	 * 
 	 * @param flow
 	 * @param origin
@@ -893,8 +902,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Updates flow update time and updated by in flow. The content of the flow was already modified by
-	 * {@link WindowFlow}
+	 * Updates flow update time and updated by in flow. The content of the flow
+	 * was already modified by {@link WindowFlow}
 	 * 
 	 * @param flow
 	 */
@@ -1074,7 +1083,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Get all forms where the user has READ permission in ABCD and EDIT permissions in Webforms.
+	 * Get all forms where the user has READ permission in ABCD and EDIT
+	 * permissions in Webforms.
 	 * 
 	 * @return
 	 */
@@ -1130,7 +1140,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns all organizations where user has permission to do all the activities in activitiesFilter.
+	 * Returns all organizations where user has permission to do all the
+	 * activities in activitiesFilter.
 	 * 
 	 * @param activitiesFilter
 	 * @return
@@ -1167,7 +1178,6 @@ public class ApplicationController {
 		unsavedFormChanges = value;
 	}
 
-
 	public com.biit.webforms.persistence.dao.ISimpleFormViewDao getSimpleFormDaoWebforms() {
 		return simpleFormDaoWebforms;
 	}
@@ -1179,5 +1189,29 @@ public class ApplicationController {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 		return null;
+	}
+
+	public void changeFormStatus(IWebformsFormView formView, FormWorkStatus value) throws NotEnoghRightsToChangeStatus {
+		// Can downgrade
+		boolean userCanDowngradeStatus = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+				UserSessionHandler.getUser(), formView, WebformsActivity.FORM_STATUS_DOWNGRADE);
+		// Or if you have admin rights.
+		boolean userIsAdmin = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+				UserSessionHandler.getUser(), formView, WebformsActivity.ADMIN_RIGHTS);
+
+		if (!formView.getStatus().isMovingForward(value)) {
+			if (!(userCanDowngradeStatus || userIsAdmin)) {
+				throw new NotEnoghRightsToChangeStatus();
+			}
+		}
+
+		Form form = loadForm(formView);
+		form.setStatus(value);
+		try {
+			UserSessionHandler.getController().saveForm(form);
+		} catch (UnexpectedDatabaseException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+		}
 	}
 }

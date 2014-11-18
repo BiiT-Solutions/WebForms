@@ -83,8 +83,8 @@ public class FormManager extends SecuredWebPage {
 		setBottomMenu(bottomMenu);
 
 		formTable = new TreeTableFormVersion(UserSessionHandler.getController().getTreeTableFormsProvider());
+		formTable.setImmediate(true);
 		formTable.setSizeFull();
-		formTable.setValue(null);
 		formTable.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -8544416078101328528L;
 
@@ -93,6 +93,8 @@ public class FormManager extends SecuredWebPage {
 				updateMenus();
 			}
 		});
+		formTable.selectLastUsedForm();
+		formTable.selectForm(null);
 		formTable.selectLastUsedForm();
 		// If it was already null
 		updateMenus();
@@ -195,19 +197,20 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+				final Form form = loadForm(getSelectedForm());
 				// Xforms only can be uses with valid forms.
 				ValidateFormComplete validator = new ValidateFormComplete();
 				validator.setStopOnFail(true);
 
 				ValidateReport report = new ValidateReport();
-				validator.validate(((Form) formTable.getValue()), report);
+				validator.validate((form), report);
 				if (report.isValid()) {
 					WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
 
 						@Override
 						public InputStream getInputStream() {
 							try {
-								return new XFormsExporter(loadForm(getSelectedForm())).generateXFormsLanguage();
+								return new XFormsExporter(form).generateXFormsLanguage();
 							} catch (NotValidTreeObjectException | NotExistingDynamicFieldException
 									| InvalidDateException | StringRuleSyntaxError | PostCodeRuleSyntaxError
 									| NotValidChildException e) {
@@ -230,14 +233,15 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+				Form form = loadForm(getSelectedForm());
+				
 				ValidateFormComplete validator = new ValidateFormComplete();
 				validator.setStopOnFail(true);
 
 				ValidateReport report = new ValidateReport();
-				validator.validate(((Form) formTable.getValue()), report);
+				validator.validate(form, report);
 				if (report.isValid()) {
-
-					new WindowDownloaderXsd(loadForm(getSelectedForm()), getSelectedForm().getLabel() + ".xsd");
+					new WindowDownloaderXsd(form, getSelectedForm().getLabel() + ".xsd");
 				} else {
 					MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
 				}
@@ -255,7 +259,7 @@ public class FormManager extends SecuredWebPage {
 					Form form = loadForm(getSelectedForm());
 					UserSessionHandler.getController().finishForm(form);
 					formTable.refreshTableData();
-					formTable.setValue(form);
+					formTable.selectForm(form);
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
@@ -304,7 +308,7 @@ public class FormManager extends SecuredWebPage {
 				try {
 					UserSessionHandler.getController().saveForm(form);
 					formTable.refreshTableData();
-					formTable.setValue(form);
+					formTable.selectForm(form);
 					window.close();
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
@@ -338,7 +342,7 @@ public class FormManager extends SecuredWebPage {
 					Form importedForm = UserSessionHandler.getController().importAbcdForm(abcdForm, newFormName,
 							abcdForm.getOrganizationId());
 					formTable.refreshTableData();
-					formTable.setValue(importedForm);
+					formTable.selectForm(importedForm);
 					window.close();
 				} catch (NotValidAbcdForm e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
@@ -380,7 +384,7 @@ public class FormManager extends SecuredWebPage {
 			newForm = UserSessionHandler.getController().createNewFormVersion(loadForm(currentForm));
 			formTable.refreshTableData();
 			formTable.defaultSort();
-			formTable.setValue(newForm);
+			formTable.selectForm(newForm);
 		} catch (NotValidStorableObjectException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 		} catch (NewVersionWithoutFinalDesignException e) {
@@ -420,7 +424,7 @@ public class FormManager extends SecuredWebPage {
 								newFormWindow.getValue(), newFormWindow.getOrganization().getOrganizationId());
 						formTable.refreshTableData();
 						formTable.defaultSort();
-						formTable.setValue(newForm);
+						formTable.selectForm(newForm);
 						newFormWindow.close();
 					}
 				} catch (FieldTooLongException e) {

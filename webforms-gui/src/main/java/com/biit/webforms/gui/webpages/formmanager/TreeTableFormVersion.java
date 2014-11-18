@@ -4,6 +4,7 @@ import com.biit.form.interfaces.IBaseFormView;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.authentication.exception.NotEnoghRightsToChangeStatus;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.components.TreeTableBaseForm;
@@ -13,6 +14,7 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.CancelActionListener;
 import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.language.ServerTranslate;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.FormWorkStatusUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
@@ -134,8 +136,6 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		boolean formIsNotDesign = form.getStatus() != FormWorkStatus.DESIGN;
 		boolean userCanUpgradeStatus = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
 				UserSessionHandler.getUser(), form, WebformsActivity.FORM_STATUS_UPGRADE);
-		final boolean userCanDowngradeStatus = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
-				UserSessionHandler.getUser(), form, WebformsActivity.FORM_STATUS_DOWNGRADE);
 		// Or if you have admin rights.
 		final boolean userIsAdmin = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
 				UserSessionHandler.getUser(), form, WebformsActivity.ADMIN_RIGHTS);
@@ -155,8 +155,9 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 
 					@Override
 					public void acceptAction(WindowAcceptCancel window) {
-						changeStatus(form, statusComboBox, (FormWorkStatus) statusComboBox.getValue(),
-								userCanDowngradeStatus, userIsAdmin);
+						changeStatus(form, statusComboBox, (FormWorkStatus) statusComboBox.getValue());
+						form.setStatus((FormWorkStatus) statusComboBox.getValue());
+						updateRow(form);
 					}
 				}, new CancelActionListener() {
 
@@ -172,26 +173,14 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		return statusComboBox;
 	}
 
-	private void changeStatus(IWebformsFormView form, ComboBox statusComboBox, FormWorkStatus value,
-			boolean userCanDowngradeStatus, boolean userIsAdmin) {
-		// TODO not implemented
-		// if (!form.getStatus().isMovingForward(value)) {
-		// if (!(userCanDowngradeStatus || userIsAdmin)) {
-		// // If you can't downgrade nor user is admin then, reset
-		// // comboBox to previous value, throw a warning and exit.
-		// statusComboBox.setValue(form.getStatus());
-		// MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
-		// LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
-		// return;
-		// }
-		// }
-		// form.setStatus(value);
-		// try {
-		// UserSessionHandler.getController().saveForm(form);
-		// } catch (UnexpectedDatabaseException e) {
-		// MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-		// LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-		// }
+	private void changeStatus(IWebformsFormView form, ComboBox statusComboBox, FormWorkStatus value) {
+		try {
+			UserSessionHandler.getController().changeFormStatus(form, value);
+		} catch (NotEnoghRightsToChangeStatus e) {
+			statusComboBox.setValue(form.getStatus());
+			MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
+					LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
+		}
 	}
 
 	/**
@@ -201,7 +190,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		try {
 			if (UserSessionHandler.getController().getLastEditedForm() != null) {
 				// Update form with new object if the form has change.
-				setValue(UserSessionHandler.getController().getLastEditedForm());
+				selectForm(UserSessionHandler.getController().getLastEditedForm());
 			} else {
 				// Select default one.
 				selectFirstRow();
@@ -226,5 +215,14 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 			permissions = LanguageCodes.CAPTION_READ_ONLY.translation();
 		}
 		return permissions;
+	}
+
+	public void selectForm(IBaseFormView form) {
+		if (form == null || form.getName() == null) {
+			setValue(null);
+		} else {
+			SimpleFormView simpleFormView = SimpleFormView.getSimpleFormView((IWebformsFormView) form);
+			setValue(simpleFormView);
+		}
 	}
 }

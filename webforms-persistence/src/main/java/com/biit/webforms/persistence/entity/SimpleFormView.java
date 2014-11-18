@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.biit.webforms.enumerations.FormWorkStatus;
@@ -15,10 +16,10 @@ public class SimpleFormView implements IWebformsFormView {
 	private Timestamp updateTime;
 	private Long updatedBy;
 	private String comparationId;
-	private long organizationId;
+	private Long organizationId;
 	private String linkedFormLabel;
 	private Set<Integer> linkedFormVersions;
-	private long linkedFormOrganizationId;
+	private Long linkedFormOrganizationId;
 	private FormWorkStatus status;
 
 	@Override
@@ -85,7 +86,7 @@ public class SimpleFormView implements IWebformsFormView {
 	public Long getLinkedFormOrganizationId() {
 		return linkedFormOrganizationId;
 	}
-	
+
 	@Override
 	public FormWorkStatus getStatus() {
 		return status;
@@ -143,7 +144,63 @@ public class SimpleFormView implements IWebformsFormView {
 		this.linkedFormOrganizationId = linkedFormOrganizationId;
 	}
 
+	@Override
 	public void setStatus(FormWorkStatus status) {
 		this.status = status;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + ((comparationId == null) ? 0 : comparationId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		SimpleFormView other = (SimpleFormView) obj;
+		if (comparationId == null) {
+			if (other.comparationId != null) {
+				return false;
+			}
+		} else if (!comparationId.equals(other.comparationId)) {
+			return false;
+		}
+		return true;
+	}
+
+	public static SimpleFormView getSimpleFormView(IWebformsFormView form) {
+
+		SimpleFormView view = new SimpleFormView();
+		view.name = form.getName();
+		view.label = form.getLabel();
+		view.version = form.getVersion();
+		view.id = form.getId();
+		view.creationTime = form.getCreationTime();
+		view.createdBy = form.getCreatedBy();
+		view.updateTime = form.getUpdateTime();
+		view.updatedBy = form.getUpdatedBy();
+		view.comparationId = form.getComparationId();
+		view.organizationId = form.getOrganizationId();
+		view.linkedFormLabel = form.getLinkedFormLabel();
+		view.linkedFormVersions = new HashSet<Integer>(form.getLinkedFormVersions());
+		view.linkedFormOrganizationId = form.getLinkedFormOrganizationId();
+
+		return view;
+	}
+
+	@Override
+	public String toString() {
+		return name + " " + label + " " + version;
 	}
 }
