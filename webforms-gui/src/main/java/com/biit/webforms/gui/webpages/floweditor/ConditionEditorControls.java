@@ -59,8 +59,8 @@ public class ConditionEditorControls extends TabSheet {
 	private Button and, or, not;
 	// Order
 	private Button leftPar, rightPar;
-	// Oher
-	private Button carry;
+	// Other
+	private Button pilcrow;
 
 	private List<InsertTokenListener> insertTokenListeners;
 
@@ -285,10 +285,10 @@ public class ConditionEditorControls extends TabSheet {
 		leftPar = createTokenButton("(", TokenTypes.LEFT_PAR);
 		rightPar = createTokenButton(")", TokenTypes.RIGHT_PAR);
 		// Oher
-		carry = createTokenButton("\u23CE", TokenTypes.RETURN);
+		pilcrow = createTokenButton("\u00B6", TokenTypes.RETURN);
 
 		GridLayout buttonHolder = new GridLayout(NUM_BUTTON_COLUMNS, NUM_BUTTON_ROWS, and, or, not, leftPar, rightPar,
-				carry);
+				pilcrow);
 		buttonHolder.setCaption(LanguageCodes.CAPTION_OPERATORS.translation());
 
 		buttonHolder.setWidth(FULL);

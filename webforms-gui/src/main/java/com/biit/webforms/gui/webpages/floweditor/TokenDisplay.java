@@ -404,7 +404,7 @@ public class TokenDisplay extends CustomComponent {
 				rootLayout.removeComponent(evaluatorLayout);
 			}
 			evaluatorLayout = createEvaluatorLayout();
-			rootLayout.addComponent(evaluatorLayout);
+			rootLayout.addComponent(evaluatorLayout, 0);
 			// If expand ratio is 0, component is not shown.
 			rootLayout.setExpandRatio(evaluatorLayout, 0.00001f);
 			rootLayout.setComponentAlignment(evaluatorLayout, Alignment.BOTTOM_RIGHT);
