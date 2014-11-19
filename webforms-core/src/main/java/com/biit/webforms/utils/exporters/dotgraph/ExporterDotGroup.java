@@ -7,6 +7,7 @@ import com.biit.webforms.persistence.entity.Group;
 
 public class ExporterDotGroup extends ExporterDot<Group> {
 	private final static String BOX_STYLE = "dashed";
+	private final static String LOOP_BOX_STYLE = "dotted";
 
 	@Override
 	public String export(Group structure) {
@@ -20,7 +21,11 @@ public class ExporterDotGroup extends ExporterDot<Group> {
 		// Cluster tag it's what makes it a separate group
 		cluster += "\tsubgraph cluster_" + filterDotLanguageId(group.getComparationId()) + " {\n";
 		cluster += "\t\tnode [style=filled, fillcolor=" + getFillColor() + "];\n";
-		cluster += "\t\tlabel = \"" + filterDotLanguage(group.getName()) + "\";\n";
+		if (group.isRepeatable()) {
+			cluster += "\t\tlabel = \"" + filterDotLanguage(group.getName() + " (Loop)") + "\";\n";
+		} else {
+			cluster += "\t\tlabel = \"" + filterDotLanguage(group.getName()) + "\";\n";
+		}
 
 		for (TreeObject child : group.getChildren()) {
 			if (child instanceof Group) {
@@ -37,9 +42,13 @@ public class ExporterDotGroup extends ExporterDot<Group> {
 		cluster += "\t\tcolor=" + getShapeColor() + ";\n";
 		cluster += "\t\tfontcolor=" + getFontColor() + ";\n";
 		cluster += "\t\tpenwidth=" + getPenWidth() + ";\n";
-		cluster += "\t\tstyle=" + BOX_STYLE + ";\n";
+		if (group.isRepeatable()) {
+			cluster += "\t\tstyle=" + LOOP_BOX_STYLE + ";\n";
+		} else {
+			cluster += "\t\tstyle=" + BOX_STYLE + ";\n";
+		}
 		cluster += "\t\t}\n";
-		
+
 		return cluster;
 	}
 
