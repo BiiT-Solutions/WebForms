@@ -340,7 +340,10 @@ public enum LanguageCodes implements ILanguageCode{
 	ORBEON_INVALID_FORMAT_DATE_BIRTHDAY("orbeon.invalid.format.date.birthday"),
 	
 	GRAPHVIZ_EXEC_NOT_FOUND("graphviz.exec.not.found"),
-	GRAPHVIZ_EXEC_NOT_FOUND_DESCRIPTION("graphviz.exec.not.found.description");
+	GRAPHVIZ_EXEC_NOT_FOUND_DESCRIPTION("graphviz.exec.not.found.description"),
+	
+	EXPRESSION_CHECKER_VALID("expression.checker.valid"),
+	EXPRESSION_CHECKER_INVALID("expression.checker.invalid");
 
 	private String value;
 

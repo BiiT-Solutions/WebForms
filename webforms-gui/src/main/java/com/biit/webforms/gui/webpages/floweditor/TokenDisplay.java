@@ -4,20 +4,27 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenDoubleClickListener;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenSingleClickListener;
+import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 public class TokenDisplay extends CustomComponent {
 	private static final long serialVersionUID = 5091855550351857003L;
 	private static final String CLASSNAME = "token-display";
 	private static final String FULL = "100%";
+	private HorizontalLayout evaluatorLayout;
 
 	private VerticalLayout rootLayout;
 
@@ -29,6 +36,12 @@ public class TokenDisplay extends CustomComponent {
 	private ShortcutListener enterShotcut;
 	private ShortcutListener nextShortcut;
 	private ShortcutListener previousShortcut;
+
+	private List<ValidationListener> validationListeners = new ArrayList<>();
+
+	interface ValidationListener {
+		void validationMessage(String message);
+	}
 
 	public TokenDisplay() {
 		super();
@@ -72,6 +85,7 @@ public class TokenDisplay extends CustomComponent {
 			tokenComponent.addTokenDoubleClick(listener);
 		}
 		addToken(tokenComponent);
+		updateEvaluator();
 	}
 
 	private void addToken(TokenComponent token) {
@@ -85,8 +99,8 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	/**
-	 * Adds a TokenComponent to the end of a specific line or after the current
-	 * selected element or adds the element as the last selected element.
+	 * Adds a TokenComponent to the end of a specific line or after the current selected element or adds the element as
+	 * the last selected element.
 	 * 
 	 * @param token
 	 * @param line
@@ -107,8 +121,7 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	/**
-	 * Gets currently selected line for work. If a component is selected returns
-	 * its line, else returns the last line.
+	 * Gets currently selected line for work. If a component is selected returns its line, else returns the last line.
 	 * 
 	 * @return
 	 */
@@ -130,6 +143,27 @@ public class TokenDisplay extends CustomComponent {
 		focusedComponent = token;
 		if (focusedComponent != null) {
 			focusedComponent.focus();
+		}
+		updateExpressionSelectionStyles();
+	}
+
+	/**
+	 * The selected expression is white.
+	 */
+	protected void updateExpressionSelectionStyles() {
+		for (int i = 0; i < rootLayout.getComponentCount(); i++) {
+			if (rootLayout.getComponent(i) instanceof HorizontalLayout) {
+				HorizontalLayout lineLayout = (HorizontalLayout) rootLayout.getComponent(i);
+				for (int j = 0; j < lineLayout.getComponentCount(); j++) {
+					if (lineLayout.getComponent(j) instanceof TokenComponent) {
+						if (lineLayout.getComponent(j).equals(focusedComponent)) {
+							((TokenComponent) lineLayout.getComponent(j)).focus();
+						} else {
+							((TokenComponent) lineLayout.getComponent(j)).loseFocus();
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -160,6 +194,7 @@ public class TokenDisplay extends CustomComponent {
 		} else {
 			token.getLine().removeToken(token);
 		}
+		updateEvaluator();
 	}
 
 	/**
@@ -182,10 +217,9 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	/**
-	 * Get element in current position + numPosition if there are no tokens
-	 * returns null. If no token is selected it gets the first element or the
-	 * last depending on the numPosition defined. Else we get the sum of
-	 * currentPosition + numPosition and do the module to get the new position.
+	 * Get element in current position + numPosition if there are no tokens returns null. If no token is selected it
+	 * gets the first element or the last depending on the numPosition defined. Else we get the sum of currentPosition +
+	 * numPosition and do the module to get the new position.
 	 * 
 	 * @param position
 	 */
@@ -211,7 +245,7 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	private TokenComponent getFirstToken() {
-		if(rootLayout.getComponentCount()==0){
+		if (rootLayout.getComponentCount() == 0) {
 			return null;
 		}
 		return ((LineDisplay) rootLayout.getComponent(0)).getFirstToken();
@@ -234,13 +268,16 @@ public class TokenDisplay extends CustomComponent {
 		}
 		return tokens;
 	}
-	
-	List<TokenComponent> getTokenComponents(){
+
+	List<TokenComponent> getTokenComponents() {
 		List<TokenComponent> tokens = new ArrayList<TokenComponent>();
 		Iterator<Component> itr = rootLayout.iterator();
-		while(itr.hasNext()){
-			LineDisplay line = (LineDisplay) itr.next();
-			tokens.addAll(line.getTokens());
+		while (itr.hasNext()) {
+			Component element = itr.next();
+			if (element instanceof LineDisplay) {
+				LineDisplay line = (LineDisplay) element;
+				tokens.addAll(line.getTokens());
+			}
 		}
 		return tokens;
 	}
@@ -254,11 +291,11 @@ public class TokenDisplay extends CustomComponent {
 		}
 
 		List<TokenComponent> tokens = getCurrentLine().getTokensAfter(focusedComponent);
-		//Remove tokens at the right side of the current selected element. Add them to the new line.
+		// Remove tokens at the right side of the current selected element. Add them to the new line.
 		getCurrentLine().removeTokens(tokens);
 		newLine.addTokens(tokens);
-		
-		int insertIndex = rootLayout.getComponentIndex(getCurrentLine())+1;
+
+		int insertIndex = rootLayout.getComponentIndex(getCurrentLine()) + 1;
 		if (insertIndex == rootLayout.getComponentCount()) {
 			rootLayout.addComponent(newLine);
 		} else {
@@ -333,4 +370,55 @@ public class TokenDisplay extends CustomComponent {
 		rootLayout.removeAllComponents();
 		addLine();
 	}
+
+	private HorizontalLayout createEvaluatorLayout() {
+		HorizontalLayout checkerLayout = new HorizontalLayout();
+		checkerLayout.setMargin(false);
+		checkerLayout.setSpacing(false);
+		checkerLayout.setSizeFull();
+
+		Label evaluatorOutput = new Label();
+		evaluatorOutput.setSizeUndefined();
+		checkerLayout.addComponent(evaluatorOutput);
+		checkerLayout.setComponentAlignment(evaluatorOutput, Alignment.TOP_RIGHT);
+
+		try {
+			WebformsParser parser = new WebformsParser(getTokens().iterator());
+			parser.parseCompleteExpression();
+			evaluatorOutput.setStyleName("expression-valid");
+			evaluatorOutput.setValue(LanguageCodes.EXPRESSION_CHECKER_VALID.translation());
+			fireValidationListeners("");
+		} catch (Exception e) {
+			fireValidationListeners(e.getMessage());
+			WebformsLogger.debug(TokenDisplay.class.getName(), e.getMessage());
+			evaluatorOutput.setStyleName("expression-invalid");
+			evaluatorOutput.setValue(LanguageCodes.EXPRESSION_CHECKER_INVALID.translation());
+		}
+
+		return checkerLayout;
+	}
+
+	private void updateEvaluator() {
+		if (rootLayout != null) {
+			if (evaluatorLayout != null) {
+				rootLayout.removeComponent(evaluatorLayout);
+			}
+			evaluatorLayout = createEvaluatorLayout();
+			rootLayout.addComponent(evaluatorLayout, 0);
+			// If expand ratio is 0, component is not shown.
+			rootLayout.setExpandRatio(evaluatorLayout, 0.00001f);
+			rootLayout.setComponentAlignment(evaluatorLayout, Alignment.BOTTOM_RIGHT);
+		}
+	}
+
+	public void addValidationListener(ValidationListener listener) {
+		validationListeners.add(listener);
+	}
+
+	public void fireValidationListeners(String message) {
+		for (ValidationListener validationListener : validationListeners) {
+			validationListener.validationMessage(message);
+		}
+	}
+
 }

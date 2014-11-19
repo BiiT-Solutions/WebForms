@@ -826,29 +826,61 @@ $open-sans-pathPrefix: "./fonts/";
 		overflow: auto;
 	}
 	
-	.token-component.v-customcomponent-token-component {
-		border: #c2c3c4;
-		border-width: 1px;
-		border-style: solid;
-		box-shadow: 1px 1px 6px -1px #777777;
-	}
-	
-	.v-customcomponent-token-component.token-component-focused.v-customcomponent-token-component-focused {
-		box-shadow: 0px 0px 6px 1px #4BB4D3 !important;
-		-webkit-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none; 
+	.token-component .v-label.v-widget.v-has-width {
+		font-size: 16px !important;
+		font-weight: 600 !important;
 	}
 	
 	.token-component-layout.v-csslayout-token-component-layout {
-		padding-top: 1px !important;
-		padding-left: 5px !important;
-		padding-right: 5px !important;
-		padding-bottom: 0px !important;
-		color: #1C86C2;
-		text-shadow: #fff 0 1px 0;
-		font-weight: 600;
-		font-size: 16px !important;
+		padding: 0px 5px 0px 5px;
+		background-color: #ededed;
+		border: 1px solid #222;
+		border-color: #aaa;
+		display:inline-block;
+		font-weight:bold;
+		color:#1C86C2;
+	}
+	
+	.v-csslayout-token-component-layout.token-component-focused.v-csslayout-token-component-focused {
+		background-color: White !important;
+	}
+	
+	.v-customcomponent-token-component.token-component-disabled.v-customcomponent-token-component-disabled {
+		background-color: gray;
+		background-image: linear-gradient(45deg, #ccc 0%, #ccc 25%, #bbb 25%, #bbb 50%, #ccc 50%, #ccc 75%, #bbb 75%);
+		background-size: 20px 20px;
+	}
+	
+	/* Valid and Invalid method */
+	.v-label.expression-valid{
+		background-color:#77b55a;
+		border-top-left-radius:0px;
+		border-top-right-radius:0px;
+		border-bottom-right-radius:0px;
+		border-bottom-left-radius:0px;
+		border:2px solid #4b8f29;
+		display:inline-block;
+		cursor:pointer;
+		color:#ffffff;
+		font-weight:bold;
+		padding:10px 20px;
+		text-decoration:none;
+	}
+
+	
+	.v-label.expression-invalid{
+		background-color:#d0451b;
+		border-top-left-radius:0px;
+		border-top-right-radius:0px;
+		border-bottom-right-radius:0px;
+		border-bottom-left-radius:0px;
+		border:2px solid #942911;
+		display:inline-block;
+		cursor:pointer;
+		color:#ffffff;
+		font-weight:bold;
+		padding:10px 20px;
+		text-decoration:none;
 	}
 
 	/* Label box */
@@ -881,5 +913,7 @@ $open-sans-pathPrefix: "./fonts/";
 		border-color: #c2c3c4;
 		overflow: auto;
 		padding: 6px;
-	}	
+	}
+
+	
 }
