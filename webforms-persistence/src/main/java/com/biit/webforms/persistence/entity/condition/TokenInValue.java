@@ -15,16 +15,14 @@ import com.biit.webforms.persistence.entity.Answer;
 
 @Entity
 @Table(name = "token_in_value")
-public class TokenInValue extends StorableObject{
+public class TokenInValue extends StorableObject {
 
 	@ManyToOne
 	private TokenIn tokenIn;
-	
+
 	@Column(nullable = false)
 	private long sortSeq = 0;
-	
-	private String textFieldvalue;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Answer answerValue;
 
@@ -34,14 +32,6 @@ public class TokenInValue extends StorableObject{
 
 	public void setAnswerValue(Answer answerValue) {
 		this.answerValue = answerValue;
-	}
-
-	public String getTextFieldvalue() {
-		return textFieldvalue;
-	}
-
-	public void setTextFieldvalue(String textFieldvalue) {
-		this.textFieldvalue = textFieldvalue;
 	}
 
 	@Override
@@ -54,7 +44,6 @@ public class TokenInValue extends StorableObject{
 		if (object instanceof TokenInValue) {
 			copyBasicInfo(object);
 			TokenInValue token = (TokenInValue) object;
-			this.textFieldvalue = token.textFieldvalue;
 			this.answerValue = token.answerValue;
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
@@ -72,5 +61,14 @@ public class TokenInValue extends StorableObject{
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			return null;
 		}
+	}
+
+	@Override
+	public String toString() {
+		return answerValue.getName();
+	}
+
+	public void setTokenIn(TokenIn tokenIn) {
+		this.tokenIn = tokenIn;
 	}
 }

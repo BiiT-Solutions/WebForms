@@ -215,7 +215,6 @@ public class Flow extends StorableObject {
 
 	@Override
 	public Set<StorableObject> getAllInnerStorableObjects() {
-		// Return nothing
 		HashSet<StorableObject> innerStorableObjects = new HashSet<StorableObject>();
 
 		if (!isOthers()) {

@@ -92,8 +92,6 @@
         sortSeq bigint not null,
         type varchar(255) not null,
         flow_ID bigint,
-        datePeriodUnit varchar(255),
-        subformat varchar(255) not null,
         question_ID bigint not null,
         primary key (ID)
     );
@@ -106,7 +104,6 @@
         updateTime datetime,
         updatedBy DOUBLE,
         sortSeq bigint not null,
-        textFieldvalue varchar(255),
         answerValue_ID bigint,
         tokenIn_ID bigint,
         primary key (ID)

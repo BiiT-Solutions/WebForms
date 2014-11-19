@@ -12,8 +12,10 @@ import com.biit.webforms.gui.webpages.floweditor.listeners.TokenDoubleClickListe
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.ExpectedTokenNotFound;
@@ -36,6 +38,11 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
+/**
+ * token conditions. Contains the right side controls and the current token
+ * condition display.
+ * 
+ */
 public class ConditionEditor extends CustomComponent {
 	private static final long serialVersionUID = 8836808232493250676L;
 
@@ -119,6 +126,12 @@ public class ConditionEditor extends CustomComponent {
 				if (token instanceof TokenComparationValue) {
 					openEditComparationOperatorValue(tokenComponent);
 				}
+				if (token instanceof TokenIn) {
+					openEditIn(tokenComponent);
+				}
+				if (token instanceof TokenBetween) {
+					openEditBetween(tokenComponent);
+				}
 			}
 		});
 
@@ -126,6 +139,41 @@ public class ConditionEditor extends CustomComponent {
 		checkAndTokens.setExpandRatio(tokenDisplay, 1.0f);
 
 		return checkAndTokens;
+	}
+
+	protected void openEditBetween(final TokenComponent tokenComponent) {
+		WindowTokenBetween window = new WindowTokenBetween();
+		window.setToken((TokenBetween) tokenComponent.getToken());
+		window.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				WindowTokenBetween windowToken = (WindowTokenBetween) window;
+				TokenBetween tokenBetween = (TokenBetween) tokenComponent.getToken();
+				tokenBetween.setContent(windowToken.getDatePeriodUnit(), windowToken.getValueStart(),
+						windowToken.getValueEnd());
+
+				tokenComponent.refresh();
+				window.close();
+			}
+		});
+		window.showCentered();
+	}
+
+	protected void openEditIn(final TokenComponent tokenComponent) {
+		WindowTokenIn window = new WindowTokenIn();
+		window.setToken((TokenIn) tokenComponent.getToken());
+		window.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				WindowTokenIn thisWindow = (WindowTokenIn) window;
+				((TokenIn) tokenComponent.getToken()).setAnswers(thisWindow.getAnswers());
+				tokenComponent.refresh();
+				window.close();
+			}
+		});
+		window.showCentered();
 	}
 
 	protected void openEditComparationOperatorValue(final TokenComponent tokenComponent) {

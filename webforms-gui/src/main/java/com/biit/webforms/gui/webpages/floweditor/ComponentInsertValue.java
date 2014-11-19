@@ -8,11 +8,14 @@ import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.TokenTypes;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.floweditor.listeners.InsertTokenListener;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
@@ -35,7 +38,7 @@ public class ComponentInsertValue extends CustomComponent {
 	private static final String FULL = "100%";
 	private static final String EXPAND = null;
 
-	private static final int VALUE_BUTTON_COLS = 3;
+	private static final int VALUE_BUTTON_COLS = 4;
 	private static final int VALUE_BUTTON_ROWS = 2;
 	private static final DatePeriodUnit DATE_FORMAT_DEFAULT_DATE_PERIOD = DatePeriodUnit.YEAR;
 
@@ -43,9 +46,10 @@ public class ComponentInsertValue extends CustomComponent {
 
 	private VerticalLayout insertValueLayout;
 
-	private ComboBox dateFormatType;
+	private ComboBox datePeriodUnit;
 	private TextField value;
-	private Button insertEqValue, insertNeValue, insertLtValue, insertGtValue, insertLeValue, insertGeValue;
+	private Button insertEqValue, insertNeValue, insertLtValue, insertGtValue, insertLeValue, insertGeValue,
+			insertBetweenButton;
 
 	private List<InsertTokenListener> insertTokenListeners;
 
@@ -62,20 +66,20 @@ public class ComponentInsertValue extends CustomComponent {
 		insertValueLayout.setHeight(EXPAND);
 		insertValueLayout.setSpacing(true);
 
-		dateFormatType = new ComboBox();
-		dateFormatType.setWidth(FULL);
-		dateFormatType.setTextInputAllowed(false);
+		datePeriodUnit = new ComboBox();
+		datePeriodUnit.setWidth(FULL);
+		datePeriodUnit.setTextInputAllowed(false);
 		// Test
-		dateFormatType.setNullSelectionAllowed(true);
-		dateFormatType.addItem("null");
-		dateFormatType.setItemCaption("null", LanguageCodes.CAPTION_DATE_PERIOD_NULL.translation());
-		dateFormatType.setNullSelectionItemId("null");
+		datePeriodUnit.setNullSelectionAllowed(true);
+		datePeriodUnit.addItem("null");
+		datePeriodUnit.setItemCaption("null", LanguageCodes.CAPTION_DATE_PERIOD_NULL.translation());
+		datePeriodUnit.setNullSelectionItemId("null");
 		//
 		for (DatePeriodUnitUi dateType : DatePeriodUnitUi.values()) {
-			dateFormatType.addItem(dateType.getDatePeriodUnit());
-			dateFormatType.setItemCaption(dateType.getDatePeriodUnit(), dateType.getTranslation());
+			datePeriodUnit.addItem(dateType.getDatePeriodUnit());
+			datePeriodUnit.setItemCaption(dateType.getDatePeriodUnit(), dateType.getTranslation());
 		}
-		dateFormatType.addValueChangeListener(new ValueChangeListener() {
+		datePeriodUnit.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -333682134124174959L;
 
 			@Override
@@ -103,12 +107,13 @@ public class ComponentInsertValue extends CustomComponent {
 		insertGtValue = createTokenComparationValueButton(TokenTypes.GE.toString(), TokenTypes.GE);
 		insertLeValue = createTokenComparationValueButton(TokenTypes.LT.toString(), TokenTypes.LT);
 		insertGeValue = createTokenComparationValueButton(TokenTypes.GT.toString(), TokenTypes.GT);
+		insertBetweenButton = createBetweenButton();
 
 		GridLayout buttonLayout = new GridLayout(VALUE_BUTTON_COLS, VALUE_BUTTON_ROWS, insertEqValue, insertLeValue,
-				insertLtValue, insertNeValue, insertGeValue, insertGtValue);
+				insertLtValue, insertBetweenButton, insertNeValue, insertGeValue, insertGtValue);
 		buttonLayout.setWidth(FULL);
 
-		insertValueLayout.addComponent(dateFormatType);
+		insertValueLayout.addComponent(datePeriodUnit);
 		insertValueLayout.addComponent(value);
 		insertValueLayout.addComponent(buttonLayout);
 
@@ -127,20 +132,20 @@ public class ComponentInsertValue extends CustomComponent {
 		value.removeAllValidators();
 		value.setValue("");
 
-		insertValueLayout.removeComponent(dateFormatType);
+		insertValueLayout.removeComponent(datePeriodUnit);
 		if (question.getAnswerFormat() == AnswerFormat.DATE) {
-			insertValueLayout.addComponentAsFirst(dateFormatType);
+			insertValueLayout.addComponentAsFirst(datePeriodUnit);
 			if (question.getAnswerSubformat() == AnswerSubformat.DATE_PERIOD) {
-				dateFormatType.setNullSelectionAllowed(false);
-				dateFormatType.setValue(DATE_FORMAT_DEFAULT_DATE_PERIOD);
+				datePeriodUnit.setNullSelectionAllowed(false);
+				datePeriodUnit.setValue(DATE_FORMAT_DEFAULT_DATE_PERIOD);
 			} else {
-				dateFormatType.setNullSelectionAllowed(true);
-				dateFormatType.setValue(null);
+				datePeriodUnit.setNullSelectionAllowed(true);
+				datePeriodUnit.setValue(null);
 			}
 			updateDateValidatorAndInputPrompt();
 		} else {
-			dateFormatType.setNullSelectionAllowed(true);
-			dateFormatType.setValue(null);
+			datePeriodUnit.setNullSelectionAllowed(true);
+			datePeriodUnit.setValue(null);
 			value.setInputPrompt(question.getAnswerSubformat().getHint());
 			value.addValidator(new ValidatorPattern(question.getAnswerSubformat().getRegex()));
 		}
@@ -151,6 +156,7 @@ public class ComponentInsertValue extends CustomComponent {
 		insertGeValue.setEnabled(question.getAnswerFormat().isValidTokenType(TokenTypes.GE));
 		insertLtValue.setEnabled(question.getAnswerFormat().isValidTokenType(TokenTypes.LT));
 		insertGtValue.setEnabled(question.getAnswerFormat().isValidTokenType(TokenTypes.GT));
+		insertBetweenButton.setEnabled(question.getAnswerFormat().isValidTokenType(TokenTypes.BETWEEN));
 	}
 
 	public Question getCurrentQuestion() {
@@ -166,10 +172,10 @@ public class ComponentInsertValue extends CustomComponent {
 	}
 
 	private DatePeriodUnit getDatePeriodUnit() {
-		if (dateFormatType.getValue() == null) {
+		if (datePeriodUnit.getValue() == null) {
 			return null;
 		} else {
-			return (DatePeriodUnit) dateFormatType.getValue();
+			return (DatePeriodUnit) datePeriodUnit.getValue();
 		}
 	}
 
@@ -185,7 +191,7 @@ public class ComponentInsertValue extends CustomComponent {
 		value.removeAllValidators();
 
 		if (currentQuestion != null && currentQuestion.getAnswerSubformat() != null) {
-			if (dateFormatType.getValue() == null) {
+			if (datePeriodUnit.getValue() == null) {
 				value.setInputPrompt(currentQuestion.getAnswerSubformat().getHint());
 				value.addValidator(new ValidatorPattern(currentQuestion.getAnswerSubformat().getRegex()));
 			} else {
@@ -214,6 +220,40 @@ public class ComponentInsertValue extends CustomComponent {
 
 		});
 		return button;
+	}
+
+	private Button createBetweenButton() {
+		Button button = new Button(TokenTypes.BETWEEN.toString());
+		button.setWidth(FULL);
+		button.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 8499457213878436486L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				openWindowTokenBetween();
+			}
+		});
+		return button;
+	}
+
+	protected void openWindowTokenBetween() {
+		WindowTokenBetween window = new WindowTokenBetween();
+		window.setQuestion(currentQuestion, (DatePeriodUnit) datePeriodUnit.getValue(), value.getValue());
+		window.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				WindowTokenBetween between = (WindowTokenBetween) window;
+				if (((WindowTokenBetween) window).isDataValid()) {
+					fireInsertTokenListeners(TokenBetween.getBetween(between.getQuestion(),
+							between.getDatePeriodUnit(), between.getValueStart(), between.getValueEnd()));
+					window.close();
+				} else {
+					MessageManager.showError(LanguageCodes.ERROR_MESSAGE_FIELDS_ARE_NOT_FILLED_CORRECTLY);
+				}
+			}
+		});
+		window.showCentered();
 	}
 
 	public boolean isValid() {

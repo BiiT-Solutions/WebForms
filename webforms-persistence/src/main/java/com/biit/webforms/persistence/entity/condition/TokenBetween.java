@@ -19,6 +19,7 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.TokenTypes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 
@@ -50,16 +51,6 @@ public class TokenBetween extends TokenComplex {
 		simpleTokens.add(TokenComparationValue.getTokenLessEqual(question, subformat, datePeriodUnit, valueEnd));
 		simpleTokens.add(Token.rigthPar());
 		return simpleTokens;
-	}
-
-	public void setContent(Question reference, AnswerSubformat subformat, DatePeriodUnit datePeriodUnit,
-			String valueStart, String valueEnd) throws NotValidTokenType {
-		this.setType(TokenTypes.BETWEEN);
-		this.question = reference;
-		this.subformat = subformat;
-		this.datePeriodUnit = datePeriodUnit;
-		this.valueStart = valueStart;
-		this.valueEnd = valueEnd;
 	}
 
 	public Question getQuestion() {
@@ -101,7 +92,7 @@ public class TokenBetween extends TokenComplex {
 	public void setValueEnd(String valueEnd) {
 		this.valueEnd = valueEnd;
 	}
-	
+
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof TokenBetween) {
@@ -117,9 +108,54 @@ public class TokenBetween extends TokenComplex {
 					+ TokenComparationAnswer.class.getName());
 		}
 	}
-	
+
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		question = (Question) mappedElements.get(question.getComparationId());
+	}
+
+	@Override
+	public String toString() {
+		String referenceString = null;
+		if (question != null) {
+			referenceString = question.getName();
+			if (subformat == AnswerSubformat.DATE_PERIOD) {
+				referenceString += "(" + datePeriodUnit + ")";
+			}
+		}
+		String answerStart = null;
+		if (valueStart != null) {
+			answerStart = valueStart;
+		}
+		String answerEnd = null;
+		if (valueEnd != null) {
+			answerEnd = valueEnd;
+		}
+
+		return referenceString + " " + getType() + " (" + answerStart + "," + answerEnd + ")";
+	}
+
+	public static Token getBetween(Question question, DatePeriodUnit datePeriodUnit, String valueStart, String valueEnd) {
+		try {
+			TokenBetween token = new TokenBetween();
+			token.setType(TokenTypes.BETWEEN);
+			token.question = question;
+			token.setContent(datePeriodUnit,valueStart,valueEnd);
+			return token;
+		} catch (NotValidTokenType e) {
+			WebformsLogger.errorMessage(TokenComparationValue.class.getName(), e);
+			return null;
+		}
+	}
+	
+	public void setContent(DatePeriodUnit datePeriodUnit, String valueStart, String valueEnd){
+		if(datePeriodUnit == null){
+			subformat = question.getAnswerSubformat();
+		}else{
+			subformat = AnswerSubformat.DATE_PERIOD;
+		}
+		this.datePeriodUnit = datePeriodUnit;
+		this.valueStart = valueStart;
+		this.valueEnd = valueEnd;
 	}
 }

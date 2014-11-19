@@ -3,8 +3,10 @@ package com.biit.webforms.condition.parser;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import com.biit.webforms.condition.parser.parselets.BetweenParselet;
 import com.biit.webforms.condition.parser.parselets.BinaryOperationParselet;
 import com.biit.webforms.condition.parser.parselets.ComparationClusterParselet;
+import com.biit.webforms.condition.parser.parselets.InParselet;
 import com.biit.webforms.condition.parser.parselets.ParenthesisParselet;
 import com.biit.webforms.condition.parser.parselets.PrefixOperatorParselet;
 import com.biit.webforms.enumerations.TokenTypes;
@@ -14,10 +16,10 @@ import com.biit.webforms.utils.parser.Parser;
 public class WebformsParser extends Parser {
 
 	public WebformsParser(Token token) {
-		super(Arrays.asList(new Token[]{token}).iterator());
+		super(Arrays.asList(new Token[] { token }).iterator());
 		configure();
 	}
-	
+
 	public WebformsParser(Iterator<Token> tokens) {
 		super(tokens);
 		configure();
@@ -34,6 +36,8 @@ public class WebformsParser extends Parser {
 		register(TokenTypes.LT, new ComparationClusterParselet());
 		register(TokenTypes.EQ, new ComparationClusterParselet());
 		register(TokenTypes.NE, new ComparationClusterParselet());
+		register(TokenTypes.IN, new InParselet());
+		register(TokenTypes.BETWEEN, new BetweenParselet());
 		// Grouping
 		register(TokenTypes.LEFT_PAR, new ParenthesisParselet());
 
