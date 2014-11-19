@@ -29,6 +29,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenComplex;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
@@ -267,6 +268,25 @@ public class Flow extends StorableObject {
 		} else {
 			return condition;
 		}
+	}
+	
+	/**
+	 * Method to obtain simple version of the tokens. This has to be used by orbeon.
+	 * @return
+	 */
+	public List<Token> getConditionSimpleTokens(){
+		List<Token> allTokens = getCondition();
+		List<Token> simplifiedTokens = new ArrayList<Token>();
+		
+		for(Token token: allTokens){
+			if(token instanceof TokenComplex){
+				simplifiedTokens.addAll(((TokenComplex) token).getSimpleTokens());
+			}else{
+				simplifiedTokens.add(token);
+			}
+		}
+		
+		return simplifiedTokens;
 	}
 
 	protected void setCondition(List<Token> condition) {
