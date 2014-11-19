@@ -3,6 +3,7 @@ package com.biit.webforms.gui.webpages.floweditor;
 import java.util.List;
 
 import com.biit.form.TreeObject;
+import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.gui.common.components.StatusLabel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -16,6 +17,13 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
+import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
+import com.biit.webforms.utils.parser.exceptions.ExpectedTokenNotFound;
+import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
+import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
+import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
+import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
+import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
@@ -255,5 +263,21 @@ public class ConditionEditor extends CustomComponent {
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
 		controls.setEnabled(enabled);
+	}
+	
+	/**
+	 * TODO check tomorrow.
+	 * @return
+	 */
+	protected boolean isConditionValid() {
+		// Translation
+		try {
+			WebformsParser parser = new WebformsParser(getTokens().iterator());
+			parser.parseCompleteExpression();
+			return true;
+		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException | IncompleteBinaryOperatorException
+				| MissingParenthesisException | ExpressionNotWellFormedException | EmptyParenthesisException e) {
+			return false;
+		}
 	}
 }
