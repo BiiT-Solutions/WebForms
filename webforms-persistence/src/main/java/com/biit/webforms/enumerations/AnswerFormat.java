@@ -19,7 +19,7 @@ public enum AnswerFormat {
 			TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE }),
 
 	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, new AnswerSubformat[] { AnswerSubformat.POSTAL_CODE }, new TokenTypes[] {
-			TokenTypes.EQ, TokenTypes.NE })
+			TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE })
 
 	;
 
