@@ -12,14 +12,14 @@ public enum AnswerFormat {
 
 	NUMBER(AnswerSubformat.NUMBER,
 			new AnswerSubformat[] { AnswerSubformat.NUMBER, AnswerSubformat.FLOAT },
-			new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE }),
+			new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN, TokenTypes.IN }),
 
 	DATE(AnswerSubformat.DATE, new AnswerSubformat[] { AnswerSubformat.DATE, AnswerSubformat.DATE_PAST,
 			AnswerSubformat.DATE_FUTURE, AnswerSubformat.DATE_PERIOD, AnswerSubformat.DATE_BIRTHDAY }, new TokenTypes[] { TokenTypes.EQ,
-			TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE }),
+			TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN, TokenTypes.IN }),
 
 	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, new AnswerSubformat[] { AnswerSubformat.POSTAL_CODE }, new TokenTypes[] {
-			TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE })
+			TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN, TokenTypes.IN })
 
 	;
 

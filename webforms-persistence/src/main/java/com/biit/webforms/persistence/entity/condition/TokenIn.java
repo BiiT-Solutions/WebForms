@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity.condition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -17,11 +18,13 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.BatchSize;
 
+import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.DatePeriodUnit;
+import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Question;
 
 @Entity
@@ -82,6 +85,16 @@ public class TokenIn extends TokenComplex {
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
 					+ TokenComparationAnswer.class.getName());
+		}
+	}
+	
+	@Override
+	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
+		question = (Question) mappedElements.get(question.getComparationId());
+		for(TokenInValue value: values){
+			if(value.getAnswerValue()!=null){
+				value.setAnswerValue((Answer) mappedElements.get(value.getAnswerValue()));
+			}
 		}
 	}
 }

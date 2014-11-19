@@ -33,6 +33,8 @@ public enum TokenTypes implements ITokenType {
 	NE("!=", 1, "!=", "!=", "!="),
 
 	BETWEEN("BETWEEN|between", 1, "BETWEEN", "between", "between"),
+	
+	IN("IN|in", 1, "IN", "in", "in"),
 
 	;
 

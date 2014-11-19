@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity.condition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -114,5 +116,10 @@ public class TokenBetween extends TokenComplex {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
 					+ TokenComparationAnswer.class.getName());
 		}
+	}
+	
+	@Override
+	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
+		question = (Question) mappedElements.get(question.getComparationId());
 	}
 }
