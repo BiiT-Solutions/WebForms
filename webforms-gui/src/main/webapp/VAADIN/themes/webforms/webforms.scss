@@ -850,6 +850,38 @@ $open-sans-pathPrefix: "./fonts/";
 		background-image: linear-gradient(45deg, #ccc 0%, #ccc 25%, #bbb 25%, #bbb 50%, #ccc 50%, #ccc 75%, #bbb 75%);
 		background-size: 20px 20px;
 	}
+	
+	/* Valid and Invalid method */
+	.v-label.expression-valid{
+		background-color:#77b55a;
+		border-top-left-radius:0px;
+		border-top-right-radius:0px;
+		border-bottom-right-radius:0px;
+		border-bottom-left-radius:0px;
+		border:2px solid #4b8f29;
+		display:inline-block;
+		cursor:pointer;
+		color:#ffffff;
+		font-weight:bold;
+		padding:10px 20px;
+		text-decoration:none;
+	}
+
+	
+	.v-label.expression-invalid{
+		background-color:#d0451b;
+		border-top-left-radius:0px;
+		border-top-right-radius:0px;
+		border-bottom-right-radius:0px;
+		border-bottom-left-radius:0px;
+		border:2px solid #942911;
+		display:inline-block;
+		cursor:pointer;
+		color:#ffffff;
+		font-weight:bold;
+		padding:10px 20px;
+		text-decoration:none;
+	}
 
 	/* Label box */
 	.v-label-box {
