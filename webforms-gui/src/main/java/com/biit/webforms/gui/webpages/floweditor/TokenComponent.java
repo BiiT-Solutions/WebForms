@@ -21,6 +21,7 @@ public class TokenComponent extends CustomComponent {
 	private static final String CLASSNAME = "token-component";
 	private static final String CLASSNAME_LAYOUT = "token-component-layout";
 	private static final String TOKEN_HEIGHT = "23px";
+	private CssLayout rootLayout;
 
 	private Token token;
 	private Label label;
@@ -43,7 +44,7 @@ public class TokenComponent extends CustomComponent {
 	}
 
 	private Component generate() {
-		CssLayout rootLayout = new CssLayout();
+		rootLayout = new CssLayout();
 		rootLayout.setStyleName(CLASSNAME_LAYOUT);
 		rootLayout.setHeight(TOKEN_HEIGHT);
 		rootLayout.setWidth(null);
@@ -75,11 +76,13 @@ public class TokenComponent extends CustomComponent {
 
 	public void loseFocus() {
 		removeStyleName(FOCUSED);
+		rootLayout.removeStyleName(FOCUSED);
 	}
 
 	@Override
 	public void focus() {
 		addStyleName(FOCUSED);
+		rootLayout.addStyleName(FOCUSED);
 	}
 
 	public void addTokenSingleClick(TokenSingleClickListener listener) {

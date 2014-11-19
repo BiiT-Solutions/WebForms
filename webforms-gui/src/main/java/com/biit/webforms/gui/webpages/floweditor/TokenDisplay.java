@@ -12,6 +12,7 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
 public class TokenDisplay extends CustomComponent {
@@ -85,8 +86,8 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	/**
-	 * Adds a TokenComponent to the end of a specific line or after the current
-	 * selected element or adds the element as the last selected element.
+	 * Adds a TokenComponent to the end of a specific line or after the current selected element or adds the element as
+	 * the last selected element.
 	 * 
 	 * @param token
 	 * @param line
@@ -107,8 +108,7 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	/**
-	 * Gets currently selected line for work. If a component is selected returns
-	 * its line, else returns the last line.
+	 * Gets currently selected line for work. If a component is selected returns its line, else returns the last line.
 	 * 
 	 * @return
 	 */
@@ -130,6 +130,27 @@ public class TokenDisplay extends CustomComponent {
 		focusedComponent = token;
 		if (focusedComponent != null) {
 			focusedComponent.focus();
+		}
+		updateExpressionSelectionStyles();
+	}
+
+	/**
+	 * The selected expression is white.
+	 */
+	protected void updateExpressionSelectionStyles() {
+		for (int i = 0; i < rootLayout.getComponentCount(); i++) {
+			if (rootLayout.getComponent(i) instanceof HorizontalLayout) {
+				HorizontalLayout lineLayout = (HorizontalLayout) rootLayout.getComponent(i);
+				for (int j = 0; j < lineLayout.getComponentCount(); j++) {
+					if (lineLayout.getComponent(j) instanceof TokenComponent) {
+						if (lineLayout.getComponent(j).equals(focusedComponent)) {
+							((TokenComponent) lineLayout.getComponent(j)).focus();
+						} else {
+							((TokenComponent) lineLayout.getComponent(j)).loseFocus();
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -182,10 +203,9 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	/**
-	 * Get element in current position + numPosition if there are no tokens
-	 * returns null. If no token is selected it gets the first element or the
-	 * last depending on the numPosition defined. Else we get the sum of
-	 * currentPosition + numPosition and do the module to get the new position.
+	 * Get element in current position + numPosition if there are no tokens returns null. If no token is selected it
+	 * gets the first element or the last depending on the numPosition defined. Else we get the sum of currentPosition +
+	 * numPosition and do the module to get the new position.
 	 * 
 	 * @param position
 	 */
@@ -211,7 +231,7 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	private TokenComponent getFirstToken() {
-		if(rootLayout.getComponentCount()==0){
+		if (rootLayout.getComponentCount() == 0) {
 			return null;
 		}
 		return ((LineDisplay) rootLayout.getComponent(0)).getFirstToken();
@@ -234,11 +254,11 @@ public class TokenDisplay extends CustomComponent {
 		}
 		return tokens;
 	}
-	
-	List<TokenComponent> getTokenComponents(){
+
+	List<TokenComponent> getTokenComponents() {
 		List<TokenComponent> tokens = new ArrayList<TokenComponent>();
 		Iterator<Component> itr = rootLayout.iterator();
-		while(itr.hasNext()){
+		while (itr.hasNext()) {
 			LineDisplay line = (LineDisplay) itr.next();
 			tokens.addAll(line.getTokens());
 		}
@@ -254,11 +274,11 @@ public class TokenDisplay extends CustomComponent {
 		}
 
 		List<TokenComponent> tokens = getCurrentLine().getTokensAfter(focusedComponent);
-		//Remove tokens at the right side of the current selected element. Add them to the new line.
+		// Remove tokens at the right side of the current selected element. Add them to the new line.
 		getCurrentLine().removeTokens(tokens);
 		newLine.addTokens(tokens);
-		
-		int insertIndex = rootLayout.getComponentIndex(getCurrentLine())+1;
+
+		int insertIndex = rootLayout.getComponentIndex(getCurrentLine()) + 1;
 		if (insertIndex == rootLayout.getComponentCount()) {
 			rootLayout.addComponent(newLine);
 		} else {
