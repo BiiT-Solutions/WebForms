@@ -438,10 +438,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 		// Simplify the visibility expression
 		List<Token> simplifiedVisibility;
 		if (WebformsConfigurationReader.getInstance().isBooleanSimplificationEnabled()) {
-			System.out.println("Real: "+visibilityAsToken);
 			BooleanExpressionSimplifier simplifier = new BooleanExpressionSimplifier(visibilityAsToken);
 			simplifiedVisibility = simplifier.getSimplified();
-			System.out.println("Simplified: "+simplifiedVisibility);
 		} else {
 			simplifiedVisibility = visibilityAsToken;
 		}

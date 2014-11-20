@@ -41,8 +41,6 @@ public class BooleanExpressionSimplifier {
 		Expression<String> parsedExpression = ExprParser.parse(expressionAsString);
 		Expression<String> simplified = RuleSet.simplify(parsedExpression);
 
-		System.out.println("Result: " + simplified);
-
 		// True is the same that empty list.
 		if (simplified.toString().equals("true")) {
 			return new ArrayList<Token>();

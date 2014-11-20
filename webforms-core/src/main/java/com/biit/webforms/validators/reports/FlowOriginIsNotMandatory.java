@@ -7,7 +7,8 @@ import com.biit.webforms.persistence.entity.Flow;
 public class FlowOriginIsNotMandatory extends Report {
 
 	public FlowOriginIsNotMandatory(Flow flow) {
-		super(ReportLevel.ERROR, "Flow '" + flow + "' origin is not mandatory.");
+		super(ReportLevel.ERROR, "Flow '" + flow + "' origin '" + flow.getOrigin().getPathName()
+				+ "' is not mandatory.");
 	}
 
 }

@@ -5,7 +5,7 @@ import com.biit.webforms.persistence.entity.Form;
 
 /**
  * Validates all the conditions for the form flow.
- *
+ * 
  */
 public class ValidateFormFlows extends SimpleValidator<Form> {
 
@@ -15,13 +15,13 @@ public class ValidateFormFlows extends SimpleValidator<Form> {
 
 	@Override
 	protected void validateImplementation(Form form) {
-		
+
 		ValidateFlow validateFlow = new ValidateFlow();
-		if(!validateFlow.validate(form.getFlows(), getReport()) && isStopOnFail()){
+		if (!validateFlow.validate(form.getFlows(), getReport()) && isStopOnFail()) {
 			return;
 		}
 		OthersUnicityValidator othersUnicityValidator = new OthersUnicityValidator();
-		othersUnicityValidator.validate(form,getReport());		
+		othersUnicityValidator.validate(form, getReport());
 	}
 
 }

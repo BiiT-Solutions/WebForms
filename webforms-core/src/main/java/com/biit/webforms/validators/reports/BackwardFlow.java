@@ -9,7 +9,8 @@ public class BackwardFlow extends Report {
 	private final Flow flow;
 
 	public BackwardFlow(Flow flow) {
-		super(ReportLevel.ERROR, "Backward flow '" + flow + "'");
+		super(ReportLevel.ERROR, "Backward flow '" + flow + "' from '" + flow.getOrigin().getPathName() + "' to '"
+				+ flow.getDestiny().getPathName() + "'.");
 		this.flow = flow;
 	}
 

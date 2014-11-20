@@ -15,8 +15,8 @@ public class NoFlowBackwardValidator extends SimpleValidator<Flow> {
 	protected void validateImplementation(Flow flow) {
 		TreeObject origin = flow.getOrigin();
 		TreeObject destiny = flow.getDestiny();
-		if(origin!=null && destiny!=null){
-			assertTrue(origin.compareTo(destiny)<0,new BackwardFlow(flow));
+		if (origin != null && destiny != null) {
+			assertTrue(origin.compareTo(destiny) < 0, new BackwardFlow(flow));
 		}
 	}
 }

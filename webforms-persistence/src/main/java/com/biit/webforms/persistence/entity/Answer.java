@@ -18,11 +18,10 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.FlowConditionScript;
 
 /**
- * Answer is a class that contains the information of a defined and possible
- * answer to a multiple choice question.
+ * Answer is a class that contains the information of a defined and possible answer to a multiple choice question.
  * 
- * -Has the next properties: name (value for client purposes, the method get/set
- * name and value affect the same parameter)
+ * -Has the next properties: name (value for client purposes, the method get/set name and value affect the same
+ * parameter)
  * 
  * -label
  * 
@@ -56,7 +55,7 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 	protected List<Class<? extends TreeObject>> getAllowedChildren() {
 		return ALLOWED_CHILDREN;
 	}
-	
+
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof Answer) {
@@ -101,14 +100,13 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 	public String getScriptRepresentation() {
 		return getScriptValueRepresentation(getName());
 	}
-	
-	public static String getScriptValueRepresentation(String value){
+
+	public static String getScriptValueRepresentation(String value) {
 		return "'" + value + "'";
 	}
 
 	/**
-	 * Checks if this answer is a subanswer by looking if it has a parent and if
-	 * it has if is an answer.
+	 * Checks if this answer is a subanswer by looking if it has a parent and if it has if is an answer.
 	 * 
 	 * @return
 	 */
@@ -120,23 +118,24 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 	}
 
 	public String getPathAnswerValue() {
-		if(getParent() == null || !(getParent() instanceof Answer)){
+		if (getParent() == null || !(getParent() instanceof Answer)) {
 			return getValue();
-		}else{
-			return getParent().getPathName()+TreeObject.DEFAULT_PATH_SEPARATOR+getValue();
+		} else {
+			return getParent().getPathName() + TreeObject.DEFAULT_PATH_SEPARATOR + getValue();
 		}
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return getValue();
 	}
-	
+
 	/**
 	 * A final answer is an answer that doesn't contain childs
+	 * 
 	 * @return
 	 */
-	public boolean isFinalAnswer(){
+	public boolean isFinalAnswer() {
 		return getChildren().isEmpty();
 	}
 }

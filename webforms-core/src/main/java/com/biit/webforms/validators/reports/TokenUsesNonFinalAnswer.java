@@ -21,7 +21,7 @@ public class TokenUsesNonFinalAnswer extends Report {
 		sb.append("Flow: ");
 		sb.append(flow);
 		sb.append(" has a reference to '");
-		sb.append(token.getAnswer());
+		sb.append(token.getAnswer().getPathAnswerValue());
 		sb.append("' which is not a final answer.");
 		return sb.toString();
 	}
