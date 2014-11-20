@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
@@ -423,58 +421,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Translate between [string1, string2] to $question >= string1 and $question <= string2;
-	 * 
-	 * @param rule
-	 * @return
-	 * @throws StringRuleSyntaxError
-	 */
-	private String translateRangePostCode(TokenComparationValue token) throws PostCodeRuleSyntaxError {
-		// Delete range token.
-		String instruction = token.getValue();
-
-		int comma = instruction.indexOf(",");
-		if (comma < 0) {
-			throw new PostCodeRuleSyntaxError("Postcode interval syntax error in rule '" + token.toString()
-					+ "'. Please use correct syntax i.e. '" + RANGE_TOKEN + " ['0000aa', '9999zz']'.");
-		}
-
-		Pattern pattern = Pattern.compile("'([0-9]{4}[a-zA-Z]{2})'");
-		Matcher matcher = pattern.matcher(instruction);
-
-		if (!matcher.find()) {
-			throw new PostCodeRuleSyntaxError(
-					"Rule '"
-							+ token.toString()
-							+ "' isn't correctly defined. Please, check the post code format and that it is defined between quotes.");
-		}
-
-		String firstInterval = "";
-		String secondInterval = "";
-		try {
-			firstInterval = matcher.group(1);
-			matcher.find();
-			secondInterval = matcher.group(1);
-			if (firstInterval.length() == 0 || secondInterval.length() == 0) {
-				throw new StringRuleSyntaxError(
-						"Rule '"
-								+ token.toString()
-								+ "' isn't correctly defined. Please, check the post code format and that it is defined between quotes.");
-			}
-		} catch (Exception e) {
-			throw new PostCodeRuleSyntaxError(
-					"Rule '"
-							+ token.toString()
-							+ "' isn't correctly defined. Please, check the post code format and that it is defined between quotes.");
-		}
-
-		return " $" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + " &gt;= '"
-				+ firstInterval + "' and " + "$"
-				+ getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + " &lt;= '" + secondInterval
-				+ "' ";
-	}
-
-	/**
 	 * Obtains the relevant rule calculation obtained from a set of flows.
 	 * 
 	 * @param flows
@@ -492,8 +438,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 		// Simplify the visibility expression
 		List<Token> simplifiedVisibility;
 		if (WebformsConfigurationReader.getInstance().isBooleanSimplificationEnabled()) {
+			System.out.println("Real: "+visibilityAsToken);
 			BooleanExpressionSimplifier simplifier = new BooleanExpressionSimplifier(visibilityAsToken);
 			simplifiedVisibility = simplifier.getSimplified();
+			System.out.println("Simplified: "+simplifiedVisibility);
 		} else {
 			simplifiedVisibility = visibilityAsToken;
 		}
@@ -534,12 +482,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// Add previous visibility.
 			List<Token> previousVisibility = new ArrayList<>();
 			previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(flow.getOrigin());
-			if (!flow.getCondition().isEmpty() && previousVisibility != null && previousVisibility.size() > 1) {
+			if (!flow.getConditionSimpleTokens().isEmpty() && previousVisibility != null
+					&& !previousVisibility.isEmpty()) {
 				previousVisibility.add(0, Token.leftPar());
 				previousVisibility.add(Token.rigthPar());
 			}
 
-			List<Token> flowvisibility = flow.getCondition();
+			List<Token> flowvisibility = flow.getConditionSimpleTokens();
 
 			if (flow.isOthers()) {
 				// Dates does not need this extra instruction (string-length($date)>0 is always false).

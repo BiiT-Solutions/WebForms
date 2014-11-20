@@ -99,7 +99,7 @@ public class TokenComparationValue extends Token {
 	}
 
 	public static TokenComparationValue getTokenGreaterEqual(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
-		return getToken(TokenTypes.LE, reference, subformat, datePeriodUnit, value);
+		return getToken(TokenTypes.GE, reference, subformat, datePeriodUnit, value);
 	}
 
 	@Override

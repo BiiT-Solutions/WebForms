@@ -77,12 +77,21 @@ public class BooleanExpressionTest {
 		Assert.assertEquals("true", simplified.toString());
 	}
 
-//	@Test
-//	public void ruleWithOrbeonNames2() {
-//		Expression<String> parsedExpression = ExprParser.parse("((B|C) & !(A)) | ((B|C) & A)");
-//		Expression<String> simplified = RuleSet.simplify(parsedExpression);
-//		System.out.println(simplified);
-//		Assert.assertEquals("true", simplified.toString());
-//		
-//	}
+	@Test
+	public void testNotValues() {
+		Expression<String> parsedExpression = ExprParser.parse("! ( ( A & B ) )");
+		Expression<String> simplified = RuleSet.simplify(parsedExpression);
+		Assert.assertEquals("!(A & B)", simplified.toString());
+	}
+	
+	@Test
+	public void testLongNotValues() {
+		Expression<String> parsedExpression = ExprParser.parse("(( ( ( A & B ) ) ) | ( ! ( ( A & B ) ) & C ))");
+		Expression<String> simplified = RuleSet.simplify(parsedExpression);
+		Assert.assertEquals("((!(A & B) & C) | (A & B))", simplified.toString());
+	}
+	
+	
+	
+	
 }
