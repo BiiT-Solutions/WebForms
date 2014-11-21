@@ -275,9 +275,10 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 	@Override
 	protected String getHint() {
-		if (((Question) getSource()).getDescription() != null && ((Question) getSource()).getDescription().length() > 0) {
-			return "<hint><![CDATA[" + ((Question) getSource()).getDescription() + "]]></hint>";
-		}
+		// if (((Question) getSource()).getDescription() != null && ((Question) getSource()).getDescription().length() >
+		// 0) {
+		// return "<hint><![CDATA[" + ((Question) getSource()).getDescription() + "]]></hint>";
+		// }
 		return "<hint/>";
 	}
 
@@ -316,7 +317,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	@Override
 	protected String getCalculateStructure(String flow) {
 		String parsedFlow = flow.replace("$", "../$");
-		//Calculate set readonly as true by default.
+		// Calculate set readonly as true by default.
 		return " calculate=\"if(" + parsedFlow + ") then . else ''\" readonly=\"false\"";
 	}
 

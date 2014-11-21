@@ -533,7 +533,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Includes previous question visibility.
+	 * Obtain all flows of an element as tokens.
 	 * 
 	 * @param flows
 	 * @return
@@ -564,6 +564,30 @@ public abstract class XFormsObject<T extends TreeObject> {
 					}
 
 					flowvisibility.addAll(previousVisibility);
+				}
+			} else {
+				// Some rules must pass through a specific question despite condition is from previous question. We can
+				// detect if origin of the flow is not in the condition.
+				boolean originUsedInCondition = false;
+				for (Token token : flowvisibility) {
+					if (token instanceof TokenComparationValue) {
+						if (((TokenComparationValue) token).getQuestion().equals(flow.getOrigin())) {
+							originUsedInCondition = true;
+						}
+					} else if (token instanceof TokenComparationAnswer) {
+						if (((TokenComparationAnswer) token).getQuestion().equals(flow.getOrigin())) {
+							originUsedInCondition = true;
+						}
+					}
+				}
+				// If is not used in condition, add as needed.
+				if (!originUsedInCondition) {
+					if (!flowvisibility.isEmpty()) {
+						flowvisibility.add(Token.and());
+					}
+					flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin(), ((Question) flow.getOrigin())
+							.getAnswerFormat() != null
+							&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 				}
 			}
 
