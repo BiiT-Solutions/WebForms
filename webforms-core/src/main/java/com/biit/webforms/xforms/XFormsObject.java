@@ -208,11 +208,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @param flow
 	 * @return
 	 */
-	private String getCalculateStructure(String flow) {
-		return "";
-		// String parsedFlow = flow.replace("$", "../$");
-		// return " calculate=\" if(" + parsedFlow + ") then . else ''\"";
-	}
+	protected abstract String getCalculateStructure(String flow);
 
 	/**
 	 * Gets the visibility of an element depending on the flow rules.
@@ -551,31 +547,24 @@ public abstract class XFormsObject<T extends TreeObject> {
 		List<Token> visibility = new ArrayList<>();
 
 		for (Flow flow : flows) {
-
 			List<Token> flowvisibility = flow.getConditionSimpleTokens();
 
-			if (flow.getOrigin() instanceof Question) {
-				// Dates does not need this extra instruction (string-length($date)>0 is always false).
-				Question prevQuestion = getXFormsHelper().getPreviousFlowQuestion((BaseQuestion) flow.getOrigin());
-				if (prevQuestion != null) {
-					if (flow.getCondition().isEmpty() || flow.isOthers()) {
-						if (!flowvisibility.isEmpty()) {
-							flowvisibility.add(Token.and());
+			// If condition is empty, inherit the relevance of the previous element. Others also has empty condition.
+			if (flow.getCondition().isEmpty()) {
+				Set<BaseQuestion> prevQuestions = getXFormsHelper().getPreviousForkTokens((BaseQuestion) flow.getDestiny());
+				if (!prevQuestions.isEmpty()) {
+					Iterator<BaseQuestion> iterator = prevQuestions.iterator();
+					while (iterator.hasNext()) {
+						BaseQuestion prevQuestion = iterator.next();
+						if (prevQuestion instanceof Question) {
+							Question question = (Question) prevQuestion;
+							//Add 'AND'.
+							if (!flowvisibility.isEmpty()) {
+								flowvisibility.add(Token.and());
+							}
+							flowvisibility.add(new TokenAnswerNeeded(question, question.getAnswerFormat() != null
+									&& question.getAnswerFormat().equals(AnswerFormat.DATE)));
 						}
-						flowvisibility.add(new TokenAnswerNeeded(prevQuestion, prevQuestion.getAnswerFormat() != null
-								&& prevQuestion.getAnswerFormat().equals(AnswerFormat.DATE)));
-					}
-				}
-			} else {
-				if (flow.getCondition().isEmpty() || flow.isOthers()) {
-					// if origin is a InfoText, uses visibility of previous question.
-					Question prevQuestion = getXFormsHelper().getPreviousFlowQuestion((BaseQuestion) flow.getOrigin());
-					if (prevQuestion != null) {
-						if (!flowvisibility.isEmpty()) {
-							flowvisibility.add(Token.and());
-						}
-						flowvisibility.add(new TokenAnswerNeeded(prevQuestion, prevQuestion.getAnswerFormat() != null
-								&& prevQuestion.getAnswerFormat().equals(AnswerFormat.DATE)));
 					}
 				}
 			}

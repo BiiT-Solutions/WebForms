@@ -98,4 +98,9 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 		}
 		return flowsToGroup;
 	}
+
+	@Override
+	protected String getCalculateStructure(String flow) {
+		return "";
+	}
 }

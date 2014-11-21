@@ -11,7 +11,6 @@ import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
 
 /**
@@ -114,31 +113,35 @@ class XFormsHelper {
 	}
 
 	/**
-	 * Return the previous question of a flow that is not an infotext. Only valid when using default flows.
+	 * Return the last fork that is critical for the flow to achieve this element. If this element is a fork, returns
+	 * it.
 	 * 
 	 * @param treeObject
 	 * @return
 	 */
-	public Question getPreviousFlowQuestion(BaseQuestion treeObject) {
+	public Set<BaseQuestion> getPreviousForkTokens(BaseQuestion treeObject) {
+		Set<BaseQuestion> tokens = new HashSet<>();
 		if (treeObject != null) {
-			Set<Flow> flows = flowsByDestiny.get(treeObject);
-			// Only valid in default flows.
-			if (flows == null || flows.size() != 1) {
-				return null;
+			Set<Flow> flowsFromElement = flowsByOrigin.get(treeObject);
+			// This element is a fork
+			if (flowsFromElement != null && flowsFromElement.size() > 1) {
+				tokens.add(treeObject);
+				return tokens;
 			}
 
-			Flow flow = flows.iterator().next();
-
-			int index = questions.indexOf(treeObject);
-			if (index > 0) {
-				if (flow.getOrigin() instanceof Question) {
-					return (Question) flow.getOrigin();
-				} else {
-					return getPreviousFlowQuestion((BaseQuestion) flow.getOrigin());
+			Set<Flow> flowsToElement = flowsByDestiny.get(treeObject);
+			if (flowsToElement != null) {
+				for (Flow flow : flowsToElement) {
+					if (flow.getCondition().isEmpty()) {
+						tokens.addAll(getPreviousForkTokens((BaseQuestion) flowsToElement.iterator().next().getOrigin()));
+					} else {
+						tokens.add((BaseQuestion) flowsToElement.iterator().next().getOrigin());
+						return tokens;
+					}
 				}
 			}
 		}
-		return null;
+		return tokens;
 	}
 
 	public TreeObject getNextQuestion(TreeObject treeObject) {

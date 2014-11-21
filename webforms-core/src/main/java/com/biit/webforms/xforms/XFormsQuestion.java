@@ -313,4 +313,11 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		return getXFormsHelper().getFlowsWithDestiny(getSource());
 	}
 
+	@Override
+	protected String getCalculateStructure(String flow) {
+		String parsedFlow = flow.replace("$", "../$");
+		//Calculate set readonly as true by default.
+		return " calculate=\"if(" + parsedFlow + ") then . else ''\" readonly=\"false\"";
+	}
+
 }
