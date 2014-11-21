@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.biit.webforms.enumerations.TokenTypes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.bpodgursky.jbool_expressions.Expression;
 import com.bpodgursky.jbool_expressions.parsers.ExprParser;
@@ -73,7 +74,8 @@ public class BooleanExpressionSimplifier {
 					}
 				}
 			} else {
-				System.out.println(newTokens[i] + " -> " + tokens.get(newTokens[i]));
+				WebformsLogger.severe(this.getClass().getName(),
+						"Token not found! " + newTokens[i] + " -> " + tokens.get(newTokens[i]));
 			}
 		}
 

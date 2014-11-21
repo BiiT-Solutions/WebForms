@@ -82,4 +82,9 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	public Set<Flow> getFlowsTo() {
 		return new HashSet<>();
 	}
+
+	@Override
+	protected String getCalculateStructure(String flow) {
+		return "";
+	}
 }
