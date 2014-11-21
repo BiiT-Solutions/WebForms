@@ -522,10 +522,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 		// returns the condition or the 'others' rule.
 		for (Token token : simplifiedVisibility) {
 			convertTokenToXForms(flowvisibility, token);
-
-			// 'not' rules need that source must select an answer.
-			// conditionVisibility += othersSourceMustBeFilledUp(flow);
-
 			flowvisibility.append(" ");
 		}
 
@@ -549,23 +545,25 @@ public abstract class XFormsObject<T extends TreeObject> {
 		for (Flow flow : flows) {
 			List<Token> flowvisibility = flow.getConditionSimpleTokens();
 
-			// If condition is empty, inherit the relevance of the previous element. Others also has empty condition.
-			if (flow.getCondition().isEmpty()) {
-				Set<BaseQuestion> prevQuestions = getXFormsHelper().getPreviousForkTokens((BaseQuestion) flow.getDestiny());
-				if (!prevQuestions.isEmpty()) {
-					Iterator<BaseQuestion> iterator = prevQuestions.iterator();
-					while (iterator.hasNext()) {
-						BaseQuestion prevQuestion = iterator.next();
-						if (prevQuestion instanceof Question) {
-							Question question = (Question) prevQuestion;
-							//Add 'AND'.
-							if (!flowvisibility.isEmpty()) {
-								flowvisibility.add(Token.and());
-							}
-							flowvisibility.add(new TokenAnswerNeeded(question, question.getAnswerFormat() != null
-									&& question.getAnswerFormat().equals(AnswerFormat.DATE)));
-						}
+			// Others must assure that the question is answered.
+			if (flow.isOthers()) {
+				if (!flowvisibility.isEmpty()) {
+					flowvisibility.add(Token.and());
+				}
+				flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin(), ((Question) flow.getOrigin())
+						.getAnswerFormat() != null
+						&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+				// If condition is empty, inherit the relevance of the previous element. Others also has empty
+				// condition.
+			} else if (flow.getCondition().isEmpty()) {
+				List<Token> previousVisibility = getXFormsHelper().getPreviousVisibilityTokens(flow);
+				if (!previousVisibility.isEmpty()) {
+					// Add 'AND'.
+					if (!flowvisibility.isEmpty()) {
+						flowvisibility.add(Token.and());
 					}
+
+					flowvisibility.addAll(previousVisibility);
 				}
 			}
 

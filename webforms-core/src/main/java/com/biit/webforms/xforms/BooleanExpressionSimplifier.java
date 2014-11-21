@@ -56,20 +56,24 @@ public class BooleanExpressionSimplifier {
 		for (int i = 0; i < newTokens.length; i++) {
 			// Recover token.
 			Token token = tokens.get(newTokens[i]);
-			result.add(token);
-			// 'not' parenthesis are removed when simplifying, but are needed in orbeon. Add it again if does not
-			// exists.
-			if (token.getType().equals(TokenTypes.NOT)) {
-				// Not exist a parenthesis.
-				if (i < newTokens.length - 1 && !tokens.get(newTokens[i + 1]).getType().equals(TokenTypes.LEFT_PAR)) {
-					result.add(Token.leftPar());
-					leftParenthesisAdded++;
+			if (token != null) {
+				result.add(token);
+				// 'not' parenthesis are removed when simplifying, but are needed in orbeon. Add it again if does not
+				// exists.
+				if (token.getType().equals(TokenTypes.NOT)) {
+					// Not exist a parenthesis.
+					if (i < newTokens.length - 1 && !tokens.get(newTokens[i + 1]).getType().equals(TokenTypes.LEFT_PAR)) {
+						result.add(Token.leftPar());
+						leftParenthesisAdded++;
+					}
+				} else {
+					while (leftParenthesisAdded > 0) {
+						result.add(Token.rigthPar());
+						leftParenthesisAdded--;
+					}
 				}
 			} else {
-				while (leftParenthesisAdded > 0) {
-					result.add(Token.rigthPar());
-					leftParenthesisAdded--;
-				}
+				System.out.println(newTokens[i] + " -> " + tokens.get(newTokens[i]));
 			}
 		}
 

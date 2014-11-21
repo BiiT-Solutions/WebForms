@@ -9,8 +9,10 @@ import java.util.Set;
 
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
+import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
 
 /**
@@ -113,31 +115,37 @@ class XFormsHelper {
 	}
 
 	/**
-	 * Return the last fork that is critical for the flow to achieve this element. If this element is a fork, returns
-	 * it.
+	 * Return the toknes needed to represent the previous visibility of a node. The previous visibility is the answers
+	 * of a questions needed to make this element visible. It is analyzed by flow and not by question to allow
+	 * recursivity.
 	 * 
-	 * @param treeObject
+	 * @param flow
+	 *            the flow that goes to the element to analyze.
 	 * @return
 	 */
-	public Set<BaseQuestion> getPreviousForkTokens(BaseQuestion treeObject) {
-		Set<BaseQuestion> tokens = new HashSet<>();
-		if (treeObject != null) {
-			Set<Flow> flowsFromElement = flowsByOrigin.get(treeObject);
-			// This element is a fork
-			if (flowsFromElement != null && flowsFromElement.size() > 1) {
-				tokens.add(treeObject);
+	public List<Token> getPreviousVisibilityTokens(Flow flow) {
+		List<Token> tokens = new ArrayList<>();
+		if (flow != null) {
+			Set<Flow> flowsFromOrigin = flowsByOrigin.get(flow.getOrigin());
+			// This element is a fork, has more than one flow.
+			if (flowsFromOrigin != null && flowsFromOrigin.size() > 1) {
+				tokens.addAll(flow.getCondition());
+				if (!tokens.isEmpty()) {
+					tokens.add(Token.and());
+				}
+				tokens.add(new TokenAnswerNeeded((Question) flow.getOrigin(), ((Question) flow.getOrigin())
+						.getAnswerFormat() != null
+						&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 				return tokens;
 			}
 
-			Set<Flow> flowsToElement = flowsByDestiny.get(treeObject);
+			Set<Flow> flowsToElement = flowsByDestiny.get(flow.getOrigin());
 			if (flowsToElement != null) {
-				for (Flow flow : flowsToElement) {
-					if (flow.getCondition().isEmpty()) {
-						tokens.addAll(getPreviousForkTokens((BaseQuestion) flowsToElement.iterator().next().getOrigin()));
-					} else {
-						tokens.add((BaseQuestion) flowsToElement.iterator().next().getOrigin());
-						return tokens;
+				for (Flow flowToOrigin : flowsToElement) {
+					if (!tokens.isEmpty()) {
+						tokens.add(Token.or());
 					}
+					tokens.addAll(getPreviousVisibilityTokens(flowToOrigin));
 				}
 			}
 		}
