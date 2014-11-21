@@ -56,6 +56,12 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	public Question(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		super(name);
+		mandatory = DEFAULT_MANDATORY;
+		horizontal = DEFAULT_HORIZONTAL;
+		description = new String();
+		answerType = AnswerType.INPUT;
+		answerFormat = AnswerFormat.TEXT;
+		answerSubformat = AnswerSubformat.TEXT;
 	}
 
 	public AnswerType getAnswerType() {
@@ -63,20 +69,27 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	}
 
 	/**
-	 * This setter sets AnswerType and sets the answer format to the default
-	 * answer format for a type.
+	 * This setter sets AnswerType and sets the answer format to the default answer format for a type.
 	 * 
 	 * @param answerType
 	 */
 	public void setAnswerType(AnswerType answerType) {
+		AnswerType prevValue = this.answerType;
 		this.answerType = answerType;
 		try {
-			setAnswerFormat(answerType.getDefaultAnswerFormat());
-			if (!answerType.isChildrenAllowed()) {
-				getChildren().clear();
+			// If you change to input field, select the default value.
+			if (answerType != prevValue) {
+				setAnswerFormat(answerType.getDefaultAnswerFormat());
+				if (!answerType.isChildrenAllowed()) {
+					getChildren().clear();
+				}
 			}
-			horizontal = answerType.getDefaultHorizontal();
-			mandatory = answerType.getDefaultMandatory();
+			if (!answerType.isHorizontalEnabled()) {
+				horizontal = answerType.getDefaultHorizontal();
+			}
+			if (!answerType.isMandatoryEnabled()) {
+				mandatory = answerType.getDefaultMandatory();
+			}
 		} catch (InvalidAnswerFormatException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -87,8 +100,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	}
 
 	/**
-	 * Setter of answer format. Sets the answer format and sets the default
-	 * answer subformat.
+	 * Setter of answer format. Sets the answer format and sets the default answer subformat.
 	 * 
 	 * @param answerFormat
 	 * @throws InvalidAnswerFormatException
@@ -105,7 +117,12 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		}
 		this.answerFormat = answerFormat;
 		if (answerFormat != null) {
-			this.answerSubformat = answerFormat.getDefaultSubformat();
+			// Answer subform is not valid for answerSubformat, change it.
+			if (answerSubformat == null
+					|| (answerSubformat.getAnswerFormat() != null && !answerSubformat.getAnswerFormat().equals(
+							answerFormat))) {
+				this.answerSubformat = answerFormat.getDefaultSubformat();
+			}
 		} else {
 			this.answerSubformat = null;
 		}
@@ -139,7 +156,6 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			Question question = (Question) object;
 
 			setDescription(new String(question.getDescription()));
-			setMandatory(question.isMandatory());
 			// This need to be set on order or otherwise the assignment process
 			// will fail
 			setAnswerType(question.getAnswerType());
@@ -149,6 +165,13 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 				// Its a copy, it should never happen.
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
+			try {
+				setAnswerSubformat(question.getAnswerSubformat());
+			} catch (InvalidAnswerSubformatException e) {
+				// Its a copy, it should never happen.
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+			setMandatory(question.isMandatory());
 			setHorizontal(question.isHorizontal());
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy");

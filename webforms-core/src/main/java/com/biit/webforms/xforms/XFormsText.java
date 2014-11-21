@@ -32,13 +32,13 @@ public class XFormsText extends XFormsQuestion {
 	}
 
 	@Override
-	protected String isMandatory() {
-		return "";
+	protected void isMandatory(StringBuilder builder) {
+		// DO nothing
 	}
 
 	@Override
-	protected String getConstraints() {
-		return "";
+	protected void getConstraints(StringBuilder builder) {
+		// DO nothing
 	}
 
 	@Override
@@ -47,8 +47,8 @@ public class XFormsText extends XFormsQuestion {
 	}
 
 	@Override
-	protected String getXFormsType() {
-		return "";
+	protected void getXFormsType(StringBuilder builder) {
+		// DO nothing
 	}
 
 	@Override

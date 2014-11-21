@@ -18,7 +18,8 @@ public enum AnswerType {
 	private Boolean defaultMandatory;
 	private boolean nestedAnswerAllowed;
 
-	AnswerType(AnswerFormat defaultAnswerType, boolean childrenAllowed, Boolean defaultHorizontal, Boolean defaultMandatory, boolean nestedAnswerAllowed) {
+	AnswerType(AnswerFormat defaultAnswerType, boolean childrenAllowed, Boolean defaultHorizontal,
+			Boolean defaultMandatory, boolean nestedAnswerAllowed) {
 		this.defaultAnswerFormat = defaultAnswerType;
 		this.childrenAllowed = childrenAllowed;
 		this.defaultHorizontal = defaultHorizontal;
@@ -31,7 +32,7 @@ public enum AnswerType {
 	}
 
 	public boolean isHorizontalEnabled() {
-		return defaultHorizontal!=null;
+		return defaultHorizontal != null;
 	}
 
 	public boolean getDefaultHorizontal() {
@@ -54,7 +55,7 @@ public enum AnswerType {
 	}
 
 	public boolean getDefaultMandatory() {
-		if (defaultMandatory!=null) {
+		if (defaultMandatory != null) {
 			return defaultMandatory;
 		}
 		return false;

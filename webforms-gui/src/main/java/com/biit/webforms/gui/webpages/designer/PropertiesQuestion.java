@@ -31,7 +31,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 	private CheckBox mandatory;
 
-	private ComboBox answerType;
+	private ComboBox answerTypeComboBox;
 
 	private ComboBox answerFormat;
 
@@ -60,25 +60,32 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		description.setWidth(WIDTH);
 		description.setMaxLength(Question.MAX_DESCRIPTION_LENGTH);
 
-		answerType = new ComboBox(LanguageCodes.CAPTION_ANSWER_TYPE.translation());
-		answerType.setWidth(WIDTH);
+		answerTypeComboBox = new ComboBox(LanguageCodes.CAPTION_ANSWER_TYPE.translation());
+		answerTypeComboBox.setWidth(WIDTH);
 		for (AnswerTypeUi type : AnswerTypeUi.values()) {
-			answerType.addItem(type.getAnswerType());
-			answerType.setItemCaption(type.getAnswerType(), type.getLanguageCode().translation());
+			answerTypeComboBox.addItem(type.getAnswerType());
+			answerTypeComboBox.setItemCaption(type.getAnswerType(), type.getLanguageCode().translation());
 		}
-		answerType.setNullSelectionAllowed(false);
-		answerType.addValueChangeListener(new ValueChangeListener() {
+		answerTypeComboBox.setNullSelectionAllowed(false);
+		answerTypeComboBox.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -7743742253650945202L;
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				AnswerType selectedType = (AnswerType) answerType.getValue();
-				answerFormat.setValue(selectedType.getDefaultAnswerFormat());
-				answerFormat.setEnabled(selectedType.isAnswerFormatEnabled());
-				horizontal.setValue(selectedType.getDefaultHorizontal());
-				horizontal.setEnabled(selectedType.isHorizontalEnabled());
-				mandatory.setValue(selectedType.getDefaultMandatory());
-				mandatory.setEnabled(selectedType.isMandatoryEnabled());
+				AnswerType selectedType = (AnswerType) answerTypeComboBox.getValue();
+				// No Input fields must put the format to null or input fields that has not any format already selected
+				if (selectedType.getDefaultAnswerFormat() == null || instance.getAnswerFormat() == null) {
+					answerFormat.setValue(selectedType.getDefaultAnswerFormat());
+					answerFormat.setEnabled(selectedType.isAnswerFormatEnabled());
+				}
+				if (!selectedType.isHorizontalEnabled()) {
+					horizontal.setValue(selectedType.getDefaultHorizontal());
+					horizontal.setEnabled(selectedType.isHorizontalEnabled());
+				}
+				if (!selectedType.isMandatoryEnabled()) {
+					mandatory.setValue(selectedType.getDefaultMandatory());
+					mandatory.setEnabled(selectedType.isMandatoryEnabled());
+				}
 			}
 		});
 
@@ -114,7 +121,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
 		commonProperties.addComponent(description);
-		commonProperties.addComponent(answerType);
+		commonProperties.addComponent(answerTypeComboBox);
 		commonProperties.addComponent(answerFormat);
 		commonProperties.addComponent(answerSubformat);
 		commonProperties.addComponent(horizontal);
@@ -154,12 +161,12 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
 		name.addValidator(new ValidatorTreeObjectNameLength());
 		name.setValue(instance.getName());
-		// TODO dynamic label
+
 		label.setValue(instance.getLabel());
 		label.addValidator(new LengthValidator(instance.getMaxLabelLength()));
 		description.setValue(instance.getDescription());
 		mandatory.setValue(instance.isMandatory());
-		answerType.setValue(instance.getAnswerType());
+		answerTypeComboBox.setValue(instance.getAnswerType());
 		answerFormat.setValue(instance.getAnswerFormat());
 		answerSubformat.setValue(instance.getAnswerSubformat());
 		horizontal.setValue(instance.isHorizontal());
@@ -182,8 +189,9 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 			tempLabel = label.getValue();
 		}
 		UserSessionHandler.getController().updateQuestion(instance, tempName, tempLabel, description.getValue(),
-				mandatory.getValue(), (AnswerType) answerType.getValue(), (AnswerFormat) answerFormat.getValue(),
-				(AnswerSubformat) answerSubformat.getValue(), horizontal.getValue());
+				mandatory.getValue(), (AnswerType) answerTypeComboBox.getValue(),
+				(AnswerFormat) answerFormat.getValue(), (AnswerSubformat) answerSubformat.getValue(),
+				horizontal.getValue());
 
 		super.updateElement();
 	}

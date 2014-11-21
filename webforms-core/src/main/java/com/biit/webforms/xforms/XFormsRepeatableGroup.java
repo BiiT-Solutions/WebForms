@@ -51,40 +51,42 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 	 * Add also a dummy section iteration.
 	 */
 	@Override
-	protected String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-		String elementBinding = "<xf:bind id=\"" + getBindingName() + "\" name=\"" + getControlName() + "\""
-				+ getRelevantStructure() + " ref=\"" + getControlName() + "\" >";
-		elementBinding += "<xf:bind id=\"" + getIteratorBindingName() + "\" name=\"" + getIteratorControlName() + "\""
-				+ getRelevantStructure() + " ref=\"" + getIteratorControlName() + "\" >";
+	protected void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		binding.append("<xf:bind id=\"").append(getBindingName()).append("\" name=\"").append(getControlName())
+				.append("\"");
+		getRelevantStructure(binding);
+		binding.append(" ref=\"").append(getControlName()).append("\" >");
+		binding.append("<xf:bind id=\"").append(getIteratorBindingName()).append("\" ");
+		binding.append("name=\"").append(getIteratorControlName()).append("\" ");
+		getRelevantStructure(binding);
+		binding.append(" ref=\"").append(getIteratorControlName()).append("\" >");
 		// Add also children.
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
-			elementBinding += child.getBinding();
+			child.getBinding(binding);
 		}
-		elementBinding += "</xf:bind>";
-		elementBinding += "</xf:bind>";
-		return elementBinding;
+		binding.append("</xf:bind>");
+		binding.append("</xf:bind>");
 	}
 
 	/**
 	 * We add a grid in a section to allow loops.
 	 */
 	@Override
-	protected String getSectionBody() {
-		String section = "";
+	protected void getSectionBody(StringBuilder body) {
 		// Dummy section
-		section += "<fr:section id=\"" + getSectionControlName() + "\" bind=\"" + getBindingName()
-				+ "\" repeat=\"true\" min=\"" + MIN_REPEATS + "\" max=\"" + MAX_REPEATS + "\" template=\"instance('"
-				+ getTemplateName() + "')\" >";
-		section += getBodyLabel();
-		section += getBodyHint();
-		section += getBodyAlert();
-		section += getBodyHelp();
+		body.append("<fr:section id=\"").append(getSectionControlName()).append("\" ");
+		body.append("bind=\"").append(getBindingName()).append("\" ");
+		body.append("repeat=\"true\" min=\"").append(MIN_REPEATS).append("\" max=\"").append(MAX_REPEATS).append("\" ");
+		body.append("template=\"instance('").append(getTemplateName()).append("')\" >");
+		body.append(getBodyLabel());
+		body.append(getBodyHint());
+		body.append(getBodyAlert());
+		body.append(getBodyHelp());
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
-			section += child.getSectionBody();
+			child.getSectionBody(body);
 		}
-		section += "</fr:section>";
-		return section;
+		body.append("</fr:section>");
 	}
 
 	protected String getLoopHeaderTags(int minRepeats, int maxRepeats) {

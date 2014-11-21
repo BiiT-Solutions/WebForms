@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -150,8 +151,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 		return children;
 	}
 
+	/**
+	 * Returns a unique name.
+	 * 
+	 * @return
+	 */
 	protected String getControlName() {
-		return getSource().getName();
+		return getXFormsHelper().getUniqueName(getSource());
 	}
 
 	protected String getHelp() {
@@ -167,12 +173,45 @@ public abstract class XFormsObject<T extends TreeObject> {
 		return "<hint/>";
 	}
 
-	protected String getRelevantStructure() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected void getRelevantStructure(StringBuilder relevant) throws InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
 		String flow = getAllFlowsVisibility();
 		if (flow != null && flow.length() > 0) {
-			return " relevant=\"" + flow + "\"";
+			getFlowRule(relevant);
+			relevant.append(" relevant=\"").append(flow).append("\"");
+			relevant.append(getCalculateStructure(flow));
 		}
+	}
+
+	/**
+	 * Simple flow rule representation for human reading.S
+	 * 
+	 * @return
+	 */
+	private void getFlowRule(StringBuilder flowRule) {
+		Iterator<Flow> iterator = getFlowsTo().iterator();
+		flowRule.append(" flowrule=\"");
+		while (iterator.hasNext()) {
+			Flow flow = iterator.next();
+			flowRule.append(flow.getConditionString().replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
+			if (iterator.hasNext() && flowRule.length() > 0) {
+				flowRule.append(" and ");
+			}
+		}
+		flowRule.append("\"");
+	}
+
+	/**
+	 * Calculate is used to clean up the value of the element if the previous element value is changed. Then all relvant
+	 * rules of next elements are forced to recalculate.
+	 * 
+	 * @param flow
+	 * @return
+	 */
+	private String getCalculateStructure(String flow) {
 		return "";
+		// String parsedFlow = flow.replace("$", "../$");
+		// return " calculate=\" if(" + parsedFlow + ") then . else ''\"";
 	}
 
 	/**
@@ -183,8 +222,20 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws StringRuleSyntaxError
 	 * @throws PostCodeRuleSyntaxError
 	 */
-	protected abstract String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError;
+	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
+		// Load stored visibility if exists.
+		if (getXFormsHelper().getVisibilityOfElement(getSource()) != null) {
+			return getXFormsHelper().getVisibilityOfElement(getSource());
+		}
+
+		Set<Flow> flowsTo = getFlowsTo();
+		String visibility = getRelevantByFlows(flowsTo);
+
+		// Store calculated visibility as string
+		getXFormsHelper().addVisibilityOfElement(getSource(), visibility);
+		return visibility;
+	}
 
 	/**
 	 * Is the default visibility of an element. For Categories is the visibility of the first question, for questions,
@@ -217,10 +268,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 		return getControlName() + "-control";
 	}
 
-	protected abstract String getBinding() throws NotExistingDynamicFieldException, InvalidDateException,
-			StringRuleSyntaxError, PostCodeRuleSyntaxError;
+	protected abstract void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError;
 
-	protected abstract String getSectionBody();
+	protected abstract void getSectionBody(StringBuilder body);
 
 	protected String getDefinition() {
 		String section = "<" + getControlName() + ">";
@@ -282,27 +333,33 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 * @throws InvalidDateException
 	 */
-	protected String convertTokenToXForms(Token token) throws InvalidDateException {
-		String visibility = "";
+	protected void convertTokenToXForms(StringBuilder visibility, Token token) throws InvalidDateException {
 		if (token instanceof TokenComparationAnswer) {
 			// $control-name='answer'
 			if (((TokenComparationAnswer) token).getQuestion().getAnswerType().equals(AnswerType.MULTIPLE_SELECTION)) {
-				visibility += getMultiCheckBoxVisibility((TokenComparationAnswer) token);
+				getMultiCheckBoxVisibility(visibility, (TokenComparationAnswer) token);
 			} else {
-				visibility += getBasicSelectionVisibility((TokenComparationAnswer) token);
+				getBasicSelectionVisibility(visibility, (TokenComparationAnswer) token);
 			}
 		} else if (token instanceof TokenComparationValue) {
 			// $control-name=1
-			visibility += getInputFieldVisibility((TokenComparationValue) token);
+			getInputFieldVisibility(visibility, (TokenComparationValue) token);
 		} else if (token instanceof TokenAnswerNeeded) {
-			visibility += "string-length($"
-					+ getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getControlName()
-					+ ")>0";
+			if (((TokenAnswerNeeded) token).isDateField()) {
+				visibility
+						.append("string-length(format-date($")
+						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
+								.getControlName()).append(", '[MNn,*-3]/[D01]/[Y]')) &gt; 0");
+			} else {
+				visibility
+						.append("string-length($")
+						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
+								.getControlName()).append(") &gt; 0");
+			}
 		} else {
 			// An operator 'and', 'or', ...
-			visibility += token.getType().getOrbeonRepresentation();
+			visibility.append(token.getType().getOrbeonRepresentation());
 		}
-		return visibility;
 	}
 
 	/**
@@ -313,9 +370,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @param token
 	 * @return
 	 */
-	private String getMultiCheckBoxVisibility(TokenComparationAnswer token) {
-		return "contains(concat($" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName()
-				+ ", ' '), concat('" + token.getAnswer().getLabel() + "', ' '))";
+	private void getMultiCheckBoxVisibility(StringBuilder visibility, TokenComparationAnswer token) {
+		visibility.append("contains(concat($")
+				.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName())
+				.append(", ' '), concat('").append(token.getAnswer().getLabel()).append("', ' '))");
 	}
 
 	/**
@@ -325,13 +383,11 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @param token
 	 * @return
 	 */
-	private String getBasicSelectionVisibility(TokenComparationAnswer token) {
-		String visibility = "";
-		visibility += "$"
-				+ getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getControlName();
-		visibility += token.getType().getOrbeonRepresentation();
-		visibility += "'" + ((TokenComparationAnswer) token).getAnswer() + "'";
-		return visibility;
+	private void getBasicSelectionVisibility(StringBuilder visibility, TokenComparationAnswer token) {
+		visibility.append("$").append(
+				getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getControlName());
+		visibility.append(token.getType().getOrbeonRepresentation());
+		visibility.append("'").append(((TokenComparationAnswer) token).getAnswer()).append("'");
 	}
 
 	/**
@@ -342,21 +398,21 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws ParseException
 	 * @throws PostCodeRuleSyntaxError
 	 */
-	private String getInputFieldVisibility(TokenComparationValue token) throws InvalidDateException {
-		String visibility = "";
+	private void getInputFieldVisibility(StringBuilder visibility, TokenComparationValue token)
+			throws InvalidDateException {
 		if (token.getQuestion().getAnswerFormat() != null) {
 			switch (token.getQuestion().getAnswerFormat()) {
 			case NUMBER:
-				visibility += "number($" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName()
-						+ ")";
-				visibility += " " + token.getType().getOrbeonRepresentation();
-				visibility += " " + token.getValue();
+				visibility.append("number($")
+						.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName()).append(")");
+				visibility.append(" ").append(token.getType().getOrbeonRepresentation()).append(" ");
+				visibility.append(token.getValue());
 				break;
 			case TEXT:
 			case POSTAL_CODE:
-				visibility += "$" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName();
-				visibility += " " + token.getType().getOrbeonRepresentation();
-				visibility += " '" + token.getValue() + "'";
+				visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName());
+				visibility.append(" ").append(token.getType().getOrbeonRepresentation());
+				visibility.append(" '").append(token.getValue()).append("'");
 				break;
 			case DATE:
 				switch (token.getSubformat()) {
@@ -372,16 +428,17 @@ public abstract class XFormsObject<T extends TreeObject> {
 						date = formatter.parse(token.getValue());
 						// Convert date to Orbeon string format.
 						formatter.applyPattern(XPATH_DATE_FORMAT);
-						visibility += "xs:date($"
-								+ getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + ")";
-						visibility += " " + token.getType().getOrbeonRepresentation();
-						visibility += " xs:date('" + formatter.format(date) + "')";
+						visibility.append("xs:date($")
+								.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName())
+								.append(") ");
+						visibility.append(token.getType().getOrbeonRepresentation());
+						visibility.append(" xs:date('").append(formatter.format(date)).append("')");
 					} catch (ParseException e) {
 						throw new InvalidDateException(e.getMessage());
 					}
 					break;
 				case DATE_PERIOD:
-					visibility += translateDatePeriod(token);
+					translateDatePeriod(visibility, token);
 					break;
 				default:
 					break;
@@ -389,10 +446,9 @@ public abstract class XFormsObject<T extends TreeObject> {
 				break;
 			}
 		}
-		return visibility;
 	}
 
-	private String translateDatePeriod(TokenComparationValue token) {
+	private void translateDatePeriod(StringBuilder visibility, TokenComparationValue token) {
 		String xPathOperation = "";
 		switch (token.getDatePeriodUnit()) {
 		case YEAR:
@@ -410,14 +466,20 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// adjust-date-to-timezone is used to remove timestamp
 			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
-			return "xs:date($" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + ") "
-					+ getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation()
-					+ " adjust-date-to-timezone(current-date(), ()) - xs:" + xPathOperation + "('P" + token.getValue()
-					+ token.getDatePeriodUnit().getAbbreviature() + "')";
+			visibility.append("xs:date($")
+					.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName()).append(") ");
+			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
+			visibility.append(" adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
+					.append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
+					.append("')");
+		} else {
+			visibility.append("xs:date($")
+					.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName()).append(") ");
+			visibility.append(token.getType().getOrbeonRepresentation()).append(
+					" adjust-date-to-timezone(current-date(), ()) + xs:");
+			visibility.append(xPathOperation).append("('P").append(token.getValue())
+					.append(token.getDatePeriodUnit().getAbbreviature()).append("')");
 		}
-		return "xs:date($" + getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + ") "
-				+ token.getType().getOrbeonRepresentation() + " adjust-date-to-timezone(current-date(), ()) + xs:"
-				+ xPathOperation + "('P" + token.getValue() + token.getDatePeriodUnit().getAbbreviature() + "')";
 	}
 
 	/**
@@ -429,7 +491,19 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 */
 	protected String getRelevantByFlows(Set<Flow> flows) throws InvalidDateException {
 		// String visibility = getRelevantByFlows(flowsTo);
-		String visibility = "";
+		StringBuilder visibility = new StringBuilder();
+
+		// One flow with condition, is same visibility as previous element.
+		if (flows.size() == 1) {
+			if (((Flow) flows.iterator().next()).getCondition().isEmpty()) {
+				String previousElementVisibility = getXFormsHelper().getVisibilityOfElement(getSource());
+				if (previousElementVisibility != null) {
+					return previousElementVisibility;
+				}
+			}
+		}
+
+		// More than one flow.
 		// Get all visibility rule as tokens.
 		List<Token> visibilityAsToken = getRelevantByFlowsAsTokens(flows);
 		if (visibilityAsToken.isEmpty()) {
@@ -448,23 +522,22 @@ public abstract class XFormsObject<T extends TreeObject> {
 		getXFormsHelper().addVisibilityOfQuestionAsToken(getSource(), simplifiedVisibility);
 
 		// Convert to String.
-		String flowvisibility = "";
+		StringBuilder flowvisibility = new StringBuilder();
 		// returns the condition or the 'others' rule.
 		for (Token token : simplifiedVisibility) {
-			String conditionVisibility = convertTokenToXForms(token);
+			convertTokenToXForms(flowvisibility, token);
 
 			// 'not' rules need that source must select an answer.
 			// conditionVisibility += othersSourceMustBeFilledUp(flow);
 
-			flowvisibility += conditionVisibility.trim() + " ";
+			flowvisibility.append(" ");
 		}
 
-		flowvisibility = flowvisibility.trim();
 		if (flowvisibility.length() > 0) {
-			visibility += "(" + flowvisibility.trim() + ")";
+			visibility.append("(").append(flowvisibility).append(")");
 		}
 
-		return visibility;
+		return visibility.toString();
 	}
 
 	/**
@@ -476,28 +549,39 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 */
 	protected List<Token> getRelevantByFlowsAsTokens(Set<Flow> flows) throws InvalidDateException {
 		List<Token> visibility = new ArrayList<>();
+
 		for (Flow flow : flows) {
-			// Add previous visibility.
-			List<Token> previousVisibility = new ArrayList<>();
-			previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(flow.getOrigin());
-			if (!flow.getConditionSimpleTokens().isEmpty() && previousVisibility != null
-					&& !previousVisibility.isEmpty()) {
-				previousVisibility.add(0, Token.leftPar());
-				previousVisibility.add(Token.rigthPar());
-			}
 
 			List<Token> flowvisibility = flow.getConditionSimpleTokens();
 
-			if (flow.isOthers()) {
+			if (flow.getOrigin() instanceof Question) {
 				// Dates does not need this extra instruction (string-length($date)>0 is always false).
-				if (!(flow.getOrigin() instanceof Question) || ((Question) flow.getOrigin()).getAnswerFormat() == null
-						|| !((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)) {
-					flowvisibility.add(Token.and());
-					flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin()));
+				Question prevQuestion = getXFormsHelper().getPreviousFlowQuestion((BaseQuestion) flow.getOrigin());
+				if (prevQuestion != null) {
+					if (flow.getCondition().isEmpty() || flow.isOthers()) {
+						if (!flowvisibility.isEmpty()) {
+							flowvisibility.add(Token.and());
+						}
+						flowvisibility.add(new TokenAnswerNeeded(prevQuestion, prevQuestion.getAnswerFormat() != null
+								&& prevQuestion.getAnswerFormat().equals(AnswerFormat.DATE)));
+					}
+				}
+			} else {
+				if (flow.getCondition().isEmpty() || flow.isOthers()) {
+					// if origin is a InfoText, uses visibility of previous question.
+					Question prevQuestion = getXFormsHelper().getPreviousFlowQuestion((BaseQuestion) flow.getOrigin());
+					if (prevQuestion != null) {
+						if (!flowvisibility.isEmpty()) {
+							flowvisibility.add(Token.and());
+						}
+						flowvisibility.add(new TokenAnswerNeeded(prevQuestion, prevQuestion.getAnswerFormat() != null
+								&& prevQuestion.getAnswerFormat().equals(AnswerFormat.DATE)));
+					}
 				}
 			}
 
-			if (!flowvisibility.isEmpty() || (previousVisibility != null && !previousVisibility.isEmpty())) {
+			// Concat rule to relevant rules.
+			if (!flowvisibility.isEmpty()) {
 				// Connector with previous rule if exists.
 				if (!visibility.isEmpty()) {
 					visibility.add(Token.or());
@@ -505,13 +589,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 				// Add visibility of previous element.
 				visibility.add(Token.leftPar());
-				if (previousVisibility != null && !previousVisibility.isEmpty()) {
-					visibility.addAll(previousVisibility);
-					if (!flowvisibility.isEmpty()) {
-						visibility.add(Token.and());
-					}
-				}
-
 				visibility.addAll(flowvisibility);
 				visibility.add(Token.rigthPar());
 			}
@@ -538,4 +615,12 @@ public abstract class XFormsObject<T extends TreeObject> {
 			return type;
 		}
 	}
+
+	/**
+	 * Get all flows that points to this element.
+	 * 
+	 * @return
+	 */
+	public abstract Set<Flow> getFlowsTo();
+
 }

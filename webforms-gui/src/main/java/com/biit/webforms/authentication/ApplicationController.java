@@ -441,7 +441,7 @@ public class ApplicationController {
 	public Category addNewCategory() {
 		try {
 			setUnsavedFormChanges(true);
-			return (Category) insertTreeObject(Category.class, getFormInUse(), "new_category");
+			return (Category) insertTreeObject(Category.class, getFormInUse(), "Category");
 		} catch (NotValidChildException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -458,7 +458,7 @@ public class ApplicationController {
 	 */
 	public Group addNewGroup(TreeObject parent) throws NotValidChildException {
 		setUnsavedFormChanges(true);
-		return (Group) insertTreeObject(Group.class, parent, "new_group");
+		return (Group) insertTreeObject(Group.class, parent, "Group");
 	}
 
 	/**
@@ -470,7 +470,7 @@ public class ApplicationController {
 	 */
 	public Question addNewQuestion(TreeObject parent) throws NotValidChildException {
 		setUnsavedFormChanges(true);
-		return (Question) insertTreeObject(Question.class, parent, "new_question");
+		return (Question) insertTreeObject(Question.class, parent, "Question");
 	}
 
 	/**
@@ -482,7 +482,7 @@ public class ApplicationController {
 	 */
 	public SystemField addNewSystemField(TreeObject parent) throws NotValidChildException {
 		setUnsavedFormChanges(true);
-		return (SystemField) insertTreeObject(SystemField.class, parent, "new_system_field");
+		return (SystemField) insertTreeObject(SystemField.class, parent, "SystemField");
 	}
 
 	/**
@@ -494,7 +494,7 @@ public class ApplicationController {
 	 */
 	public Text addNewText(TreeObject parent) throws NotValidChildException {
 		setUnsavedFormChanges(true);
-		return (Text) insertTreeObject(Text.class, parent, "new_text");
+		return (Text) insertTreeObject(Text.class, parent, "Text");
 	}
 
 	/**
@@ -506,7 +506,7 @@ public class ApplicationController {
 	 */
 	public Answer addNewAnswer(TreeObject parent) throws NotValidChildException {
 		setUnsavedFormChanges(true);
-		return (Answer) insertTreeObject(Answer.class, parent, "new_answer");
+		return (Answer) insertTreeObject(Answer.class, parent, "Answer");
 	}
 
 	/**
@@ -530,7 +530,7 @@ public class ApplicationController {
 			treeObject = classType.newInstance();
 			String nameNumber = getNewStringNumber(parent, name);
 			treeObject.setName(nameNumber);
-			treeObject.setLabel(nameNumber + "_label");
+			treeObject.setLabel(nameNumber);
 			treeObject.setCreatedBy(UserSessionHandler.getUser());
 			treeObject.setUpdatedBy(UserSessionHandler.getUser());
 			parent.addChild(treeObject);
@@ -577,7 +577,7 @@ public class ApplicationController {
 		if (maxNewString == 0) {
 			return newString;
 		} else {
-			return newString + "_" + (maxNewString + 1);
+			return newString + (maxNewString + 1);
 		}
 	}
 
@@ -769,10 +769,10 @@ public class ApplicationController {
 			question.setName(name);
 			question.setLabel(label);
 			question.setDescription(description);
-			question.setMandatory(mandatory);
 			question.setAnswerType(answerType);
 			question.setAnswerFormat(answerFormat);
 			question.setAnswerSubformat(answerSubformat);
+			question.setMandatory(mandatory);
 			question.setHorizontal(horizontal);
 			question.setUpdatedBy(UserSessionHandler.getUser());
 			question.setUpdateTime();

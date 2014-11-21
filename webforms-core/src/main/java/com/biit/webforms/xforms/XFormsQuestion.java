@@ -51,15 +51,22 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	@Override
-	public String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-		return "<xf:bind id=\"" + getBindingName() + "\"  name=\"" + getSource().getName() + "\" ref=\""
-				+ getControlName() + "\" " + getXFormsType() + " " + isMandatory() + " " + getConstraints() + " "
-				+ getRelevantStructure() + " />";
+	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		binding.append("<xf:bind id=\"").append(getBindingName()).append("\"  name=\"")
+				.append(getXFormsHelper().getUniqueName(getSource())).append("\" ");
+		binding.append("ref=\"").append(getControlName()).append("\" ");
+		getXFormsType(binding);
+		isMandatory(binding);
+		getConstraints(binding);
+		getRelevantStructure(binding);
+		binding.append(" />");
 	}
 
-	protected String isMandatory() {
-		return ((Question) getSource()).isMandatory() ? " required=\"true()\" " : "";
+	protected void isMandatory(StringBuilder binding) {
+		if (((Question) getSource()).isMandatory()) {
+			binding.append(" required=\"true()\" ");
+		}
 	}
 
 	/**
@@ -67,21 +74,21 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * 
 	 * @return
 	 */
-	protected String getConstraints() {
+	protected void getConstraints(StringBuilder contraints) {
 		if (((Question) getSource()).getAnswerFormat() != null) {
 			// adjust-date-to-timezone is used to remove timestamp
 			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
 			if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_PAST)) {
-				return " constraint=\". &lt;= adjust-date-to-timezone(current-date(), ())\" ";
+				contraints.append(" constraint=\". &lt;= adjust-date-to-timezone(current-date(), ())\" ");
 			} else if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE)) {
-				return " constraint=\". &gt;= adjust-date-to-timezone(current-date(), ())\" ";
+				contraints.append(" constraint=\". &gt;= adjust-date-to-timezone(current-date(), ())\" ");
 			} else if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_BIRTHDAY)) {
-				return " constraint=\". &lt;= adjust-date-to-timezone(current-date(), ()) and (year-from-date(current-date()) - year-from-date(.) &lt;= "
-						+ MAX_YEARS_BIRTHDAY + ")\"";
+				contraints
+						.append(" constraint=\". &lt;= adjust-date-to-timezone(current-date(), ()) and (year-from-date(current-date()) - year-from-date(.) &lt;= ")
+						.append(MAX_YEARS_BIRTHDAY).append(")\" ");
 			}
 		}
-		return "";
 	}
 
 	/**
@@ -90,27 +97,31 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * @param element
 	 * @return
 	 */
-	protected String getXFormsType() {
+	protected void getXFormsType(StringBuilder type) {
 		if (((Question) getSource()).getAnswerFormat() != null) {
 			switch (((Question) getSource()).getAnswerFormat()) {
 			case TEXT:
 				switch (((Question) getSource()).getAnswerSubformat()) {
-				case TEXT:
-					return "";
 				case EMAIL:
-					return " type=\"xf:email\" ";
+					type.append(" type=\"xf:email\" ");
+					break;
 				case PHONE:
-					return " constraint=\". = '' or matches(., '^"
-							+ WebformsConfigurationReader.getInstance().getRegexPhone() + "')\" ";
+					type.append(" constraint=\". = '' or matches(., '^")
+							.append(WebformsConfigurationReader.getInstance().getRegexPhone()).append("')\" ");
+					break;
 				case IBAN:
-					return " constraint=\". = '' or matches(., '^"
-							+ WebformsConfigurationReader.getInstance().getRegexIban() + "')\" ";
+					type.append(" constraint=\". = '' or matches(., '^")
+							.append(WebformsConfigurationReader.getInstance().getRegexIban()).append("')\" ");
+					break;
 				case BSN:
-					return " constraint=\". = '' or matches(., '"
-							+ WebformsConfigurationReader.getInstance().getRegexBsn() + "')\" ";
+					type.append(" constraint=\". = '' or matches(., '")
+							.append(WebformsConfigurationReader.getInstance().getRegexBsn()).append("')\" ");
+					break;
+				case TEXT:
 				default:
-					return "";
+					break;
 				}
+				break;
 			case DATE:
 				switch (((Question) getSource()).getAnswerSubformat()) {
 				case DATE:
@@ -118,42 +129,44 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 				case DATE_FUTURE:
 				case DATE_PERIOD:
 				case DATE_BIRTHDAY:
-					return " type=\"xf:date\" ";
+					type.append(" type=\"xf:date\" ");
+					break;
 				default:
-					return "";
+					break;
 				}
+				break;
 			case NUMBER:
 				switch (((Question) getSource()).getAnswerSubformat()) {
 				case NUMBER:
-					return " type=\"xf:decimal\" ";
+					type.append(" type=\"xf:decimal\" ");
+					break;
 				case FLOAT:
-					return " type=\"xf:float\" ";
+					type.append(" type=\"xf:float\" ");
+					break;
 				default:
-					return "";
+					break;
 				}
-
+				break;
 			case POSTAL_CODE:
-				return " constraint=\". = '' or matches(., '^"
-						+ WebformsConfigurationReader.getInstance().getRegexPostalCode() + "')\" ";
+				type.append(" constraint=\". = '' or matches(., '^")
+						.append(WebformsConfigurationReader.getInstance().getRegexPostalCode()).append("')\" ");
+				break;
 			}
 		}
-		return "";
 	}
 
 	@Override
-	public String getSectionBody() {
-		String section = "";
+	public void getSectionBody(StringBuilder body) {
 		// Add row.
-		section += "<xh:tr>";
-		section += "<xh:td>";
+		body.append("<xh:tr>");
+		body.append("<xh:td>");
 
 		// Add element info.
-		section += createElement();
+		body.append(createElement());
 
 		// Close row.
-		section += "</xh:td>";
-		section += "</xh:tr>";
-		return section;
+		body.append("</xh:td>");
+		body.append("</xh:tr>");
 	}
 
 	/**
@@ -269,29 +282,13 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	@Override
-	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-		// Load stored visibility if exists.
-		if (getXFormsHelper().getVisibilityOfQuestion(getSource()) != null) {
-			return getXFormsHelper().getVisibilityOfQuestion(getSource());
-		}
-
-		Set<Flow> flowsTo = getXFormsHelper().getFlowsWithDestiny(getSource());
-		String visibility = getRelevantByFlows(flowsTo);
-
-		// Store calculated visibility as string
-		getXFormsHelper().addVisibilityOfQuestion(getSource(), visibility);
-		return visibility;
-	}
-
-	@Override
 	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// First element always visible.
 		if (getXFormsHelper().isFirstQuestion(getSource())) {
 			return "";
 		}
 		// Other elements uses the previous element visibility.
-		return getXFormsHelper().getVisibilityOfQuestion(getXFormsHelper().getPreviousQuestion(getSource()));
+		return getXFormsHelper().getVisibilityOfElement(getXFormsHelper().getPreviousBaseQuestion(getSource()));
 	}
 
 	/**
@@ -309,6 +306,11 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			// Impossible
 			WebformsLogger.errorMessage(XFormsQuestion.class.getName(), e);
 		}
+	}
+
+	@Override
+	public Set<Flow> getFlowsTo() {
+		return getXFormsHelper().getFlowsWithDestiny(getSource());
 	}
 
 }

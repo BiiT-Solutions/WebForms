@@ -1,8 +1,12 @@
 package com.biit.webforms.xforms;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -16,14 +20,14 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	}
 
 	@Override
-	public String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-		return null;
+	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		// Do nothing.
 	}
 
 	@Override
-	public String getSectionBody() {
-		return null;
+	public void getSectionBody(StringBuilder binding) {
+		// Do nothing.
 	}
 
 	/**
@@ -72,5 +76,10 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Set<Flow> getFlowsTo() {
+		return new HashSet<>();
 	}
 }

@@ -27,67 +27,34 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 	}
 
 	@Override
-	protected String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-		String elementBinding = "<xf:bind id=\"" + getBindingName() + "\" name=\"" + getControlName() + "\""
-				+ getRelevantStructure() + " ref=\"" + getControlName() + "\" >";
+	protected void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		binding.append("<xf:bind id=\"").append(getBindingName()).append("\" name=\"").append(getControlName())
+				.append("\"");
+		getRelevantStructure(binding);
+		binding.append(" ref=\"").append(getControlName()).append("\" >");
 		// Add also children.
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
-			elementBinding += child.getBinding();
+			child.getBinding(binding);
 		}
-		elementBinding += "</xf:bind>";
-		return elementBinding;
+		binding.append("</xf:bind>");
 	}
 
 	/**
 	 * Groups are represented as sections.
 	 */
 	@Override
-	protected String getSectionBody() {
-		String section = "";
-		section += "<fr:section id=\"" + getSectionControlName() + "\" bind=\"" + getBindingName() + "\">";
-		section += getBodyLabel();
-		section += getBodyHint();
-		section += getBodyAlert();
-		section += getBodyHelp();
+	protected void getSectionBody(StringBuilder body) {
+		body.append("<fr:section id=\"").append(getSectionControlName()).append("\" bind=\"").append(getBindingName())
+				.append("\">");
+		body.append(getBodyLabel());
+		body.append(getBodyHint());
+		body.append(getBodyAlert());
+		body.append(getBodyHelp());
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
-			section += child.getSectionBody();
+			child.getSectionBody(body);
 		}
-		section += "</fr:section>";
-		return section;
-	}
-
-	/**
-	 * Is the visibility of all the questions that are inside.
-	 */
-	@Override
-	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-
-		// Load stored visibility if exists.
-		if (getXFormsHelper().getVisibilityOfQuestion(getSource()) != null) {
-			return getXFormsHelper().getVisibilityOfQuestion(getSource());
-		}
-
-		LinkedHashSet<TreeObject> questionsInGroup = getSource().getAllChildrenInHierarchy(BaseQuestion.class);
-		Set<Flow> flowsToGroup = new HashSet<>();
-		// Get all flows from outside to any question of the group.
-		for (TreeObject questionInGroup : questionsInGroup) {
-			Set<Flow> flowsToQuestion = getXFormsHelper().getFlowsWithDestiny(questionInGroup);
-			for (Flow flow : flowsToQuestion) {
-				// Is a flow from outside of the group...
-				if (!questionsInGroup.contains(flow.getOrigin())) {
-					flowsToGroup.add(flow);
-				}
-			}
-		}
-
-		String visibility = getRelevantByFlows(flowsToGroup);
-
-		// Store calculated visibility
-		getXFormsHelper().addVisibilityOfQuestion(getSource(), visibility);
-
-		return visibility;
+		body.append("</fr:section>");
 	}
 
 	/**
@@ -108,9 +75,27 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 				return "";
 			}
 			// Other elements uses the previous element visibility.
-			return getXFormsHelper().getVisibilityOfQuestion(getXFormsHelper().getPreviousQuestion(firstQuestion));
+			return getXFormsHelper().getVisibilityOfElement(
+					getXFormsHelper().getPreviousBaseQuestion((BaseQuestion) firstQuestion));
 		}
 		// Empty groups are hidden.
 		return "false";
+	}
+
+	@Override
+	public Set<Flow> getFlowsTo() {
+		LinkedHashSet<TreeObject> questionsInGroup = getSource().getAllChildrenInHierarchy(BaseQuestion.class);
+		Set<Flow> flowsToGroup = new HashSet<>();
+		// Get all flows from outside to any question of the group.
+		for (TreeObject questionInGroup : questionsInGroup) {
+			Set<Flow> flowsToQuestion = getXFormsHelper().getFlowsWithDestiny(questionInGroup);
+			for (Flow flow : flowsToQuestion) {
+				// Is a flow from outside of the group...
+				if (!questionsInGroup.contains(flow.getOrigin())) {
+					flowsToGroup.add(flow);
+				}
+			}
+		}
+		return flowsToGroup;
 	}
 }

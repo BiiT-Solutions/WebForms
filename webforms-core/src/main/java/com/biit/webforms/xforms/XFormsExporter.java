@@ -161,16 +161,17 @@ public class XFormsExporter {
 	 */
 	private String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
-		String dataModel = "<xf:bind id=\"fr-form-binds\" ref=\"instance('fr-form-instance')\">";
+		StringBuilder binding = new StringBuilder();
+		binding.append("<xf:bind id=\"fr-form-binds\" ref=\"instance('fr-form-instance')\">");
 
 		// Add hidden email field.
-		dataModel += XFormsHiddenEmailField.getBinding();
+		binding.append(XFormsHiddenEmailField.getBinding());
 
 		for (XFormsCategory category : xFormsCategories) {
-			dataModel += category.getBinding();
+			category.getBinding(binding);
 		}
-		dataModel += " </xf:bind>";
-		return dataModel;
+		binding.append(" </xf:bind>");
+		return binding.toString();
 	}
 
 	/**
@@ -348,14 +349,14 @@ public class XFormsExporter {
 	 * @throws InvalidFlowInForm
 	 */
 	private String getBodySection() {
-		String section = "";
+		StringBuilder body = new StringBuilder();
 
 		// Add hidden email field.
-		section += XFormsHiddenEmailField.getBody();
+		body.append(XFormsHiddenEmailField.getBody());
 
 		for (XFormsCategory category : xFormsCategories) {
-			section += category.getSectionBody();
+			category.getSectionBody(body);
 		}
-		return section;
+		return body.toString();
 	}
 }

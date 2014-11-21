@@ -16,14 +16,16 @@ import com.biit.webforms.persistence.entity.condition.Token;
 public class TokenAnswerNeeded extends Token {
 
 	private Question question;
+	private boolean dateField;
 
 	public TokenAnswerNeeded() {
 		super();
 	}
 
-	public TokenAnswerNeeded(Question question) {
+	public TokenAnswerNeeded(Question question, boolean dateField) {
 		super();
 		this.question = question;
+		this.dateField = dateField;
 	}
 
 	@Override
@@ -70,6 +72,10 @@ public class TokenAnswerNeeded extends Token {
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		question = (Question) mappedElements.get(question.getComparationId());
+	}
+
+	public boolean isDateField() {
+		return dateField;
 	}
 
 }

@@ -11,13 +11,14 @@ import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
 
 /**
  * Stores some basic data and perform basic and generic methods.
  */
 class XFormsHelper {
-	private List<TreeObject> questions;
+	private List<BaseQuestion> questions;
 	// Stores already calculated visibility to avoid recalculation.
 	private HashMap<TreeObject, String> visibilityOfQuestions;
 	// Stores already calculated visibility to avoid recalculation.
@@ -29,6 +30,9 @@ class XFormsHelper {
 	private Set<Flow> flows;
 	private HashMap<TreeObject, Set<Flow>> flowsByOrigin;
 	private HashMap<TreeObject, Set<Flow>> flowsByDestiny;
+	// Control names must be unique.
+	private HashMap<TreeObject, String> controlNames;
+	private Set<String> usedControlNames;
 
 	protected XFormsHelper(Form form) {
 		questions = new ArrayList<>();
@@ -36,6 +40,8 @@ class XFormsHelper {
 		xformsFromTreeObject = new HashMap<>();
 		visibilityOfQuestions = new HashMap<>();
 		visibilityOfQuestionsAsTokens = new HashMap<>();
+		usedControlNames = new HashSet<String>();
+		controlNames = new HashMap<>();
 		flows = new HashSet<Flow>();
 		flowsByOrigin = new HashMap<>();
 		flowsByDestiny = new HashMap<>();
@@ -97,10 +103,40 @@ class XFormsHelper {
 		return questions.indexOf(treeObject) == 0;
 	}
 
-	public TreeObject getPreviousQuestion(TreeObject treeObject) {
-		int index = questions.indexOf(treeObject);
-		if (index > 0) {
-			return questions.get(index - 1);
+	public BaseQuestion getPreviousBaseQuestion(BaseQuestion treeObject) {
+		if (treeObject != null) {
+			int index = questions.indexOf(treeObject);
+			if (index > 0) {
+				return questions.get(index - 1);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return the previous question of a flow that is not an infotext. Only valid when using default flows.
+	 * 
+	 * @param treeObject
+	 * @return
+	 */
+	public Question getPreviousFlowQuestion(BaseQuestion treeObject) {
+		if (treeObject != null) {
+			Set<Flow> flows = flowsByDestiny.get(treeObject);
+			// Only valid in default flows.
+			if (flows == null || flows.size() != 1) {
+				return null;
+			}
+
+			Flow flow = flows.iterator().next();
+
+			int index = questions.indexOf(treeObject);
+			if (index > 0) {
+				if (flow.getOrigin() instanceof Question) {
+					return (Question) flow.getOrigin();
+				} else {
+					return getPreviousFlowQuestion((BaseQuestion) flow.getOrigin());
+				}
+			}
 		}
 		return null;
 	}
@@ -123,18 +159,20 @@ class XFormsHelper {
 	}
 
 	public XFormsQuestion getPreviousElement(XFormsQuestion xFormsQuestion) {
-		int index = xFormsQuestions.indexOf(xFormsQuestion);
-		if (index > 0) {
-			return xFormsQuestions.get(index - 1);
+		if (xFormsQuestion != null) {
+			int index = xFormsQuestions.indexOf(xFormsQuestion);
+			if (index > 0) {
+				return xFormsQuestions.get(index - 1);
+			}
 		}
 		return null;
 	}
 
-	public String getVisibilityOfQuestion(TreeObject treeObject) {
+	public String getVisibilityOfElement(TreeObject treeObject) {
 		return visibilityOfQuestions.get(treeObject);
 	}
 
-	public void addVisibilityOfQuestion(TreeObject treeObject, String visibility) {
+	public void addVisibilityOfElement(TreeObject treeObject, String visibility) {
 		visibilityOfQuestions.put(treeObject, visibility);
 	}
 
@@ -148,6 +186,29 @@ class XFormsHelper {
 
 	public XFormsObject<? extends TreeObject> getXFormsObject(TreeObject treeObject) {
 		return xformsFromTreeObject.get(treeObject);
+	}
+
+	/**
+	 * Checks that the controlName is unique.
+	 * 
+	 * @param treeObject
+	 * @return
+	 */
+	public String getUniqueName(TreeObject treeObject) {
+		if (controlNames.get(treeObject) == null) {
+			if (!usedControlNames.contains(treeObject.getName())) {
+				controlNames.put(treeObject, treeObject.getName());
+				usedControlNames.add(treeObject.getName());
+			} else {
+				int i = 2;
+				while (usedControlNames.contains(treeObject.getName() + "-" + i)) {
+					i++;
+				}
+				controlNames.put(treeObject, treeObject.getName() + "-" + i);
+				usedControlNames.add(treeObject.getName() + "-" + i);
+			}
+		}
+		return controlNames.get(treeObject);
 	}
 
 }
