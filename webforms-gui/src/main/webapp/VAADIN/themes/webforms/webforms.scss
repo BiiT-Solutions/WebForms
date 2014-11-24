@@ -915,5 +915,16 @@ $open-sans-pathPrefix: "./fonts/";
 		padding: 6px;
 	}
 
+	/* read only text area */
+	textarea.v-textarea.v-widget.v-readonly.v-textarea-readonly {
+		border: 1px solid #bcbdbe;
+		border-top-color: #a2a3a4;
+		border-bottom-color: #d2d3d4;
+		background: #fff;
+		border-radius: 3px;
+		margin: 0;
+		height: 23px;
+		line-height: normal;
+	}
 	
 }

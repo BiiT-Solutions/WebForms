@@ -46,6 +46,7 @@ public class Validation extends SecuredWebPage {
 
 		textArea = new TextArea();
 		textArea.setSizeFull();
+		textArea.setReadOnly(true);
 
 		rootLayout.addComponent(textArea);
 		getWorkingArea().addComponent(rootLayout);
@@ -162,19 +163,29 @@ public class Validation extends SecuredWebPage {
 	}
 
 	private void setValidationReport(ValidateReport report) {
-		textArea.setValue(report.getReport());
+		textArea.setReadOnly(false);
+		changeReport(report.getReport());
+		textArea.setReadOnly(true);
 	}
 
 	private void setValidationPassedMessage() {
-		textArea.setValue(LanguageCodes.MESSAGE_VALIDATION_FINISHED_CORRECTLY.translation());
+		textArea.setReadOnly(false);
+		changeReport(LanguageCodes.MESSAGE_VALIDATION_FINISHED_CORRECTLY.translation());
+		textArea.setReadOnly(true);
 	}
 
 	private void setNoLinkedFormsMessage() {
-		textArea.setValue(LanguageCodes.MESSAGE_VALIDATION_NO_ABCD_FORMS_LINKED.translation());
+		changeReport(LanguageCodes.MESSAGE_VALIDATION_NO_ABCD_FORMS_LINKED.translation());
 	}
 
 	private void setLinkedFormsCorrectMessage() {
-		textArea.setValue(LanguageCodes.MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT.translation());
+		changeReport(LanguageCodes.MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT.translation());
+	}
+	
+	private void changeReport(String report){
+		textArea.setReadOnly(false);
+		textArea.setValue(report);
+		textArea.setReadOnly(true);
 	}
 
 	@Override
