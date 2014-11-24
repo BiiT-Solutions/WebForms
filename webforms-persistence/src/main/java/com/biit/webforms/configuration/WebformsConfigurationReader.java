@@ -82,6 +82,18 @@ public class WebformsConfigurationReader {
 
 	private static final String DEFAULT_BOOLEAN_SIMPLIFICATION_ENABLED = "false";
 
+	// XForms
+	private final String XFORMS_USER_TAG = "orbeonUser";
+	private final String XFORMS_PASSWORD_TAG = "orbeonPassword";
+	private final String XFORMS_DATABASE_TAG = "orbeonDatabase";
+	private final String XFORMS_HOST_TAG = "orbeonHost";
+
+	private final String DEFAULT_ORBEON_FORM_RUNNER_URL = "http://127.0.0.1:8080/orbeon/fr";
+	private final String DEFAULT_XFORMS_DATABASE = "orbeon";
+	private final String DEFAULT_HOST = "localhost";
+	private final String DEFAULT_USER = "user";
+	private final String DEFAULT_PASSWORD = "pass";
+
 	private String graphvizBinPath;
 
 	private String regexText;
@@ -119,6 +131,12 @@ public class WebformsConfigurationReader {
 	private boolean booleanSimplificationEnabled;
 
 	private static WebformsConfigurationReader instance;
+
+	private String xFormsUser;
+	private String xFormsPassword;
+	private String xFormsDatabaseName;
+	private String xFormsServer;
+	private String orbeonFormRunnerUrl;
 
 	private WebformsConfigurationReader() {
 		readConfig();
@@ -161,6 +179,11 @@ public class WebformsConfigurationReader {
 			xsdNamespace = prop.getProperty(XSD_NAMESPACE, DEFAULT_XSD_NAMESPACE);
 			booleanSimplificationEnabled = Boolean.parseBoolean(prop.getProperty(BOOLEAN_SIMPLIFICATION_ENABLED,
 					DEFAULT_BOOLEAN_SIMPLIFICATION_ENABLED));
+			xFormsUser = prop.getProperty(XFORMS_USER_TAG, DEFAULT_USER);
+			xFormsPassword = prop.getProperty(XFORMS_PASSWORD_TAG, DEFAULT_PASSWORD);
+			xFormsDatabaseName = prop.getProperty(XFORMS_DATABASE_TAG, DEFAULT_XFORMS_DATABASE);
+			xFormsServer = prop.getProperty(XFORMS_HOST_TAG, DEFAULT_HOST);
+			orbeonFormRunnerUrl = prop.getProperty(DEFAULT_ORBEON_FORM_RUNNER_URL, DEFAULT_ORBEON_FORM_RUNNER_URL);
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -241,6 +264,26 @@ public class WebformsConfigurationReader {
 	 */
 	public boolean isBooleanSimplificationEnabled() {
 		return booleanSimplificationEnabled;
+	}
+
+	public String getXFormsUser() {
+		return xFormsUser;
+	}
+
+	public String getXFormsPassword() {
+		return xFormsPassword;
+	}
+
+	public String getXFormsDatabaseName() {
+		return xFormsDatabaseName;
+	}
+
+	public String getXFormsServer() {
+		return xFormsServer;
+	}
+
+	public String getOrbeonFormRunnerUrl() {
+		return orbeonFormRunnerUrl;
 	}
 
 }

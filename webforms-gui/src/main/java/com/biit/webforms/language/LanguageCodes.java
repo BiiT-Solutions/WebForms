@@ -35,6 +35,11 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_SETTINGS_CLOSE("caption.settings.close"),
 	CAPTION_SEARCH("caption.search"),
 	CAPTION_DOWNLOAD_FILE("caption.download.file"),
+	CAPTION_DOWNLOAD_FILE_DESCRIPTION("caption.download.file.description"),
+	CAPTION_PREVIEW_FILE("caption.preview.file"),
+	CAPTION_PREVIEW_FILE_DESCRIPTION("caption.preview.file.description"),
+	CAPTION_PUBLISH_FILE("caption.publish.file"),
+	CAPTION_PUBLISH_FILE_DESCRIPTION("caption.publish.file.description"),
 	CAPTION_PROCEED_LOSE_DATA("caption.proceed.lose.data"),
 	CAPTION_SETTINGS_CLEAR_CACHE("caption.settings.clear.cache"),	
 	INFO_CACHE_CLEARED("info.cache.cleared"),
@@ -343,7 +348,14 @@ public enum LanguageCodes implements ILanguageCode{
 	GRAPHVIZ_EXEC_NOT_FOUND_DESCRIPTION("graphviz.exec.not.found.description"),
 	
 	EXPRESSION_CHECKER_VALID("expression.checker.valid"),
-	EXPRESSION_CHECKER_INVALID("expression.checker.invalid");
+	EXPRESSION_CHECKER_INVALID("expression.checker.invalid"),
+	
+	ERROR_FORM_NOT_PUBLISHED("error.form.not.published"),
+	ERROR_FORM_ALREADY_EXISTS("error.form.already.exist"),	
+	ERROR_XFORMS_USER_INVALID("error.form.user.invalid"),
+	
+	XFORM_PUBLISHED("form.published.correctly")
+	;
 
 	private String value;
 
