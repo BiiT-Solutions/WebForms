@@ -39,10 +39,6 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 @Entity
 @Table(name = "flow")
 public class Flow extends StorableObject {
-
-	// uniqueConstraints = { @UniqueConstraint(columnNames = { "origin_id",
-	// "destiny_id" }) }
-
 	private static final String TOKEN_SEPARATOR = " ";
 
 	/*
