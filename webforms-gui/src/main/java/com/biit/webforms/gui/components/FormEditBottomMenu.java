@@ -17,7 +17,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class FormEditBottomMenu extends BottomMenu {
 	private static final long serialVersionUID = 5814263369658754770L;
 
-	private IconButton editFormButton, editFlowButton, validateForm, impactAnalisys;
+	private IconButton editFormButton, editFlowButton, validateForm, impactAnalisys, compareStructure;
 	private List<LockFormListener> listeners;
 
 	public FormEditBottomMenu() {
@@ -31,7 +31,9 @@ public class FormEditBottomMenu extends BottomMenu {
 				LanguageCodes.TOOLTIP_VALIDATE_FORM, IconSize.BIG);
 		impactAnalisys = new IconButton(LanguageCodes.CAPTION_IMPACT_ANALYSIS, ThemeIcons.IMPACT_ANALYSIS,
 				LanguageCodes.TOOLTIP_IMPACT_ANALISYS, IconSize.BIG);
-		
+		compareStructure = new IconButton(LanguageCodes.CAPTION_COMPARE_STRUCTURE, ThemeIcons.COMPARE_STRUCTURE,
+				LanguageCodes.TOOLTIP_COMPARE_STRUCTURE, IconSize.BIG);
+
 		editFormButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 3789769131264938760L;
 
@@ -59,13 +61,23 @@ public class FormEditBottomMenu extends BottomMenu {
 				ApplicationUi.navigateTo(WebMap.VALIDATION);
 			}
 		});
+		compareStructure.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 4927787198580829348L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				lockForm();
+				ApplicationUi.navigateTo(WebMap.COMPARE_STRUCTURE);
+			}
+		});
 		impactAnalisys.setEnabled(false);
-		
+
 		addIconButton(editFormButton);
 		addIconButton(editFlowButton);
 		addIconButton(validateForm);
 		addIconButton(impactAnalisys);
-		
+		addIconButton(compareStructure);
+
 	}
 
 	public IconButton getEditFormButton() {
@@ -83,25 +95,25 @@ public class FormEditBottomMenu extends BottomMenu {
 	public IconButton getImpactAnalisys() {
 		return impactAnalisys;
 	}
-	
-	private void lockForm(){
-		if(UserSessionHandler.getController().getFormInUse()==null){
+
+	private void lockForm() {
+		if (UserSessionHandler.getController().getFormInUse() == null) {
 			fireLockFormListeners();
 		}
 	}
-	
-	public void addLockFormListener(LockFormListener listener){
+
+	public void addLockFormListener(LockFormListener listener) {
 		listeners.add(listener);
 	}
-	
-	private void fireLockFormListeners(){
-		for(LockFormListener listener: listeners){
+
+	private void fireLockFormListeners() {
+		for (LockFormListener listener : listeners) {
 			listener.lockForm();
 		}
 	}
-	
-	public interface LockFormListener{
+
+	public interface LockFormListener {
 		public void lockForm();
 	}
-	
+
 }

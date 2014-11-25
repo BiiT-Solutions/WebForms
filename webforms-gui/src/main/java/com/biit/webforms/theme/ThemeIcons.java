@@ -78,7 +78,15 @@ public enum ThemeIcons implements IThemeIcon{
 	
 	EXPORT_XSD("form.xsd.svg"),
 	
-	EXPORT_XML("form.xml.svg"),  
+	EXPORT_XML("form.xml.svg"), 
+	
+	UPLOAD("alert.svg"), //TODO 
+	REMOVE("alert.svg"), //TODO
+	REMOVE_ALL("alert.svg"), //TODO
+	VALIDATE("alert.svg"), //TODO
+	VALIDATE_ALL("alert.svg"), //TODO
+	
+	COMPARE_STRUCTURE("alert.svg"), //TODO
 	
 	;
 	
