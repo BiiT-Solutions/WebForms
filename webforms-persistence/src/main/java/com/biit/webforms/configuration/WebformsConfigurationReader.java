@@ -86,7 +86,8 @@ public class WebformsConfigurationReader {
 	private final String XFORMS_USER_TAG = "orbeonUser";
 	private final String XFORMS_PASSWORD_TAG = "orbeonPassword";
 	private final String XFORMS_DATABASE_TAG = "orbeonDatabase";
-	private final String XFORMS_HOST_TAG = "orbeonHost";
+	private final String XFORMS_DATABASE_HOST_TAG = "orbeonDatabaseHost";
+	private final String XFORMS_FORM_RUNNER_TAG = "orbeonFormRunnerUrl";
 
 	private final String DEFAULT_ORBEON_FORM_RUNNER_URL = "http://127.0.0.1:8080/orbeon/fr";
 	private final String DEFAULT_XFORMS_DATABASE = "orbeon";
@@ -135,7 +136,7 @@ public class WebformsConfigurationReader {
 	private String xFormsUser;
 	private String xFormsPassword;
 	private String xFormsDatabaseName;
-	private String xFormsServer;
+	private String xFormsDatabaseHost;
 	private String orbeonFormRunnerUrl;
 
 	private WebformsConfigurationReader() {
@@ -182,8 +183,8 @@ public class WebformsConfigurationReader {
 			xFormsUser = prop.getProperty(XFORMS_USER_TAG, DEFAULT_USER);
 			xFormsPassword = prop.getProperty(XFORMS_PASSWORD_TAG, DEFAULT_PASSWORD);
 			xFormsDatabaseName = prop.getProperty(XFORMS_DATABASE_TAG, DEFAULT_XFORMS_DATABASE);
-			xFormsServer = prop.getProperty(XFORMS_HOST_TAG, DEFAULT_HOST);
-			orbeonFormRunnerUrl = prop.getProperty(DEFAULT_ORBEON_FORM_RUNNER_URL, DEFAULT_ORBEON_FORM_RUNNER_URL);
+			xFormsDatabaseHost = prop.getProperty(XFORMS_DATABASE_HOST_TAG, DEFAULT_HOST);
+			orbeonFormRunnerUrl = prop.getProperty(XFORMS_FORM_RUNNER_TAG, DEFAULT_ORBEON_FORM_RUNNER_URL);
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -278,8 +279,8 @@ public class WebformsConfigurationReader {
 		return xFormsDatabaseName;
 	}
 
-	public String getXFormsServer() {
-		return xFormsServer;
+	public String getXFormsDatabaseHost() {
+		return xFormsDatabaseHost;
 	}
 
 	public String getOrbeonFormRunnerUrl() {
