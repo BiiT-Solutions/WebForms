@@ -191,13 +191,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 	private void getFlowRule(StringBuilder flowRule) {
 		Iterator<Flow> iterator = getFlowsTo().iterator();
 		flowRule.append(" flowrule=\"");
+		StringBuilder rule = new StringBuilder();
 		while (iterator.hasNext()) {
 			Flow flow = iterator.next();
-			flowRule.append(flow.getConditionString().replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
-			if (iterator.hasNext() && flowRule.length() > 0) {
-				flowRule.append(" and ");
+			rule.append(flow.toString().replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
+			if (iterator.hasNext() && rule.length() > 0) {
+				rule.append(" and ");
 			}
 		}
+		flowRule.append(rule);
 		flowRule.append("\"");
 	}
 

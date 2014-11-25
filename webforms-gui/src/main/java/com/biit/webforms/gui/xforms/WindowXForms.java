@@ -51,30 +51,26 @@ public class WindowXForms extends Window {
 	}
 
 	private Component generateContent() {
-
-		final WindowXForms thisWindow = this;
-
 		VerticalLayout rootLayout = new VerticalLayout();
 		rootLayout.setWidth("100%");
 		rootLayout.setHeight(null);
 
-		final Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
-				UserSessionHandler.getUser(), UserSessionHandler.getController().getFormInUse().getOrganizationId());
+		final Organization organization = WebformsAuthorizationService.getInstance()
+				.getOrganization(UserSessionHandler.getUser(),
+						UserSessionHandler.getController().getPreviewedForm().getOrganizationId());
 
 		Button previewButton = new Button(LanguageCodes.CAPTION_PREVIEW_FILE.translation(), new ClickListener() {
 			private static final long serialVersionUID = -4996751752953783384L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				if (saveFormInOrbeon(UserSessionHandler.getController().getFormInUse(), organization, true)) {
-					thisWindow.close();
-				}
+				saveFormInOrbeon(UserSessionHandler.getController().getPreviewedForm(), organization, true);
 			}
 		});
 
 		BrowserWindowOpener opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
-		opener.setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
-				XFormsPersistence.formatFormName(UserSessionHandler.getController().getFormInUse(), organization, true));
+		opener.setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG, XFormsPersistence.formatFormName(UserSessionHandler
+				.getController().getPreviewedForm(), organization, true));
 		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsExporter.APP_NAME);
 		opener.setFeatures("target=_new");
 		opener.extend(previewButton);
@@ -88,9 +84,8 @@ public class WindowXForms extends Window {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				if (saveFormInOrbeon(UserSessionHandler.getController().getFormInUse(), organization, false)) {
+				if (saveFormInOrbeon(UserSessionHandler.getController().getPreviewedForm(), organization, false)) {
 					MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
-					thisWindow.close();
 				}
 			}
 		});
@@ -103,13 +98,12 @@ public class WindowXForms extends Window {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				final Form form = UserSessionHandler.getController().getFormInUse();
+				final Form form = UserSessionHandler.getController().getPreviewedForm();
 				WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
 
 					@Override
 					public InputStream getInputStream() {
 						try {
-							thisWindow.close();
 							return new XFormsExporter(form).generateXFormsLanguage();
 						} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
 								| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException e) {
@@ -119,7 +113,7 @@ public class WindowXForms extends Window {
 					}
 				});
 				window.setIndeterminate(true);
-				window.setFilename(UserSessionHandler.getController().getFormInUse().getLabel() + ".txt");
+				window.setFilename(UserSessionHandler.getController().getPreviewedForm().getLabel() + ".txt");
 				window.showCentered();
 			}
 		});

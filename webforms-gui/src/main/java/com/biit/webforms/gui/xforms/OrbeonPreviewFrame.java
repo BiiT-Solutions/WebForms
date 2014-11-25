@@ -1,8 +1,9 @@
 package com.biit.webforms.gui.xforms;
 
-import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.ViewChangeListener;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.UI;
 
 /**
@@ -12,7 +13,6 @@ public class OrbeonPreviewFrame extends UI {
 	public final static String FORM_PARAMETER_TAG = "form_param";
 	public final static String APPLICATION_PARAMETER_TAG = "application_param";
 	private static final long serialVersionUID = -4957704029911500631L;
-	private Navigator navigator;
 	private String form;
 	private String application;
 
@@ -29,26 +29,14 @@ public class OrbeonPreviewFrame extends UI {
 		getPage().setTitle("Preview");
 		this.form = request.getParameter(FORM_PARAMETER_TAG);
 		this.application = request.getParameter(APPLICATION_PARAMETER_TAG);
-		// Create a navigator to control the views
-		navigator = new Navigator(this, this);
 
-		navigator.addViewChangeListener(new ViewChangeListener() {
-			private static final long serialVersionUID = -668206181478591694L;
+		BrowserFrame browser = new BrowserFrame(null, new ExternalResource(WebformsConfigurationReader.getInstance()
+				.getOrbeonFormRunnerUrl() + "/" + application + "/" + form + "/new"));
 
-			@Override
-			public void afterViewChange(ViewChangeEvent event) {
-				OrbeonPreview previewer = (OrbeonPreview) event.getNewView();
-				previewer.createBrowser(getApplication(), getForm());
-			}
+		browser.setImmediate(true);
+		browser.setSizeFull();
 
-			@Override
-			public boolean beforeViewChange(ViewChangeEvent event) {
-				return true;
-			}
-		});
-
-		navigator.addView("ORBEON_PREVIEW", OrbeonPreview.class);
-		UI.getCurrent().getNavigator().navigateTo("ORBEON_PREVIEW");
+		setContent(browser);
 	}
 
 }

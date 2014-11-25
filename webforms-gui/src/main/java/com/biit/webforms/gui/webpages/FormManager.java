@@ -190,7 +190,7 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				Form form = loadForm(getSelectedForm());
-				UserSessionHandler.getController().setFormInUse(form);
+				UserSessionHandler.getController().setPreviewedForm(form);
 
 				// Xforms only can be uses with valid forms.
 				ValidateFormComplete validator = new ValidateFormComplete();
@@ -198,8 +198,8 @@ public class FormManager extends SecuredWebPage {
 
 				ValidateReport report = new ValidateReport();
 				validator.validate((form), report);
-				if (report.isValid()) {
 
+				if (report.isValid()) {
 					WindowXForms windowXForms = new WindowXForms();
 					windowXForms.show();
 				} else {

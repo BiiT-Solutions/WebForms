@@ -72,7 +72,7 @@ public class ApplicationUi extends UI {
 		navigator = new Navigator(this, this);
 		// Define login page as first one.
 		navigator.addView("", WebMap.getLoginPage().getWebPageJavaClass());
-		navigator.setErrorView(WebMap.getLoginPage().getWebPageJavaClass());
+		//navigator.setErrorView(WebMap.getLoginPage().getWebPageJavaClass());
 		// Create and register the other web pages.
 		for (WebMap page : WebMap.values()) {
 			addView(page);
@@ -81,7 +81,7 @@ public class ApplicationUi extends UI {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void addView(WebMap newPage) {
+	public void addView(WebMap newPage) {
 		navigator.addView(newPage.toString(), newPage.getWebPageJavaClass());
 	}
 

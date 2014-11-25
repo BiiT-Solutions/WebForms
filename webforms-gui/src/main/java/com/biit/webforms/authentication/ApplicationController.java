@@ -87,6 +87,9 @@ public class ApplicationController {
 
 	private Form lastEditedForm;
 	private Form formInUse;
+	
+	//Form that is not locked
+	private Form previewedForm;
 
 	private boolean unsavedFormChanges = false;
 
@@ -1213,5 +1216,13 @@ public class ApplicationController {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
+	}
+
+	public Form getPreviewedForm() {
+		return previewedForm;
+	}
+
+	public void setPreviewedForm(Form previewedForm) {
+		this.previewedForm = previewedForm;
 	}
 }
