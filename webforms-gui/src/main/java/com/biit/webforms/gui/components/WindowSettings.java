@@ -50,7 +50,7 @@ public class WindowSettings extends Window {
 		formDao = (IFormDao) helper.getBean("formDao");
 	}
 
-	public Component generateContent() {
+	private Component generateContent() {
 
 		VerticalLayout rootLayout = new VerticalLayout();
 		rootLayout.setWidth("100%");

@@ -11,8 +11,6 @@ import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.abcd.security.AbcdActivity;
 import com.biit.abcd.security.AbcdAuthorizationService;
 import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.form.exceptions.NotValidChildException;
-import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
@@ -41,6 +39,7 @@ import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderXsd;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
 import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
+import com.biit.webforms.gui.xforms.WindowXForms;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
@@ -50,11 +49,6 @@ import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.biit.webforms.validators.ValidateFormComplete;
-import com.biit.webforms.xforms.XFormsExporter;
-import com.biit.webforms.xforms.exceptions.InvalidDateException;
-import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
-import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
-import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -163,7 +157,7 @@ public class FormManager extends SecuredWebPage {
 					}
 				});
 				downloader.setIndeterminate(true);
-				downloader.setFilename(getSelectedForm().getLabel()+ ".pdf");
+				downloader.setFilename(getSelectedForm().getLabel() + ".pdf");
 				downloader.showCentered();
 			}
 		});
@@ -195,7 +189,9 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				final Form form = loadForm(getSelectedForm());
+				Form form = loadForm(getSelectedForm());
+				UserSessionHandler.getController().setFormInUse(form);
+
 				// Xforms only can be uses with valid forms.
 				ValidateFormComplete validator = new ValidateFormComplete();
 				validator.setStopOnFail(true);
@@ -203,23 +199,9 @@ public class FormManager extends SecuredWebPage {
 				ValidateReport report = new ValidateReport();
 				validator.validate((form), report);
 				if (report.isValid()) {
-					WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
 
-						@Override
-						public InputStream getInputStream() {
-							try {
-								return new XFormsExporter(form).generateXFormsLanguage();
-							} catch (NotValidTreeObjectException | NotExistingDynamicFieldException
-									| InvalidDateException | StringRuleSyntaxError | PostCodeRuleSyntaxError
-									| NotValidChildException e) {
-								WebformsLogger.errorMessage(this.getClass().getName(), e);
-								return null;
-							}
-						}
-					});
-					window.setIndeterminate(true);
-					window.setFilename(getSelectedForm().getLabel()+ ".txt");
-					window.showCentered();
+					WindowXForms windowXForms = new WindowXForms();
+					windowXForms.show();
 				} else {
 					MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
 				}
@@ -231,7 +213,7 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				Form form = loadForm(getSelectedForm());
-				
+
 				ValidateFormComplete validator = new ValidateFormComplete();
 				validator.setStopOnFail(true);
 
