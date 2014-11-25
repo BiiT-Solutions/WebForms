@@ -1,17 +1,28 @@
 package com.biit.webforms.xml;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class XmlUtils {
@@ -57,4 +68,34 @@ public class XmlUtils {
 	public static String normalizeNodeName(String originalString) {
 		return originalString.replaceAll(" ", "_");
 	}
+
+	public static String validateXml(String xml, String xsd) throws ParserConfigurationException, SAXException,
+			IOException {
+		String resultString = new String();
+
+		// create a SchemaFactory capable of understanding WXS schemas
+		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+		// load a WXS schema, represented by a Schema instance
+		Source schemaFile = new StreamSource(new ByteArrayInputStream(xsd.getBytes()));
+		Schema schema = factory.newSchema(schemaFile);
+
+		// parse an XML document into a DOM tree
+		DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		Document document = parser.parse(new ByteArrayInputStream(xml.getBytes()));
+
+		// create a Validator instance, which can be used to validate an
+		// instance document
+		Validator validator = schema.newValidator();
+
+		// validate the DOM tree
+		try {
+			validator.validate(new DOMSource(document));
+		} catch (SAXException e) {
+			resultString += e.getMessage() + System.lineSeparator();
+		}
+
+		return resultString;
+	}
+
 }

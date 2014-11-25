@@ -119,6 +119,7 @@ public enum LanguageCodes implements ILanguageCode{
 	COMMON_ERROR_NAME_IS_IN_USE_DESCRIPTION("common.error.name.is.in.use.description"),
 	COMMON_ERROR_ELEMENT_NOT_DELETED("common.error.element.not.deleted"),
 	COMMON_ERROR_UNEXPECTED_ERROR("common.error.unexpected.error"),
+	ERROR_FILE_TOO_LARGE("error.file.too.large"),
 	
 	//Manager
 	CAPTION_NEW_FORM("caption.new.form"),
@@ -327,7 +328,31 @@ public enum LanguageCodes implements ILanguageCode{
 	
 	MESSAGE_VALIDATION_FINISHED_CORRECTLY("message.validation.finished.correctly"), 
 	MESSAGE_VALIDATION_NO_ABCD_FORMS_LINKED("message.validation.no.abcd.forms.linked"), 
-	MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT("message.validation.all.linked.forms.correct"), 
+	MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT("message.validation.all.linked.forms.correct"),
+	
+	//Compare Structure
+	CAPTION_COMPARE_STRUCTURE("caption.compare.structure"),	
+	CAPTION_UPLOAD("caption.upload"), 
+	CAPTION_REMOVE("caption.remove"),
+	CAPTION_REMOVE_ALL("caption.remove.all"),  
+	CAPTION_VALIDATE("caption.validate"), 
+	CAPTION_VALIDATE_ALL("caption.validate.all"),
+	CAPTION_FILE_CONTENT("caption.file.content"),
+	CAPTION_FILE_RESULT("caption.file.result"),
+	
+	TOOLTIP_COMPARE_STRUCTURE("tooltip.compare.structure"),
+	TOOLTIP_UPLOAD("tooltip.upload"), 
+	TOOLTIP_REMOVE("tooltip.remove"), 
+	TOOLTIP_REMOVE_ALL("tooltip.remove.all"),
+	TOOLTIP_VALIDATE("tooltip.validate"),
+	TOOLTIP_VALIDATE_ALL("tooltip.validate.all"),
+	
+	XSD_XML_VALIDATION_ALL_OK("xsd.xml.validation.all.ok"),
+	XSD_XML_VALIDATION_COULD_NOT_BE_DONE("xsd.xml.validation.could.not.be.done"),
+	
+	WARNING_VALIDATE_XML_STRUCTURE_NOT_SELECTED("warning.validate.xml.structure.not.selected"),
+	
+	ERROR_MESSAGE_CURRENT_FORM_STRUCTURE_IS_NOT_VALID("error.message.current.form.structure.is.not.valid"),
 	
 	//Orbeon
 	ORBEON_INVALID_FORMAT_EMAIL("orbeon.invalid.format.email"),
@@ -343,7 +368,9 @@ public enum LanguageCodes implements ILanguageCode{
 	GRAPHVIZ_EXEC_NOT_FOUND_DESCRIPTION("graphviz.exec.not.found.description"),
 	
 	EXPRESSION_CHECKER_VALID("expression.checker.valid"),
-	EXPRESSION_CHECKER_INVALID("expression.checker.invalid");
+	EXPRESSION_CHECKER_INVALID("expression.checker.invalid"),
+	
+	;
 
 	private String value;
 
