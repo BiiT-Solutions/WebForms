@@ -71,7 +71,7 @@ public enum ThemeIcons implements IThemeIcon{
 	FORM_MANAGER_IMPORT_ABCD_FORM("form.import.svg"),
 	FORM_MANAGER_LINK_ABCD_FORM("form.link.svg"),
 	
-	COMPLETE_VALIDATION("validate.all.svg"),
+	COMPLETE_VALIDATION("validate.document.svg"),
 	VALIDATE_STRUCTURE("validate.structure.svg"),
 	VALIDATE_FLOW("validate.flow.svg"),
 	VALIDATE_ABCD_LINK("validate.link.svg"), 
@@ -80,13 +80,13 @@ public enum ThemeIcons implements IThemeIcon{
 	
 	EXPORT_XML("form.xml.svg"), 
 	
-	UPLOAD("alert.svg"), //TODO 
-	REMOVE("alert.svg"), //TODO
-	REMOVE_ALL("alert.svg"), //TODO
-	VALIDATE("alert.svg"), //TODO
-	VALIDATE_ALL("alert.svg"), //TODO
+	UPLOAD("document.upload.svg"),  
+	REMOVE("element.delete.svg"), //TODO
+	REMOVE_ALL("element.remove.all.svg"), //TODO
+	VALIDATE("validate.document.svg"), 
+	VALIDATE_ALL("validate.documents.svg"), 
 	
-	COMPARE_STRUCTURE("alert.svg"), //TODO
+	COMPARE_STRUCTURE("page.xml.svg"), 
 	
 	;
 	
