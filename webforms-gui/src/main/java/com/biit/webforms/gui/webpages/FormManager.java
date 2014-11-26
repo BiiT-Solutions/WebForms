@@ -457,6 +457,7 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.getExportPdf().setEnabled(rowNotNullAndForm);
 			upperMenu.getExportFlowPdf().setEnabled(rowNotNullAndForm);
 			upperMenu.getExportXsd().setEnabled(rowNotNullAndForm);
+			upperMenu.getExportXForms().setEnabled(rowNotNullAndForm);
 
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);
