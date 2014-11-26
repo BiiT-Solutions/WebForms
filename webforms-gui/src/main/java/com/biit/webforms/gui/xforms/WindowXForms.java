@@ -152,7 +152,7 @@ public class WindowXForms extends Window {
 			xformsConnection.connect(WebformsConfigurationReader.getInstance().getXFormsPassword(),
 					WebformsConfigurationReader.getInstance().getXFormsUser(), WebformsConfigurationReader
 							.getInstance().getXFormsDatabaseName(), WebformsConfigurationReader.getInstance()
-							.getXFormsServer());
+							.getXFormsDatabaseHost());
 			try {
 				String xmlData = getXFormsData(form);
 				xformsConnection.storeForm(form, UserSessionHandler.getUser(), organization, xmlData, preview);

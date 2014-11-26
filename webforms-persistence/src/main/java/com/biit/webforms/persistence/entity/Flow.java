@@ -339,9 +339,9 @@ public class Flow extends StorableObject {
 
 		String condition = getConditionString();
 		if (condition.length() > 0) {
-			sb.append(" [");
+			sb.append(" ['");
 			sb.append(condition);
-			sb.append("]");
+			sb.append("']");
 		}
 		return sb.toString();
 	}

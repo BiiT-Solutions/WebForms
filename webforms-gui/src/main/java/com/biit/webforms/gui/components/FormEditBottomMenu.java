@@ -76,7 +76,7 @@ public class FormEditBottomMenu extends BottomMenu {
 		addIconButton(editFlowButton);
 		addIconButton(validateForm);
 		addIconButton(impactAnalisys);
-		addIconButton(compareStructure);
+		//addIconButton(compareStructure);
 
 	}
 
