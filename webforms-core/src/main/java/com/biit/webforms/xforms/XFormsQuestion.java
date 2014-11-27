@@ -91,6 +91,29 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		}
 	}
 
+	@Override
+	protected String getAlert() {
+		if (getSource() instanceof Question) {
+			if (((Question) getSource()).getAnswerFormat() != null) {
+				switch (((Question) getSource()).getAnswerFormat()) {
+				case DATE:
+					switch (((Question) getSource()).getAnswerSubformat()) {
+					case DATE_FUTURE:
+						return "<alert><![CDATA[Date must be at the future!]]></alert>";
+					case DATE_PAST:
+					case DATE_BIRTHDAY:
+						return "<alert><![CDATA[Date must be at the past!]]></alert>";
+					default:
+						break;
+					}
+				default:
+					break;
+				}
+			}
+		}
+		return "<alert/>";
+	}
+
 	/**
 	 * Translate the element type of DHszw forms to XForms.
 	 * 
