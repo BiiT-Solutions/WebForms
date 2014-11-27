@@ -12,11 +12,9 @@ public class UpperMenu extends UpperMenuWebforms {
 
 	private IconButton compareContent;
 	private IconButton uploadOriginalXml;
-	private IconButton removeOriginalXml;
-	private IconButton removeAllOriginalXml;
 	private IconButton uploadProcessedXml;
-	private IconButton removeProcessedXml;
-	private IconButton removeAllProcessedXml;
+	private IconButton removeXml;
+	private IconButton cleanXml;
 
 	public UpperMenu() {
 
@@ -25,25 +23,20 @@ public class UpperMenu extends UpperMenuWebforms {
 
 		uploadOriginalXml = new IconButton(LanguageCodes.CAPTION_UPLOAD_XML_ORIGINAL, ThemeIcons.UPLOAD_XML_ORIGINAL,
 				LanguageCodes.TOOLTIP_UPLOAD_XML_ORIGINAL, IconSize.BIG);
-		removeOriginalXml = new IconButton(LanguageCodes.CAPTION_REMOVE_XML_ORIGINAL, ThemeIcons.REMOVE_XML_ORIGINAL,
-				LanguageCodes.TOOLTIP_REMOVE_XML_ORIGINAL, IconSize.BIG);
-		removeAllOriginalXml = new IconButton(LanguageCodes.CAPTION_REMOVE_ALL_XML_ORIGINAL,
-				ThemeIcons.REMOVE_ALL_XML_ORIGINAL, LanguageCodes.TOOLTIP_REMOVE_ALL_XML_ORIGINAL, IconSize.BIG);
-
 		uploadProcessedXml = new IconButton(LanguageCodes.CAPTION_UPLOAD_XML_PROCESSED,
-				ThemeIcons.UPLOAD_XML_PROCESSED, LanguageCodes.TOOLTIP_UPLOAD_XML_PROCESSED, IconSize.BIG);
-		removeProcessedXml = new IconButton(LanguageCodes.CAPTION_REMOVE_XML_PROCESSED,
-				ThemeIcons.REMOVE_XML_PROCESSED, LanguageCodes.TOOLTIP_REMOVE_XML_PROCESSED, IconSize.BIG);
-		removeAllProcessedXml = new IconButton(LanguageCodes.CAPTION_REMOVE_ALL_XML_PROCESSED,
-				ThemeIcons.REMOVE_ALL_XML_PROCESSED, LanguageCodes.TOOLTIP_REMOVE_ALL_XML_PROCESSED, IconSize.BIG);
+				ThemeIcons.UPLOAD_XML_PROCESSED, LanguageCodes.TOOLTIP_UPLOAD_XML_PROCESSED, IconSize.BIG);	
+		
+		removeXml = new IconButton(LanguageCodes.CAPTION_REMOVE_XML, ThemeIcons.REMOVE_XML,
+				LanguageCodes.TOOLTIP_REMOVE_XML, IconSize.BIG);
+		cleanXml = new IconButton(LanguageCodes.CAPTION_CLEAN_XML,
+				ThemeIcons.CLEAN_XML, LanguageCodes.TOOLTIP_CLEAN_XML, IconSize.BIG);
+
 
 		addIconButton(compareContent);
 		addIconButton(uploadOriginalXml);
-		addIconButton(removeOriginalXml);
-		addIconButton(removeAllOriginalXml);
 		addIconButton(uploadProcessedXml);
-		addIconButton(removeProcessedXml);
-		addIconButton(removeAllProcessedXml);
+		addIconButton(removeXml);
+		addIconButton(cleanXml);
 
 	}
 
@@ -57,6 +50,14 @@ public class UpperMenu extends UpperMenuWebforms {
 
 	public void addCompareListener(ClickListener listener) {
 		compareContent.addClickListener(listener);
+	}
+
+	public void addRemoveListener(ClickListener listener) {
+		removeXml.addClickListener(listener);
+	}
+
+	public void addCleanListener(ClickListener listener) {
+		cleanXml.addClickListener(listener);
 	}
 
 }

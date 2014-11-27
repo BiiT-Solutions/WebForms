@@ -3,7 +3,6 @@ package com.biit.webforms.gui.webpages;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,13 +17,14 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.UploadedFile;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
-import com.biit.webforms.gui.webpages.compare.content.TableResultComparation;
-import com.biit.webforms.gui.webpages.compare.content.TableXmlFiles;
+import com.biit.webforms.gui.webpages.compare.content.TableOriginalProcessedComparation;
 import com.biit.webforms.gui.webpages.compare.content.UpperMenu;
 import com.biit.webforms.gui.webpages.compare.structure.XmlWindowUpload;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.xml.CompareXmlToXml;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -38,10 +38,7 @@ public class CompareContent extends SecuredWebPage {
 
 	private UpperMenu upperMenu;
 
-	private TableXmlFiles originalFiles;
-	private TableXmlFiles processedFiles;
-
-	private TableResultComparation resultComparation;
+	TableOriginalProcessedComparation tableXmlFiles;
 
 	private TextArea comparationResult;
 
@@ -59,34 +56,45 @@ public class CompareContent extends SecuredWebPage {
 	}
 
 	private Component generate() {
+
 		HorizontalLayout rootLayout = new HorizontalLayout();
 
 		rootLayout.setMargin(true);
 		rootLayout.setSpacing(true);
 		rootLayout.setSizeFull();
 
-		originalFiles = new TableXmlFiles();
-		originalFiles.setSizeFull();
-		originalFiles.setSelectable(true);
+		tableXmlFiles = new TableOriginalProcessedComparation();
+		tableXmlFiles.setSizeFull();
+		tableXmlFiles.setSelectable(true);
+		tableXmlFiles.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = 5829670383313278757L;
 
-		processedFiles = new TableXmlFiles();
-		processedFiles.setSizeFull();
-		processedFiles.setSelectable(true);
-
-		resultComparation = new TableResultComparation();
-		resultComparation.setSizeFull();
-		resultComparation.setSelectable(true);
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				if (event.getProperty().getValue() != null) {
+					String result = tableXmlFiles.getResult(event.getProperty().getValue());
+					setComparationResult(result);
+				}
+			}
+		});
 
 		comparationResult = new TextArea();
 		comparationResult.setSizeFull();
 		comparationResult.setReadOnly(true);
 
-		rootLayout.addComponent(originalFiles);
-		rootLayout.addComponent(processedFiles);
-		rootLayout.addComponent(resultComparation);
+		rootLayout.addComponent(tableXmlFiles);
 		rootLayout.addComponent(comparationResult);
 
+		rootLayout.setExpandRatio(tableXmlFiles, 0.6f);
+		rootLayout.setExpandRatio(comparationResult, 0.4f);
+
 		return rootLayout;
+	}
+
+	protected void setComparationResult(String result) {
+		comparationResult.setReadOnly(false);
+		comparationResult.setValue(result);
+		comparationResult.setReadOnly(true);
 	}
 
 	private UpperMenu createUpperMenu() {
@@ -98,6 +106,7 @@ public class CompareContent extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				compareXmlContents();
+				updateResultOfComparation();
 			}
 		});
 		menu.addUploadOriginalListener(new Button.ClickListener() {
@@ -116,33 +125,58 @@ public class CompareContent extends SecuredWebPage {
 				uploadProcessedXml();
 			}
 		});
+		menu.addRemoveListener(new Button.ClickListener() {
+			private static final long serialVersionUID = -9091662409267978653L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				tableXmlFiles.removeSelected();
+				updateResultOfComparation();
+			}
+		});
+		menu.addCleanListener(new Button.ClickListener() {
+			private static final long serialVersionUID = -6318807184713228031L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				tableXmlFiles.setValue(null);
+				tableXmlFiles.removeAllItems();
+				updateResultOfComparation();
+			}
+		});
 
 		return menu;
 	}
 
-	protected void compareXmlContents() {
-		if (originalFiles.getItemIds().size() != processedFiles.getItemIds().size()) {
-			MessageManager
-					.showWarning(LanguageCodes.WARNING_DESCRIPTION_NUMBER_OF_ORIGINAL_AND_PROCESSED_FILES_DOESNT_MATCH);
-		}
-
-		Iterator<?> itrI = originalFiles.getItemIds().iterator();
-		Iterator<?> itrJ = processedFiles.getItemIds().iterator();
-		
-		resultComparation.removeAllItems();
-
-		while (itrI.hasNext()) {
-			UploadedFile originalFile = (UploadedFile) itrI.next();
-			if (itrJ.hasNext()) {
-				UploadedFile processedFile = (UploadedFile) itrJ.next();
-				compareXmlContents(originalFile, processedFile);
-			} else {
-				break;
-			}
+	protected void updateResultOfComparation() {
+		if (tableXmlFiles.getValue() != null) {
+			String result = tableXmlFiles.getResult(tableXmlFiles.getValue());
+			setComparationResult(result);
+		} else {
+			setComparationResult(new String());
 		}
 	}
 
-	private void compareXmlContents(UploadedFile originalFile, UploadedFile processedFile) {
+	protected void compareXmlContents() {
+
+		boolean missingFilesShown = false;
+		for (Object itemId : tableXmlFiles.getItemIds()) {
+
+			if (tableXmlFiles.isOriginalAndProcessedFileUploaded(itemId)) {
+				compareXmlContents(itemId, tableXmlFiles.getOriginalFile(itemId),
+						tableXmlFiles.getProcessedFile(itemId));
+			} else {
+				if (!missingFilesShown) {
+					MessageManager
+							.showWarning(LanguageCodes.WARNING_DESCRIPTION_NUMBER_OF_ORIGINAL_AND_PROCESSED_FILES_DOESNT_MATCH);
+					missingFilesShown = true;
+				}
+			}
+
+		}
+	}
+
+	private void compareXmlContents(Object itemId, UploadedFile originalFile, UploadedFile processedFile) {
 		CompareXmlToXml comparator = null;
 		try {
 			comparator = new CompareXmlToXml(originalFile.getStream(), processedFile.getStream());
@@ -150,16 +184,15 @@ public class CompareContent extends SecuredWebPage {
 			MessageManager.showError(LanguageCodes.ERROR_UNEXPECTED_ERROR_IN_COMPARATION);
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
-		
-		String message = "File '" + originalFile.getFileName() + "' and '" + processedFile.getFileName()
-				+ "' ";
-		
+
+		String message = "File '" + originalFile.getFileName() + "' and '" + processedFile.getFileName() + "' ";
+
 		if (comparator.comparate()) {
-			message +="contain the same information";
-			resultComparation.addOk(message);
+			message += "contain the same information";
+			tableXmlFiles.addOk(itemId, message);
 		} else {
 			message += comparator.getCause();
-			resultComparation.addError(message);
+			tableXmlFiles.addError(itemId, message);
 		}
 	}
 
@@ -170,7 +203,7 @@ public class CompareContent extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				List<UploadedFile> files = uploadWindow.getFiles();
-				addXmlFiles(files, originalFiles);
+				addOriginalXmlFiles(files);
 				window.close();
 			}
 		});
@@ -184,16 +217,22 @@ public class CompareContent extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				List<UploadedFile> files = uploadWindow.getFiles();
-				addXmlFiles(files, processedFiles);
+				addProcessedXmlFiles(files);
 				window.close();
 			}
 		});
 		uploadWindow.showCentered();
 	}
 
-	protected void addXmlFiles(List<UploadedFile> files, TableXmlFiles table) {
+	protected void addOriginalXmlFiles(List<UploadedFile> files) {
 		for (UploadedFile file : files) {
-			table.addRow(file);
+			tableXmlFiles.addRow(file, null);
+		}
+	}
+
+	protected void addProcessedXmlFiles(List<UploadedFile> files) {
+		for (UploadedFile file : files) {
+			tableXmlFiles.addRow(null, file);
 		}
 	}
 
@@ -201,5 +240,4 @@ public class CompareContent extends SecuredWebPage {
 	public List<IActivity> accessAuthorizationsRequired() {
 		return activityPermissions;
 	}
-
 }
