@@ -16,7 +16,7 @@ public class QuestionNotFound extends Report {
 		sb.append("Form '");
 		sb.append(form);
 		sb.append("' doesn't contain '");
-		sb.append(abcdQuestion.getHierarchyName());
+		sb.append(abcdQuestion.getPathName());
 		sb.append("'");
 		return sb.toString();
 	}
