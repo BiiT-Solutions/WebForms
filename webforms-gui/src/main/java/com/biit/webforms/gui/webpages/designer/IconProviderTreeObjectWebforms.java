@@ -6,6 +6,8 @@ import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.common.theme.IThemeIcon;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SystemField;
+import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.theme.ThemeIcons;
 
 public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject> {
@@ -42,6 +44,10 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject> {
 			if (group.isRepeatable()) {
 				return CommonThemeIcon.TREE_OBJECT_GROUP_LOOP;
 			}
+		} else if (object instanceof Text) {
+			return ThemeIcons.DESIGNER_INFO_TEXT;
+		} else if (object instanceof SystemField) {
+			return ThemeIcons.DESIGNER_SYSTEM_FIELD;
 		}
 		return null;
 	}
