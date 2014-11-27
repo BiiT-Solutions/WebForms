@@ -21,6 +21,7 @@ public class SimpleFormView implements IWebformsFormView {
 	private Set<Integer> linkedFormVersions;
 	private Long linkedFormOrganizationId;
 	private FormWorkStatus status;
+	private boolean isLastVersion;
 
 	@Override
 	public String getName() {
@@ -202,5 +203,14 @@ public class SimpleFormView implements IWebformsFormView {
 	@Override
 	public String toString() {
 		return name + " " + label + " " + version;
+	}
+
+	@Override
+	public boolean isLastVersion() {
+		return isLastVersion;
+	}
+
+	public void setLastVersion(boolean isLastVersion) {
+		this.isLastVersion = isLastVersion;
 	}
 }

@@ -379,7 +379,9 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private Form loadForm(IWebformsFormView formView) {
-		return UserSessionHandler.getController().loadForm(formView);
+		Form form = UserSessionHandler.getController().loadForm(formView);
+		form.setLastVersion(formView.isLastVersion());
+		return form;
 	}
 
 	private void openNewFormWindow() {
@@ -452,7 +454,7 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.setEnabled(true);
 			upperMenu.getNewForm().setEnabled(canCreateForms);
 			upperMenu.getFinish().setEnabled(rowNotNullAndForm && canCreateForms);
-			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion);
+			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion && selectedForm.isLastVersion());
 			upperMenu.getLinkAbcdForm().setEnabled(rowNotNullAndForm && canLinkVersion);
 			upperMenu.getExportPdf().setEnabled(rowNotNullAndForm);
 			upperMenu.getExportFlowPdf().setEnabled(rowNotNullAndForm);

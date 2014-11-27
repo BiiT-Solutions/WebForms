@@ -81,8 +81,8 @@ public enum ThemeIcons implements IThemeIcon{
 	EXPORT_XML("form.xml.svg"), 
 	
 	UPLOAD("document.upload.svg"),  
-	REMOVE("element.delete.svg"), //TODO
-	REMOVE_ALL("element.remove.all.svg"), //TODO
+	REMOVE("element.delete.svg"), 
+	REMOVE_ALL("element.remove.all.svg"), 
 	VALIDATE("validate.document.svg"), 
 	VALIDATE_ALL("validate.documents.svg"), 
 	

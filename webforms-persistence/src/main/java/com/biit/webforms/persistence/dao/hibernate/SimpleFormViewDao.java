@@ -61,8 +61,11 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		SQLQuery query = session
-				.createSQLQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status "
-						+ "FROM tree_forms tf " + "ORDER BY label, tf.version DESC;");
+				.createSQLQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, max.maxversion "
+						+ "FROM tree_forms tf INNER JOIN "
+						+ "(SELECT MAX(version) AS maxversion, label, organizationId FROM tree_forms "
+						+ "GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
+						+ "ORDER BY label, tf.version DESC;");
 
 		List<Object[]> rows = query.list();
 
@@ -91,10 +94,12 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 			if (row[11] != null) {
 				formView.setLinkedFormOrganizationId(((BigInteger) row[11]).longValue());
 			}
-			
-			if(row[12] !=null){
-				formView.setStatus(FormWorkStatus.getFromString((String)row[12]));
+
+			if (row[12] != null) {
+				formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
 			}
+
+			formView.setLastVersion((Integer) row[13] == (Integer) row[3]);
 
 			formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 
