@@ -14,7 +14,9 @@ public enum WebMap {
 
 	VALIDATION(Validation.class),
 
-	COMPARE_STRUCTURE(CompareStructure.class),
+	COMPARE_STRUCTURE(CompareStructure.class), 
+	
+	COMPARE_CONTENT(CompareContent.class),
 	
 	;
 

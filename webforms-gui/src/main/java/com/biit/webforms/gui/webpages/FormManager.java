@@ -23,6 +23,7 @@ import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.authentication.exception.NotValidAbcdForm;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -224,6 +225,14 @@ public class FormManager extends SecuredWebPage {
 				} else {
 					MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
 				}
+			}
+		});
+		upperMenu.addCompareContent(new ClickListener() {
+			private static final long serialVersionUID = 1044352586328012252L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				ApplicationUi.navigateTo(WebMap.COMPARE_CONTENT);
 			}
 		});
 		return upperMenu;

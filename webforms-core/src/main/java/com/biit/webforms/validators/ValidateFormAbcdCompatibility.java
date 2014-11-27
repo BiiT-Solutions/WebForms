@@ -31,9 +31,13 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<Form> {
 			TreeObject child = form.getChild(abcdQuestion.getPath());
 			assertTrue(child != null, new QuestionNotFound(form, abcdQuestion));
 			if (child != null) {
-				com.biit.webforms.persistence.entity.Question question = (com.biit.webforms.persistence.entity.Question) child;
-				assertTrue(checkCompatibility(question, abcdQuestion), new QuestionCompatibilityError(question,
-						abcdForm, abcdQuestion));
+				if (child instanceof com.biit.webforms.persistence.entity.Question) {
+					com.biit.webforms.persistence.entity.Question question = (com.biit.webforms.persistence.entity.Question) child;
+					assertTrue(checkCompatibility(question, abcdQuestion), new QuestionCompatibilityError(question,
+							abcdForm, abcdQuestion));
+				}else{
+					assertTrue(false, new QuestionNotFound(form,abcdQuestion));
+				}
 			}
 		}
 
