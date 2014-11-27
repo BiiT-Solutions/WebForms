@@ -28,9 +28,6 @@ public class CompareXmlToXml {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
-		System.out.println(new ByteArrayInputStream(file1Content.toByteArray()).toString());
-		System.out.println("KIWIIIIIIIIIIIIII");
-
 		xmlDocument1 = dBuilder.parse(new ByteArrayInputStream(file1Content.toByteArray()));
 		xmlDocument2 = dBuilder.parse(new ByteArrayInputStream(file2Content.toByteArray()));
 		cause = new String();
@@ -40,11 +37,6 @@ public class CompareXmlToXml {
 
 		xmlDocument1.normalizeDocument();
 		xmlDocument2.normalizeDocument();
-
-		System.out.println("Doc1");
-		System.out.println(xmlDocument1.toString());
-		System.out.println("Doc2");
-		System.out.println(xmlDocument2.toString());
 
 		Element document1 = xmlDocument1.getDocumentElement();
 		Element document2 = xmlDocument2.getDocumentElement();

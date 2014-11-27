@@ -21,7 +21,7 @@ public class TableResultComparation extends Table {
 	}
 
 	protected void initContainerProperties() {
-		addContainerProperty(Properties.STATUS_ICON, Component.class, null, LanguageCodes.CAPTION_LABEL.translation(),
+		addContainerProperty(Properties.STATUS_ICON, Component.class, null, LanguageCodes.CAPTION_COMPARATION.translation(),
 				null, Align.CENTER);
 		addContainerProperty(Properties.RESULT_MESSAGE, String.class, null, LanguageCodes.CAPTION_LABEL.translation(),
 				null, Align.CENTER);
@@ -55,6 +55,16 @@ public class TableResultComparation extends Table {
 		error.setHeight("14px");
 		error.setWidth("14px");
 		return error;
+	}
+
+	public String getSelectedResult() {
+		if (getValue() != null) {
+			Object value = getItem(getValue()).getItemProperty(Properties.RESULT_MESSAGE).getValue();
+			if (value != null) {
+				return (String) value;
+			}
+		}
+		return "";
 	}
 
 }

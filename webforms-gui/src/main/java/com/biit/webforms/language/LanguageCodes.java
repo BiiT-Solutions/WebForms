@@ -371,7 +371,10 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_UPLOAD_XML_PROCESSED("caption.upload.xml.processed"),
 	CAPTION_REMOVE_XML_PROCESSED("caption.remove.xml.processed"),  
 	CAPTION_REMOVE_ALL_XML_PROCESSED("caption.remove.all.xml.processed"),
+	CAPTION_COMPARATION("caption.comparation"),
+	CAPTION_REMOVE_XML("caption.remove.xml"),
 	
+	TOOLTIP_REMOVE_XML("tooltip.remove.xml"),	
 	TOOLTIP_COMPARE_XML_CONTENT("tooltip.compare.xml.content"),
 	TOOLTIP_UPLOAD_XML_ORIGINAL("tooltip.upload.xml.original"), 
 	TOOLTIP_REMOVE_XML_ORIGINAL("tooltip.remove.xml.original"), 

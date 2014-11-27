@@ -25,6 +25,8 @@ import com.biit.webforms.gui.webpages.compare.structure.XmlWindowUpload;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.xml.CompareXmlToXml;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -35,6 +37,7 @@ public class CompareContent extends SecuredWebPage {
 	private static final long serialVersionUID = 8670784419625264277L;
 	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
 			Arrays.asList(WebformsActivity.READ));
+	private static final String RESULT_WIDTH = "140px";
 
 	private UpperMenu upperMenu;
 
@@ -44,6 +47,10 @@ public class CompareContent extends SecuredWebPage {
 	private TableResultComparation resultComparation;
 
 	private TextArea comparationResult;
+
+	private ValueChangeOriginalXml valueChangeOriginal;
+	private ValueChangeProcessedXml valueChangeProcessed;
+	private ValueChangeResultXml valueChangeResult;
 
 	@Override
 	protected void initContent() {
@@ -59,6 +66,11 @@ public class CompareContent extends SecuredWebPage {
 	}
 
 	private Component generate() {
+
+		valueChangeOriginal = new ValueChangeOriginalXml();
+		valueChangeProcessed = new ValueChangeProcessedXml();
+		valueChangeResult = new ValueChangeResultXml();
+
 		HorizontalLayout rootLayout = new HorizontalLayout();
 
 		rootLayout.setMargin(true);
@@ -68,14 +80,18 @@ public class CompareContent extends SecuredWebPage {
 		originalFiles = new TableXmlFiles();
 		originalFiles.setSizeFull();
 		originalFiles.setSelectable(true);
+		originalFiles.addValueChangeListener(valueChangeOriginal);
 
 		processedFiles = new TableXmlFiles();
 		processedFiles.setSizeFull();
 		processedFiles.setSelectable(true);
+		processedFiles.addValueChangeListener(valueChangeProcessed);
 
 		resultComparation = new TableResultComparation();
 		resultComparation.setSizeFull();
 		resultComparation.setSelectable(true);
+		resultComparation.setWidth(RESULT_WIDTH);
+		resultComparation.addValueChangeListener(valueChangeResult);
 
 		comparationResult = new TextArea();
 		comparationResult.setSizeFull();
@@ -86,7 +102,17 @@ public class CompareContent extends SecuredWebPage {
 		rootLayout.addComponent(resultComparation);
 		rootLayout.addComponent(comparationResult);
 
+		rootLayout.setExpandRatio(originalFiles, 0.3f);
+		rootLayout.setExpandRatio(processedFiles, 0.3f);
+		rootLayout.setExpandRatio(comparationResult, 0.40f);
+
 		return rootLayout;
+	}
+
+	protected void setComparationResult(String result) {
+		comparationResult.setReadOnly(false);
+		comparationResult.setValue(result);
+		comparationResult.setReadOnly(true);
 	}
 
 	private UpperMenu createUpperMenu() {
@@ -116,6 +142,24 @@ public class CompareContent extends SecuredWebPage {
 				uploadProcessedXml();
 			}
 		});
+		menu.addRemoveListener(new Button.ClickListener() {
+			private static final long serialVersionUID = -9091662409267978653L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				originalFiles.removeValueChangeListener(valueChangeOriginal);
+				processedFiles.removeValueChangeListener(valueChangeProcessed);
+
+				originalFiles.removeCurrentSelection();
+				processedFiles.removeCurrentSelection();
+
+				originalFiles.addValueChangeListener(valueChangeOriginal);
+				processedFiles.addValueChangeListener(valueChangeProcessed);
+				
+				resultComparation.setValue(null);
+				resultComparation.removeAllItems();
+			}
+		});
 
 		return menu;
 	}
@@ -128,7 +172,7 @@ public class CompareContent extends SecuredWebPage {
 
 		Iterator<?> itrI = originalFiles.getItemIds().iterator();
 		Iterator<?> itrJ = processedFiles.getItemIds().iterator();
-		
+
 		resultComparation.removeAllItems();
 
 		while (itrI.hasNext()) {
@@ -150,12 +194,11 @@ public class CompareContent extends SecuredWebPage {
 			MessageManager.showError(LanguageCodes.ERROR_UNEXPECTED_ERROR_IN_COMPARATION);
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
-		
-		String message = "File '" + originalFile.getFileName() + "' and '" + processedFile.getFileName()
-				+ "' ";
-		
+
+		String message = "File '" + originalFile.getFileName() + "' and '" + processedFile.getFileName() + "' ";
+
 		if (comparator.comparate()) {
-			message +="contain the same information";
+			message += "contain the same information";
 			resultComparation.addOk(message);
 		} else {
 			message += comparator.getCause();
@@ -202,4 +245,71 @@ public class CompareContent extends SecuredWebPage {
 		return activityPermissions;
 	}
 
+	public class ValueChangeOriginalXml implements ValueChangeListener {
+		private static final long serialVersionUID = -6934095193340246239L;
+
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+			if (event.getProperty().getValue() != null) {
+				processedFiles.setValue(null);
+				resultComparation.removeValueChangeListener(valueChangeResult);
+				resultComparation.setValue(originalFiles.getSelectedPosition());
+				resultComparation.addValueChangeListener(valueChangeResult);
+			}else{
+				resultComparation.removeValueChangeListener(valueChangeResult);
+				resultComparation.setValue(null);
+				resultComparation.addValueChangeListener(valueChangeResult);
+			}
+			updateProcessedText();
+		}
+	}
+
+	public class ValueChangeProcessedXml implements ValueChangeListener {
+		private static final long serialVersionUID = -7053035215659481939L;
+
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+			if (event.getProperty().getValue() != null) {
+				originalFiles.setValue(null);
+				resultComparation.removeValueChangeListener(valueChangeResult);
+				resultComparation.setValue(processedFiles.getSelectedPosition());
+				resultComparation.addValueChangeListener(valueChangeResult);
+			}else{
+				resultComparation.removeValueChangeListener(valueChangeResult);
+				resultComparation.setValue(null);
+				resultComparation.addValueChangeListener(valueChangeResult);
+			}
+			updateProcessedText();
+		}
+	}
+
+	public class ValueChangeResultXml implements ValueChangeListener {
+		private static final long serialVersionUID = -4278522308125189132L;
+
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+			originalFiles.removeValueChangeListener(valueChangeOriginal);
+			processedFiles.removeValueChangeListener(valueChangeProcessed);
+			if (event.getProperty().getValue() != null) {
+				originalFiles.selectItemAtPosition((Integer) event.getProperty().getValue());
+				processedFiles.selectItemAtPosition((Integer) event.getProperty().getValue());
+			} else {
+				originalFiles.setValue(null);
+				processedFiles.setValue(null);
+			}
+			originalFiles.addValueChangeListener(valueChangeOriginal);
+			processedFiles.addValueChangeListener(valueChangeProcessed);
+
+			updateProcessedText();
+		}
+	}
+
+	public void updateProcessedText() {
+		if (resultComparation.getValue() != null) {
+			String result = resultComparation.getSelectedResult();
+			setComparationResult(result);
+		}else{
+			setComparationResult(new String());
+		}
+	}
 }

@@ -36,4 +36,32 @@ public class TableXmlFiles extends Table {
 	public void removeRow(UploadedFile itemId) {
 		removeItem(itemId);
 	}
+
+	public void selectItemAtPosition(Integer value) {
+		int i = 0;
+		for (Object itemId : this.getItemIds()) {
+			if (i == value) {
+				setValue(itemId);
+				break;
+			}
+			i++;
+		}
+	}
+
+	public void removeCurrentSelection() {
+		if (getValue() != null) {
+			removeItem(getValue());
+		}
+	}
+
+	public Integer getSelectedPosition() {
+		int i = 0;
+		for (Object itemId : this.getItemIds()) {
+			if (itemId == getValue()) {
+				return i;
+			}
+			i++;
+		}
+		return -1;
+	}
 }
