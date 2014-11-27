@@ -137,6 +137,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_GENERATED_FILE("caption.generated.file"),
 	CAPTION_COMPARE_CONTENT("caption.compare.content"), 
 
+	CAPTION_WAITING_VALIDATION("caption.waiting.validation"),
 	TITLE_DOWNLOAD_FILE("title.download.file"),
 	
 	TOOLTIP_NEW_FORM("tooltip.new.form"),

@@ -39,16 +39,11 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 @Entity
 @Table(name = "flow")
 public class Flow extends StorableObject {
-
-	// uniqueConstraints = { @UniqueConstraint(columnNames = { "origin_id",
-	// "destiny_id" }) }
-
 	private static final String TOKEN_SEPARATOR = " ";
 
 	/*
-	 * Hibernate changes name of column when you use a many-to-one relationship.
-	 * If you want to add a constraint attached to that column, you have to
-	 * state the name.
+	 * Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
+	 * attached to that column, you have to state the name.
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "origin_id", nullable = false)
@@ -268,23 +263,24 @@ public class Flow extends StorableObject {
 			return condition;
 		}
 	}
-	
+
 	/**
 	 * Method to obtain simple version of the tokens. This has to be used by orbeon.
+	 * 
 	 * @return
 	 */
-	public List<Token> getConditionSimpleTokens(){
+	public List<Token> getConditionSimpleTokens() {
 		List<Token> allTokens = getCondition();
 		List<Token> simplifiedTokens = new ArrayList<Token>();
-		
-		for(Token token: allTokens){
-			if(token instanceof TokenComplex){
+
+		for (Token token : allTokens) {
+			if (token instanceof TokenComplex) {
 				simplifiedTokens.addAll(((TokenComplex) token).getSimpleTokens());
-			}else{
+			} else {
 				simplifiedTokens.add(token);
 			}
 		}
-		
+
 		return simplifiedTokens;
 	}
 
@@ -303,8 +299,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * This functions updates references to question and answers If a reference
-	 * is missing it will throw a {@code UpdateNullReferenceException}
+	 * This functions updates references to question and answers If a reference is missing it will throw a
+	 * {@code UpdateNullReferenceException}
 	 * 
 	 * @param mappedCopiedQuestions
 	 * @param mappedCopiedAnswers
@@ -334,37 +330,41 @@ public class Flow extends StorableObject {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(origin);
-		sb.append("->");
+		sb.append(" to ");
 		if (flowType == FlowType.END_FORM) {
 			sb.append("END_FORM");
 		} else {
 			sb.append(destiny);
 		}
-		sb.append(" '");
-		sb.append(getConditionString());
-		sb.append("'");
+
+		String condition = getConditionString();
+		if (condition.length() > 0) {
+			sb.append(" ['");
+			sb.append(condition);
+			sb.append("']");
+		}
 		return sb.toString();
 	}
 
 	public boolean isDependent(TreeObject treeObject) {
-		if(origin.equals(treeObject) || (destiny!=null && destiny.equals(treeObject))){
+		if (origin.equals(treeObject) || (destiny != null && destiny.equals(treeObject))) {
 			return true;
 		}
-		if(treeObject instanceof Question){
+		if (treeObject instanceof Question) {
 			Question question = (Question) treeObject;
-			for(Token token: condition){
-				if(token instanceof TokenComparationAnswer){
-					if(((TokenComparationAnswer) token).getQuestion().equals(question)){
+			for (Token token : condition) {
+				if (token instanceof TokenComparationAnswer) {
+					if (((TokenComparationAnswer) token).getQuestion().equals(question)) {
 						return true;
 					}
 					continue;
 				}
-				if(token instanceof TokenComparationValue){
-					if(((TokenComparationValue) token).getQuestion().equals(question)){
+				if (token instanceof TokenComparationValue) {
+					if (((TokenComparationValue) token).getQuestion().equals(question)) {
 						return true;
 					}
 					continue;
-				}				
+				}
 			}
 		}
 		return false;

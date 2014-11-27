@@ -146,6 +146,9 @@
 	<bean name="formDaoAbcd" class="com.biit.abcd.persistence.dao.hibernate.FormDao">
 		<property name="sessionFactory" ref="sessionFactoryAbcd" />
 	</bean>
+	<bean name="customVariableDao" class="com.biit.abcd.persistence.dao.hibernate.CustomVariableDao">
+		<property name="sessionFactory" ref="sessionFactoryAbcd" />
+	</bean>
 	<bean name="simpleFormDaoAbcd" class="com.biit.abcd.persistence.dao.hibernate.SimpleFormViewDao">
 		<property name="sessionFactory" ref="sessionFactoryAbcd" />
 	</bean>

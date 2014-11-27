@@ -191,7 +191,7 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				Form form = loadForm(getSelectedForm());
-				UserSessionHandler.getController().setFormInUse(form);
+				UserSessionHandler.getController().setPreviewedForm(form);
 
 				// Xforms only can be uses with valid forms.
 				ValidateFormComplete validator = new ValidateFormComplete();
@@ -199,8 +199,8 @@ public class FormManager extends SecuredWebPage {
 
 				ValidateReport report = new ValidateReport();
 				validator.validate((form), report);
-				if (report.isValid()) {
 
+				if (report.isValid()) {
 					WindowXForms windowXForms = new WindowXForms();
 					windowXForms.show();
 				} else {
@@ -388,7 +388,9 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private Form loadForm(IWebformsFormView formView) {
-		return UserSessionHandler.getController().loadForm(formView);
+		Form form = UserSessionHandler.getController().loadForm(formView);
+		form.setLastVersion(formView.isLastVersion());
+		return form;
 	}
 
 	private void openNewFormWindow() {
@@ -461,11 +463,12 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.setEnabled(true);
 			upperMenu.getNewForm().setEnabled(canCreateForms);
 			upperMenu.getFinish().setEnabled(rowNotNullAndForm && canCreateForms);
-			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion);
+			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion && selectedForm.isLastVersion());
 			upperMenu.getLinkAbcdForm().setEnabled(rowNotNullAndForm && canLinkVersion);
 			upperMenu.getExportPdf().setEnabled(rowNotNullAndForm);
 			upperMenu.getExportFlowPdf().setEnabled(rowNotNullAndForm);
 			upperMenu.getExportXsd().setEnabled(rowNotNullAndForm);
+			upperMenu.getExportXForms().setEnabled(rowNotNullAndForm);
 
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);

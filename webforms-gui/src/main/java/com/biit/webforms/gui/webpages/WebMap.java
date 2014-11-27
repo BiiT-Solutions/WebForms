@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.webpages;
 
+
 @SuppressWarnings("rawtypes")
 public enum WebMap {
 	LOGIN_PAGE(Login.class),

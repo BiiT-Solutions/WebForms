@@ -191,13 +191,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 	private void getFlowRule(StringBuilder flowRule) {
 		Iterator<Flow> iterator = getFlowsTo().iterator();
 		flowRule.append(" flowrule=\"");
+		StringBuilder rule = new StringBuilder();
 		while (iterator.hasNext()) {
 			Flow flow = iterator.next();
-			flowRule.append(flow.getConditionString().replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
-			if (iterator.hasNext() && flowRule.length() > 0) {
-				flowRule.append(" and ");
+			rule.append(flow.toString().replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
+			if (iterator.hasNext() && rule.length() > 0) {
+				rule.append(" and ");
 			}
 		}
+		flowRule.append(rule);
 		flowRule.append("\"");
 	}
 
@@ -330,6 +332,11 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws InvalidDateException
 	 */
 	protected void convertTokenToXForms(StringBuilder visibility, Token token) throws InvalidDateException {
+		if (token instanceof TokenComparationValue
+				&& ((TokenComparationValue) token).getQuestion().getName().contains("Geboortedatum")) {
+			System.out.println("--------------------");
+		}
+
 		if (token instanceof TokenComparationAnswer) {
 			// $control-name='answer'
 			if (((TokenComparationAnswer) token).getQuestion().getAnswerType().equals(AnswerType.MULTIPLE_SELECTION)) {
@@ -396,6 +403,11 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 */
 	private void getInputFieldVisibility(StringBuilder visibility, TokenComparationValue token)
 			throws InvalidDateException {
+		if (token.getQuestion().getName().contains("Geboortedatum")) {
+			System.out.println(token.getQuestion().getAnswerFormat());
+			System.out.println("$"+getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + " " + token.getType().getOrbeonRepresentation() + " '" + token.getValue() + "'");
+		}
+
 		if (token.getQuestion().getAnswerFormat() != null) {
 			switch (token.getQuestion().getAnswerFormat()) {
 			case NUMBER:
@@ -441,6 +453,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 				}
 				break;
 			}
+		}
+
+		if (token.getQuestion().getName().contains("Geboortedatum")) {
+			System.out.println(visibility.toString());
 		}
 	}
 
@@ -547,7 +563,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 			// Others must assure that the question is answered.
 			if (flow.isOthers()) {
-				if (!flowvisibility.isEmpty()) {
+				if (existPreviousCondition(flowvisibility)) {
 					flowvisibility.add(Token.and());
 				}
 				flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin(), ((Question) flow.getOrigin())
@@ -559,7 +575,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 				List<Token> previousVisibility = getXFormsHelper().getPreviousVisibilityTokens(flow);
 				if (!previousVisibility.isEmpty()) {
 					// Add 'AND'.
-					if (!flowvisibility.isEmpty()) {
+					if (existPreviousCondition(flowvisibility)) {
 						flowvisibility.add(Token.and());
 					}
 
@@ -582,7 +598,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 				}
 				// If is not used in condition, add as needed.
 				if (!originUsedInCondition) {
-					if (!flowvisibility.isEmpty()) {
+					if (existPreviousCondition(flowvisibility)) {
 						flowvisibility.add(Token.and());
 					}
 					flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin(), ((Question) flow.getOrigin())
@@ -592,7 +608,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 			}
 
 			// Concat rule to relevant rules.
-			if (!flowvisibility.isEmpty()) {
+			if (existPreviousCondition(flowvisibility)) {
 				// Connector with previous rule if exists.
 				if (!visibility.isEmpty()) {
 					visibility.add(Token.or());
@@ -605,6 +621,21 @@ public abstract class XFormsObject<T extends TreeObject> {
 			}
 		}
 		return visibility;
+	}
+
+	/**
+	 * Detects if exist a previous condition in a flow chain.
+	 * 
+	 * @param flowChain
+	 * @return
+	 */
+	private boolean existPreviousCondition(List<Token> flowChain) {
+		for (Token token : flowChain) {
+			if (token instanceof TokenComparationValue || token instanceof TokenComparationAnswer) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

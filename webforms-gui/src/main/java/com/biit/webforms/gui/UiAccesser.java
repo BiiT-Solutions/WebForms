@@ -54,7 +54,11 @@ public class UiAccesser {
 	}
 
 	public static synchronized boolean isUserUserUsingForm(User user, IWebformsFormView form) {
-		return formsInUse.get(form.getComparationId()) != null && formsInUse.get(form.getComparationId()).equals(user);
+		if (form != null) {
+			return formsInUse.get(form.getComparationId()) != null
+					&& formsInUse.get(form.getComparationId()).equals(user);
+		}
+		return false;
 	}
 
 	public static synchronized User getUserUsingForm(IBaseFormView form) {
