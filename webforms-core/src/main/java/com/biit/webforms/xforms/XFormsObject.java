@@ -332,11 +332,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws InvalidDateException
 	 */
 	protected void convertTokenToXForms(StringBuilder visibility, Token token) throws InvalidDateException {
-		if (token instanceof TokenComparationValue
-				&& ((TokenComparationValue) token).getQuestion().getName().contains("Geboortedatum")) {
-			System.out.println("--------------------");
-		}
-
 		if (token instanceof TokenComparationAnswer) {
 			// $control-name='answer'
 			if (((TokenComparationAnswer) token).getQuestion().getAnswerType().equals(AnswerType.MULTIPLE_SELECTION)) {
@@ -403,11 +398,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 */
 	private void getInputFieldVisibility(StringBuilder visibility, TokenComparationValue token)
 			throws InvalidDateException {
-		if (token.getQuestion().getName().contains("Geboortedatum")) {
-			System.out.println(token.getQuestion().getAnswerFormat());
-			System.out.println("$"+getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName() + " " + token.getType().getOrbeonRepresentation() + " '" + token.getValue() + "'");
-		}
-
 		if (token.getQuestion().getAnswerFormat() != null) {
 			switch (token.getQuestion().getAnswerFormat()) {
 			case NUMBER:
@@ -453,10 +443,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 				}
 				break;
 			}
-		}
-
-		if (token.getQuestion().getName().contains("Geboortedatum")) {
-			System.out.println(visibility.toString());
 		}
 	}
 
