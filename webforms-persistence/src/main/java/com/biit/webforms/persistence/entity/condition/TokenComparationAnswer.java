@@ -129,4 +129,17 @@ public class TokenComparationAnswer extends Token {
 		}
 		return referenceString + getType().getExpressionSimplifierRepresentation() + answerString;
 	}
+
+	@Override
+	public String getExpressionEditorRepresentation() {
+		String referenceString = null;
+		if (question != null) {
+			referenceString = question.getPathName().replaceAll("[^A-Za-z0-9_.]", "_");
+		}
+		String answerString = null;
+		if (answer != null) {
+			answerString = answer.getName();
+		}
+		return referenceString + getType().getExpressionEditorRepresentation() + answerString;
+	}
 }

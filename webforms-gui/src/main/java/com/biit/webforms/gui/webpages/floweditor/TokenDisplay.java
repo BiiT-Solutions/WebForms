@@ -89,12 +89,9 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	private void addToken(TokenComponent token) {
-		if (token.getToken().getType() == TokenTypes.RETURN) {
-			LineDisplay newLine = addLine();
-			newLine.addToken(token);
-			setFocused(token);
-		} else {
-			addToken(token, null);
+		boolean added = addToken(token, null);
+		if (token.getToken().getType() == TokenTypes.RETURN && added) {
+			addLine();
 		}
 	}
 
@@ -105,19 +102,34 @@ public class TokenDisplay extends CustomComponent {
 	 * @param token
 	 * @param line
 	 */
-	private void addToken(TokenComponent token, LineDisplay line) {
+	private boolean addToken(TokenComponent token, LineDisplay line) {
 		// If a line is defined we add it to the end of the line
 		if (line != null) {
 			line.addToken(token);
+			return true;
 		} else {
 			// If not we add after the focused component or the last line.
 			if (focusedComponent != null) {
-				focusedComponent.getLine().addTokenAfter(token, focusedComponent);
+				if (focusedComponent.getToken().getType() == TokenTypes.RETURN) {
+					// Avoid two consecutive pilcrum.
+					if (token.getToken().getType() != TokenTypes.RETURN) {
+						getNextLine(focusedComponent).addToken(token, 0);
+						setFocused(token);
+						return true;
+					}
+				} else {
+					if (focusedComponent.getLine().addTokenAfter(token, focusedComponent)) {
+						setFocused(token);
+						return true;
+					}
+				}
 			} else {
 				addToken(token, getCurrentLine());
+				setFocused(token);
+				return true;
 			}
 		}
-		setFocused(token);
+		return false;
 	}
 
 	/**
@@ -190,11 +202,22 @@ public class TokenDisplay extends CustomComponent {
 
 	private void remove(TokenComponent token) {
 		if (token.getToken().getType() == TokenTypes.RETURN) {
-			remove(token.getLine());
-		} else {
-			token.getLine().removeToken(token);
+			LineDisplay lineToRemove = getNextLine(token);
+			if (lineToRemove != null) {
+				remove(lineToRemove);
+			}
 		}
+		token.getLine().removeToken(token);
 		updateEvaluator();
+	}
+
+	private LineDisplay getNextLine(TokenComponent token) {
+		int nextLineIndex = rootLayout.getComponentIndex(token.getLine()) + 1;
+		try {
+			return (LineDisplay) rootLayout.getComponent(nextLineIndex);
+		} catch (IndexOutOfBoundsException iob) {
+			return null;
+		}
 	}
 
 	/**
@@ -204,8 +227,6 @@ public class TokenDisplay extends CustomComponent {
 	 */
 	private void remove(LineDisplay line) {
 		List<TokenComponent> tokens = line.getTokens();
-		// Return token should always be the first element
-		tokens.remove(0);
 
 		int previousLineIndex = rootLayout.getComponentIndex(line) - 1;
 		// First line can't be removed so we can assume we will always have one

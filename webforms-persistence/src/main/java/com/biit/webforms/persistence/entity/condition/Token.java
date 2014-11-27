@@ -211,4 +211,8 @@ public class Token extends StorableObject {
 		}
 		return getToken(tokenTypes);
 	}
+
+	public String getExpressionEditorRepresentation() {
+		return type.getExpressionEditorRepresentation();
+	}
 }
