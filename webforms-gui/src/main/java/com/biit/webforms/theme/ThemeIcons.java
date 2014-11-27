@@ -81,12 +81,9 @@ public enum ThemeIcons implements IThemeIcon {
 
 	COMPARE_XML_CONTENT("alert.svg"), // TODO
 	UPLOAD_XML_ORIGINAL("alert.svg"), // TODO
-	REMOVE_XML_ORIGINAL("alert.svg"), // TODO
 	REMOVE_XML("alert.svg"), // TODO
-	REMOVE_ALL_XML_ORIGINAL("alert.svg"), // TODO
-	UPLOAD_XML_PROCESSED("alert.svg"), // TODO
-	REMOVE_XML_PROCESSED("alert.svg"), // TODO
-	REMOVE_ALL_XML_PROCESSED("alert.svg"), //TODO 
+	CLEAN_XML("alert.svg"), // TODO
+	UPLOAD_XML_PROCESSED("alert.svg"), // TODO 
 	
 	EXPORT_XML("form.xml.svg"), 
 	

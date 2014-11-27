@@ -12,12 +12,9 @@ public class UpperMenu extends UpperMenuWebforms {
 
 	private IconButton compareContent;
 	private IconButton uploadOriginalXml;
-	//private IconButton removeOriginalXml;
-	private IconButton removeAllOriginalXml;
 	private IconButton uploadProcessedXml;
-	//private IconButton removeProcessedXml;
-	private IconButton removeAllProcessedXml;
 	private IconButton removeXml;
+	private IconButton cleanXml;
 
 	public UpperMenu() {
 
@@ -31,28 +28,15 @@ public class UpperMenu extends UpperMenuWebforms {
 		
 		removeXml = new IconButton(LanguageCodes.CAPTION_REMOVE_XML, ThemeIcons.REMOVE_XML,
 				LanguageCodes.TOOLTIP_REMOVE_XML, IconSize.BIG);
-		
-		removeAllOriginalXml = new IconButton(LanguageCodes.CAPTION_REMOVE_ALL_XML_ORIGINAL,
-				ThemeIcons.REMOVE_ALL_XML_ORIGINAL, LanguageCodes.TOOLTIP_REMOVE_ALL_XML_ORIGINAL, IconSize.BIG);
-		removeAllProcessedXml = new IconButton(LanguageCodes.CAPTION_REMOVE_ALL_XML_PROCESSED,
-				ThemeIcons.REMOVE_ALL_XML_PROCESSED, LanguageCodes.TOOLTIP_REMOVE_ALL_XML_PROCESSED, IconSize.BIG);
-		
-		
-//		removeOriginalXml = new IconButton(LanguageCodes.CAPTION_REMOVE_XML_ORIGINAL, ThemeIcons.REMOVE_XML_ORIGINAL,
-//				LanguageCodes.TOOLTIP_REMOVE_XML_ORIGINAL, IconSize.BIG);
-
-
-
-//		removeProcessedXml = new IconButton(LanguageCodes.CAPTION_REMOVE_XML_PROCESSED,
-//				ThemeIcons.REMOVE_XML_PROCESSED, LanguageCodes.TOOLTIP_REMOVE_XML_PROCESSED, IconSize.BIG);
+		cleanXml = new IconButton(LanguageCodes.CAPTION_CLEAN_XML,
+				ThemeIcons.CLEAN_XML, LanguageCodes.TOOLTIP_CLEAN_XML, IconSize.BIG);
 
 
 		addIconButton(compareContent);
 		addIconButton(uploadOriginalXml);
 		addIconButton(uploadProcessedXml);
 		addIconButton(removeXml);
-		addIconButton(removeAllOriginalXml);
-		addIconButton(removeAllProcessedXml);
+		addIconButton(cleanXml);
 
 	}
 
@@ -70,6 +54,10 @@ public class UpperMenu extends UpperMenuWebforms {
 
 	public void addRemoveListener(ClickListener listener) {
 		removeXml.addClickListener(listener);
+	}
+
+	public void addCleanListener(ClickListener listener) {
+		cleanXml.addClickListener(listener);
 	}
 
 }

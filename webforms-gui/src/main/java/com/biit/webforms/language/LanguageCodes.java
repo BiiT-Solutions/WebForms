@@ -365,23 +365,17 @@ public enum LanguageCodes implements ILanguageCode{
 	
 	// Compare content
 	CAPTION_COMPARE_XML_CONTENT("caption.compare.xml.content"),
-	CAPTION_UPLOAD_XML_ORIGINAL("caption.upload.xml.original"), 
-	CAPTION_REMOVE_XML_ORIGINAL("caption.remove.xml.original"), 
-	CAPTION_REMOVE_ALL_XML_ORIGINAL("caption.remove.all.xml.original"), 
+	CAPTION_UPLOAD_XML_ORIGINAL("caption.upload.xml.original"),
 	CAPTION_UPLOAD_XML_PROCESSED("caption.upload.xml.processed"),
-	CAPTION_REMOVE_XML_PROCESSED("caption.remove.xml.processed"),  
-	CAPTION_REMOVE_ALL_XML_PROCESSED("caption.remove.all.xml.processed"),
 	CAPTION_COMPARATION("caption.comparation"),
 	CAPTION_REMOVE_XML("caption.remove.xml"),
-	
-	TOOLTIP_REMOVE_XML("tooltip.remove.xml"),	
+	CAPTION_CLEAN_XML("caption.clean.xml"),
+
 	TOOLTIP_COMPARE_XML_CONTENT("tooltip.compare.xml.content"),
-	TOOLTIP_UPLOAD_XML_ORIGINAL("tooltip.upload.xml.original"), 
-	TOOLTIP_REMOVE_XML_ORIGINAL("tooltip.remove.xml.original"), 
-	TOOLTIP_REMOVE_ALL_XML_ORIGINAL("tooltip.remove.all.xml.original"), 
-	TOOLTIP_UPLOAD_XML_PROCESSED("tooltip.upload.xml.processed"), 
-	TOOLTIP_REMOVE_XML_PROCESSED("tooltip.remove.xml.processed"), 
-	TOOLTIP_REMOVE_ALL_XML_PROCESSED("tooltip.remove.all.xml.processed"),
+	TOOLTIP_UPLOAD_XML_ORIGINAL("tooltip.upload.xml.original"),
+	TOOLTIP_UPLOAD_XML_PROCESSED("tooltip.upload.xml.processed"),
+	TOOLTIP_REMOVE_XML("tooltip.remove.xml"),
+	TOOLTIP_CLEAN_XML("tooltip.clean.xml"), 
 	
 	WARNING_DESCRIPTION_NUMBER_OF_ORIGINAL_AND_PROCESSED_FILES_DOESNT_MATCH("warning.description.number.of.original.and.processed.files.doesnt.match"),
 	
