@@ -14,8 +14,8 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private IconButton newForm, finish, newFormVersion, importAbcdForm, linkAbcdForm, exportXForms, exportPdf,
-			exportFlowPdf, exportXsd;
+	private final IconButton newForm, finish, newFormVersion, importAbcdForm, linkAbcdForm, exportXForms, exportPdf,
+			exportFlowPdf, exportXsd, impactAnalisys, compareContent;
 
 	public UpperMenuProjectManager() {
 		super();
@@ -40,6 +40,13 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		
 		exportXsd = new IconButton(LanguageCodes.CAPTION_EXPORT_XSD, ThemeIcons.EXPORT_XSD,
 				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
+		
+		impactAnalisys = new IconButton(LanguageCodes.CAPTION_IMPACT_ANALYSIS, ThemeIcons.IMPACT_ANALYSIS,
+				LanguageCodes.TOOLTIP_IMPACT_ANALISYS, IconSize.BIG);
+		impactAnalisys.setEnabled(false);
+		
+		compareContent = new IconButton(LanguageCodes.CAPTION_COMPARE_CONTENT, ThemeIcons.COMPARE_CONTENT,
+				LanguageCodes.TOOLTIP_COMPARE_CONTENT, IconSize.BIG);
 
 		addIconButton(newForm);
 		//addIconButton(finish);
@@ -50,6 +57,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		addIconButton(exportFlowPdf);
 		addIconButton(exportXsd);
 		addIconButton(exportXForms);
+		addIconButton(impactAnalisys);
+		addIconButton(compareContent);
 	}
 
 	public void addNewFormListener(ClickListener listener) {
@@ -87,6 +96,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	public void addExportXsdListener(ClickListener listener) {
 		exportXsd.addClickListener(listener);
 	}
+	
+	public void addCompareContent(ClickListener listener) {
+		compareContent.addClickListener(listener);
+	}
 
 	public IconButton getNewForm() {
 		return newForm;
@@ -122,5 +135,13 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	
 	public IconButton getExportXsd() {
 		return exportXsd;
+	}
+	
+	public IconButton getImpactAnalisys() {
+		return impactAnalisys;
+	}
+
+	public IconButton getCompareContent() {
+		return compareContent;
 	}
 }

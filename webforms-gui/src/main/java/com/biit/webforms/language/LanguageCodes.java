@@ -135,6 +135,8 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_EXPORT_XSD("caption.link.export.xsd"),
 	CAPTION_GENERATING_FILE("caption.generating.file"),
 	CAPTION_GENERATED_FILE("caption.generated.file"),
+	CAPTION_COMPARE_CONTENT("caption.compare.content"), 
+
 	CAPTION_WAITING_VALIDATION("caption.waiting.validation"),
 	TITLE_DOWNLOAD_FILE("title.download.file"),
 	
@@ -143,6 +145,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_IMPORT_ABCD_FORM("tooltip.import.abcd.form"),
 	TOOLTIP_LINK_ABCD_FORM("tooltip.link.abcd.form"),
 	TOOLTIP_EXPORT_XSD("caption.link.export.xsd"),
+	TOOLTIP_COMPARE_CONTENT("tooltip.compare.content"), 
 	
 	NULL_VALUE_NEW_FORM("null.value.new.form"),
 	NULL_VALUE_NEW_BLOCK("null.value.new.block"),
@@ -360,6 +363,27 @@ public enum LanguageCodes implements ILanguageCode{
 	
 	ERROR_MESSAGE_CURRENT_FORM_STRUCTURE_IS_NOT_VALID("error.message.current.form.structure.is.not.valid"),
 	
+	// Compare content
+	CAPTION_COMPARE_XML_CONTENT("caption.compare.xml.content"),
+	CAPTION_UPLOAD_XML_ORIGINAL("caption.upload.xml.original"), 
+	CAPTION_REMOVE_XML_ORIGINAL("caption.remove.xml.original"), 
+	CAPTION_REMOVE_ALL_XML_ORIGINAL("caption.remove.all.xml.original"), 
+	CAPTION_UPLOAD_XML_PROCESSED("caption.upload.xml.processed"),
+	CAPTION_REMOVE_XML_PROCESSED("caption.remove.xml.processed"),  
+	CAPTION_REMOVE_ALL_XML_PROCESSED("caption.remove.all.xml.processed"),
+	
+	TOOLTIP_COMPARE_XML_CONTENT("tooltip.compare.xml.content"),
+	TOOLTIP_UPLOAD_XML_ORIGINAL("tooltip.upload.xml.original"), 
+	TOOLTIP_REMOVE_XML_ORIGINAL("tooltip.remove.xml.original"), 
+	TOOLTIP_REMOVE_ALL_XML_ORIGINAL("tooltip.remove.all.xml.original"), 
+	TOOLTIP_UPLOAD_XML_PROCESSED("tooltip.upload.xml.processed"), 
+	TOOLTIP_REMOVE_XML_PROCESSED("tooltip.remove.xml.processed"), 
+	TOOLTIP_REMOVE_ALL_XML_PROCESSED("tooltip.remove.all.xml.processed"),
+	
+	WARNING_DESCRIPTION_NUMBER_OF_ORIGINAL_AND_PROCESSED_FILES_DOESNT_MATCH("warning.description.number.of.original.and.processed.files.doesnt.match"),
+	
+	ERROR_UNEXPECTED_ERROR_IN_COMPARATION("error.unexpected.error.in.comparation"),
+	
 	//Orbeon
 	ORBEON_INVALID_FORMAT_EMAIL("orbeon.invalid.format.email"),
 	ORBEON_INVALID_FORMAT_PHONE("orbeon.invalid.format.phone"),
@@ -380,7 +404,7 @@ public enum LanguageCodes implements ILanguageCode{
 	ERROR_FORM_ALREADY_EXISTS("error.form.already.exist"),	
 	ERROR_XFORMS_USER_INVALID("error.form.user.invalid"),
 	
-	XFORM_PUBLISHED("form.published.correctly")
+	XFORM_PUBLISHED("form.published.correctly"), 
 	;
 
 	private String value;

@@ -17,7 +17,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class FormEditBottomMenu extends BottomMenu {
 	private static final long serialVersionUID = 5814263369658754770L;
 
-	private IconButton editFormButton, editFlowButton, validateForm, impactAnalisys, compareStructure;
+	private IconButton editFormButton, editFlowButton, validateForm, compareStructure;
 	private List<LockFormListener> listeners;
 
 	public FormEditBottomMenu() {
@@ -29,8 +29,6 @@ public class FormEditBottomMenu extends BottomMenu {
 				LanguageCodes.TOOLTIP_EDIT_FORM_FLOW, IconSize.BIG);
 		validateForm = new IconButton(LanguageCodes.CAPTION_VALIDATE_FORM, ThemeIcons.VALIDATE_FORM,
 				LanguageCodes.TOOLTIP_VALIDATE_FORM, IconSize.BIG);
-		impactAnalisys = new IconButton(LanguageCodes.CAPTION_IMPACT_ANALYSIS, ThemeIcons.IMPACT_ANALYSIS,
-				LanguageCodes.TOOLTIP_IMPACT_ANALISYS, IconSize.BIG);
 		compareStructure = new IconButton(LanguageCodes.CAPTION_COMPARE_STRUCTURE, ThemeIcons.COMPARE_STRUCTURE,
 				LanguageCodes.TOOLTIP_COMPARE_STRUCTURE, IconSize.BIG);
 
@@ -70,12 +68,11 @@ public class FormEditBottomMenu extends BottomMenu {
 				ApplicationUi.navigateTo(WebMap.COMPARE_STRUCTURE);
 			}
 		});
-		impactAnalisys.setEnabled(false);
+
 
 		addIconButton(editFormButton);
 		addIconButton(editFlowButton);
 		addIconButton(validateForm);
-		addIconButton(impactAnalisys);
 		addIconButton(compareStructure);
 	}
 
@@ -89,10 +86,6 @@ public class FormEditBottomMenu extends BottomMenu {
 
 	public IconButton getValidateForm() {
 		return validateForm;
-	}
-
-	public IconButton getImpactAnalisys() {
-		return impactAnalisys;
 	}
 
 	private void lockForm() {
