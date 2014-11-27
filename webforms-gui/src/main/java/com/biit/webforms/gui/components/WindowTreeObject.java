@@ -1,10 +1,10 @@
 package com.biit.webforms.gui.components;
 
+import com.biit.form.BaseForm;
 import com.biit.form.TreeObject;
 import com.biit.webforms.gui.common.components.TableWithSearch;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.language.ILanguageCode;
-import com.biit.webforms.persistence.entity.Form;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -28,7 +28,7 @@ public class WindowTreeObject extends WindowAcceptCancel {
 	private TableWithSearch tableWithSearch;
 	private Class<?>[] selectFilters;
 
-	public WindowTreeObject(ILanguageCode code, Form form, Class<?>... loadfilter) {
+	public WindowTreeObject(ILanguageCode code, BaseForm form, Class<?>... loadfilter) {
 		super();
 		setCaption(code.translation());
 		setContent(generateContent(form, loadfilter));
@@ -48,7 +48,7 @@ public class WindowTreeObject extends WindowAcceptCancel {
 		});
 	}
 
-	private Component generateContent(Form form, Class<?>... loadFilter) {
+	private Component generateContent(BaseForm form, Class<?>... loadFilter) {
 		formTable = new TableTreeObjectLabel();
 		formTable.setSizeFull();
 		formTable.setSelectable(true);
