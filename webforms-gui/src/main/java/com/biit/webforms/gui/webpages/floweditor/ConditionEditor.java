@@ -265,10 +265,6 @@ public class ConditionEditor extends CustomComponent {
 		controls.setEnabled(enabled);
 	}
 	
-	/**
-	 * TODO check tomorrow.
-	 * @return
-	 */
 	protected boolean isConditionValid() {
 		// Translation
 		try {

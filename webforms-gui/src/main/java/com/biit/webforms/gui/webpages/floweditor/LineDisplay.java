@@ -49,33 +49,41 @@ public class LineDisplay extends CustomComponent {
 	}
 
 	/**
-	 * Adds a new token to the line. If the token is a return element then
-	 * appears always at the beginning of the list. The return token can only
-	 * appear as first element. As it is intented to work like a new character
-	 * than can be deleted to allow to allow the delete of the line.
+	 * Adds a new token to the line. If the token is a return element then appears always at the beginning of the list.
+	 * The return token can only appear as first element. As it is intented to work like a new character than can be
+	 * deleted to allow to allow the delete of the line.
 	 * 
 	 * @param token
 	 */
 	public void addToken(TokenComponent token) {
-		if (token.getToken().getType() == TokenTypes.RETURN) {
-			rootLayout.addComponentAsFirst(token);
-		} else {
-			rootLayout.addComponent(token);
-		}
+		rootLayout.addComponent(token);
 	}
 
-	public void addTokenAfter(TokenComponent token, TokenComponent focusedComponent) {
+	public void addToken(TokenComponent token, int index) {
+		rootLayout.addComponent(token, index);
+	}
+
+	public boolean addTokenAfter(TokenComponent token, TokenComponent focusedComponent) {
 		if (focusedComponent == null) {
 			addToken(token);
+			return true;
 		} else {
 			int insertionIndex = rootLayout.getComponentIndex(focusedComponent) + 1;
 			if (insertionIndex == rootLayout.getComponentCount()) {
 				// Last item selected. Insert at end.
 				addToken(token);
+				return true;
 			} else {
-				rootLayout.addComponent(token, insertionIndex);
+				// Avoid two consecutive pilcrum.
+				if (!token.getToken().getType().equals(TokenTypes.RETURN)
+						|| (rootLayout.getComponent(insertionIndex) instanceof TokenComponent && !((TokenComponent) rootLayout
+								.getComponent(insertionIndex)).getToken().getType().equals(TokenTypes.RETURN))) {
+					rootLayout.addComponent(token, insertionIndex);
+					return true;
+				}
 			}
 		}
+		return false;
 	}
 
 	public void removeToken(TokenComponent token) {

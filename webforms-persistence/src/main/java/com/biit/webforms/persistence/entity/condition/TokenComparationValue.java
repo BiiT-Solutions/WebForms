@@ -78,27 +78,33 @@ public class TokenComparationValue extends Token {
 		}
 	}
 
-	public static TokenComparationValue getTokenEqual(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+	public static TokenComparationValue getTokenEqual(Question reference, AnswerSubformat subformat,
+			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.EQ, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenNotEqual(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+	public static TokenComparationValue getTokenNotEqual(Question reference, AnswerSubformat subformat,
+			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.NE, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenLessThan(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+	public static TokenComparationValue getTokenLessThan(Question reference, AnswerSubformat subformat,
+			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.LT, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenGreaterThan(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+	public static TokenComparationValue getTokenGreaterThan(Question reference, AnswerSubformat subformat,
+			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.GT, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenLessEqual(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+	public static TokenComparationValue getTokenLessEqual(Question reference, AnswerSubformat subformat,
+			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.LE, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenGreaterEqual(Question reference, AnswerSubformat subformat,DatePeriodUnit datePeriodUnit, String value) {
+	public static TokenComparationValue getTokenGreaterEqual(Question reference, AnswerSubformat subformat,
+			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.GE, reference, subformat, datePeriodUnit, value);
 	}
 
@@ -110,19 +116,18 @@ public class TokenComparationValue extends Token {
 		}
 
 		if (subformat == AnswerSubformat.DATE_PERIOD) {
-			return referenceString + " (" + datePeriodUnit + ")" + getType()
-					+ value.substring(0, value.length());
+			return referenceString + " (" + datePeriodUnit + ")" + getType() + value.substring(0, value.length());
 		}
 
 		return referenceString + getType() + value;
 	}
-	
-	public String getLocalizedString(String localizedDatePeriodUnit){
+
+	public String getLocalizedString(String localizedDatePeriodUnit) {
 		String referenceString = null;
 		if (question != null) {
 			referenceString = question.getName();
 		}
-		
+
 		if (subformat == AnswerSubformat.DATE_PERIOD) {
 			return referenceString + " (" + localizedDatePeriodUnit + ")" + getType()
 					+ value.substring(0, value.length());
@@ -140,6 +145,15 @@ public class TokenComparationValue extends Token {
 		return referenceString + getType().getExpressionSimplifierRepresentation() + value;
 	}
 
+	@Override
+	public String getExpressionEditorRepresentation() {
+		String referenceString = null;
+		if (question != null) {
+			referenceString = question.getPathName().replaceAll("[^A-Za-z0-9_.]", "_");
+		}
+		return referenceString + getType().getExpressionEditorRepresentation() + value;
+	}
+
 	public Question getQuestion() {
 		return question;
 	}
@@ -151,8 +165,8 @@ public class TokenComparationValue extends Token {
 	public AnswerSubformat getSubformat() {
 		return subformat;
 	}
-	
-	public DatePeriodUnit getDatePeriodUnit(){
+
+	public DatePeriodUnit getDatePeriodUnit() {
 		return datePeriodUnit;
 	}
 

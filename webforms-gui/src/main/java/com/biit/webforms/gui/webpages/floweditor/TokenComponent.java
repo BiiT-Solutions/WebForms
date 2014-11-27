@@ -124,7 +124,7 @@ public class TokenComponent extends CustomComponent {
 
 			label.setValue(((TokenComparationValue) token).getLocalizedString(unitLocalization));
 		} else {
-			label.setValue(token.toString());
+			label.setValue(token.getExpressionEditorRepresentation());
 		}
 	}
 

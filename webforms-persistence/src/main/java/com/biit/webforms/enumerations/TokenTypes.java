@@ -6,35 +6,35 @@ import com.biit.webforms.utils.parser.ITokenType;
 
 public enum TokenTypes implements ITokenType {
 
-	WHITESPACE("\\s+|\\n+", 0, " ", "", ""),
+	WHITESPACE("\\s+|\\n+", 0, " ", "", "", " "),
 	// Only for UI consistency.
-	RETURN("\\n", 0, "\n", "", ""),
+	RETURN("\\n", 0, "", "", "", "\u00B6"),
 
-	LEFT_PAR("\\(", 1, "(", "(", "("),
+	LEFT_PAR("\\(", 1, "(", "(", "(", "("),
 
-	RIGHT_PAR("\\)", 1, ")", ")", ")"),
+	RIGHT_PAR("\\)", 1, ")", ")", ")", ")"),
 
-	AND("AND|and|&&", 1, "AND", "and", "&"),
+	AND("AND|and|&&", 1, "AND", "and", "&", "AND"),
 
-	OR("OR|or|\\|\\|", 1, "OR", "or", "|"),
+	OR("OR|or|\\|\\|", 1, "OR", "or", "|", "OR"),
 
-	NOT("NOT|not|!", 1, "NOT", "not", "!"),
+	NOT("NOT|not|!", 1, "NOT", "not", "!", "NOT"),
 
-	GT(">", 1, ">", "&gt;", "gt"),
+	GT(">", 1, ">", "&gt;", "gt", ">"),
 
-	LT("<", 1, "<", "&lt;", "lt"),
+	LT("<", 1, "<", "&lt;", "lt", "<"),
 
-	GE(">=", 1, ">=", "&gt;=", "gt="),
+	GE(">=", 1, ">=", "&gt;=", "gt=", ">="),
 
-	LE("<=", 1, "<=", "&lt;=", "lt="),
+	LE("<=", 1, "<=", "&lt;=", "lt=", "<="),
 
-	EQ("==", 1, "==", "=", "="),
+	EQ("==", 1, "==", "=", "=", "=="),
 
-	NE("!=", 1, "!=", "!=", "!="),
+	NE("!=", 1, "<>", "!=", "!=", "<>"),
 
-	BETWEEN("BETWEEN|between", 1, "BETWEEN", "between", "between"),
-	
-	IN("IN|in", 1, "IN", "in", "in"),
+	BETWEEN("BETWEEN|between", 1, "BETWEEN", "between", "between", "BETWEEN"),
+
+	IN("IN|in", 1, "IN", "in", "in", "IN"),
 
 	;
 
@@ -43,14 +43,16 @@ public enum TokenTypes implements ITokenType {
 	private String stringForm;
 	private String orbeonRepresentation;
 	private String expressionSimplifierRepresentation;
+	private String expressionEditorRepressentation;
 
 	TokenTypes(String regexFilter, int precedence, String stringForm, String orbeonRepresentation,
-			String expressionSimplifierRepresentation) {
+			String expressionSimplifierRepresentation, String expressionEditorRepressentation) {
 		this.regexFilter = Pattern.compile(regexFilter);
 		this.preference = precedence;
 		this.stringForm = stringForm;
 		this.orbeonRepresentation = orbeonRepresentation;
 		this.expressionSimplifierRepresentation = expressionSimplifierRepresentation;
+		this.expressionEditorRepressentation = expressionEditorRepressentation;
 	}
 
 	@Override
@@ -102,6 +104,10 @@ public enum TokenTypes implements ITokenType {
 			}
 		}
 		return null;
+	}
+
+	public String getExpressionEditorRepresentation() {
+		return expressionEditorRepressentation;
 	}
 
 }
