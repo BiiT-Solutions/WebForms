@@ -30,7 +30,6 @@ import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyE
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
-import com.biit.webforms.validators.reports.FlowOriginIsNotMandatory;
 
 public class FormTestUtilities {
 
@@ -109,7 +108,7 @@ public class FormTestUtilities {
 		Form form = createForm("test1", cat1);
 
 		// Flow
-		Flow flow1 = createNormalFlow(qu1, qu2, false, token(qu1, "==", "a"), or(), token(qu1, "!=", "a"));
+		Flow flow1 = createNormalFlow(qu1, qu2, false, token(qu1, "==", "a"), or(), token(qu1, "<>", "a"));
 		Flow flow3 = createNormalFlow(qu2, qu3, false, token(qu2, "==", "d"));
 		Flow flow4 = createEndFlow(qu2, true);
 
@@ -134,7 +133,7 @@ public class FormTestUtilities {
 
 		// Flow
 		Flow flow1 = createNormalFlow(qu1, qu2, false, token(qu1, "==", "a"));
-		Flow flow1rep = createNormalFlow(qu1, qu2, false, token(qu1, "==", "a"), or(), token(qu1, "!=", "c"));
+		Flow flow1rep = createNormalFlow(qu1, qu2, false, token(qu1, "==", "a"), or(), token(qu1, "<>", "c"));
 		Flow flow2 = createEndFlow(qu1, true);
 		Flow flow3 = createNormalFlow(qu2, qu3, false, token(qu2, "==", "d"));
 		Flow flow4 = createEndFlow(qu2, true);

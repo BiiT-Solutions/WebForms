@@ -21,24 +21,16 @@ import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 
 /**
- * Flow unit domain Is the domain that exists at every question It can be
- * created only if the union of flow domain restrictions is complete.
+ * Flow unit domain Is the domain that exists at every question It can be created only if the union of flow domain
+ * restrictions is complete.
  * 
  */
 public class FlowUnitDomain {
 
 	public FlowUnitDomain(Form form, BaseQuestion from) throws BadFormedExpressions, IncompleteLogic, RedundantLogic {
 		Set<Flow> flowQ1 = form.getFlowsFrom(from);
-//		System.out.println("****************************************");
-//		System.out.println(flowQ1);
 		List<IDomain> domains = getFlowDomains(flowQ1);
-//		System.out.println("****************************************");
-//		System.out.println("Unicity test");
-//		System.out.println("****************************************");
 		checkUnicity(domains);
-//		System.out.println("****************************************");
-//		System.out.println("Completeness test");
-//		System.out.println("****************************************");
 		checkCompleteness(domains);
 
 	}
@@ -46,9 +38,7 @@ public class FlowUnitDomain {
 	private void checkUnicity(List<IDomain> domains) throws RedundantLogic {
 		for (int i = 0; i < domains.size(); i++) {
 			for (int j = i + 1; j < domains.size(); j++) {
-//				System.out.println(i + " " + domains.get(i) +" intersec "+ j + " " + domains.get(j));
 				IDomain intersection = domains.get(i).intersect(domains.get(j));
-//				System.out.println("Interseccion " + intersection+" Empty:"+intersection.isEmpty());
 				if (!intersection.isEmpty()) {
 					throw new RedundantLogic();
 				}
@@ -66,7 +56,6 @@ public class FlowUnitDomain {
 				unionflowDomain = unionflowDomain.union(flowDomain);
 			}
 		}
-		//System.out.println("Union " + unionflowDomain+ " Complete:"+unionflowDomain.isComplete());
 		if (!unionflowDomain.isComplete()) {
 			throw new IncompleteLogic();
 		}
