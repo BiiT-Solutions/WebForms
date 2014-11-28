@@ -23,13 +23,13 @@ public class XFormsText extends XFormsQuestion {
 	}
 
 	@Override
-	public String getHelp() {
-		// Avoid empty help windows.
+	protected String getLabel() {
 		if (((Text) getSource()).getDescription().length() > 0) {
-			return "<help><![CDATA[" + ((Text) getSource()).getDescription() + "]]></help>";
+			return "<label><![CDATA[" + ((Text) getSource()).getDescription() + "]]></label>";
 		}
 		return "";
 	}
+	
 
 	@Override
 	protected void isMandatory(StringBuilder builder) {
