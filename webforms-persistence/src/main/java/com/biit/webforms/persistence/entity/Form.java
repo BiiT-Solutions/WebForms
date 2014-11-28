@@ -412,4 +412,19 @@ public class Form extends BaseForm implements IWebformsFormView {
 		this.isLastVersion = isLastVersion;
 	}
 
+	public String exportToJavaCode(StringBuilder sb){
+		Integer counter =0;
+		
+		sb.append("Form form = new Form();").append(System.lineSeparator());
+		sb.append("form.setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
+		sb.append("form.setDescription(\"").append(this.getDescription()).append("\");").append(System.lineSeparator());
+		
+		for(TreeObject child: getChildren()){
+			int tempCounter = counter+1;
+			counter = ((Category)child).exportToJavaCode(sb,counter+1);
+			sb.append("form.addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
+		}
+		
+		return sb.toString();
+	}
 }

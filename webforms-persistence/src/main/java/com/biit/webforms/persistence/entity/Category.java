@@ -20,8 +20,8 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 @Entity
 @Table(name = "tree_categories")
 public class Category extends BaseCategory {
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(BaseQuestion.class,
-			BaseRepeatableGroup.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
+			Arrays.asList(BaseQuestion.class, BaseRepeatableGroup.class));
 
 	public Category() {
 		super();
@@ -35,14 +35,36 @@ public class Category extends BaseCategory {
 	protected List<Class<? extends TreeObject>> getAllowedChildren() {
 		return ALLOWED_CHILDS;
 	}
-	
+
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof Category) {
-			//Nothing to copy except basic information data.
+			// Nothing to copy except basic information data.
 			copyBasicInfo(object);
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Category only supports the same type copy");
 		}
+	}
+
+	public int exportToJavaCode(StringBuilder sb, int counter) {
+		String idName = "el_" + counter;
+
+		sb.append("Category ").append(idName).append("  = new Category();").append(System.lineSeparator());
+		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
+		sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
+		
+		int currentCounter = counter;
+		for (TreeObject child : getChildren()) {
+			int tempCounter = currentCounter+1;
+			if (child instanceof Group) {
+				currentCounter = ((Group) child).exportToJavaCode(sb, currentCounter + 1);
+			}
+			if (child instanceof Question) {
+				currentCounter = ((Question) child).exportToJavaCode(sb, currentCounter + 1);
+			}
+			
+			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
+		}
+		return counter;
 	}
 }

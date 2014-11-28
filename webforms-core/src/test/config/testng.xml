@@ -6,6 +6,7 @@
 				<include name="testDomain" />
 				<include name="testFlowDomain" />
 				<include name="booleanExpressions" />
+				<include name="linkValidation" />
 				<include name="xforms" />
 			</run>
 		</groups>
@@ -14,6 +15,7 @@
 			<class name="com.biit.webforms.utils.math.domain.TestFlowDomain" />
 			<class name="com.biit.webforms.xforms.expressions.BooleanExpressionTest" />
 			<class name="com.biit.webforms.xforms.expressions.XFormExporter" />
+			<class name="com.biit.webforms.validators.LinkValidationTests" />
 		</classes>
 	</test>
 </suite>
