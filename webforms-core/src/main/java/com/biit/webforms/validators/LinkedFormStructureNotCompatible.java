@@ -13,7 +13,9 @@ public class LinkedFormStructureNotCompatible extends Report {
 	private static String generateReport(Form form, com.biit.abcd.persistence.entity.Form abcdForm) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Form '");
-		sb.append(form);
+		sb.append(form.getLabel());
+		sb.append("' Version '");
+		sb.append(abcdForm.getVersion());
 		sb.append("' is not compatible with '");
 		sb.append(abcdForm);
 		sb.append("' version: ");

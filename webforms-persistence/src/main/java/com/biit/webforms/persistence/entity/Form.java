@@ -20,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
@@ -74,6 +75,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	private Long linkedFormOrganizationId;
 
+	@Transient
 	private boolean isLastVersion;
 
 	public Form() {
