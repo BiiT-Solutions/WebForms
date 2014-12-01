@@ -361,9 +361,10 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		for (TreeObject child : getChildren()) {
 			int tempCounter = currentCounter+1;
 			currentCounter = ((Answer) child).exportToJavaCode(sb, currentCounter + 1);
+			sb.append("//ques").append(System.lineSeparator());
 			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
 		}
 		
-		return counter;
+		return currentCounter;
 	}
 }

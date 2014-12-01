@@ -1,4 +1,4 @@
-package com.biit.webforms.validators;
+package com.biit.webforms.validators.reports;
 
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;

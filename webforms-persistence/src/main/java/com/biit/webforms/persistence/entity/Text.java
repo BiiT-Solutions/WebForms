@@ -65,4 +65,14 @@ public class Text extends WebformsBaseQuestion {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public int exportToJavaCode(StringBuilder sb, int counter) {
+		String idName = "el_" + counter;
+		
+		sb.append("Text ").append(idName).append("  = new Text();").append(System.lineSeparator());
+		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
+		sb.append(idName).append(".setDescription(\"").append(this.getDescription()).append("\");").append(System.lineSeparator());
+
+		return counter;
+	}
 }

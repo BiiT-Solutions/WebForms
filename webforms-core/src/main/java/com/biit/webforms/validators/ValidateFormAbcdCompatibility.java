@@ -95,12 +95,12 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<Form> {
 			return checkCompatibilityAnswerFormat(question, abcdQuestion);
 		case SINGLE_SELECTION_LIST:
 		case SINGLE_SELECTION_RADIO:
-			if (abcdQuestion.getAnswerType().equals(AnswerType.RADIO)) {
+			if (abcdQuestion.getAnswerType()!=null && abcdQuestion.getAnswerType().equals(AnswerType.RADIO)) {
 				return true;
 			}
 			return false;
 		case MULTIPLE_SELECTION:
-			if (abcdQuestion.getAnswerType().equals(AnswerType.MULTI_CHECKBOX)) {
+			if (abcdQuestion.getAnswerType()!=null && abcdQuestion.getAnswerType().equals(AnswerType.MULTI_CHECKBOX)) {
 				return true;
 			}
 			return false;
@@ -114,22 +114,22 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<Form> {
 			Question abcdQuestion) {
 		switch (question.getAnswerFormat()) {
 		case DATE:
-			if (abcdQuestion.getAnswerFormat().equals(AnswerFormat.DATE)) {
+			if (abcdQuestion.getAnswerFormat()!=null && abcdQuestion.getAnswerFormat().equals(AnswerFormat.DATE)) {
 				return true;
 			}
 			return false;
 		case NUMBER:
-			if (abcdQuestion.getAnswerFormat().equals(AnswerFormat.NUMBER)) {
+			if (abcdQuestion.getAnswerFormat()!=null && abcdQuestion.getAnswerFormat().equals(AnswerFormat.NUMBER)) {
 				return true;
 			}
 			return false;
 		case TEXT:
-			if (abcdQuestion.getAnswerFormat().equals(AnswerFormat.TEXT)) {
+			if (abcdQuestion.getAnswerFormat()!=null && abcdQuestion.getAnswerFormat().equals(AnswerFormat.TEXT)) {
 				return true;
 			}
 			return false;
 		case POSTAL_CODE:
-			if (abcdQuestion.getAnswerFormat().equals(AnswerFormat.POSTAL_CODE)) {
+			if (abcdQuestion.getAnswerFormat()!=null && abcdQuestion.getAnswerFormat().equals(AnswerFormat.POSTAL_CODE)) {
 				return true;
 			}
 			return false;

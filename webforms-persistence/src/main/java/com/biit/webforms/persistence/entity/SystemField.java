@@ -30,4 +30,14 @@ public class SystemField extends WebformsBaseQuestion {
 		copyBasicInfo(object);
 	}
 
+	public int exportToJavaCode(StringBuilder sb, int counter) {
+		String idName = "el_" + counter;
+		
+		sb.append("SystemField ").append(idName).append("  = new SystemField();").append(System.lineSeparator());
+		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
+		sb.append(idName).append(".setFieldName(\"").append(this.getFieldName()).append("\");").append(System.lineSeparator());
+
+		return counter;
+	}
+
 }

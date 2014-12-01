@@ -62,9 +62,16 @@ public class Category extends BaseCategory {
 			if (child instanceof Question) {
 				currentCounter = ((Question) child).exportToJavaCode(sb, currentCounter + 1);
 			}
+			if (child instanceof Text) {
+				currentCounter = ((Text) child).exportToJavaCode(sb, currentCounter + 1);
+			}
+			if (child instanceof SystemField) {
+				currentCounter = ((SystemField) child).exportToJavaCode(sb, currentCounter + 1);
+			}
 			
+			sb.append("//cat").append(System.lineSeparator());
 			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
 		}
-		return counter;
+		return currentCounter;
 	}
 }

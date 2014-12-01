@@ -30,9 +30,9 @@ public class Group extends BaseRepeatableGroup {
 		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
 		sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
 		if (isRepeatable()) {
-			sb.append(idName).append(".setRepeatable(true)").append(System.lineSeparator());
+			sb.append(idName).append(".setRepeatable(true);").append(System.lineSeparator());
 		} else {
-			sb.append(idName).append(".setRepeatable(false)").append(System.lineSeparator());
+			sb.append(idName).append(".setRepeatable(false);").append(System.lineSeparator());
 		}
 
 		int currentCounter = counter;
@@ -44,8 +44,15 @@ public class Group extends BaseRepeatableGroup {
 			if (child instanceof Question) {
 				currentCounter = ((Question) child).exportToJavaCode(sb, currentCounter + 1);
 			}
+			if (child instanceof Text) {
+				currentCounter = ((Text) child).exportToJavaCode(sb, currentCounter + 1);
+			}
+			if (child instanceof SystemField) {
+				currentCounter = ((SystemField) child).exportToJavaCode(sb, currentCounter + 1);
+			}
+			sb.append("//group").append(System.lineSeparator());
 			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
 		}
-		return counter;
+		return currentCounter;
 	}
 }

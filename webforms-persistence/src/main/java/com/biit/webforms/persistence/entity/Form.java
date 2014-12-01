@@ -422,6 +422,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		for(TreeObject child: getChildren()){
 			int tempCounter = counter+1;
 			counter = ((Category)child).exportToJavaCode(sb,counter+1);
+			sb.append("//form").append(System.lineSeparator());
 			sb.append("form.addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
 		}
 		

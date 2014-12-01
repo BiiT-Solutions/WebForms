@@ -65,7 +65,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				window.showCentered();
 			}
 		});
-		exportToJavaCode.setVisible(false);
+		exportToJavaCode.setVisible(true);
 
 		addIconButton(saveButton);
 		addIconButton(saveAsBlockButton);
