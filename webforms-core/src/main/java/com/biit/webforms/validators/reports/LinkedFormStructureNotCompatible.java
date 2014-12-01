@@ -18,8 +18,9 @@ public class LinkedFormStructureNotCompatible extends Report {
 		sb.append(abcdForm.getVersion());
 		sb.append("' is not compatible with '");
 		sb.append(abcdForm);
-		sb.append("' version: ");
+		sb.append("' version '");
 		sb.append(abcdForm.getVersion());
+		sb.append("'.");
 		return sb.toString();
 	}
 

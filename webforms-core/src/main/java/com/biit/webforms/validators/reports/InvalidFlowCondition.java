@@ -12,9 +12,9 @@ public class InvalidFlowCondition extends Report {
 
 	private static String generateReport(Flow flow) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Flow: ");
+		sb.append("Flow '");
 		sb.append(flow.toString());
-		sb.append(" has an invalid condition.");
+		sb.append("' has an invalid condition.");
 		return sb.toString();
 	}
 

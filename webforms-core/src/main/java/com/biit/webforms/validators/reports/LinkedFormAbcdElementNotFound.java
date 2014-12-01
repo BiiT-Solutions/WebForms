@@ -35,7 +35,7 @@ public class LinkedFormAbcdElementNotFound extends Report {
 			}
 		}
 		sb.append(abcdChild.getPathName());
-		sb.append("' and it's not found in webforms form");
+		sb.append("' and it's not found in webforms form.");
 		return sb.toString();
 	}
 

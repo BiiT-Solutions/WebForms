@@ -9,7 +9,7 @@ public class OthersUnicityBrokenAt extends Report {
 	private final TreeObject origin;
 
 	public OthersUnicityBrokenAt(TreeObject origin) {
-		super(ReportLevel.ERROR, "Element '" + origin.getPathName() + "' has more than one others flow");
+		super(ReportLevel.ERROR, "Element '" + origin.getPathName() + "' has more than one others flow.");
 		this.origin = origin;
 	}
 
