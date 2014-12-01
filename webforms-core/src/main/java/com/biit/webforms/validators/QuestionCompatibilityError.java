@@ -14,7 +14,7 @@ public class QuestionCompatibilityError extends Report {
 	private static String generateReport(Question question, Form abcdForm, com.biit.abcd.persistence.entity.Question abcdQuestion) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Form '");
-		sb.append(abcdForm);
+		sb.append(abcdForm.getLabel());
 		sb.append("' Version: ");
 		sb.append(abcdForm.getVersion());
 		sb.append(" Question '");

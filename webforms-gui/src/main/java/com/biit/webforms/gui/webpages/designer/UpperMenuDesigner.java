@@ -1,10 +1,13 @@
 package com.biit.webforms.gui.webpages.designer;
 
+import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
+import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.theme.ThemeIcons;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 public class UpperMenuDesigner extends UpperMenuWebforms {
@@ -13,7 +16,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	private IconButton saveButton, saveAsBlockButton, insertBlockButton, newCategoryButton, newGroupButton,
 			newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, newSubanswerButton, moveButton,
-			deleteButton, upButton, downButton, finish;
+			deleteButton, upButton, downButton, finish, exportToJavaCode;
 
 	public UpperMenuDesigner() {
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
@@ -49,6 +52,20 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				LanguageCodes.COMMON_TOOLTIP_DELETE);
 		finish = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
 				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
+		
+		exportToJavaCode = new IconButton(LanguageCodes.APPLICATION_NAME, ThemeIcons.ALERT, LanguageCodes.APPLICATION_NAME);
+		exportToJavaCode.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 5531403001527645029L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				WindowTextArea window = new WindowTextArea("Java code");
+				window.setValue(UserSessionHandler.getController().getFormInUse().exportToJavaCode(new StringBuilder()));
+				window.setResizable(true);
+				window.showCentered();
+			}
+		});
+		exportToJavaCode.setVisible(false);
 
 		addIconButton(saveButton);
 		addIconButton(saveAsBlockButton);
@@ -65,6 +82,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(downButton);
 		addIconButton(deleteButton);
 		addIconButton(finish);
+		addIconButton(exportToJavaCode);
 		setConfirmationNeeded(true);
 	}
 

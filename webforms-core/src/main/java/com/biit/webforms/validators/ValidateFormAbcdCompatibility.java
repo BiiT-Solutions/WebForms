@@ -1,15 +1,21 @@
 package com.biit.webforms.validators;
 
-import java.util.List;
-
 import com.biit.abcd.persistence.entity.AnswerFormat;
 import com.biit.abcd.persistence.entity.AnswerType;
 import com.biit.abcd.persistence.entity.Form;
 import com.biit.abcd.persistence.entity.Question;
+import com.biit.form.BaseCategory;
+import com.biit.form.BaseForm;
+import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
+import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
 import com.biit.utils.validation.SimpleValidator;
-import com.biit.webforms.validators.reports.QuestionNotFound;
+import com.biit.webforms.validators.reports.LinkedFormAbcdAnswerNotFound;
+import com.biit.webforms.validators.reports.LinkedFormAbcdElementIsBaseGroupNotBaseQuestion;
+import com.biit.webforms.validators.reports.LinkedFormAbcdElementIsBaseQuestionNotBaseGroup;
+import com.biit.webforms.validators.reports.LinkedFormAbcdElementNotFound;
+import com.biit.webforms.validators.reports.LinkedFormAbcdGroupRepeatableStatusIsDifferent;
 
 public class ValidateFormAbcdCompatibility extends SimpleValidator<Form> {
 
@@ -22,25 +28,65 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<Form> {
 
 	@Override
 	protected void validateImplementation(Form abcdForm) {
-		assertTrue(form.isSubset(abcdForm), new LinkedFormStructureNotCompatible(form, abcdForm));
+		validateStructure(form, abcdForm);
+	}
 
-		List<TreeObject> elements = abcdForm.getAll(BaseQuestion.class);
-		for (TreeObject element : elements) {
-			Question abcdQuestion = (Question) element;
+	private void validateStructure(BaseForm webformsForm, BaseForm abcdForm) {
+		for (TreeObject abcdChild : abcdForm.getChildren()) {
+			TreeObject webformsChild = webformsForm.getChild(abcdChild.getName());
+			if (webformsChild == null) {
+				assertTrue(false, new LinkedFormAbcdElementNotFound(form, abcdForm, abcdChild));
+				continue;
+			}
+			validateStructure(abcdForm, (BaseCategory) webformsChild, (BaseCategory) abcdChild);
+		}
+	}
 
-			TreeObject child = form.getChild(abcdQuestion.getPath());
-			assertTrue(child != null, new QuestionNotFound(form, abcdQuestion));
-			if (child != null) {
-				if (child instanceof com.biit.webforms.persistence.entity.Question) {
-					com.biit.webforms.persistence.entity.Question question = (com.biit.webforms.persistence.entity.Question) child;
-					assertTrue(checkCompatibility(question, abcdQuestion), new QuestionCompatibilityError(question,
-							abcdForm, abcdQuestion));
-				}else{
-					assertTrue(false, new QuestionNotFound(form,abcdQuestion));
-				}
+	private void validateStructure(BaseForm abcdForm, BaseGroup webformsElement, BaseGroup abcdElement) {
+		if (abcdElement instanceof BaseRepeatableGroup && webformsElement instanceof BaseRepeatableGroup) {
+			if (((BaseRepeatableGroup) abcdElement).isRepeatable() != ((BaseRepeatableGroup) webformsElement)
+					.isRepeatable()) {
+				assertTrue(false, new LinkedFormAbcdGroupRepeatableStatusIsDifferent(form, abcdForm, abcdElement));
 			}
 		}
 
+		for (TreeObject abcdChild : abcdElement.getChildren()) {
+			TreeObject webformsChild = webformsElement.getChild(abcdChild.getName());
+			if (webformsChild == null) {
+				assertTrue(false, new LinkedFormAbcdElementNotFound(form, abcdForm, abcdChild));
+				continue;
+			}
+			if (abcdChild instanceof BaseQuestion && webformsChild instanceof BaseGroup) {
+				assertTrue(false, new LinkedFormAbcdElementIsBaseQuestionNotBaseGroup(form, abcdForm, abcdChild));
+				continue;
+			}
+			if (abcdChild instanceof BaseGroup && webformsChild instanceof BaseQuestion) {
+				assertTrue(false, new LinkedFormAbcdElementIsBaseGroupNotBaseQuestion(form, abcdForm, abcdChild));
+				continue;
+			}
+
+			if (abcdChild instanceof BaseQuestion) {
+				validateStructure(abcdForm, (BaseQuestion) webformsChild, (BaseQuestion) abcdChild);
+			} else {
+				validateStructure(abcdForm, (BaseGroup) webformsChild, (BaseGroup) abcdChild);
+			}
+		}
+	}
+
+	private void validateStructure(BaseForm abcdForm, BaseQuestion webformsQuestion, BaseQuestion abcdQuestion) {
+		assertTrue(
+				checkCompatibility((com.biit.webforms.persistence.entity.Question) webformsQuestion,
+						(Question) abcdQuestion), new QuestionCompatibilityError(
+						(com.biit.webforms.persistence.entity.Question) webformsQuestion, (Form) abcdForm,
+						(Question) abcdQuestion));
+
+		for (TreeObject abcdChild : abcdQuestion.getChildren()) {
+			TreeObject webformsChild = webformsQuestion.getChild(abcdChild.getName());
+			if (webformsChild == null) {
+				assertTrue(false, new LinkedFormAbcdAnswerNotFound(form, abcdForm, abcdChild));
+				continue;
+			}
+		}
 	}
 
 	private boolean checkCompatibility(com.biit.webforms.persistence.entity.Question question, Question abcdQuestion) {

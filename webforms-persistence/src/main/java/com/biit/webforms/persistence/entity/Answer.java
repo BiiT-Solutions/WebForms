@@ -138,4 +138,14 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 	public boolean isFinalAnswer() {
 		return getChildren().isEmpty();
 	}
+
+	public int exportToJavaCode(StringBuilder sb, int counter) {
+		String idName = "el_" + counter;
+		
+		sb.append("Answer ").append(idName).append("  = new Answer();").append(System.lineSeparator());
+		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
+		sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
+		
+		return counter;
+	}
 }
