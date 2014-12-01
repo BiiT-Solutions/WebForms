@@ -102,4 +102,8 @@ public class FileUpload extends CustomComponent {
 		}
 		return new UploadedFile(label.getValue(), stream);
 	}
+
+	public boolean isComplete() {
+		return stream!=null;
+	}
 }

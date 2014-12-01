@@ -45,6 +45,8 @@ public enum LanguageCodes implements ILanguageCode{
 	INFO_CACHE_CLEARED("info.cache.cleared"),
 	WARNING_CLEAR_CACHE("warning.clear.cache"),
 	
+	ERROR_MESSAGE_FILES_UPLOAD_NOT_COMPLETED("error.message.files.upload.not.completed"),
+	
 	CAPTION_PROCEED_MODIFY_STATUS("caption.proceed.modify.status"),
 //	TOOLTIP_EDIT_FORM_DESIGN,
 //	TOOLTIP_EDIT_FORM_FLOW,
@@ -401,7 +403,7 @@ public enum LanguageCodes implements ILanguageCode{
 	ERROR_FORM_ALREADY_EXISTS("error.form.already.exist"),	
 	ERROR_XFORMS_USER_INVALID("error.form.user.invalid"),
 	
-	XFORM_PUBLISHED("form.published.correctly"), 
+	XFORM_PUBLISHED("form.published.correctly"),  
 	;
 
 	private String value;
