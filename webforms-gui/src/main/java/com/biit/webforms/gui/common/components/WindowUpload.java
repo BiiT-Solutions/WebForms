@@ -155,7 +155,6 @@ public class WindowUpload extends WindowAcceptCancel {
 				deleteFile(upload);
 			}
 		}
-
 	}
 
 	private class WindowUploadDropHandler implements DropHandler {

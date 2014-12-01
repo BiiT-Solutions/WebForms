@@ -341,6 +341,8 @@ public enum LanguageCodes implements ILanguageCode{
 	MESSAGE_VALIDATION_NO_ABCD_FORMS_LINKED("message.validation.no.abcd.forms.linked"), 
 	MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT("message.validation.all.linked.forms.correct"),
 	
+	ERROR_FORM_STRUCTURE_COULD_NOT_BE_VALIDATED("error.form.struture.could.not.be.validated"),
+	
 	//Compare Structure
 	CAPTION_COMPARE_STRUCTURE("caption.compare.structure"),	
 	CAPTION_UPLOAD("caption.upload"), 

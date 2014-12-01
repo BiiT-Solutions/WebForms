@@ -92,38 +92,49 @@ public class Validation extends SecuredWebPage {
 	}
 
 	protected void validateAbcdLink() {
-		List<Form> linkedForms;
-		try {
-			linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
-					UserSessionHandler.getController().getFormInUse());
 
-			if (linkedForms.isEmpty()) {
-				setNoLinkedFormsMessage();
-			} else {
-				ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(UserSessionHandler
-						.getController().getFormInUse());
-				ValidateReport report = new ValidateReport();
-				validator.validate(linkedForms, report);
-				if (report.isValid()) {
-					setLinkedFormsCorrectMessage();
+		ValidateBaseForm structureValidator = new ValidateBaseForm();
+		if (structureValidator.validate(UserSessionHandler.getController().getFormInUse())) {
+			List<Form> linkedForms;
+			try {
+				linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
+						UserSessionHandler.getController().getFormInUse());
+
+				if (linkedForms.isEmpty()) {
+					setNoLinkedFormsMessage();
 				} else {
-					setValidationReport(report);
+					ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(UserSessionHandler
+							.getController().getFormInUse());
+					ValidateReport report = new ValidateReport();
+					validator.validate(linkedForms, report);
+					if (report.isValid()) {
+						setLinkedFormsCorrectMessage();
+					} else {
+						setValidationReport(report);
+					}
 				}
+			} catch (UnexpectedDatabaseException e) {
+				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+						LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 			}
-		} catch (UnexpectedDatabaseException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+		} else {
+			MessageManager.showError(LanguageCodes.ERROR_FORM_STRUCTURE_COULD_NOT_BE_VALIDATED);
 		}
 	}
 
 	protected void validateFlow() {
-		ValidateFormFlows validator = new ValidateFormFlows();
-		ValidateReport report = new ValidateReport();
-		validator.validate(UserSessionHandler.getController().getFormInUse(), report);
-		if (report.isValid()) {
-			setValidationPassedMessage();
+		ValidateBaseForm structureValidator = new ValidateBaseForm();
+		if (structureValidator.validate(UserSessionHandler.getController().getFormInUse())) {
+			ValidateFormFlows validator = new ValidateFormFlows();
+			ValidateReport report = new ValidateReport();
+			validator.validate(UserSessionHandler.getController().getFormInUse(), report);
+			if (report.isValid()) {
+				setValidationPassedMessage();
+			} else {
+				setValidationReport(report);
+			}
 		} else {
-			setValidationReport(report);
+			MessageManager.showError(LanguageCodes.ERROR_FORM_STRUCTURE_COULD_NOT_BE_VALIDATED);
 		}
 	}
 
@@ -181,8 +192,8 @@ public class Validation extends SecuredWebPage {
 	private void setLinkedFormsCorrectMessage() {
 		changeReport(LanguageCodes.MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT.translation());
 	}
-	
-	private void changeReport(String report){
+
+	private void changeReport(String report) {
 		textArea.setReadOnly(false);
 		textArea.setValue(report);
 		textArea.setReadOnly(true);
