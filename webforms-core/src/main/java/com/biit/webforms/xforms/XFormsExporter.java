@@ -188,9 +188,12 @@ public class XFormsExporter {
 	private String getHeader() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
 		String header = "<xh:head>";
+		header += "<xh:meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />";
 		header += "<xh:title>" + form.getLabel() + "</xh:title>";
 		header += "<xf:model id=\"fr-form-model\" xxf:expose-xpath-types=\"true\">";
-		header += getMetaData();
+		header += "<xf:instance xxf:readonly=\"true\" id=\"fr-form-metadata\" xxf:exclude-result-prefixes=\"#all\">";
+		header += getMetaData(form);
+		header += "</xf:instance>";
 		header += getModel();
 		header += getBinding();
 		header += getAttachments();
@@ -216,9 +219,8 @@ public class XFormsExporter {
 	 * @param form
 	 * @return
 	 */
-	private String getMetaData() {
-		String metadata = "<xf:instance xxf:readonly=\"true\" id=\"fr-form-metadata\" xxf:exclude-result-prefixes=\"#all\">";
-		metadata += "<metadata>";
+	public String getMetaData(Form form) {
+		String metadata = "<metadata>";
 
 		metadata += "<application-name>" + APP_NAME + "</application-name>";
 		metadata += "<form-name>" + formatFormName(form) + "</form-name>";
@@ -226,7 +228,6 @@ public class XFormsExporter {
 		metadata += "<description xml:lang=\"en\">" + createFormDescription(form) + "</description>";
 
 		metadata += "</metadata>";
-		metadata += "</xf:instance>";
 
 		return metadata;
 	}
