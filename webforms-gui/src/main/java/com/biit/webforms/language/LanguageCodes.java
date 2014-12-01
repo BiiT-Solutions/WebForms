@@ -403,7 +403,9 @@ public enum LanguageCodes implements ILanguageCode{
 	ERROR_FORM_ALREADY_EXISTS("error.form.already.exist"),	
 	ERROR_XFORMS_USER_INVALID("error.form.user.invalid"),
 	
-	XFORM_PUBLISHED("form.published.correctly"),  
+	XFORM_PUBLISHED("form.published.correctly"), 
+	
+	CAPTION_DRAG_AND_DROP_FILES("caption.drag.and.drop.files"),  
 	;
 
 	private String value;

@@ -937,5 +937,17 @@ $open-sans-pathPrefix: "./fonts/";
 	.window-upload-root-layout{
 		overflow-y: auto !important;
 		overflow-x: hidden !important;
+		border: 2px dashed #a4a4a2;
+		border-radius: 10px;
+		background-color: #F4F4F4;
+	}
+	
+	.biit-file-upload.v-horizontallayout-biit-file-upload {
+		border: rgb(149, 164, 174);
+		border-style: solid;
+		border-bottom-width: 1px !important;
+		border-left-width: 0px;
+		border-right-width: 0px;
+		border-top-width: 0px;
 	}
 }

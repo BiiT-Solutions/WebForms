@@ -79,11 +79,11 @@ public enum ThemeIcons implements IThemeIcon {
 	
 	EXPORT_XSD("form.xsd.svg"),
 
-	COMPARE_XML_CONTENT("alert.svg"), // TODO
-	UPLOAD_XML_ORIGINAL("alert.svg"), // TODO
-	REMOVE_XML("alert.svg"), // TODO
-	CLEAN_XML("alert.svg"), // TODO
-	UPLOAD_XML_PROCESSED("alert.svg"), // TODO 
+	COMPARE_XML_CONTENT("page.compare.svg"),
+	UPLOAD_XML_ORIGINAL("document.upload.svg"),
+	REMOVE_XML("appbar.table.delete.row.svg"),
+	CLEAN_XML("appbar.table.clean.svg"),
+	UPLOAD_XML_PROCESSED("document.upload.processed.svg"), 
 	
 	EXPORT_XML("form.xml.svg"), 
 	
@@ -95,7 +95,7 @@ public enum ThemeIcons implements IThemeIcon {
 	
 	COMPARE_STRUCTURE("page.xml.svg"), 
 	
-	COMPARE_CONTENT("page.compare.svg"), // TODO
+	COMPARE_CONTENT("page.compare.svg"),
 
 	;
 

@@ -273,7 +273,7 @@ public class WindowUpload extends WindowAcceptCancel {
 	}
 
 	private void setPutFilesLabel() {
-		Label label = new Label("Drag here files from your computer");
+		Label label = new Label(LanguageCodes.CAPTION_DRAG_AND_DROP_FILES.translation());
 		label.setSizeUndefined();
 		dropLayout.addComponent(label);
 		dropLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
