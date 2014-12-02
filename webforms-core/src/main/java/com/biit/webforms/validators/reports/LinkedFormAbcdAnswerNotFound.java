@@ -20,7 +20,7 @@ public class LinkedFormAbcdAnswerNotFound extends Report {
 		sb.append(abcdForm.getVersion());
 		sb.append("' has answer '");
 		sb.append(abcdChild.getPathName());
-		sb.append("' and it's not found in webforms form");
+		sb.append("' and it's not found in webforms form.");
 		return sb.toString();
 	}
 }

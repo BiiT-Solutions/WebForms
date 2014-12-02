@@ -83,7 +83,7 @@ public enum ThemeIcons implements IThemeIcon {
 	UPLOAD_XML_ORIGINAL("document.upload.svg"),
 	REMOVE_XML("appbar.table.delete.row.svg"),
 	CLEAN_XML("appbar.table.clean.svg"),
-	UPLOAD_XML_PROCESSED("document.upload.processed.svg"), 
+	UPLOAD_XML_PROCESSED("document.upload.svg"), //TODO 
 	
 	EXPORT_XML("form.xml.svg"), 
 	

@@ -11,7 +11,7 @@ public enum AnswerFormat {
 			TokenTypes.NE }),
 
 	NUMBER(AnswerSubformat.NUMBER,
-			new AnswerSubformat[] { AnswerSubformat.NUMBER, AnswerSubformat.FLOAT },
+			new AnswerSubformat[] { AnswerSubformat.NUMBER, AnswerSubformat.FLOAT, AnswerSubformat.AMOUNT },
 			new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN, TokenTypes.IN }),
 
 	DATE(AnswerSubformat.DATE, new AnswerSubformat[] { AnswerSubformat.DATE, AnswerSubformat.DATE_PAST,

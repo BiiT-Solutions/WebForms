@@ -18,7 +18,7 @@ public class LinkedFormAbcdElementIsBaseQuestionNotBaseGroup extends Report {
 		sb.append(abcdForm.getLabel());
 		sb.append("' element '");
 		sb.append(abcdChild.getPathName());
-		sb.append("' is a base question and in webforms is found as a group");
+		sb.append("' is a base question and in webforms is found as a group.");
 		return sb.toString();
 	}
 }
