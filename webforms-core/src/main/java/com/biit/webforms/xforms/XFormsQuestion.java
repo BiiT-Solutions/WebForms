@@ -298,10 +298,6 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 	@Override
 	protected String getHint() {
-		// if (((Question) getSource()).getDescription() != null && ((Question) getSource()).getDescription().length() >
-		// 0) {
-		// return "<hint><![CDATA[" + ((Question) getSource()).getDescription() + "]]></hint>";
-		// }
 		return "<hint/>";
 	}
 

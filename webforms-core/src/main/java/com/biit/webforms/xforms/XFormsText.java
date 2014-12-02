@@ -16,9 +16,11 @@ public class XFormsText extends XFormsQuestion {
 
 	@Override
 	public String getBodyHelp() {
-		if (((Text) getSource()).getDescription().length() > 0) {
-			return getBodyStructure("help", true);
-		}
+		return "";
+	}
+
+	@Override
+	public String getHelp() {
 		return "";
 	}
 
@@ -29,7 +31,6 @@ public class XFormsText extends XFormsQuestion {
 		}
 		return "";
 	}
-	
 
 	@Override
 	protected void isMandatory(StringBuilder builder) {
@@ -64,14 +65,6 @@ public class XFormsText extends XFormsQuestion {
 	@Override
 	protected String isHtmlText() {
 		return "";
-	}
-
-	@Override
-	protected String getHint() {
-		if (((Text) getSource()).getDescription() != null && ((Text) getSource()).getDescription().length() > 0) {
-			return "<hint><![CDATA[" + ((Text) getSource()).getDescription() + "]]></hint>";
-		}
-		return "<hint/>";
 	}
 
 }
