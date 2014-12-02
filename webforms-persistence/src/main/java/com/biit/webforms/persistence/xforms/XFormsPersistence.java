@@ -100,10 +100,10 @@ public class XFormsPersistence {
 	public void deleteForm(Form form, Organization organization, boolean preview) {
 		if (form != null) {
 			try (PreparedStatement stmt = connection.prepareStatement("DELETE FROM orbeon_form_definition WHERE app='"
-					+ APP_NAME + "' and form='" + formatFormName(form, organization, preview) + "';")) {
+					+ APP_NAME + "' and form='" + formatFormName(form, organization, preview) + "' and form_version="
+					+ form.getVersion() + ";")) {
 				stmt.executeUpdate();
 			} catch (SQLException ex) {
-				ex.printStackTrace();
 				WebformsLogger.errorMessage(this.getClass().getName(), ex);
 			}
 		}
@@ -127,7 +127,8 @@ public class XFormsPersistence {
 				.prepareStatement("INSERT INTO orbeon_form_definition (`created`, `last_modified_time`, `last_modified_by`,`app`,`form`, `form_version`, `form_metadata`, `deleted`, `xml`) VALUES (?,?,?,?,?,?,?,?,?);")) {
 
 			stmt.setTimestamp(1, form.getCreationTime());
-			stmt.setTimestamp(2, form.getUpdateTime());
+			// Update time is the date when has been exported to Orbeon.
+			stmt.setTimestamp(2, new java.sql.Timestamp(new java.util.Date().getTime()));
 			if (user != null) {
 				stmt.setString(3, user.getEmailAddress());
 			} else {

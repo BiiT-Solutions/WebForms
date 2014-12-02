@@ -250,8 +250,8 @@ public class XFormsExporter {
 	 */
 	private static String createFormDescription(Form form) {
 		return "Version: " + form.getVersion() + ". Modification date: "
-				+ DateManager.convertDateToString(form.getUpdateTime()) + ". Publication date: "
-				+ DateManager.convertDateToString(new Timestamp(new java.util.Date().getTime())) + ".";
+				+ DateManager.convertDateToStringWithHours(form.getUpdateTime()) + ". Publication date: "
+				+ DateManager.convertDateToStringWithHours(new Timestamp(new java.util.Date().getTime())) + ".";
 	}
 
 	/**
