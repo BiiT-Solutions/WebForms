@@ -220,6 +220,9 @@ public class WebformsAuthorizationService extends AuthorizationService {
 	}
 
 	public boolean isAuthorizedToForm(IWebformsFormView form, User user) {
+		if (form == null || user == null) {
+			return false;
+		}
 		boolean formIsBlock = form instanceof Block;
 		boolean formIsInDesign = form.getStatus() == FormWorkStatus.DESIGN;
 		boolean blockEditAuthorized = isAuthorizedActivity(user, form, WebformsActivity.BUILDING_BLOCK_EDITING);

@@ -29,10 +29,10 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 	@Override
 	protected void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
 			StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		binding.append("<xf:bind id=\"").append(getBindingName()).append("\" name=\"").append(getControlName())
+		binding.append("<xf:bind id=\"").append(getBindingId()).append("\" name=\"").append(getBindingName())
 				.append("\"");
 		getRelevantStructure(binding);
-		binding.append(" ref=\"").append(getControlName()).append("\" >");
+		binding.append(" ref=\"").append(getXPath()).append("\" >");
 		// Add also children.
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
 			child.getBinding(binding);
@@ -45,7 +45,7 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 	 */
 	@Override
 	protected void getSectionBody(StringBuilder body) {
-		body.append("<fr:section id=\"").append(getSectionControlName()).append("\" bind=\"").append(getBindingName())
+		body.append("<fr:section id=\"").append(getSectionControlName()).append("\" bind=\"").append(getBindingId())
 				.append("\">");
 		body.append(getBodyLabel());
 		body.append(getBodyHint());

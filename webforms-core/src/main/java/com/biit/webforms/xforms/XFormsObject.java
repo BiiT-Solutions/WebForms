@@ -99,8 +99,19 @@ public abstract class XFormsObject<T extends TreeObject> {
 		return "<alert/>";
 	}
 
+	protected String getBindingId() {
+		return getUniqueName() + "-bind";
+	}
+
 	protected String getBindingName() {
-		return getControlName() + "-bind";
+		return getUniqueName();
+	}
+
+	protected String getXPath() {
+		if (getParent() != null) {
+			return getParent().getXPath() + "/" + getName();
+		}
+		return "/form/" + getName();
 	}
 
 	protected String getBodyAlert() {
@@ -142,9 +153,9 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 */
 	protected String getPath() {
 		if (getParent() != null) {
-			return getParent().getPath() + "/" + getControlName();
+			return getParent().getPath() + "/" + getName();
 		}
-		return getControlName();
+		return getName();
 	}
 
 	protected List<XFormsObject<? extends TreeObject>> getChildren() {
@@ -152,11 +163,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Returns a unique name.
+	 * Returns the name of the element.
 	 * 
 	 * @return
 	 */
-	protected String getControlName() {
+	protected String getName() {
+		return getSource().getName();
+	}
+
+	protected String getUniqueName() {
 		return getXFormsHelper().getUniqueName(getSource());
 	}
 
@@ -248,7 +263,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 			PostCodeRuleSyntaxError;
 
 	protected String getResources() throws NotExistingDynamicFieldException {
-		String resource = "<" + getControlName() + ">";
+		String resource = "<" + getName() + ">";
 		resource += getLabel();
 		resource += getHint();
 		resource += getAlert();
@@ -258,12 +273,12 @@ public abstract class XFormsObject<T extends TreeObject> {
 			resource += child.getResources();
 		}
 
-		resource += "</" + getControlName() + ">";
+		resource += "</" + getName() + ">";
 		return resource;
 	}
 
 	protected String getSectionControlName() {
-		return getControlName() + "-control";
+		return getUniqueName() + "-control";
 	}
 
 	protected abstract void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException,
@@ -272,11 +287,11 @@ public abstract class XFormsObject<T extends TreeObject> {
 	protected abstract void getSectionBody(StringBuilder body);
 
 	protected String getDefinition() {
-		String section = "<" + getControlName() + ">";
+		String section = "<" + getName() + ">";
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
 			section += child.getDefinition();
 		}
-		section += "</" + getControlName() + ">";
+		section += "</" + getName() + ">";
 		return section;
 	}
 
@@ -344,15 +359,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 			getInputFieldVisibility(visibility, (TokenComparationValue) token);
 		} else if (token instanceof TokenAnswerNeeded) {
 			if (((TokenAnswerNeeded) token).isDateField()) {
-				visibility
-						.append("string-length(format-date($")
-						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getControlName()).append(", '[MNn,*-3]/[D01]/[Y]')) &gt; 0");
+				visibility.append("string-length(format-date($")
+						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getBindingName())
+						.append(", '[MNn,*-3]/[D01]/[Y]')) &gt; 0");
 			} else {
-				visibility
-						.append("string-length($")
-						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getControlName()).append(") &gt; 0");
+				visibility.append("string-length($")
+						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getBindingName())
+						.append(") &gt; 0");
 			}
 		} else {
 			// An operator 'and', 'or', ...
@@ -369,8 +382,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getMultiCheckBoxVisibility(StringBuilder visibility, TokenComparationAnswer token) {
-		visibility.append("contains(concat($")
-				.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName())
+		visibility.append("contains(concat($").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
 				.append(", ' '), concat('").append(token.getAnswer().getLabel()).append("', ' '))");
 	}
 
@@ -383,7 +395,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 */
 	private void getBasicSelectionVisibility(StringBuilder visibility, TokenComparationAnswer token) {
 		visibility.append("$").append(
-				getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getControlName());
+				getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getBindingName());
 		visibility.append(token.getType().getOrbeonRepresentation());
 		visibility.append("'").append(((TokenComparationAnswer) token).getAnswer()).append("'");
 	}
@@ -401,14 +413,14 @@ public abstract class XFormsObject<T extends TreeObject> {
 		if (token.getQuestion().getAnswerFormat() != null) {
 			switch (token.getQuestion().getAnswerFormat()) {
 			case NUMBER:
-				visibility.append("number($")
-						.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName()).append(")");
+				visibility.append("number($").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+						.append(")");
 				visibility.append(" ").append(token.getType().getOrbeonRepresentation()).append(" ");
 				visibility.append(token.getValue());
 				break;
 			case TEXT:
 			case POSTAL_CODE:
-				visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName());
+				visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName());
 				visibility.append(" ").append(token.getType().getOrbeonRepresentation());
 				visibility.append(" '").append(token.getValue()).append("'");
 				break;
@@ -427,8 +439,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 						// Convert date to Orbeon string format.
 						formatter.applyPattern(XPATH_DATE_FORMAT);
 						visibility.append("xs:date($")
-								.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName())
-								.append(") ");
+								.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName()).append(") ");
 						visibility.append(token.getType().getOrbeonRepresentation());
 						visibility.append(" xs:date('").append(formatter.format(date)).append("')");
 					} catch (ParseException e) {
@@ -464,15 +475,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// adjust-date-to-timezone is used to remove timestamp
 			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
-			visibility.append("xs:date($")
-					.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName()).append(") ");
+			visibility.append("xs:date($").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+					.append(") ");
 			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
 			visibility.append(" adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
 					.append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
 					.append("')");
 		} else {
-			visibility.append("xs:date($")
-					.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getControlName()).append(") ");
+			visibility.append("xs:date($").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+					.append(") ");
 			visibility.append(token.getType().getOrbeonRepresentation()).append(
 					" adjust-date-to-timezone(current-date(), ()) + xs:");
 			visibility.append(xPathOperation).append("('P").append(token.getValue())

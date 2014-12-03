@@ -427,6 +427,7 @@ public class FormManager extends SecuredWebPage {
 					if (newFormWindow.getOrganization() != null) {
 						Form newForm = UserSessionHandler.getController().createFormAndPersist(
 								newFormWindow.getValue(), newFormWindow.getOrganization().getOrganizationId());
+						newForm.setLastVersion(true);
 						formTable.refreshTableData();
 						formTable.defaultSort();
 						formTable.selectForm(newForm);

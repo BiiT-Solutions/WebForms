@@ -126,6 +126,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public Form createNewVersion(User user) throws NotValidStorableObjectException, CharacterNotAllowedException {
 		Form newVersion = (Form) generateCopy(false, true);
 		newVersion.setVersion(newVersion.getVersion() + 1);
+		newVersion.setLastVersion(true);
+		this.setLastVersion(false);
 		newVersion.resetIds();
 		newVersion.setCreatedBy(user);
 		newVersion.setUpdatedBy(user);
