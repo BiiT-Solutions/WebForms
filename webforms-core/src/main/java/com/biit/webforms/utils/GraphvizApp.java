@@ -13,6 +13,8 @@ import com.biit.webforms.utils.exceptions.ExecutableCanNotBeExecuted;
 import com.biit.webforms.utils.exceptions.PathToExecutableNotFound;
 import com.biit.webforms.utils.exporters.dotgraph.ExporterDotFilteredForm;
 import com.biit.webforms.utils.exporters.dotgraph.ExporterDotForm;
+import com.biit.webforms.utils.exporters.dotgraph.impact.ExporterDotFormAddedElements;
+import com.biit.webforms.utils.exporters.dotgraph.impact.ExporterDotFormRemovedElements;
 
 public class GraphvizApp {
 
@@ -137,4 +139,25 @@ public class GraphvizApp {
 		return generateImageFromDotCode(dotCode, imgType);
 	}
 
+	public static byte[] generateImageImpactAnalysisRemovedElements(Form formOldVersion, Form formNewVersion,
+			ImgType imgType) throws IOException, InterruptedException {
+		// Generate DotCode
+		String dotCode = null;
+		ExporterDotFormRemovedElements exporter = new ExporterDotFormRemovedElements(formNewVersion);
+		dotCode = exporter.export(formOldVersion);
+
+		// Call Graphviz to make a render from dot code.
+		return generateImageFromDotCode(dotCode, imgType);
+	}
+
+	public static byte[] generateImageImpactAnalysisAddedElements(Form formOldVersion, Form formNewVersion,
+			ImgType imgType) throws IOException, InterruptedException {
+		// Generate DotCode
+		String dotCode = null;
+		ExporterDotFormAddedElements exporter = new ExporterDotFormAddedElements(formOldVersion);
+		dotCode = exporter.export(formNewVersion);
+
+		// Call Graphviz to make a render from dot code.
+		return generateImageFromDotCode(dotCode, imgType);
+	}
 }

@@ -29,11 +29,7 @@ public class ExporterDotForm extends ExporterDotFormBasic<Form> {
 
 	@Override
 	public String generateDotNodeList(Form form) {
-		String dotNodes = new String();
-		for (TreeObject child : form.getChildren()) {
-			dotNodes += (new ExporterDotCategory()).generateDotNodeList((Category) child);
-		}
-		return dotNodes;
+		return generateDotNodeChilds(form);
 	}
 
 	@Override
@@ -49,5 +45,14 @@ public class ExporterDotForm extends ExporterDotFormBasic<Form> {
 		}
 
 		return dotFlow;
+	}
+
+	@Override
+	public String generateDotNodeChilds(Form form) {
+		String dotNodes = new String();
+		for (TreeObject child : form.getChildren()) {
+			dotNodes += (new ExporterDotCategory()).generateDotNodeList((Category) child);
+		}
+		return dotNodes;
 	}
 }

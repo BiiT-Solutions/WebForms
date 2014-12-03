@@ -2,10 +2,31 @@ package com.biit.webforms.utils.exporters.dotgraph;
 
 public abstract class ExporterDot<T> {
 	
-	protected String fillColor = "lightgray";
-	protected String shapeColor = "grey";
-	protected String fontColor = "black";
-	protected String linkColor = "black";
+	
+	protected static final String DEFAULT_FILL_COLOR = "lightgray";
+	protected static final String DELETED_FILL_COLOR = "lightgray";
+	protected static final String MODIFIED_FILL_COLOR = "lightgray";
+	protected static final String NEW_FILL_COLOR = "lightgray";
+	
+	protected static final String DEFAULT_FONT_COLOR = "black";
+	protected static final String DELETED_FONT_COLOR = "red3";
+	protected static final String MODIFIED_FONT_COLOR = "royalblue4";
+	protected static final String NEW_FONT_COLOR = "forestgreen";
+	
+	protected static final String DEFAULT_SHAPE_COLOR = "grey";
+	protected static final String DELETED_SHAPE_COLOR = "red3";
+	protected static final String MODIFIED_SHAPE_COLOR = "royalblue4";
+	protected static final String NEW_SHAPE_COLOR = "forestgreen";
+	
+	protected final String DEFAULT_LINK_COLOR = "black";
+	protected final String DELETED_LINK_COLOR = "red3";
+	protected final String MODIFIED_LINK_COLOR = "royalblue4";
+	protected final String NEW_LINK_COLOR = "forestgreen"; 
+	
+	protected String fillColor = DEFAULT_FILL_COLOR;
+	protected String shapeColor = DEFAULT_SHAPE_COLOR;
+	protected String fontColor = DEFAULT_FONT_COLOR;
+	protected String linkColor = DEFAULT_LINK_COLOR;
 	protected String penWidth = "1.0";
 	
 	protected String sizeLimit = "23.30,33.10";
@@ -16,6 +37,8 @@ public abstract class ExporterDot<T> {
 	public abstract String generateDotNodeList(T structure);
 	
 	public abstract String generateDotNodeFlow(T structure);
+	
+	public abstract String generateDotNodeChilds(T structure);
 
 	public String getSizeLimit() {
 		return sizeLimit;

@@ -95,7 +95,7 @@ public enum ThemeIcons implements IThemeIcon {
 	
 	COMPARE_STRUCTURE("page.xml.svg"), 
 	
-	COMPARE_CONTENT("page.compare.svg"),
+	COMPARE_CONTENT("page.compare.svg"), 
 
 	;
 

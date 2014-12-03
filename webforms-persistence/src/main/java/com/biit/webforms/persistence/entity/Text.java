@@ -75,4 +75,23 @@ public class Text extends WebformsBaseQuestion {
 
 		return counter;
 	}
+	
+	/**
+	 * Compares the content of treeObject - Needs to be an instance of Text
+	 * 
+	 * @param treeObject
+	 * @return
+	 */
+	public boolean isContentEqual(TreeObject treeObject) {
+		if (treeObject instanceof Text) {
+			if(super.isContentEqual(treeObject)){
+				Text question = (Text) treeObject;
+				if(this.getDescription()!=null && this.getDescription()!=question.getDescription()){
+					return false;
+				}
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -61,4 +61,10 @@ public class ExporterDotBaseQuestion extends ExporterDot<BaseQuestion> {
 	protected String getDotId(TreeObject treeObject) {
 		return filterDotLanguageId("id_" + treeObject.getComparationId());
 	}
+
+	@Override
+	public String generateDotNodeChilds(BaseQuestion structure) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

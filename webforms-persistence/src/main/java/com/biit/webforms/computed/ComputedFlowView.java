@@ -85,6 +85,7 @@ public class ComputedFlowView {
 		Flow flow = new Flow();
 		try {
 			flow.setContent(origin, FlowType.NORMAL, destiny, false, new ArrayList<Token>());
+			flow.setGenerated(true);
 			addFlow(flow);
 		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
 				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
@@ -97,6 +98,7 @@ public class ComputedFlowView {
 		Flow flow = new Flow();
 		try {
 			flow.setContent(origin, FlowType.END_FORM, null, false, new ArrayList<Token>());
+			flow.setGenerated(true);
 			addFlow(flow);
 		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
 				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {

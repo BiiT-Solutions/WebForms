@@ -215,8 +215,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
-	 * goes to the next element)
+	 * This method creates a ComputeRuleView with all the current rules and the
+	 * implicit rules (question without rule goes to the next element)
 	 * 
 	 * @return
 	 */
@@ -350,9 +350,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * This is the only function that has to be used to link forms. This controls that the linked element and versions
-	 * are present at the same time or not when modifying data. It is assumed that all linked forms have the same name
-	 * and organization.
+	 * This is the only function that has to be used to link forms. This
+	 * controls that the linked element and versions are present at the same
+	 * time or not when modifying data. It is assumed that all linked forms have
+	 * the same name and organization.
 	 * 
 	 * @param linkedForms
 	 */
@@ -412,20 +413,31 @@ public class Form extends BaseForm implements IWebformsFormView {
 		this.isLastVersion = isLastVersion;
 	}
 
-	public String exportToJavaCode(StringBuilder sb){
-		Integer counter =0;
-		
+	public String exportToJavaCode(StringBuilder sb) {
+		Integer counter = 0;
+
 		sb.append("Form form = new Form();").append(System.lineSeparator());
 		sb.append("form.setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
 		sb.append("form.setDescription(\"").append(this.getDescription()).append("\");").append(System.lineSeparator());
-		
-		for(TreeObject child: getChildren()){
-			int tempCounter = counter+1;
-			counter = ((Category)child).exportToJavaCode(sb,counter+1);
+
+		for (TreeObject child : getChildren()) {
+			int tempCounter = counter + 1;
+			counter = ((Category) child).exportToJavaCode(sb, counter + 1);
 			sb.append("//form").append(System.lineSeparator());
 			sb.append("form.addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
 		}
-		
+
 		return sb.toString();
+	}
+
+	public Set<Flow> getFlows(TreeObject origin, TreeObject destiny) {
+		Set<Flow> selectedFlows = new HashSet<Flow>();
+		for (Flow flow : rules) {
+			if (flow.getOrigin().equals(origin)
+					&& ((flow.getDestiny() != null && flow.getDestiny().equals(destiny)) || (flow.getDestiny() == null && destiny == null))) {
+				selectedFlows.add(flow);
+			}
+		}
+		return selectedFlows;
 	}
 }

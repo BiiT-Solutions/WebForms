@@ -367,4 +367,35 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		
 		return currentCounter;
 	}
+	
+	/**
+	 * Compares the content of treeObject - Needs to be an instance of Question
+	 * 
+	 * @param treeObject
+	 * @return
+	 */
+	public boolean isContentEqual(TreeObject treeObject) {
+		if (treeObject instanceof Question) {
+			if(super.isContentEqual(treeObject)){
+				Question question = (Question) treeObject;
+				if(this.getAnswerType()!=question.getAnswerType()){
+					return false;
+				}
+				if(this.getAnswerFormat()!=question.getAnswerFormat()){
+					return false;
+				}
+				if(this.getAnswerSubformat()!=question.getAnswerSubformat()){
+					return false;
+				}
+				if(this.isMandatory()!=question.isMandatory()){
+					return false;
+				}
+				if(this.isHorizontal()!=question.isHorizontal()){
+					return false;
+				}
+				return true;
+			}
+		}
+		return false;
+	}
 }

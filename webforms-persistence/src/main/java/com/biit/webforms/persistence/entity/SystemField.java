@@ -3,9 +3,12 @@ package com.biit.webforms.persistence.entity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.biit.form.TreeObject;
+import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.logger.WebformsLogger;
 
 @Entity
 @Table(name = "tree_system_fields")
@@ -26,8 +29,18 @@ public class SystemField extends WebformsBaseQuestion {
 
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		// Copy basic data
-		copyBasicInfo(object);
+		if (object instanceof SystemField) {
+			// Copy basic data and fieldName
+			copyBasicInfo(object);
+			try {
+				setFieldName(((SystemField) object).getFieldName());
+			} catch (FieldTooLongException e) {
+				// Impossible
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+		} else {
+			throw new NotValidTreeObjectException("Copy data for SystemField only supports the same type copy");
+		}
 	}
 
 	public int exportToJavaCode(StringBuilder sb, int counter) {
@@ -40,4 +53,22 @@ public class SystemField extends WebformsBaseQuestion {
 		return counter;
 	}
 
+	/**
+	 * Compares the content of treeObject - Needs to be an instance of SystemField
+	 * 
+	 * @param treeObject
+	 * @return
+	 */
+	public boolean isContentEqual(TreeObject treeObject) {
+		if (treeObject instanceof SystemField) {
+			if(super.isContentEqual(treeObject)){
+				SystemField question = (SystemField) treeObject;
+				if(this.getFieldName()!=null && !this.getFieldName().equals(question.getFieldName())){
+					return false;
+				}
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -387,6 +387,7 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
 			upperMenu.getDownButton().setEnabled(canEdit && !rowIsForm);
+			upperMenu.getFinish().setEnabled(canEdit);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			// Disable everthing as a security measure.
@@ -403,6 +404,7 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getDeleteButton().setEnabled(false);
 			upperMenu.getUpButton().setEnabled(false);
 			upperMenu.getDownButton().setEnabled(false);
+			upperMenu.getFinish().setEnabled(false);
 		}
 	}
 

@@ -23,18 +23,7 @@ public class ExporterDotCategory extends ExporterDot<Category> {
 		cluster += "\t\tnode [style=filled, fillcolor=" + getFillColor() + "];\n";
 		cluster += "\t\tlabel = \"" + filterDotLanguage(category.getName()) + "\";\n";
 
-		for (TreeObject child : category.getChildren()) {
-			if (child instanceof Group) {
-				cluster += (new ExporterDotGroup()).generateDotNodeList((Group) child);
-				continue;
-			}
-			if (child instanceof BaseQuestion) {
-				cluster += (new ExporterDotBaseQuestion()).generateDotNodeList((BaseQuestion) child);
-				continue;
-			}
-			WebformsLogger.severe(this.getClass().getName(), "Has ignored an element of type: "
-					+ child.getClass().getName() + " '" + child + "'");
-		}
+		cluster += generateDotNodeChilds(category);
 
 		cluster += "\t\tcolor=" + getShapeColor() + ";\n";
 		cluster += "\t\tfontcolor=" + getFontColor() + ";\n";
@@ -44,11 +33,30 @@ public class ExporterDotCategory extends ExporterDot<Category> {
 
 		return cluster;
 	}
+	
+	@Override
+	public String generateDotNodeChilds(Category category) {
+		String clusterChilds = new String();
+		
+		for (TreeObject child : category.getChildren()) {
+			if (child instanceof Group) {
+				clusterChilds += (new ExporterDotGroup()).generateDotNodeList((Group) child);
+				continue;
+			}
+			if (child instanceof BaseQuestion) {
+				clusterChilds += (new ExporterDotBaseQuestion()).generateDotNodeList((BaseQuestion) child);
+				continue;
+			}
+			WebformsLogger.severe(this.getClass().getName(), "Has ignored an element of type: "
+					+ child.getClass().getName() + " '" + child + "'");
+		}
+		return clusterChilds;
+	}
+
 
 	@Override
 	public String generateDotNodeFlow(Category structure) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
