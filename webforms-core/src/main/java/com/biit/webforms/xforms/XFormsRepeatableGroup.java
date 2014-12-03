@@ -27,7 +27,7 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 	 */
 	@Override
 	protected String getDefinition() {
-		String section = "<" + getControlName() + ">";
+		String section = "<" + getName() + ">";
 		section += "<" + getIteratorControlName() + ">";
 
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
@@ -35,16 +35,20 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 		}
 
 		section += "</" + getIteratorControlName() + ">";
-		section += "</" + getControlName() + ">";
+		section += "</" + getName() + ">";
 		return section;
 	}
 
 	private String getIteratorControlName() {
-		return getControlName() + "-iterator";
+		return getUniqueName() + "-iterator";
 	}
 
+	private String getIteratorBindingId() {
+		return getUniqueName() + "-iterator-bind";
+	}
+	
 	private String getIteratorBindingName() {
-		return getIteratorControlName() + "-bind";
+		return getUniqueName() + "-iterator-bind";
 	}
 
 	/**
@@ -53,12 +57,12 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 	@Override
 	protected void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
 			StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		binding.append("<xf:bind id=\"").append(getBindingName()).append("\" name=\"").append(getControlName())
-				.append("\"");
+		binding.append("<xf:bind id=\"").append(getBindingId()).append("\" name=\"")
+				.append(getBindingName()).append("\"");
 		getRelevantStructure(binding);
-		binding.append(" ref=\"").append(getControlName()).append("\" >");
-		binding.append("<xf:bind id=\"").append(getIteratorBindingName()).append("\" ");
-		binding.append("name=\"").append(getIteratorControlName()).append("\" ");
+		binding.append(" ref=\"").append(getXPath()).append("\" >");
+		binding.append("<xf:bind id=\"").append(getIteratorBindingId()).append("\" ");
+		binding.append("name=\"").append(getIteratorBindingName()).append("\" ");
 		getRelevantStructure(binding);
 		binding.append(" ref=\"").append(getIteratorControlName()).append("\" >");
 		// Add also children.
@@ -76,7 +80,7 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 	protected void getSectionBody(StringBuilder body) {
 		// Dummy section
 		body.append("<fr:section id=\"").append(getSectionControlName()).append("\" ");
-		body.append("bind=\"").append(getBindingName()).append("\" ");
+		body.append("bind=\"").append(getBindingId()).append("\" ");
 		body.append("repeat=\"true\" min=\"").append(MIN_REPEATS).append("\" max=\"").append(MAX_REPEATS).append("\" ");
 		body.append("template=\"instance('").append(getTemplateName()).append("')\" >");
 		body.append(getBodyLabel());
@@ -99,14 +103,14 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 			minRepeatsTag = " min=\"" + minRepeats + "\" ";
 		}
 
-		String group = "<fr:grid id=\"" + getSectionControlName() + "\" repeat=\"true\" bind=\"" + getBindingName()
+		String group = "<fr:grid id=\"" + getSectionControlName() + "\" repeat=\"true\" bind=\"" + getBindingId()
 				+ "\" origin=\"instance('" + getTemplateName() + "')\" " + minRepeatsTag + maxRepeatsTag + ">";
 
 		return group;
 	}
 
 	private String getTemplateName() {
-		return getControlName() + "-template";
+		return getName() + "-template";
 	}
 
 	/**

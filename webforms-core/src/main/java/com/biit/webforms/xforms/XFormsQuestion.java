@@ -53,9 +53,9 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	@Override
 	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
 			StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		binding.append("<xf:bind id=\"").append(getBindingName()).append("\"  name=\"")
-				.append(getXFormsHelper().getUniqueName(getSource())).append("\" ");
-		binding.append("ref=\"").append(getControlName()).append("\" ");
+		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"")
+				.append(getBindingName()).append("\" ");
+		binding.append("ref=\"").append(getXPath()).append("\" ");
 		getXFormsType(binding);
 		isMandatory(binding);
 		getConstraints(binding);
@@ -201,7 +201,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	private String createElement() {
 		String section = "";
 		section += "<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName()
-				+ "\" " + " bind=\"" + getBindingName() + "\">";
+				+ "\" " + " bind=\"" + getBindingId() + "\">";
 		section += getBodyLabel();
 		section += getBodyHint();
 		section += getBodyAlert();
