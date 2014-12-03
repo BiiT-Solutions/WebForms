@@ -65,8 +65,9 @@ public class Designer extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
-		if (!WebformsAuthorizationService.getInstance().isFormEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+		if (UserSessionHandler.getController().getFormInUse() != null
+				&& !WebformsAuthorizationService.getInstance().isFormEditable(
+						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
@@ -491,9 +492,9 @@ public class Designer extends SecuredWebPage {
 					window.close();
 					table.setValue(null);
 					table.removeRow(whatToMove);
-					table.loadTreeObject(whatToMove, whereToMove,false);
+					table.loadTreeObject(whatToMove, whereToMove, false);
 					table.expand(whereToMove);
-					// FIX to force a jump to this point in table. 
+					// FIX to force a jump to this point in table.
 					table.setValue(null);
 					table.setValue(whatToMove);
 				} catch (NotValidChildException e) {

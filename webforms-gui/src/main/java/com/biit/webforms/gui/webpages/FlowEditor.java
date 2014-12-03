@@ -76,8 +76,9 @@ public class FlowEditor extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
-		if (!WebformsAuthorizationService.getInstance().isFormEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+		if (UserSessionHandler.getController().getFormInUse() != null
+				&& !WebformsAuthorizationService.getInstance().isFormEditable(
+						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
