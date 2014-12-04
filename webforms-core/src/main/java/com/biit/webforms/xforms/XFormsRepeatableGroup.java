@@ -39,16 +39,16 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 		return section;
 	}
 
-	private String getIteratorControlName() {
+	protected String getIteratorControlName() {
 		return getUniqueName() + "-iterator";
 	}
 
 	private String getIteratorBindingId() {
 		return getUniqueName() + "-iterator-bind";
 	}
-	
+
 	private String getIteratorBindingName() {
-		return getUniqueName() + "-iterator-bind";
+		return getUniqueName() + "-iterator";
 	}
 
 	/**
@@ -57,14 +57,14 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 	@Override
 	protected void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
 			StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		binding.append("<xf:bind id=\"").append(getBindingId()).append("\" name=\"")
-				.append(getBindingName()).append("\"");
+		binding.append("<xf:bind id=\"").append(getBindingId()).append("\" name=\"").append(getBindingName())
+				.append("\"");
 		getRelevantStructure(binding);
 		binding.append(" ref=\"").append(getXPath()).append("\" >");
 		binding.append("<xf:bind id=\"").append(getIteratorBindingId()).append("\" ");
 		binding.append("name=\"").append(getIteratorBindingName()).append("\" ");
 		getRelevantStructure(binding);
-		binding.append(" ref=\"").append(getIteratorControlName()).append("\" >");
+		binding.append(" ref=\"").append(getXPath() + "/" + getIteratorControlName()).append("\" >");
 		// Add also children.
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
 			child.getBinding(binding);
@@ -110,7 +110,7 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 	}
 
 	private String getTemplateName() {
-		return getName() + "-template";
+		return getUniqueName() + "-template";
 	}
 
 	/**
