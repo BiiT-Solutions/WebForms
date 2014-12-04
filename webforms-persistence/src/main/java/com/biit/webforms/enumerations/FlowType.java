@@ -6,7 +6,9 @@ public enum FlowType {
 
 	END_LOOP(true,true),
 
-	END_FORM(true,false), ;
+	END_FORM(true,false),
+	
+	;
 
 	private final boolean destinyNull;
 	private final boolean onlyInRepeatableGroups;

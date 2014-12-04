@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.BatchSize;
 
@@ -65,11 +66,15 @@ public class Flow extends StorableObject {
 
 	@ManyToOne
 	private Form form;
+	
+	@Transient
+	private boolean generated;
 
 	public Flow() {
 		super();
 		flowType = FlowType.NORMAL;
 		condition = new ArrayList<Token>();
+		generated = false;
 	}
 
 	public TreeObject getOrigin() {
@@ -368,5 +373,13 @@ public class Flow extends StorableObject {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isGenerated(){
+		return generated; 
+	}
+
+	public void setGenerated(boolean value) {
+		this.generated = value;
 	}
 }

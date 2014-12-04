@@ -7,6 +7,7 @@ import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.theme.ThemeIcons;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -200,5 +201,9 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public void addFinishListener(ClickListener clickListener) {
 		finish.addClickListener(clickListener);
+	}
+
+	public AbstractComponent getFinish() {
+		return finish;
 	}
 }

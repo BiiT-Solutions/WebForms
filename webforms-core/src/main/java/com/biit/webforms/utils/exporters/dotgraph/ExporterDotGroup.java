@@ -27,29 +27,43 @@ public class ExporterDotGroup extends ExporterDot<Group> {
 			cluster += "\t\tlabel = \"" + filterDotLanguage(group.getName()) + "\";\n";
 		}
 
+		cluster += generateDotNodeChilds(group);
+
+		cluster += "\t\tcolor=" + getShapeColor() + ";\n";
+		cluster += "\t\tfontcolor=" + getFontColor() + ";\n";
+		cluster += "\t\tpenwidth=" + getPenWidth() + ";\n";
+		cluster += "\t\tstyle=" + getGroupStyle(group) + ";\n";
+
+		cluster += "\t\t}\n";
+
+		return cluster;
+	}
+
+	@Override
+	public String generateDotNodeChilds(Group group) {
+		String clusterChilds = new String();
+
 		for (TreeObject child : group.getChildren()) {
 			if (child instanceof Group) {
-				cluster += (new ExporterDotGroup()).generateDotNodeList((Group) child);
+				clusterChilds += (new ExporterDotGroup()).generateDotNodeList((Group) child);
 				continue;
 			}
 			if (child instanceof BaseQuestion) {
-				cluster += (new ExporterDotBaseQuestion()).generateDotNodeList((BaseQuestion) child);
+				clusterChilds += (new ExporterDotBaseQuestion()).generateDotNodeList((BaseQuestion) child);
 				continue;
 			}
 			WebformsLogger.severe(this.getClass().getName(), "Has ignored an element of type: "
 					+ child.getClass().getName() + " '" + child + "'");
 		}
-		cluster += "\t\tcolor=" + getShapeColor() + ";\n";
-		cluster += "\t\tfontcolor=" + getFontColor() + ";\n";
-		cluster += "\t\tpenwidth=" + getPenWidth() + ";\n";
-		if (group.isRepeatable()) {
-			cluster += "\t\tstyle=" + LOOP_BOX_STYLE + ";\n";
-		} else {
-			cluster += "\t\tstyle=" + BOX_STYLE + ";\n";
-		}
-		cluster += "\t\t}\n";
+		return clusterChilds;
+	}
 
-		return cluster;
+	public String getGroupStyle(Group group) {
+		if (group.isRepeatable()) {
+			return LOOP_BOX_STYLE;
+		} else {
+			return BOX_STYLE;
+		}
 	}
 
 	@Override

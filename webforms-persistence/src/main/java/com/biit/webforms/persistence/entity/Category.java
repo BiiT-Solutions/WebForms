@@ -52,10 +52,10 @@ public class Category extends BaseCategory {
 		sb.append("Category ").append(idName).append("  = new Category();").append(System.lineSeparator());
 		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
 		sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
-		
+
 		int currentCounter = counter;
 		for (TreeObject child : getChildren()) {
-			int tempCounter = currentCounter+1;
+			int tempCounter = currentCounter + 1;
 			if (child instanceof Group) {
 				currentCounter = ((Group) child).exportToJavaCode(sb, currentCounter + 1);
 			}
@@ -68,10 +68,28 @@ public class Category extends BaseCategory {
 			if (child instanceof SystemField) {
 				currentCounter = ((SystemField) child).exportToJavaCode(sb, currentCounter + 1);
 			}
-			
+
 			sb.append("//cat").append(System.lineSeparator());
-			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
+			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");")
+					.append(System.lineSeparator());
 		}
 		return currentCounter;
+	}
+
+	/**
+	 * This function checks if the content of two category elements is the same.
+	 * 
+	 * @param category
+	 * @return
+	 */
+	public boolean isContentEqual(Category category) {
+		if (!getName().equals(category.getName())) {
+			return false;
+		}
+		if ((getLabel() == null && category.getLabel() != null) || (getLabel() != null && category.getLabel() == null)
+				|| (getLabel() != null && category.getLabel() != null && !(getLabel().equals(category.getLabel())))) {
+			return false;
+		}
+		return true;
 	}
 }

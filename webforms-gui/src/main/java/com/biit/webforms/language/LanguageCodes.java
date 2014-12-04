@@ -139,7 +139,9 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_GENERATED_FILE("caption.generated.file"),
 	CAPTION_COMPARE_CONTENT("caption.compare.content"), 
 
-	CAPTION_WAITING_VALIDATION("caption.waiting.validation"),
+	CAPTION_WAITING_VALIDATION("caption.waiting.validation"),	
+	CAPTION_CONTENT_ANALYSIS("caption.content.analysis"),
+	
 	TITLE_DOWNLOAD_FILE("title.download.file"),
 	
 	TOOLTIP_NEW_FORM("tooltip.new.form"),
@@ -148,6 +150,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_LINK_ABCD_FORM("tooltip.link.abcd.form"),
 	TOOLTIP_EXPORT_XSD("caption.link.export.xsd"),
 	TOOLTIP_COMPARE_CONTENT("tooltip.compare.content"), 
+	TOOLTIP_CONTENT_ANALYSIS("tooltip.content.analysis"),
 	
 	NULL_VALUE_NEW_FORM("null.value.new.form"),
 	NULL_VALUE_NEW_BLOCK("null.value.new.block"),
@@ -407,7 +410,8 @@ public enum LanguageCodes implements ILanguageCode{
 	
 	XFORM_PUBLISHED("form.published.correctly"), 
 	
-	CAPTION_DRAG_AND_DROP_FILES("caption.drag.and.drop.files"),  
+	CAPTION_DRAG_AND_DROP_FILES("caption.drag.and.drop.files"), 
+	  
 	;
 
 	private String value;

@@ -562,8 +562,8 @@ public class ApplicationController {
 					// First one (newString)
 					maxNewString = Math.max(maxNewString, 1);
 				} else {
-					// Other, extract number (newString-int)
-					String value = child.getName().substring(newString.length() + 1);
+					// Other, extract number (newStringint)
+					String value = child.getName().substring(newString.length());
 					try {
 						maxNewString = Math.max(maxNewString, Integer.parseInt(value));
 					} catch (NumberFormatException nfe) {
@@ -1192,6 +1192,18 @@ public class ApplicationController {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 		return null;
+	}
+	
+	public List<com.biit.webforms.persistence.entity.SimpleFormView> getSimpleFormVersionsWebforms(String label, Long organizationId) {
+		List<com.biit.webforms.persistence.entity.SimpleFormView> filteredForms = new ArrayList<>();
+		List<com.biit.webforms.persistence.entity.SimpleFormView> forms = simpleFormDaoWebforms.getAll();
+		
+		for(com.biit.webforms.persistence.entity.SimpleFormView form:forms){
+			if(form.getLabel().equals(label) && form.getOrganizationId().equals(organizationId)){
+				filteredForms.add(form);
+			}
+		}
+		return filteredForms;
 	}
 
 	public void changeFormStatus(IWebformsFormView formView, FormWorkStatus value) throws NotEnoghRightsToChangeStatus {

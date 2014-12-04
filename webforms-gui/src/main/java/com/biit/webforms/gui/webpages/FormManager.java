@@ -38,6 +38,7 @@ import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderXsd;
+import com.biit.webforms.gui.webpages.formmanager.WindowImpactAnalysis;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
 import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
 import com.biit.webforms.gui.xforms.WindowXForms;
@@ -235,7 +236,21 @@ public class FormManager extends SecuredWebPage {
 				ApplicationUi.navigateTo(WebMap.COMPARE_CONTENT);
 			}
 		});
+		upperMenu.addImpactAnalysisListener(new ClickListener() {
+			private static final long serialVersionUID = 8831217333785785818L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				impactAnalysis();
+			}
+		});
 		return upperMenu;
+	}
+
+	protected void impactAnalysis() {
+		WindowImpactAnalysis impactAnalysis = new WindowImpactAnalysis();
+		impactAnalysis.setForm(getSelectedForm());
+		impactAnalysis.showCentered();
 	}
 
 	protected void finishForm() {
@@ -470,6 +485,7 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.getExportFlowPdf().setEnabled(rowNotNullAndForm);
 			upperMenu.getExportXsd().setEnabled(rowNotNullAndForm);
 			upperMenu.getExportXForms().setEnabled(rowNotNullAndForm);
+			upperMenu.getImpactAnalysis().setEnabled(rowNotNullAndForm);
 
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);

@@ -34,9 +34,7 @@ public class ExporterDotFilteredForm extends ExporterDotFormBasic<FilteredForm> 
 	@Override
 	public String generateDotNodeList(FilteredForm structure) {
 		String dotNodes = new String();
-		for (TreeObject child : structure.getFilteredForm().getChildren()) {
-			dotNodes += (new ExporterDotCategory()).generateDotNodeList((Category) child);
-		}
+		dotNodes += generateDotNodeChilds(structure);
 		return dotNodes;
 	}
 
@@ -53,6 +51,15 @@ public class ExporterDotFilteredForm extends ExporterDotFormBasic<FilteredForm> 
 		}
 
 		return dotFlow;
+	}
+
+	@Override
+	public String generateDotNodeChilds(FilteredForm structure) {
+		String dotNodes = new String();
+		for (TreeObject child : structure.getFilteredForm().getChildren()) {
+			dotNodes += (new ExporterDotCategory()).generateDotNodeList((Category) child);
+		}
+		return dotNodes;
 	}
 
 }
