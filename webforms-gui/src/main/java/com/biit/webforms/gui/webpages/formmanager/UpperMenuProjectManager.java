@@ -5,6 +5,7 @@ import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.theme.ThemeIcons;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickListener;
 
 /**
@@ -14,58 +15,59 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private final IconButton newForm, finish, newFormVersion, importAbcdForm, linkAbcdForm, exportXForms, exportPdf,
-			exportFlowPdf, exportXsd, impactAnalysis, compareContent;
+	private final IconButton newForm, newFormVersion;
+	private final IconButton rules, importAbcdForm, linkAbcdForm;
+	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms;
+	private final IconButton export, exportPdf, exportFlowPdf, exportXsd;
+	private final IconButton impactAnalysis, compareContent;
 
 	public UpperMenuProjectManager() {
 		super();
 
 		newForm = new IconButton(LanguageCodes.CAPTION_NEW_FORM, ThemeIcons.FORM_MANAGER_ADD_FORM,
 				LanguageCodes.TOOLTIP_NEW_FORM, IconSize.BIG);
-		finish = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
-				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 		newFormVersion = new IconButton(LanguageCodes.CAPTION_NEW_FORM_VERSION, ThemeIcons.FORM_MANAGER_NEW_VERSION,
 				LanguageCodes.TOOLTIP_NEW_FORM_VERSION, IconSize.BIG);
+
 		importAbcdForm = new IconButton(LanguageCodes.CAPTION_IMPORT_ABCD_FORM,
 				ThemeIcons.FORM_MANAGER_IMPORT_ABCD_FORM, LanguageCodes.TOOLTIP_IMPORT_ABCD_FORM, IconSize.BIG);
 		linkAbcdForm = new IconButton(LanguageCodes.CAPTION_LINK_ABCD_FORM, ThemeIcons.FORM_MANAGER_LINK_ABCD_FORM,
 				LanguageCodes.TOOLTIP_LINK_ABCD_FORM, IconSize.BIG);
+
 		exportPdf = new IconButton(LanguageCodes.COMMON_CAPTION_EXPORT_TO_PDF, ThemeIcons.EXPORT_FORM_TO_PDF,
 				LanguageCodes.COMMON_TOOLTIP_EXPORT_TO_PDF, IconSize.BIG);
 		exportFlowPdf = new IconButton(LanguageCodes.CAPTION_PRINT_FLOW, ThemeIcons.EXPORT_FORM_TO_PDF,
 				LanguageCodes.TOOLTIP_PRINT_FLOW, IconSize.BIG);
-
-		exportXForms = new IconButton(LanguageCodes.CAPTION_TO_XFORMS, ThemeIcons.EXPORT_FORM_TO_XFORMS,
-				LanguageCodes.TOOLTIP_TO_XFORMS, IconSize.BIG);
-		
 		exportXsd = new IconButton(LanguageCodes.CAPTION_EXPORT_XSD, ThemeIcons.EXPORT_XSD,
 				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
-		
+
+		previewXForms = new IconButton(LanguageCodes.CAPTION_PREVIEW_XFORMS, ThemeIcons.PREVIEW_XFORMS,
+				LanguageCodes.TOOLTIP_PREVIEW_XFORMS, IconSize.BIG);
+		publishXForms = new IconButton(LanguageCodes.CAPTION_PUBLISH_XFORMS, ThemeIcons.PUBLISH_XFORMS,
+				LanguageCodes.TOOLTIP_PUBLISH_XFORMS, IconSize.BIG);
+		downloadXForms = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS, ThemeIcons.DOWNLOAD_XFORMS,
+				LanguageCodes.TOOLTIP_DOWNLOAD_XFORMS, IconSize.BIG);
+
 		impactAnalysis = new IconButton(LanguageCodes.CAPTION_IMPACT_ANALYSIS, ThemeIcons.IMPACT_ANALYSIS,
 				LanguageCodes.TOOLTIP_IMPACT_ANALISYS, IconSize.BIG);
-		
+
 		compareContent = new IconButton(LanguageCodes.CAPTION_COMPARE_CONTENT, ThemeIcons.COMPARE_CONTENT,
 				LanguageCodes.TOOLTIP_COMPARE_CONTENT, IconSize.BIG);
 
 		addIconButton(newForm);
-		//addIconButton(finish);
 		addIconButton(newFormVersion);
-		addIconButton(importAbcdForm);
-		addIconButton(linkAbcdForm);
-		addIconButton(exportPdf);
-		addIconButton(exportFlowPdf);
-		addIconButton(exportXsd);
-		addIconButton(exportXForms);
+		rules = addSubMenu(ThemeIcons.RULES, LanguageCodes.CAPTION_RULES, LanguageCodes.TOOLTIP_RULES, importAbcdForm,
+				linkAbcdForm);
 		addIconButton(impactAnalysis);
 		addIconButton(compareContent);
+		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
+				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
+		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
+				exportFlowPdf, exportXsd);
 	}
 
 	public void addNewFormListener(ClickListener listener) {
 		newForm.addClickListener(listener);
-	}
-
-	public void addFinishListener(ClickListener listener) {
-		finish.addClickListener(listener);
 	}
 
 	public void addNewFormVersionListener(ClickListener listener) {
@@ -88,63 +90,71 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		exportFlowPdf.addClickListener(listener);
 	}
 
-	public void addExportXFormsListener(ClickListener listener) {
-		exportXForms.addClickListener(listener);
-	}
-	
 	public void addExportXsdListener(ClickListener listener) {
 		exportXsd.addClickListener(listener);
 	}
-	
+
 	public void addCompareContent(ClickListener listener) {
 		compareContent.addClickListener(listener);
 	}
-	
-	public void addImpactAnalysisListener(ClickListener listener){
+
+	public void addImpactAnalysisListener(ClickListener listener) {
 		impactAnalysis.addClickListener(listener);
+	}
+
+	public void addPreviewXForms(ClickListener listener) {
+		previewXForms.addClickListener(listener);
+	}
+
+	public void addPublishXForms(ClickListener listener) {
+		publishXForms.addClickListener(listener);
+	}
+
+	public void addDownloadXForms(ClickListener listener) {
+		downloadXForms.addClickListener(listener);
 	}
 
 	public IconButton getNewForm() {
 		return newForm;
 	}
 
-	public IconButton getFinish() {
-		return finish;
-	}
-
 	public IconButton getNewFormVersion() {
 		return newFormVersion;
 	}
 
-	public IconButton getImportAbcdForm() {
-		return importAbcdForm;
+	public void setEnabledRules(boolean value) {
+		rules.setEnabled(value);
 	}
 
-	public IconButton getLinkAbcdForm() {
-		return linkAbcdForm;
+	public void setEnabledExport(boolean value) {
+		export.setEnabled(value);
 	}
 
-	public IconButton getExportPdf() {
-		return exportPdf;
+	public void setEnabledXForms(boolean value) {
+		exportXForms.setEnabled(value);
 	}
 
-	public IconButton getExportFlowPdf() {
-		return exportFlowPdf;
-	}
-
-	public IconButton getExportXForms() {
-		return exportXForms;
-	}
-	
-	public IconButton getExportXsd() {
-		return exportXsd;
-	}
-	
 	public IconButton getCompareContent() {
 		return compareContent;
 	}
-	
-	public IconButton getImpactAnalysis(){
+
+	public IconButton getImpactAnalysis() {
 		return impactAnalysis;
+	}
+
+	public AbstractComponent getPreviewXForms() {
+		return previewXForms;
+	}
+
+	public void setEnabledImportAbcd(boolean enabled) {
+		importAbcdForm.setEnabled(enabled);
+	}
+
+	public void setEnabledLinkAbcd(boolean enabled) {
+		linkAbcdForm.setEnabled(enabled);
+	}
+
+	public void addExportXFormsListener(ClickListener listener) {
+		exportXForms.addClickListener(listener);
 	}
 }

@@ -15,7 +15,9 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	private static final long serialVersionUID = -368255188051163986L;
 
-	private IconButton saveButton, saveAsBlockButton, insertBlockButton, newCategoryButton, newGroupButton,
+	private final IconButton saveButton;
+	private final IconButton block, saveAsBlockButton, insertBlockButton;
+	private final IconButton newCategoryButton, newGroupButton,
 			newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, newSubanswerButton, moveButton,
 			deleteButton, upButton, downButton, finish, exportToJavaCode;
 
@@ -69,8 +71,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		exportToJavaCode.setVisible(false);
 
 		addIconButton(saveButton);
-		addIconButton(saveAsBlockButton);
-		addIconButton(insertBlockButton);
+		block = addSubMenu(ThemeIcons.BUILDING_BLOCK_MENU,LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER,LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, saveAsBlockButton,insertBlockButton);
 		addIconButton(newCategoryButton);
 		addIconButton(newGroupButton);
 		addIconButton(newQuestionButton);

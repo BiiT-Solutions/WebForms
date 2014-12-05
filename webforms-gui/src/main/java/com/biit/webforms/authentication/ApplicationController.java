@@ -28,6 +28,7 @@ import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.validation.ValidateReport;
+import com.biit.webforms.authentication.exception.BadAbcdLink;
 import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
@@ -87,9 +88,6 @@ public class ApplicationController {
 
 	private Form lastEditedForm;
 	private Form formInUse;
-	
-	//Form that is not locked
-	private Form previewedForm;
 
 	private boolean unsavedFormChanges = false;
 
@@ -176,7 +174,8 @@ public class ApplicationController {
 		return newform;
 	}
 
-	public Block createBlock(String blockName, Long organizationId) throws Exception {
+	public Block createBlock(String blockName, Long organizationId) throws CharacterNotAllowedException,
+			FieldTooLongException, FormWithSameNameException, UnexpectedDatabaseException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " createBlock "
 				+ blockName);
 		logInfoStart("createBlock", blockName, organizationId);
@@ -192,17 +191,12 @@ public class ApplicationController {
 		}
 
 		// Check if database contains a form with the same name.
-		try {
-			if (blockDao.getBlock(blockName, organizationId) != null) {
-				FormWithSameNameException ex = new FormWithSameNameException("Block with name: " + blockName
-						+ " already exists");
-				WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-						+ " createBlock " + ex.getMessage());
-				throw ex;
-			}
-		} catch (Exception e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			throw e;
+		if (blockDao.getBlock(blockName, organizationId) != null) {
+			FormWithSameNameException ex = new FormWithSameNameException("Block with name: " + blockName
+					+ " already exists");
+			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
+					+ " createBlock " + ex.getMessage());
+			throw ex;
 		}
 
 		// Persist form.
@@ -287,15 +281,20 @@ public class ApplicationController {
 	 * @param form
 	 * @return
 	 * @throws UnexpectedDatabaseException
+	 * @throws BadAbcdLink
 	 */
-	public List<com.biit.abcd.persistence.entity.Form> getLinkedAbcdForm(Form form) throws UnexpectedDatabaseException {
+	public List<com.biit.abcd.persistence.entity.Form> getLinkedAbcdForm(Form form) throws UnexpectedDatabaseException,
+			BadAbcdLink {
 		List<com.biit.abcd.persistence.entity.Form> linkedForms = new ArrayList<>();
 		if (form.getLinkedFormLabel() != null && form.getLinkedFormOrganizationId() != null) {
 			try {
 				for (Integer version : form.getLinkedFormVersions()) {
-					linkedForms.add(formDaoAbcd.getForm(form.getLinkedFormLabel(), version,
-							form.getLinkedFormOrganizationId()));
-
+					com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.getForm(form.getLinkedFormLabel(),
+							version, form.getLinkedFormOrganizationId());
+					if (abcdForm == null) {
+						throw new BadAbcdLink();
+					}
+					linkedForms.add(abcdForm);
 				}
 			} catch (UnexpectedDatabaseException e) {
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -659,7 +658,8 @@ public class ApplicationController {
 		saveForm(form);
 	}
 
-	public void saveAsBlock(TreeObject element, String blockLabel, Long organizationId) throws Exception {
+	public void saveAsBlock(TreeObject element, String blockLabel, Long organizationId) throws FieldTooLongException,
+			FormWithSameNameException, UnexpectedDatabaseException {
 		logInfoStart("saveAsBlock ", element, blockLabel, organizationId);
 
 		Block block = null;
@@ -1193,13 +1193,14 @@ public class ApplicationController {
 		}
 		return null;
 	}
-	
-	public List<com.biit.webforms.persistence.entity.SimpleFormView> getSimpleFormVersionsWebforms(String label, Long organizationId) {
+
+	public List<com.biit.webforms.persistence.entity.SimpleFormView> getSimpleFormVersionsWebforms(String label,
+			Long organizationId) {
 		List<com.biit.webforms.persistence.entity.SimpleFormView> filteredForms = new ArrayList<>();
 		List<com.biit.webforms.persistence.entity.SimpleFormView> forms = simpleFormDaoWebforms.getAll();
-		
-		for(com.biit.webforms.persistence.entity.SimpleFormView form:forms){
-			if(form.getLabel().equals(label) && form.getOrganizationId().equals(organizationId)){
+
+		for (com.biit.webforms.persistence.entity.SimpleFormView form : forms) {
+			if (form.getLabel().equals(label) && form.getOrganizationId().equals(organizationId)) {
 				filteredForms.add(form);
 			}
 		}
@@ -1228,13 +1229,5 @@ public class ApplicationController {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
-	}
-
-	public Form getPreviewedForm() {
-		return previewedForm;
-	}
-
-	public void setPreviewedForm(Form previewedForm) {
-		this.previewedForm = previewedForm;
 	}
 }

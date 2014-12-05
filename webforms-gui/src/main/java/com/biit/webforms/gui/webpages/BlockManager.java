@@ -8,6 +8,7 @@ import java.util.List;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
@@ -157,9 +158,10 @@ public class BlockManager extends SecuredWebPage {
 				} catch (CharacterNotAllowedException e) {
 					// Impossible
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
-				} catch (Exception e) {
+				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});

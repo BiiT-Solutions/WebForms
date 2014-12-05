@@ -3,9 +3,15 @@ package com.biit.webforms.gui.common.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biit.webforms.gui.common.language.ILanguageCode;
+import com.biit.webforms.gui.common.theme.IThemeIcon;
+import com.biit.webforms.gui.popover.Popover;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 
 public class UpperMenu extends HorizontalButtonGroup {
 	private static final long serialVersionUID = 3501103183357307175L;
@@ -14,6 +20,7 @@ public class UpperMenu extends HorizontalButtonGroup {
 
 	public static final String CLASSNAME_HORIZONTAL_BUTTON_WRAPPER = "v-horizontal-button-group-wrapper";
 	private static final String SEPARATOR_STYLE = "v-menu-separator";
+	private static final String UPPER_MENU_HEIGHT = "70px";
 
 	private HorizontalLayout upperRootLayout;
 	private HorizontalLayout oldRootLayoutContainer;
@@ -72,7 +79,59 @@ public class UpperMenu extends HorizontalButtonGroup {
 
 	private void defineUpperMenu() {
 		this.setWidth("100%");
-		this.setHeight("70px");
+		this.setHeight(UPPER_MENU_HEIGHT);
 		setStyleName("upper-menu v-horizontal-button-group");
+	}
+	
+	/**
+	 * 
+	 * @param icon
+	 * @param caption
+	 * @param tooltip
+	 * @param buttons
+	 * @return
+	 */
+	public IconButton addSubMenu(IThemeIcon icon, ILanguageCode caption, ILanguageCode tooltip, IconButton ...buttons){
+		IconButton subMenu = generateSubMenu(icon, caption, tooltip, buttons);
+		addIconButton(subMenu);
+		return subMenu;
+	}
+	
+	public IconButton generateSubMenu(IThemeIcon icon, ILanguageCode caption, ILanguageCode tooltip, final IconButton ...buttons){
+		for(IconButton button: buttons){
+			button.addStyleName("v-popover-upper-submenu");
+		}
+		
+		final IconButton subMenu = new IconButton(caption, icon, tooltip, IconSize.BIG);
+		subMenu.addStyleName("opens-popover-menu");
+		subMenu.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 9175409158532169878L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				VerticalLayout rootLayout = new VerticalLayout();
+				rootLayout.setSizeUndefined();
+				
+				final Popover popover = new Popover(rootLayout);
+				popover.setClosable(true);
+				
+				for(IconButton button: buttons){
+					button.setWidth(getIconSize());
+					button.setHeight(UPPER_MENU_HEIGHT);
+					rootLayout.addComponent(button);
+					button.addClickListener(new ClickListener() {
+						private static final long serialVersionUID = -2214568128797434177L;
+
+						@Override
+						public void buttonClick(ClickEvent event) {
+							//Close original popover.
+							popover.close();
+						}
+					});
+				}				
+				popover.showRelativeTo(subMenu);
+			}
+		});
+		return subMenu;
 	}
 }
