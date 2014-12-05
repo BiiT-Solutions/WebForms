@@ -11,6 +11,8 @@ import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.abcd.security.AbcdActivity;
 import com.biit.abcd.security.AbcdAuthorizationService;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.NotValidChildException;
+import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
@@ -29,7 +31,6 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
-import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
@@ -41,19 +42,28 @@ import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderXsd;
 import com.biit.webforms.gui.webpages.formmanager.WindowImpactAnalysis;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
 import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
-import com.biit.webforms.gui.xforms.WindowXForms;
+import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
+import com.biit.webforms.gui.xforms.OrbeonUtils;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
+import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.biit.webforms.validators.ValidateFormComplete;
+import com.biit.webforms.xforms.XFormsExporter;
+import com.biit.webforms.xforms.exceptions.InvalidDateException;
+import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
+import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
+import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
+import com.liferay.portal.model.Organization;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -66,6 +76,7 @@ public class FormManager extends SecuredWebPage {
 	private TreeTableFormVersion formTable;
 	private UpperMenuProjectManager upperMenu;
 	private FormEditBottomMenu bottomMenu;
+	private BrowserWindowOpener opener;
 
 	@Override
 	protected void initContent() {
@@ -108,14 +119,6 @@ public class FormManager extends SecuredWebPage {
 				openNewFormWindow();
 			}
 		});
-		upperMenu.addFinishListener(new ClickListener() {
-			private static final long serialVersionUID = 8869180038869702710L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				finishForm();
-			}
-		});
 		upperMenu.addNewFormVersionListener(new ClickListener() {
 			private static final long serialVersionUID = 2014729211949601816L;
 
@@ -145,22 +148,7 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				WindowDownloader downloader = new WindowDownloader(new WindowDownloaderProcess() {
-
-					@Override
-					public InputStream getInputStream() {
-						try {
-							return FormGeneratorPdf.generatePdf(new FormPdfGenerator(loadForm(getSelectedForm())));
-						} catch (IOException | DocumentException e) {
-							WebformsLogger.errorMessage(FormManager.class.getName(), e);
-							MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-						}
-						return null;
-					}
-				});
-				downloader.setIndeterminate(true);
-				downloader.setFilename(getSelectedForm().getLabel() + ".pdf");
-				downloader.showCentered();
+				exportPdf();
 			}
 		});
 		upperMenu.addExportFlowPdfListener(new ClickListener() {
@@ -168,45 +156,46 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
-
-					@Override
-					public InputStream getInputStream() {
-						try {
-							return new ByteArrayInputStream(GraphvizApp.generateImage(loadForm(getSelectedForm()),
-									null, ImgType.PDF));
-						} catch (IOException | InterruptedException e) {
-							WebformsLogger.errorMessage(this.getClass().getName(), e);
-							return null;
-						}
-					}
-				});
-				window.setIndeterminate(true);
-				window.setFilename(getSelectedForm().getLabel() + ".pdf");
-				window.showCentered();
+				exportFlowPdf();
 			}
 		});
 		upperMenu.addExportXFormsListener(new ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+						UserSessionHandler.getUser(), getSelectedForm().getOrganizationId());
+				opener.setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
+						XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
+			}
+		});
+		// Add browser window opener to the button.
+		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
+		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsExporter.APP_NAME);
+		opener.setFeatures("target=_new");
+		opener.extend(upperMenu.getPreviewXForms());
+		upperMenu.addPreviewXForms(new ClickListener() {
+			private static final long serialVersionUID = -8790434440652432643L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				previewXForms(opener);
+			}
+		});
+		upperMenu.addPublishXForms(new ClickListener() {
 			private static final long serialVersionUID = -4167515599696676260L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				Form form = loadForm(getSelectedForm());
-				UserSessionHandler.getController().setPreviewedForm(form);
+				publishXForms();
+			}
+		});
+		upperMenu.addDownloadXForms(new ClickListener() {
+			private static final long serialVersionUID = -2359606371849802798L;
 
-				// Xforms only can be uses with valid forms.
-				ValidateFormComplete validator = new ValidateFormComplete();
-				validator.setStopOnFail(true);
-
-				ValidateReport report = new ValidateReport();
-				validator.validate((form), report);
-
-				if (report.isValid()) {
-					WindowXForms windowXForms = new WindowXForms();
-					windowXForms.show();
-				} else {
-					MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
-				}
+			@Override
+			public void buttonClick(ClickEvent event) {
+				downloadXForms();
 			}
 		});
 		upperMenu.addExportXsdListener(new ClickListener() {
@@ -214,18 +203,7 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				Form form = loadForm(getSelectedForm());
-
-				ValidateFormComplete validator = new ValidateFormComplete();
-				validator.setStopOnFail(true);
-
-				ValidateReport report = new ValidateReport();
-				validator.validate(form, report);
-				if (report.isValid()) {
-					new WindowDownloaderXsd(form, getSelectedForm().getLabel() + ".xsd");
-				} else {
-					MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
-				}
+				exportXsd();
 			}
 		});
 		upperMenu.addCompareContent(new ClickListener() {
@@ -247,28 +225,130 @@ public class FormManager extends SecuredWebPage {
 		return upperMenu;
 	}
 
+	/**
+	 * Loads a forms and tries to validate. If the form is not validated returns
+	 * null
+	 * 
+	 * @return
+	 */
+	protected Form loadAndValidateForm() {
+		Form form = loadForm(getSelectedForm());
+
+		// Xforms only can be uses with valid forms.
+		ValidateFormComplete validator = new ValidateFormComplete();
+		validator.setStopOnFail(true);
+
+		ValidateReport report = new ValidateReport();
+		validator.validate((form), report);
+
+		if (report.isValid()) {
+			return form;
+		} else {
+			MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
+			return null;
+		}
+	}
+
+	protected void downloadXForms() {
+		Form form = loadAndValidateForm();
+		if (form != null) {
+			final Form previewForm = form;
+			WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
+
+				@Override
+				public InputStream getInputStream() {
+					try {
+						return new XFormsExporter(previewForm).generateXFormsLanguage();
+					} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
+							| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException e) {
+						WebformsLogger.errorMessage(this.getClass().getName(), e);
+						return null;
+					}
+				}
+			});
+			window.setIndeterminate(true);
+			window.setFilename(previewForm.getLabel() + ".txt");
+			window.showCentered();
+		}
+	}
+
+	protected void publishXForms() {
+		Form form = loadAndValidateForm();
+		if (form != null) {
+			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+					UserSessionHandler.getUser(), form.getOrganizationId());
+			if (OrbeonUtils.saveFormInOrbeon(form, organization, false)) {
+				MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
+			}
+		}
+	}
+
+	protected void previewXForms(BrowserWindowOpener opener) {
+		Form form = loadAndValidateForm();
+		if (form != null) {
+			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+					UserSessionHandler.getUser(), form.getOrganizationId());
+			OrbeonUtils.saveFormInOrbeon(form, organization, true);
+		}
+	}
+
+	protected void exportXsd() {
+		Form form = loadForm(getSelectedForm());
+
+		ValidateFormComplete validator = new ValidateFormComplete();
+		validator.setStopOnFail(true);
+
+		ValidateReport report = new ValidateReport();
+		validator.validate(form, report);
+		if (report.isValid()) {
+			new WindowDownloaderXsd(form, getSelectedForm().getLabel() + ".xsd");
+		} else {
+			MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
+		}
+	}
+
+	protected void exportFlowPdf() {
+		WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
+
+			@Override
+			public InputStream getInputStream() {
+				try {
+					return new ByteArrayInputStream(GraphvizApp.generateImage(loadForm(getSelectedForm()), null,
+							ImgType.PDF));
+				} catch (IOException | InterruptedException e) {
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+					return null;
+				}
+			}
+		});
+		window.setIndeterminate(true);
+		window.setFilename(getSelectedForm().getLabel() + ".pdf");
+		window.showCentered();
+	}
+
+	protected void exportPdf() {
+		WindowDownloader downloader = new WindowDownloader(new WindowDownloaderProcess() {
+
+			@Override
+			public InputStream getInputStream() {
+				try {
+					return FormGeneratorPdf.generatePdf(new FormPdfGenerator(loadForm(getSelectedForm())));
+				} catch (IOException | DocumentException e) {
+					WebformsLogger.errorMessage(FormManager.class.getName(), e);
+					MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+				}
+				return null;
+			}
+		});
+		downloader.setIndeterminate(true);
+		downloader.setFilename(getSelectedForm().getLabel() + ".pdf");
+		downloader.showCentered();
+	}
+
 	protected void impactAnalysis() {
 		WindowImpactAnalysis impactAnalysis = new WindowImpactAnalysis();
 		impactAnalysis.setForm(getSelectedForm());
 		impactAnalysis.showCentered();
-	}
-
-	protected void finishForm() {
-		new WindowProceedAction(LanguageCodes.TEXT_PROCEED_FORM_CLOSE, new AcceptActionListener() {
-
-			@Override
-			public void acceptAction(WindowAcceptCancel window) {
-				try {
-					Form form = loadForm(getSelectedForm());
-					UserSessionHandler.getController().finishForm(form);
-					formTable.refreshTableData();
-					formTable.selectForm(form);
-				} catch (UnexpectedDatabaseException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-				}
-			}
-		});
 	}
 
 	/**
@@ -478,13 +558,15 @@ public class FormManager extends SecuredWebPage {
 
 			upperMenu.setEnabled(true);
 			upperMenu.getNewForm().setEnabled(canCreateForms);
-			upperMenu.getFinish().setEnabled(rowNotNullAndForm && canCreateForms);
 			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion && selectedForm.isLastVersion());
-			upperMenu.getLinkAbcdForm().setEnabled(rowNotNullAndForm && canLinkVersion);
-			upperMenu.getExportPdf().setEnabled(rowNotNullAndForm);
-			upperMenu.getExportFlowPdf().setEnabled(rowNotNullAndForm);
-			upperMenu.getExportXsd().setEnabled(rowNotNullAndForm);
-			upperMenu.getExportXForms().setEnabled(rowNotNullAndForm);
+
+			upperMenu.setEnabledRules(true);
+			upperMenu.setEnabledImportAbcd(canCreateForms);
+			upperMenu.setEnabledLinkAbcd(rowNotNullAndForm && canLinkVersion);
+
+			upperMenu.setEnabledExport(rowNotNullAndForm);
+			upperMenu.setEnabledXForms(rowNotNullAndForm);
+
 			upperMenu.getImpactAnalysis().setEnabled(rowNotNullAndForm);
 
 			// Bottom menu

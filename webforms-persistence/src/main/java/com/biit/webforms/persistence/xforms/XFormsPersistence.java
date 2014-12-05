@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.xforms.exceptions.AccessNotAllowed;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedKeyException;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedXFormException;
@@ -31,7 +32,7 @@ public class XFormsPersistence {
 	 * @param preview
 	 * @return
 	 */
-	public static String formatFormName(Form form, Organization organization, boolean preview) {
+	public static String formatFormName(IWebformsFormView form, Organization organization, boolean preview) {
 		if (preview) {
 			return PREVIEW_PREFIX + form.getLabel().replace(" ", "_") + "_" + organization.getName();
 		} else {

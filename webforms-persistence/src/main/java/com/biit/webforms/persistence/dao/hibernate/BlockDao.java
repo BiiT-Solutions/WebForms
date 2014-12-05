@@ -10,7 +10,6 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +23,6 @@ import com.biit.webforms.persistence.entity.Flow;
 public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 
 	public BlockDao() {
-		super(Block.class);
-	}
-
-	public BlockDao(HibernateTransactionManager transactionManager) {
 		super(Block.class);
 	}
 

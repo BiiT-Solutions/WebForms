@@ -79,4 +79,8 @@ public class HorizontalButtonGroup extends CustomComponent {
 		markAsDirtyRecursive();
 	}
 
+	protected String getIconSize() {
+		return size;
+	}
+
 }

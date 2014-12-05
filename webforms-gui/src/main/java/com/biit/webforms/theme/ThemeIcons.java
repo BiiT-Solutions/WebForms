@@ -96,6 +96,13 @@ public enum ThemeIcons implements IThemeIcon {
 	COMPARE_STRUCTURE("page.xml.svg"), 
 	
 	COMPARE_CONTENT("page.compare.svg"), 
+	
+	EXPORT("alert.svg"), 
+	RULES("alert.svg"),
+	PREVIEW_XFORMS("alert.svg"),
+	PUBLISH_XFORMS("alert.svg"),
+	DOWNLOAD_XFORMS("alert.svg"), 
+	BUILDING_BLOCK_MENU("page.building.block.manager.svg"),
 
 	;
 

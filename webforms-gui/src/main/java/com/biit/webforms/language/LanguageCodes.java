@@ -345,6 +345,7 @@ public enum LanguageCodes implements ILanguageCode{
 	MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT("message.validation.all.linked.forms.correct"),
 	
 	ERROR_FORM_STRUCTURE_COULD_NOT_BE_VALIDATED("error.form.struture.could.not.be.validated"),
+	ERROR_ABCD_FORM_LINKED_NOT_FOUND("error.abcd.form.linked.not.found"),
 	
 	//Compare Structure
 	CAPTION_COMPARE_STRUCTURE("caption.compare.structure"),	
@@ -411,6 +412,17 @@ public enum LanguageCodes implements ILanguageCode{
 	XFORM_PUBLISHED("form.published.correctly"), 
 	
 	CAPTION_DRAG_AND_DROP_FILES("caption.drag.and.drop.files"), 
+	
+	CAPTION_EXPORT("caption.export"),
+	CAPTION_RULES("caption.rules"),
+	TOOLTIP_EXPORT("tooltip.export"), 
+	TOOLTIP_RULES("tooltip.rules"), 
+	CAPTION_PREVIEW_XFORMS("caption.preview.xforms"), 
+	CAPTION_PUBLISH_XFORMS("caption.publish.xforms"),
+	CAPTION_DOWNLOAD_XFORMS("caption.download.xforms"),
+	TOOLTIP_PREVIEW_XFORMS("tooltip.preview.xforms"),
+	TOOLTIP_PUBLISH_XFORMS("tooltip.publish.xforms"),
+	TOOLTIP_DOWNLOAD_XFORMS("tooltip.download.xforms"),
 	  
 	;
 

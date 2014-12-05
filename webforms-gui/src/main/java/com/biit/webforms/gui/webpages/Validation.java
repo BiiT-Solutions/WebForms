@@ -11,6 +11,7 @@ import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
+import com.biit.webforms.authentication.exception.BadAbcdLink;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
@@ -116,6 +117,9 @@ public class Validation extends SecuredWebPage {
 			} catch (UnexpectedDatabaseException e) {
 				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 						LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+			} catch (BadAbcdLink e) {
+				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+						LanguageCodes.ERROR_ABCD_FORM_LINKED_NOT_FOUND);
 			}
 		} else {
 			MessageManager.showError(LanguageCodes.ERROR_FORM_STRUCTURE_COULD_NOT_BE_VALIDATED);
@@ -170,6 +174,9 @@ public class Validation extends SecuredWebPage {
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+		} catch (BadAbcdLink e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ABCD_FORM_LINKED_NOT_FOUND);
 		}
 	}
 
