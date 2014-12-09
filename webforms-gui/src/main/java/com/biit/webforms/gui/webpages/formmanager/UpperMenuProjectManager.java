@@ -66,12 +66,14 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		submenuNew = addSubMenu(ThemeIcons.NEW, LanguageCodes.CAPTION_NEW, LanguageCodes.TOOLTIP_NEW, newForm,
 				newFormVersion, importAbcdForm);
 		addIconButton(linkAbcdForm);
-		addIconButton(impactAnalysis);
-		addIconButton(compareContent);
-		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
-				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
+		
 		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
 				exportFlowPdf, exportXsd);
+		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
+				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
+		
+		addIconButton(impactAnalysis);
+		addIconButton(compareContent);
 	}
 
 	public void addNewFormListener(ClickListener listener) {
