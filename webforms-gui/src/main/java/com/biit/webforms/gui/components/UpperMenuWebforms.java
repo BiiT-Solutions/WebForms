@@ -120,7 +120,6 @@ public class UpperMenuWebforms extends UpperMenu {
 					WebformsActivity.EVICT_CACHE)) {
 				clearCacheButton.setVisible(true);
 				clearCacheButton.setWidth("100%");
-				rootLayout.addComponent(clearCacheButton);
 			} else {
 				clearCacheButton.setVisible(false);
 			}

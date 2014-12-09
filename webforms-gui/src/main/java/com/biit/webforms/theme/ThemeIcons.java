@@ -19,7 +19,7 @@ public enum ThemeIcons implements IThemeIcon {
 	PAGE_BUILDING_BLOCK_EDITOR("page.building.block.edit.svg"), 
 	PAGE_BUILDING_BLOCK_FLOW_EDITOR("page.flow.editor.svg"),
 
-	FORM_MANAGER_ADD_FORM("form.create.svg"), 
+	FORM_MANAGER_ADD_FORM("form.page.svg"), 
 	FORM_MANAGER_NEW_VERSION("form.new.version.svg"),
 
 	FORM_SAVE("form.save.svg"), 
@@ -98,17 +98,16 @@ public enum ThemeIcons implements IThemeIcon {
 	COMPARE_CONTENT("page.compare.svg"), 
 	
 	EXPORT("form.export.svg"), 
-	RULES("alert.svg"),
-	PREVIEW_XFORMS("alert.svg"),
-	PUBLISH_XFORMS("alert.svg"),
+	PREVIEW_XFORMS("form.preview.svg"),
+	PUBLISH_XFORMS("form.xforms.svg"),
 	DOWNLOAD_XFORMS("form.download.svg"), 
 	BUILDING_BLOCK_MENU("page.building.block.manager.svg"), 
 	
-	ABOUT_US("alert.svg"), 
-	CLEAR_CACHE("alert.svg"), 
-	LOG_OUT("alert.svg"), 
+	ABOUT_US("about.window.svg"), 
+	CLEAR_CACHE("cache.clear.svg"), 
+	LOG_OUT("user.logout.svg"), 
 	
-	NEW("alert.svg"),
+	NEW("form.create.svg"), //form.page.svg
 
 	;
 
