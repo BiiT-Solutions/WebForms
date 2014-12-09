@@ -18,8 +18,8 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private final IconButton newForm, newFormVersion;
-	private final IconButton rules, importAbcdForm, linkAbcdForm;
+	private final IconButton submenuNew, newForm, newFormVersion, importAbcdForm;
+	private final IconButton linkAbcdForm;
 	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms;
 	private final IconButton export, exportPdf, exportFlowPdf, exportXsd;
 	private final IconButton impactAnalysis, compareContent;
@@ -63,10 +63,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		compareContent = new IconButton(LanguageCodes.CAPTION_COMPARE_CONTENT, ThemeIcons.COMPARE_CONTENT,
 				LanguageCodes.TOOLTIP_COMPARE_CONTENT, IconSize.BIG);
 
-		addIconButton(newForm);
-		addIconButton(newFormVersion);
-		rules = addSubMenu(ThemeIcons.RULES, LanguageCodes.CAPTION_RULES, LanguageCodes.TOOLTIP_RULES, importAbcdForm,
-				linkAbcdForm);
+		submenuNew = addSubMenu(ThemeIcons.NEW, LanguageCodes.CAPTION_NEW, LanguageCodes.TOOLTIP_NEW, newForm,
+				newFormVersion, importAbcdForm);
+		addIconButton(linkAbcdForm);
 		addIconButton(impactAnalysis);
 		addIconButton(compareContent);
 		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
@@ -129,10 +128,6 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public IconButton getNewFormVersion() {
 		return newFormVersion;
-	}
-
-	public void setEnabledRules(boolean value) {
-		rules.setEnabled(value);
 	}
 
 	public void setEnabledExport(boolean value) {

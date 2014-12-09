@@ -106,7 +106,9 @@ public enum ThemeIcons implements IThemeIcon {
 	
 	ABOUT_US("alert.svg"), 
 	CLEAR_CACHE("alert.svg"), 
-	LOG_OUT("alert.svg"),
+	LOG_OUT("alert.svg"), 
+	
+	NEW("alert.svg"),
 
 	;
 

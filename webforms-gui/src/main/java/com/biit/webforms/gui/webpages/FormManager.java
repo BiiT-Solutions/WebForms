@@ -555,7 +555,6 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.getNewForm().setEnabled(canCreateForms);
 			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion && selectedForm.isLastVersion());
 
-			upperMenu.setEnabledRules(true);
 			upperMenu.setEnabledImportAbcd(canCreateForms);
 			upperMenu.setEnabledLinkAbcd(rowNotNullAndForm && canLinkVersion);
 

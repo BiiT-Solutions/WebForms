@@ -426,7 +426,9 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_PREVIEW_XFORMS("tooltip.preview.xforms"),
 	TOOLTIP_PUBLISH_XFORMS("tooltip.publish.xforms"),
 	TOOLTIP_DOWNLOAD_XFORMS("tooltip.download.xforms"), 
-	  
+	
+	CAPTION_NEW("caption.new"), 
+	TOOLTIP_NEW("tooltip.new"), 
 	;
 
 	private String value;
