@@ -173,15 +173,15 @@ public class FormManager extends SecuredWebPage {
 		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
 		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsExporter.APP_NAME);
 		opener.setFeatures("target=_new");
-		opener.extend(upperMenu.getPreviewXForms());
 		upperMenu.addPreviewXForms(new ClickListener() {
 			private static final long serialVersionUID = -8790434440652432643L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				previewXForms(opener);
+				saveFormInOrbeon();
 			}
 		});
+		opener.extend(upperMenu.getPreviewXForms());
 		upperMenu.addPublishXForms(new ClickListener() {
 			private static final long serialVersionUID = -4167515599696676260L;
 
@@ -283,7 +283,7 @@ public class FormManager extends SecuredWebPage {
 		}
 	}
 
-	protected void previewXForms(BrowserWindowOpener opener) {
+	protected void saveFormInOrbeon() {
 		Form form = loadAndValidateForm();
 		if (form != null) {
 			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(

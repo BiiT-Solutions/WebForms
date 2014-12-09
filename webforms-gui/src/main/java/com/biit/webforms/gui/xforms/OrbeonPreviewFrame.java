@@ -29,6 +29,9 @@ public class OrbeonPreviewFrame extends UI {
 		getPage().setTitle("Preview");
 		this.form = request.getParameter(FORM_PARAMETER_TAG);
 		this.application = request.getParameter(APPLICATION_PARAMETER_TAG);
+		
+		System.out.println(WebformsConfigurationReader.getInstance()
+				.getOrbeonFormRunnerUrl() + "/" + application + "/" + form + "/new");
 
 		BrowserFrame browser = new BrowserFrame(null, new ExternalResource(WebformsConfigurationReader.getInstance()
 				.getOrbeonFormRunnerUrl() + "/" + application + "/" + form + "/new"));
