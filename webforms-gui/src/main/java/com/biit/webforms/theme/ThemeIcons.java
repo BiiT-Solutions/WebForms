@@ -102,7 +102,11 @@ public enum ThemeIcons implements IThemeIcon {
 	PREVIEW_XFORMS("alert.svg"),
 	PUBLISH_XFORMS("alert.svg"),
 	DOWNLOAD_XFORMS("alert.svg"), 
-	BUILDING_BLOCK_MENU("page.building.block.manager.svg"),
+	BUILDING_BLOCK_MENU("page.building.block.manager.svg"), 
+	
+	ABOUT_US("alert.svg"), 
+	CLEAR_CACHE("alert.svg"), 
+	LOG_OUT("alert.svg"),
 
 	;
 

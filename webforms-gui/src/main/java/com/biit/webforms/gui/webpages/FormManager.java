@@ -63,7 +63,6 @@ import com.liferay.portal.model.Organization;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -76,14 +75,13 @@ public class FormManager extends SecuredWebPage {
 	private TreeTableFormVersion formTable;
 	private UpperMenuProjectManager upperMenu;
 	private FormEditBottomMenu bottomMenu;
-	private BrowserWindowOpener opener;
 
 	@Override
 	protected void initContent() {
 		UserSessionHandler.getController().clearFormInUse();
 
 		setCentralPanelAsWorkingArea();
-		upperMenu = createUpperMenu();
+		createUpperMenu();
 		bottomMenu = createBottomMenu();
 
 		setUpperMenu(upperMenu);
@@ -110,7 +108,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private UpperMenuProjectManager createUpperMenu() {
-		UpperMenuProjectManager upperMenu = new UpperMenuProjectManager();
+		upperMenu = new UpperMenuProjectManager();
 		upperMenu.addNewFormListener(new ClickListener() {
 			private static final long serialVersionUID = 8958665495299558548L;
 
@@ -160,26 +158,23 @@ public class FormManager extends SecuredWebPage {
 			}
 		});
 		upperMenu.addExportXFormsListener(new ClickListener() {
+			private static final long serialVersionUID = -8790434440652432643L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
 						UserSessionHandler.getUser(), getSelectedForm().getOrganizationId());
-				opener.setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
+				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
 						XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
 			}
 		});
 		// Add browser window opener to the button.
-		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
-		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsExporter.APP_NAME);
-		opener.setFeatures("target=_new");
-		opener.extend(upperMenu.getPreviewXForms());
 		upperMenu.addPreviewXForms(new ClickListener() {
 			private static final long serialVersionUID = -8790434440652432643L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				previewXForms(opener);
+				previewXForms();
 			}
 		});
 		upperMenu.addPublishXForms(new ClickListener() {
@@ -283,7 +278,7 @@ public class FormManager extends SecuredWebPage {
 		}
 	}
 
-	protected void previewXForms(BrowserWindowOpener opener) {
+	protected void previewXForms() {
 		Form form = loadAndValidateForm();
 		if (form != null) {
 			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(

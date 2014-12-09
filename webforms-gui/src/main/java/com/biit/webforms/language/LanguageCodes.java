@@ -115,6 +115,9 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_IMPACT_ANALISYS("tooltip.impact.analisys"),
 	TOOLTIP_CLOSE("tooltip.close"),
 	TOOLTIP_DOWNLOAD_FILE("tooltip.download.file"),
+	TOOLTIP_ABOUT_US("tooltip.about.us"),
+	TOOLTIP_SETTINGS_CLEAR_CACHE("tooltip.settings.clear.cache"),
+	TOOLTIP_SETTINGS_LOG_OUT("tooltip.settings.log.out"),
 	
 	COMMON_WARNING_TITLE_FORM_NOT_CREATED("common.warning.title.form.not.created"),
 	COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME("common.warning.description.form.needs.name"),
@@ -422,7 +425,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_DOWNLOAD_XFORMS("caption.download.xforms"),
 	TOOLTIP_PREVIEW_XFORMS("tooltip.preview.xforms"),
 	TOOLTIP_PUBLISH_XFORMS("tooltip.publish.xforms"),
-	TOOLTIP_DOWNLOAD_XFORMS("tooltip.download.xforms"),
+	TOOLTIP_DOWNLOAD_XFORMS("tooltip.download.xforms"), 
 	  
 	;
 

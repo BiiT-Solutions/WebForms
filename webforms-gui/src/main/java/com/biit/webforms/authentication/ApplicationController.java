@@ -1230,4 +1230,10 @@ public class ApplicationController {
 					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
 	}
+
+	public void evictAllCache() {
+		formDao.evictAllCache();
+		blockDao.evictAllCache();
+		formDaoAbcd.evictAllCache();
+	}
 }
