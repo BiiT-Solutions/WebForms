@@ -3,8 +3,11 @@ package com.biit.webforms.gui.webpages.formmanager;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
+import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.theme.ThemeIcons;
+import com.biit.webforms.xforms.XFormsExporter;
+import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -15,11 +18,12 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private final IconButton newForm, newFormVersion;
-	private final IconButton rules, importAbcdForm, linkAbcdForm;
+	private final IconButton submenuNew, newForm, newFormVersion, importAbcdForm;
+	private final IconButton linkAbcdForm;
 	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms;
 	private final IconButton export, exportPdf, exportFlowPdf, exportXsd;
 	private final IconButton impactAnalysis, compareContent;
+	private BrowserWindowOpener opener;
 
 	public UpperMenuProjectManager() {
 		super();
@@ -41,8 +45,13 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		exportXsd = new IconButton(LanguageCodes.CAPTION_EXPORT_XSD, ThemeIcons.EXPORT_XSD,
 				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
 
+		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
+		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsExporter.APP_NAME);
+		opener.setFeatures("target=_new");
 		previewXForms = new IconButton(LanguageCodes.CAPTION_PREVIEW_XFORMS, ThemeIcons.PREVIEW_XFORMS,
 				LanguageCodes.TOOLTIP_PREVIEW_XFORMS, IconSize.BIG);
+		opener.extend(previewXForms);
+
 		publishXForms = new IconButton(LanguageCodes.CAPTION_PUBLISH_XFORMS, ThemeIcons.PUBLISH_XFORMS,
 				LanguageCodes.TOOLTIP_PUBLISH_XFORMS, IconSize.BIG);
 		downloadXForms = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS, ThemeIcons.DOWNLOAD_XFORMS,
@@ -54,16 +63,17 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		compareContent = new IconButton(LanguageCodes.CAPTION_COMPARE_CONTENT, ThemeIcons.COMPARE_CONTENT,
 				LanguageCodes.TOOLTIP_COMPARE_CONTENT, IconSize.BIG);
 
-		addIconButton(newForm);
-		addIconButton(newFormVersion);
-		rules = addSubMenu(ThemeIcons.RULES, LanguageCodes.CAPTION_RULES, LanguageCodes.TOOLTIP_RULES, importAbcdForm,
-				linkAbcdForm);
-		addIconButton(impactAnalysis);
-		addIconButton(compareContent);
-		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
-				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
+		submenuNew = addSubMenu(ThemeIcons.NEW, LanguageCodes.CAPTION_NEW, LanguageCodes.TOOLTIP_NEW, newForm,
+				newFormVersion, importAbcdForm);
+		addIconButton(linkAbcdForm);
+		
 		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
 				exportFlowPdf, exportXsd);
+		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
+				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
+		
+		addIconButton(impactAnalysis);
+		addIconButton(compareContent);
 	}
 
 	public void addNewFormListener(ClickListener listener) {
@@ -122,10 +132,6 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		return newFormVersion;
 	}
 
-	public void setEnabledRules(boolean value) {
-		rules.setEnabled(value);
-	}
-
 	public void setEnabledExport(boolean value) {
 		export.setEnabled(value);
 	}
@@ -156,5 +162,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public void addExportXFormsListener(ClickListener listener) {
 		exportXForms.addClickListener(listener);
+	}
+
+	public BrowserWindowOpener getOpener() {
+		return opener;
 	}
 }
