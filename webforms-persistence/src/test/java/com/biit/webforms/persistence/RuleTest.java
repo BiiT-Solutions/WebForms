@@ -13,6 +13,7 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 import org.testng.annotations.Test;
 
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
@@ -46,8 +47,8 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 	private static final String FORM_NAME = "test_form";
 	private static final String CATEGORY_ONE_NAME = "category_1";
 	private static final String GROUP_ONE_NAME = "group_1";
-	private static final String QUESTION_WO_ANSWERS = "question_wo_answers";
-	private static final String QUESTION_W_ANSWERS = "question_w_answers";
+	private static final String QUESTION_WITHOUT_ANSWERS = "question_wo_answers";
+	private static final String QUESTION_WITH_ANSWERS = "question_w_answers";
 	private static final String ANSWER_1 = "answer1";
 	private static final String ANSWER_2 = "answer2";
 	private static final Long ORGANIZATION_ID = 0L;
@@ -60,8 +61,10 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 			InvalidAnswerSubformatException, NotValidChildException, UnexpectedDatabaseException {
 		Form form = createForm();
 
+		int prevForm = formDao.getRowCount();
+
 		formDao.makePersistent(form);
-		Assert.assertEquals(formDao.getRowCount(), 1);
+		Assert.assertEquals(formDao.getRowCount(), prevForm + 1);
 
 		Form dbForm = formDao.getForm(FORM_NAME, ORGANIZATION_ID);
 
@@ -93,12 +96,12 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 			Group group = new Group();
 			group.setName(GROUP_ONE_NAME);
 
-			Question question1 = new Question(QUESTION_WO_ANSWERS);
+			Question question1 = new Question(QUESTION_WITHOUT_ANSWERS);
 			question1.setAnswerType(AnswerType.INPUT);
 			question1.setAnswerFormat(AnswerFormat.TEXT);
 			question1.setAnswerSubformat(AnswerSubformat.EMAIL);
 
-			Question question2 = new Question(QUESTION_W_ANSWERS);
+			Question question2 = new Question(QUESTION_WITH_ANSWERS);
 			question2.setAnswerType(AnswerType.SINGLE_SELECTION_LIST);
 
 			Answer answer1 = new Answer(ANSWER_1);
@@ -113,7 +116,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 			form.addChild(category);
 
 			List<Token> condition = Arrays.asList(new Token[] {
-					TokenComparationValue.getTokenEqual(question1, AnswerSubformat.TEXT,null, "test"),
+					TokenComparationValue.getTokenEqual(question1, AnswerSubformat.TEXT, null, "test"),
 					TokenComparationAnswer.getTokenEqual(question2, answer1) });
 			Flow rule1 = createRule(question1, FlowType.NORMAL, question2, false, condition);
 
@@ -132,12 +135,57 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 
 		try {
 			Flow rule = new Flow();
-			rule.setContent(question1, ruletype, question2, false, condition);
+			rule.setContent(question1, ruletype, question2, others, condition);
 			return rule;
 		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
 				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Test(expectedExceptions = { DependencyExistException.class })
+	public void removeFlowWithQuestion() throws UnexpectedDatabaseException, DependencyExistException {
+		Form form = createForm();
+		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"
+				+ QUESTION_WITH_ANSWERS);
+		Assert.assertNotNull(question2);
+		question2.remove();
+	}
+
+	@Test(expectedExceptions = { DependencyExistException.class })
+	public void removeFlowWithQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException {
+		Form form = createForm();
+		formDao.makePersistent(form);
+
+		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"
+				+ QUESTION_WITH_ANSWERS);
+		Assert.assertNotNull(question2);
+		try {
+			question2.remove();
+		} finally {
+			formDao.makeTransient(form);
+		}
+	}
+
+	@Test
+	public void removeFlowAndQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException {
+		Form form = createForm();
+		formDao.makePersistent(form);
+
+		// Remove first flow.
+		form.getFlows().remove(form.getFlows().iterator().next());
+
+		// Remove question.
+		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"
+				+ QUESTION_WITH_ANSWERS);
+		Assert.assertNotNull(question2);
+		question2.remove();
+
+		// persist
+		formDao.makePersistent(form);
+
+		formDao.makeTransient(form);
+
 	}
 }

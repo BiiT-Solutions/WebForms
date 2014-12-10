@@ -18,15 +18,15 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
 	@Override
 	public void checkDependencies() throws DependencyExistException {
 		Form form = (Form) this.getAncestor(Form.class);
-		if(form==null){
+		if (form == null) {
 			return;
 		}
-		
-		for(Flow flow: form.getFlows()){
-			if(flow.isDependent(this)){
-				throw new DependencyExistException("Flow '"+flow+"' depends of element '"+this+"'");
+
+		for (Flow flow : form.getFlows()) {
+			if (flow.isDependent(this)) {
+				throw new DependencyExistException("Flow '" + flow + "' depends of element '" + this + "'");
 			}
 		}
 	}
-	
+
 }

@@ -157,4 +157,8 @@ public class TokenIn extends TokenComplex {
 			value.resetIds();
 		}
 	}
+
+	public List<TokenInValue> getValues() {
+		return values;
+	}
 }

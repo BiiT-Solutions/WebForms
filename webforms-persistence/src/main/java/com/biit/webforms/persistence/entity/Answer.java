@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import com.biit.form.BaseAnswer;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -27,7 +28,6 @@ import com.biit.webforms.computed.FlowConditionScript;
  * 
  * -description
  * 
- * @author joriz_000
  * 
  */
 @Entity
@@ -141,11 +141,25 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 
 	public int exportToJavaCode(StringBuilder sb, int counter) {
 		String idName = "el_" + counter;
-		
+
 		sb.append("Answer ").append(idName).append("  = new Answer();").append(System.lineSeparator());
 		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
 		sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
-		
+
 		return counter;
+	}
+
+	@Override
+	public void checkDependencies() throws DependencyExistException {
+		Form form = (Form) this.getAncestor(Form.class);
+		if (form == null) {
+			return;
+		}
+
+		for (Flow flow : form.getFlows()) {
+			if (flow.isDependent(this)) {
+				throw new DependencyExistException("Flow '" + flow + "' depends of element '" + this + "'");
+			}
+		}
 	}
 }

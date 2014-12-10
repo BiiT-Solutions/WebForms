@@ -107,8 +107,7 @@ public enum ThemeIcons implements IThemeIcon {
 	CLEAR_CACHE("cache.clear.svg"), 
 	LOG_OUT("user.logout.svg"), 
 	
-	NEW("form.create.svg"), //form.page.svg
-
+	NEW("form.create.svg"), 
 	;
 
 	private String value;

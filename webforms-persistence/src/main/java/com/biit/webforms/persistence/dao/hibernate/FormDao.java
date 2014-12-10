@@ -43,9 +43,9 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	@Override
 	@Cacheable(value = "forms", key = "#id")
 	public Form read(Long id) throws UnexpectedDatabaseException {
-		WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
+		//WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
 		Form form = super.read(id);
-		WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
+		//WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
 		return form;
 	}
 

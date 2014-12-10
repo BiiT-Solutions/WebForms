@@ -28,9 +28,12 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.TokenComplex;
+import com.biit.webforms.persistence.entity.condition.TokenIn;
+import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
@@ -66,7 +69,7 @@ public class Flow extends StorableObject {
 
 	@ManyToOne
 	private Form form;
-	
+
 	@Transient
 	private boolean generated;
 
@@ -352,31 +355,65 @@ public class Flow extends StorableObject {
 	}
 
 	public boolean isDependent(TreeObject treeObject) {
-		if (origin.equals(treeObject) || (destiny != null && destiny.equals(treeObject))) {
-			return true;
-		}
-		if (treeObject instanceof Question) {
-			Question question = (Question) treeObject;
-			for (Token token : condition) {
-				if (token instanceof TokenComparationAnswer) {
-					if (((TokenComparationAnswer) token).getQuestion().equals(question)) {
+		return false;
+	}
+
+	public boolean isDependent(Answer answer) {
+		for (Token token : condition) {
+			if (token instanceof TokenComparationAnswer) {
+				if (((TokenComparationAnswer) token).getAnswer().equals(answer)) {
+					return true;
+				}
+				continue;
+			}
+			if (token instanceof TokenIn) {
+				for (TokenInValue inValue : ((TokenIn) token).getValues()) {
+					if (inValue.getAnswerValue().equals(answer)) {
 						return true;
 					}
-					continue;
 				}
-				if (token instanceof TokenComparationValue) {
-					if (((TokenComparationValue) token).getQuestion().equals(question)) {
-						return true;
-					}
-					continue;
-				}
+				continue;
 			}
 		}
 		return false;
 	}
-	
-	public boolean isGenerated(){
-		return generated; 
+
+	public boolean isDependent(WebformsBaseQuestion question) {
+		if (origin.equals(question) || (destiny != null && destiny.equals(question))) {
+			return true;
+		}
+
+		for (Token token : condition) {
+			if (token instanceof TokenComparationAnswer) {
+				if (((TokenComparationAnswer) token).getQuestion().equals(question)) {
+					return true;
+				}
+				continue;
+			}
+			if (token instanceof TokenComparationValue) {
+				if (((TokenComparationValue) token).getQuestion().equals(question)) {
+					return true;
+				}
+				continue;
+			}
+			if (token instanceof TokenBetween) {
+				if (((TokenBetween) token).getQuestion().equals(question)) {
+					return true;
+				}
+				continue;
+			}
+			if (token instanceof TokenIn) {
+				if (((TokenIn) token).getQuestion().equals(question)) {
+					return true;
+				}
+				continue;
+			}
+		}
+		return false;
+	}
+
+	public boolean isGenerated() {
+		return generated;
 	}
 
 	public void setGenerated(boolean value) {

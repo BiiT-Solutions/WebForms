@@ -281,6 +281,7 @@ public class FormManager extends SecuredWebPage {
 	protected void previewXForms() {
 		Form form = loadAndValidateForm();
 		if (form != null) {
+			System.out.println("Saving form...");
 			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
 					UserSessionHandler.getUser(), form.getOrganizationId());
 			OrbeonUtils.saveFormInOrbeon(form, organization, true);
