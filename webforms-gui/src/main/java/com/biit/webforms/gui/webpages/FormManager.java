@@ -221,8 +221,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	/**
-	 * Loads a forms and tries to validate. If the form is not validated returns
-	 * null
+	 * Loads a forms and tries to validate. If the form is not validated returns null
 	 * 
 	 * @return
 	 */
@@ -457,10 +456,7 @@ public class FormManager extends SecuredWebPage {
 	protected void newFormVersion() {
 		Form newForm;
 		try {
-			RootForm rootForm = formTable.getSelectedRootForm();
-			IWebformsFormView currentForm = (IWebformsFormView) rootForm.getLastFormVersion();
-
-			newForm = UserSessionHandler.getController().createNewFormVersion(loadForm(currentForm));
+			newForm = UserSessionHandler.getController().createNewFormVersion(loadForm(getSelectedForm()));
 			formTable.refreshTableData();
 			formTable.defaultSort();
 			formTable.selectForm(newForm);

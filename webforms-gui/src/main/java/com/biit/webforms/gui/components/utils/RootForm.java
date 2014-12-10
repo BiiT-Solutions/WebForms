@@ -28,10 +28,10 @@ public class RootForm extends Form {
 	}
 
 	public IBaseFormView getLastFormVersion() {
-		int numVersion = 0;
+		Integer numVersion = null;
 		IBaseFormView lastVersion = null;
 		for (IBaseFormView form : getChildForms()) {
-			if (form.getVersion() > numVersion) {
+			if (lastVersion == null || form.getVersion() > numVersion) {
 				lastVersion = form;
 				numVersion = form.getVersion();
 			}
