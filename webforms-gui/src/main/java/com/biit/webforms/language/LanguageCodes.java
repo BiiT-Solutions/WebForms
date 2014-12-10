@@ -429,6 +429,8 @@ public enum LanguageCodes implements ILanguageCode{
 	
 	CAPTION_NEW("caption.new"), 
 	TOOLTIP_NEW("tooltip.new"), 
+	
+	WARNING_ELEMENT_WTIH_SAME_NAME_EXIST("warning.element.same.name"),
 	;
 
 	private String value;
