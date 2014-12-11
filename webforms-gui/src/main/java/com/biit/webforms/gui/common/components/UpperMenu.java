@@ -6,6 +6,7 @@ import java.util.List;
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.biit.webforms.gui.common.theme.IThemeIcon;
 import com.biit.webforms.gui.popover.Popover;
+import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
@@ -82,7 +83,7 @@ public class UpperMenu extends HorizontalButtonGroup {
 		this.setHeight(UPPER_MENU_HEIGHT);
 		setStyleName("upper-menu v-horizontal-button-group");
 	}
-	
+
 	/**
 	 * 
 	 * @param icon
@@ -91,17 +92,18 @@ public class UpperMenu extends HorizontalButtonGroup {
 	 * @param buttons
 	 * @return
 	 */
-	public IconButton addSubMenu(IThemeIcon icon, ILanguageCode caption, ILanguageCode tooltip, IconButton ...buttons){
+	public IconButton addSubMenu(IThemeIcon icon, ILanguageCode caption, ILanguageCode tooltip, IconButton... buttons) {
 		IconButton subMenu = generateSubMenu(icon, caption, tooltip, buttons);
 		addIconButton(subMenu);
 		return subMenu;
 	}
-	
-	public IconButton generateSubMenu(IThemeIcon icon, ILanguageCode caption, ILanguageCode tooltip, final IconButton ...buttons){
-		for(IconButton button: buttons){
+
+	public IconButton generateSubMenu(IThemeIcon icon, ILanguageCode caption, ILanguageCode tooltip,
+			final IconButton... buttons) {
+		for (IconButton button : buttons) {
 			button.addStyleName("v-popover-upper-submenu");
 		}
-		
+
 		final IconButton subMenu = new IconButton(caption, icon, tooltip, IconSize.BIG);
 		subMenu.addStyleName("opens-popover-menu");
 		subMenu.addClickListener(new ClickListener() {
@@ -111,11 +113,11 @@ public class UpperMenu extends HorizontalButtonGroup {
 			public void buttonClick(ClickEvent event) {
 				VerticalLayout rootLayout = new VerticalLayout();
 				rootLayout.setSizeUndefined();
-				
+
 				final Popover popover = new Popover(rootLayout);
 				popover.setClosable(true);
-				
-				for(IconButton button: buttons){
+
+				for (final IconButton button : buttons) {
 					button.setWidth(getIconSize());
 					button.setHeight(UPPER_MENU_HEIGHT);
 					rootLayout.addComponent(button);
@@ -124,11 +126,13 @@ public class UpperMenu extends HorizontalButtonGroup {
 
 						@Override
 						public void buttonClick(ClickEvent event) {
-							//Close original popover.
-							popover.close();
+							// Close original popover. XForms preview must have the menu open until the view is created. 
+							if (!button.getCaption().equals(LanguageCodes.CAPTION_PREVIEW_XFORMS.translation())) {
+								popover.close();
+							}
 						}
 					});
-				}				
+				}
 				popover.showRelativeTo(subMenu);
 			}
 		});

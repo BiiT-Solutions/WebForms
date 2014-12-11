@@ -1,12 +1,16 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
+import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.xforms.XFormsExporter;
+import com.liferay.portal.model.Organization;
 import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickListener;
@@ -46,11 +50,11 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
 
 		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
+		opener.setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,"Preview_Aanvraag_Persoonlijke_Lening_ABCD");
 		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsExporter.APP_NAME);
 		opener.setFeatures("target=_new");
 		previewXForms = new IconButton(LanguageCodes.CAPTION_PREVIEW_XFORMS, ThemeIcons.PREVIEW_XFORMS,
 				LanguageCodes.TOOLTIP_PREVIEW_XFORMS, IconSize.BIG);
-		opener.extend(previewXForms);
 
 		publishXForms = new IconButton(LanguageCodes.CAPTION_PUBLISH_XFORMS, ThemeIcons.PUBLISH_XFORMS,
 				LanguageCodes.TOOLTIP_PUBLISH_XFORMS, IconSize.BIG);
@@ -66,12 +70,13 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		submenuNew = addSubMenu(ThemeIcons.NEW, LanguageCodes.CAPTION_NEW, LanguageCodes.TOOLTIP_NEW, newForm,
 				newFormVersion, importAbcdForm);
 		addIconButton(linkAbcdForm);
-		
+
 		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
 				exportFlowPdf, exportXsd);
 		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
 				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
-		
+		opener.extend(previewXForms);
+
 		addIconButton(impactAnalysis);
 		addIconButton(compareContent);
 	}
@@ -166,5 +171,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public BrowserWindowOpener getOpener() {
 		return opener;
+	}
+
+	public IconButton getSubmenuNew() {
+		return submenuNew;
 	}
 }
