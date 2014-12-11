@@ -1,9 +1,13 @@
 package com.biit.webforms.gui.common.components;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
@@ -25,7 +29,7 @@ public class WindowDownloader extends WindowProgressBar {
 	private FileDownloader downloader;
 	private StreamResource streamResource;
 	private Button downloadButton;
-	private InputStream dataStreamSource;
+	private byte[] dataSource;
 	private boolean resourceGenerated;
 	private final WindowDownloaderProcess process;
 
@@ -37,7 +41,7 @@ public class WindowDownloader extends WindowProgressBar {
 
 			@Override
 			public InputStream getStream() {
-				return dataStreamSource;
+				return new ByteArrayInputStream(dataSource);
 			}
 		}, DEFAULT_FILENAME);
 		downloader = new FileDownloader(streamResource);
@@ -95,8 +99,8 @@ public class WindowDownloader extends WindowProgressBar {
 		setContent(rootLayout);
 	}
 
-	public synchronized void setDataStreamSource(InputStream dataStreamSource) {
-		this.dataStreamSource = dataStreamSource;
+	public synchronized void setDataSource(byte[] dataStreamSource) {
+		this.dataSource = dataStreamSource;
 	}
 
 	/**
@@ -118,8 +122,16 @@ public class WindowDownloader extends WindowProgressBar {
 	class WorkThread extends Thread {
 		@Override
 		public void run() {
-			setDataStreamSource(process.getInputStream());
-			enableDownload();
+			try {
+				InputStream stream = process.getInputStream();
+				byte[] data = new byte[stream.available()];
+				stream.read(data);
+				setDataSource(data);
+				enableDownload();
+			} catch (IOException e) {
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+				MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+			}		    
 		}
 	};
 }
