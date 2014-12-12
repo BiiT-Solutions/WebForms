@@ -32,8 +32,8 @@ public class QuestionValueDomain implements IDomainQuestion {
 		switch (question.getAnswerFormat()) {
 		case DATE:
 		case NUMBER:
-			return RealLimitPair.realRange();
 		case POSTAL_CODE:
+			return RealLimitPair.realRange();
 		case TEXT:
 			WebformsLogger.errorMessage(this.getClass().getName(), new RuntimeException("Not implemented"));
 			return RealLimitPair.realRange();
@@ -66,6 +66,11 @@ public class QuestionValueDomain implements IDomainQuestion {
 		case FLOAT:
 		case NUMBER:
 			return Float.parseFloat(token.getValue());
+		case DATE:
+		case DATE_PERIOD:
+			throw new RuntimeException("Not implemented");
+		case POSTAL_CODE:
+			return ParseValueUtils.parsePostalCode(token.getValue());
 		default:
 			throw new RuntimeException("Not implemented");
 		}

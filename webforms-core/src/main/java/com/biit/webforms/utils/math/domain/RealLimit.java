@@ -1,16 +1,16 @@
 package com.biit.webforms.utils.math.domain;
 
-public class RealLimit implements Comparable<RealLimit> {
+public abstract class RealLimit<T extends Comparable<T>> implements Comparable<RealLimit<T>> {
 
-	private final Float limit;
+	private final T limit;
 	private final Closure closure;
 
-	public RealLimit(Float limit, Closure closure) {
+	public RealLimit(T limit, Closure closure) {
 		this.limit = limit;
 		this.closure = closure;
 	}
 
-	public Float getLimit() {
+	public T getLimit() {
 		return limit;
 	}
 
@@ -18,33 +18,16 @@ public class RealLimit implements Comparable<RealLimit> {
 		return closure;
 	}
 
-	public static RealLimit negativeInfinity() {
-		return new RealLimit(Float.NEGATIVE_INFINITY, Closure.EXCLUSIVE);
-	}
-
-	public static RealLimit positiveInfinity() {
-		return new RealLimit(Float.POSITIVE_INFINITY, Closure.EXCLUSIVE);
-	}
-
-	@Override
-	public int compareTo(RealLimit arg0) {
-		//TODO this is under observation if no problem is given on tests delete.
-//		if (limit.equals(arg0.limit)) {
-//			if (closure == arg0.closure && closure == Closure.INCLUSIVE) {
-//				return 0;
-//			} else {
-//				return -1;
-//			}
-//		}
-		return limit.compareTo(arg0.limit);
+	public int compareTo(RealLimit<T> arg0) {
+		return getLimit().compareTo(arg0.getLimit());
 	}
 
 	public boolean isSingleElement() {
 		return closure == Closure.SINGLE_VALUE;
 	}
 
-	public RealLimit generateCopy(){
-		return new RealLimit(limit, closure);
+	public RealLimit<T> generateCopy(){
+		return newInstance(getLimit(), getClosure());
 	}
 	
 	@Override
@@ -52,7 +35,13 @@ public class RealLimit implements Comparable<RealLimit> {
 		return limit+" "+closure;
 	}
 
-	public RealLimit inverse() {
-		return new RealLimit(limit, closure.inverse());
+	public RealLimit<T> inverse(){
+		return newInstance(getLimit(), getClosure().inverse());
 	}
+	
+	public abstract RealLimit<T> newInstance(T limit, Closure closure);
+	
+	public abstract RealLimit<T> negativeInfinity();
+	
+	public abstract RealLimit<T> positiveInfinity();
 }
