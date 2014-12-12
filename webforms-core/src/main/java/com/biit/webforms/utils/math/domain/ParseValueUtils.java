@@ -10,35 +10,36 @@ import com.biit.webforms.logger.WebformsLogger;
 
 public class ParseValueUtils {
 
-	public static Float parseDate(String value) {
+	public static Long parseDate(String value) {
 		SimpleDateFormat formatter = new SimpleDateFormat();
 		// Convert String to date.
 		formatter.applyPattern(WebformsConfigurationReader.getInstance().getDatePattern());
 		try {
 			Date date = formatter.parse(value);
+			return date.getTime();
 		} catch (ParseException e) {
 			WebformsLogger.errorMessage(ParseValueUtils.class.getName(), e);
 		}
 		return null;
 	}
 
-	public static Float parseDatePeriod(DatePeriodUnit unit, String datePeriod) {
-		Float period = Float.parseFloat(datePeriod);
+	public static Integer parseDatePeriod(DatePeriodUnit unit, String datePeriod) {
+		Integer period = Integer.parseInt(datePeriod);
 		switch (unit) {
 		case DAY:
 			return period;
 		case MONTH:
-			return period * 30.41f;
+			return period * 30;
 		case YEAR:
 			return period * 365;
 		}
 		return null;
 	}
 
-	public static Float parsePostalCode(String postalCode) {
+	public static Long parsePostalCode(String postalCode) {
 		String numericalPart = postalCode.substring(0, 4);
 		numericalPart += ((int) postalCode.charAt(4)) + "";
 		numericalPart += ((int) postalCode.charAt(5)) + "";
-		return Float.parseFloat(numericalPart);
+		return Long.parseLong(numericalPart);
 	}
 }

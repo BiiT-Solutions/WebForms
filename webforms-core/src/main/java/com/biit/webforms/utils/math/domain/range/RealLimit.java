@@ -1,10 +1,17 @@
-package com.biit.webforms.utils.math.domain;
+package com.biit.webforms.utils.math.domain.range;
 
-public abstract class RealLimit<T extends Comparable<T>> implements Comparable<RealLimit<T>> {
+import com.biit.webforms.utils.math.domain.Closure;
+
+public class RealLimit<T extends Comparable<T>> implements Comparable<RealLimit<T>> {
 
 	private final T limit;
 	private final Closure closure;
 
+	protected RealLimit() {
+		limit = null;
+		closure = null;
+	}
+	
 	public RealLimit(T limit, Closure closure) {
 		this.limit = limit;
 		this.closure = closure;
@@ -27,7 +34,7 @@ public abstract class RealLimit<T extends Comparable<T>> implements Comparable<R
 	}
 
 	public RealLimit<T> generateCopy(){
-		return newInstance(getLimit(), getClosure());
+		return new RealLimit<T>(getLimit(), getClosure());
 	}
 	
 	@Override
@@ -36,12 +43,7 @@ public abstract class RealLimit<T extends Comparable<T>> implements Comparable<R
 	}
 
 	public RealLimit<T> inverse(){
-		return newInstance(getLimit(), getClosure().inverse());
+		return new RealLimit<T>(getLimit(), getClosure().inverse());
 	}
 	
-	public abstract RealLimit<T> newInstance(T limit, Closure closure);
-	
-	public abstract RealLimit<T> negativeInfinity();
-	
-	public abstract RealLimit<T> positiveInfinity();
 }

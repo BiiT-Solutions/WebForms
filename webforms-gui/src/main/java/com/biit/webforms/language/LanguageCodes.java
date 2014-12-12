@@ -198,6 +198,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_NEW_ANSWER("caption.new.answer"),
 	CAPTION_NEW_SUBANSWER("caption.new.subanswer"),
 	CAPTION_NAME("caption.name"),
+	CAPTION_TECHNICAL_NAME("caption.technical.name"),
 	CAPTION_VALUE("caption.value"),
 	CAPTION_LABEL("caption.label"),
 	CAPTION_FIELD("caption.field"),

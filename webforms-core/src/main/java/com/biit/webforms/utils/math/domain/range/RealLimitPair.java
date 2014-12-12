@@ -1,9 +1,16 @@
-package com.biit.webforms.utils.math.domain;
+package com.biit.webforms.utils.math.domain.range;
 
-public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLimitPair<T>>{
+import com.biit.webforms.utils.math.domain.Closure;
+
+public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLimitPair<T>> {
 
 	private final RealLimit<T> left;
 	private final RealLimit<T> right;
+
+	protected RealLimitPair() {
+		left = null;
+		right = null;
+	}
 
 	public RealLimitPair(RealLimit<T> left, RealLimit<T> right) {
 		this.left = left;
@@ -11,10 +18,11 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 	}
 
 	private boolean isContainedFromLeft(RealLimit<T> value) {
-		if (left.getLimit().compareTo(value.getLimit())<0) {
+		if (left.getLimit().compareTo(value.getLimit()) < 0) {
 			return true;
 		} else {
-			if(left.getLimit().equals(value.getLimit()) && (left.getClosure()==Closure.INCLUSIVE ||value.getClosure()==Closure.INCLUSIVE)){
+			if (left.getLimit().equals(value.getLimit())
+					&& (left.getClosure() == Closure.INCLUSIVE || value.getClosure() == Closure.INCLUSIVE)) {
 				return true;
 			}
 		}
@@ -22,10 +30,11 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 	}
 
 	private boolean isContainedFromRight(RealLimit<T> value) {
-		if (right.getLimit().compareTo(value.getLimit())>0) {
+		if (right.getLimit().compareTo(value.getLimit()) > 0) {
 			return true;
 		} else {
-			if(right.getLimit().equals(value.getLimit()) && (right.getClosure()==Closure.INCLUSIVE ||value.getClosure()==Closure.INCLUSIVE)){
+			if (right.getLimit().equals(value.getLimit())
+					&& (right.getClosure() == Closure.INCLUSIVE || value.getClosure() == Closure.INCLUSIVE)) {
 				return true;
 			}
 		}
@@ -65,16 +74,16 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 		}
 		return null;
 	}
-	
-	
+
 	/**
 	 * Check if overlapping is strict.
+	 * 
 	 * @param pair
 	 * @return
 	 */
 	private boolean isOverlapStrict(RealLimitPair<T> pair) {
-		if(right.getLimit().equals(pair.getLeft().getLimit())){
-			if(right.getClosure()!=Closure.INCLUSIVE || pair.getLeft().getClosure()!=Closure.INCLUSIVE){
+		if (right.getLimit().equals(pair.getLeft().getLimit())) {
+			if (right.getClosure() != Closure.INCLUSIVE || pair.getLeft().getClosure() != Closure.INCLUSIVE) {
 				return false;
 			}
 		}
@@ -137,29 +146,9 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 
 	@Override
 	public int compareTo(RealLimitPair<T> o) {
-		if((left.compareTo(o.left) == 0 ) && ((right.compareTo(o.right)==0 ))){
+		if ((left.compareTo(o.left) == 0) && ((right.compareTo(o.right) == 0))) {
 			return 0;
 		}
 		return left.compareTo(o.left);
 	}
-	
-//	public static RealLimitPair<T> lt(Float value){
-//		return newInstance(RealLimitFloat.negativeInfinity(), new RealLimitFloat(value, Closure.EXCLUSIVE));
-//	}
-//	
-//	public static RealLimitPair<T> le(Float value){
-//		return newInstance(RealLimitFloat.negativeInfinity(), new RealLimitFloat(value, Closure.INCLUSIVE));
-//	}
-//	
-//	public static RealLimitPair<T> gt(Float value){
-//		return newInstance(new RealLimitFloat(value, Closure.EXCLUSIVE), RealLimitFloat.positiveInfinity());
-//	}
-//	
-//	public static RealLimitPair<T> ge(Float value){
-//		return newInstance(new RealLimitFloat(value, Closure.INCLUSIVE), RealLimitFloat.positiveInfinity());
-//	}
-//	
-//	public static RealLimitPair<T> realRange(){
-//		return newInstance(RealLimitFloat.negativeInfinity(), RealLimitFloat.positiveInfinity());
-//	}
 }
