@@ -157,7 +157,9 @@ public abstract class RealRange<T extends Comparable<T>> {
 		List<RealLimitPair<T>> intersectionPairs = new ArrayList<RealLimitPair<T>>();
 		for (RealLimitPair<T> limit : limits) {
 			for (RealLimitPair<T> rangeLimit : range.limits) {
+				System.out.println("RealRange intersection " +limit+" "+rangeLimit);
 				RealLimitPair<T> intersection = limit.intersection(rangeLimit);
+				System.out.println("RealRange intersection res:" +intersection);
 				if (intersection != null) {
 					intersectionPairs.add(intersection);
 				}

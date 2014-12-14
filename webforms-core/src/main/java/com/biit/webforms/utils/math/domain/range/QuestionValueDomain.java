@@ -71,16 +71,18 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 	@Override
 	public IDomain intersect(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {
+			System.out.println("A");
 			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
-				new QuestionValueDomain<T>(question, completeDomain,
-						this.value.intersection(((QuestionValueDomain<T>) domain).value));
+				return new QuestionValueDomain<T>(question, completeDomain, this.value.intersection(((QuestionValueDomain<T>) domain).value));
 			} else {
 				return new DomainSetIntersection(this, (IDomainQuestion) domain);
 			}
 		}
 		if (domain instanceof DomainSet) {
+			System.out.println("B");
 			return domain.intersect(this);
 		}
+		System.out.println("C");
 		return null;
 	}
 

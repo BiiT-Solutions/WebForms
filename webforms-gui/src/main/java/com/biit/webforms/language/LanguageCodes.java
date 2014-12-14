@@ -138,6 +138,7 @@ public enum LanguageCodes implements ILanguageCode{
 	CAPTION_IMPORT_ABCD_FORM("caption.import.abcd.form"),
 	CAPTION_LINK_ABCD_FORM("caption.link.abcd.form"),
 	CAPTION_EXPORT_XSD("caption.link.export.xsd"),
+	CAPTION_EXPORT_JSON("caption.export.json"),
 	CAPTION_GENERATING_FILE("caption.generating.file"),
 	CAPTION_GENERATED_FILE("caption.generated.file"),
 	CAPTION_COMPARE_CONTENT("caption.compare.content"), 
@@ -152,6 +153,7 @@ public enum LanguageCodes implements ILanguageCode{
 	TOOLTIP_IMPORT_ABCD_FORM("tooltip.import.abcd.form"),
 	TOOLTIP_LINK_ABCD_FORM("tooltip.link.abcd.form"),
 	TOOLTIP_EXPORT_XSD("caption.link.export.xsd"),
+	TOOLTIP_EXPORT_JSON("tooltip.export.json"),
 	TOOLTIP_COMPARE_CONTENT("tooltip.compare.content"), 
 	TOOLTIP_CONTENT_ANALYSIS("tooltip.content.analysis"),
 	

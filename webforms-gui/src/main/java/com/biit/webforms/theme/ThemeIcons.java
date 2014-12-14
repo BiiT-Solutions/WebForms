@@ -108,6 +108,8 @@ public enum ThemeIcons implements IThemeIcon {
 	LOG_OUT("user.logout.svg"), 
 	
 	NEW("form.create.svg"), 
+	
+	EXPORT_JSON("alert.svg"), 
 	;
 
 	private String value;

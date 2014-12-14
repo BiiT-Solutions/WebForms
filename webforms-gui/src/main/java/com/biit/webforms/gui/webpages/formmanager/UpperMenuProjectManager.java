@@ -1,16 +1,12 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import com.biit.webforms.authentication.UserSessionHandler;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.xforms.XFormsExporter;
-import com.liferay.portal.model.Organization;
 import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickListener;
@@ -25,7 +21,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private final IconButton submenuNew, newForm, newFormVersion, importAbcdForm;
 	private final IconButton linkAbcdForm;
 	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms;
-	private final IconButton export, exportPdf, exportFlowPdf, exportXsd;
+	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson;
 	private final IconButton impactAnalysis, compareContent;
 	private BrowserWindowOpener opener;
 
@@ -48,6 +44,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_PRINT_FLOW, IconSize.BIG);
 		exportXsd = new IconButton(LanguageCodes.CAPTION_EXPORT_XSD, ThemeIcons.EXPORT_XSD,
 				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
+		exportJson = new IconButton(LanguageCodes.CAPTION_EXPORT_JSON, ThemeIcons.EXPORT_JSON,
+				LanguageCodes.TOOLTIP_EXPORT_JSON, IconSize.BIG);
 
 		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
 		opener.setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,"Preview_Aanvraag_Persoonlijke_Lening_ABCD");
@@ -72,7 +70,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		addIconButton(linkAbcdForm);
 
 		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
-				exportFlowPdf, exportXsd);
+				exportFlowPdf, exportXsd,exportJson);
 		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
 				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
 		opener.extend(previewXForms);
@@ -107,6 +105,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public void addExportXsdListener(ClickListener listener) {
 		exportXsd.addClickListener(listener);
+	}
+	
+	public void addExportJsonListener(ClickListener listener) {
+		exportJson.addClickListener(listener);
 	}
 
 	public void addCompareContent(ClickListener listener) {

@@ -39,7 +39,7 @@ public class Token extends StorableObject {
 	@ManyToOne
 	private Flow flow;
 
-	protected Token() {
+	public Token() {
 		super();
 	}
 
@@ -68,7 +68,7 @@ public class Token extends StorableObject {
 		return type;
 	}
 
-	protected void setType(TokenTypes tokenType) throws NotValidTokenType {
+	public void setType(TokenTypes tokenType) throws NotValidTokenType {
 		if (isValidTokenType(tokenType)) {
 			this.type = tokenType;
 		} else {

@@ -18,11 +18,13 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 	}
 
 	private boolean isContainedFromLeft(RealLimit<T> value) {
+		System.out.println("isContained from left"+left+" "+value);
 		if (left.getLimit().compareTo(value.getLimit()) < 0) {
+			System.out.println("=_=A");
 			return true;
 		} else {
-			if (left.getLimit().equals(value.getLimit())
-					&& (left.getClosure() == Closure.INCLUSIVE || value.getClosure() == Closure.INCLUSIVE)) {
+			System.out.println("=_=B");
+			if (left.getLimit().equals(value.getLimit()) && left.getClosure() == Closure.INCLUSIVE) {
 				return true;
 			}
 		}
@@ -33,8 +35,7 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 		if (right.getLimit().compareTo(value.getLimit()) > 0) {
 			return true;
 		} else {
-			if (right.getLimit().equals(value.getLimit())
-					&& (right.getClosure() == Closure.INCLUSIVE || value.getClosure() == Closure.INCLUSIVE)) {
+			if (right.getLimit().equals(value.getLimit()) && right.getClosure() == Closure.INCLUSIVE) {
 				return true;
 			}
 		}
@@ -42,10 +43,13 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 	}
 
 	public boolean isContained(RealLimit<T> value) {
+		System.out.println("Is Contained  "+isContainedFromLeft(value) +" "+ isContainedFromRight(value));
 		return isContainedFromLeft(value) && isContainedFromRight(value);
 	}
 
 	public boolean overlap(RealLimitPair<T> pair) {
+		System.out.println("Overlap "+this+" "+pair);
+		System.out.println("Overlap "+isContained(pair.getLeft()) +" "+ isContained(pair.getRight()) +" "+ pair.isContained(getLeft()));
 		if (isContained(pair.getLeft()) || isContained(pair.getRight()) || pair.isContained(getLeft())) {
 			return true;
 		}

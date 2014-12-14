@@ -56,14 +56,17 @@ public class DomainSetUnion extends DomainSet {
 	public boolean isComplete() {
 		for (IDomain domain : domainQuestions.values()) {
 			if (domain.isComplete()) {
+//				System.out.println("IsComplete?" +toString()+" true");
 				return true;
 			}
 		}
 		for (IDomain domain : domainSets) {
 			if (domain.isComplete()) {
+//				System.out.println("IsComplete?" +toString()+" true");
 				return true;
 			}
 		}
+//		System.out.println("IsComplete?" +toString()+" false");
 		return false;
 	}
 

@@ -4,10 +4,10 @@
 		<groups>
 			<run>
 				<include name="testDomain" />
-			 	<include name="testFlowDomain" />
+			 	<!-- <include name="testFlowDomain" />
 				<include name="booleanExpressions" />
 				<include name="linkValidation" />
-				<include name="xforms" />
+				<include name="xforms" /> -->
 			</run>
 		</groups>
 		<classes>

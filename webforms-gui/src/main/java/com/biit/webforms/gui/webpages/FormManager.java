@@ -38,6 +38,7 @@ import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
+import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderJson;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderXsd;
 import com.biit.webforms.gui.webpages.formmanager.WindowImpactAnalysis;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
@@ -217,6 +218,14 @@ public class FormManager extends SecuredWebPage {
 				impactAnalysis();
 			}
 		});
+		upperMenu.addExportJsonListener(new ClickListener() {
+			private static final long serialVersionUID = 2815280910647730087L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				exportJson();
+			}
+		});
 		return upperMenu;
 	}
 
@@ -299,6 +308,13 @@ public class FormManager extends SecuredWebPage {
 		} else {
 			MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
 		}
+	}
+	
+	protected void exportJson() {
+		Form form = loadForm(getSelectedForm());
+
+		new WindowDownloaderJson(form, getSelectedForm().getLabel() + ".json");
+
 	}
 
 	protected void exportFlowPdf() {

@@ -189,4 +189,20 @@ public class TokenComparationValue extends Token {
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		question = (Question) mappedElements.get(question.getComparationId());
 	}
+
+	public void setQuestion(Question question) {
+		this.question = question;
+	}
+
+	public void setSubformat(AnswerSubformat subformat) {
+		this.subformat = subformat;
+	}
+
+	public void setDatePeriodUnit(DatePeriodUnit datePeriodUnit) {
+		this.datePeriodUnit = datePeriodUnit;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 }
