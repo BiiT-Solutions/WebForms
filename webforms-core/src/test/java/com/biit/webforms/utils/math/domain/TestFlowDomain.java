@@ -304,7 +304,7 @@ public class TestFlowDomain {
 		System.out.println("Test Json24");
 		Form form = loadForm("test_date_period.json");
 		
-		//Incomplete, date and int
+		//Complete
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question2"));
 	}
 	
@@ -314,8 +314,45 @@ public class TestFlowDomain {
 		System.out.println("Test Json25");
 		Form form = loadForm("test_postal_code.json");
 		
-		//Incomplete, date and int
+		//Complete
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question"));
+	}
+	
+	//Text
+	@Test(dependsOnMethods = { "testJson25" })
+	public void testJson26() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json26");
+		Form form = loadForm("test_text.json");
+		
+		//Complete
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question"));
+	}
+	
+	@Test(dependsOnMethods = { "testJson26" })
+	public void testJson27() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json27");
+		Form form = loadForm("test_text.json");
+		
+		//Complete
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question2"));
+	}
+	
+	@Test(dependsOnMethods = { "testJson27" }, expectedExceptions = { IncompleteLogic.class })
+	public void testJson28() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json28");
+		Form form = loadForm("test_text.json");
+		
+		//Incomplete
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Text"));
+	}
+	
+	@Test(dependsOnMethods = { "testJson28" })
+	public void testJson29() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json29");
+		Form form = loadForm("test_text.json");
+		
+		//Incomplete
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Text2"));
 	}
 	
 	public Form loadForm(String filename) throws IOException {

@@ -125,18 +125,24 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 		case NUMBER:
 			intValue = Integer.parseInt(token.getValue());
 			return generateIntQuestionValueDomain(token, intValue);
+		 case BSN:
+		 case EMAIL:
+		 case IBAN:
+		 case PHONE:
+		 case TEXT:
+			 return generateRangedTextDomain(token, token.getValue());
 		default:
 			System.out.println("ha salido default!");
-			// Not treated
-			// case BSN:
-			// case EMAIL:
-			// case IBAN:
-			// case PHONE:
-			// case TEXT:
 			return null;
 		}
 	}
 	
+	private static QuestionValueDomain<RangedText> generateRangedTextDomain(TokenComparationValue token, String value) {
+		RealRange<RangedText> generator = new RealStringRange();
+		return new QuestionValueDomain<RangedText>(token.getQuestion(), generator.domain(),
+				generator.generateValue(token.getType(),new RangedText(value)));
+	}
+
 	private static QuestionValueDomain<PostalCode> generatePostalCodeQuestionValueDomain(TokenComparationValue token, String value) {
 		RealRange<PostalCode> generator = new RealRangePostalCode();
 		return new QuestionValueDomain<PostalCode>(token.getQuestion(), generator.domain(),

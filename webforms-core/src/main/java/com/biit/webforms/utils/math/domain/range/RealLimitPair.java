@@ -48,10 +48,19 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 
 	public boolean overlap(RealLimitPair<T> pair) {
 		System.out.println("Overlap " + this + " " + pair);
-		System.out.println("Overlap " + isContained(pair.getLeft()) + " " + isContained(pair.getRight()) + " "
-				+ pair.isContained(getLeft()) + " " + pair.isContained(getRight()));
+		System.out.println("Overlap " + isContained(pair.getLeft()) + " " + isContained(pair.getRight()) + " " + pair.isContained(getLeft()) + " " + pair.isContained(getRight()));
 		if (isContained(pair.getLeft()) || isContained(pair.getRight()) || pair.isContained(getLeft())
 				|| pair.isContained(getRight())) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean unionOverlap(RealLimitPair<T> pair){
+		if(left.getLimit().compareTo(pair.getRight().getLimit())==0 && (left.getClosure()==Closure.INCLUSIVE || pair.getRight().getClosure()==Closure.INCLUSIVE)){
+			return true;
+		}
+		if(right.getLimit().compareTo(pair.getLeft().getLimit())==0 && (right.getClosure()==Closure.INCLUSIVE || pair.getLeft().getClosure()==Closure.INCLUSIVE)){
 			return true;
 		}
 		return false;
@@ -59,7 +68,7 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 
 	public RealLimitPair<T> union(RealLimitPair<T> pair) {
 		System.out.println("Union " + this + " " + pair);
-		if (overlap(pair)) {
+		if (overlap(pair)|| unionOverlap(pair)) {
 			RealLimit<T> newLeft;
 			RealLimit<T> newRight;
 			if (getLeft().compareTo(pair.getLeft()) < 0) {
