@@ -3,7 +3,7 @@ package com.biit.webforms.language;
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 
-public enum LanguageCodes implements ILanguageCode{
+public enum LanguageCodes implements ILanguageCode {
 	//Common
 	APPLICATION_NAME("application.name"),
 	COMMON_CAPTION_NAME("caption.name"),

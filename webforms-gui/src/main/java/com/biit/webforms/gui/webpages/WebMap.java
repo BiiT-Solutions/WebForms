@@ -1,6 +1,5 @@
 package com.biit.webforms.gui.webpages;
 
-
 @SuppressWarnings("rawtypes")
 public enum WebMap {
 	LOGIN_PAGE(Login.class),
@@ -15,10 +14,10 @@ public enum WebMap {
 
 	VALIDATION(Validation.class),
 
-	COMPARE_STRUCTURE(CompareStructure.class), 
-	
+	COMPARE_STRUCTURE(CompareStructure.class),
+
 	COMPARE_CONTENT(CompareContent.class),
-	
+
 	;
 
 	private static WebMap loginPage = WebMap.LOGIN_PAGE;

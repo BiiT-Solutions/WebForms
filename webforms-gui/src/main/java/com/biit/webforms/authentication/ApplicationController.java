@@ -32,7 +32,7 @@ import com.biit.webforms.authentication.exception.BadAbcdLink;
 import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
-import com.biit.webforms.authentication.exception.NotEnoghRightsToChangeStatus;
+import com.biit.webforms.authentication.exception.NotEnoughRightsToChangeStatusException;
 import com.biit.webforms.authentication.exception.NotValidAbcdForm;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.enumerations.AnswerFormat;
@@ -1202,7 +1202,7 @@ public class ApplicationController {
 		return filteredForms;
 	}
 
-	public void changeFormStatus(IWebformsFormView formView, FormWorkStatus value) throws NotEnoghRightsToChangeStatus {
+	public void changeFormStatus(IWebformsFormView formView, FormWorkStatus value) throws NotEnoughRightsToChangeStatusException {
 		// Can downgrade
 		boolean userCanDowngradeStatus = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
 				UserSessionHandler.getUser(), formView, WebformsActivity.FORM_STATUS_DOWNGRADE);
@@ -1212,7 +1212,7 @@ public class ApplicationController {
 
 		if (!formView.getStatus().isMovingForward(value)) {
 			if (!(userCanDowngradeStatus || userIsAdmin)) {
-				throw new NotEnoghRightsToChangeStatus();
+				throw new NotEnoughRightsToChangeStatusException();
 			}
 		}
 

@@ -4,7 +4,7 @@ import com.biit.form.interfaces.IBaseFormView;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
-import com.biit.webforms.authentication.exception.NotEnoghRightsToChangeStatus;
+import com.biit.webforms.authentication.exception.NotEnoughRightsToChangeStatusException;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.components.TreeTableBaseForm;
@@ -35,6 +35,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	public TreeTableFormVersion(TreeTableProvider<SimpleFormView> formProvider) {
 		super(formProvider);
 		configureContainerProperties();
+		setImmediate(true);
 	}
 
 	@Override
@@ -130,17 +131,12 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		}
 		statusComboBox.setValue(form.getStatus());
 		statusComboBox.setWidth("100%");
+		statusComboBox.setImmediate(true);
 
-		// Status can change if you are not in DESIGN phase and can advance form
-		// status
-		boolean formIsNotDesign = form.getStatus() != FormWorkStatus.DESIGN;
 		boolean userCanUpgradeStatus = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
-				UserSessionHandler.getUser(), form, WebformsActivity.FORM_STATUS_UPGRADE);
-		// Or if you have admin rights.
-		final boolean userIsAdmin = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
-				UserSessionHandler.getUser(), form, WebformsActivity.ADMIN_RIGHTS);
+				UserSessionHandler.getUser(), form, WebformsActivity.FORM_STATUS_DOWNGRADE);
 
-		statusComboBox.setEnabled((formIsNotDesign && userCanUpgradeStatus) || userIsAdmin);
+		statusComboBox.setEnabled(userCanUpgradeStatus);
 		statusComboBox.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = 6270860285995563296L;
 
@@ -177,7 +173,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		updateRow(form);
 		try {
 			UserSessionHandler.getController().changeFormStatus(form, value);
-		} catch (NotEnoghRightsToChangeStatus e) {
+		} catch (NotEnoughRightsToChangeStatusException e) {
 			statusComboBox.setValue(form.getStatus());
 			MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
 					LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
@@ -203,8 +199,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	}
 
 	/**
-	 * This function returns an string with read only if the form can't be
-	 * edited by the user
+	 * This function returns an string with read only if the form can't be edited by the user
 	 * 
 	 * @param form
 	 * @return
