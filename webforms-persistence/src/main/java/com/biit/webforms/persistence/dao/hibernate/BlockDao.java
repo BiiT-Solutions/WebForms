@@ -11,7 +11,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
@@ -114,7 +113,6 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	@Transactional
 	public Block makePersistent(Block entity) throws UnexpectedDatabaseException {
 		// For solving Hibernate bug
 		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
