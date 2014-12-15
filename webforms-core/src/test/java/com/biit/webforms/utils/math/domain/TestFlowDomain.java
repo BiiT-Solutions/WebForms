@@ -203,7 +203,7 @@ public class TestFlowDomain {
 		System.out.println("Test Json13");
 		Form form = loadForm("test_integer.json");
 		
-		//Complete
+		//Incomplete
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Text2"));
 	}
 	
@@ -212,7 +212,7 @@ public class TestFlowDomain {
 		System.out.println("Test Json14");
 		Form form = loadForm("test_integer.json");
 		
-		//Complete
+		//Incomplete
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Text3"));
 	}
 	
@@ -221,10 +221,37 @@ public class TestFlowDomain {
 		System.out.println("Test Json15");
 		Form form = loadForm("test_integer.json");
 		
-		//Complete
+		//Incomplete
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Text4"));
 	}
 
+	@Test(dependsOnMethods = { "testJson15" })
+	public void testJson16() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json16");
+		Form form = loadForm("test_float.json");
+		
+		//Complete
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question"));
+	}
+	
+	@Test(dependsOnMethods = { "testJson16" }, expectedExceptions = { IncompleteLogic.class })
+	public void testJson17() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json17");
+		Form form = loadForm("test_float.json");
+		
+		//Incomplete
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question2"));
+	}
+	@Test(dependsOnMethods = { "testJson17" })
+	public void testJson18() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json18");
+		Form form = loadForm("test_float.json");
+		
+		//Complete
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question3"));
+	}
+	
+	
 	public Form loadForm(String filename) throws IOException {
 
 		ClassLoader classLoader = getClass().getClassLoader();
