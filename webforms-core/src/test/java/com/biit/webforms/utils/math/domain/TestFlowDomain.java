@@ -309,6 +309,14 @@ public class TestFlowDomain {
 	}
 	
 	//Postal Codes
+	@Test(dependsOnMethods = { "testJson24" })
+	public void testJson25() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json25");
+		Form form = loadForm("test_postal_code.json");
+		
+		//Incomplete, date and int
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question"));
+	}
 	
 	public Form loadForm(String filename) throws IOException {
 

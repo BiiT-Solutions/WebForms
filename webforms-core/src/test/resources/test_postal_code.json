@@ -1,0 +1,229 @@
+{
+  "class": "com.biit.webforms.persistence.entity.Form",
+  "comparationId": "d539795e-91f4-41de-8349-96f7e82e5dd4",
+  "creationTime": "Dec 15, 2014 11:55:46 AM",
+  "updateTime": "Dec 15, 2014 12:19:52 PM",
+  "createdBy": 10735,
+  "updatedBy": 10735,
+  "name": "form",
+  "label": "test_postal_code",
+  "children": [
+    {
+      "class": "com.biit.webforms.persistence.entity.Category",
+      "comparationId": "0dbe1a4b-0017-45ec-a0be-da343e5b6fc1",
+      "creationTime": "Dec 15, 2014 11:55:52 AM",
+      "updateTime": "Dec 15, 2014 11:56:18 AM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "name": "Category",
+      "label": "Category",
+      "children": [
+        {
+          "class": "com.biit.webforms.persistence.entity.Group",
+          "comparationId": "e8d67839-ed21-4e2a-b949-513ac254654b",
+          "creationTime": "Dec 15, 2014 11:55:53 AM",
+          "updateTime": "Dec 15, 2014 11:56:18 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "Group",
+          "label": "Group",
+          "children": [
+            {
+              "class": "com.biit.webforms.persistence.entity.Question",
+              "comparationId": "284fa6b7-902e-4b54-991d-12991f177a44",
+              "creationTime": "Dec 15, 2014 11:55:53 AM",
+              "updateTime": "Dec 15, 2014 11:56:18 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "Question",
+              "label": "Question",
+              "children": [],
+              "answerType": "INPUT",
+              "answerFormat": "POSTAL_CODE",
+              "answerSubformat": "POSTAL_CODE",
+              "mandatory": true,
+              "horizontal": false,
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Text",
+              "comparationId": "264a9bc2-a1ce-4733-b06b-a20045352882",
+              "creationTime": "Dec 15, 2014 11:55:56 AM",
+              "updateTime": "Dec 15, 2014 11:56:11 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "Text",
+              "label": "",
+              "children": [],
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Text",
+              "comparationId": "ac8078db-839c-49f6-90a5-a48f8ca248e5",
+              "creationTime": "Dec 15, 2014 11:55:56 AM",
+              "updateTime": "Dec 15, 2014 11:55:57 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "Text2",
+              "label": "",
+              "children": [],
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Text",
+              "comparationId": "2de8f4c2-8abe-4ced-b32e-07973ae67104",
+              "creationTime": "Dec 15, 2014 11:55:57 AM",
+              "updateTime": "Dec 15, 2014 11:55:58 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "Text3",
+              "label": "",
+              "children": [],
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Text",
+              "comparationId": "93787efc-ab51-4316-a0de-dc54c4205610",
+              "creationTime": "Dec 15, 2014 11:55:59 AM",
+              "updateTime": "Dec 15, 2014 11:56:00 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "Text4",
+              "label": "",
+              "children": [],
+              "description": ""
+            }
+          ],
+          "repeatable": false
+        }
+      ]
+    }
+  ],
+  "version": 1,
+  "organizationId": 10785,
+  "description": "",
+  "flows": [
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "6eaebab3-09b8-4b03-a512-5c54bf468020",
+      "creationTime": "Dec 15, 2014 12:16:59 PM",
+      "updateTime": "Dec 15, 2014 12:19:03 PM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "origin_id": [
+        "Category",
+        "Group",
+        "Question"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "Group",
+        "Text2"
+      ],
+      "others": false,
+      "condition": [
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.TokenComparationValue",
+          "comparationId": "376671b2-e970-46dc-99dc-83d27a295558",
+          "creationTime": "Dec 15, 2014 12:16:58 PM",
+          "updateTime": "Dec 15, 2014 12:16:58 PM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "type": "GE",
+          "question_id": [
+            "Category",
+            "Group",
+            "Question"
+          ],
+          "subformat": "POSTAL_CODE",
+          "value": "0001AA"
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.Token",
+          "comparationId": "e43cab74-1dbb-4364-b2e0-5bb0880cd1eb",
+          "creationTime": "Dec 15, 2014 12:18:47 PM",
+          "updateTime": "Dec 15, 2014 12:20:07 PM",
+          "type": "AND"
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.TokenComparationValue",
+          "comparationId": "d3483602-3360-41c2-ab69-205105e6fd1b",
+          "creationTime": "Dec 15, 2014 12:19:01 PM",
+          "updateTime": "Dec 15, 2014 12:19:01 PM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "type": "LE",
+          "question_id": [
+            "Category",
+            "Group",
+            "Question"
+          ],
+          "subformat": "POSTAL_CODE",
+          "value": "9999ZZ"
+        }
+      ]
+    },
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "287d56e9-4dda-4eba-8ed1-8bc6ad75057b",
+      "creationTime": "Dec 15, 2014 12:11:59 PM",
+      "updateTime": "Dec 15, 2014 12:11:59 PM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "origin_id": [
+        "Category",
+        "Group",
+        "Question"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "Group",
+        "Text"
+      ],
+      "others": false,
+      "condition": [
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.TokenComparationValue",
+          "comparationId": "627cd894-f754-4e5a-bb43-9cdf2f9a12cf",
+          "creationTime": "Dec 15, 2014 12:09:42 PM",
+          "updateTime": "Dec 15, 2014 12:09:42 PM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "type": "GE",
+          "question_id": [
+            "Category",
+            "Group",
+            "Question"
+          ],
+          "subformat": "POSTAL_CODE",
+          "value": "0000AA"
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.Token",
+          "comparationId": "a7e66d45-3adb-4c6c-9e0f-f85fe0a31342",
+          "creationTime": "Dec 15, 2014 12:09:47 PM",
+          "updateTime": "Dec 15, 2014 12:20:07 PM",
+          "type": "AND"
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.TokenComparationValue",
+          "comparationId": "a13aca1b-0fca-47b9-ab3f-d6cb5c08e40f",
+          "creationTime": "Dec 15, 2014 12:11:45 PM",
+          "updateTime": "Dec 15, 2014 12:11:45 PM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "type": "LE",
+          "question_id": [
+            "Category",
+            "Group",
+            "Question"
+          ],
+          "subformat": "POSTAL_CODE",
+          "value": "0000ZZ"
+        }
+      ]
+    }
+  ]
+}

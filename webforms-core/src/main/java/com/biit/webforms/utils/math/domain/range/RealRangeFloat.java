@@ -54,4 +54,15 @@ public class RealRangeFloat extends RealRange<Float> {
 		return Float.POSITIVE_INFINITY;
 	}
 
+	@Override
+	protected boolean isDiscrete() {
+		return false;
+	}
+
+	@Override
+	protected Float getNextDiscreteValue(Float value) {
+		//No discrete value
+		return null;
+	}
+
 }

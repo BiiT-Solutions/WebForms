@@ -117,8 +117,7 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 			longValue = ParseValueUtils.parseDate(token.getValue());
 			return generateLongQuestionValueDomain(token, longValue);
 		case POSTAL_CODE:
-			longValue = ParseValueUtils.parsePostalCode(token.getValue());
-			return generateLongQuestionValueDomain(token, longValue);
+			return generatePostalCodeQuestionValueDomain(token, token.getValue());
 		case DATE_PERIOD:
 			intValue = ParseValueUtils.parseDatePeriod(token.getDatePeriodUnit(), token.getValue());
 			return generateIntQuestionValueDomain(token, intValue);
@@ -138,6 +137,12 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 		}
 	}
 	
+	private static QuestionValueDomain<PostalCode> generatePostalCodeQuestionValueDomain(TokenComparationValue token, String value) {
+		RealRange<PostalCode> generator = new RealRangePostalCode();
+		return new QuestionValueDomain<PostalCode>(token.getQuestion(), generator.domain(),
+				generator.generateValue(token.getType(),new PostalCode(value)));
+	}
+
 	public static QuestionValueDomain<Float> generateFloatQuestionValueDomain(TokenComparationValue token, Float value){
 		RealRange<Float> generator = new RealRangeFloat();
 		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(),

@@ -22,7 +22,7 @@ public abstract class RealRange<T extends Comparable<T>> {
 	public RealRange() {
 		this.limits = new ArrayList<>();
 	}
-	
+
 	public RealRange(RealLimitPair<T> limit) {
 		this.limits = new ArrayList<>();
 		addLimit(limit);
@@ -47,17 +47,17 @@ public abstract class RealRange<T extends Comparable<T>> {
 		limits.add(limit);
 	}
 
-//	private void setEmpty() {
-//		limits.clear();
-//	}
+	// private void setEmpty() {
+	// limits.clear();
+	// }
 
-//	private void setValue(T value) {
-//		try {
-//			addLimit(new RealLimit<T>(value, Closure.SINGLE_VALUE));
-//		} catch (LimitInsertionException e) {
-//			WebformsLogger.errorMessage(this.getClass().getName(), e);
-//		}
-//	}
+	// private void setValue(T value) {
+	// try {
+	// addLimit(new RealLimit<T>(value, Closure.SINGLE_VALUE));
+	// } catch (LimitInsertionException e) {
+	// WebformsLogger.errorMessage(this.getClass().getName(), e);
+	// }
+	// }
 
 	private void setValue(Closure leftClosure, T left, T right, Closure rightClosure) throws LimitInsertionException {
 		if (leftClosure == null || left == null || right == null || rightClosure == null) {
@@ -137,6 +137,16 @@ public abstract class RealRange<T extends Comparable<T>> {
 			}
 
 			RealLimitPair<T> nextAccum = accum.union(allPairs.get(i));
+			if (isDiscrete() && nextAccum == null) {
+				//Try to make an union for discretes
+				if(accum.getRight().getClosure()==Closure.INCLUSIVE && allPairs.get(i).getLeft().getClosure()==Closure.INCLUSIVE){
+					T nextValue = getNextDiscreteValue(accum.getRight().getLimit());
+					if(nextValue.compareTo(allPairs.get(i).getLeft().getLimit())==0){
+						nextAccum = accum.discreteUnion(allPairs.get(i));
+					}
+				}
+			}
+			
 			if (nextAccum == null) {
 				unionPairs.add(accum);
 				accum = allPairs.get(i);
@@ -161,15 +171,15 @@ public abstract class RealRange<T extends Comparable<T>> {
 		List<RealLimitPair<T>> intersectionPairs = new ArrayList<RealLimitPair<T>>();
 		for (RealLimitPair<T> limit : limits) {
 			for (RealLimitPair<T> rangeLimit : range.limits) {
-				System.out.println("RealRange intersection " +limit+" "+rangeLimit);
+				System.out.println("RealRange intersection " + limit + " " + rangeLimit);
 				RealLimitPair<T> intersection = limit.intersection(rangeLimit);
-				System.out.println("RealRange intersection res:" +intersection);
+				System.out.println("RealRange intersection res:" + intersection);
 				if (intersection != null) {
 					intersectionPairs.add(intersection);
 				}
 			}
 		}
-		System.out.println("Creating new real range with intersected pairs"+intersectionPairs);
+		System.out.println("Creating new real range with intersected pairs" + intersectionPairs);
 		return createNewRealRange(intersectionPairs);
 	}
 
@@ -227,7 +237,7 @@ public abstract class RealRange<T extends Comparable<T>> {
 			return false;
 		}
 	}
-	
+
 	public RealRange<T> generateValue(TokenTypes type, T value) {
 		switch (type) {
 		case EQ:
@@ -247,17 +257,22 @@ public abstract class RealRange<T extends Comparable<T>> {
 			throw new RuntimeException("Unexpected default action at switch");
 		}
 	}
-	
-	protected abstract RealRange<T> createNewRealRange(Closure leftClosure, T left, T right, Closure rightClosure) throws LimitInsertionException;
-	
+
+	protected abstract RealRange<T> createNewRealRange(Closure leftClosure, T left, T right, Closure rightClosure)
+			throws LimitInsertionException;
+
 	protected abstract RealRange<T> createNewRealRange(RealLimitPair<T> limit);
-	
+
 	protected abstract RealRange<T> createNewRealRange(List<RealLimitPair<T>> limits);
-	
+
 	protected abstract T typeNegativeInfinity();
-	
+
 	protected abstract T typePositiveInfinity();
-	
+
+	protected abstract boolean isDiscrete();
+
+	protected abstract T getNextDiscreteValue(T value);
+
 	public RealLimit<T> negativeInfinity() {
 		return new RealLimit<T>(typeNegativeInfinity(), Closure.EXCLUSIVE);
 	}
@@ -269,24 +284,24 @@ public abstract class RealRange<T extends Comparable<T>> {
 	public RealLimitPair<T> domain() {
 		return new RealLimitPair<T>(negativeInfinity(), positiveInfinity());
 	}
-	
-	public RealRange<T> realRange(){
+
+	public RealRange<T> realRange() {
 		return createNewRealRange(domain());
 	}
-	
-	public RealLimitPair<T> pairLt(T value){
+
+	public RealLimitPair<T> pairLt(T value) {
 		return new RealLimitPair<T>(negativeInfinity(), new RealLimit<T>(value, Closure.EXCLUSIVE));
 	}
 
-	public RealLimitPair<T> pairLe(T value){
+	public RealLimitPair<T> pairLe(T value) {
 		return new RealLimitPair<T>(negativeInfinity(), new RealLimit<T>(value, Closure.INCLUSIVE));
 	}
-	
-	public RealLimitPair<T> pairGt(T value){
+
+	public RealLimitPair<T> pairGt(T value) {
 		return new RealLimitPair<T>(new RealLimit<T>(value, Closure.EXCLUSIVE), positiveInfinity());
 	}
 
-	public RealLimitPair<T> pairGe(T value){
+	public RealLimitPair<T> pairGe(T value) {
 		return new RealLimitPair<T>(new RealLimit<T>(value, Closure.INCLUSIVE), positiveInfinity());
 	}
 

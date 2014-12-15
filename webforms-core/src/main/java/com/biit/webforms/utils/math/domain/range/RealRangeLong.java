@@ -54,4 +54,14 @@ public class RealRangeLong extends RealRange<Long>{
 		return Long.MAX_VALUE;
 	}
 
+	@Override
+	protected boolean isDiscrete() {
+		return true;
+	}
+
+	@Override
+	protected Long getNextDiscreteValue(Long value) {
+		return value+1;
+	}
+
 }

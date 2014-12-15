@@ -42,21 +42,23 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 	}
 
 	public boolean isContained(RealLimit<T> value) {
-		System.out.println("Is Contained  "+isContainedFromLeft(value) +" "+ isContainedFromRight(value));
+		System.out.println("Is Contained  " + isContainedFromLeft(value) + " " + isContainedFromRight(value));
 		return isContainedFromLeft(value) && isContainedFromRight(value);
 	}
 
 	public boolean overlap(RealLimitPair<T> pair) {
-		System.out.println("Overlap "+this+" "+pair);
-		System.out.println("Overlap "+isContained(pair.getLeft()) +" "+ isContained(pair.getRight()) +" "+ pair.isContained(getLeft()) +" "+pair.isContained(getRight()));
-		if (isContained(pair.getLeft()) || isContained(pair.getRight()) || pair.isContained(getLeft()) || pair.isContained(getRight())) {
+		System.out.println("Overlap " + this + " " + pair);
+		System.out.println("Overlap " + isContained(pair.getLeft()) + " " + isContained(pair.getRight()) + " "
+				+ pair.isContained(getLeft()) + " " + pair.isContained(getRight()));
+		if (isContained(pair.getLeft()) || isContained(pair.getRight()) || pair.isContained(getLeft())
+				|| pair.isContained(getRight())) {
 			return true;
 		}
 		return false;
 	}
 
 	public RealLimitPair<T> union(RealLimitPair<T> pair) {
-		System.out.println("Union "+this+" "+pair);
+		System.out.println("Union " + this + " " + pair);
 		if (overlap(pair)) {
 			RealLimit<T> newLeft;
 			RealLimit<T> newRight;
@@ -77,6 +79,27 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 			return new RealLimitPair<T>(newLeft, newRight);
 		}
 		return null;
+	}
+
+	public RealLimitPair<T> discreteUnion(RealLimitPair<T> pair) {
+		System.out.println("Discrete Union " + this + " " + pair);
+		RealLimit<T> newLeft;
+		RealLimit<T> newRight;
+		if (getLeft().compareTo(pair.getLeft()) < 0) {
+			// this < than range
+			newLeft = getLeft();
+		} else {
+			// this > pair
+			newLeft = pair.getLeft();
+		}
+		if (getRight().compareTo(pair.getRight()) > 0) {
+			// this > than pair
+			newRight = getRight();
+		} else {
+			// range less or equal than this
+			newRight = pair.getRight();
+		}
+		return new RealLimitPair<T>(newLeft, newRight);
 	}
 
 	/**
@@ -155,17 +178,18 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 
 	@Override
 	public int compareTo(RealLimitPair<T> o) {
-		if((right.compareTo(o.left) == 0) && (left.compareTo(o.left) <= 0)){
+		if ((right.compareTo(o.left) == 0) && (left.compareTo(o.left) <= 0)) {
 			return -1;
 		}
-		if((left.compareTo(o.right) == 0) && (right.compareTo(o.right) >= 0)){
+		if ((left.compareTo(o.right) == 0) && (right.compareTo(o.right) >= 0)) {
 			return 1;
 		}
 		return left.compareTo(o.left);
-//		if ((left.compareTo(o.left) == 0) && ((right.compareTo(o.right) == 0))) {
-//			return 0;
-//		}
-//		
-//		return left.compareTo(o.left);
+		// if ((left.compareTo(o.left) == 0) && ((right.compareTo(o.right) ==
+		// 0))) {
+		// return 0;
+		// }
+		//
+		// return left.compareTo(o.left);
 	}
 }
