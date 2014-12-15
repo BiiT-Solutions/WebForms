@@ -225,6 +225,7 @@ public class TestFlowDomain {
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Text4"));
 	}
 
+	//Floats
 	@Test(dependsOnMethods = { "testJson15" })
 	public void testJson16() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
 		System.out.println("Test Json16");
@@ -251,6 +252,63 @@ public class TestFlowDomain {
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question3"));
 	}
 	
+	//Date
+	@Test(dependsOnMethods = { "testJson18" })
+	public void testJson19() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json19");
+		Form form = loadForm("test_date.json");
+		
+		//Complete
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question"));
+	}
+	
+	@Test(dependsOnMethods = { "testJson19" }, expectedExceptions = { RedundantLogic.class })
+	public void testJson20() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json20");
+		Form form = loadForm("test_date.json");
+		
+		//Overlap of two dates
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question2"));
+	}
+	
+	@Test(dependsOnMethods = { "testJson20" })
+	public void testJson21() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json21");
+		Form form = loadForm("test_date.json");
+		
+		//Complete, date and int
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question3"));
+	}
+	
+	@Test(dependsOnMethods = { "testJson21" }, expectedExceptions = { IncompleteLogic.class })
+	public void testJson22() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json22");
+		Form form = loadForm("test_date.json");
+		
+		//Incomplete, date and int
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Text"));
+	}
+	
+	//Date period
+	@Test(dependsOnMethods = { "testJson22" })
+	public void testJson23() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json23");
+		Form form = loadForm("test_date_period.json");
+		
+		//Incomplete, date and int
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question"));
+	}
+	
+	@Test(dependsOnMethods = { "testJson23" })
+	public void testJson24() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic {
+		System.out.println("Test Json24");
+		Form form = loadForm("test_date_period.json");
+		
+		//Incomplete, date and int
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Question2"));
+	}
+	
+	//Postal Codes
 	
 	public Form loadForm(String filename) throws IOException {
 

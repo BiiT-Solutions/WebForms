@@ -114,6 +114,8 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 			floatValue = Float.parseFloat(token.getValue());
 			return generateFloatQuestionValueDomain(token, floatValue);
 		case DATE:
+			longValue = ParseValueUtils.parseDate(token.getValue());
+			return generateLongQuestionValueDomain(token, longValue);
 		case POSTAL_CODE:
 			longValue = ParseValueUtils.parsePostalCode(token.getValue());
 			return generateLongQuestionValueDomain(token, longValue);

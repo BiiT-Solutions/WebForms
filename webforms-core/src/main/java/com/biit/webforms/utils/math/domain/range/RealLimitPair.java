@@ -48,8 +48,8 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 
 	public boolean overlap(RealLimitPair<T> pair) {
 		System.out.println("Overlap "+this+" "+pair);
-		System.out.println("Overlap "+isContained(pair.getLeft()) +" "+ isContained(pair.getRight()) +" "+ pair.isContained(getLeft()));
-		if (isContained(pair.getLeft()) || isContained(pair.getRight()) || pair.isContained(getLeft())) {
+		System.out.println("Overlap "+isContained(pair.getLeft()) +" "+ isContained(pair.getRight()) +" "+ pair.isContained(getLeft()) +" "+pair.isContained(getRight()));
+		if (isContained(pair.getLeft()) || isContained(pair.getRight()) || pair.isContained(getLeft()) || pair.isContained(getRight())) {
 			return true;
 		}
 		return false;
