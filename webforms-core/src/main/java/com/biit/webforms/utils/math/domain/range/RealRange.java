@@ -115,6 +115,7 @@ public abstract class RealRange<T extends Comparable<T>> {
 	}
 
 	public RealRange<T> union(RealRange<T> range) {
+		System.out.println("Real Range Union "+this+" "+range);
 		if (range.isEmpty()) {
 			return createNewRealRange(limits);
 		}
@@ -123,7 +124,9 @@ public abstract class RealRange<T extends Comparable<T>> {
 		allPairs.addAll(limits);
 		allPairs.addAll(range.limits);
 
+		System.out.println("Not ordered pairs: "+allPairs);
 		Collections.sort(allPairs);
+		System.out.println("Ordered pairs: "+allPairs);
 
 		List<RealLimitPair<T>> unionPairs = new ArrayList<RealLimitPair<T>>();
 		RealLimitPair<T> accum = null;
@@ -146,6 +149,7 @@ public abstract class RealRange<T extends Comparable<T>> {
 			unionPairs.add(accum);
 		}
 
+		System.out.println("Real Range Union end "+unionPairs);
 		return createNewRealRange(unionPairs);
 	}
 
@@ -165,7 +169,7 @@ public abstract class RealRange<T extends Comparable<T>> {
 				}
 			}
 		}
-
+		System.out.println("Creating new real range with intersected pairs"+intersectionPairs);
 		return createNewRealRange(intersectionPairs);
 	}
 

@@ -56,10 +56,12 @@ public class FlowUnitDomain {
 		for (IDomain flowDomain : flowDomains) {
 			if (unionflowDomain == null) {
 				unionflowDomain = flowDomain;
+				System.out.println("checkCompleteness: "+unionflowDomain);
 			} else {
 				unionflowDomain = unionflowDomain.union(flowDomain);
+				System.out.println("checkCompleteness: "+unionflowDomain);
 			}
-			System.out.println(unionflowDomain);
+			
 		}
 		if (!unionflowDomain.isComplete()) {
 			throw new IncompleteLogic();

@@ -55,7 +55,7 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 	public IDomain union(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {
 			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
-				new QuestionValueDomain<T>(question, completeDomain,
+				return new QuestionValueDomain<T>(question, completeDomain,
 						this.value.union(((QuestionValueDomain<T>) domain).value));
 			} else {
 				return new DomainSetUnion(this, (IDomainQuestion) domain);
@@ -82,7 +82,7 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 			System.out.println("B");
 			return domain.intersect(this);
 		}
-		System.out.println("C");
+		System.out.println("C "+domain.getClass());
 		return null;
 	}
 
@@ -93,15 +93,18 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 
 	@Override
 	public boolean isComplete() {
+		System.out.println("QuestionValueDomain isComplete? "+ value.isComplete(completeDomain));
 		return value.isComplete(completeDomain);
 	}
 
 	@Override
 	public boolean isEmpty() {
+		System.out.println("QuestionValueDomain isEmpty? "+ value.isEmpty());
 		return value.isEmpty();
 	}
 
 	public static QuestionValueDomain<?> generateQuestionValueDomain(TokenComparationValue token) {
+		System.out.println("generateQuestionValueDomain" + token);
 		Float floatValue = null;
 		Integer intValue = null;
 		Long longValue = null;
@@ -122,6 +125,7 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 			intValue = Integer.parseInt(token.getValue());
 			return generateIntQuestionValueDomain(token, intValue);
 		default:
+			System.out.println("ha salido default!");
 			// Not treated
 			// case BSN:
 			// case EMAIL:

@@ -18,13 +18,11 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 	}
 
 	private boolean isContainedFromLeft(RealLimit<T> value) {
-		System.out.println("isContained from left"+left+" "+value);
 		if (left.getLimit().compareTo(value.getLimit()) < 0) {
-			System.out.println("=_=A");
 			return true;
 		} else {
-			System.out.println("=_=B");
-			if (left.getLimit().equals(value.getLimit()) && left.getClosure() == Closure.INCLUSIVE) {
+			if (left.getLimit().equals(value.getLimit())
+					&& (left.getClosure() == Closure.INCLUSIVE || value.getClosure() == Closure.INCLUSIVE)) {
 				return true;
 			}
 		}
@@ -35,7 +33,8 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 		if (right.getLimit().compareTo(value.getLimit()) > 0) {
 			return true;
 		} else {
-			if (right.getLimit().equals(value.getLimit()) && right.getClosure() == Closure.INCLUSIVE) {
+			if (right.getLimit().equals(value.getLimit())
+					&& (right.getClosure() == Closure.INCLUSIVE || value.getClosure() == Closure.INCLUSIVE)) {
 				return true;
 			}
 		}
@@ -57,6 +56,7 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 	}
 
 	public RealLimitPair<T> union(RealLimitPair<T> pair) {
+		System.out.println("Union "+this+" "+pair);
 		if (overlap(pair)) {
 			RealLimit<T> newLeft;
 			RealLimit<T> newRight;
@@ -88,6 +88,11 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 	private boolean isOverlapStrict(RealLimitPair<T> pair) {
 		if (right.getLimit().equals(pair.getLeft().getLimit())) {
 			if (right.getClosure() != Closure.INCLUSIVE || pair.getLeft().getClosure() != Closure.INCLUSIVE) {
+				return false;
+			}
+		}
+		if (left.getLimit().equals(pair.getRight().getLimit())) {
+			if (left.getClosure() != Closure.INCLUSIVE || pair.getRight().getClosure() != Closure.INCLUSIVE) {
 				return false;
 			}
 		}
@@ -150,9 +155,17 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 
 	@Override
 	public int compareTo(RealLimitPair<T> o) {
-		if ((left.compareTo(o.left) == 0) && ((right.compareTo(o.right) == 0))) {
-			return 0;
+		if((right.compareTo(o.left) == 0) && (left.compareTo(o.left) <= 0)){
+			return -1;
+		}
+		if((left.compareTo(o.right) == 0) && (right.compareTo(o.right) >= 0)){
+			return 1;
 		}
 		return left.compareTo(o.left);
+//		if ((left.compareTo(o.left) == 0) && ((right.compareTo(o.right) == 0))) {
+//			return 0;
+//		}
+//		
+//		return left.compareTo(o.left);
 	}
 }
