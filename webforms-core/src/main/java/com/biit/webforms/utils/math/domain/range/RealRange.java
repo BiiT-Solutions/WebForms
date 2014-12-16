@@ -47,30 +47,12 @@ public abstract class RealRange<T extends Comparable<T>> {
 		limits.add(limit);
 	}
 
-	// private void setEmpty() {
-	// limits.clear();
-	// }
-
-	// private void setValue(T value) {
-	// try {
-	// addLimit(new RealLimit<T>(value, Closure.SINGLE_VALUE));
-	// } catch (LimitInsertionException e) {
-	// WebformsLogger.errorMessage(this.getClass().getName(), e);
-	// }
-	// }
-
 	private void setValue(Closure leftClosure, T left, T right, Closure rightClosure) throws LimitInsertionException {
 		if (leftClosure == null || left == null || right == null || rightClosure == null) {
 			throw new NullPointerException("Real range can't use null as a limit value");
 		}
 		addLimit(new RealLimitPair<T>(new RealLimit<T>(left, leftClosure), new RealLimit<T>(right, rightClosure)));
 	}
-
-	// public static RealRange value(Float value) {
-	// RealRange range = new RealRange();
-	// range.setValue(value);
-	// return range;
-	// }
 
 	public RealRange<T> eq(T value) {
 		try {
@@ -115,7 +97,6 @@ public abstract class RealRange<T extends Comparable<T>> {
 	}
 
 	public RealRange<T> union(RealRange<T> range) {
-		System.out.println("Real Range Union "+this+" "+range);
 		if (range.isEmpty()) {
 			return createNewRealRange(limits);
 		}
@@ -124,9 +105,7 @@ public abstract class RealRange<T extends Comparable<T>> {
 		allPairs.addAll(limits);
 		allPairs.addAll(range.limits);
 
-		System.out.println("Not ordered pairs: "+allPairs);
 		Collections.sort(allPairs);
-		System.out.println("Ordered pairs: "+allPairs);
 
 		List<RealLimitPair<T>> unionPairs = new ArrayList<RealLimitPair<T>>();
 		RealLimitPair<T> accum = null;
@@ -159,7 +138,6 @@ public abstract class RealRange<T extends Comparable<T>> {
 			unionPairs.add(accum);
 		}
 
-		System.out.println("Real Range Union end "+unionPairs);
 		return createNewRealRange(unionPairs);
 	}
 
@@ -171,15 +149,12 @@ public abstract class RealRange<T extends Comparable<T>> {
 		List<RealLimitPair<T>> intersectionPairs = new ArrayList<RealLimitPair<T>>();
 		for (RealLimitPair<T> limit : limits) {
 			for (RealLimitPair<T> rangeLimit : range.limits) {
-				System.out.println("RealRange intersection " + limit + " " + rangeLimit);
 				RealLimitPair<T> intersection = limit.intersection(rangeLimit);
-				System.out.println("RealRange intersection res:" + intersection);
 				if (intersection != null) {
 					intersectionPairs.add(intersection);
 				}
 			}
 		}
-		System.out.println("Creating new real range with intersected pairs" + intersectionPairs);
 		return createNewRealRange(intersectionPairs);
 	}
 

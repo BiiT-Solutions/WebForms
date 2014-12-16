@@ -42,13 +42,10 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 	}
 
 	public boolean isContained(RealLimit<T> value) {
-		System.out.println("Is Contained  " + isContainedFromLeft(value) + " " + isContainedFromRight(value));
 		return isContainedFromLeft(value) && isContainedFromRight(value);
 	}
 
 	public boolean overlap(RealLimitPair<T> pair) {
-		System.out.println("Overlap " + this + " " + pair);
-		System.out.println("Overlap " + isContained(pair.getLeft()) + " " + isContained(pair.getRight()) + " " + pair.isContained(getLeft()) + " " + pair.isContained(getRight()));
 		if (isContained(pair.getLeft()) || isContained(pair.getRight()) || pair.isContained(getLeft())
 				|| pair.isContained(getRight())) {
 			return true;
@@ -67,7 +64,6 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 	}
 
 	public RealLimitPair<T> union(RealLimitPair<T> pair) {
-		System.out.println("Union " + this + " " + pair);
 		if (overlap(pair)|| unionOverlap(pair)) {
 			RealLimit<T> newLeft;
 			RealLimit<T> newRight;
@@ -91,7 +87,6 @@ public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLi
 	}
 
 	public RealLimitPair<T> discreteUnion(RealLimitPair<T> pair) {
-		System.out.println("Discrete Union " + this + " " + pair);
 		RealLimit<T> newLeft;
 		RealLimit<T> newRight;
 		if (getLeft().compareTo(pair.getLeft()) < 0) {

@@ -29,8 +29,6 @@ public class PostalCode implements Comparable<PostalCode> {
 	}
 
 	public PostalCode getNextPostalCode() {
-		System.out.println("getNextPostalCode");
-
 		int number = Integer.parseInt(postalCode.substring(0, 4));
 		int firstChar = (int) postalCode.charAt(5);
 		int secondChar = (int) postalCode.charAt(5);
@@ -51,7 +49,6 @@ public class PostalCode implements Comparable<PostalCode> {
 		String nextPostalCode = String.format("%04d", number) + ((char) firstChar) + ((char) secondChar);
 
 		PostalCode newPostalCode = new PostalCode(nextPostalCode);
-		System.out.println(newPostalCode);
 		return newPostalCode;
 	}
 }

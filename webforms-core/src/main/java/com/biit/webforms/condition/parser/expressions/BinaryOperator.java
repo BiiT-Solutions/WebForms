@@ -81,8 +81,6 @@ public class BinaryOperator extends Expression implements WebformsExpression {
 		IDomain rightDomain = ((WebformsExpression) right).getDomain(); 
 
 		if (type == TokenTypes.AND) {
-			System.out.println("Get Domain -Expression - "+left+" and "+right);
-			System.out.println("Get Domain "+leftDomain+" and "+rightDomain);
 			return leftDomain.intersect(rightDomain);
 		} else {
 			return leftDomain.union(rightDomain);
