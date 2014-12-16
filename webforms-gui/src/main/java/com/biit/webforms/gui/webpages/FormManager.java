@@ -106,6 +106,7 @@ public class FormManager extends SecuredWebPage {
 		updateMenus();
 
 		getWorkingArea().addComponent(formTable);
+
 	}
 
 	private UpperMenuProjectManager createUpperMenu() {
@@ -167,6 +168,8 @@ public class FormManager extends SecuredWebPage {
 						UserSessionHandler.getUser(), getSelectedForm().getOrganizationId());
 				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
 						XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
+				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_VERSION_PARAMETER_TAG,
+						getSelectedForm().getVersion().toString());
 			}
 		});
 		// Add browser window opener to the button.
@@ -309,12 +312,10 @@ public class FormManager extends SecuredWebPage {
 			MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
 		}
 	}
-	
+
 	protected void exportJson() {
 		Form form = loadForm(getSelectedForm());
-
 		new WindowDownloaderJson(form, getSelectedForm().getLabel() + ".json");
-
 	}
 
 	protected void exportFlowPdf() {

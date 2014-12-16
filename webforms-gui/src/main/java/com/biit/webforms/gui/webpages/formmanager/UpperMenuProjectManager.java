@@ -48,7 +48,6 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_EXPORT_JSON, IconSize.BIG);
 
 		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
-		opener.setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,"Preview_Aanvraag_Persoonlijke_Lening_ABCD");
 		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsExporter.APP_NAME);
 		opener.setFeatures("target=_new");
 		previewXForms = new IconButton(LanguageCodes.CAPTION_PREVIEW_XFORMS, ThemeIcons.PREVIEW_XFORMS,
