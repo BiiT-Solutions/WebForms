@@ -20,6 +20,7 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.validators.ValidateFormComplete;
 import com.biit.webforms.validators.ValidateFormFlows;
+import com.biit.webforms.validators.ValidateLogic;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.TextArea;
@@ -78,6 +79,14 @@ public class Validation extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				validateFlow();
+			}
+		});
+		upperMenu.addValidateConditions(new ClickListener() {
+			private static final long serialVersionUID = -3892060791990799778L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				validateConditions();
 			}
 		});
 		upperMenu.addValidateAbcdLinkListener(new ClickListener() {
@@ -142,6 +151,27 @@ public class Validation extends SecuredWebPage {
 		}
 	}
 
+	protected void validateConditions() {
+		ValidateBaseForm structureValidator = new ValidateBaseForm();
+		if (structureValidator.validate(UserSessionHandler.getController().getFormInUse())) {
+			ValidateFormFlows validator = new ValidateFormFlows();
+			if (validator.validate(UserSessionHandler.getController().getFormInUse())) {
+				ValidateLogic logicValidator = new ValidateLogic();
+				ValidateReport report = new ValidateReport();
+				logicValidator.validate(UserSessionHandler.getController().getFormInUse(), report);
+				if (report.isValid()) {
+					setValidationPassedMessage();
+				} else {
+					setValidationReport(report);
+				}
+			}else{
+				setValidationFlowNotPassed();
+			}
+		} else {
+			MessageManager.showError(LanguageCodes.ERROR_FORM_STRUCTURE_COULD_NOT_BE_VALIDATED);
+		}
+	}
+
 	protected void validateStructure() {
 		ValidateBaseForm validator = new ValidateBaseForm();
 		ValidateReport report = new ValidateReport();
@@ -189,6 +219,12 @@ public class Validation extends SecuredWebPage {
 	private void setValidationPassedMessage() {
 		textArea.setReadOnly(false);
 		changeReport(LanguageCodes.MESSAGE_VALIDATION_FINISHED_CORRECTLY.translation());
+		textArea.setReadOnly(true);
+	}
+	
+	private void setValidationFlowNotPassed() {
+		textArea.setReadOnly(false);
+		changeReport(LanguageCodes.MESSAGE_VALIDATION_FLOW_NOT_PASSED_CORRECTLY.translation());
 		textArea.setReadOnly(true);
 	}
 
