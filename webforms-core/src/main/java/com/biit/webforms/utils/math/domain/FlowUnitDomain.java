@@ -36,9 +36,13 @@ public class FlowUnitDomain {
 	}
 
 	private void checkUnicity(List<IDomain> domains) throws RedundantLogic {
+		System.out.println("Unicity check, Domains:" + domains);
 		for (int i = 0; i < domains.size(); i++) {
 			for (int j = i + 1; j < domains.size(); j++) {
+				System.out.println(domains.get(i).getClass());
+				System.out.println("Intersection Bef: "+domains.get(i)+" "+(domains.get(j)));
 				IDomain intersection = domains.get(i).intersect(domains.get(j));
+				System.out.println("Intersection: "+intersection);
 				if (!intersection.isEmpty()) {
 					throw new RedundantLogic();
 				}
@@ -52,9 +56,12 @@ public class FlowUnitDomain {
 		for (IDomain flowDomain : flowDomains) {
 			if (unionflowDomain == null) {
 				unionflowDomain = flowDomain;
+				System.out.println("checkCompleteness: "+unionflowDomain);
 			} else {
 				unionflowDomain = unionflowDomain.union(flowDomain);
+				System.out.println("checkCompleteness: "+unionflowDomain);
 			}
+			
 		}
 		if (!unionflowDomain.isComplete()) {
 			throw new IncompleteLogic();

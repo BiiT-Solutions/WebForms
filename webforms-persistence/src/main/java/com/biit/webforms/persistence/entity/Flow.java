@@ -292,7 +292,7 @@ public class Flow extends StorableObject {
 		return simplifiedTokens;
 	}
 
-	protected void setCondition(List<Token> condition) {
+	public void setCondition(List<Token> condition) {
 		this.condition.clear();
 		this.condition.addAll(condition);
 		for (Token token : this.condition) {

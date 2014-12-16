@@ -55,6 +55,7 @@
 		<DES-encryption.version>1.0.0</DES-encryption.version>
 		<abcd.version>1.0.8</abcd.version>
 		<jbool_expressions.version>1.6</jbool_expressions.version>
+		<gson.version>2.3.1</gson.version>
 	</properties>
 
 	<dependencies>

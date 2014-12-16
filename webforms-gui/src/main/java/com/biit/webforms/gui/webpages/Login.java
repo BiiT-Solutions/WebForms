@@ -15,6 +15,7 @@ import com.biit.security.exceptions.PBKDF2EncryptorException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.WebPageComponent;
+import com.biit.webforms.gui.common.components.WindowUpload;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -107,7 +108,6 @@ public class Login extends WebPageComponent {
 				}
 			}
 		});
-
 		// Add the login button
 		Button loginButton = new Button(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_SIGN_IN),
 				new ClickListener() {

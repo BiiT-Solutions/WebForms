@@ -8,7 +8,7 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.utils.math.domain.IDomain;
 import com.biit.webforms.utils.math.domain.QuestionAnswerDomain;
-import com.biit.webforms.utils.math.domain.QuestionValueDomain;
+import com.biit.webforms.utils.math.domain.range.QuestionValueDomain;
 import com.biit.webforms.utils.parser.Expression;
 
 public class ComparationCluster extends Expression implements WebformsExpression {
@@ -67,7 +67,7 @@ public class ComparationCluster extends Expression implements WebformsExpression
 			return new QuestionAnswerDomain((TokenComparationAnswer) token);
 		}
 		if (token instanceof TokenComparationValue) {
-			return new QuestionValueDomain((TokenComparationValue) token);
+			return QuestionValueDomain.generateQuestionValueDomain((TokenComparationValue) token);
 		}
 		return null;
 	}

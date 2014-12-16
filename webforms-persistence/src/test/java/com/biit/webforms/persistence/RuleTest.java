@@ -33,11 +33,11 @@ import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContextTest.xml" })
@@ -117,6 +117,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 
 			List<Token> condition = Arrays.asList(new Token[] {
 					TokenComparationValue.getTokenEqual(question1, AnswerSubformat.TEXT, null, "test"),
+					Token.and(),
 					TokenComparationAnswer.getTokenEqual(question2, answer1) });
 			Flow rule1 = createRule(question1, FlowType.NORMAL, question2, false, condition);
 
@@ -188,4 +189,21 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		formDao.makeTransient(form);
 
 	}
+	
+//	@Test
+//	public void testJson() throws ChildrenNotFoundException  {
+//		Form form = createForm();
+//		
+//		String jsonString = form.toJson();
+//		System.out.println(jsonString);
+//		
+//		Form jsonForm = Form.fromJson(jsonString);
+//		System.out.println(jsonForm.getName()+" "+jsonForm.getLabel());
+//		System.out.println(jsonForm.getChildren());
+//		System.out.println(jsonForm.getChild(0).getChildren());
+//		System.out.println(jsonForm.getChild(0).getChild(0).getChildren());
+//		System.out.println(jsonForm.getChild(0).getChild(0).getChild(1).getChildren());
+//		System.out.println(jsonForm.getFlows());
+//
+//	}
 }

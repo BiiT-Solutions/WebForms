@@ -25,7 +25,7 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 	@Override
 	protected void initElement() {
 
-		name = new TextField(LanguageCodes.CAPTION_NAME.translation());
+		name = new TextField(LanguageCodes.CAPTION_TECHNICAL_NAME.translation());
 		name.setWidth(WIDTH);
 		name.setRequired(true);
 

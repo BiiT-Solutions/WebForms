@@ -1,9 +1,10 @@
-package com.biit.webforms.utils.math.domain;
+package com.biit.webforms.utils.math.domain.range;
 
 import junit.framework.Assert;
 
 import org.testng.annotations.Test;
 
+import com.biit.webforms.utils.math.domain.Closure;
 import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
 
 @Test(groups = { "testDomain" })
@@ -32,12 +33,12 @@ public class TestDomain {
 	@Test
 	public void testRealRangeGeneration() {
 
-		RealRange emptyRange = new RealRange();
-		RealRange realRange = RealRange.realRange();
-		RealRange ltThree = RealRange.lt(3.0f);
-		RealRange gtThree = RealRange.gt(3.0f);
-		RealRange geThree = RealRange.ge(3.0f);
-		RealRange leThree = RealRange.le(3.0f);
+		RealRange<Float> emptyRange = new RealRangeFloat();
+		RealRange<Float> realRange = new RealRangeFloat().realRange();
+		RealRange<Float> ltThree = new RealRangeFloat().lt(3.0f);
+		RealRange<Float> gtThree = new RealRangeFloat().gt(3.0f);
+		RealRange<Float> geThree = new RealRangeFloat().ge(3.0f);
+		RealRange<Float> leThree = new RealRangeFloat().le(3.0f);
 
 		Assert.assertEquals(emptyRange.toString(), TEST_01);
 		Assert.assertEquals(realRange.toString(), TEST_02);
@@ -49,27 +50,28 @@ public class TestDomain {
 
 	@Test
 	public void testRealRangeGenerationComposition() {
-		RealRange composedRange = new RealRange(RealLimitPair.lt(3.0f), RealLimitPair.gt(3.0f));
+		RealRange<Float> composedRange = new RealRangeFloat(new RealRangeFloat().pairLt(3.0f),
+				new RealRangeFloat().pairGt(3.0f));
 		Assert.assertEquals(composedRange.toString(), TEST_07);
 	}
 
 	@Test
 	public void testUnion() throws LimitInsertionException {
 
-		RealRange range2to3 = new RealRange(Closure.INCLUSIVE, 2.0f, 3.0f, Closure.INCLUSIVE);
-		RealRange range3to4 = new RealRange(Closure.INCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
+		RealRange<Float> range2to3 = new RealRangeFloat(Closure.INCLUSIVE, 2.0f, 3.0f, Closure.INCLUSIVE);
+		RealRange<Float> range3to4 = new RealRangeFloat(Closure.INCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
 
 		Assert.assertEquals(range2to3.union(range3to4).toString(), TEST_08);
 
-		RealRange range3to4OpenLeft = new RealRange(Closure.EXCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
+		RealRange<Float> range3to4OpenLeft = new RealRangeFloat(Closure.EXCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
 
 		Assert.assertEquals(range2to3.union(range3to4OpenLeft).toString(), TEST_09);
 
-		RealRange range2to3OpenRight = new RealRange(Closure.INCLUSIVE, 2.0f, 3.0f, Closure.EXCLUSIVE);
+		RealRange<Float> range2to3OpenRight = new RealRangeFloat(Closure.INCLUSIVE, 2.0f, 3.0f, Closure.EXCLUSIVE);
 
 		Assert.assertEquals(range2to3OpenRight.union(range3to4OpenLeft).toString(), TEST_10);
 
-		RealRange range3 = new RealRange(Closure.INCLUSIVE, 3.0f, 3.0f, Closure.INCLUSIVE);
+		RealRange<Float> range3 = new RealRangeFloat(Closure.INCLUSIVE, 3.0f, 3.0f, Closure.INCLUSIVE);
 
 		Assert.assertEquals(range2to3OpenRight.union(range3).toString(), TEST_11);
 
@@ -79,23 +81,23 @@ public class TestDomain {
 	public void testUnionComposition() throws LimitInsertionException {
 
 		// (-Inf,3)
-		RealRange rang1 = RealRange.lt(3.0f);
+		RealRange<Float> rang1 = new RealRangeFloat().lt(3.0f);
 		// (3,5]
-		RealRange rang2 = new RealRange(Closure.EXCLUSIVE, 3.0f, 5.0f, Closure.INCLUSIVE);
+		RealRange<Float> rang2 = new RealRangeFloat(Closure.EXCLUSIVE, 3.0f, 5.0f, Closure.INCLUSIVE);
 		// [6,9]
-		RealRange rang3 = new RealRange(Closure.INCLUSIVE, 6.0f, 9.0f, Closure.INCLUSIVE);
+		RealRange<Float> rang3 = new RealRangeFloat(Closure.INCLUSIVE, 6.0f, 9.0f, Closure.INCLUSIVE);
 
-		RealRange rangeA = rang1.union(rang2).union(rang3);
+		RealRange<Float> rangeA = rang1.union(rang2).union(rang3);
 		Assert.assertEquals(rangeA.toString(), TEST_12);
 
 		// [0,4]
-		RealRange rangB1 = new RealRange(Closure.INCLUSIVE, 0.0f, 4.0f, Closure.INCLUSIVE);
+		RealRange<Float> rangB1 = new RealRangeFloat(Closure.INCLUSIVE, 0.0f, 4.0f, Closure.INCLUSIVE);
 		// [7,8]
-		RealRange rangB2 = new RealRange(Closure.INCLUSIVE, 7.0f, 8.0f, Closure.INCLUSIVE);
+		RealRange<Float> rangB2 = new RealRangeFloat(Closure.INCLUSIVE, 7.0f, 8.0f, Closure.INCLUSIVE);
 		// [20,+inf)
-		RealRange rangB3 = RealRange.ge(20.0f);
+		RealRange<Float> rangB3 = new RealRangeFloat().ge(20.0f);
 
-		RealRange rangeB = rangB1.union(rangB2).union(rangB3);
+		RealRange<Float> rangeB = rangB1.union(rangB2).union(rangB3);
 		Assert.assertEquals(rangeB.toString(), TEST_13);
 		Assert.assertEquals(rangeA.union(rangeB).toString(), TEST_14);
 
@@ -104,12 +106,12 @@ public class TestDomain {
 	@Test
 	public void testIntersection() throws LimitInsertionException {
 
-		RealRange range2to3 = new RealRange(Closure.INCLUSIVE, 2.0f, 3.0f, Closure.INCLUSIVE);
-		RealRange range3to4 = new RealRange(Closure.INCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
+		RealRange<Float> range2to3 = new RealRangeFloat(Closure.INCLUSIVE, 2.0f, 3.0f, Closure.INCLUSIVE);
+		RealRange<Float> range3to4 = new RealRangeFloat(Closure.INCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
 
 		Assert.assertEquals(range2to3.intersection(range3to4).toString(), TEST_15);
 
-		RealRange range3to4LeftOpen = new RealRange(Closure.EXCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
+		RealRange<Float> range3to4LeftOpen = new RealRangeFloat(Closure.EXCLUSIVE, 3.0f, 4.0f, Closure.INCLUSIVE);
 
 		Assert.assertEquals(range2to3.intersection(range3to4LeftOpen).toString(), TEST_16);
 
@@ -119,22 +121,22 @@ public class TestDomain {
 	public void testIntersectionComposition() throws LimitInsertionException {
 
 		// (-Inf,3)
-		RealRange rang1 = RealRange.lt(3.0f);
+		RealRange<Float> rang1 = new RealRangeFloat().lt(3.0f);
 		// (3,5]
-		RealRange rang2 = new RealRange(Closure.EXCLUSIVE, 3.0f, 5.0f, Closure.INCLUSIVE);
+		RealRange<Float> rang2 = new RealRangeFloat(Closure.EXCLUSIVE, 3.0f, 5.0f, Closure.INCLUSIVE);
 		// [6,9]
-		RealRange rang3 = new RealRange(Closure.INCLUSIVE, 6.0f, 9.0f, Closure.INCLUSIVE);
+		RealRange<Float> rang3 = new RealRangeFloat(Closure.INCLUSIVE, 6.0f, 9.0f, Closure.INCLUSIVE);
 
-		RealRange rangeA = rang1.union(rang2).union(rang3);
+		RealRange<Float> rangeA = rang1.union(rang2).union(rang3);
 
 		// [0,4]
-		RealRange rangB1 = new RealRange(Closure.INCLUSIVE, 0.0f, 4.0f, Closure.INCLUSIVE);
+		RealRange<Float> rangB1 = new RealRangeFloat(Closure.INCLUSIVE, 0.0f, 4.0f, Closure.INCLUSIVE);
 		// [7,8]
-		RealRange rangB2 = new RealRange(Closure.INCLUSIVE, 7.0f, 8.0f, Closure.INCLUSIVE);
+		RealRange<Float> rangB2 = new RealRangeFloat(Closure.INCLUSIVE, 7.0f, 8.0f, Closure.INCLUSIVE);
 		// [20,+inf)
-		RealRange rangB3 = RealRange.ge(20.0f);
+		RealRange<Float> rangB3 = new RealRangeFloat().ge(20.0f);
 
-		RealRange rangeB = rangB1.union(rangB2).union(rangB3);
+		RealRange<Float> rangeB = rangB1.union(rangB2).union(rangB3);
 
 		Assert.assertEquals(rangeA.intersection(rangeB).toString(), TEST_17);
 
@@ -144,23 +146,23 @@ public class TestDomain {
 	public void testInverse() throws LimitInsertionException {
 
 		// (-Inf,3)
-		RealRange rang1 = RealRange.lt(3.0f);
+		RealRange<Float> rang1 = new RealRangeFloat().lt(3.0f);
 		// (3,5]
-		RealRange rang2 = new RealRange(Closure.EXCLUSIVE, 3.0f, 5.0f, Closure.INCLUSIVE);
+		RealRange<Float> rang2 = new RealRangeFloat(Closure.EXCLUSIVE, 3.0f, 5.0f, Closure.INCLUSIVE);
 		// [6,9]
-		RealRange rang3 = new RealRange(Closure.INCLUSIVE, 6.0f, 9.0f, Closure.INCLUSIVE);
+		RealRange<Float> rang3 = new RealRangeFloat(Closure.INCLUSIVE, 6.0f, 9.0f, Closure.INCLUSIVE);
 
-		RealRange rangeAinv = rang1.union(rang2).union(rang3).inverse(RealLimitPair.realRange());
+		RealRange<Float> rangeAinv = rang1.union(rang2).union(rang3).inverse(new RealRangeFloat().domain());
 		Assert.assertEquals(rangeAinv.toString(), TEST_18);
 
 		// [0,4]
-		RealRange rangB1 = new RealRange(Closure.INCLUSIVE, 0.0f, 4.0f, Closure.INCLUSIVE);
+		RealRange<Float> rangB1 = new RealRangeFloat(Closure.INCLUSIVE, 0.0f, 4.0f, Closure.INCLUSIVE);
 		// [7,8]
-		RealRange rangB2 = new RealRange(Closure.INCLUSIVE, 7.0f, 8.0f, Closure.INCLUSIVE);
+		RealRange<Float> rangB2 = new RealRangeFloat(Closure.INCLUSIVE, 7.0f, 8.0f, Closure.INCLUSIVE);
 		// [20,+inf)
-		RealRange rangB3 = RealRange.ge(20.0f);
+		RealRange<Float> rangB3 = new RealRangeFloat().ge(20.0f);
 
-		RealRange rangeBinv = rangB1.union(rangB2).union(rangB3).inverse(RealLimitPair.realRange());
+		RealRange<Float> rangeBinv = rangB1.union(rangB2).union(rangB3).inverse(new RealRangeFloat().domain());
 		Assert.assertEquals(rangeBinv.toString(), TEST_19);
 
 	}

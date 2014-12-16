@@ -142,4 +142,12 @@ public class TokenComparationAnswer extends Token {
 		}
 		return referenceString + getType().getExpressionEditorRepresentation() + answerString;
 	}
+
+	public void setQuestion(Question question) {
+		this.question = question;
+	}
+
+	public void setAnswer(Answer answer) {
+		this.answer = answer;
+	}
 }

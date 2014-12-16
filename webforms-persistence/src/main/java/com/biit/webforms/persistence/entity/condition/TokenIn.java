@@ -161,4 +161,16 @@ public class TokenIn extends TokenComplex {
 	public List<TokenInValue> getValues() {
 		return values;
 	}
+
+	public void setQuestion(Question question) {
+		this.question = question;
+	}
+
+	public void setValues(List<TokenInValue> values) {
+		this.values.clear();
+		for(TokenInValue value: values){
+			this.values.add(value);
+			value.setTokenIn(this);
+		}
+	}
 }

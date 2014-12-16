@@ -46,7 +46,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	@Override
 	protected void initElement() {
 
-		name = new TextField(LanguageCodes.CAPTION_NAME.translation());
+		name = new TextField(LanguageCodes.CAPTION_TECHNICAL_NAME.translation());
 		name.setWidth(WIDTH);
 		name.setRequired(true);
 		name.setMaxLength(TreeObject.MAX_UNIQUE_COLUMN_LENGTH);
