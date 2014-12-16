@@ -166,6 +166,8 @@ public class FormManager extends SecuredWebPage {
 						UserSessionHandler.getUser(), getSelectedForm().getOrganizationId());
 				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
 						XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
+				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_VERSION_PARAMETER_TAG,
+						getSelectedForm().getVersion().toString());
 			}
 		});
 		// Add browser window opener to the button.

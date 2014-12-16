@@ -12,9 +12,11 @@ import com.vaadin.ui.UI;
 public class OrbeonPreviewFrame extends UI {
 	public final static String FORM_PARAMETER_TAG = "form_param";
 	public final static String APPLICATION_PARAMETER_TAG = "application_param";
+	public final static String FORM_VERSION_PARAMETER_TAG = "form_version_param";
 	private static final long serialVersionUID = -4957704029911500631L;
 	private String form;
 	private String application;
+	private String version;
 
 	public String getApplication() {
 		return application;
@@ -29,6 +31,7 @@ public class OrbeonPreviewFrame extends UI {
 		getPage().setTitle("Preview");
 		this.form = request.getParameter(FORM_PARAMETER_TAG);
 		this.application = request.getParameter(APPLICATION_PARAMETER_TAG);
+		this.version = request.getParameter(FORM_VERSION_PARAMETER_TAG);
 
 		BrowserFrame browser = new BrowserFrame(null, new ExternalResource(WebformsConfigurationReader.getInstance()
 				.getOrbeonFormRunnerUrl() + "/" + application + "/" + form + "/new"));
