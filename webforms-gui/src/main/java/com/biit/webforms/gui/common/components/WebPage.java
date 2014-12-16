@@ -1,5 +1,7 @@
 package com.biit.webforms.gui.common.components;
 
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Panel;
@@ -48,6 +50,13 @@ public abstract class WebPage extends WebPageComponent {
 			this.upperMenu = upperMenu;
 			this.getRootLayout().addComponent(upperMenu, 0);
 			getRootLayout().setComponentAlignment(upperMenu, Alignment.TOP_CENTER);
+		}
+
+		// Hide logout button.
+		if (upperMenu instanceof UpperMenuWebforms) {
+			if (((ApplicationUi) getUI()).getUser() != null && ((ApplicationUi) getUI()).getPassword() != null) {
+				((UpperMenuWebforms) upperMenu).hideLogoutButton(true);
+			}
 		}
 	}
 

@@ -29,6 +29,7 @@ public class UpperMenuWebforms extends UpperMenu {
 	private IconButton blockManagerButton;
 	private IconButton settingsButton;
 	private boolean confirmationNeeded;
+	private IconButton logoutButton;
 
 	public UpperMenuWebforms() {
 		super();
@@ -128,7 +129,7 @@ public class UpperMenuWebforms extends UpperMenu {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 
-		IconButton logoutButton = new IconButton(LanguageCodes.CAPTION_SETTINGS_LOG_OUT, ThemeIcons.LOG_OUT,
+		logoutButton = new IconButton(LanguageCodes.CAPTION_SETTINGS_LOG_OUT, ThemeIcons.LOG_OUT,
 				LanguageCodes.TOOLTIP_SETTINGS_LOG_OUT, new ClickListener() {
 					private static final long serialVersionUID = -1121572145945309858L;
 
@@ -145,7 +146,7 @@ public class UpperMenuWebforms extends UpperMenu {
 				});
 
 		settingsButton = generateSubMenu(ThemeIcons.SETTINGS, LanguageCodes.COMMON_CAPTION_SETTINGS,
-				LanguageCodes.COMMON_TOOLTIP_SETTINGS, aboutUsButton,clearCacheButton,logoutButton);
+				LanguageCodes.COMMON_TOOLTIP_SETTINGS, aboutUsButton, clearCacheButton, logoutButton);
 
 		settingsButton.setHeight("100%");
 		settingsButton.setWidth(BUTTON_WIDTH);
@@ -161,5 +162,9 @@ public class UpperMenuWebforms extends UpperMenu {
 
 	public void setConfirmationNeeded(boolean confirmationNeeded) {
 		this.confirmationNeeded = confirmationNeeded;
+	}
+	
+	public void hideLogoutButton(boolean hide){
+		hideButton(settingsButton, logoutButton, !hide);
 	}
 }

@@ -15,7 +15,6 @@ import com.biit.security.exceptions.PBKDF2EncryptorException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.WebPageComponent;
-import com.biit.webforms.gui.common.components.WindowUpload;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -56,14 +55,14 @@ public class Login extends WebPageComponent {
 
 		VerticalLayout loginLayout = new VerticalLayout();
 		loginLayout.setSizeUndefined();
-		
+
 		Panel loginPanel = buildLoginForm();
 		Component loginLabel = createNameVersion();
 		loginLayout.addComponent(loginPanel);
 		loginLayout.addComponent(loginLabel);
 		loginLayout.setComponentAlignment(loginPanel, Alignment.MIDDLE_CENTER);
 		loginLayout.setComponentAlignment(loginLabel, Alignment.MIDDLE_CENTER);
-		
+
 		rootLayout.addComponent(loginLayout);
 		rootLayout.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
 		usernameField.focus();
@@ -71,7 +70,9 @@ public class Login extends WebPageComponent {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// Nothing to do.
+		if (((ApplicationUi) getUI()).getUser() != null && ((ApplicationUi) getUI()).getPassword() != null) {
+			checkUserAndPassword(((ApplicationUi) getUI()).getUser(), ((ApplicationUi) getUI()).getPassword());
+		}
 	}
 
 	private Panel buildLoginForm() {
@@ -100,7 +101,7 @@ public class Login extends WebPageComponent {
 				// limit the enters to only from the password field from this
 				// form
 				if (target == passwordField) {
-					checkUserAndPassword();
+					checkUserAndPassword((String) usernameField.getValue(), (String) passwordField.getValue());
 				}
 				// If write user name and press enter, go to pass field.
 				if (target == usernameField) {
@@ -115,7 +116,7 @@ public class Login extends WebPageComponent {
 
 					@Override
 					public void buttonClick(ClickEvent event) {
-						checkUserAndPassword();
+						checkUserAndPassword((String) usernameField.getValue(), (String) passwordField.getValue());
 					}
 				});
 		loginButton.setWidth(FIELD_SIZE);
@@ -131,11 +132,8 @@ public class Login extends WebPageComponent {
 		return panel;
 	}
 
-	private void checkUserAndPassword() {
+	private void checkUserAndPassword(String userMail, String password) {
 		// Try to log in the user when the button is clicked
-		String userMail = (String) usernameField.getValue();
-		String password = (String) passwordField.getValue();
-
 		User user = null;
 		try {
 			user = AuthenticationService.getInstance().authenticate(userMail, password);
@@ -190,9 +188,9 @@ public class Login extends WebPageComponent {
 		}
 		return version;
 	}
-	
+
 	private Component createNameVersion() {
-		Label label = new Label(LanguageCodes.APPLICATION_NAME.translation()+" - v" + getVersion());
+		Label label = new Label(LanguageCodes.APPLICATION_NAME.translation() + " - v" + getVersion());
 		label.setWidth(null);
 		return label;
 	}

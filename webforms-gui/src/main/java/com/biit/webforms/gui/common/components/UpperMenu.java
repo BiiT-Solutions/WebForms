@@ -1,6 +1,8 @@
 package com.biit.webforms.gui.common.components;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import com.biit.webforms.gui.common.language.ILanguageCode;
@@ -26,12 +28,14 @@ public class UpperMenu extends HorizontalButtonGroup {
 	private HorizontalLayout upperRootLayout;
 	private HorizontalLayout oldRootLayoutContainer;
 	private List<IconButton> rightButtons;
+	private HashMap<IconButton, List<IconButton>> subMenuButtons;
 
 	public UpperMenu() {
 		super();
 		defineUpperMenu();
 		this.setContractIcons(true, BUTTON_WIDTH);
 		rightButtons = new ArrayList<IconButton>();
+		subMenuButtons = new HashMap<>();
 	}
 
 	@Override
@@ -126,7 +130,7 @@ public class UpperMenu extends HorizontalButtonGroup {
 
 						@Override
 						public void buttonClick(ClickEvent event) {
-							// Close original popover. XForms preview must have the menu open until the view is created. 
+							// Close original popover. XForms preview must have the menu open until the view is created.
 							if (!button.getCaption().equals(LanguageCodes.CAPTION_PREVIEW_XFORMS.translation())) {
 								popover.close();
 							}
@@ -136,6 +140,18 @@ public class UpperMenu extends HorizontalButtonGroup {
 				popover.showRelativeTo(subMenu);
 			}
 		});
+		subMenuButtons.put(subMenu, new ArrayList<IconButton>(Arrays.asList(buttons)));
 		return subMenu;
+	}
+
+	public void hideButton(IconButton submenu, IconButton button, boolean visible) {
+		List<IconButton> buttons = subMenuButtons.get(submenu);
+		if (buttons != null) {
+			for (IconButton buttonInSubmenu : buttons) {
+				if (buttonInSubmenu.equals(button)) {
+					buttonInSubmenu.setVisible(visible);
+				}
+			}
+		}
 	}
 }

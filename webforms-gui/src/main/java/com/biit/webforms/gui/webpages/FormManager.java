@@ -106,6 +106,7 @@ public class FormManager extends SecuredWebPage {
 		updateMenus();
 
 		getWorkingArea().addComponent(formTable);
+
 	}
 
 	private UpperMenuProjectManager createUpperMenu() {
@@ -311,12 +312,10 @@ public class FormManager extends SecuredWebPage {
 			MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
 		}
 	}
-	
+
 	protected void exportJson() {
 		Form form = loadForm(getSelectedForm());
-
 		new WindowDownloaderJson(form, getSelectedForm().getLabel() + ".json");
-
 	}
 
 	protected void exportFlowPdf() {

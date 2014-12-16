@@ -13,9 +13,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
 /**
- * Main Ui class of application. Ui has been configured to preserve the Ui when
- * a Refresh action has occurred. This way, a UI is only discarded when the user
- * is no longer active in a long time, instead of every time there is a refresh
+ * Main Ui class of application. Ui has been configured to preserve the Ui when a Refresh action has occurred. This way,
+ * a UI is only discarded when the user is no longer active in a long time, instead of every time there is a refresh
  * event.
  * 
  */
@@ -23,15 +22,23 @@ import com.vaadin.ui.UI;
 @Theme("webforms")
 @PreserveOnRefresh
 public class ApplicationUi extends UI {
+	public final static String USER_PARAMETER_TAG = "user";
+	public final static String PASSWORD_PARAMETER_TAG = "password";
 	private static final long serialVersionUID = -704009283476930001L;
 	private Navigator navigator;
 	private View currentView;
+	private String user;
+	private String password;
 
 	@Override
 	protected void init(VaadinRequest request) {
 		getPage().setTitle("");
 		defineWebPages();
 		UiAccesser.register(UserSessionHandler.getController());
+
+		// Liferay send this data and automatically are used in the login screen.
+		this.user = request.getParameter(USER_PARAMETER_TAG);
+		this.password = request.getParameter(PASSWORD_PARAMETER_TAG);
 	}
 
 	@Override
@@ -72,7 +79,7 @@ public class ApplicationUi extends UI {
 		navigator = new Navigator(this, this);
 		// Define login page as first one.
 		navigator.addView("", WebMap.getLoginPage().getWebPageJavaClass());
-		//navigator.setErrorView(WebMap.getLoginPage().getWebPageJavaClass());
+		// navigator.setErrorView(WebMap.getLoginPage().getWebPageJavaClass());
 		// Create and register the other web pages.
 		for (WebMap page : WebMap.values()) {
 			addView(page);
@@ -95,6 +102,14 @@ public class ApplicationUi extends UI {
 
 	private void setCurrentView(View currentView) {
 		this.currentView = currentView;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 
 }
