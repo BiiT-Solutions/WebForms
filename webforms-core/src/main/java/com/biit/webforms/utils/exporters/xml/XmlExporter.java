@@ -19,13 +19,14 @@ public class XmlExporter {
 
 	private final Form form;
 	private final ComputedFlowView flows;
-	private HashMap<BaseQuestion, Integer> counters;
-	private HashMap<BaseQuestion, Integer> endFormCounters;
+	private final HashMap<BaseQuestion, Integer> counters;
+	private final HashMap<BaseQuestion, Integer> endFormCounters;
 
 	public XmlExporter(Form form) {
 		this.form = form;
 		this.flows = form.getComputedFlowsView();
 		this.counters = new HashMap<>();
+		this.endFormCounters = new HashMap<>();
 		initializeCounters();
 	}
 
@@ -70,12 +71,16 @@ public class XmlExporter {
 		BaseQuestion currentNode = startNode;
 		int numberOfIterations = 0;
 		while (currentNode != null) {
-			if (numberOfIterations < numberOfQuestion) {
+			System.out.println(currentNode.getPathName());
+			if (numberOfIterations > numberOfQuestion) {
 				throw new TooMuchIterationsWhileGeneratingPath();
 			}
 			numberOfIterations++;
-			Set<BaseQuestion> nextNode = getNextQuestions(currentNode);
-			path.add(getLeastUsedNexNode(currentNode, nextNode));
+			Set<BaseQuestion> nextNodes = getNextQuestions(currentNode);
+			System.out.println("Next questions "+nextNodes);
+			BaseQuestion nextNode = getLeastUsedNexNode(currentNode, nextNodes);
+			path.add(nextNode);
+			currentNode = nextNode;
 		}
 
 		return path;

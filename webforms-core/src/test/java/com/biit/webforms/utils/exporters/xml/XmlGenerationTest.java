@@ -6,14 +6,18 @@ import org.apache.commons.io.IOUtils;
 import org.testng.annotations.Test;
 
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.utils.exporters.xml.exceptions.ElementWithoutNextElement;
+import com.biit.webforms.utils.exporters.xml.exceptions.TooMuchIterationsWhileGeneratingPath;
 
+@Test(groups = { "xmlGeneration" })
 public class XmlGenerationTest {
 
 	@Test()
-	public void testXmlGeneration() throws IOException {
+	public void testXmlGeneration() throws IOException, ElementWithoutNextElement, TooMuchIterationsWhileGeneratingPath {
 		System.out.println("XmlGeneration test");
 		Form form = loadForm("test_text.json");
-		
+		XmlExporter exporter = new XmlExporter(form);
+		exporter.generate(5);
 	}
 
 	public Form loadForm(String filename) throws IOException {
