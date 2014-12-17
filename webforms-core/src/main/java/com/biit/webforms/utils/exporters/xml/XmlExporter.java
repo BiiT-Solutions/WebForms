@@ -1,6 +1,7 @@
 package com.biit.webforms.utils.exporters.xml;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,7 +66,7 @@ public class XmlExporter {
 				break;
 			}
 			numberOfIterations++;
-			Set<Flow> flows = getFlows(currentNode);
+			Set<BaseQuestion> flows = getNextQuestions(currentNode);
 		}
 		
 		return null;
@@ -76,6 +77,15 @@ public class XmlExporter {
 			throw new ElementWithoutNextElement();
 		}
 		return flows.getFlowsByOrigin(currentNode);
+	}
+	
+	private Set<BaseQuestion> getNextQuestions(BaseQuestion currentNode) throws ElementWithoutNextElement {
+		Set<Flow> flows = getFlows(currentNode);
+		Set<BaseQuestion> nextQuestions = new HashSet<>();
+		for(Flow flow: flows){
+			nextQuestions.add((BaseQuestion) flow.getDestiny());
+		}
+		return nextQuestions;
 	}
 
 	public void visitQuestion(BaseQuestion question){
