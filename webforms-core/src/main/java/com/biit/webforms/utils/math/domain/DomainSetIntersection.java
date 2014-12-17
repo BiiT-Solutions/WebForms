@@ -49,20 +49,16 @@ public class DomainSetIntersection extends DomainSet {
 
 	@Override
 	public boolean isComplete() {
-		System.out.println("IsComplete domain intersection");
 		for (IDomain domain : domainQuestions.values()) {
 			if (!domain.isComplete()) {
-//				System.out.println("IsComplete?" +toString()+" false A-"+domain);
 				return false;
 			}
 		}
 		for (IDomain domain : domainSets) {
 			if (!domain.isComplete()) {
-//				System.out.println("IsComplete?" +toString()+" false B-"+domain);
 				return false;
 			}
 		}
-//		System.out.println("IsComplete?" +toString()+" true");
 		return true;
 	}
 

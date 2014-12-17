@@ -10,9 +10,7 @@ public class ValidateFormComplete extends CompositeValidator<Form>{
 		super(Form.class);
 		add(ValidateBaseForm.class);
 		add(ValidateFormFlows.class);
+		add(ValidateLogic.class);
 	}
 	
-	
-	
-
 }

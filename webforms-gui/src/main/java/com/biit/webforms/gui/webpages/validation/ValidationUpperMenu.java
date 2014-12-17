@@ -11,7 +11,7 @@ public class ValidationUpperMenu extends UpperMenuWebforms {
 
 	private static final long serialVersionUID = 8072439945816031352L;
 
-	private final IconButton completeValidation, validateStructure, validateFlow, validateAbcdLink;
+	private final IconButton completeValidation, validateStructure, validateFlow, validateConditions, validateAbcdLink;
 
 	public ValidationUpperMenu() {
 
@@ -24,12 +24,16 @@ public class ValidationUpperMenu extends UpperMenuWebforms {
 		validateFlow = new IconButton(LanguageCodes.CAPTION_VALIDATE_FLOW, ThemeIcons.VALIDATE_FLOW,
 				LanguageCodes.TOOLTIP_VALIDATE_FLOW, IconSize.BIG);
 
+		validateConditions = new IconButton(LanguageCodes.CAPTION_VALIDATE_CONDITIONS, ThemeIcons.VALIDATE_CONDITIONS,
+				LanguageCodes.TOOLTIP_VALIDATE_CONDITIONS, IconSize.BIG);
+
 		validateAbcdLink = new IconButton(LanguageCodes.CAPTION_VALIDATE_ABCD_LINK, ThemeIcons.VALIDATE_ABCD_LINK,
 				LanguageCodes.TOOLTIP_VALIDATE_ABCD_LINK, IconSize.BIG);
 
 		addIconButton(completeValidation);
 		addIconButton(validateStructure);
 		addIconButton(validateFlow);
+		addIconButton(validateConditions);
 		addIconButton(validateAbcdLink);
 
 		setConfirmationNeeded(true);
@@ -45,6 +49,10 @@ public class ValidationUpperMenu extends UpperMenuWebforms {
 
 	public void addValidateFlowListener(ClickListener listener) {
 		validateFlow.addClickListener(listener);
+	}
+
+	public void addValidateConditions(ClickListener listener) {
+		validateConditions.addClickListener(listener);
 	}
 
 	public void addValidateAbcdLinkListener(ClickListener listener) {
@@ -63,7 +71,11 @@ public class ValidationUpperMenu extends UpperMenuWebforms {
 		return validateFlow;
 	}
 
+	public IconButton getValidateConditions() {
+		return validateConditions;
+	}
+
 	public IconButton getValidateAbcdLink() {
 		return validateAbcdLink;
-	}	
+	}
 }

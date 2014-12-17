@@ -189,21 +189,5 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		formDao.makeTransient(form);
 
 	}
-	
-//	@Test
-//	public void testJson() throws ChildrenNotFoundException  {
-//		Form form = createForm();
-//		
-//		String jsonString = form.toJson();
-//		System.out.println(jsonString);
-//		
-//		Form jsonForm = Form.fromJson(jsonString);
-//		System.out.println(jsonForm.getName()+" "+jsonForm.getLabel());
-//		System.out.println(jsonForm.getChildren());
-//		System.out.println(jsonForm.getChild(0).getChildren());
-//		System.out.println(jsonForm.getChild(0).getChild(0).getChildren());
-//		System.out.println(jsonForm.getChild(0).getChild(0).getChild(1).getChildren());
-//		System.out.println(jsonForm.getFlows());
-//
-//	}
+
 }

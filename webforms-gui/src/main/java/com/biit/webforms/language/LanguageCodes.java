@@ -26,6 +26,7 @@ public enum LanguageCodes implements ILanguageCode {
 	COMMON_CAPTION_GROUP("common.caption.group"),
 	CAPTION_EDIT_FORM_DESIGN("caption.edit.form.design"),
 	CAPTION_EDIT_FORM_FLOW("caption.edit.form.flow"),
+	CAPTION_VALIDATE_CONDITIONS("caption.validate.conditions"),
 	CAPTION_VALIDATE_FORM("caption.validate.form"),
 	CAPTION_IMPACT_ANALYSIS("caption.impact.analysis"),
 	CAPTION_SETTINGS_TITLE("caption.settings.title"),
@@ -345,10 +346,12 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_VALIDATE_STRUCTURE("caption.validation.structure"),
 	TOOLTIP_VALIDATE_FLOW("caption.validation.flow"),
 	TOOLTIP_VALIDATE_ABCD_LINK("caption.validation.abcd.link"), 
+	TOOLTIP_VALIDATE_CONDITIONS("tooltip.validate.conditions"),
 	
 	MESSAGE_VALIDATION_FINISHED_CORRECTLY("message.validation.finished.correctly"), 
 	MESSAGE_VALIDATION_NO_ABCD_FORMS_LINKED("message.validation.no.abcd.forms.linked"), 
 	MESSAGE_VALIDATION_All_LINKED_FORMS_CORRECT("message.validation.all.linked.forms.correct"),
+	MESSAGE_VALIDATION_FLOW_NOT_PASSED_CORRECTLY("message.validation.flow.not.passed.correctly"),
 	
 	ERROR_FORM_STRUCTURE_COULD_NOT_BE_VALIDATED("error.form.struture.could.not.be.validated"),
 	ERROR_ABCD_FORM_LINKED_NOT_FOUND("error.abcd.form.linked.not.found"),
@@ -433,7 +436,8 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_NEW("caption.new"), 
 	TOOLTIP_NEW("tooltip.new"), 
 	
-	WARNING_ELEMENT_WTIH_SAME_NAME_EXIST("warning.element.same.name"),
+	WARNING_ELEMENT_WTIH_SAME_NAME_EXIST("warning.element.same.name"),  
+	
 	;
 
 	private String value;

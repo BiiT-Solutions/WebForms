@@ -1,0 +1,786 @@
+{
+  "class": "com.biit.webforms.persistence.entity.Form",
+  "comparationId": "70213c0b-1256-4581-904b-004c0482fc88",
+  "creationTime": "Dec 17, 2014 9:48:50 AM",
+  "updateTime": "Dec 17, 2014 10:21:14 AM",
+  "createdBy": 10735,
+  "updatedBy": 10735,
+  "name": "form",
+  "label": "test_xml",
+  "children": [
+    {
+      "class": "com.biit.webforms.persistence.entity.Category",
+      "comparationId": "8d916880-4292-48f4-80a9-f5bec776b3ab",
+      "creationTime": "Dec 17, 2014 9:49:06 AM",
+      "updateTime": "Dec 17, 2014 10:10:55 AM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "name": "Category",
+      "label": "Category",
+      "children": [
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "b9b6c9d0-0e3c-49f0-a48a-42d9ad429765",
+          "creationTime": "Dec 17, 2014 9:50:01 AM",
+          "updateTime": "Dec 17, 2014 10:00:30 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "name",
+          "label": "name",
+          "children": [],
+          "answerType": "INPUT",
+          "answerFormat": "TEXT",
+          "answerSubformat": "TEXT",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "b0c84f18-938b-489e-ba91-f3458e1f47bc",
+          "creationTime": "Dec 17, 2014 9:51:05 AM",
+          "updateTime": "Dec 17, 2014 10:00:30 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "birthday",
+          "label": "birthday",
+          "children": [],
+          "answerType": "INPUT",
+          "answerFormat": "DATE",
+          "answerSubformat": "DATE_PAST",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "edc17f09-9e73-4fa9-a3d5-d7c8203c9066",
+          "creationTime": "Dec 17, 2014 9:56:16 AM",
+          "updateTime": "Dec 17, 2014 10:00:30 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "address",
+          "label": "address",
+          "children": [],
+          "answerType": "INPUT",
+          "answerFormat": "TEXT",
+          "answerSubformat": "TEXT",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "424be295-cf5b-40ac-8bed-41795a551a39",
+          "creationTime": "Dec 17, 2014 10:00:26 AM",
+          "updateTime": "Dec 17, 2014 10:00:50 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "postalCode",
+          "label": "Postal Code",
+          "children": [],
+          "answerType": "INPUT",
+          "answerFormat": "POSTAL_CODE",
+          "answerSubformat": "POSTAL_CODE",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "0d437886-4d21-493f-9744-5301c98ee7fb",
+          "creationTime": "Dec 17, 2014 9:51:06 AM",
+          "updateTime": "Dec 17, 2014 10:00:54 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "bankAccount",
+          "label": "Bank Account",
+          "children": [],
+          "answerType": "INPUT",
+          "answerFormat": "TEXT",
+          "answerSubformat": "IBAN",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "db078678-2de9-4269-a7e6-398e0890fc46",
+          "creationTime": "Dec 17, 2014 9:51:06 AM",
+          "updateTime": "Dec 17, 2014 10:01:02 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "netgain",
+          "label": "netgain",
+          "children": [],
+          "answerType": "INPUT",
+          "answerFormat": "NUMBER",
+          "answerSubformat": "FLOAT",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "42a1150f-e0a5-4e69-b1f4-9344e9a4bb3f",
+          "creationTime": "Dec 17, 2014 9:53:11 AM",
+          "updateTime": "Dec 17, 2014 10:01:28 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "hasChildren",
+          "label": "Has Children",
+          "children": [
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "c106eb41-ba9b-42d6-a58a-62a90a5dd162",
+              "creationTime": "Dec 17, 2014 10:01:16 AM",
+              "updateTime": "Dec 17, 2014 10:01:23 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "yes",
+              "label": "Yes",
+              "children": [],
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "085c65fd-0ade-44ef-bde3-0d5c73e92a8e",
+              "creationTime": "Dec 17, 2014 10:01:16 AM",
+              "updateTime": "Dec 17, 2014 10:01:28 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "no",
+              "label": "No",
+              "children": [],
+              "description": ""
+            }
+          ],
+          "answerType": "SINGLE_SELECTION_RADIO",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Group",
+          "comparationId": "df5e5141-c56e-42c4-9a84-3a71f4126215",
+          "creationTime": "Dec 17, 2014 9:54:08 AM",
+          "updateTime": "Dec 17, 2014 10:02:26 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "childrenData",
+          "label": "Children",
+          "children": [
+            {
+              "class": "com.biit.webforms.persistence.entity.Question",
+              "comparationId": "6e53025d-8ddc-44ad-af4e-cdba4497f16e",
+              "creationTime": "Dec 17, 2014 9:54:23 AM",
+              "updateTime": "Dec 17, 2014 10:01:49 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "name",
+              "label": "Name",
+              "children": [],
+              "answerType": "INPUT",
+              "answerFormat": "TEXT",
+              "answerSubformat": "TEXT",
+              "mandatory": true,
+              "horizontal": false,
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Question",
+              "comparationId": "253a0434-b02e-44ff-aa0c-46409289a844",
+              "creationTime": "Dec 17, 2014 9:54:34 AM",
+              "updateTime": "Dec 17, 2014 9:54:56 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "birthday",
+              "label": "Birthday",
+              "children": [],
+              "answerType": "INPUT",
+              "answerFormat": "TEXT",
+              "answerSubformat": "TEXT",
+              "mandatory": true,
+              "horizontal": false,
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Question",
+              "comparationId": "78a37cca-dc9d-48d2-85d9-ac0ab70bae8c",
+              "creationTime": "Dec 17, 2014 9:57:54 AM",
+              "updateTime": "Dec 17, 2014 10:02:10 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "tutela",
+              "label": "tutela",
+              "children": [
+                {
+                  "class": "com.biit.webforms.persistence.entity.Answer",
+                  "comparationId": "5f62961f-a7ff-4e5b-935c-83883725ec41",
+                  "creationTime": "Dec 17, 2014 10:01:57 AM",
+                  "updateTime": "Dec 17, 2014 10:02:05 AM",
+                  "createdBy": 10735,
+                  "updatedBy": 10735,
+                  "name": "yes",
+                  "label": "Yes",
+                  "children": [],
+                  "description": ""
+                },
+                {
+                  "class": "com.biit.webforms.persistence.entity.Answer",
+                  "comparationId": "4135329c-81b8-4550-9bfd-dae221ae4763",
+                  "creationTime": "Dec 17, 2014 10:01:58 AM",
+                  "updateTime": "Dec 17, 2014 10:02:10 AM",
+                  "createdBy": 10735,
+                  "updatedBy": 10735,
+                  "name": "no",
+                  "label": "No",
+                  "children": [],
+                  "description": ""
+                }
+              ],
+              "answerType": "SINGLE_SELECTION_RADIO",
+              "mandatory": true,
+              "horizontal": false,
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Question",
+              "comparationId": "e5932bf3-45b6-4758-ae7c-35b68aea117c",
+              "creationTime": "Dec 17, 2014 9:58:33 AM",
+              "updateTime": "Dec 17, 2014 10:02:26 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "tutor",
+              "label": "tutor",
+              "children": [],
+              "answerType": "INPUT",
+              "answerFormat": "TEXT",
+              "answerSubformat": "TEXT",
+              "mandatory": true,
+              "horizontal": false,
+              "description": ""
+            }
+          ],
+          "repeatable": false
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "f4875360-9348-40de-88d3-cfa63b0483c1",
+          "creationTime": "Dec 17, 2014 9:54:59 AM",
+          "updateTime": "Dec 17, 2014 10:02:29 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "civilState",
+          "label": "Civil State\n",
+          "children": [
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "a2af343c-2b31-425e-9aab-b66a907d48b9",
+              "creationTime": "Dec 17, 2014 9:55:19 AM",
+              "updateTime": "Dec 17, 2014 10:02:29 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "soltero",
+              "label": "Soltero",
+              "children": [],
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "971670bd-465e-43d2-9ec3-475b8bcc3d55",
+              "creationTime": "Dec 17, 2014 9:55:19 AM",
+              "updateTime": "Dec 17, 2014 9:55:51 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "casado",
+              "label": "Casado",
+              "children": [],
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "d28d9686-605c-4a29-8013-05c103cf7055",
+              "creationTime": "Dec 17, 2014 9:55:20 AM",
+              "updateTime": "Dec 17, 2014 9:56:00 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "viudo",
+              "label": "Viudo",
+              "children": [],
+              "description": ""
+            }
+          ],
+          "answerType": "SINGLE_SELECTION_LIST",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Group",
+          "comparationId": "6af6506e-34a3-433a-bb2f-187cd8ccca41",
+          "creationTime": "Dec 17, 2014 9:59:16 AM",
+          "updateTime": "Dec 17, 2014 10:00:30 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "pareja",
+          "label": "pareja",
+          "children": [
+            {
+              "class": "com.biit.webforms.persistence.entity.Question",
+              "comparationId": "b95d39d6-c3ff-44dc-95aa-256ce3e5c71d",
+              "creationTime": "Dec 17, 2014 9:59:38 AM",
+              "updateTime": "Dec 17, 2014 9:59:47 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "name",
+              "label": "name",
+              "children": [],
+              "answerType": "INPUT",
+              "answerFormat": "TEXT",
+              "answerSubformat": "TEXT",
+              "mandatory": true,
+              "horizontal": false,
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Question",
+              "comparationId": "1bbf6a8c-bfdc-4da9-a35e-325cfc20d934",
+              "creationTime": "Dec 17, 2014 9:59:40 AM",
+              "updateTime": "Dec 17, 2014 9:59:58 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "birthday",
+              "label": "birthday",
+              "children": [],
+              "answerType": "INPUT",
+              "answerFormat": "TEXT",
+              "answerSubformat": "TEXT",
+              "mandatory": true,
+              "horizontal": false,
+              "description": ""
+            }
+          ],
+          "repeatable": false
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Text",
+          "comparationId": "4df733c3-a3ab-41ab-a114-63fc8cabe1ed",
+          "creationTime": "Dec 17, 2014 10:07:42 AM",
+          "updateTime": "Dec 17, 2014 10:10:46 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "Text",
+          "label": "Lorem ipsum dolor sit amet, co...",
+          "children": [],
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque lacus neque, mollis eget lacus sit amet, suscipit dictum augue. Vivamus tincidunt purus blandit eros eleifend lacinia. Aliquam lacus ante, lacinia in cursus a, pharetra sit amet orci. Phasellus ut tristique diam. Sed hendrerit augue eu felis bibendum laoreet. Proin bibendum nulla diam, vitae feugiat nisi hendrerit scelerisque. Nulla dui dolor, sodales eget nulla nec, vehicula molestie ante. Nulla vitae quam vitae leo sagittis pellentesque. Nunc sed metus ut lorem cursus sodales. In scelerisque dui a ipsum imperdiet, sed aliquam ante porttitor. Vivamus fringilla, massa efficitur efficitur hendrerit, ante diam maximus quam, a dignissim erat nunc pretium tellus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce posuere et tellus sit amet ultrices. Duis dolor lacus, gravida eget blandit vitae, pellentesque sit amet ante. Sed eu augue consequat, pellentesque diam id, porttitor nunc."
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "4471c804-219d-4693-8fd7-ab0872ba45fc",
+          "creationTime": "Dec 17, 2014 10:07:55 AM",
+          "updateTime": "Dec 17, 2014 10:08:09 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "questionYoung",
+          "label": "Question",
+          "children": [],
+          "answerType": "INPUT",
+          "answerFormat": "TEXT",
+          "answerSubformat": "TEXT",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "e4b04981-b300-4ddb-b899-65a10ef63c9a",
+          "creationTime": "Dec 17, 2014 10:08:09 AM",
+          "updateTime": "Dec 17, 2014 10:08:17 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "questionMiddleAge",
+          "label": "Question",
+          "children": [],
+          "answerType": "INPUT",
+          "answerFormat": "TEXT",
+          "answerSubformat": "TEXT",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "3bd330fe-6ba0-4475-bd69-a9827b5f157d",
+          "creationTime": "Dec 17, 2014 10:08:10 AM",
+          "updateTime": "Dec 17, 2014 10:08:45 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "questionOld",
+          "label": "Question2",
+          "children": [],
+          "answerType": "INPUT",
+          "answerFormat": "TEXT",
+          "answerSubformat": "TEXT",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Text",
+          "comparationId": "e376322c-8ac6-4461-9a52-f4442adbf8d5",
+          "creationTime": "Dec 17, 2014 10:08:45 AM",
+          "updateTime": "Dec 17, 2014 10:10:48 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "Text2",
+          "label": "Lorem ipsum dolor sit amet, co...",
+          "children": [],
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque lacus neque, mollis eget lacus sit amet, suscipit dictum augue. Vivamus tincidunt purus blandit eros eleifend lacinia. Aliquam lacus ante, lacinia in cursus a, pharetra sit amet orci. Phasellus ut tristique diam. Sed hendrerit augue eu felis bibendum laoreet. Proin bibendum nulla diam, vitae feugiat nisi hendrerit scelerisque. Nulla dui dolor, sodales eget nulla nec, vehicula molestie ante. Nulla vitae quam vitae leo sagittis pellentesque. Nunc sed metus ut lorem cursus sodales. In scelerisque dui a ipsum imperdiet, sed aliquam ante porttitor. Vivamus fringilla, massa efficitur efficitur hendrerit, ante diam maximus quam, a dignissim erat nunc pretium tellus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce posuere et tellus sit amet ultrices. Duis dolor lacus, gravida eget blandit vitae, pellentesque sit amet ante. Sed eu augue consequat, pellentesque diam id, porttitor nunc."
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "befdfa2c-5125-479a-9c53-9a4f14f07a55",
+          "creationTime": "Dec 17, 2014 10:08:57 AM",
+          "updateTime": "Dec 17, 2014 10:10:55 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "name": "acknowledge",
+          "label": "acknowledge",
+          "children": [
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "9b59a1a8-8517-45bb-8323-7c945dfe0009",
+              "creationTime": "Dec 17, 2014 10:09:46 AM",
+              "updateTime": "Dec 17, 2014 10:10:55 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "yes",
+              "label": "yes",
+              "children": [],
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "02993524-36ce-41de-bf70-65c7729c84ad",
+              "creationTime": "Dec 17, 2014 10:09:46 AM",
+              "updateTime": "Dec 17, 2014 10:10:04 AM",
+              "createdBy": 10735,
+              "updatedBy": 10735,
+              "name": "no",
+              "label": "no",
+              "children": [],
+              "description": ""
+            }
+          ],
+          "answerType": "SINGLE_SELECTION_RADIO",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "version": 1,
+  "organizationId": 10785,
+  "description": "",
+  "flows": [
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "5129437e-97ff-482c-aa69-a7ad21d9315a",
+      "creationTime": "Dec 17, 2014 10:04:44 AM",
+      "updateTime": "Dec 17, 2014 10:04:44 AM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "origin_id": [
+        "Category",
+        "childrenData",
+        "tutela"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "childrenData",
+        "tutor"
+      ],
+      "others": false,
+      "condition": [
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.TokenComparationAnswer",
+          "comparationId": "8ebad6b5-2766-4217-a9a1-357e9e41ca20",
+          "creationTime": "Dec 17, 2014 10:04:43 AM",
+          "updateTime": "Dec 17, 2014 10:26:03 AM",
+          "type": "EQ",
+          "question_id": [
+            "Category",
+            "childrenData",
+            "tutela"
+          ],
+          "answer_id": [
+            "Category",
+            "childrenData",
+            "tutela",
+            "no"
+          ]
+        }
+      ]
+    },
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "0d08752c-e385-4b72-839f-2d70bd9fe06c",
+      "creationTime": "Dec 17, 2014 10:19:19 AM",
+      "updateTime": "Dec 17, 2014 10:20:59 AM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "origin_id": [
+        "Category",
+        "Text"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "questionOld"
+      ],
+      "others": false,
+      "condition": [
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.TokenComparationValue",
+          "comparationId": "ef795388-8d8d-4ae4-94b7-84bb6542aacd",
+          "creationTime": "Dec 17, 2014 10:18:13 AM",
+          "updateTime": "Dec 17, 2014 10:18:13 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "type": "GT",
+          "question_id": [
+            "Category",
+            "birthday"
+          ],
+          "subformat": "DATE_PERIOD",
+          "datePeriodUnit": "YEAR",
+          "value": "40"
+        }
+      ]
+    },
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "bc0daa1f-f560-41ce-a25e-b76b67e7792b",
+      "creationTime": "Dec 17, 2014 10:19:41 AM",
+      "updateTime": "Dec 17, 2014 10:19:41 AM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "origin_id": [
+        "Category",
+        "questionYoung"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "Text2"
+      ],
+      "others": false,
+      "condition": []
+    },
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "335f9a90-3b0b-4c78-9feb-799a3e0a03c2",
+      "creationTime": "Dec 17, 2014 10:05:05 AM",
+      "updateTime": "Dec 17, 2014 10:05:19 AM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "origin_id": [
+        "Category",
+        "childrenData",
+        "tutela"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "civilState"
+      ],
+      "others": false,
+      "condition": [
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.TokenComparationAnswer",
+          "comparationId": "fa903772-67e9-455b-a9f1-a85a500dc966",
+          "creationTime": "Dec 17, 2014 10:05:04 AM",
+          "updateTime": "Dec 17, 2014 10:26:03 AM",
+          "type": "EQ",
+          "question_id": [
+            "Category",
+            "childrenData",
+            "tutela"
+          ],
+          "answer_id": [
+            "Category",
+            "childrenData",
+            "tutela",
+            "yes"
+          ]
+        }
+      ]
+    },
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "160c43c3-d4e4-4d31-b373-d9586afb3c14",
+      "creationTime": "Dec 17, 2014 10:11:32 AM",
+      "updateTime": "Dec 17, 2014 10:19:26 AM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "origin_id": [
+        "Category",
+        "Text"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "questionYoung"
+      ],
+      "others": false,
+      "condition": [
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.TokenComparationValue",
+          "comparationId": "81af112d-46d6-44c0-b6b5-d5ae51a23a9a",
+          "creationTime": "Dec 17, 2014 10:11:17 AM",
+          "updateTime": "Dec 17, 2014 10:11:17 AM",
+          "createdBy": 10735,
+          "updatedBy": 10735,
+          "type": "LT",
+          "question_id": [
+            "Category",
+            "birthday"
+          ],
+          "subformat": "DATE_PERIOD",
+          "datePeriodUnit": "YEAR",
+          "value": "15"
+        }
+      ]
+    },
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "0c56e62b-1ade-4abe-9854-8e0abaee8e09",
+      "creationTime": "Dec 17, 2014 10:03:30 AM",
+      "updateTime": "Dec 17, 2014 10:03:30 AM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "origin_id": [
+        "Category",
+        "hasChildren"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "childrenData",
+        "name"
+      ],
+      "others": false,
+      "condition": [
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.TokenComparationAnswer",
+          "comparationId": "a670c325-7cac-4374-9926-ab4956f6c69f",
+          "creationTime": "Dec 17, 2014 10:02:44 AM",
+          "updateTime": "Dec 17, 2014 10:26:03 AM",
+          "type": "EQ",
+          "question_id": [
+            "Category",
+            "hasChildren"
+          ],
+          "answer_id": [
+            "Category",
+            "hasChildren",
+            "yes"
+          ]
+        }
+      ]
+    },
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "c7f5f926-f83a-4173-806e-7a819e9231dd",
+      "creationTime": "Dec 17, 2014 10:19:59 AM",
+      "updateTime": "Dec 17, 2014 10:19:59 AM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "origin_id": [
+        "Category",
+        "questionMiddleAge"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "Text2"
+      ],
+      "others": false,
+      "condition": []
+    },
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "de7ba650-6ab4-430a-a24b-ae97ab0c1589",
+      "creationTime": "Dec 17, 2014 10:13:11 AM",
+      "updateTime": "Dec 17, 2014 10:13:11 AM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "origin_id": [
+        "Category",
+        "Text"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "questionMiddleAge"
+      ],
+      "others": false,
+      "condition": [
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.TokenBetween",
+          "comparationId": "1e29fab7-01cb-4387-bc59-f04b004b6020",
+          "creationTime": "Dec 17, 2014 10:12:19 AM",
+          "updateTime": "Dec 17, 2014 10:26:03 AM",
+          "type": "BETWEEN",
+          "question_id": [
+            "Category",
+            "birthday"
+          ],
+          "subformat": "DATE_PERIOD",
+          "datePeriodUnit": "YEAR",
+          "valueStart": "15",
+          "valueEnd": "40"
+        }
+      ]
+    },
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "237fc85c-e480-4617-b036-2310e1747381",
+      "creationTime": "Dec 17, 2014 10:03:56 AM",
+      "updateTime": "Dec 17, 2014 10:03:56 AM",
+      "createdBy": 10735,
+      "updatedBy": 10735,
+      "origin_id": [
+        "Category",
+        "hasChildren"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "civilState"
+      ],
+      "others": false,
+      "condition": [
+        {
+          "class": "com.biit.webforms.persistence.entity.condition.TokenComparationAnswer",
+          "comparationId": "93c5eeeb-b3bd-4fda-8599-ae321815604e",
+          "creationTime": "Dec 17, 2014 10:03:56 AM",
+          "updateTime": "Dec 17, 2014 10:26:03 AM",
+          "type": "EQ",
+          "question_id": [
+            "Category",
+            "hasChildren"
+          ],
+          "answer_id": [
+            "Category",
+            "hasChildren",
+            "no"
+          ]
+        }
+      ]
+    }
+  ]
+}

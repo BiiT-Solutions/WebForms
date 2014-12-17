@@ -71,7 +71,6 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 	@Override
 	public IDomain intersect(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {
-			System.out.println("A");
 			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
 				return new QuestionValueDomain<T>(question, completeDomain, this.value.intersection(((QuestionValueDomain<T>) domain).value));
 			} else {
@@ -79,10 +78,8 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 			}
 		}
 		if (domain instanceof DomainSet) {
-			System.out.println("B");
 			return domain.intersect(this);
 		}
-		System.out.println("C "+domain.getClass());
 		return null;
 	}
 
@@ -93,18 +90,15 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 
 	@Override
 	public boolean isComplete() {
-		System.out.println("QuestionValueDomain isComplete? "+ value.isComplete(completeDomain));
 		return value.isComplete(completeDomain);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		System.out.println("QuestionValueDomain isEmpty? "+ value.isEmpty());
 		return value.isEmpty();
 	}
 
 	public static QuestionValueDomain<?> generateQuestionValueDomain(TokenComparationValue token) {
-		System.out.println("generateQuestionValueDomain" + token);
 		Float floatValue = null;
 		Integer intValue = null;
 		Long longValue = null;
@@ -132,7 +126,6 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 		 case TEXT:
 			 return generateRangedTextDomain(token, token.getValue());
 		default:
-			System.out.println("ha salido default!");
 			return null;
 		}
 	}
@@ -166,20 +159,4 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(),
 				generator.generateValue(token.getType(),value));
 	}
-
-	//
-	// private Float getValueConverted(TokenComparationValue token) {
-	// switch (token.getSubformat()) {
-	// case FLOAT:
-	// case NUMBER:
-	// return Float.parseFloat(token.getValue());
-	// case DATE:
-	// case DATE_PERIOD:
-	// throw new RuntimeException("Not implemented");
-	// case POSTAL_CODE:
-	// return ParseValueUtils.parsePostalCode(token.getValue());
-	// default:
-	// throw new RuntimeException("Not implemented");
-	// }
-	// }
 }

@@ -11,4 +11,6 @@ public interface IDomain {
 	public IDomain inverse();
 
 	public boolean isEmpty();
+
+//	public void generateRandomValue();
 }

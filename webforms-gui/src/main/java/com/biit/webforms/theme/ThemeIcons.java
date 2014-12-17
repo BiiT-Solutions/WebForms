@@ -110,6 +110,8 @@ public enum ThemeIcons implements IThemeIcon {
 	NEW("form.create.svg"), 
 	
 	EXPORT_JSON("alert.svg"), 
+	
+	VALIDATE_CONDITIONS("alert.svg"), 
 	;
 
 	private String value;

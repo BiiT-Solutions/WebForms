@@ -105,7 +105,6 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	 * @return
 	 */
 	public boolean isComplete() {
-		System.out.println("Iscomplete?"+value+" "+ (completeDomain.intersection(value)).equals(completeDomain));
 		return (completeDomain.intersection(value)).equals(completeDomain);
 	}
 
