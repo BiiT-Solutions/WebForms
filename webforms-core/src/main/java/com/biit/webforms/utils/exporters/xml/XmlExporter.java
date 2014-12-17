@@ -2,7 +2,6 @@ package com.biit.webforms.utils.exporters.xml;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,31 +9,42 @@ import java.util.Set;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.webforms.computed.ComputedFlowView;
+import com.biit.webforms.condition.parser.WebformsParser;
+import com.biit.webforms.condition.parser.expressions.WebformsExpression;
+import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.utils.exporters.xml.exceptions.ElementWithoutNextElement;
 import com.biit.webforms.utils.exporters.xml.exceptions.TooMuchIterationsWhileGeneratingPath;
+import com.biit.webforms.utils.math.domain.IDomain;
+import com.biit.webforms.utils.math.domain.exceptions.BadFormedExpressions;
+import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
+import com.biit.webforms.utils.parser.exceptions.ExpectedTokenNotFound;
+import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
+import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
+import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
+import com.biit.webforms.utils.parser.exceptions.ParseException;
 
 public class XmlExporter {
 
 	private final Form form;
-	private final ComputedFlowView flows;
-	private final HashMap<BaseQuestion, Integer> counters;
-	private final HashMap<BaseQuestion, Integer> endFormCounters;
+	private final ComputedFlowView computedFlows;
+	private final HashMap<Flow, Integer> counters;
+	private final HashMap<Flow, IDomain> compiledDomains;
 
-	public XmlExporter(Form form) {
+	public XmlExporter(Form form) throws BadFormedExpressions {
 		this.form = form;
-		this.flows = form.getComputedFlowsView();
+		this.computedFlows = form.getComputedFlowsView();
 		this.counters = new HashMap<>();
-		this.endFormCounters = new HashMap<>();
+		this.compiledDomains = new HashMap<>();
 		initializeCounters();
 	}
 
-	private void initializeCounters() {
-		LinkedHashSet<TreeObject> questions = form.getAllChildrenInHierarchy(BaseQuestion.class);
-		for (TreeObject question : questions) {
-			counters.put((BaseQuestion) question, new Integer(0));
-			endFormCounters.put((BaseQuestion) question, new Integer(0));
+	private void initializeCounters() throws BadFormedExpressions {
+		for (Flow flow: computedFlows.getFlows()) {
+			counters.put( flow, new Integer(0));
+			compiledDomains.put(flow, getDomain(flow));
 		}
 	}
 
@@ -55,89 +65,105 @@ public class XmlExporter {
 		if (questions.isEmpty()) {
 			return;
 		}
+		
+		BaseQuestion startNode =(BaseQuestion) questions.iterator().next();
 
 		for (int i = 0; i < number; i++) {
-			List<BaseQuestion> path = generatePath((BaseQuestion) questions.iterator().next(), questions.size());
+			List<Flow> path = generatePath(startNode, questions.size());
 			System.out.println(path);
-			markPath(path);
+			
+			createValueResult(path);
+			
+			markFlows(path);
 		}
 		
 	}
 
-	private void markPath(List<BaseQuestion> path) {
-		BaseQuestion previousQuestion = null;
-		for(BaseQuestion node: path){
-			if(node!=null){
-				markQuestion(node, 1);
-				previousQuestion = node;
-			}else{
-				markQuestionToEnd(previousQuestion,1);
+	private void createValueResult(List<Flow> path) {
+		// TODO Auto-generated method stub
+		for(Flow flow: path){
+			if(compiledDomains.get(flow)==null){
+				//Skip empty domains
+				continue;
 			}
+			System.out.println(flow);
+			System.out.println(compiledDomains.get(flow));
+			compiledDomains.get(flow).generateRandomValue();
 		}
 	}
 
-	private List<BaseQuestion> generatePath(BaseQuestion startNode, int numberOfQuestion)
+	private IDomain getDomain(Flow flow) throws BadFormedExpressions {
+		WebformsParser parser = new WebformsParser(flow.getConditionSimpleTokens().iterator());
+		try {
+			WebformsExpression expression = ((WebformsExpression) parser.parseExpression());
+			
+			if (expression != null) {
+				return expression.getDomain();
+			}
+			return null;
+		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException | IncompleteBinaryOperatorException
+				| MissingParenthesisException | EmptyParenthesisException e) {
+			throw new BadFormedExpressions(flow);
+		}
+	}
+
+	private void markFlows(List<Flow> path) {
+		for(Flow flow: path){
+			markFlow(flow, 1);
+		}
+	}
+
+	private List<Flow> generatePath(BaseQuestion startNode, int numberOfQuestion)
 			throws ElementWithoutNextElement, TooMuchIterationsWhileGeneratingPath {
 
-		List<BaseQuestion> path = new ArrayList<BaseQuestion>();
-		path.add(startNode);
+		List<Flow> path = new ArrayList<>();
+
 		BaseQuestion currentNode = startNode;
 		int numberOfIterations = 0;
+		
 		while (currentNode != null) {
 			if (numberOfIterations > numberOfQuestion) {
 				throw new TooMuchIterationsWhileGeneratingPath();
 			}
 			numberOfIterations++;
-			Set<BaseQuestion> nextNodes = getNextQuestions(currentNode);
-			BaseQuestion nextNode = getLeastUsedNexNode(currentNode, nextNodes);
-			path.add(nextNode);
-			currentNode = nextNode;
+			Set<Flow> nextFlows = getFlows(currentNode);
+			Flow nextFlow = getLeastUsedNextFlowNode(nextFlows);
+			path.add(nextFlow);
+			
+			if(nextFlow.getFlowType()==FlowType.NORMAL){
+				currentNode = (BaseQuestion) nextFlow.getDestiny();
+			}else{
+				currentNode = null;
+			}
 		}
 
 		return path;
 	}
 
-	private BaseQuestion getLeastUsedNexNode(BaseQuestion currentNode, Set<BaseQuestion> nodes) {
-		BaseQuestion leastUsedNode = null;
-		Integer numberOfUsesOfLeastUsedNode = null;
+	private Flow getLeastUsedNextFlowNode(Set<Flow> nextFlows) {
+		Flow leastUsedFlow = null;
+		Integer numberOfUsesOfLeastUsedFlow = null;
 
-		for (BaseQuestion node : nodes) {
-			int numberOfUses;
-			if (node == null) {
-				numberOfUses = endFormCounters.get(currentNode);
-				
-			} else {
-				numberOfUses = counters.get(node);
+		for (Flow flow : nextFlows) {
+			if(flow.getFlowType()==FlowType.END_LOOP){
+				continue;
 			}
-			if ( numberOfUsesOfLeastUsedNode==null || numberOfUses < numberOfUsesOfLeastUsedNode) {
-				numberOfUsesOfLeastUsedNode = numberOfUses;
-				leastUsedNode = node;
+			
+			int numberOfUses = counters.get(flow);
+			if ( numberOfUsesOfLeastUsedFlow==null || numberOfUses < numberOfUsesOfLeastUsedFlow) {
+				numberOfUsesOfLeastUsedFlow = numberOfUses;
+				leastUsedFlow = flow;
 			}
 		}
-		return leastUsedNode;
+		return leastUsedFlow;
 	}
 
 	private Set<Flow> getFlows(BaseQuestion currentNode) throws ElementWithoutNextElement {
-		if (flows.getFlowsByOrigin(currentNode).isEmpty()) {
-			throw new ElementWithoutNextElement();
-		}
-		return flows.getFlowsByOrigin(currentNode);
+		Set<Flow> flows = computedFlows.getFlowsByOrigin(currentNode);
+		return flows;
 	}
 
-	private Set<BaseQuestion> getNextQuestions(BaseQuestion currentNode) throws ElementWithoutNextElement {
-		Set<Flow> flows = getFlows(currentNode);
-		Set<BaseQuestion> nextQuestions = new HashSet<>();
-		for (Flow flow : flows) {
-			nextQuestions.add((BaseQuestion) flow.getDestiny());
-		}
-		return nextQuestions;
-	}
-
-	public void markQuestion(BaseQuestion question,int quantity) {
-		counters.put(question, counters.get(question) + quantity);
-	}
-
-	private void markQuestionToEnd(BaseQuestion node, int quantity) {
-		endFormCounters.put(node, endFormCounters.get(node) + quantity);
+	public void markFlow(Flow flow,int quantity) {
+		counters.put(flow, counters.get(flow) + quantity);
 	}
 }

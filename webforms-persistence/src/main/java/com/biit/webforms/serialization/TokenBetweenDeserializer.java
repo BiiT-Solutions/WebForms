@@ -23,7 +23,7 @@ public class TokenBetweenDeserializer extends TokenDeserializer<TokenBetween> {
 		element.setSubformat(QuestionDeserializer.parseAnswerSubformat("subformat", jobject, context));
 		element.setDatePeriodUnit(parseDatePeriodUnit("datePeriodUnit", jobject, context));
 		element.setValueStart(parseString("valueStart", jobject, context));
-		element.setValueStart(parseString("valueEnd", jobject, context));
+		element.setValueEnd(parseString("valueEnd", jobject, context));
 
 		super.deserialize(json, context, element);
 	}
