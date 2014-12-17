@@ -11,7 +11,8 @@ import com.biit.form.TreeObject;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.utils.exporters.xml.export.ElementWithoutNextElement;
+import com.biit.webforms.utils.exporters.xml.exceptions.ElementWithoutNextElement;
+import com.biit.webforms.utils.exporters.xml.exceptions.TooMuchIterationsWhileGeneratingPath;
 
 public class XmlExporter {
 
@@ -33,7 +34,7 @@ public class XmlExporter {
 		}
 	}
 
-	public void generate(int number) throws ElementWithoutNextElement {
+	public void generate(int number) throws ElementWithoutNextElement, TooMuchIterationsWhileGeneratingPath {
 		// This is not a complete search of the form.
 		// Complete search with the complexity of forms makes a large impact on
 		// computer resources. We are talking about more than 2^64 paths on
@@ -56,14 +57,13 @@ public class XmlExporter {
 		
 	}
 
-	private List<BaseQuestion> generatePath(BaseQuestion startNode,int numberOfQuestion) throws ElementWithoutNextElement {
+	private List<BaseQuestion> generatePath(BaseQuestion startNode,int numberOfQuestion) throws ElementWithoutNextElement, TooMuchIterationsWhileGeneratingPath {
 		
 		BaseQuestion currentNode = startNode;
 		int numberOfIterations = 0;
 		while(currentNode!=null){
 			if(numberOfIterations<numberOfQuestion){
-				//Throw exception?
-				break;
+				throw new TooMuchIterationsWhileGeneratingPath();
 			}
 			numberOfIterations++;
 			Set<BaseQuestion> flows = getNextQuestions(currentNode);
