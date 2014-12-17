@@ -59,8 +59,21 @@ public class XmlExporter {
 		for (int i = 0; i < number; i++) {
 			List<BaseQuestion> path = generatePath((BaseQuestion) questions.iterator().next(), questions.size());
 			System.out.println(path);
+			markPath(path);
 		}
 		
+	}
+
+	private void markPath(List<BaseQuestion> path) {
+		BaseQuestion previousQuestion = null;
+		for(BaseQuestion node: path){
+			if(node!=null){
+				markQuestion(node, 1);
+				previousQuestion = node;
+			}else{
+				markQuestionToEnd(previousQuestion,1);
+			}
+		}
 	}
 
 	private List<BaseQuestion> generatePath(BaseQuestion startNode, int numberOfQuestion)
@@ -71,13 +84,11 @@ public class XmlExporter {
 		BaseQuestion currentNode = startNode;
 		int numberOfIterations = 0;
 		while (currentNode != null) {
-			System.out.println(currentNode.getPathName());
 			if (numberOfIterations > numberOfQuestion) {
 				throw new TooMuchIterationsWhileGeneratingPath();
 			}
 			numberOfIterations++;
 			Set<BaseQuestion> nextNodes = getNextQuestions(currentNode);
-			System.out.println("Next questions "+nextNodes);
 			BaseQuestion nextNode = getLeastUsedNexNode(currentNode, nextNodes);
 			path.add(nextNode);
 			currentNode = nextNode;
@@ -88,7 +99,7 @@ public class XmlExporter {
 
 	private BaseQuestion getLeastUsedNexNode(BaseQuestion currentNode, Set<BaseQuestion> nodes) {
 		BaseQuestion leastUsedNode = null;
-		int numberOfUsesOfLeastUsedNode = -1;
+		Integer numberOfUsesOfLeastUsedNode = null;
 
 		for (BaseQuestion node : nodes) {
 			int numberOfUses;
@@ -98,7 +109,7 @@ public class XmlExporter {
 			} else {
 				numberOfUses = counters.get(node);
 			}
-			if (numberOfUses > numberOfUsesOfLeastUsedNode) {
+			if ( numberOfUsesOfLeastUsedNode==null || numberOfUses < numberOfUsesOfLeastUsedNode) {
 				numberOfUsesOfLeastUsedNode = numberOfUses;
 				leastUsedNode = node;
 			}
@@ -122,8 +133,11 @@ public class XmlExporter {
 		return nextQuestions;
 	}
 
-	public void visitQuestion(BaseQuestion question) {
-		counters.put(question, counters.get(question) + 1);
+	public void markQuestion(BaseQuestion question,int quantity) {
+		counters.put(question, counters.get(question) + quantity);
 	}
 
+	private void markQuestionToEnd(BaseQuestion node, int quantity) {
+		endFormCounters.put(node, endFormCounters.get(node) + quantity);
+	}
 }

@@ -17,7 +17,7 @@ public class XmlGenerationTest {
 		System.out.println("XmlGeneration test");
 		Form form = loadForm("test_xml.json");
 		XmlExporter exporter = new XmlExporter(form);
-		exporter.generate(5);
+		exporter.generate(9);
 	}
 
 	public Form loadForm(String filename) throws IOException {
