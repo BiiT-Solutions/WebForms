@@ -15,7 +15,7 @@ public class XmlGenerationTest {
 	@Test()
 	public void testXmlGeneration() throws IOException, ElementWithoutNextElement, TooMuchIterationsWhileGeneratingPath {
 		System.out.println("XmlGeneration test");
-		Form form = loadForm("test_text.json");
+		Form form = loadForm("test_xml.json");
 		XmlExporter exporter = new XmlExporter(form);
 		exporter.generate(5);
 	}

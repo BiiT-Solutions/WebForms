@@ -92,14 +92,15 @@ public class XmlExporter {
 
 		for (BaseQuestion node : nodes) {
 			int numberOfUses;
-			if (node != null) {
+			if (node == null) {
 				numberOfUses = endFormCounters.get(currentNode);
+				
 			} else {
-				numberOfUses = counters.get(currentNode);
+				numberOfUses = counters.get(node);
 			}
 			if (numberOfUses > numberOfUsesOfLeastUsedNode) {
 				numberOfUsesOfLeastUsedNode = numberOfUses;
-				leastUsedNode = currentNode;
+				leastUsedNode = node;
 			}
 		}
 		return leastUsedNode;
