@@ -1,5 +1,7 @@
 package com.biit.webforms.utils.math.domain.range;
 
+import java.util.HashMap;
+
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.utils.math.domain.DomainSet;
@@ -15,25 +17,12 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 	private final RealLimitPair<T> completeDomain;
 	private final RealRange<T> value;
 
-	// public QuestionValueDomain(Question question, RealLimitPair<T>
-	// completeDomain) {
-	// this.question = question;
-	// this.completeDomain = completeDomain;
-	// this.value = new RealRange<T>();
-	// }
-
 	public QuestionValueDomain(Question question, RealLimitPair<T> completeDomain, RealRange<T> value) {
 		this.question = question;
 		this.completeDomain = completeDomain;
 		this.value = value;
 	}
-
-	// public QuestionValueDomain(TokenComparationValue token) {
-	// this.question = token.getQuestion();
-	// this.completeDomain = generateDomain(token.getQuestion());
-	// this.value = generateValues(token);
-	// }
-
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -158,5 +147,12 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 		RealRange<Integer> generator = new RealRangeInteger();
 		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(),
 				generator.generateValue(token.getType(),value));
+	}
+
+	@Override
+	public HashMap<Question, String> generateRandomValue() {
+		HashMap<Question, String> randomValue = new HashMap<>();
+		randomValue.put(question,value.generateRandomValue().toString());
+		return randomValue;
 	}
 }

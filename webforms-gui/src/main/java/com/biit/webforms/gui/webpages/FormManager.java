@@ -172,6 +172,14 @@ public class FormManager extends SecuredWebPage {
 						getSelectedForm().getVersion().toString());
 			}
 		});
+		upperMenu.addExportXmlListener(new ClickListener() {
+			private static final long serialVersionUID = -4167515599696676260L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				exportXmlListener();
+			}
+		});
 		// Add browser window opener to the button.
 		upperMenu.addPreviewXForms(new ClickListener() {
 			private static final long serialVersionUID = -8790434440652432643L;
@@ -230,6 +238,15 @@ public class FormManager extends SecuredWebPage {
 			}
 		});
 		return upperMenu;
+	}
+	
+	protected void exportXmlListener() {		
+		Form form = loadAndValidateForm();
+		
+		if(form!=null){
+			WindowGenerateXml window = new WindowGenerateXml(form);
+			window.showCentered();
+		}
 	}
 
 	/**

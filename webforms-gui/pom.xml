@@ -50,6 +50,11 @@
 
 
 	<dependencies>
+	    <dependency>
+		   <groupId>org.vaadin.addons</groupId>
+		   <artifactId>stepper</artifactId>
+		   <version>${stepper.version}</version>
+		</dependency>
 		<!-- Core -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>

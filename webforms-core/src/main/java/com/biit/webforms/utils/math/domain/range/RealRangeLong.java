@@ -64,4 +64,13 @@ public class RealRangeLong extends RealRange<Long>{
 		return value+1;
 	}
 
+	@Override
+	public Long generateRandomValue(RealLimitPair<Long> range) {
+		if(range.getLeft().getLimit().equals(range.getRight().getLimit())){
+			return range.getLeft().getLimit();
+		}
+		long randomNum = (Math.abs(random.nextLong()) % (range.getRight().getLimit() - range.getLeft().getLimit())+ range.getLeft().getLimit());
+		return randomNum;
+	}
+
 }

@@ -508,4 +508,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 		
 		return gson.toJson(this);
 	}
+
+	public String getLabelWithouthSpaces() {
+		return getLabel().replace(" ", "_");
+	}
 }

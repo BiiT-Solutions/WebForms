@@ -67,7 +67,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		Assert.assertEquals(formDao.getRowCount(), prevForm + 1);
 
 		Form dbForm = formDao.getForm(FORM_NAME, ORGANIZATION_ID);
-
+		Assert.assertNotNull(dbForm);
 		Assert.assertTrue(!dbForm.getFlows().isEmpty());
 
 		Flow dbRule = dbForm.getFlows().iterator().next();
@@ -175,7 +175,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		formDao.makePersistent(form);
 
 		// Remove first flow.
-		form.getFlows().remove(form.getFlows().iterator().next());
+		form.removeRule(form.getFlows().iterator().next());
 
 		// Remove question.
 		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"

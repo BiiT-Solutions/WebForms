@@ -64,4 +64,12 @@ public class RealRangePostalCode extends RealRange<PostalCode> {
 		return value.getNextPostalCode();
 	}
 
+	@Override
+	public PostalCode generateRandomValue(RealLimitPair<PostalCode> range) {
+		if(range.getLeft().getLimit().equals(range.getRight().getLimit())){
+			return range.getLeft().getLimit();
+		}
+		return PostalCode.random(range.getLeft().getLimit(),range.getRight().getLimit());
+	}
+
 }

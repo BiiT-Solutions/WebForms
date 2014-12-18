@@ -5,12 +5,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import com.biit.webforms.persistence.entity.Question;
 
 public abstract class DomainSet implements IDomain {
 
+	protected static Random random = new Random();
 	protected final HashMap<Question, IDomainQuestion> domainQuestions;
 	protected final HashSet<DomainSet> domainSets;
 

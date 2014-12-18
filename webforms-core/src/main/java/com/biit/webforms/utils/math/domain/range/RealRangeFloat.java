@@ -6,7 +6,7 @@ import com.biit.webforms.utils.math.domain.Closure;
 import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
 
 public class RealRangeFloat extends RealRange<Float> {
-
+	
 	public RealRangeFloat() {
 		super();
 	}
@@ -64,5 +64,15 @@ public class RealRangeFloat extends RealRange<Float> {
 		//No discrete value
 		return null;
 	}
+
+	@Override
+	public Float generateRandomValue(RealLimitPair<Float> range) {
+		if(range.getLeft().getLimit().equals(range.getRight().getLimit())){
+			return range.getLeft().getLimit();
+		}
+		float randomNum = random.nextFloat() * (range.getRight().getLimit()-range.getLeft().getLimit());
+		return randomNum;
+	}
+
 
 }

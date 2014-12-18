@@ -65,6 +65,15 @@ public class RealStringRange extends RealRange<RangedText> {
 		// Not possible
 		return null;
 	}
+
+	@Override
+	public RangedText generateRandomValue(RealLimitPair<RangedText> range) {
+		if(range.getLeft().getLimit().equals(range.getRight().getLimit())){
+			return range.getLeft().getLimit();
+		}
+		//No random between 
+		return null;
+	}
 	
 	
 	

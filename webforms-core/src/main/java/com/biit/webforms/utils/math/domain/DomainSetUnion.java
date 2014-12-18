@@ -110,4 +110,14 @@ public class DomainSetUnion extends DomainSet {
 		sb.append(")");
 		return sb.toString();
 	}
+
+	@Override
+	public HashMap<Question, String> generateRandomValue() {		
+		List<IDomain> domains = getDomains();
+		if(domains== null || domains.isEmpty()){
+			return new HashMap<Question, String>();
+		}
+		int randomInt = random.nextInt(domains.size());
+		return domains.get(randomInt).generateRandomValue();
+	}
 }

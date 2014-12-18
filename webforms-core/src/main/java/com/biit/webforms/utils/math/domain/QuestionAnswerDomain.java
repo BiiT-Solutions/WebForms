@@ -1,5 +1,6 @@
 package com.biit.webforms.utils.math.domain;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -191,6 +192,16 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 
 	public Question getQuestion() {
 		return question;
+	}
+
+	@Override
+	public HashMap<Question, String> generateRandomValue() {
+		HashMap<Question, String> randomValue = new HashMap<>();
+		if(isEmpty()){
+			return randomValue;
+		}
+		randomValue.put(question, value.getRandomElement().toString());
+		return randomValue;
 	}
 
 }

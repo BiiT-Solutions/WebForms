@@ -110,4 +110,15 @@ public class DomainSetIntersection extends DomainSet {
 		sb.append(")");
 		return sb.toString();
 	}
+
+	@Override
+	public HashMap<Question, String> generateRandomValue() {
+		HashMap<Question, String> randomValue = new HashMap<Question, String>();
+		
+		for(IDomain domain: getDomains()){
+			randomValue.putAll(domain.generateRandomValue());
+		}
+		
+		return randomValue;
+	}
 }
