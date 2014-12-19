@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
@@ -46,6 +47,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
 		exportJson = new IconButton(LanguageCodes.CAPTION_EXPORT_JSON, ThemeIcons.EXPORT_JSON,
 				LanguageCodes.TOOLTIP_EXPORT_JSON, IconSize.BIG);
+		exportJson.setVisible(WebformsConfigurationReader.getInstance().isJsonExportEnabled());
 		exportXml = new IconButton(LanguageCodes.CAPTION_EXPORT_XML, ThemeIcons.EXPORT_XML,
 				LanguageCodes.TOOLTIP_EXPORT_XML, IconSize.BIG);
 

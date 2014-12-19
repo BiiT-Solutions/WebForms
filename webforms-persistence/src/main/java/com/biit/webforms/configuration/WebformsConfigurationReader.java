@@ -82,6 +82,14 @@ public class WebformsConfigurationReader {
 
 	private static final String DEFAULT_BOOLEAN_SIMPLIFICATION_ENABLED = "false";
 
+	private static final String XML_BASE_ADDRESS = "xmlBaseAddress";
+
+	private static final String DEFAULT_XML_BASE_ADDRESS = "http://dev.biit-solutions.com/";
+
+	private static final String JSON_EXPORT_ENABLED = "jsonExportEnabled";
+
+	private static final String DEFAULT_JSON_EXPORT_ENABLED = "false";
+
 	// XForms
 	private final String XFORMS_USER_TAG = "orbeonUser";
 	private final String XFORMS_PASSWORD_TAG = "orbeonPassword";
@@ -139,6 +147,10 @@ public class WebformsConfigurationReader {
 	private String xFormsDatabaseHost;
 	private String orbeonFormRunnerUrl;
 
+	private String xmlBaseAddress;
+
+	private boolean jsonExportEnabled;
+
 	private WebformsConfigurationReader() {
 		readConfig();
 	}
@@ -185,6 +197,8 @@ public class WebformsConfigurationReader {
 			xFormsDatabaseName = prop.getProperty(XFORMS_DATABASE_TAG, DEFAULT_XFORMS_DATABASE);
 			xFormsDatabaseHost = prop.getProperty(XFORMS_DATABASE_HOST_TAG, DEFAULT_HOST);
 			orbeonFormRunnerUrl = prop.getProperty(XFORMS_FORM_RUNNER_TAG, DEFAULT_ORBEON_FORM_RUNNER_URL);
+			xmlBaseAddress = prop.getProperty(XML_BASE_ADDRESS,DEFAULT_XML_BASE_ADDRESS);
+			jsonExportEnabled = Boolean.parseBoolean(prop.getProperty(JSON_EXPORT_ENABLED, DEFAULT_JSON_EXPORT_ENABLED));
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -287,4 +301,11 @@ public class WebformsConfigurationReader {
 		return orbeonFormRunnerUrl;
 	}
 
+	public String getXmlBaseAddress() {
+		return xmlBaseAddress;
+	}
+
+	public boolean isJsonExportEnabled(){
+		return jsonExportEnabled;
+	}
 }
