@@ -36,11 +36,14 @@ public class FlowUnitDomain {
 
 	public FlowUnitDomain(Form form, BaseQuestion from) throws BadFormedExpressions, IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
 		Set<Flow> flows = form.getFlowsFrom(from);
+		System.out.println(flows);
 		checkSameDateUnitForQuestion(flows);
 		List<IDomain> domains = getFlowDomains(flows);
+		System.out.println("Check unicity");
 		checkUnicity(domains);
+		System.out.println("Check completeness");
 		checkCompleteness(domains);
-
+		System.out.println("End flow");
 	}
 
 	private void checkSameDateUnitForQuestion(Set<Flow> flows) throws DifferentDateUnitForQuestions {
@@ -71,8 +74,11 @@ public class FlowUnitDomain {
 
 	private void checkUnicity(List<IDomain> domains) throws RedundantLogic {
 		for (int i = 0; i < domains.size(); i++) {
+			System.out.println("Domain: "+domains.get(i));
 			for (int j = i + 1; j < domains.size(); j++) {
+				System.out.println("Intersect with domain: "+domains.get(j));
 				IDomain intersection = domains.get(i).intersect(domains.get(j));
+				
 				if (!intersection.isEmpty()) {
 					throw new RedundantLogic();
 				}
@@ -90,6 +96,7 @@ public class FlowUnitDomain {
 		}
 
 		for (IDomain flowDomain : flowDomains) {
+			System.out.println("union "+flowDomain);
 			if (unionflowDomain == null) {
 				unionflowDomain = flowDomain;
 			} else {

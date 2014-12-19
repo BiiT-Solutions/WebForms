@@ -327,6 +327,15 @@ public class TestFlowDomain {
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Text2"));
 	}
 	
+	@Test(dependsOnMethods = { "testJson29" })
+	public void testJson30() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
+		System.out.println("De haagse");
+		Form form = loadForm("De Haagse Passage_v6.json");
+		
+		//Error
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Opleidingen","Opleiding","Opleiding","Welke"));
+	}
+	
 	public Form loadForm(String filename) throws IOException {
 
 		ClassLoader classLoader = getClass().getClassLoader();

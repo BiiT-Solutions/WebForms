@@ -175,9 +175,18 @@ public abstract class DomainSet implements IDomain {
 		DomainSetUnion union = new DomainSetUnion(domainA.getDomains());
 		
 		if(!domainA.contains(domainB.getQuestion())){
+			//DomainA didn't contain domainB question, so put it inside.
 			union.add(domainB);
 		}else{
-			union.add(union.getDomainQuestion(domainB.getQuestion()).union(domainB));
+			//Recheck before monday.
+			//DomainA contained the same question
+			if(union.getDomainQuestion(domainB.getQuestion())!=null){
+				//The union has the domain add the union of both.
+				union.add(union.getDomainQuestion(domainB.getQuestion()).union(domainB));
+			}else{
+				//The union has the domain inside of another group, just add it as an or
+				union.add(domainB);
+			}
 		}
 		return union;
 	}
