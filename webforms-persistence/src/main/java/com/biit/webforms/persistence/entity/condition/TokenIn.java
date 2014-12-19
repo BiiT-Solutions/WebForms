@@ -108,7 +108,7 @@ public class TokenIn extends TokenComplex {
 	public String toString() {
 		String referenceString = null;
 		if (question != null) {
-			referenceString = question.getName();
+			referenceString = question.getPathName();
 		}
 		String answerString = null;
 		if (values != null) {
@@ -172,5 +172,10 @@ public class TokenIn extends TokenComplex {
 			this.values.add(value);
 			value.setTokenIn(this);
 		}
+	}
+	
+	@Override
+	public String getExpressionEditorRepresentation() {
+		return toString();
 	}
 }

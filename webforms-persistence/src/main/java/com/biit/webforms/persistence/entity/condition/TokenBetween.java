@@ -118,7 +118,7 @@ public class TokenBetween extends TokenComplex {
 	public String toString() {
 		String referenceString = null;
 		if (question != null) {
-			referenceString = question.getName();
+			referenceString = question.getPathName();
 			if (subformat == AnswerSubformat.DATE_PERIOD) {
 				referenceString += "(" + datePeriodUnit + ")";
 			}
@@ -157,5 +157,10 @@ public class TokenBetween extends TokenComplex {
 		this.datePeriodUnit = datePeriodUnit;
 		this.valueStart = valueStart;
 		this.valueEnd = valueEnd;
+	}
+	
+	@Override
+	public String getExpressionEditorRepresentation() {
+		return toString();
 	}
 }
