@@ -50,7 +50,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.label"),
+	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.label, #form.right"),
 			@CacheEvict(value = "forms", key = "#form.id"),
 			@CacheEvict(value = "forms", key = "#form.label, #form.organizationId") })
 	public void makeTransient(Form form) throws UnexpectedDatabaseException {
@@ -58,7 +58,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	@Cacheable(value = "forms", key = "#label")
+	@Cacheable(value = "forms", key = "#label, #organizationId")
 	public Form getForm(String label, Long organizationId) throws UnexpectedDatabaseException {
 		return super.getForm(label, organizationId);
 	}
