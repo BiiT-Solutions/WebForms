@@ -56,33 +56,33 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 	@Autowired
 	private IFormDao formDao;
 
-//	@Test
-//	public void testRule() throws FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
-//			InvalidAnswerSubformatException, NotValidChildException, UnexpectedDatabaseException {
-//		Form form = createForm();
-//
-//		int prevForm = formDao.getRowCount();
-//
-//		formDao.makePersistent(form);
-//		Assert.assertEquals(formDao.getRowCount(), prevForm + 1);
-//
-//		Form dbForm = formDao.getForm(form.getLabel(), form.getOrganizationId());
-//
-//		Assert.assertTrue(!dbForm.getFlows().isEmpty());
-//
-//		Flow dbRule = dbForm.getFlows().iterator().next();
-//		Assert.assertTrue(!dbRule.getCondition().isEmpty());
-//
-//		// Check that removing rule doesn't make disappear anything else.
-//		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
-//		dbForm.removeRule(dbRule);
-//		formDao.makePersistent(dbForm);
-//		dbForm = formDao.getForm(form.getLabel(), form.getOrganizationId());
-//		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
-//		Assert.assertTrue(dbForm.getFlows().isEmpty());
-//
-//		formDao.makeTransient(dbForm);
-//	}
+	@Test
+	public void testRule() throws FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
+			InvalidAnswerSubformatException, NotValidChildException, UnexpectedDatabaseException {
+		Form form = createForm();
+
+		int prevForm = formDao.getRowCount();
+
+		formDao.makePersistent(form);
+		Assert.assertEquals(formDao.getRowCount(), prevForm + 1);
+
+		Form dbForm = formDao.getForm(form.getLabel(), form.getOrganizationId());
+
+		Assert.assertTrue(!dbForm.getFlows().isEmpty());
+
+		Flow dbRule = dbForm.getFlows().iterator().next();
+		Assert.assertTrue(!dbRule.getCondition().isEmpty());
+
+		// Check that removing rule doesn't make disappear anything else.
+		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
+		dbForm.removeRule(dbRule);
+		formDao.makePersistent(dbForm);
+		dbForm = formDao.getForm(form.getLabel(), form.getOrganizationId());
+		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
+		Assert.assertTrue(dbForm.getFlows().isEmpty());
+
+		formDao.makeTransient(dbForm);
+	}
 
 	private Form createForm() {
 		try {
@@ -144,29 +144,29 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		}
 	}
 
-//	@Test(expectedExceptions = { DependencyExistException.class })
-//	public void removeFlowWithQuestion() throws UnexpectedDatabaseException, DependencyExistException {
-//		Form form = createForm();
-//		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"
-//				+ QUESTION_WITH_ANSWERS);
-//		Assert.assertNotNull(question2);
-//		question2.remove();
-//	}
+	@Test(expectedExceptions = { DependencyExistException.class })
+	public void removeFlowWithQuestion() throws UnexpectedDatabaseException, DependencyExistException {
+		Form form = createForm();
+		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"
+				+ QUESTION_WITH_ANSWERS);
+		Assert.assertNotNull(question2);
+		question2.remove();
+	}
 
-//	@Test(expectedExceptions = { DependencyExistException.class })
-//	public void removeFlowWithQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException {
-//		Form form = createForm();
-//		formDao.makePersistent(form);
-//
-//		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"
-//				+ QUESTION_WITH_ANSWERS);
-//		Assert.assertNotNull(question2);
-//		try {
-//			question2.remove();
-//		} finally {
-//			formDao.makeTransient(form);
-//		}
-//	}
+	@Test(expectedExceptions = { DependencyExistException.class })
+	public void removeFlowWithQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException {
+		Form form = createForm();
+		formDao.makePersistent(form);
+
+		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"
+				+ QUESTION_WITH_ANSWERS);
+		Assert.assertNotNull(question2);
+		try {
+			question2.remove();
+		} finally {
+			formDao.makeTransient(form);
+		}
+	}
 
 	@Test
 	public void removeFlowAndQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException {
