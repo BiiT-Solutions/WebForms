@@ -2,6 +2,7 @@ package com.biit.webforms.persistence;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import junit.framework.Assert;
 
@@ -51,7 +52,6 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 	private static final String QUESTION_WITH_ANSWERS = "question_w_answers";
 	private static final String ANSWER_1 = "answer1";
 	private static final String ANSWER_2 = "answer2";
-	private static final Long ORGANIZATION_ID = 0L;
 
 	@Autowired
 	private IFormDao formDao;
@@ -66,8 +66,8 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		formDao.makePersistent(form);
 		Assert.assertEquals(formDao.getRowCount(), prevForm + 1);
 
-		Form dbForm = formDao.getForm(FORM_NAME, ORGANIZATION_ID);
-		Assert.assertNotNull(dbForm);
+		Form dbForm = formDao.getForm(form.getLabel(), form.getOrganizationId());
+
 		Assert.assertTrue(!dbForm.getFlows().isEmpty());
 
 		Flow dbRule = dbForm.getFlows().iterator().next();
@@ -77,7 +77,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
 		dbForm.removeRule(dbRule);
 		formDao.makePersistent(dbForm);
-		dbForm = formDao.getForm(FORM_NAME, ORGANIZATION_ID);
+		dbForm = formDao.getForm(form.getLabel(), form.getOrganizationId());
 		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
 		Assert.assertTrue(dbForm.getFlows().isEmpty());
 
@@ -88,7 +88,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		try {
 			Form form = new Form();
 			form.setLabel(FORM_NAME);
-			form.setOrganizationId(ORGANIZATION_ID);
+			form.setOrganizationId(new Long(new Random().nextInt()));
 
 			Category category = new Category();
 			category.setName(CATEGORY_ONE_NAME);
@@ -116,8 +116,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 			form.addChild(category);
 
 			List<Token> condition = Arrays.asList(new Token[] {
-					TokenComparationValue.getTokenEqual(question1, AnswerSubformat.TEXT, null, "test"),
-					Token.and(),
+					TokenComparationValue.getTokenEqual(question1, AnswerSubformat.TEXT, null, "test"), Token.and(),
 					TokenComparationAnswer.getTokenEqual(question2, answer1) });
 			Flow rule1 = createRule(question1, FlowType.NORMAL, question2, false, condition);
 
@@ -175,7 +174,9 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		formDao.makePersistent(form);
 
 		// Remove first flow.
-		form.removeRule(form.getFlows().iterator().next());
+		form.getFlows().remove(form.getFlows().iterator().next());
+
+		formDao.makePersistent(form);
 
 		// Remove question.
 		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"
@@ -187,7 +188,6 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		formDao.makePersistent(form);
 
 		formDao.makeTransient(form);
-
 	}
 
 }

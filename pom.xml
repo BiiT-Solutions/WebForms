@@ -53,7 +53,7 @@
 		<ehcache.version>2.6.9</ehcache.version>
 		<c3p0.version>0.9.2.1</c3p0.version>
 		<DES-encryption.version>1.0.0</DES-encryption.version>
-		<abcd.version>1.0.8</abcd.version>
+		<abcd.version>1.0.9</abcd.version>
 		<jbool_expressions.version>1.6</jbool_expressions.version>
 		<gson.version>2.3.1</gson.version>
 		<stepper.version>2.2.0</stepper.version>

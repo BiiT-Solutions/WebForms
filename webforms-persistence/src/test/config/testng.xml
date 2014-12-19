@@ -3,14 +3,12 @@
 	<test name="WebformsPersistanceTest" enabled="true" preserve-order="true">
 		<groups>
 			<run>
-				<!-- <include name="ehCache" /> -->
-				<!-- <include name="parseCondition" /> -->
+				<exclude name="ehCache" />
 				<include name="ruleTest" />
 			</run>
 		</groups>
 		<classes>
-			<!-- <class name="com.biit.webforms.persistence.EhCacheTest" /> -->
-			<!-- <class name="com.biit.webforms.condition.parser.ParseCondition" /> -->
+			<class name="com.biit.webforms.persistence.EhCacheTest" />
 			<class name="com.biit.webforms.persistence.RuleTest" />
 		</classes>
 	</test>
