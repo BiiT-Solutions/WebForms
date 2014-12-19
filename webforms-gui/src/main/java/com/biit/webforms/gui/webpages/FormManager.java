@@ -597,6 +597,7 @@ public class FormManager extends SecuredWebPage {
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);
 			bottomMenu.getEditFlowButton().setEnabled(rowNotNullAndForm);
 			bottomMenu.getValidateForm().setEnabled(rowNotNullAndForm);
+			bottomMenu.getCompareStructureButton().setEnabled(rowNotNullAndForm);
 
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

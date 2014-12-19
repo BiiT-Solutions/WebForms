@@ -102,7 +102,7 @@ public class XmlExporter {
 				+ form.getLabelWithouthSpaces()
 				+ " xmlns=\""+xmlBaseAddress+""
 				+ form.getLabelWithouthSpaces()
-				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\""+xmlBaseAddress+""
+				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\""+xmlBaseAddress+ " schema.xsd"
 				+ form.getLabelWithouthSpaces() + "\">");
 		for (Flow flow : path) {
 			if (flow.getOrigin() instanceof Text || flow.getOrigin() instanceof SystemField) {
