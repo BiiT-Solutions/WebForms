@@ -144,7 +144,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		}
 	}
 
-	@Test(dependsOnMethods={"testRule"}, expectedExceptions = { DependencyExistException.class })
+	@Test(expectedExceptions = { DependencyExistException.class })
 	public void removeFlowWithQuestion() throws UnexpectedDatabaseException, DependencyExistException {
 		Form form = createForm();
 		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"
@@ -153,7 +153,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		question2.remove();
 	}
 
-	@Test(dependsOnMethods={"removeFlowWithQuestion"},expectedExceptions = { DependencyExistException.class })
+	@Test(expectedExceptions = { DependencyExistException.class })
 	public void removeFlowWithQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException {
 		Form form = createForm();
 		formDao.makePersistent(form);
@@ -168,7 +168,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		}
 	}
 
-	@Test(dependsOnMethods={"removeFlowWithQuestionPersisted"})
+	@Test
 	public void removeFlowAndQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException {
 		Form form = createForm();
 		formDao.makePersistent(form);
