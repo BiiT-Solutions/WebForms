@@ -1,5 +1,9 @@
 package com.biit.webforms.utils.math.domain;
 
+import java.util.HashMap;
+
+import com.biit.webforms.persistence.entity.Question;
+
 public interface IDomain {
 
 	public boolean isComplete();
@@ -12,5 +16,5 @@ public interface IDomain {
 
 	public boolean isEmpty();
 
-//	public void generateRandomValue();
+	public HashMap<Question, String> generateRandomValue();
 }

@@ -9,6 +9,8 @@
         goal "vaadin:update-widgetset".
     -->
 
+	<!-- Inherit Stepper -->
+	<inherits name="org.vaadin.risto.stepper.widgetset.StepperWidgetset" />
     <!-- Inherit DefaultWidgetSet -->
     <inherits name="com.vaadin.DefaultWidgetSet" />
 

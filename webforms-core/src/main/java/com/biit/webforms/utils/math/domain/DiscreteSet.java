@@ -2,6 +2,7 @@ package com.biit.webforms.utils.math.domain;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -12,6 +13,8 @@ import java.util.Set;
  */
 public class DiscreteSet<T> {
 
+	private static Random random = new Random();
+	
 	private Set<T> domainMembers;
 
 	public DiscreteSet() {
@@ -23,6 +26,24 @@ public class DiscreteSet<T> {
 		for (T element : elements) {
 			domainMembers.add(element);
 		}
+	}
+	
+	public T getRandomElement(){
+		if(domainMembers.isEmpty()){
+			return null;
+		}
+		
+		int randomNum = random.nextInt((domainMembers.size()-1) + 1);
+		Iterator<T> itr = domainMembers.iterator();
+		T randomElement = itr.next();
+		int i = 0;
+		while(itr.hasNext()){
+			if(i<randomNum){
+				return  randomElement;
+			}
+			itr.next();
+		}
+		return randomElement;
 	}
 
 	public boolean contains(T element) {

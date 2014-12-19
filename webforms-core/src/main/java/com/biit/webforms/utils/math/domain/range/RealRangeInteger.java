@@ -5,7 +5,7 @@ import java.util.List;
 import com.biit.webforms.utils.math.domain.Closure;
 import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
 
-public class RealRangeInteger extends RealRange<Integer>{
+public class RealRangeInteger extends RealRange<Integer> {
 
 	public RealRangeInteger() {
 		super();
@@ -18,7 +18,7 @@ public class RealRangeInteger extends RealRange<Integer>{
 	public RealRangeInteger(List<RealLimitPair<Integer>> limits) {
 		super(limits);
 	}
-	
+
 	public RealRangeInteger(RealLimitPair<Integer> first, RealLimitPair<Integer> second) {
 		super(first, second);
 	}
@@ -27,7 +27,7 @@ public class RealRangeInteger extends RealRange<Integer>{
 			throws LimitInsertionException {
 		super(leftClosure, left, right, rightClosure);
 	}
-	
+
 	@Override
 	protected RealRange<Integer> createNewRealRange(Closure leftClosure, Integer left, Integer right,
 			Closure rightClosure) throws LimitInsertionException {
@@ -61,7 +61,16 @@ public class RealRangeInteger extends RealRange<Integer>{
 
 	@Override
 	protected Integer getNextDiscreteValue(Integer value) {
-		return value+1;
+		return value + 1;
+	}
+
+	@Override
+	public Integer generateRandomValue(RealLimitPair<Integer> range) {
+		if(range.getLeft().getLimit().equals(range.getRight().getLimit())){
+			return range.getLeft().getLimit();
+		}
+		int randomNum = (Math.abs(random.nextInt())%(range.getRight().getLimit() - range.getLeft().getLimit())) + range.getLeft().getLimit();
+		return randomNum;
 	}
 
 }

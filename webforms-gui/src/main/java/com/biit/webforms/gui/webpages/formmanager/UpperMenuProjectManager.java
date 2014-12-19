@@ -21,7 +21,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private final IconButton submenuNew, newForm, newFormVersion, importAbcdForm;
 	private final IconButton linkAbcdForm;
 	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms;
-	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson;
+	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson, exportXml;
 	private final IconButton impactAnalysis, compareContent;
 	private BrowserWindowOpener opener;
 
@@ -46,6 +46,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
 		exportJson = new IconButton(LanguageCodes.CAPTION_EXPORT_JSON, ThemeIcons.EXPORT_JSON,
 				LanguageCodes.TOOLTIP_EXPORT_JSON, IconSize.BIG);
+		exportXml = new IconButton(LanguageCodes.CAPTION_EXPORT_XML, ThemeIcons.EXPORT_XML,
+				LanguageCodes.TOOLTIP_EXPORT_XML, IconSize.BIG);
 
 		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
 		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsExporter.APP_NAME);
@@ -69,7 +71,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		addIconButton(linkAbcdForm);
 
 		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
-				exportFlowPdf, exportXsd,exportJson);
+				exportFlowPdf, exportXsd,exportXml,exportJson);
 		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
 				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
 		opener.extend(previewXForms);
@@ -169,6 +171,11 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	public void addExportXFormsListener(ClickListener listener) {
 		exportXForms.addClickListener(listener);
 	}
+	
+	public void addExportXmlListener(ClickListener listener) {
+		exportXml.addClickListener(listener);
+	}
+
 
 	public BrowserWindowOpener getOpener() {
 		return opener;
@@ -176,5 +183,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public IconButton getSubmenuNew() {
 		return submenuNew;
+	}
+
+	public IconButton getExportXml() {
+		return exportXml;
 	}
 }

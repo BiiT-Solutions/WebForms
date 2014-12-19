@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -17,6 +18,7 @@ import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
  */
 public abstract class RealRange<T extends Comparable<T>> {
 
+	protected static Random random = new Random();
 	private final List<RealLimitPair<T>> limits;
 
 	public RealRange() {
@@ -117,15 +119,16 @@ public abstract class RealRange<T extends Comparable<T>> {
 
 			RealLimitPair<T> nextAccum = accum.union(allPairs.get(i));
 			if (isDiscrete() && nextAccum == null) {
-				//Try to make an union for discretes
-				if(accum.getRight().getClosure()==Closure.INCLUSIVE && allPairs.get(i).getLeft().getClosure()==Closure.INCLUSIVE){
+				// Try to make an union for discretes
+				if (accum.getRight().getClosure() == Closure.INCLUSIVE
+						&& allPairs.get(i).getLeft().getClosure() == Closure.INCLUSIVE) {
 					T nextValue = getNextDiscreteValue(accum.getRight().getLimit());
-					if(nextValue.compareTo(allPairs.get(i).getLeft().getLimit())==0){
+					if (nextValue.compareTo(allPairs.get(i).getLeft().getLimit()) == 0) {
 						nextAccum = accum.discreteUnion(allPairs.get(i));
 					}
 				}
 			}
-			
+
 			if (nextAccum == null) {
 				unionPairs.add(accum);
 				accum = allPairs.get(i);
@@ -279,5 +282,12 @@ public abstract class RealRange<T extends Comparable<T>> {
 	public RealLimitPair<T> pairGe(T value) {
 		return new RealLimitPair<T>(new RealLimit<T>(value, Closure.INCLUSIVE), positiveInfinity());
 	}
+
+	public T generateRandomValue() {
+		int randomNum = random.nextInt((limits.size() - 1) + 1);
+		return generateRandomValue(limits.get(randomNum));
+	}
+
+	public abstract T generateRandomValue(RealLimitPair<T> range);
 
 }
