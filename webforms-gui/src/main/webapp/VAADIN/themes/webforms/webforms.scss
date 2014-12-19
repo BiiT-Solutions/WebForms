@@ -999,4 +999,8 @@ $open-sans-pathPrefix: "./fonts/";
 	.v-button-opens-popover-menu, .v-button-opens-popover-menu.v-button:focus{
 		background: linear-gradient(-45deg, black 8%, white 9.5%, white 100%);
 	}
+	
+	.popupContent .v-scrollable {
+		overflow: hidden !important;
+	}
 }
