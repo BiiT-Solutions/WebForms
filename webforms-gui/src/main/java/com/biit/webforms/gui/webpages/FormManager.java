@@ -25,6 +25,7 @@ import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.authentication.exception.NotValidAbcdForm;
+import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -99,8 +100,6 @@ public class FormManager extends SecuredWebPage {
 				updateMenus();
 			}
 		});
-		formTable.selectLastUsedForm();
-		formTable.selectForm(null);
 		formTable.selectLastUsedForm();
 		// If it was already null
 		updateMenus();
@@ -239,11 +238,11 @@ public class FormManager extends SecuredWebPage {
 		});
 		return upperMenu;
 	}
-	
-	protected void exportXmlListener() {		
+
+	protected void exportXmlListener() {
 		Form form = loadAndValidateForm();
-		
-		if(form!=null){
+
+		if (form != null) {
 			WindowGenerateXml window = new WindowGenerateXml(form);
 			window.showCentered();
 		}
@@ -572,6 +571,7 @@ public class FormManager extends SecuredWebPage {
 			// Top menu
 			boolean rowNotNull = row != null;
 			IWebformsFormView selectedForm = (IWebformsFormView) formTable.getValue();
+
 			boolean rowInstanceOfRootForm = row instanceof RootForm;
 			boolean rowNotNullAndForm = rowNotNull && !rowInstanceOfRootForm;
 			boolean canCreateForms = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
@@ -583,7 +583,9 @@ public class FormManager extends SecuredWebPage {
 
 			upperMenu.setEnabled(true);
 			upperMenu.getNewForm().setEnabled(canCreateForms);
-			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion && selectedForm.isLastVersion());
+			upperMenu.getNewFormVersion().setEnabled(
+					rowNotNull && canCreateNewVersion && selectedForm.isLastVersion()
+							&& !selectedForm.getStatus().equals(FormWorkStatus.DESIGN));
 
 			upperMenu.setEnabledImportAbcd(canCreateForms);
 			upperMenu.setEnabledLinkAbcd(rowNotNullAndForm && canLinkVersion);

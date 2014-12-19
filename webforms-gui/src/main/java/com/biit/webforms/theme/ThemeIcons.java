@@ -89,7 +89,7 @@ public enum ThemeIcons implements IThemeIcon {
 	
 	UPLOAD("document.upload.svg"),  
 	REMOVE("element.delete.svg"), 
-	REMOVE_ALL("element.remove.all.svg"), 
+	REMOVE_ALL("element.delete.svg"), 
 	VALIDATE("validate.document.svg"), 
 	VALIDATE_ALL("validate.documents.svg"), 
 	

@@ -136,6 +136,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_NEW_FORM("caption.new.form"),
 	CAPTION_NEW_FORM_VERSION("caption.new.form.version"),
 	CAPTION_READ_ONLY("caption.read.only"),
+	CAPTION_IN_USE("caption.in.use"),
 	CAPTION_IMPORT_ABCD_FORM("caption.import.abcd.form"),
 	CAPTION_LINK_ABCD_FORM("caption.link.abcd.form"),
 	CAPTION_EXPORT_XSD("caption.link.export.xsd"),

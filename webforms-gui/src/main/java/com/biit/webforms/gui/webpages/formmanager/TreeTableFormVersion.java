@@ -205,12 +205,16 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	 * @return
 	 */
 	private String getFormPermissionsTag(SimpleFormView form) {
-		String permissions = "";
-
-		if (WebformsAuthorizationService.getInstance().isFormReadOnly(form, UserSessionHandler.getUser())) {
-			permissions = LanguageCodes.CAPTION_READ_ONLY.translation();
+		if (UiAccesser.getUserUsingForm(form) != null
+				&& !UiAccesser.getUserUsingForm(form).equals(UserSessionHandler.getUser())) {
+			return LanguageCodes.CAPTION_IN_USE.translation();
 		}
-		return permissions;
+
+		if (!WebformsAuthorizationService.getInstance().isAuthorizedToForm(form, UserSessionHandler.getUser())
+				&& form.getStatus().equals(FormWorkStatus.DESIGN)) {
+			return LanguageCodes.CAPTION_READ_ONLY.translation();
+		}
+		return "";
 	}
 
 	public void selectForm(IBaseFormView form) {
