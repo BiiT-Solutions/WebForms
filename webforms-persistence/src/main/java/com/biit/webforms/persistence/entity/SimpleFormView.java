@@ -196,6 +196,7 @@ public class SimpleFormView implements IWebformsFormView {
 		view.linkedFormLabel = form.getLinkedFormLabel();
 		view.linkedFormVersions = new HashSet<Integer>(form.getLinkedFormVersions());
 		view.linkedFormOrganizationId = form.getLinkedFormOrganizationId();
+		view.status = form.getStatus();
 
 		return view;
 	}
