@@ -112,7 +112,7 @@ public class TokenComparationValue extends Token {
 	public String toString() {
 		String referenceString = null;
 		if (question != null) {
-			referenceString = question.getName();
+			referenceString = question.getPathName();
 		}
 
 		if (subformat == AnswerSubformat.DATE_PERIOD) {
@@ -125,7 +125,7 @@ public class TokenComparationValue extends Token {
 	public String getLocalizedString(String localizedDatePeriodUnit) {
 		String referenceString = null;
 		if (question != null) {
-			referenceString = question.getName();
+			referenceString = question.getPathName();
 		}
 
 		if (subformat == AnswerSubformat.DATE_PERIOD) {
@@ -140,7 +140,7 @@ public class TokenComparationValue extends Token {
 	public String getExpressionSimplifierRepresentation() {
 		String referenceString = null;
 		if (question != null) {
-			referenceString = question.getPathName().replaceAll("[^A-Za-z0-9_.]", "_");
+			referenceString = question.getPathName().replaceAll("[^A-Za-z0-9_./]", "_");
 		}
 		return referenceString + getType().getExpressionSimplifierRepresentation() + value;
 	}

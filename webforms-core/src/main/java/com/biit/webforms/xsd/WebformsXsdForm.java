@@ -24,10 +24,10 @@ public class WebformsXsdForm extends XsdSchema {
 	}
 
 	private static String getNamespace(Form form) {
-		return WebformsConfigurationReader.getInstance().getXsdNamespace()+"/"+XmlUtils.normalizeNodeName(form.getLabel());
+		return WebformsConfigurationReader.getInstance().getXmlBaseAddress()+XmlUtils.normalizeNodeName(form.getLabel());
 	}
 
 	private static String getXMLNS(Form form) {
-		return WebformsConfigurationReader.getInstance().getXsdXmlns()+"/"+XmlUtils.normalizeNodeName(form.getLabel());
+		return WebformsConfigurationReader.getInstance().getXmlBaseAddress()+XmlUtils.normalizeNodeName(form.getLabel());
 	}
 }

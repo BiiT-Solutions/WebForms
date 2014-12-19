@@ -11,6 +11,7 @@ import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.theme.ThemeIcons;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -106,6 +107,10 @@ public class FormEditBottomMenu extends BottomMenu {
 
 	public interface LockFormListener {
 		public void lockForm();
+	}
+
+	public AbstractComponent getCompareStructureButton() {
+		return compareStructure;
 	}
 
 }

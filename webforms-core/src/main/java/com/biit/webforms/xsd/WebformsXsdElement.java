@@ -15,7 +15,7 @@ public class WebformsXsdElement extends XsdElement {
 			putType(XmlUtils.normalizeNodeName(element.getLabel()));
 		} else {
 			if (element instanceof BaseGroup) {
-				putType(element.getPathName());
+				putType(element.getPathName().replace('/', '.'));
 				if (!(element instanceof BaseRepeatableGroup && (((BaseRepeatableGroup) element).isRepeatable()))) {
 					putMaxOccurs(1);
 				}

@@ -13,6 +13,7 @@ import com.biit.form.TreeObject;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.condition.parser.expressions.WebformsExpression;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Flow;
@@ -93,13 +94,15 @@ public class XmlExporter {
 		TreeObject currentElement = null;
 
 		StringBuilder sb = new StringBuilder();
+		
+		String xmlBaseAddress = WebformsConfigurationReader.getInstance().getXmlBaseAddress();
 
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		sb.append("<"
 				+ form.getLabelWithouthSpaces()
-				+ " xmlns=\"http://schemas.denhaag.nl/"
+				+ " xmlns=\""+xmlBaseAddress+""
 				+ form.getLabelWithouthSpaces()
-				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://schemas.denhaag.nl/"
+				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\""+xmlBaseAddress+ " schema.xsd"
 				+ form.getLabelWithouthSpaces() + "\">");
 		for (Flow flow : path) {
 			if (flow.getOrigin() instanceof Text || flow.getOrigin() instanceof SystemField) {

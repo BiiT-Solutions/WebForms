@@ -11,6 +11,7 @@ public class ValidateFormComplete extends CompositeValidator<Form>{
 		add(ValidateBaseForm.class);
 		add(ValidateFormFlows.class);
 		add(ValidateLogic.class);
+		setStopOnFail(true);
 	}
 	
 }

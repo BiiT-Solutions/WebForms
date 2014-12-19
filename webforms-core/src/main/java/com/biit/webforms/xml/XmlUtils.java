@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 
 import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -20,7 +19,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -80,17 +78,13 @@ public class XmlUtils {
 		Source schemaFile = new StreamSource(new ByteArrayInputStream(xsd.getBytes()));
 		Schema schema = factory.newSchema(schemaFile);
 
-		// parse an XML document into a DOM tree
-		DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		Document document = parser.parse(new ByteArrayInputStream(xml.getBytes()));
-
 		// create a Validator instance, which can be used to validate an
 		// instance document
 		Validator validator = schema.newValidator();
 
 		// validate the DOM tree
 		try {
-			validator.validate(new DOMSource(document));
+			validator.validate(new StreamSource(new ByteArrayInputStream(xml.getBytes())));
 		} catch (SAXException e) {
 			resultString += e.getMessage() + System.lineSeparator();
 		}

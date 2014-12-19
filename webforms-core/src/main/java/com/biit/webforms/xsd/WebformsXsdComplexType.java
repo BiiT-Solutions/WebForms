@@ -19,7 +19,7 @@ public class WebformsXsdComplexType extends XsdComplexType {
 	}
 
 	public WebformsXsdComplexType(BaseGroup group) {
-		super(group.getPathName());
+		super(group.getPathName().replace('/', '.'));
 		addChild(new XsdAll(generateXsdElements(group.getChildren())));
 	}
 
