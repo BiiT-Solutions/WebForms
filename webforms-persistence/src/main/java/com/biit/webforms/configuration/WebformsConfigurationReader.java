@@ -66,14 +66,6 @@ public class WebformsConfigurationReader {
 
 	private static final String DEFAULT_ISSUE_MANAGER_URL = null;
 
-	private static final String XSD_XMLNS = "xsdXmlns";
-
-	private static final String DEFAULT_XSD_XMLNS = "http://schemas.biit.com/";
-
-	private static final String XSD_NAMESPACE = "xsdNamespace";
-
-	private static final String DEFAULT_XSD_NAMESPACE = "http://schemas.biit.com/";
-
 	private static final String DATE_PATTERN = "dd/MM/yyyy";
 
 	private static final String DEFAULT_DATE_PATTERN = "dd/MM/yyyy";
@@ -132,11 +124,7 @@ public class WebformsConfigurationReader {
 	private String regexDateBirthday;
 
 	private String datePattern;
-
-	private String xsdXmlns;
-
-	private String xsdNamespace;
-
+	
 	private boolean booleanSimplificationEnabled;
 
 	private static WebformsConfigurationReader instance;
@@ -188,8 +176,6 @@ public class WebformsConfigurationReader {
 			regexDateBirthday = prop.getProperty(REGEX_DATE_BIRTHDAY, DEFAULT_REGEX_BIRTHDAY);
 			issueManagerUrl = prop.getProperty(ISSUE_MANAGER_URL, DEFAULT_ISSUE_MANAGER_URL);
 			datePattern = prop.getProperty(DATE_PATTERN, DEFAULT_DATE_PATTERN);
-			xsdXmlns = prop.getProperty(XSD_XMLNS, DEFAULT_XSD_XMLNS);
-			xsdNamespace = prop.getProperty(XSD_NAMESPACE, DEFAULT_XSD_NAMESPACE);
 			booleanSimplificationEnabled = Boolean.parseBoolean(prop.getProperty(BOOLEAN_SIMPLIFICATION_ENABLED,
 					DEFAULT_BOOLEAN_SIMPLIFICATION_ENABLED));
 			xFormsUser = prop.getProperty(XFORMS_USER_TAG, DEFAULT_USER);
@@ -262,14 +248,6 @@ public class WebformsConfigurationReader {
 
 	public String getDatePattern() {
 		return datePattern;
-	}
-
-	public String getXsdXmlns() {
-		return xsdXmlns;
-	}
-
-	public String getXsdNamespace() {
-		return xsdNamespace;
 	}
 
 	/**
