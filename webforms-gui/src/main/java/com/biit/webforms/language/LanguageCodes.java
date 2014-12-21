@@ -138,6 +138,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_READ_ONLY("caption.read.only"),
 	CAPTION_IN_USE("caption.in.use"),
 	CAPTION_IMPORT_ABCD_FORM("caption.import.abcd.form"),
+	CAPTION_IMPORT_JSON_FORM("caption.import.json.form"),  
 	CAPTION_LINK_ABCD_FORM("caption.link.abcd.form"),
 	CAPTION_EXPORT_XSD("caption.link.export.xsd"),
 	CAPTION_EXPORT_JSON("caption.export.json"),
@@ -153,6 +154,7 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_NEW_FORM("tooltip.new.form"),
 	TOOLTIP_NEW_FORM_VERSION("tooltip.new.form.version"),
 	TOOLTIP_IMPORT_ABCD_FORM("tooltip.import.abcd.form"),
+	TOOLTIP_IMPORT_JSON_FORM("tooltip.import.json.form"),
 	TOOLTIP_LINK_ABCD_FORM("tooltip.link.abcd.form"),
 	TOOLTIP_EXPORT_XSD("caption.link.export.xsd"),
 	TOOLTIP_EXPORT_JSON("tooltip.export.json"),
@@ -443,7 +445,7 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_EXPORT_XML("tooltip.export.xml"), 
 	
 	WARNING_NUMBER_OF_GENERATED_XML_NOT_VALID("warning.number.of.generated.xml.not.valid"), 
-	CAPTION_SELECT_AMMOUNT_OF_XML_TO_GENERATE("caption.select.ammount.of.xml.to.generate"),  
+	CAPTION_SELECT_AMMOUNT_OF_XML_TO_GENERATE("caption.select.ammount.of.xml.to.generate"),
 	
 	;
 

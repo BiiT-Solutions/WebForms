@@ -3,7 +3,7 @@ package com.biit.webforms.utils.math.domain.range;
 
 public class RangedText implements Comparable<RangedText> {
 
-	private static final int BUFFER_MAX_SIZE = 190;
+	private static final int BUFFER_MAX_SIZE = 4;
 	
 	//The buffer has one extra bit to signal infinite
 	private char[] buffer = new char[BUFFER_MAX_SIZE+1];

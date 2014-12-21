@@ -2,6 +2,10 @@ package com.biit.webforms.utils.math.domain;
 
 import java.io.IOException;
 
+import javax.swing.text.FlowView;
+
+import junit.framework.Assert;
+
 import org.apache.commons.io.IOUtils;
 import org.testng.annotations.Test;
 
@@ -10,6 +14,7 @@ import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
@@ -21,6 +26,9 @@ import com.biit.webforms.utils.math.domain.exceptions.BadFormedExpressions;
 import com.biit.webforms.utils.math.domain.exceptions.DifferentDateUnitForQuestions;
 import com.biit.webforms.utils.math.domain.exceptions.IncompleteLogic;
 import com.biit.webforms.utils.math.domain.exceptions.RedundantLogic;
+import com.biit.webforms.validators.ValidateFlow;
+import com.biit.webforms.validators.ValidateFlowCondition;
+import com.biit.webforms.validators.ValidateLogic;
 
 @Test(groups = { "testFlowDomain" })
 public class TestFlowDomain {
@@ -322,18 +330,34 @@ public class TestFlowDomain {
 	@Test(dependsOnMethods = { "testJson28" })
 	public void testJson29() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
 		Form form = loadForm("test_text.json");
-		
 		//Incomplete
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Category","Group","Text2"));
 	}
 	
 	@Test(dependsOnMethods = { "testJson29" })
 	public void testJson30() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
-		System.out.println("De haagse");
+		Form form = loadForm("De Haagse Passage_v6.json");
+		
+		ValidateReport report = new ValidateReport();
+		ValidateLogic validator = new ValidateLogic();
+		Assert.assertFalse(validator.validate(form,report));
+
+	}
+	
+	@Test(dependsOnMethods = { "testJson30" }, expectedExceptions = { IncompleteLogic.class })
+	public void testJson31() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
 		Form form = loadForm("De Haagse Passage_v6.json");
 		
 		//Error
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Opleidingen","Opleiding","Opleiding","Welke"));
+	}
+	
+	@Test(dependsOnMethods = { "testJson31" }, expectedExceptions = { RedundantLogic.class })
+	public void testJson32() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
+		Form form = loadForm("De Haagse Passage_v6.json");
+		
+		//Error
+		new FlowUnitDomain(form, (BaseQuestion) form.getChild("EigenMogelijkheden/SociaalNetwerk/EigenMogelijkhedenFamilie/Afstand"));
 	}
 	
 	public Form loadForm(String filename) throws IOException {

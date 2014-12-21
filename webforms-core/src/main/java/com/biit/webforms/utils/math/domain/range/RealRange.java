@@ -116,7 +116,7 @@ public abstract class RealRange<T extends Comparable<T>> {
 				accum = allPairs.get(i);
 				continue;
 			}
-
+			
 			RealLimitPair<T> nextAccum = accum.union(allPairs.get(i));
 			if (isDiscrete() && nextAccum == null) {
 				// Try to make an union for discretes

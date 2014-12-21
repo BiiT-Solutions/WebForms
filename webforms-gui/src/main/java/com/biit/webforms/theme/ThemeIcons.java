@@ -111,7 +111,7 @@ public enum ThemeIcons implements IThemeIcon {
 	
 	EXPORT_JSON("alert.svg"), 
 	
-	VALIDATE_CONDITIONS("alert.svg"), 
+	VALIDATE_CONDITIONS("alert.svg"), FORM_MANAGER_IMPORT_JSON_FORM("alert.svg"), 
 	;
 
 	private String value;

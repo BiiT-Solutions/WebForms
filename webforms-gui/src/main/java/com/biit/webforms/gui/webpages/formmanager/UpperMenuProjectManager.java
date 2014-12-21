@@ -19,7 +19,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private final IconButton submenuNew, newForm, newFormVersion, importAbcdForm;
+	private final IconButton submenuNew, newForm, newFormVersion, importAbcdForm, importJsonForm;
 	private final IconButton linkAbcdForm;
 	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms;
 	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson, exportXml;
@@ -36,6 +36,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 		importAbcdForm = new IconButton(LanguageCodes.CAPTION_IMPORT_ABCD_FORM,
 				ThemeIcons.FORM_MANAGER_IMPORT_ABCD_FORM, LanguageCodes.TOOLTIP_IMPORT_ABCD_FORM, IconSize.BIG);
+		importJsonForm = new IconButton(LanguageCodes.CAPTION_IMPORT_JSON_FORM,
+				ThemeIcons.FORM_MANAGER_IMPORT_JSON_FORM, LanguageCodes.TOOLTIP_IMPORT_JSON_FORM, IconSize.BIG);
+		importJsonForm.setVisible(WebformsConfigurationReader.getInstance().isJsonExportEnabled());
 		linkAbcdForm = new IconButton(LanguageCodes.CAPTION_LINK_ABCD_FORM, ThemeIcons.FORM_MANAGER_LINK_ABCD_FORM,
 				LanguageCodes.TOOLTIP_LINK_ABCD_FORM, IconSize.BIG);
 
@@ -69,7 +72,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_COMPARE_CONTENT, IconSize.BIG);
 
 		submenuNew = addSubMenu(ThemeIcons.NEW, LanguageCodes.CAPTION_NEW, LanguageCodes.TOOLTIP_NEW, newForm,
-				newFormVersion, importAbcdForm);
+				newFormVersion, importAbcdForm,importJsonForm);
 		addIconButton(linkAbcdForm);
 
 		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
@@ -92,6 +95,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public void addImportAbcdForm(ClickListener listener) {
 		importAbcdForm.addClickListener(listener);
+	}
+	
+	public void addImportJsonForm(ClickListener listener) {
+		importJsonForm.addClickListener(listener);
 	}
 
 	public void addLinkAbcdForm(ClickListener listener) {

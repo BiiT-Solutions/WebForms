@@ -93,18 +93,21 @@ public class ApplicationController {
 
 	public ApplicationController() {
 		super();
-		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet
+				.getCurrent().getServletContext());
 		formDao = (IFormDao) helper.getBean("formDao");
 		blockDao = (IBlockDao) helper.getBean("blockDao");
-		formDaoAbcd = (com.biit.abcd.persistence.dao.IFormDao) helper.getBean("formDaoAbcd");
-		simpleFormDaoAbcd = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoAbcd"));
+		formDaoAbcd = (com.biit.abcd.persistence.dao.IFormDao) helper
+				.getBean("formDaoAbcd");
+		simpleFormDaoAbcd = ((ISimpleFormViewDao) helper
+				.getBean("simpleFormDaoAbcd"));
 		simpleFormDaoWebforms = ((com.biit.webforms.persistence.dao.ISimpleFormViewDao) helper
 				.getBean("simpleFormDaoWebforms"));
 	}
 
 	/**
-	 * User action to create a form on memory no persistance is done. Needs a unique name where name.length() < 190
-	 * characters.
+	 * User action to create a form on memory no persistance is done. Needs a
+	 * unique name where name.length() < 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -112,8 +115,9 @@ public class ApplicationController {
 	 * @throws FormWithSameNameException
 	 * @throws UnexpectedDatabaseException
 	 */
-	public Form createForm(String formLabel, Long organizationId) throws FieldTooLongException,
-			FormWithSameNameException, CharacterNotAllowedException, UnexpectedDatabaseException {
+	public Form createForm(String formLabel, Long organizationId)
+			throws FieldTooLongException, FormWithSameNameException,
+			CharacterNotAllowedException, UnexpectedDatabaseException {
 		logInfoStart("createForm", formLabel, organizationId);
 
 		// Create new form
@@ -121,18 +125,22 @@ public class ApplicationController {
 		try {
 			newform = new Form(formLabel, getUser(), organizationId);
 		} catch (FieldTooLongException | CharacterNotAllowedException ex) {
-			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " createForm " + ex.getMessage());
+			WebformsLogger.severe(
+					ApplicationController.class.getName(),
+					"User: " + getUserEmailAddress() + " createForm "
+							+ ex.getMessage());
 			throw ex;
 		}
 
 		// Check if database contains a form with the same name.
 		try {
 			if (formDao.getForm(formLabel, organizationId) != null) {
-				FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel
-						+ " already exists");
-				WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-						+ " createForm " + ex.getMessage());
+				FormWithSameNameException ex = new FormWithSameNameException(
+						"Form with name: " + formLabel + " already exists");
+				WebformsLogger.severe(
+						ApplicationController.class.getName(),
+						"User: " + getUserEmailAddress() + " createForm "
+								+ ex.getMessage());
 				throw ex;
 			}
 		} catch (UnexpectedDatabaseException e) {
@@ -143,8 +151,34 @@ public class ApplicationController {
 		return newform;
 	}
 
+	public Form importFormFromJson(String json,String formLabel,Long organizationId) throws FormWithSameNameException, UnexpectedDatabaseException, FieldTooLongException {
+		// Check if database contains a form with the same name.
+		try {
+			if (formDao.getForm(formLabel, organizationId) != null) {
+				FormWithSameNameException ex = new FormWithSameNameException(
+						"Form with name: " + formLabel + " already exists");
+				WebformsLogger.severe(
+						ApplicationController.class.getName(),
+						"User: " + getUserEmailAddress() + " createForm "
+								+ ex.getMessage());
+				throw ex;
+			}
+			
+			Form newForm = Form.fromJson(json);
+			newForm.setOrganizationId(organizationId);
+			newForm.setLabel(formLabel);
+			
+			formDao.makePersistent(newForm);
+		} catch (UnexpectedDatabaseException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			throw e;
+		}
+		return formInUse;
+	}
+
 	/**
-	 * User action to create a form. Needs a unique name where name.length() < 190 characters.
+	 * User action to create a form. Needs a unique name where name.length() <
+	 * 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -152,8 +186,9 @@ public class ApplicationController {
 	 * @throws FormWithSameNameException
 	 * @throws UnexpectedDatabaseException
 	 */
-	public Form createFormAndPersist(String formLabel, Long organizationId) throws FieldTooLongException,
-			FormWithSameNameException, CharacterNotAllowedException, UnexpectedDatabaseException {
+	public Form createFormAndPersist(String formLabel, Long organizationId)
+			throws FieldTooLongException, FormWithSameNameException,
+			CharacterNotAllowedException, UnexpectedDatabaseException {
 		logInfoStart("createFormAndPersist", formLabel, organizationId);
 
 		// Create new form
@@ -163,7 +198,8 @@ public class ApplicationController {
 		try {
 			formDao.makePersistent(newform);
 		} catch (ConstraintViolationException cve) {
-			WebformsLogger.errorMessage(ApplicationController.class.getName(), cve);
+			WebformsLogger.errorMessage(ApplicationController.class.getName(),
+					cve);
 			throw cve;
 		} catch (UnexpectedDatabaseException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -173,10 +209,11 @@ public class ApplicationController {
 		return newform;
 	}
 
-	public Block createBlock(String blockName, Long organizationId) throws CharacterNotAllowedException,
-			FieldTooLongException, FormWithSameNameException, UnexpectedDatabaseException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " createBlock "
-				+ blockName);
+	public Block createBlock(String blockName, Long organizationId)
+			throws CharacterNotAllowedException, FieldTooLongException,
+			FormWithSameNameException, UnexpectedDatabaseException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: "
+				+ getUserEmailAddress() + " createBlock " + blockName);
 		logInfoStart("createBlock", blockName, organizationId);
 
 		// Create new block
@@ -184,17 +221,21 @@ public class ApplicationController {
 		try {
 			newBlock = new Block(blockName, getUser(), organizationId);
 		} catch (FieldTooLongException | CharacterNotAllowedException ex) {
-			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " createBlock " + ex.getMessage());
+			WebformsLogger.warning(
+					ApplicationController.class.getName(),
+					"User: " + getUserEmailAddress() + " createBlock "
+							+ ex.getMessage());
 			throw ex;
 		}
 
 		// Check if database contains a form with the same name.
 		if (blockDao.getBlock(blockName, organizationId) != null) {
-			FormWithSameNameException ex = new FormWithSameNameException("Block with name: " + blockName
-					+ " already exists");
-			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " createBlock " + ex.getMessage());
+			FormWithSameNameException ex = new FormWithSameNameException(
+					"Block with name: " + blockName + " already exists");
+			WebformsLogger.warning(
+					ApplicationController.class.getName(),
+					"User: " + getUserEmailAddress() + " createBlock "
+							+ ex.getMessage());
 			throw ex;
 		}
 
@@ -202,7 +243,8 @@ public class ApplicationController {
 		try {
 			blockDao.makePersistent(newBlock);
 		} catch (ConstraintViolationException cve) {
-			WebformsLogger.errorMessage(ApplicationController.class.getName(), cve);
+			WebformsLogger.errorMessage(ApplicationController.class.getName(),
+					cve);
 			throw cve;
 		} catch (UnexpectedDatabaseException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -224,10 +266,12 @@ public class ApplicationController {
 	 * @throws FieldTooLongException
 	 * @throws UnexpectedDatabaseException
 	 */
-	public Form importAbcdForm(SimpleFormView simpleFormView, String importLabel, Long organizationId)
-			throws NotValidAbcdForm, FieldTooLongException, FormWithSameNameException, CharacterNotAllowedException,
-			UnexpectedDatabaseException {
-		logInfoStart("importAbcdForm", simpleFormView, importLabel, organizationId);
+	public Form importAbcdForm(SimpleFormView simpleFormView,
+			String importLabel, Long organizationId) throws NotValidAbcdForm,
+			FieldTooLongException, FormWithSameNameException,
+			CharacterNotAllowedException, UnexpectedDatabaseException {
+		logInfoStart("importAbcdForm", simpleFormView, importLabel,
+				organizationId);
 
 		// Try to create a new form with the name and the organization
 		Form webformsForm = createForm(importLabel, organizationId);
@@ -240,8 +284,10 @@ public class ApplicationController {
 			ValidateBaseForm validator = new ValidateBaseForm();
 			ValidateReport report = new ValidateReport();
 			if (!validator.validate(abcdForm, report)) {
-				WebformsLogger.warning(this.getClass().getName(), "Import from Abcd failed. - Form not validated");
-				WebformsLogger.warning(this.getClass().getName(), report.getReport());
+				WebformsLogger.warning(this.getClass().getName(),
+						"Import from Abcd failed. - Form not validated");
+				WebformsLogger.warning(this.getClass().getName(),
+						report.getReport());
 				throw new NotValidAbcdForm();
 			}
 
@@ -274,21 +320,24 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns the List of Abcd Forms linked to a form or empty list if there are no links.
+	 * Returns the List of Abcd Forms linked to a form or empty list if there
+	 * are no links.
 	 * 
 	 * @param form
 	 * @return
 	 * @throws UnexpectedDatabaseException
 	 * @throws BadAbcdLink
 	 */
-	public List<com.biit.abcd.persistence.entity.Form> getLinkedAbcdForm(Form form) throws UnexpectedDatabaseException,
-			BadAbcdLink {
+	public List<com.biit.abcd.persistence.entity.Form> getLinkedAbcdForm(
+			Form form) throws UnexpectedDatabaseException, BadAbcdLink {
 		List<com.biit.abcd.persistence.entity.Form> linkedForms = new ArrayList<>();
-		if (form.getLinkedFormLabel() != null && form.getLinkedFormOrganizationId() != null) {
+		if (form.getLinkedFormLabel() != null
+				&& form.getLinkedFormOrganizationId() != null) {
 			try {
 				for (Integer version : form.getLinkedFormVersions()) {
-					com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.getForm(form.getLinkedFormLabel(),
-							version, form.getLinkedFormOrganizationId());
+					com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd
+							.getForm(form.getLinkedFormLabel(), version,
+									form.getLinkedFormOrganizationId());
 					if (abcdForm == null) {
 						throw new BadAbcdLink();
 					}
@@ -303,7 +352,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns abcd simpleViewForm linked to form using it's name, version and organizationId.
+	 * Returns abcd simpleViewForm linked to form using it's name, version and
+	 * organizationId.
 	 * 
 	 * @param form
 	 * @return
@@ -311,8 +361,10 @@ public class ApplicationController {
 	public List<SimpleFormView> getLinkedSimpleAbcdForms(Form form) {
 		List<SimpleFormView> linkedSimpleAbcdForms = new ArrayList<SimpleFormView>();
 		if (form.getLabel() != null && form.getOrganizationId() != null) {
-			List<SimpleFormView> views = simpleFormDaoAbcd.getSimpleFormViewByLabelAndOrganization(
-					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
+			List<SimpleFormView> views = simpleFormDaoAbcd
+					.getSimpleFormViewByLabelAndOrganization(
+							form.getLinkedFormLabel(),
+							form.getLinkedFormOrganizationId());
 			for (SimpleFormView view : views) {
 				if (form.getLinkedFormVersions().contains(view.getVersion())) {
 					linkedSimpleAbcdForms.add(view);
@@ -322,14 +374,21 @@ public class ApplicationController {
 		return linkedSimpleAbcdForms;
 	}
 
-	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException,
-			NotValidStorableObjectException, CharacterNotAllowedException, UnexpectedDatabaseException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-				+ " createNewFormVersion " + form);
+	public Form createNewFormVersion(Form form)
+			throws NewVersionWithoutFinalDesignException,
+			NotValidStorableObjectException, CharacterNotAllowedException,
+			UnexpectedDatabaseException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: "
+				+ getUserEmailAddress() + " createNewFormVersion " + form);
 
 		if (form.getStatus() == FormWorkStatus.DESIGN) {
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " createNewFormVersion " + form + " tried to create a new form version that is still in design");
+			WebformsLogger
+					.info(ApplicationController.class.getName(),
+							"User: "
+									+ getUserEmailAddress()
+									+ " createNewFormVersion "
+									+ form
+									+ " tried to create a new form version that is still in design");
 			throw new NewVersionWithoutFinalDesignException();
 		}
 
@@ -337,15 +396,18 @@ public class ApplicationController {
 		try {
 			newFormVersion = form.createNewVersion(getUser());
 		} catch (CharacterNotAllowedException | NotValidStorableObjectException ex) {
-			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " createForm " + ex.getMessage());
+			WebformsLogger.severe(
+					ApplicationController.class.getName(),
+					"User: " + getUserEmailAddress() + " createForm "
+							+ ex.getMessage());
 			throw ex;
 		}
 
 		try {
 			formDao.makePersistent(newFormVersion);
 		} catch (ConstraintViolationException cve) {
-			WebformsLogger.errorMessage(ApplicationController.class.getName(), cve);
+			WebformsLogger.errorMessage(ApplicationController.class.getName(),
+					cve);
 			throw cve;
 		} catch (UnexpectedDatabaseException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -354,15 +416,18 @@ public class ApplicationController {
 		return newFormVersion;
 	}
 
-	public void changeFormDescription(Form form, String text) throws FieldTooLongException, UnexpectedDatabaseException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-				+ " changeFormDescription " + form + " " + text);
+	public void changeFormDescription(Form form, String text)
+			throws FieldTooLongException, UnexpectedDatabaseException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: "
+				+ getUserEmailAddress() + " changeFormDescription " + form
+				+ " " + text);
 		try {
 			form.setDescription(text);
 			formDao.makePersistent(form);
 		} catch (FieldTooLongException e) {
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " changeFormDescription " + e.getMessage());
+			WebformsLogger.info(ApplicationController.class.getName(),
+					"User: " + getUserEmailAddress()
+							+ " changeFormDescription " + e.getMessage());
 			throw e;
 		} catch (UnexpectedDatabaseException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -393,11 +458,11 @@ public class ApplicationController {
 		UiAccesser.lockForm(form, user);
 
 		if (form instanceof Block) {
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " setFormInUse Block:" + form);
+			WebformsLogger.info(ApplicationController.class.getName(), "User: "
+					+ getUserEmailAddress() + " setFormInUse Block:" + form);
 		} else {
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " setFormInUse Form: " + form);
+			WebformsLogger.info(ApplicationController.class.getName(), "User: "
+					+ getUserEmailAddress() + " setFormInUse Form: " + form);
 		}
 
 		this.formInUse = form;
@@ -423,8 +488,8 @@ public class ApplicationController {
 
 	public void clearFormInUse() {
 		if (formInUse != null) {
-			WebformsLogger.info(ApplicationController.class.getName(), "User: '" + getUserEmailAddress()
-					+ "' clearFormInUse");
+			WebformsLogger.info(ApplicationController.class.getName(),
+					"User: '" + getUserEmailAddress() + "' clearFormInUse");
 			UiAccesser.releaseForm(formInUse, user);
 			formInUse = null;
 			setUnsavedFormChanges(false);
@@ -440,7 +505,8 @@ public class ApplicationController {
 	public Category addNewCategory() {
 		try {
 			setUnsavedFormChanges(true);
-			return (Category) insertTreeObject(Category.class, getFormInUse(), "Category");
+			return (Category) insertTreeObject(Category.class, getFormInUse(),
+					"Category");
 		} catch (NotValidChildException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -467,7 +533,8 @@ public class ApplicationController {
 	 * @return
 	 * @throws NotValidChildException
 	 */
-	public Question addNewQuestion(TreeObject parent) throws NotValidChildException {
+	public Question addNewQuestion(TreeObject parent)
+			throws NotValidChildException {
 		setUnsavedFormChanges(true);
 		return (Question) insertTreeObject(Question.class, parent, "Question");
 	}
@@ -479,9 +546,11 @@ public class ApplicationController {
 	 * @return
 	 * @throws NotValidChildException
 	 */
-	public SystemField addNewSystemField(TreeObject parent) throws NotValidChildException {
+	public SystemField addNewSystemField(TreeObject parent)
+			throws NotValidChildException {
 		setUnsavedFormChanges(true);
-		return (SystemField) insertTreeObject(SystemField.class, parent, "SystemField");
+		return (SystemField) insertTreeObject(SystemField.class, parent,
+				"SystemField");
 	}
 
 	/**
@@ -509,7 +578,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Creates any kind of TreeObject descendant with @name and inserts into parent if possible.
+	 * Creates any kind of TreeObject descendant with @name and inserts into
+	 * parent if possible.
 	 * 
 	 * @param classType
 	 * @param parent
@@ -517,11 +587,12 @@ public class ApplicationController {
 	 * @return
 	 * @throws NotValidChildException
 	 */
-	public TreeObject insertTreeObject(Class<? extends TreeObject> classType, TreeObject parent, String name)
-			throws NotValidChildException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-				+ " insertTreeObject of type '" + classType.getName() + "' to '" + parent + "' with name '" + name
-				+ "' START");
+	public TreeObject insertTreeObject(Class<? extends TreeObject> classType,
+			TreeObject parent, String name) throws NotValidChildException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: "
+				+ getUserEmailAddress() + " insertTreeObject of type '"
+				+ classType.getName() + "' to '" + parent + "' with name '"
+				+ name + "' START");
 
 		TreeObject treeObject = null;
 		try {
@@ -533,14 +604,17 @@ public class ApplicationController {
 			treeObject.setUpdatedBy(UserSessionHandler.getUser());
 			parent.addChild(treeObject);
 			setUnsavedFormChanges(true);
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " inserted '"
-					+ treeObject + "' into '" + parent + "'");
-		} catch (FieldTooLongException | InstantiationException | IllegalAccessException | CharacterNotAllowedException e) {
+			WebformsLogger.info(ApplicationController.class.getName(), "User: "
+					+ getUserEmailAddress() + " inserted '" + treeObject
+					+ "' into '" + parent + "'");
+		} catch (FieldTooLongException | InstantiationException
+				| IllegalAccessException | CharacterNotAllowedException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		} catch (NotValidChildException e) {
-			WebformsLogger.severe(this.getClass().getName(), "Element of type '" + classType.getName()
-					+ "' could not be inserted in '" + parent + "'");
+			WebformsLogger.severe(this.getClass().getName(),
+					"Element of type '" + classType.getName()
+							+ "' could not be inserted in '" + parent + "'");
 			throw e;
 		}
 
@@ -558,9 +632,11 @@ public class ApplicationController {
 					maxNewString = Math.max(maxNewString, 1);
 				} else {
 					// Other, extract number (newStringint)
-					String value = child.getName().substring(newString.length());
+					String value = child.getName()
+							.substring(newString.length());
 					try {
-						maxNewString = Math.max(maxNewString, Integer.parseInt(value));
+						maxNewString = Math.max(maxNewString,
+								Integer.parseInt(value));
 					} catch (NumberFormatException nfe) {
 						// This is not an error, it won't be logged because it's
 						// just for controlling when new-element tag is used
@@ -585,9 +661,11 @@ public class ApplicationController {
 	 * @param row
 	 * @throws DependencyExistException
 	 */
-	public void removeTreeObject(TreeObject row) throws DependencyExistException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-				+ " removeTreeObject " + row + " of " + row.getAncestor(Form.class));
+	public void removeTreeObject(TreeObject row)
+			throws DependencyExistException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: "
+				+ getUserEmailAddress() + " removeTreeObject " + row + " of "
+				+ row.getAncestor(Form.class));
 
 		row.remove();
 		setUnsavedFormChanges(true);
@@ -599,8 +677,8 @@ public class ApplicationController {
 	 * @param row
 	 */
 	public void moveUp(TreeObject row) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " moveUp " + row
-				+ " START");
+		WebformsLogger.info(ApplicationController.class.getName(), "User: "
+				+ getUserEmailAddress() + " moveUp " + row + " START");
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
 			int index = parent.getChildren().indexOf(row);
@@ -618,8 +696,8 @@ public class ApplicationController {
 	 * @param row
 	 */
 	public void moveDown(TreeObject row) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " moveDown "
-				+ row);
+		WebformsLogger.info(ApplicationController.class.getName(), "User: "
+				+ getUserEmailAddress() + " moveDown " + row);
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
 			int index = parent.getChildren().indexOf(row);
@@ -654,7 +732,8 @@ public class ApplicationController {
 		saveForm(form);
 	}
 
-	public void saveAsBlock(TreeObject element, String blockLabel, Long organizationId) throws FieldTooLongException,
+	public void saveAsBlock(TreeObject element, String blockLabel,
+			Long organizationId) throws FieldTooLongException,
 			FormWithSameNameException, UnexpectedDatabaseException {
 		logInfoStart("saveAsBlock ", element, blockLabel, organizationId);
 
@@ -662,7 +741,8 @@ public class ApplicationController {
 		try {
 			// First we generate a copy. This can abort the whole process if the
 			// resulted simplification is not complete.
-			Form copiedForm = formInUse.generateFormCopiedSimplification(element);
+			Form copiedForm = formInUse
+					.generateFormCopiedSimplification(element);
 			copiedForm.resetIds();
 
 			// Now we create the new block
@@ -674,7 +754,8 @@ public class ApplicationController {
 			block.setUpdatedBy(getUser());
 			block.setUpdateTime();
 			blockDao.makePersistent(block);
-		} catch (NotValidChildException | CharacterNotAllowedException | NotValidStorableObjectException e) {
+		} catch (NotValidChildException | CharacterNotAllowedException
+				| NotValidStorableObjectException e) {
 			// Impossible, still, if fails remove block.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			if (block != null) {
@@ -685,7 +766,8 @@ public class ApplicationController {
 
 	public void updateForm(Form form, String label, String description) {
 		try {
-			if (!form.getLabel().equals(label) || !form.getDescription().equals(description)) {
+			if (!form.getLabel().equals(label)
+					|| !form.getDescription().equals(description)) {
 				setUnsavedFormChanges(true);
 				logInfoStart("updateForm", form, label, description);
 			}
@@ -698,9 +780,11 @@ public class ApplicationController {
 		}
 	}
 
-	public void updateAnswer(Answer answer, String value, String label, String description) {
+	public void updateAnswer(Answer answer, String value, String label,
+			String description) {
 		try {
-			if (!answer.getLabel().equals(label) || !answer.getDescription().equals(description)
+			if (!answer.getLabel().equals(label)
+					|| !answer.getDescription().equals(description)
 					|| !answer.getValue().equals(value)) {
 				setUnsavedFormChanges(true);
 				logInfoStart("updateAnswer", answer, value, label, description);
@@ -718,7 +802,8 @@ public class ApplicationController {
 
 	public void updateCategory(Category category, String name, String label) {
 		try {
-			if (!category.getName().equals(label) || !category.getLabel().equals(label)) {
+			if (!category.getName().equals(label)
+					|| !category.getLabel().equals(label)) {
 				setUnsavedFormChanges(true);
 				logInfoStart("updateCategory", category, name, label);
 			}
@@ -732,9 +817,12 @@ public class ApplicationController {
 		}
 	}
 
-	public void updateGroup(Group group, String name, String label, boolean repeatable) {
+	public void updateGroup(Group group, String name, String label,
+			boolean repeatable) {
 		try {
-			if (!group.getName().equals(name) || !group.getLabel().equals(label) || group.isRepeatable() != repeatable) {
+			if (!group.getName().equals(name)
+					|| !group.getLabel().equals(label)
+					|| group.isRepeatable() != repeatable) {
 				setUnsavedFormChanges(true);
 				logInfoStart("updateGroup", group, name, label, repeatable);
 			}
@@ -749,19 +837,25 @@ public class ApplicationController {
 		}
 	}
 
-	public void updateQuestion(Question question, String name, String label, String description, boolean mandatory,
-			AnswerType answerType, AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal) {
+	public void updateQuestion(Question question, String name, String label,
+			String description, boolean mandatory, AnswerType answerType,
+			AnswerFormat answerFormat, AnswerSubformat answerSubformat,
+			boolean horizontal) {
 		try {
 			if (!question.getLabel().equals(label)
 					|| !question.getDescription().equals(description)
 					|| !question.getName().equals(name)
 					|| question.isMandatory() != mandatory
-					|| (question.getAnswerType() != null && !question.getAnswerType().equals(answerType))
-					|| (question.getAnswerFormat() != null && !question.getAnswerFormat().equals(answerFormat))
-					|| (question.getAnswerSubformat() != null && !question.getAnswerSubformat().equals(answerSubformat))
+					|| (question.getAnswerType() != null && !question
+							.getAnswerType().equals(answerType))
+					|| (question.getAnswerFormat() != null && !question
+							.getAnswerFormat().equals(answerFormat))
+					|| (question.getAnswerSubformat() != null && !question
+							.getAnswerSubformat().equals(answerSubformat))
 					|| question.isHorizontal() != horizontal) {
 				setUnsavedFormChanges(true);
-				logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat,
+				logInfoStart("updateQuestion", question, name, label,
+						description, mandatory, answerType, answerFormat,
 						answerSubformat, horizontal);
 			}
 
@@ -775,22 +869,26 @@ public class ApplicationController {
 			question.setHorizontal(horizontal);
 			question.setUpdatedBy(UserSessionHandler.getUser());
 			question.setUpdateTime();
-		} catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException
+		} catch (FieldTooLongException | InvalidAnswerFormatException
+				| CharacterNotAllowedException
 				| InvalidAnswerSubformatException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
-	 * hierarchy seed and introduces to current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone
+	 * of the block using the element as hierarchy seed and introduces to
+	 * current form as a new category.
 	 * 
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
 	 */
-	public void insertBlock(TreeObject element) throws CategoryWithSameNameAlreadyExistsInForm {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " insertBlock "
-				+ formInUse + " " + element);
+	public void insertBlock(TreeObject element)
+			throws CategoryWithSameNameAlreadyExistsInForm {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: "
+				+ getUserEmailAddress() + " insertBlock " + formInUse + " "
+				+ element);
 
 		// Check name uniqueness first
 		Category category = (Category) element.getAncestor(Category.class);
@@ -801,14 +899,16 @@ public class ApplicationController {
 
 		try {
 			Block blockToInsert = (Block) element.getAncestor(Block.class);
-			Block copiedBlock = (Block) blockToInsert.generateFormCopiedSimplification(element);
+			Block copiedBlock = (Block) blockToInsert
+					.generateFormCopiedSimplification(element);
 			copiedBlock.resetIds();
 
 			formInUse.addChildren(copiedBlock.getChildren());
 			formInUse.addFlows(copiedBlock.getFlows());
 
 			setUnsavedFormChanges(true);
-		} catch (NotValidStorableObjectException | NotValidChildException | CharacterNotAllowedException e) {
+		} catch (NotValidStorableObjectException | NotValidChildException
+				| CharacterNotAllowedException e) {
 			// Impossible.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -823,32 +923,38 @@ public class ApplicationController {
 	 * @throws SameOriginAndDestinationException
 	 * @throws DestinyIsContainedAtOrigin
 	 */
-	public void moveTo(TreeObject origin, TreeObject destiny) throws NotValidChildException,
-			SameOriginAndDestinationException, DestinyIsContainedAtOrigin, ChildrenNotFoundException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " move " + origin
-				+ " to " + destiny);
+	public void moveTo(TreeObject origin, TreeObject destiny)
+			throws NotValidChildException, SameOriginAndDestinationException,
+			DestinyIsContainedAtOrigin, ChildrenNotFoundException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User: "
+				+ getUserEmailAddress() + " move " + origin + " to " + destiny);
 		if (origin.equals(destiny)) {
-			throw new SameOriginAndDestinationException("Origin and destination are the same element");
+			throw new SameOriginAndDestinationException(
+					"Origin and destination are the same element");
 		}
 		if (origin.contains(destiny)) {
-			throw new DestinyIsContainedAtOrigin("Origin is contained inside destination element.");
+			throw new DestinyIsContainedAtOrigin(
+					"Origin is contained inside destination element.");
 		}
 		if (destiny.getChild(origin.getName()) != null) {
-			MessageManager.showWarning(LanguageCodes.WARNING_ELEMENT_WTIH_SAME_NAME_EXIST);
+			MessageManager
+					.showWarning(LanguageCodes.WARNING_ELEMENT_WTIH_SAME_NAME_EXIST);
 		}
 		try {
 			destiny.addChild(origin);
 			TreeObject.move(origin, destiny);
 			setUnsavedFormChanges(true);
 		} catch (NotValidChildException | ChildrenNotFoundException e) {
-			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " move "
-					+ origin + " to " + destiny + " could not be done.");
+			WebformsLogger.warning(ApplicationController.class.getName(),
+					"User: " + getUserEmailAddress() + " move " + origin
+							+ " to " + destiny + " could not be done.");
 			throw e;
 		}
 	}
 
 	/**
-	 * This function is called when the ui has expired. The implementation needs to free any "locked" resources
+	 * This function is called when the ui has expired. The implementation needs
+	 * to free any "locked" resources
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
@@ -867,8 +973,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Update flow content. This function currently is a direct call to the structure function. If the flow is not on
-	 * the form, it gets added.
+	 * Update flow content. This function currently is a direct call to the
+	 * structure function. If the flow is not on the form, it gets added.
 	 * 
 	 * @param flow
 	 * @param origin
@@ -881,10 +987,13 @@ public class ApplicationController {
 	 * @throws FlowDestinyIsBeforeOrigin
 	 * @throws FlowWithoutDestiny
 	 */
-	public void updateFlowContent(Flow flow, TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
-			List<Token> condition) throws BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
-		logInfoStart("updateFlowContent", flow, origin, flowType, destiny, others, condition);
+	public void updateFlowContent(Flow flow, TreeObject origin,
+			FlowType flowType, TreeObject destiny, boolean others,
+			List<Token> condition) throws BadFlowContentException,
+			FlowWithoutSource, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+		logInfoStart("updateFlowContent", flow, origin, flowType, destiny,
+				others, condition);
 
 		flow.setContent(origin, flowType, destiny, others, condition);
 
@@ -902,14 +1011,15 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Updates flow update time and updated by in flow. The content of the flow was already modified by
-	 * {@link WindowFlow}
+	 * Updates flow update time and updated by in flow. The content of the flow
+	 * was already modified by {@link WindowFlow}
 	 * 
 	 * @param flow
 	 */
 	public void updateFlow(Flow flow) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " updateFlow "
-				+ flow + " in " + getFormInUse() + "START");
+		WebformsLogger.info(ApplicationController.class.getName(), "User: "
+				+ getUserEmailAddress() + " updateFlow " + flow + " in "
+				+ getFormInUse() + "START");
 		flow.setUpdateTime();
 		flow.setUpdatedBy(getUser());
 		setUnsavedFormChanges(true);
@@ -941,7 +1051,8 @@ public class ApplicationController {
 		Set<Flow> clones = cloneFlows(selectedFlows);
 		for (Flow clone : clones) {
 			clone.resetIds();
-			addFlowToForm(clone, UserSessionHandler.getController().getFormInUse());
+			addFlowToForm(clone, UserSessionHandler.getController()
+					.getFormInUse());
 			setUnsavedFormChanges(true);
 		}
 		return clones;
@@ -957,9 +1068,11 @@ public class ApplicationController {
 	 * @param value
 	 * @return
 	 */
-	public Token createTokenComparationValue(TokenTypes type, Question question, AnswerSubformat valueAnswerSubformat,
+	public Token createTokenComparationValue(TokenTypes type,
+			Question question, AnswerSubformat valueAnswerSubformat,
 			DatePeriodUnit datePeriodUnit, String value) {
-		Token token = TokenComparationValue.getToken(type, question, valueAnswerSubformat, datePeriodUnit, value);
+		Token token = TokenComparationValue.getToken(type, question,
+				valueAnswerSubformat, datePeriodUnit, value);
 		token.setCreatedBy(UserSessionHandler.getUser());
 		token.setUpdatedBy(UserSessionHandler.getUser());
 		token.setUpdateTime();
@@ -984,8 +1097,9 @@ public class ApplicationController {
 	}
 
 	private void logInfoStart(String functionName, Object... parameters) {
-		WebformsLogger.info(ApplicationController.class.getName(),
-				getUserInfo() + " " + getFunctionInfo(functionName, parameters));
+		WebformsLogger
+				.info(ApplicationController.class.getName(), getUserInfo()
+						+ " " + getFunctionInfo(functionName, parameters));
 	}
 
 	protected String getUserInfo() {
@@ -1018,7 +1132,8 @@ public class ApplicationController {
 	}
 
 	public void logOut() {
-		WebformsLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
+		WebformsLogger.info(this.getClass().getName(), "User '"
+				+ UserSessionHandler.getUser().getEmailAddress()
 				+ "' has logged out.");
 		clearFormInUse();
 		ApplicationUi.navigateTo(WebMap.LOGIN_PAGE);
@@ -1040,13 +1155,17 @@ public class ApplicationController {
 		TreeTableProvider<com.biit.abcd.persistence.entity.Form> provider = new TreeTableProvider<com.biit.abcd.persistence.entity.Form>() {
 
 			@Override
-			public Collection<com.biit.abcd.persistence.entity.Form> getAll() throws UnexpectedDatabaseException {
+			public Collection<com.biit.abcd.persistence.entity.Form> getAll()
+					throws UnexpectedDatabaseException {
 				List<com.biit.abcd.persistence.entity.Form> forms = new ArrayList<>();
 
-				Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
-						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
+				Set<Organization> userOrganizations = WebformsAuthorizationService
+						.getInstance().getUserOrganizationsWhereIsAuthorized(
+								UserSessionHandler.getUser(),
+								WebformsActivity.READ);
 				for (Organization organization : userOrganizations) {
-					forms.addAll(getFormDaoAbcd().getAll(organization.getOrganizationId()));
+					forms.addAll(getFormDaoAbcd().getAll(
+							organization.getOrganizationId()));
 				}
 				return forms;
 			}
@@ -1063,14 +1182,18 @@ public class ApplicationController {
 					throws UnexpectedDatabaseException {
 				List<com.biit.webforms.persistence.entity.SimpleFormView> userForms = new ArrayList<>();
 
-				List<com.biit.webforms.persistence.entity.SimpleFormView> simpleForms = simpleFormDaoWebforms.getAll();
+				List<com.biit.webforms.persistence.entity.SimpleFormView> simpleForms = simpleFormDaoWebforms
+						.getAll();
 
-				Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
-						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
+				Set<Organization> userOrganizations = WebformsAuthorizationService
+						.getInstance().getUserOrganizationsWhereIsAuthorized(
+								UserSessionHandler.getUser(),
+								WebformsActivity.READ);
 
 				for (com.biit.webforms.persistence.entity.SimpleFormView form : simpleForms) {
 					for (Organization organization : userOrganizations) {
-						if (form.getOrganizationId().equals(organization.getOrganizationId())) {
+						if (form.getOrganizationId().equals(
+								organization.getOrganizationId())) {
 							userForms.add(form);
 						}
 					}
@@ -1083,7 +1206,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Get all forms where the user has READ permission in ABCD and EDIT permissions in Webforms.
+	 * Get all forms where the user has READ permission in ABCD and EDIT
+	 * permissions in Webforms.
 	 * 
 	 * @return
 	 */
@@ -1097,27 +1221,35 @@ public class ApplicationController {
 				// Get all organizations where user has read permissions and
 				// store ids in a hash map. User must be in the same
 				// organizations in both ABCD and WebForms.
-				Set<Organization> userOrganizationsFromAbcd = AbcdAuthorizationService.getInstance()
-						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), AbcdActivity.READ);
+				Set<Organization> userOrganizationsFromAbcd = AbcdAuthorizationService
+						.getInstance()
+						.getUserOrganizationsWhereIsAuthorized(
+								UserSessionHandler.getUser(), AbcdActivity.READ);
 				HashSet<Long> userAbcdOrganizationIds = new HashSet<Long>();
 				for (Organization organization : userOrganizationsFromAbcd) {
-					userAbcdOrganizationIds.add(organization.getOrganizationId());
+					userAbcdOrganizationIds.add(organization
+							.getOrganizationId());
 				}
 
-				Set<Organization> userOrganizationsFromWebforms = WebformsAuthorizationService.getInstance()
-						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(),
+				Set<Organization> userOrganizationsFromWebforms = WebformsAuthorizationService
+						.getInstance().getUserOrganizationsWhereIsAuthorized(
+								UserSessionHandler.getUser(),
 								WebformsActivity.FORM_EDITING);
 				HashSet<Long> userWebformsOrganizationIds = new HashSet<Long>();
 				for (Organization organization : userOrganizationsFromWebforms) {
-					userWebformsOrganizationIds.add(organization.getOrganizationId());
+					userWebformsOrganizationIds.add(organization
+							.getOrganizationId());
 				}
 
 				// Get all simple forms and add to the form list if their
 				// organization id is on the organization id map.
-				List<SimpleFormView> simpleForms = getSimpleFormDaoAbcd().getAll();
+				List<SimpleFormView> simpleForms = getSimpleFormDaoAbcd()
+						.getAll();
 				for (SimpleFormView simpleForm : simpleForms) {
-					if (userAbcdOrganizationIds.contains(simpleForm.getOrganizationId())
-							&& userWebformsOrganizationIds.contains(simpleForm.getOrganizationId())) {
+					if (userAbcdOrganizationIds.contains(simpleForm
+							.getOrganizationId())
+							&& userWebformsOrganizationIds.contains(simpleForm
+									.getOrganizationId())) {
 						forms.add(simpleForm);
 					}
 				}
@@ -1139,23 +1271,27 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns all organizations where user has permission to do all the activities in activitiesFilter.
+	 * Returns all organizations where user has permission to do all the
+	 * activities in activitiesFilter.
 	 * 
 	 * @param activitiesFilter
 	 * @return
 	 */
-	public Set<Organization> getOrganizatiosWhereUser(IActivity... activitiesFilter) {
+	public Set<Organization> getOrganizatiosWhereUser(
+			IActivity... activitiesFilter) {
 		try {
-			Set<Organization> organizations = WebformsAuthorizationService.getInstance().getUserOrganizations(
-					UserSessionHandler.getUser());
+			Set<Organization> organizations = WebformsAuthorizationService
+					.getInstance().getUserOrganizations(
+							UserSessionHandler.getUser());
 			Iterator<Organization> itr = organizations.iterator();
 			while (itr.hasNext()) {
 				Organization organization = itr.next();
 				for (IActivity activity : activitiesFilter) {
 					// If the user doesn't comply to all activities in the
 					// filter in the group, then exit
-					if (!WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-							organization, activity)) {
+					if (!WebformsAuthorizationService.getInstance()
+							.isAuthorizedActivity(UserSessionHandler.getUser(),
+									organization, activity)) {
 						itr.remove();
 						break;
 					}
@@ -1189,26 +1325,32 @@ public class ApplicationController {
 		return null;
 	}
 
-	public List<com.biit.webforms.persistence.entity.SimpleFormView> getSimpleFormVersionsWebforms(String label,
-			Long organizationId) {
+	public List<com.biit.webforms.persistence.entity.SimpleFormView> getSimpleFormVersionsWebforms(
+			String label, Long organizationId) {
 		List<com.biit.webforms.persistence.entity.SimpleFormView> filteredForms = new ArrayList<>();
-		List<com.biit.webforms.persistence.entity.SimpleFormView> forms = simpleFormDaoWebforms.getAll();
+		List<com.biit.webforms.persistence.entity.SimpleFormView> forms = simpleFormDaoWebforms
+				.getAll();
 
 		for (com.biit.webforms.persistence.entity.SimpleFormView form : forms) {
-			if (form.getLabel().equals(label) && form.getOrganizationId().equals(organizationId)) {
+			if (form.getLabel().equals(label)
+					&& form.getOrganizationId().equals(organizationId)) {
 				filteredForms.add(form);
 			}
 		}
 		return filteredForms;
 	}
 
-	public void changeFormStatus(IWebformsFormView formView, FormWorkStatus value) throws NotEnoughRightsToChangeStatusException {
+	public void changeFormStatus(IWebformsFormView formView,
+			FormWorkStatus value) throws NotEnoughRightsToChangeStatusException {
 		// Can downgrade
-		boolean userCanDowngradeStatus = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
-				UserSessionHandler.getUser(), formView, WebformsActivity.FORM_STATUS_DOWNGRADE);
+		boolean userCanDowngradeStatus = WebformsAuthorizationService
+				.getInstance().isAuthorizedActivity(
+						UserSessionHandler.getUser(), formView,
+						WebformsActivity.FORM_STATUS_DOWNGRADE);
 		// Or if you have admin rights.
-		boolean userIsAdmin = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
-				UserSessionHandler.getUser(), formView, WebformsActivity.ADMIN_RIGHTS);
+		boolean userIsAdmin = WebformsAuthorizationService.getInstance()
+				.isAuthorizedActivity(UserSessionHandler.getUser(), formView,
+						WebformsActivity.ADMIN_RIGHTS);
 
 		if (!formView.getStatus().isMovingForward(value)) {
 			if (!(userCanDowngradeStatus || userIsAdmin)) {
