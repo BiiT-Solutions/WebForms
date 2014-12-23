@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -118,8 +119,9 @@ public class WindowGenerateXml extends WindowAcceptCancel {
 		int digits = (int)(Math.log10(numberOfFiles)+1);		
 		
 		for(int i=0; i<xmlFiles.size();i++){
+			System.out.println("Default charset: "+Charset.defaultCharset());
 			String currentFile = String.format("%0"+digits+"d", i);
-			addFileToZip(zos, xmlFiles.get(i).getBytes(), "export_"+currentFile+".xml");
+			addFileToZip(zos, xmlFiles.get(i).getBytes(Charset.forName("UTF-8")), "export_"+currentFile+".xml");
 		}
 
 		zos.closeEntry();

@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -60,7 +61,7 @@ public class XmlUtils {
 
 	public static InputStream formatToInputStream(String xml) {
 		StringWriter result = formatToStringWriter(xml);
-		return new ByteArrayInputStream(result.getBuffer().toString().getBytes());
+		return new ByteArrayInputStream(result.getBuffer().toString().getBytes(Charset.forName("UTF-8")));
 	}
 
 	public static String normalizeNodeName(String originalString) {
@@ -75,7 +76,7 @@ public class XmlUtils {
 		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
 		// load a WXS schema, represented by a Schema instance
-		Source schemaFile = new StreamSource(new ByteArrayInputStream(xsd.getBytes()));
+		Source schemaFile = new StreamSource(new ByteArrayInputStream(xsd.getBytes(Charset.forName("UTF-8"))));
 		Schema schema = factory.newSchema(schemaFile);
 
 		// create a Validator instance, which can be used to validate an
@@ -84,7 +85,7 @@ public class XmlUtils {
 
 		// validate the DOM tree
 		try {
-			validator.validate(new StreamSource(new ByteArrayInputStream(xml.getBytes())));
+			validator.validate(new StreamSource(new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8")))));
 		} catch (SAXException e) {
 			resultString += e.getMessage() + System.lineSeparator();
 		}

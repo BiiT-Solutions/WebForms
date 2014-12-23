@@ -232,6 +232,10 @@ public class XmlExporter {
 				// Skip empty domains
 				continue;
 			}
+			if(compiledDomains.get(flow).isEmpty()){
+				//Skip
+				continue;
+			}
 			randomValues.putAll(compiledDomains.get(flow).generateRandomValue());
 		}
 		return randomValues;

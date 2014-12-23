@@ -284,7 +284,13 @@ public abstract class RealRange<T extends Comparable<T>> {
 	}
 
 	public T generateRandomValue() {
-		int randomNum = random.nextInt((limits.size() - 1) + 1);
+		if(limits.size()==0){
+			System.out.println("wtf? "+ this);
+		}
+		if(limits.size()==1){
+			return generateRandomValue(limits.get(0));
+		}
+		int randomNum = random.nextInt(limits.size());
 		return generateRandomValue(limits.get(randomNum));
 	}
 

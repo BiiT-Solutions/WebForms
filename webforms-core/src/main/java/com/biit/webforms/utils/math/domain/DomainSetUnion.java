@@ -117,7 +117,12 @@ public class DomainSetUnion extends DomainSet {
 		if(domains== null || domains.isEmpty()){
 			return new HashMap<Question, String>();
 		}
-		int randomInt = random.nextInt(domains.size());
-		return domains.get(randomInt).generateRandomValue();
+		for(IDomain domain:domains){
+			if(domain.isComplete()){
+				continue;
+			}
+			return domain.generateRandomValue();
+		}
+		return null;
 	}
 }
