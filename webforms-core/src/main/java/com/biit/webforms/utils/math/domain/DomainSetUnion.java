@@ -68,7 +68,7 @@ public class DomainSetUnion extends DomainSet {
 	}
 
 	@Override
-	public boolean isEmpty() {
+	public boolean isEmpty() {	
 		for (IDomain domain : domainQuestions.values()) {
 			if (domain.isEmpty()) {
 				return true;

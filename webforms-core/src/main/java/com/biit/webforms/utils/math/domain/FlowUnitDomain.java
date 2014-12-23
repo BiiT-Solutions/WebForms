@@ -34,28 +34,45 @@ import com.biit.webforms.utils.parser.exceptions.ParseException;
  */
 public class FlowUnitDomain {
 
-	public FlowUnitDomain(Form form, BaseQuestion from) throws BadFormedExpressions, IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
+	public FlowUnitDomain(Form form, BaseQuestion from) throws BadFormedExpressions, IncompleteLogic, RedundantLogic,
+			DifferentDateUnitForQuestions {
 		Set<Flow> flows = form.getFlowsFrom(from);
 		checkSameDateUnitForQuestion(flows);
 		List<IDomain> domains = getFlowDomains(flows);
 		checkUnicity(domains);
-		checkCompleteness(domains);
+		if (!containFlowOthers(flows)) {
+			checkCompleteness(domains);
+		}
 	}
 
-	private void checkSameDateUnitForQuestion(Set<Flow> flows) throws DifferentDateUnitForQuestions {
+	private boolean containFlowOthers(Set<Flow> flows) {
+		for(Flow flow: flows){
+			if(flow.isOthers()){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void checkSameDateUnitForQuestion(Set<Flow> flows)
+			throws DifferentDateUnitForQuestions {
 		HashMap<Question, AnswerSubformat> questionDateUnit = new HashMap<>();
 		Set<Question> questionsAffected = new HashSet<>();
-		for(Flow flow: flows){
+		for (Flow flow : flows) {
 			List<Token> tokens = flow.getConditionSimpleTokens();
-			for(Token token: tokens){
-				if(token instanceof TokenComparationValue){
+			for (Token token : tokens) {
+				if (token instanceof TokenComparationValue) {
 					TokenComparationValue tokenValue = (TokenComparationValue) token;
 					Question question = tokenValue.getQuestion();
-					if(question.getAnswerFormat()!=null && question.getAnswerFormat()==AnswerFormat.DATE){
-						if(!questionDateUnit.containsKey(question)){
-							questionDateUnit.put(question, ((TokenComparationValue) token).getSubformat());
-						}else{
-							if(questionDateUnit.get(question)!=tokenValue.getSubformat()){
+					if (question.getAnswerFormat() != null
+							&& question.getAnswerFormat() == AnswerFormat.DATE) {
+						if (!questionDateUnit.containsKey(question)) {
+							questionDateUnit.put(question,
+									((TokenComparationValue) token)
+											.getSubformat());
+						} else {
+							if (questionDateUnit.get(question) != tokenValue
+									.getSubformat()) {
 								questionsAffected.add(question);
 							}
 						}
@@ -63,7 +80,7 @@ public class FlowUnitDomain {
 				}
 			}
 		}
-		if(!questionsAffected.isEmpty()){
+		if (!questionsAffected.isEmpty()) {
 			throw new DifferentDateUnitForQuestions(questionsAffected);
 		}
 	}
@@ -72,7 +89,7 @@ public class FlowUnitDomain {
 		for (int i = 0; i < domains.size(); i++) {
 			for (int j = i + 1; j < domains.size(); j++) {
 				IDomain intersection = domains.get(i).intersect(domains.get(j));
-				
+
 				if (!intersection.isEmpty()) {
 					throw new RedundantLogic();
 				}
@@ -80,7 +97,8 @@ public class FlowUnitDomain {
 		}
 	}
 
-	private void checkCompleteness(List<IDomain> flowDomains) throws IncompleteLogic {
+	private void checkCompleteness(List<IDomain> flowDomains)
+			throws IncompleteLogic {
 		IDomain unionflowDomain = null;
 
 		if (flowDomains.isEmpty()) {
@@ -102,7 +120,8 @@ public class FlowUnitDomain {
 		}
 	}
 
-	private List<IDomain> getFlowDomains(Set<Flow> flows) throws BadFormedExpressions {
+	private List<IDomain> getFlowDomains(Set<Flow> flows)
+			throws BadFormedExpressions {
 
 		List<IDomain> domains = new ArrayList<>();
 
@@ -126,15 +145,18 @@ public class FlowUnitDomain {
 	}
 
 	private IDomain getDomain(Flow flow) throws BadFormedExpressions {
-		WebformsParser parser = new WebformsParser(flow.getConditionSimpleTokens().iterator());
+		WebformsParser parser = new WebformsParser(flow
+				.getConditionSimpleTokens().iterator());
 		try {
-			WebformsExpression expression = ((WebformsExpression) parser.parseExpression());
-			
+			WebformsExpression expression = ((WebformsExpression) parser
+					.parseExpression());
+
 			if (expression != null) {
 				return expression.getDomain();
 			}
 			return null;
-		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException | IncompleteBinaryOperatorException
+		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException
+				| IncompleteBinaryOperatorException
 				| MissingParenthesisException | EmptyParenthesisException e) {
 			throw new BadFormedExpressions(flow);
 		}

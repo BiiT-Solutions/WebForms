@@ -195,7 +195,7 @@ public abstract class RealRange<T extends Comparable<T>> {
 			}
 
 			int maxRange = limits.size() - 1;
-			if (completeDomain.getRight().compareTo(limits.get(maxRange).getLeft()) > 0) {
+			if (completeDomain.getRight().compareTo(limits.get(maxRange).getRight()) > 0) {
 				inverseRanges.add(new RealLimitPair<T>(limits.get(maxRange).getRight().inverse(), completeDomain
 						.getRight()));
 			}

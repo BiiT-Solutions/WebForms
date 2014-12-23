@@ -28,7 +28,7 @@ public class TestDomain {
 	private static final Object TEST_16 = "[]";
 	private static final String TEST_17 = "[[0.0,3.0)(3.0,4.0][7.0,8.0]]";
 	private static final Object TEST_18 = "[[3.0,3.0](5.0,6.0)(9.0,Infinity)]";
-	private static final Object TEST_19 = "[(-Infinity,0.0)(4.0,7.0)(8.0,20.0)[Infinity,Infinity)]";
+	private static final Object TEST_19 = "[(-Infinity,0.0)(4.0,7.0)(8.0,20.0)]";
 
 	@Test
 	public void testRealRangeGeneration() {
