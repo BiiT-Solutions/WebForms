@@ -4,7 +4,10 @@ import java.util.LinkedHashSet;
 
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
+import com.biit.utils.validation.Report;
+import com.biit.utils.validation.ReportLevel;
 import com.biit.utils.validation.SimpleValidator;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.math.domain.FlowUnitDomain;
 import com.biit.webforms.utils.math.domain.exceptions.BadFormedExpressions;
@@ -39,15 +42,20 @@ public class ValidateLogic extends SimpleValidator<Form> {
 		LinkedHashSet<TreeObject> elements = form.getAllChildrenInHierarchy(BaseQuestion.class);
 		for (TreeObject element : elements) {
 			try {
-				new FlowUnitDomain(form, (BaseQuestion) element);
-			} catch (BadFormedExpressions e) {
-				assertTrue(false, new NotValidCondition(e.getBadFormedExpression()));
-			} catch (IncompleteLogic e) {
-				assertTrue(false, new IncompleteLogicReport(element));
-			} catch (RedundantLogic e) {
-				assertTrue(false, new RedundantLogicReport(element));
-			} catch (DifferentDateUnitForQuestions e) {
-				assertTrue(false, new DifferentDateUnitForQuestionsReport(element,e.getQuestionsAffected()));
+				try {
+					new FlowUnitDomain(form, (BaseQuestion) element);
+				} catch (BadFormedExpressions e) {
+					assertTrue(false, new NotValidCondition(e.getBadFormedExpression()));
+				} catch (IncompleteLogic e) {
+					assertTrue(false, new IncompleteLogicReport(element));
+				} catch (RedundantLogic e) {
+					assertTrue(false, new RedundantLogicReport(element));
+				} catch (DifferentDateUnitForQuestions e) {
+					assertTrue(false, new DifferentDateUnitForQuestionsReport(element, e.getQuestionsAffected()));
+				}
+			} catch (Exception e) {
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+				assertTrue(false, new Report(ReportLevel.WARNING, "Unexpected validation error."));
 			}
 		}
 	}

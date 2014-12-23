@@ -3,7 +3,9 @@ package com.biit.webforms.xsd;
 import com.biit.form.BaseGroup;
 import com.biit.form.BaseRepeatableGroup;
 import com.biit.form.TreeObject;
+import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.xml.XmlUtils;
 
 public class WebformsXsdElement extends XsdElement {
@@ -20,8 +22,15 @@ public class WebformsXsdElement extends XsdElement {
 					putMaxOccurs(1);
 				}
 			} else {
-				putType(XsdElementType.STRING);
 				putMaxOccurs(1);
+				if(element instanceof Question){
+					Question question = (Question) element;
+					if(question.getAnswerType() == AnswerType.SINGLE_SELECTION_LIST || question.getAnswerType() == AnswerType.SINGLE_SELECTION_RADIO){
+						addChild(new XsdSimpleType(new WebformsXsdQuestionAnswerRestriction(question)));
+					}
+				}else{
+					putType(XsdElementType.STRING);
+				}
 			}
 			putMinOccurs(0);
 		}
