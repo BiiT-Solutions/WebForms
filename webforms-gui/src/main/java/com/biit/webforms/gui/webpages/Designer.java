@@ -388,7 +388,8 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
 			upperMenu.getDownButton().setEnabled(canEdit && !rowIsForm);
-			upperMenu.getFinish().setEnabled(canEdit);
+			upperMenu.getFinish().setVisible(!formIsBlock);
+			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);	
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			// Disable everthing as a security measure.
