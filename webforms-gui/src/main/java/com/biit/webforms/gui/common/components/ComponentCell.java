@@ -176,7 +176,8 @@ public class ComponentCell extends CustomComponent implements LayoutClickNotifie
 
 		private void processClickEvent(boolean isCtrlKey, boolean isShiftKey) {
 			if (!table.isMultiSelect()) {
-				if (table.isNullSelectionAllowed() && table.getValue().equals(itemId)) {
+				Object value = table.getValue();
+				if (table.isNullSelectionAllowed() && value!=null && table.getValue().equals(itemId)) {
 					table.setValue(null);
 				} else {
 					table.setValue(itemId);
