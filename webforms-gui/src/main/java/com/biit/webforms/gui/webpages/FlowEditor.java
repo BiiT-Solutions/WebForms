@@ -20,6 +20,8 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormFlowViewer;
+import com.biit.webforms.gui.webpages.floweditor.DestinyFilter;
+import com.biit.webforms.gui.webpages.floweditor.OriginFilter;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.gui.webpages.floweditor.TableFlows;
@@ -40,9 +42,7 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
-import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -153,59 +153,6 @@ public class FlowEditor extends SecuredWebPage {
 		i.setExpandRatio(tableFlows, 1.0f);
 
 		return i;
-	}
-
-	public class OriginFilter implements Filter {
-		private static final long serialVersionUID = -8541390160081477981L;
-
-		protected TreeObject filter;
-		protected Object newFlow;
-
-		public OriginFilter(TreeObject filter, Object newFlow) {
-			super();
-			this.filter = filter;
-			this.newFlow = newFlow;
-		}
-
-		public TreeObject getFilter() {
-			return filter;
-		}
-
-		public void setFilter(TreeObject filter) {
-			this.filter = filter;
-		}
-
-		@Override
-		public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-			if (filter == null || (itemId != null && itemId.equals(newFlow))) {
-				return true;
-			}
-			Flow flow = (Flow) itemId;
-			return filter.equals(flow.getOrigin()) || filter.contains(flow.getOrigin());
-		}
-
-		@Override
-		public boolean appliesToProperty(Object propertyId) {
-			// Doesn't apply to any property.
-			return false;
-		}
-	};
-
-	public class DestinyFilter extends OriginFilter {
-		private static final long serialVersionUID = -7194892064324001003L;
-
-		public DestinyFilter(TreeObject filter, Object newFlow) {
-			super(filter, newFlow);
-		}
-
-		@Override
-		public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-			if (filter == null || (itemId != null && itemId.equals(newFlow))) {
-				return true;
-			}
-			Flow flow = (Flow) itemId;
-			return filter.equals(flow.getDestiny()) || filter.contains(flow.getDestiny());
-		}
 	}
 
 	private Component createTableFilterBar() {

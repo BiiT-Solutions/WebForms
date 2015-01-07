@@ -119,7 +119,6 @@ public class WindowGenerateXml extends WindowAcceptCancel {
 		int digits = (int)(Math.log10(numberOfFiles)+1);		
 		
 		for(int i=0; i<xmlFiles.size();i++){
-			System.out.println("Default charset: "+Charset.defaultCharset());
 			String currentFile = String.format("%0"+digits+"d", i);
 			addFileToZip(zos, xmlFiles.get(i).getBytes(Charset.forName("UTF-8")), "export_"+currentFile+".xml");
 		}

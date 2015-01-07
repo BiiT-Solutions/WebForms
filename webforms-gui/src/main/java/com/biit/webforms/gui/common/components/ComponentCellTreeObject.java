@@ -19,7 +19,9 @@ public class ComponentCellTreeObject extends ComponentCell {
 		} else {
 			addLabel(treeObject.getName());
 		}
-		addIcon(iconProvider.getIcon(treeObject));
+		if(iconProvider.getIcon(treeObject)!=null){
+			addIcon(iconProvider.getIcon(treeObject));
+		}
 	}
 
 }

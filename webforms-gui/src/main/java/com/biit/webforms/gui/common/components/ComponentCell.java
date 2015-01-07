@@ -1,6 +1,8 @@
 package com.biit.webforms.gui.common.components;
 
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.biit.webforms.gui.common.theme.IThemeIcon;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
@@ -50,25 +52,25 @@ public class ComponentCell extends CustomComponent implements LayoutClickNotifie
 		}
 		registerTouchCallback();
 	}
-	
+
 	@Override
-	public void detach(){
-		if(disabled){
+	public void detach() {
+		if (disabled) {
 			return;
-		}		
+		}
 		super.detach();
 		disabled = true;
 	}
 
 	public void clear() {
-		if(disabled){
+		if (disabled) {
 			return;
 		}
 		rootLayout.removeAllComponents();
 	}
 
 	public void addLabel(String value) {
-		if(disabled){
+		if (disabled) {
 			return;
 		}
 		Label label = new Label(value, ContentMode.HTML);
@@ -77,7 +79,7 @@ public class ComponentCell extends CustomComponent implements LayoutClickNotifie
 	}
 
 	public void addIcon(IThemeIcon themeIcon) {
-		if(disabled){
+		if (disabled) {
 			return;
 		}
 		IconButton button = new IconButton(themeIcon, IconSize.SMALL, (String) null);
@@ -86,7 +88,7 @@ public class ComponentCell extends CustomComponent implements LayoutClickNotifie
 	}
 
 	public void addIconButton(IThemeIcon themeIcon, Button.ClickListener listener) {
-		if(disabled){
+		if (disabled) {
 			return;
 		}
 		IconButton button = new IconButton(themeIcon, IconSize.SMALL, (String) null);
@@ -164,12 +166,79 @@ public class ComponentCell extends CustomComponent implements LayoutClickNotifie
 
 		@Override
 		public void buttonClick(ClickEvent event) {
-			table.setValue(itemId);
+			processClickEvent(event.isCtrlKey(), event.isShiftKey());
 		}
 
 		@Override
 		public void layoutClick(LayoutClickEvent event) {
-			table.setValue(itemId);
+			processClickEvent(event.isCtrlKey(), event.isShiftKey());
+		}
+
+		private void processClickEvent(boolean isCtrlKey, boolean isShiftKey) {
+			if (!table.isMultiSelect()) {
+				if (table.isNullSelectionAllowed() && table.getValue().equals(itemId)) {
+					table.setValue(null);
+				} else {
+					table.setValue(itemId);
+				}
+			} else {
+				@SuppressWarnings("unchecked")
+				Set<Object> values = new LinkedHashSet<Object>((Set<Object>) table.getValue());
+				// Empty case or select a new element
+				if (values.isEmpty() || (!isCtrlKey && !isShiftKey)) {
+					values = new LinkedHashSet<>();
+					values.add(itemId);
+					table.setValue(values);
+					return;
+				}
+
+				// Ctrl key pressed and we already have values in the
+				// selection.
+				if (isCtrlKey) {
+					if (!values.contains(itemId)) {
+						values.add(itemId);
+					} else {
+						if (values.size() > 1 || table.isNullSelectionAllowed()) {
+							values.remove(itemId);
+						}
+					}
+					table.setValue(values);
+					return;
+				}
+
+				if (isShiftKey) {
+					// Get First element and clean the set.
+					Object firstElement = values.iterator().next();
+					values = new LinkedHashSet<Object>();
+					Iterator<?> itr = table.getItemIds().iterator();
+
+					int operationMode = 0;
+					while (itr.hasNext()) {
+						Object item = itr.next();
+						switch (operationMode) {
+						case 0:
+							if (item.equals(firstElement) || item.equals(itemId)) {
+								operationMode++;
+								values.add(item);
+							}
+							break;
+						case 1:
+							values.add(item);
+							if (item.equals(firstElement) || item.equals(itemId)) {
+								operationMode++;
+							}
+							break;
+						default:
+							break;
+						}
+						if (operationMode == 2) {
+							break;
+						}
+					}
+					table.setValue(values);
+					return;
+				}
+			}
 		}
 	}
 }
