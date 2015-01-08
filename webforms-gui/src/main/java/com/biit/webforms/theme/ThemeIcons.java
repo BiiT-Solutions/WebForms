@@ -109,9 +109,11 @@ public enum ThemeIcons implements IThemeIcon {
 	
 	NEW("form.create.svg"), 
 	
-	EXPORT_JSON("alert.svg"), 
+	EXPORT_JSON("file.json.svg"), 
 	
-	VALIDATE_CONDITIONS("alert.svg"), FORM_MANAGER_IMPORT_JSON_FORM("alert.svg"), 
+	VALIDATE_CONDITIONS("alert.svg"), 
+	
+	FORM_MANAGER_IMPORT_JSON_FORM("file.json.svg"), 
 	;
 
 	private String value;
