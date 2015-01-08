@@ -471,10 +471,10 @@ public class Designer extends SecuredWebPage {
 					clearAndUpdateFormTable();
 					window.close();
 				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
-					MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
 							LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
 				} catch (EmptyBlockCannotBeInserted e) {
-					MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
 							LanguageCodes.WARNING_DESCRIPTION_EMPTY_BLOCK);
 				}
 			}
