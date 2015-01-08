@@ -2,8 +2,6 @@ package com.biit.webforms.utils.math.domain;
 
 import java.io.IOException;
 
-import javax.swing.text.FlowView;
-
 import junit.framework.Assert;
 
 import org.apache.commons.io.IOUtils;
@@ -26,8 +24,6 @@ import com.biit.webforms.utils.math.domain.exceptions.BadFormedExpressions;
 import com.biit.webforms.utils.math.domain.exceptions.DifferentDateUnitForQuestions;
 import com.biit.webforms.utils.math.domain.exceptions.IncompleteLogic;
 import com.biit.webforms.utils.math.domain.exceptions.RedundantLogic;
-import com.biit.webforms.validators.ValidateFlow;
-import com.biit.webforms.validators.ValidateFlowCondition;
 import com.biit.webforms.validators.ValidateLogic;
 
 @Test(groups = { "testFlowDomain" })
@@ -364,7 +360,6 @@ public class TestFlowDomain {
 	@Test(dependsOnMethods = { "testJson22" })
 	public void testJson33() throws IOException, BadFormedExpressions, IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
 		Form form = loadForm("test_OrAnd.json");
-		System.out.println("<----------------------------------------------------------------->");
 		//Error
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("CAT/NUMBER"));
 	}

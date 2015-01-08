@@ -445,7 +445,8 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_EXPORT_XML("tooltip.export.xml"), 
 	
 	WARNING_NUMBER_OF_GENERATED_XML_NOT_VALID("warning.number.of.generated.xml.not.valid"), 
-	CAPTION_SELECT_AMMOUNT_OF_XML_TO_GENERATE("caption.select.ammount.of.xml.to.generate"),
+	CAPTION_SELECT_AMMOUNT_OF_XML_TO_GENERATE("caption.select.ammount.of.xml.to.generate"), 
+	WARNING_DESCRIPTION_EMPTY_BLOCK("warning.description.empty.block"),
 	
 	;
 

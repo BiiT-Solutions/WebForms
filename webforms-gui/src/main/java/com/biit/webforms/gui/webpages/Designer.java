@@ -20,6 +20,7 @@ import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
+import com.biit.webforms.authentication.exception.EmptyBlockCannotBeInserted;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.PropertieUpdateListener;
@@ -472,6 +473,9 @@ public class Designer extends SecuredWebPage {
 				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
 					MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
 							LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
+				} catch (EmptyBlockCannotBeInserted e) {
+					MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
+							LanguageCodes.WARNING_DESCRIPTION_EMPTY_BLOCK);
 				}
 			}
 		});
