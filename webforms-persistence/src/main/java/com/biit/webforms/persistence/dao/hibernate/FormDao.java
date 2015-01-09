@@ -43,24 +43,16 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	@Override
 	@Cacheable(value = "forms", key = "#id")
 	public Form read(Long id) throws UnexpectedDatabaseException {
-		//WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
+		// WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
 		Form form = super.read(id);
-		//WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
+		// WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
 		return form;
 	}
 
 	@Override
-	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.label, #form.right"),
-			@CacheEvict(value = "forms", key = "#form.id"),
-			@CacheEvict(value = "forms", key = "#form.label, #form.organizationId") })
+	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.id") })
 	public void makeTransient(Form form) throws UnexpectedDatabaseException {
 		super.makeTransient(form);
-	}
-
-	@Override
-	@Cacheable(value = "forms", key = "#label, #organizationId")
-	public Form getForm(String label, Long organizationId) throws UnexpectedDatabaseException {
-		return super.getForm(label, organizationId);
 	}
 
 	/**
@@ -71,7 +63,6 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	 * @return
 	 * @throws UnexpectedDatabaseException
 	 */
-	@Cacheable(value = "forms")
 	public List<Form> getAll(Class<?> cls, Organization organization) throws UnexpectedDatabaseException {
 		if (!Form.class.isAssignableFrom(cls)) {
 			throw new TypeConstraintException("FormDao can only filter subclasses of " + Form.class.getName());
@@ -110,25 +101,26 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	public Form makePersistent(Form entity) throws UnexpectedDatabaseException {
+	public Form makePersistent(Form form) throws UnexpectedDatabaseException {
 		// For solving Hibernate bug
 		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
 		// list of children
 		// with @Orderby or @OrderColumn we use our own order manager.
 
 		// Sort the rules
-		Set<Flow> rules = entity.getFlows();
+		Set<Flow> rules = form.getFlows();
 		Iterator<Flow> ruleItr = rules.iterator();
 		while (ruleItr.hasNext()) {
 			Flow rule = ruleItr.next();
 			rule.updateConditionSortSeq();
 		}
 
-		return super.makePersistent(entity);
+		return super.makePersistent(form);
 	}
 
 	@Override
-	public Form getForm(String label, Integer version, Organization organization) throws UnexpectedDatabaseException {
-		return getForm(label, version, organization.getOrganizationId());
+	@CacheEvict(value = "forms", allEntries = true)
+	public void evictAllCache() {
+		super.evictAllCache();
 	}
 }

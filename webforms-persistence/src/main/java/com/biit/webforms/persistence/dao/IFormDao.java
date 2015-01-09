@@ -18,15 +18,4 @@ public interface IFormDao extends IBaseFormDao<Form> {
 	 * @throws UnexpectedDatabaseException
 	 */
 	public List<Form> getAll(Class<?> cls, Organization organization) throws UnexpectedDatabaseException;
-
-	/**
-	 * Get for by label, version and organization.
-	 * 
-	 * @param label
-	 * @param version
-	 * @param organization
-	 * @return
-	 * @throws UnexpectedDatabaseException
-	 */
-	public Form getForm(String label, Integer version, Organization organization) throws UnexpectedDatabaseException;
 }

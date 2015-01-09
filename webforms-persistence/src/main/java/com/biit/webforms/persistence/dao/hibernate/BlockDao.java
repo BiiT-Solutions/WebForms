@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
@@ -46,24 +48,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 
 	@Override
 	public Block getBlock(String blockLabel, Long organizationId) throws UnexpectedDatabaseException {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		try {
-			Criteria criteria = session.createCriteria(Block.class);
-			criteria.add(Restrictions.eq("label", blockLabel));
-			criteria.add(Restrictions.eq("organizationId", organizationId));
-			@SuppressWarnings("unchecked")
-			List<Block> results = criteria.list();
-			initializeSets(results);
-			session.getTransaction().commit();
-			if (!results.isEmpty()) {
-				return (Block) results.get(0);
-			}
-		} catch (RuntimeException e) {
-			session.getTransaction().rollback();
-			throw new UnexpectedDatabaseException(e.getMessage(), e);
-		}
-		return null;
+		return getForm(blockLabel, organizationId);
 	}
 
 	@Override
@@ -89,6 +74,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
+	@Cacheable(value = "buildingBlocks")
 	public List<Block> getAll(Long organizationId) throws UnexpectedDatabaseException {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
@@ -193,4 +179,39 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 		throw new UnsupportedOperationException("Block dao doesn't allow a get by name, version and organization");
 	}
 
+	@Override
+	public Long getId(String blockLabel, Long organizationId, int version) throws UnexpectedDatabaseException {
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		try {
+			Criteria criteria = session.createCriteria(getType());
+			criteria.setProjection(Projections.property("id"));
+			criteria.add(Restrictions.eq("label", blockLabel));
+			criteria.add(Restrictions.eq("organizationId", organizationId));
+			criteria.add(Restrictions.eq("version", version));
+			List<?> result = criteria.list();
+			Long formId = null;
+			for (Iterator<?> it = result.iterator(); it.hasNext();) {
+				formId = (Long) it.next();
+				break;
+			}
+			session.getTransaction().commit();
+			return formId;
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			throw new UnexpectedDatabaseException(e.getMessage(), e);
+		}
+	}
+
+	@Override
+	@CacheEvict(value = "buildingBlocks", allEntries = true)
+	public void evictAllCache() {
+		super.evictAllCache();
+	}
+
+	@Override
+	@Cacheable(value = "buildingBlocks")
+	public Block read(Long id) throws UnexpectedDatabaseException {
+		return super.read(id);
+	}
 }
