@@ -15,9 +15,8 @@ import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.dao.IBlockDao;
-import com.biit.webforms.persistence.entity.Block;
-import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.dao.ISimpleBlockViewDao;
+import com.biit.webforms.persistence.entity.SimpleBlockView;
 import com.biit.webforms.utils.DateManager;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
@@ -29,7 +28,7 @@ public class TableBlock extends Table {
 
 	private static final long serialVersionUID = 2995535101037124681L;
 
-	private IBlockDao blockDao;
+	private ISimpleBlockViewDao simpleBlockDao;
 
 	enum TreeTableBlockProperties {
 		BLOCK_LABEL, ORGANIZATION, ACCESS, USED_BY, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
@@ -38,35 +37,36 @@ public class TableBlock extends Table {
 	public TableBlock() {
 		// Add Vaadin conext to Spring, and get beans for DAOs.
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-		blockDao = (IBlockDao) helper.getBean("blockDao");
+		simpleBlockDao = (ISimpleBlockViewDao) helper.getBean("simpleBlockViewDao");
 
 		initContainerProperties();
 		initializeBlockTable();
 	}
 
 	private void initializeBlockTable() {
-		List<Block> blocks = new ArrayList<>();
+		List<SimpleBlockView> blocks = new ArrayList<>();
 
 		Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
 				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 		try {
 			for (Organization organization : userOrganizations) {
-				blocks.addAll(blockDao.getAll(organization.getOrganizationId()));
+				blocks.addAll(simpleBlockDao.getAll(organization.getOrganizationId()));
 			}
 
-			Collections.sort(blocks, new TreeObjectUpdateDateComparator());
+			Collections.sort(blocks, new SimpleBlockViewUpdateDateComparator());
 
-			for (Block block : blocks) {
+			for (SimpleBlockView block : blocks) {
 				addRow(block);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public void addRow(Block block) {
+	public void addRow(SimpleBlockView block) {
 		if (block != null) {
 			Item item = addItem(block);
 			item.getItemProperty(TreeTableBlockProperties.BLOCK_LABEL).setValue(block.getLabel());
@@ -111,7 +111,7 @@ public class TableBlock extends Table {
 	 * @param form
 	 * @return
 	 */
-	private String getFormPermissionsTag(Form form) {
+	private String getFormPermissionsTag(SimpleBlockView form) {
 		String permissions = "";
 
 		if (WebformsAuthorizationService.getInstance().isFormReadOnly(form, UserSessionHandler.getUser())) {

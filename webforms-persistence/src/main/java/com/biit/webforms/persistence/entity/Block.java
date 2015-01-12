@@ -13,7 +13,7 @@ import com.liferay.portal.model.User;
 @Entity
 @Table(name = "tree_blocks")
 @Polymorphism(type = PolymorphismType.EXPLICIT)
-public class Block extends Form {
+public class Block extends Form implements IWebformsBlockView {
 
 	public Block() {
 		super();

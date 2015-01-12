@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.biit.form.interfaces.IBaseFormView;
+import com.biit.form.IBaseFormView;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.AuthorizationService;
 import com.biit.liferay.security.IActivity;
@@ -16,6 +16,7 @@ import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
+import com.biit.webforms.persistence.entity.SimpleBlockView;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
@@ -219,23 +220,25 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		return organizations;
 	}
 
-	public boolean isAuthorizedToForm(IWebformsFormView form, User user) {
+	public boolean isAuthorizedToForm(IBaseFormView form, User user) {
 		if (form == null || user == null) {
 			return false;
 		}
-		boolean formIsBlock = form instanceof Block;
-		boolean formIsInDesign = form.getStatus() == FormWorkStatus.DESIGN;
-		boolean blockEditAuthorized = isAuthorizedActivity(user, form, WebformsActivity.BUILDING_BLOCK_EDITING);
-		boolean formEditAuthorized = isAuthorizedActivity(user, form, WebformsActivity.FORM_EDITING);
-		return formIsInDesign && ((formIsBlock && blockEditAuthorized) || (!formIsBlock && formEditAuthorized));
+
+		if (form instanceof Block || form instanceof SimpleBlockView) {
+			return isAuthorizedActivity(user, form, WebformsActivity.BUILDING_BLOCK_EDITING);
+		} else {
+			return isAuthorizedActivity(user, form, WebformsActivity.FORM_EDITING)
+					&& (((IWebformsFormView) form).getStatus() == FormWorkStatus.DESIGN);
+		}
 	}
 
-	public boolean isFormEditable(IWebformsFormView form, User user) {
+	public boolean isFormEditable(IBaseFormView form, User user) {
 		boolean userLockedForm = UiAccesser.isUserUserUsingForm(user, form);
 		return userLockedForm && isAuthorizedToForm(form, user);
 	}
 
-	public boolean isFormReadOnly(IWebformsFormView form, User user) {
+	public boolean isFormReadOnly(IBaseFormView form, User user) {
 		boolean formIsInUse = UiAccesser.getUserUsingForm(form) != null;
 		return (!formIsInUse && !isAuthorizedToForm(form, user))
 				|| (formIsInUse && UiAccesser.getUserUsingForm(form) != user);

@@ -70,7 +70,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 public class FormManager extends SecuredWebPage {
-
 	private static final long serialVersionUID = 4853622392162188013L;
 	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
 			Arrays.asList(WebformsActivity.READ));

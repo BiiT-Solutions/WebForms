@@ -100,7 +100,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	@CachePut(value = "buildingBlocks", key = "#entity.getId()")
+	@CachePut(value = "buildingBlocks", key = "#entity.getId()", condition = "#entity.getId() != null")
 	public Block makePersistent(Block entity) throws UnexpectedDatabaseException {
 		// For solving Hibernate bug
 		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the

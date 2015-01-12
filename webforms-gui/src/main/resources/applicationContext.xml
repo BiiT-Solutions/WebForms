@@ -157,6 +157,10 @@
 	<bean name="simpleFormDaoWebforms" class="com.biit.webforms.persistence.dao.hibernate.SimpleFormViewDao">
 		<property name="sessionFactory" ref="sessionFactoryWebforms" />
 	</bean>
+	<bean name="simpleBlockViewDao" class="com.biit.webforms.persistence.dao.hibernate.SimpleBlockViewDao">
+		<property name="sessionFactory" ref="sessionFactoryWebforms" />
+	</bean>
+
 	<!-- Liferay Services -->
 	<bean id="userService" class="com.biit.liferay.access.UserService" />
 	<!-- EhCache -->

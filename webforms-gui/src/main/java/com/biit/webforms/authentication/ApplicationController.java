@@ -14,13 +14,13 @@ import com.biit.abcd.persistence.dao.ISimpleFormViewDao;
 import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.abcd.security.AbcdActivity;
 import com.biit.abcd.security.AbcdAuthorizationService;
+import com.biit.form.IBaseFormView;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
-import com.biit.form.interfaces.IBaseFormView;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
@@ -60,6 +60,7 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.IWebformsBlockView;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
@@ -104,8 +105,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form on memory no persistance is done. Needs a
-	 * unique name where name.length() < 190 characters.
+	 * User action to create a form on memory no persistance is done. Needs a unique name where name.length() < 190
+	 * characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -169,8 +170,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form. Needs a unique name where name.length() <
-	 * 190 characters.
+	 * User action to create a form. Needs a unique name where name.length() < 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -300,8 +300,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns the List of Abcd Forms linked to a form or empty list if there
-	 * are no links.
+	 * Returns the List of Abcd Forms linked to a form or empty list if there are no links.
 	 * 
 	 * @param form
 	 * @return
@@ -330,8 +329,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns abcd simpleViewForm linked to form using it's name, version and
-	 * organizationId.
+	 * Returns abcd simpleViewForm linked to form using it's name, version and organizationId.
 	 * 
 	 * @param form
 	 * @return
@@ -417,20 +415,20 @@ public class ApplicationController {
 			// Release current form if any.
 			UiAccesser.releaseForm(formInUse, user);
 		}
-		// Lock new form
-		UiAccesser.lockForm(form, user);
-
-		if (form instanceof Block) {
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " setFormInUse Block:" + form);
+		if (form == null) {
+			formInUse = null;
 		} else {
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " setFormInUse Form: " + form);
+			try {
+				formInUse = (Form) form.generateCopy(true, true);
+				// Lock new form
+				UiAccesser.lockForm(formInUse, user);
+				WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
+						+ " setFormInUse Form: " + formInUse);
+				setUnsavedFormChanges(false);
+				setLastEditedForm(formInUse);
+			} catch (NotValidStorableObjectException | CharacterNotAllowedException e) {
+			}
 		}
-
-		this.formInUse = form;
-		setUnsavedFormChanges(false);
-		setLastEditedForm(form);
 	}
 
 	public Form getFormInUse() {
@@ -537,8 +535,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Creates any kind of TreeObject descendant with @name and inserts into
-	 * parent if possible.
+	 * Creates any kind of TreeObject descendant with @name and inserts into parent if possible.
 	 * 
 	 * @param classType
 	 * @param parent
@@ -811,9 +808,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone
-	 * of the block using the element as hierarchy seed and introduces to
-	 * current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
+	 * hierarchy seed and introduces to current form as a new category.
 	 * 
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
@@ -825,7 +821,7 @@ public class ApplicationController {
 				+ formInUse + " " + element);
 
 		if (element instanceof Block) {
-			if(element.getChildren().isEmpty()){
+			if (element.getChildren().isEmpty()) {
 				throw new EmptyBlockCannotBeInserted();
 			}
 			try {
@@ -834,7 +830,7 @@ public class ApplicationController {
 					throw new CategoryWithSameNameAlreadyExistsInForm();
 				}
 			} catch (ChildrenNotFoundException e) {
-				//Not possible.
+				// Not possible.
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
 		} else {
@@ -895,8 +891,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * This function is called when the ui has expired. The implementation needs
-	 * to free any "locked" resources
+	 * This function is called when the ui has expired. The implementation needs to free any "locked" resources
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
@@ -915,8 +910,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Update flow content. This function currently is a direct call to the
-	 * structure function. If the flow is not on the form, it gets added.
+	 * Update flow content. This function currently is a direct call to the structure function. If the flow is not on
+	 * the form, it gets added.
 	 * 
 	 * @param flow
 	 * @param origin
@@ -950,8 +945,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Updates flow update time and updated by in flow. The content of the flow
-	 * was already modified by {@link WindowFlow}
+	 * Updates flow update time and updated by in flow. The content of the flow was already modified by
+	 * {@link WindowFlow}
 	 * 
 	 * @param flow
 	 */
@@ -1131,8 +1126,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Get all forms where the user has READ permission in ABCD and EDIT
-	 * permissions in Webforms.
+	 * Get all forms where the user has READ permission in ABCD and EDIT permissions in Webforms.
 	 * 
 	 * @return
 	 */
@@ -1188,8 +1182,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns all organizations where user has permission to do all the
-	 * activities in activitiesFilter.
+	 * Returns all organizations where user has permission to do all the activities in activitiesFilter.
 	 * 
 	 * @param activitiesFilter
 	 * @return
@@ -1233,6 +1226,15 @@ public class ApplicationController {
 	public Form loadForm(IWebformsFormView formView) {
 		try {
 			return formDao.read(formView.getId());
+		} catch (UnexpectedDatabaseException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		return null;
+	}
+
+	public Block loadBlock(IWebformsBlockView blockView) {
+		try {
+			return blockDao.read(blockView.getId());
 		} catch (UnexpectedDatabaseException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

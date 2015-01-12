@@ -1,13 +1,12 @@
 package com.biit.webforms.persistence.entity;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.Set;
 
 import com.biit.form.IBaseFormView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 
-public class SimpleFormView implements IWebformsFormView {
+public class SimpleBlockView extends SimpleFormView implements IWebformsBlockView {
 	private String name;
 	private String label;
 	private Integer version;
@@ -18,10 +17,6 @@ public class SimpleFormView implements IWebformsFormView {
 	private Long updatedBy;
 	private String comparationId;
 	private Long organizationId;
-	private String linkedFormLabel;
-	private Set<Integer> linkedFormVersions;
-	private Long linkedFormOrganizationId;
-	private FormWorkStatus status;
 	private boolean isLastVersion;
 
 	@Override
@@ -74,26 +69,6 @@ public class SimpleFormView implements IWebformsFormView {
 		return organizationId;
 	}
 
-	@Override
-	public String getLinkedFormLabel() {
-		return linkedFormLabel;
-	}
-
-	@Override
-	public Set<Integer> getLinkedFormVersions() {
-		return linkedFormVersions;
-	}
-
-	@Override
-	public Long getLinkedFormOrganizationId() {
-		return linkedFormOrganizationId;
-	}
-
-	@Override
-	public FormWorkStatus getStatus() {
-		return status;
-	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -134,23 +109,6 @@ public class SimpleFormView implements IWebformsFormView {
 		this.organizationId = organizationId;
 	}
 
-	public void setLinkedFormLabel(String linkedFormLabel) {
-		this.linkedFormLabel = linkedFormLabel;
-	}
-
-	public void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
-		this.linkedFormVersions = linkedFormVersions;
-	}
-
-	public void setLinkedFormOrganizationId(long linkedFormOrganizationId) {
-		this.linkedFormOrganizationId = linkedFormOrganizationId;
-	}
-
-	@Override
-	public void setStatus(FormWorkStatus status) {
-		this.status = status;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -170,9 +128,9 @@ public class SimpleFormView implements IWebformsFormView {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		SimpleFormView other = (SimpleFormView) obj;
+		SimpleBlockView other = (SimpleBlockView) obj;
 		if (comparationId == null) {
-			if (other.comparationId != null) {
+			if (other.getComparationId() != null) {
 				return false;
 			}
 		} else if (!comparationId.equals(other.comparationId)) {
@@ -181,22 +139,18 @@ public class SimpleFormView implements IWebformsFormView {
 		return true;
 	}
 
-	public static SimpleFormView getSimpleFormView(IWebformsFormView form) {
-		SimpleFormView view = new SimpleFormView();
-		view.name = form.getName();
-		view.label = form.getLabel();
-		view.version = form.getVersion();
-		view.id = form.getId();
-		view.creationTime = form.getCreationTime();
-		view.createdBy = form.getCreatedBy();
-		view.updateTime = form.getUpdateTime();
-		view.updatedBy = form.getUpdatedBy();
-		view.comparationId = form.getComparationId();
-		view.organizationId = form.getOrganizationId();
-		view.linkedFormLabel = form.getLinkedFormLabel();
-		view.linkedFormVersions = new HashSet<Integer>(form.getLinkedFormVersions());
-		view.linkedFormOrganizationId = form.getLinkedFormOrganizationId();
-		view.status = form.getStatus();
+	public static SimpleBlockView getSimpleBlockView(IWebformsBlockView block) {
+		SimpleBlockView view = new SimpleBlockView();
+		view.name = block.getName();
+		view.label = block.getLabel();
+		view.version = block.getVersion();
+		view.id = block.getId();
+		view.creationTime = block.getCreationTime();
+		view.createdBy = block.getCreatedBy();
+		view.updateTime = block.getUpdateTime();
+		view.updatedBy = block.getUpdatedBy();
+		view.comparationId = block.getComparationId();
+		view.organizationId = block.getOrganizationId();
 
 		return view;
 	}
@@ -216,6 +170,30 @@ public class SimpleFormView implements IWebformsFormView {
 	}
 
 	public IBaseFormView generateCopy(boolean copyParentHierarchy, boolean copyChilds) {
-		return SimpleFormView.getSimpleFormView(this);
+		return SimpleBlockView.getSimpleBlockView(this);
+	}
+
+	@Override
+	public void setStatus(FormWorkStatus status) {
+	}
+
+	@Override
+	public FormWorkStatus getStatus() {
+		return null;
+	}
+
+	@Override
+	public Set<Integer> getLinkedFormVersions() {
+		return null;
+	}
+
+	@Override
+	public Long getLinkedFormOrganizationId() {
+		return null;
+	}
+
+	@Override
+	public String getLinkedFormLabel() {
+		return null;
 	}
 }

@@ -2,7 +2,7 @@ package com.biit.webforms.persistence.entity;
 
 import java.util.Set;
 
-import com.biit.form.interfaces.IBaseFormView;
+import com.biit.form.IBaseFormView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 
 public interface IWebformsFormView extends IBaseFormView {

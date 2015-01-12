@@ -23,18 +23,16 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Polymorphism;
 import org.hibernate.annotations.PolymorphismType;
 
 import com.biit.form.BaseForm;
 import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
+import com.biit.form.IBaseFormView;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
-import com.biit.form.interfaces.IBaseFormView;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
@@ -77,7 +75,6 @@ import com.liferay.portal.model.User;
 		"organizationId" }) })
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
 		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
-@Cache(region = "forms", usage = CacheConcurrencyStrategy.READ_WRITE)
 @Polymorphism(type = PolymorphismType.EXPLICIT)
 public class Form extends BaseForm implements IWebformsFormView {
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;

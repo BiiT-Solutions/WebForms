@@ -102,7 +102,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	@CachePut(value = "forms", key = "#form.getId()")
+	@CachePut(value = "forms", key = "#form.getId()", condition = "#form.getId() != null")
 	public Form makePersistent(Form form) throws UnexpectedDatabaseException {
 		// For solving Hibernate bug
 		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the

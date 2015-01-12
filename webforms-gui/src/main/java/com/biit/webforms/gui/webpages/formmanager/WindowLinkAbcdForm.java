@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.biit.abcd.persistence.entity.SimpleFormView;
-import com.biit.form.interfaces.IBaseFormView;
+import com.biit.form.IBaseFormView;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.utils.BidimensionalHashMap;

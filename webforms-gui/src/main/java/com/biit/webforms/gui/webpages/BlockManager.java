@@ -26,6 +26,8 @@ import com.biit.webforms.gui.webpages.blockmanager.UpperMenuBlockManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Block;
+import com.biit.webforms.persistence.entity.IWebformsBlockView;
+import com.biit.webforms.persistence.entity.SimpleBlockView;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button.ClickEvent;
@@ -69,7 +71,7 @@ public class BlockManager extends SecuredWebPage {
 
 	protected void updateMenus() {
 		try {
-			Block block = getSelectedBlock();
+			IWebformsBlockView block = getSelectedBlock();
 
 			boolean blockNotNull = block != null;
 			boolean canCreateBlocks = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
@@ -100,7 +102,7 @@ public class BlockManager extends SecuredWebPage {
 
 			@Override
 			public void lockForm() {
-				UserSessionHandler.getController().setFormInUse(getSelectedBlock());
+				UserSessionHandler.getController().setFormInUse(loadBlock(getSelectedBlock()));
 			}
 		});
 		return bottomMenu;
@@ -124,8 +126,17 @@ public class BlockManager extends SecuredWebPage {
 		return upperMenu;
 	}
 
-	protected Block getSelectedBlock() {
-		return (Block) blockTable.getValue();
+	protected IWebformsBlockView getSelectedBlock() {
+		return ((IWebformsBlockView) blockTable.getValue());
+	}
+
+	private Block loadBlock(IWebformsBlockView blockView) {
+		if (blockView != null) {
+			Block block = UserSessionHandler.getController().loadBlock(blockView);
+			block.setLastVersion(blockView.isLastVersion());
+			return block;
+		}
+		return null;
 	}
 
 	protected void openNewBlockWindow() {
@@ -168,7 +179,7 @@ public class BlockManager extends SecuredWebPage {
 	}
 
 	protected void addBlockToTable(Block newBlock) {
-		blockTable.addRow(newBlock);
+		blockTable.addRow(SimpleBlockView.getSimpleBlockView(newBlock));
 		blockTable.setValue(newBlock);
 	}
 }
