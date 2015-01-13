@@ -79,7 +79,6 @@ import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
 
 public class ApplicationController {
-
 	private User user;
 
 	private IFormDao formDao;

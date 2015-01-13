@@ -68,7 +68,7 @@ public class UpperMenuWebforms extends UpperMenu {
 
 					@Override
 					public void buttonClick(ClickEvent event) {
-						if (confirmationNeeded) {
+						if (confirmationNeeded && UserSessionHandler.getController().existsUnsavedFormChanges()) {
 							new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_LOSE_DATA,
 									new AcceptActionListener() {
 
