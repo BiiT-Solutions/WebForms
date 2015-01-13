@@ -22,6 +22,7 @@ import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExi
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
 import com.biit.webforms.authentication.exception.EmptyBlockCannotBeInserted;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
+import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
@@ -384,13 +385,14 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getNewTextButton().setEnabled(canEdit && selectedRowHierarchyAllows(Text.class));
 			upperMenu.getNewAnswerButton().setEnabled(canEdit && selectedRowHierarchyAllows(Answer.class));
 			upperMenu.getNewSubanswerButton().setEnabled(
-					canEdit && selectedRowIsAnswer && selectedRowHierarchyAllows(Answer.class));
+					canEdit && selectedRowIsAnswer && selectedRowHierarchyAllows(Answer.class)
+							&& isParentQuestionOfType(table.getSelectedRow(), AnswerType.SINGLE_SELECTION_RADIO));
 			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
 			upperMenu.getDownButton().setEnabled(canEdit && !rowIsForm);
 			upperMenu.getFinish().setVisible(!formIsBlock);
-			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);	
+			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			// Disable everthing as a security measure.
@@ -414,6 +416,15 @@ public class Designer extends SecuredWebPage {
 	protected boolean selectedRowHierarchyAllows(Class<? extends TreeObject> cls) {
 		TreeObject selectedRow = table.getSelectedRow();
 		return selectedRow != null && (selectedRow.getAncestorThatAccepts(cls) != null);
+	}
+
+	protected boolean isParentQuestionOfType(TreeObject answer, AnswerType type) {
+		if (answer != null && answer.getParent() != null && answer.getParent() instanceof Question) {
+			return ((Question) answer.getParent()).getAnswerType().equals(type);
+		} else if (answer != null && answer.getParent() != null && answer.getParent() instanceof Answer) {
+			return isParentQuestionOfType(answer.getParent(), type);
+		}
+		return false;
 	}
 
 	/**

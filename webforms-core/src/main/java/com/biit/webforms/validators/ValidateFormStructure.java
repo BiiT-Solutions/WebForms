@@ -4,15 +4,13 @@ import com.biit.form.validators.ValidateBaseForm;
 import com.biit.utils.validation.CompositeValidator;
 import com.biit.webforms.persistence.entity.Form;
 
-public class ValidateFormComplete extends CompositeValidator<Form> {
+public class ValidateFormStructure  extends CompositeValidator<Form> {
 
-	public ValidateFormComplete() {
+	public ValidateFormStructure() {
 		super(Form.class);
 		add(ValidateBaseForm.class);
-		add(ValidateFormStructure.class);
-		add(ValidateFormFlows.class);
-		add(ValidateLogic.class);
-		setStopOnFail(true);
+		add(ValidateSubanswers.class);
 	}
 
+	
 }

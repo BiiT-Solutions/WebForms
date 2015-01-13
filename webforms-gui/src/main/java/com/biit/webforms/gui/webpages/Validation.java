@@ -20,6 +20,7 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.validators.ValidateFormComplete;
 import com.biit.webforms.validators.ValidateFormFlows;
+import com.biit.webforms.validators.ValidateFormStructure;
 import com.biit.webforms.validators.ValidateLogic;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -128,7 +129,7 @@ public class Validation extends SecuredWebPage {
 	}
 
 	protected void validateFlow() {
-		ValidateBaseForm structureValidator = new ValidateBaseForm();
+		ValidateFormStructure structureValidator = new ValidateFormStructure();
 		if (structureValidator.validate(UserSessionHandler.getController().getFormInUse())) {
 			ValidateFormFlows validator = new ValidateFormFlows();
 			ValidateReport report = new ValidateReport();
@@ -150,7 +151,7 @@ public class Validation extends SecuredWebPage {
 	}
 
 	protected void validateStructure() {
-		ValidateBaseForm validator = new ValidateBaseForm();
+		ValidateFormStructure validator = new ValidateFormStructure();
 		ValidateReport report = new ValidateReport();
 		validator.validate(UserSessionHandler.getController().getFormInUse(), report);
 		if (report.isValid()) {
