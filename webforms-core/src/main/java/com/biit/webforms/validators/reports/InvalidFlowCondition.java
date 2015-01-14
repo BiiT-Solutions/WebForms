@@ -6,8 +6,11 @@ import com.biit.webforms.persistence.entity.Flow;
 
 public class InvalidFlowCondition extends Report {
 
+	private Flow flow;
+
 	public InvalidFlowCondition(Flow flow) {
 		super(ReportLevel.ERROR, generateReport(flow));
+		this.flow = flow;
 	}
 
 	private static String generateReport(Flow flow) {
@@ -16,6 +19,10 @@ public class InvalidFlowCondition extends Report {
 		sb.append(flow.toString());
 		sb.append("' has an invalid condition.");
 		return sb.toString();
+	}
+
+	public Flow getFlow() {
+		return flow;
 	}
 
 }

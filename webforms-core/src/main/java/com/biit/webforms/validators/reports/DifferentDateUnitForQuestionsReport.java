@@ -9,12 +9,26 @@ import com.biit.webforms.persistence.entity.Question;
 
 public class DifferentDateUnitForQuestionsReport extends Report {
 
+	private TreeObject element;
+	private Set<Question> questions;
+
 	public DifferentDateUnitForQuestionsReport(TreeObject element, Set<Question> questions) {
-		super(ReportLevel.ERROR, generateReport(element,questions));
+		super(ReportLevel.ERROR, generateReport(element, questions));
+		this.element = element;
+		this.questions = questions;
 	}
 
 	private static String generateReport(TreeObject element, Set<Question> questions) {
-		return "Flows that start from '"+element.getPathName()+"' have different time units for questions "+questions;
+		return "Flows that start from '" + element.getPathName() + "' have different time units for questions "
+				+ questions;
+	}
+
+	public TreeObject getElement() {
+		return element;
+	}
+
+	public Set<Question> getQuestions() {
+		return questions;
 	}
 
 }

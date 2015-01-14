@@ -6,8 +6,11 @@ import com.biit.webforms.persistence.entity.Question;
 
 public class NoSubanswersAllowed extends Report {
 
+	private Question question;
+
 	public NoSubanswersAllowed(Question question) {
 		super(ReportLevel.ERROR, generateReport(question));
+		this.question = question;
 	}
 
 	private static String generateReport(Question question) {
@@ -16,6 +19,10 @@ public class NoSubanswersAllowed extends Report {
 		sb.append(question.getPathName());
 		sb.append("' cannot have subanswers. Only radio buttons are allowed to use subanswers.");
 		return sb.toString();
+	}
+
+	public Question getQuestion() {
+		return question;
 	}
 
 }
