@@ -447,6 +447,8 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_SELECT_AMMOUNT_OF_XML_TO_GENERATE("caption.select.ammount.of.xml.to.generate"), 
 	WARNING_DESCRIPTION_EMPTY_BLOCK("warning.description.empty.block"),
 	
+	INFO_USER_SESSION_EXPIRED("info.usersession.expired"),
+	
 	;
 
 	private String value;
