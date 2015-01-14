@@ -1,16 +1,21 @@
 package com.biit.webforms.validators.reports;
 
+import com.biit.form.BaseForm;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
-import com.biit.webforms.persistence.entity.Form;
 
 public class LinkedFormStructureNotCompatible extends Report {
 
-	public LinkedFormStructureNotCompatible(Form form, com.biit.abcd.persistence.entity.Form abcdForm) {
+	private BaseForm webform;
+	private BaseForm abcdForm;
+
+	public LinkedFormStructureNotCompatible(BaseForm form, BaseForm abcdForm) {
 		super(ReportLevel.ERROR, generateReport(form, abcdForm));
+		this.webform = form;
+		this.abcdForm = abcdForm;
 	}
 
-	private static String generateReport(Form form, com.biit.abcd.persistence.entity.Form abcdForm) {
+	private static String generateReport(BaseForm form, BaseForm abcdForm) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Form '");
 		sb.append(form.getLabel());
@@ -22,6 +27,14 @@ public class LinkedFormStructureNotCompatible extends Report {
 		sb.append(abcdForm.getVersion());
 		sb.append("'.");
 		return sb.toString();
+	}
+
+	public BaseForm getWebform() {
+		return webform;
+	}
+
+	public BaseForm getAbcdForm() {
+		return abcdForm;
 	}
 
 }

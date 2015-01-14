@@ -7,15 +7,21 @@ import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
-import com.biit.webforms.persistence.entity.Form;
 
 public class LinkedFormAbcdElementNotFound extends Report {
 
-	public LinkedFormAbcdElementNotFound(Form form, BaseForm abcdForm, TreeObject abcdChild) {
+	private BaseForm webform;
+	private BaseForm abcdform;
+	private TreeObject abcdChild;
+
+	public LinkedFormAbcdElementNotFound(BaseForm form, BaseForm abcdForm, TreeObject abcdChild) {
 		super(ReportLevel.ERROR, generateReport(form, abcdForm, abcdChild));
+		this.webform = form;
+		this.abcdform = abcdForm;
+		this.abcdChild = abcdChild;
 	}
 
-	private static String generateReport(Form form, BaseForm abcdForm, TreeObject abcdChild) {
+	private static String generateReport(BaseForm form, BaseForm abcdForm, TreeObject abcdChild) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Form '");
 		sb.append(abcdForm.getLabel());
@@ -37,6 +43,18 @@ public class LinkedFormAbcdElementNotFound extends Report {
 		sb.append(abcdChild.getPathName());
 		sb.append("' and it's not found in webforms form.");
 		return sb.toString();
+	}
+
+	public BaseForm getWebform() {
+		return webform;
+	}
+
+	public BaseForm getAbcdform() {
+		return abcdform;
+	}
+
+	public TreeObject getAbcdChild() {
+		return abcdChild;
 	}
 
 }

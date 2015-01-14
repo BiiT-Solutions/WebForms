@@ -7,8 +7,13 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 
 public class InvalidFlowSubformat extends Report {
 
+	private Flow flow;
+	private TokenComparationValue invalidToken;
+
 	public InvalidFlowSubformat(Flow flow, TokenComparationValue invalidToken) {
 		super(ReportLevel.ERROR, generateReport(flow, invalidToken));
+		this.flow = flow;
+		this.invalidToken = invalidToken;
 	}
 
 	private static String generateReport(Flow flow, TokenComparationValue invalidToken) {
@@ -26,5 +31,13 @@ public class InvalidFlowSubformat extends Report {
 			return sb.toString();
 		}
 		return "";
+	}
+
+	public Flow getFlow() {
+		return flow;
+	}
+
+	public TokenComparationValue getInvalidToken() {
+		return invalidToken;
 	}
 }

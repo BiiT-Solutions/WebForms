@@ -8,8 +8,15 @@ import com.biit.webforms.persistence.entity.Form;
 
 public class LinkedFormAbcdGroupRepeatableStatusIsDifferent extends Report {
 
+	private BaseForm webform;
+	private BaseForm abcdForm;
+	private TreeObject abcdChild;
+
 	public LinkedFormAbcdGroupRepeatableStatusIsDifferent(Form form, BaseForm abcdForm, TreeObject abcdChild) {
-		super(ReportLevel.ERROR, generateReport(form,abcdForm,abcdChild));
+		super(ReportLevel.ERROR, generateReport(form, abcdForm, abcdChild));
+		this.webform = form;
+		this.abcdChild = abcdChild;
+		this.abcdForm = abcdForm;
 	}
 
 	private static String generateReport(Form form, BaseForm abcdForm, TreeObject abcdChild) {
@@ -20,5 +27,17 @@ public class LinkedFormAbcdGroupRepeatableStatusIsDifferent extends Report {
 		sb.append(abcdChild.getPathName());
 		sb.append("' has repeatable flag with a different value than webforms version.");
 		return sb.toString();
+	}
+
+	public BaseForm getAbcdForm() {
+		return abcdForm;
+	}
+
+	public TreeObject getAbcdChild() {
+		return abcdChild;
+	}
+
+	public BaseForm getWebform() {
+		return webform;
 	}
 }

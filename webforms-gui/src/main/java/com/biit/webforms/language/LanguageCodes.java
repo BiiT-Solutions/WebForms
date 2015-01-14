@@ -449,6 +449,30 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	INFO_USER_SESSION_EXPIRED("info.usersession.expired"),
 	
+	
+	VALIDATION_DUPLICATED_NAMES("validation.duplicated.nested.name"),
+	VALIDATION_DUPLICATED_NAMES_WITH_CHILDS("validation.duplicated.nested.name.with.childs"),
+	VALIDATION_INVALID_ELEMENT_NAME("validation.invalid.element.name"),
+	VALIDATION_BACKWARD_FLOW("validation.backward.flow"),
+	VALIDATION_INVALID_DATE_UNIT("validation.invalid.date.unit"),
+	VALIDATION_FLOW_ORIGIN_NOT_MANDATORY("validation.flow.origin.not.mandatory"),
+	VALIDATION_INCOMPLETE_LOGIN_REPORT("validation.incomplete.login.report"),
+	VALIDATION_INVALID_FLOW_CONDITION("validation.invalid.flow.condition"),	
+	VALIDATION_INVALID_FLOW_SUBFORMAT("validation.invalid.flow.subformat"),
+	VALIDATION_LINKED_FORM_ABCD_ANSWER_NOT_FOUND("validation.linked.form.abcd.answer.not.found"),
+	VALIDATION_LINKED_FORM_ABCD_ELEMENT_IS_GROUP_NOT_QUESTION("validation.linked.form.abcd.element.is.group.not.question"),
+	VALIDATION_LINKED_FORM_ABCD_ELEMENT_IS_QUESTION_NOT_GROUP("validation.linked.form.abcd.element.is.question.not.group"),
+	VALIDATION_LINKED_FORM_ABCD_GROUP_REPEATABLE_STATUS_IS_DIFFERENT("validation.linked.form.abcd.group.repeatable.status.is.different"),
+	VALIDATION_LINKED_FORM_STRUCTURE_NOT_COMPATIBLE("validation.linked.form.structure.not.compatible"),
+	VALIDATION_MULTIPLE_END_FORMS_FROM_SAME_ELEMENT("validation.multiple.end.forms.from.same.element"),
+	VALIDATION_MULTIPLE_END_LOOPS_FROM_SAME_ELEMENT("validation.multiple.end.loops.from.same.element"),
+	VALIDATION_MULTIPLE_FLOWS_WITH_SAME_ORIGIN_AND_DESTINY("validation.multiple.flows.with.same.origin.and.destiny"),
+	VALIDATION_NO_SUBANSWERS_ALLOWED("validation.no.subanswers.allowed"),
+	VALIDATION_NOT_VALID_CONDITION("valdiation.not.valid.condition"),
+	VALIDATION_OTHERS_UNICITY_BROKEN("validation.others.unicity.broken"),
+	VALIDATION_QUESTION_NOT_FOUND("validation.question.not.found"),
+	VALIDATION_REDUNDANT_LOGIC("validation.redundant.logic"),
+	VALIDATION_TOKEN_USES_NON_FINAL_ANSWER("validation.token.uses.non.final.answer"),
 	;
 
 	private String value;
