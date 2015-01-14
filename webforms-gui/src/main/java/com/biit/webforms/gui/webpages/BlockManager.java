@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.biit.abcd.core.SpringContextHelper;
+import com.biit.abcd.logger.AbcdLogger;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
@@ -17,6 +19,7 @@ import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
+import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
@@ -25,11 +28,13 @@ import com.biit.webforms.gui.webpages.blockmanager.TableBlock;
 import com.biit.webforms.gui.webpages.blockmanager.UpperMenuBlockManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.IWebformsBlockView;
 import com.biit.webforms.persistence.entity.SimpleBlockView;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -41,6 +46,14 @@ public class BlockManager extends SecuredWebPage {
 	private UpperMenuBlockManager upperMenu;
 	private FormEditBottomMenu bottomMenu;
 	private TableBlock blockTable;
+
+	private IBlockDao blockDao;
+
+	public BlockManager() {
+		super();
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		blockDao = (IBlockDao) helper.getBean("blockDao");
+	}
 
 	@Override
 	protected void initContent() {
@@ -69,7 +82,7 @@ public class BlockManager extends SecuredWebPage {
 		getWorkingArea().addComponent(blockTable);
 	}
 
-	protected void updateMenus() {
+	private void updateMenus() {
 		try {
 			IWebformsBlockView block = getSelectedBlock();
 
@@ -78,6 +91,11 @@ public class BlockManager extends SecuredWebPage {
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_EDITING);
 
 			upperMenu.getNewBlock().setEnabled(canCreateBlocks);
+
+			upperMenu.getRemoveBlock().setEnabled(
+					blockNotNull
+							&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+									UserSessionHandler.getUser(), block, WebformsActivity.BLOCK_REMOVE));
 
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(blockNotNull);
@@ -123,7 +141,41 @@ public class BlockManager extends SecuredWebPage {
 				openNewBlockWindow();
 			}
 		});
+		upperMenu.addRemoveBlock(new ClickListener() {
+			private static final long serialVersionUID = -3264661636078442579L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				if (blockTable.getValue() != null) {
+					new WindowProceedAction(LanguageCodes.WARNING_REMOVE_ELEMENT, new AcceptActionListener() {
+						@Override
+						public void acceptAction(WindowAcceptCancel window) {
+							removeSelectedBlock();
+							window.close();
+						}
+					});
+				}
+			}
+		});
 		return upperMenu;
+	}
+
+	public void removeSelectedBlock() {
+		Block selectedBlock;
+		try {
+			selectedBlock = blockDao.read(((IWebformsBlockView) blockTable.getValue()).getId());
+			if (selectedBlock != null) {
+				// Remove the form.
+				blockDao.makeTransient(selectedBlock);
+				WebformsLogger.info(this.getClass().getName(),
+						"User '" + UserSessionHandler.getUser().getEmailAddress() + "' has removed form '"
+								+ selectedBlock.getLabel() + "' (version " + selectedBlock.getVersion() + ").");
+				blockTable.refreshTableData();
+			}
+		} catch (UnexpectedDatabaseException e) {
+			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+			AbcdLogger.errorMessage(this.getClass().getName(), e);
+		}
 	}
 
 	protected IWebformsBlockView getSelectedBlock() {
@@ -139,7 +191,7 @@ public class BlockManager extends SecuredWebPage {
 		return null;
 	}
 
-	protected void openNewBlockWindow() {
+	private void openNewBlockWindow() {
 		final WindowNameGroup newBlockWindow = new WindowNameGroup(LanguageCodes.COMMON_CAPTION_NAME.translation(),
 				LanguageCodes.COMMON_CAPTION_GROUP.translation(),
 				new IActivity[] { WebformsActivity.BUILDING_BLOCK_EDITING });
@@ -178,7 +230,7 @@ public class BlockManager extends SecuredWebPage {
 		});
 	}
 
-	protected void addBlockToTable(Block newBlock) {
+	private void addBlockToTable(Block newBlock) {
 		blockTable.addRow(SimpleBlockView.getSimpleBlockView(newBlock));
 		blockTable.setValue(newBlock);
 	}

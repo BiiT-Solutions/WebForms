@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.biit.abcd.core.SpringContextHelper;
+import com.biit.abcd.logger.AbcdLogger;
 import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.abcd.security.AbcdActivity;
 import com.biit.abcd.security.AbcdAuthorizationService;
@@ -32,6 +34,7 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
+import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
@@ -51,6 +54,7 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
+import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.xforms.XFormsPersistence;
@@ -66,6 +70,7 @@ import com.liferay.portal.model.Organization;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -78,6 +83,14 @@ public class FormManager extends SecuredWebPage {
 	private UpperMenuProjectManager upperMenu;
 	private FormEditBottomMenu bottomMenu;
 
+	private IFormDao formDao;
+
+	public FormManager() {
+		super();
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		formDao = (IFormDao) helper.getBean("formDao");
+	}
+
 	@Override
 	protected void initContent() {
 		UserSessionHandler.getController().clearFormInUse();
@@ -89,8 +102,7 @@ public class FormManager extends SecuredWebPage {
 		setUpperMenu(upperMenu);
 		setBottomMenu(bottomMenu);
 
-		formTable = new TreeTableFormVersion(UserSessionHandler.getController()
-				.getTreeTableFormsProvider());
+		formTable = new TreeTableFormVersion(UserSessionHandler.getController().getTreeTableFormsProvider());
 		formTable.setImmediate(true);
 		formTable.setSizeFull();
 		formTable.addValueChangeListener(new ValueChangeListener() {
@@ -172,16 +184,11 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				Organization organization = WebformsAuthorizationService
-						.getInstance().getOrganization(
-								UserSessionHandler.getUser(),
-								getSelectedForm().getOrganizationId());
-				upperMenu.getOpener().setParameter(
-						OrbeonPreviewFrame.FORM_PARAMETER_TAG,
-						XFormsPersistence.formatFormName(getSelectedForm(),
-								organization, true));
-				upperMenu.getOpener().setParameter(
-						OrbeonPreviewFrame.FORM_VERSION_PARAMETER_TAG,
+				Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+						UserSessionHandler.getUser(), getSelectedForm().getOrganizationId());
+				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
+						XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
+				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_VERSION_PARAMETER_TAG,
 						getSelectedForm().getVersion().toString());
 			}
 		});
@@ -250,15 +257,49 @@ public class FormManager extends SecuredWebPage {
 				exportJson();
 			}
 		});
+		upperMenu.addRemoveForm(new ClickListener() {
+			private static final long serialVersionUID = -3264661636078442579L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				if (formTable.getValue() != null) {
+					new WindowProceedAction(LanguageCodes.WARNING_REMOVE_ELEMENT, new AcceptActionListener() {
+						@Override
+						public void acceptAction(WindowAcceptCancel window) {
+							removeSelectedForm();
+							window.close();
+						}
+					});
+				}
+			}
+		});
 		return upperMenu;
 	}
 
-	protected void importJsonForm() {
+	private void removeSelectedForm() {
+		Form selectedForm;
+		try {
+			selectedForm = formDao.read(((IWebformsFormView) formTable.getValue()).getId());
+			if (selectedForm != null) {
+				// Remove the form.
+				formDao.makeTransient(selectedForm);
+				WebformsLogger.info(this.getClass().getName(),
+						"User '" + UserSessionHandler.getUser().getEmailAddress() + "' has removed form '"
+								+ selectedForm.getLabel() + "' (version " + selectedForm.getVersion() + ").");
+				formTable.refreshTableData();
+			}
+		} catch (UnexpectedDatabaseException e) {
+			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+			AbcdLogger.errorMessage(this.getClass().getName(), e);
+		}
+	}
+
+	private void importJsonForm() {
 		WindowImportJson window = new WindowImportJson();
 		window.showCentered();
 	}
 
-	protected void exportXmlListener() {
+	private void exportXmlListener() {
 		Form form = loadAndValidateForm();
 
 		if (form != null) {
@@ -268,12 +309,11 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	/**
-	 * Loads a forms and tries to validate. If the form is not validated returns
-	 * null
+	 * Loads a forms and tries to validate. If the form is not validated returns null
 	 * 
 	 * @return
 	 */
-	protected Form loadAndValidateForm() {
+	private Form loadAndValidateForm() {
 		Form form = loadForm(getSelectedForm());
 
 		// Xforms only can be uses with valid forms.
@@ -286,67 +326,55 @@ public class FormManager extends SecuredWebPage {
 		if (report.isValid()) {
 			return form;
 		} else {
-			MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID,
-					LanguageCodes.VALIDATE_FORM);
+			MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
 			return null;
 		}
 	}
 
-	protected void downloadXForms() {
+	private void downloadXForms() {
 		Form form = loadAndValidateForm();
 		if (form != null) {
 			final Form previewForm = form;
-			WindowDownloader window = new WindowDownloader(
-					new WindowDownloaderProcess() {
+			WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
 
-						@Override
-						public InputStream getInputStream() {
-							try {
-								return new XFormsExporter(previewForm)
-										.generateXFormsLanguage();
-							} catch (NotValidTreeObjectException
-									| NotExistingDynamicFieldException
-									| InvalidDateException
-									| StringRuleSyntaxError
-									| PostCodeRuleSyntaxError
-									| NotValidChildException e) {
-								WebformsLogger.errorMessage(this.getClass()
-										.getName(), e);
-								return null;
-							}
-						}
-					});
+				@Override
+				public InputStream getInputStream() {
+					try {
+						return new XFormsExporter(previewForm).generateXFormsLanguage();
+					} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
+							| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException e) {
+						WebformsLogger.errorMessage(this.getClass().getName(), e);
+						return null;
+					}
+				}
+			});
 			window.setIndeterminate(true);
 			window.setFilename(previewForm.getLabel() + ".txt");
 			window.showCentered();
 		}
 	}
 
-	protected void publishXForms() {
+	private void publishXForms() {
 		Form form = loadAndValidateForm();
 		if (form != null) {
-			Organization organization = WebformsAuthorizationService
-					.getInstance().getOrganization(
-							UserSessionHandler.getUser(),
-							form.getOrganizationId());
+			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+					UserSessionHandler.getUser(), form.getOrganizationId());
 			if (OrbeonUtils.saveFormInOrbeon(form, organization, false)) {
 				MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
 			}
 		}
 	}
 
-	protected void previewXForms() {
+	private void previewXForms() {
 		Form form = loadAndValidateForm();
 		if (form != null) {
-			Organization organization = WebformsAuthorizationService
-					.getInstance().getOrganization(
-							UserSessionHandler.getUser(),
-							form.getOrganizationId());
+			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+					UserSessionHandler.getUser(), form.getOrganizationId());
 			OrbeonUtils.saveFormInOrbeon(form, organization, true);
 		}
 	}
 
-	protected void exportXsd() {
+	private void exportXsd() {
 		Form form = loadForm(getSelectedForm());
 
 		ValidateFormComplete validator = new ValidateFormComplete();
@@ -357,64 +385,54 @@ public class FormManager extends SecuredWebPage {
 		if (report.isValid()) {
 			new WindowDownloaderXsd(form, getSelectedForm().getLabel() + ".xsd");
 		} else {
-			MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID,
-					LanguageCodes.VALIDATE_FORM);
+			MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
 		}
 	}
 
-	protected void exportJson() {
+	private void exportJson() {
 		Form form = loadForm(getSelectedForm());
 		new WindowDownloaderJson(form, getSelectedForm().getLabel() + ".json");
 	}
 
-	protected void exportFlowPdf() {
-		WindowDownloader window = new WindowDownloader(
-				new WindowDownloaderProcess() {
+	private void exportFlowPdf() {
+		WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
 
-					@Override
-					public InputStream getInputStream() {
-						try {
-							return new ByteArrayInputStream(
-									GraphvizApp.generateImage(
-											loadForm(getSelectedForm()), null,
-											ImgType.PDF));
-						} catch (IOException | InterruptedException e) {
-							WebformsLogger.errorMessage(this.getClass()
-									.getName(), e);
-							return null;
-						}
-					}
-				});
+			@Override
+			public InputStream getInputStream() {
+				try {
+					return new ByteArrayInputStream(GraphvizApp.generateImage(loadForm(getSelectedForm()), null,
+							ImgType.PDF));
+				} catch (IOException | InterruptedException e) {
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+					return null;
+				}
+			}
+		});
 		window.setIndeterminate(true);
 		window.setFilename(getSelectedForm().getLabel() + ".pdf");
 		window.showCentered();
 	}
 
-	protected void exportPdf() {
-		WindowDownloader downloader = new WindowDownloader(
-				new WindowDownloaderProcess() {
+	private void exportPdf() {
+		WindowDownloader downloader = new WindowDownloader(new WindowDownloaderProcess() {
 
-					@Override
-					public InputStream getInputStream() {
-						try {
-							return FormGeneratorPdf
-									.generatePdf(new FormPdfGenerator(
-											loadForm(getSelectedForm())));
-						} catch (IOException | DocumentException e) {
-							WebformsLogger.errorMessage(
-									FormManager.class.getName(), e);
-							MessageManager
-									.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-						}
-						return null;
-					}
-				});
+			@Override
+			public InputStream getInputStream() {
+				try {
+					return FormGeneratorPdf.generatePdf(new FormPdfGenerator(loadForm(getSelectedForm())));
+				} catch (IOException | DocumentException e) {
+					WebformsLogger.errorMessage(FormManager.class.getName(), e);
+					MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+				}
+				return null;
+			}
+		});
 		downloader.setIndeterminate(true);
 		downloader.setFilename(getSelectedForm().getLabel() + ".pdf");
 		downloader.showCentered();
 	}
 
-	protected void impactAnalysis() {
+	private void impactAnalysis() {
 		WindowImpactAnalysis impactAnalysis = new WindowImpactAnalysis();
 		impactAnalysis.setForm(getSelectedForm());
 		impactAnalysis.showCentered();
@@ -423,39 +441,33 @@ public class FormManager extends SecuredWebPage {
 	/**
 	 * Opens window to link form with abcd form and version.
 	 */
-	protected void linkAbcdForm() {
+	private void linkAbcdForm() {
 		final Form form = loadForm(getSelectedForm());
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
 		List<SimpleFormView> availableForms;
 		if (form.getLinkedFormLabel() == null) {
 			// Not linked yet. Show all available forms.
-			availableForms = UserSessionHandler.getController()
-					.getSimpleFormDaoAbcd().getAll();
+			availableForms = UserSessionHandler.getController().getSimpleFormDaoAbcd().getAll();
 		} else {
 			// Already linked form, show only the versions of this form.
 			availableForms = UserSessionHandler
 					.getController()
 					.getSimpleFormDaoAbcd()
-					.getSimpleFormViewByLabelAndOrganization(
-							form.getLinkedFormLabel(),
+					.getSimpleFormViewByLabelAndOrganization(form.getLinkedFormLabel(),
 							form.getLinkedFormOrganizationId());
 		}
 
 		// Not linked yet. Show all available forms.
 		for (SimpleFormView simpleFormView : availableForms) {
-			if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(
-					UserSessionHandler.getUser(),
+			if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 					simpleFormView.getOrganizationId(), AbcdActivity.READ)
-					&& WebformsAuthorizationService.getInstance()
-							.isAuthorizedActivity(UserSessionHandler.getUser(),
-									simpleFormView.getOrganizationId(),
-									WebformsActivity.FORM_EDITING)) {
+					&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+							simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
 				linkAbcdForm.add(simpleFormView);
 			}
 		}
 
-		linkAbcdForm.setValue(UserSessionHandler.getController()
-				.getLinkedSimpleAbcdForms(form));
+		linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleAbcdForms(form));
 		linkAbcdForm.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
@@ -469,8 +481,7 @@ public class FormManager extends SecuredWebPage {
 					formTable.selectForm(form);
 					window.close();
 				} catch (UnexpectedDatabaseException e) {
-					MessageManager.showError(
-							LanguageCodes.ERROR_ACCESSING_DATABASE,
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				}
 			}
@@ -478,10 +489,9 @@ public class FormManager extends SecuredWebPage {
 		linkAbcdForm.showCentered();
 	}
 
-	protected void importAbcdForm() {
-		final WindowImportAbcdForms importAbcdForm = new WindowImportAbcdForms(
-				UserSessionHandler.getController()
-						.getTreeTableSimpleAbcdFormsProvider());
+	private void importAbcdForm() {
+		final WindowImportAbcdForms importAbcdForm = new WindowImportAbcdForms(UserSessionHandler.getController()
+				.getTreeTableSimpleAbcdFormsProvider());
 		importAbcdForm.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
@@ -491,8 +501,7 @@ public class FormManager extends SecuredWebPage {
 				String newFormName = importAbcdForm.getImportName();
 
 				if (newFormName == null || newFormName.isEmpty()) {
-					MessageManager.showError(
-							LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
 							LanguageCodes.ERROR_DESCRIPTION_NAME_NOT_VALID);
 					return;
 				}
@@ -500,28 +509,22 @@ public class FormManager extends SecuredWebPage {
 				// Try to import the form.
 				try {
 					SimpleFormView abcdForm = importAbcdForm.getForm();
-					Form importedForm = UserSessionHandler.getController()
-							.importAbcdForm(abcdForm, newFormName,
-									abcdForm.getOrganizationId());
+					Form importedForm = UserSessionHandler.getController().importAbcdForm(abcdForm, newFormName,
+							abcdForm.getOrganizationId());
 					formTable.refreshTableData();
 					formTable.selectForm(importedForm);
 					window.close();
 				} catch (NotValidAbcdForm e) {
-					MessageManager
-							.showError(
-									LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
-									LanguageCodes.ERROR_DESCRIPTION_NOT_VALID_ABCD_FORM);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
+							LanguageCodes.ERROR_DESCRIPTION_NOT_VALID_ABCD_FORM);
 				} catch (FieldTooLongException | CharacterNotAllowedException e) {
-					MessageManager.showError(
-							LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
 							LanguageCodes.ERROR_DESCRIPTION_NAME_NOT_VALID);
 				} catch (FormWithSameNameException e) {
-					MessageManager.showError(
-							LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED,
 							LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
 				} catch (UnexpectedDatabaseException e) {
-					MessageManager.showError(
-							LanguageCodes.ERROR_ACCESSING_DATABASE,
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				}
 
@@ -536,18 +539,16 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void lockForm() {
-				UserSessionHandler.getController().setFormInUse(
-						loadForm(getSelectedForm()));
+				UserSessionHandler.getController().setFormInUse(loadForm(getSelectedForm()));
 			}
 		});
 		return bottomMenu;
 	}
 
-	protected void newFormVersion() {
+	private void newFormVersion() {
 		Form newForm;
 		try {
-			newForm = UserSessionHandler.getController().createNewFormVersion(
-					loadForm(getSelectedForm()));
+			newForm = UserSessionHandler.getController().createNewFormVersion(loadForm(getSelectedForm()));
 			formTable.refreshTableData();
 			formTable.defaultSort();
 			formTable.selectForm(newForm);
@@ -572,33 +573,24 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void openNewFormWindow() {
-		final WindowNameGroup newFormWindow = new WindowNameGroup(
-				LanguageCodes.COMMON_CAPTION_NAME.translation(),
-				LanguageCodes.COMMON_CAPTION_GROUP.translation(),
-				new IActivity[] { WebformsActivity.FORM_EDITING });
+		final WindowNameGroup newFormWindow = new WindowNameGroup(LanguageCodes.COMMON_CAPTION_NAME.translation(),
+				LanguageCodes.COMMON_CAPTION_GROUP.translation(), new IActivity[] { WebformsActivity.FORM_EDITING });
 		newFormWindow.setCaption(LanguageCodes.CAPTION_NEW_FORM.translation());
-		newFormWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_FORM
-				.translation());
+		newFormWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_FORM.translation());
 		newFormWindow.showCentered();
 		newFormWindow.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
-				if (newFormWindow.getValue() == null
-						|| newFormWindow.getValue().isEmpty()) {
-					MessageManager
-							.showError(
-									LanguageCodes.COMMON_WARNING_TITLE_FORM_NOT_CREATED,
-									LanguageCodes.COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME);
+				if (newFormWindow.getValue() == null || newFormWindow.getValue().isEmpty()) {
+					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_FORM_NOT_CREATED,
+							LanguageCodes.COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME);
 					return;
 				}
 				try {
 					if (newFormWindow.getOrganization() != null) {
-						Form newForm = UserSessionHandler.getController()
-								.createFormAndPersist(
-										newFormWindow.getValue(),
-										newFormWindow.getOrganization()
-												.getOrganizationId());
+						Form newForm = UserSessionHandler.getController().createFormAndPersist(
+								newFormWindow.getValue(), newFormWindow.getOrganization().getOrganizationId());
 						newForm.setLastVersion(true);
 						formTable.refreshTableData();
 						formTable.defaultSort();
@@ -606,17 +598,14 @@ public class FormManager extends SecuredWebPage {
 						newFormWindow.close();
 					}
 				} catch (FieldTooLongException e) {
-					MessageManager
-							.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
+					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 				} catch (FormWithSameNameException e) {
-					MessageManager
-							.showError(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
+					MessageManager.showError(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
 				} catch (CharacterNotAllowedException e) {
 					// Impossible
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				} catch (UnexpectedDatabaseException e) {
-					MessageManager.showError(
-							LanguageCodes.ERROR_ACCESSING_DATABASE,
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				}
 			}
@@ -641,31 +630,22 @@ public class FormManager extends SecuredWebPage {
 		try {
 			// Top menu
 			boolean rowNotNull = row != null;
-			IWebformsFormView selectedForm = (IWebformsFormView) formTable
-					.getValue();
+			IWebformsFormView selectedForm = (IWebformsFormView) formTable.getValue();
 
 			boolean rowInstanceOfRootForm = row instanceof RootForm;
 			boolean rowNotNullAndForm = rowNotNull && !rowInstanceOfRootForm;
-			boolean canCreateForms = WebformsAuthorizationService.getInstance()
-					.isUserAuthorizedInAnyOrganization(
-							UserSessionHandler.getUser(),
-							WebformsActivity.FORM_EDITING);
-			boolean canCreateNewVersion = WebformsAuthorizationService
-					.getInstance().isAuthorizedActivity(
-							UserSessionHandler.getUser(), selectedForm,
-							WebformsActivity.FORM_NEW_VERSION);
-			boolean canLinkVersion = WebformsAuthorizationService.getInstance()
-					.isAuthorizedActivity(UserSessionHandler.getUser(),
-							selectedForm, WebformsActivity.FORM_EDITING);
+			boolean canCreateForms = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+					UserSessionHandler.getUser(), WebformsActivity.FORM_EDITING);
+			boolean canCreateNewVersion = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+					UserSessionHandler.getUser(), selectedForm, WebformsActivity.FORM_NEW_VERSION);
+			boolean canLinkVersion = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+					UserSessionHandler.getUser(), selectedForm, WebformsActivity.FORM_EDITING);
 
 			upperMenu.setEnabled(true);
 			upperMenu.getNewForm().setEnabled(canCreateForms);
 			upperMenu.getNewFormVersion().setEnabled(
-					rowNotNull
-							&& canCreateNewVersion
-							&& selectedForm.isLastVersion()
-							&& !selectedForm.getStatus().equals(
-									FormWorkStatus.DESIGN));
+					rowNotNull && canCreateNewVersion && selectedForm.isLastVersion()
+							&& !selectedForm.getStatus().equals(FormWorkStatus.DESIGN));
 
 			upperMenu.setEnabledImportAbcd(canCreateForms);
 			upperMenu.setEnabledLinkAbcd(rowNotNullAndForm && canLinkVersion);
@@ -675,17 +655,20 @@ public class FormManager extends SecuredWebPage {
 
 			upperMenu.getImpactAnalysis().setEnabled(rowNotNullAndForm);
 
+			upperMenu.getRemoveForm().setEnabled(
+					rowNotNullAndForm
+							&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+									UserSessionHandler.getUser(), selectedForm, WebformsActivity.FORM_REMOVE));
+
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);
 			bottomMenu.getEditFlowButton().setEnabled(rowNotNullAndForm);
 			bottomMenu.getValidateForm().setEnabled(rowNotNullAndForm);
-			bottomMenu.getCompareStructureButton()
-					.setEnabled(rowNotNullAndForm);
+			bottomMenu.getCompareStructureButton().setEnabled(rowNotNullAndForm);
 
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			MessageManager
-					.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			// failsafe, disable everything.
 			upperMenu.setEnabled(false);
 			// Bottom menu

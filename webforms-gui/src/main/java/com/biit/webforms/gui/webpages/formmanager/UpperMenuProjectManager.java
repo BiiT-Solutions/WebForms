@@ -19,7 +19,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private final IconButton submenuNew, newForm, newFormVersion, importAbcdForm, importJsonForm;
+	private final IconButton submenuNew, newForm, newFormVersion, removeForm, importAbcdForm, importJsonForm;
 	private final IconButton linkAbcdForm;
 	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms;
 	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson, exportXml;
@@ -72,11 +72,16 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_COMPARE_CONTENT, IconSize.BIG);
 
 		submenuNew = addSubMenu(ThemeIcons.NEW, LanguageCodes.CAPTION_NEW, LanguageCodes.TOOLTIP_NEW, newForm,
-				newFormVersion, importAbcdForm,importJsonForm);
+				newFormVersion, importAbcdForm, importJsonForm);
+
+		removeForm = new IconButton(LanguageCodes.CAPTION_REMOVE_FORM, ThemeIcons.DELETE_FORM,
+				LanguageCodes.CAPTION_REMOVE_FORM, IconSize.MEDIUM);
+		addIconButton(removeForm);
+
 		addIconButton(linkAbcdForm);
 
 		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
-				exportFlowPdf, exportXsd,exportXml,exportJson);
+				exportFlowPdf, exportXsd, exportXml, exportJson);
 		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
 				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
 		opener.extend(previewXForms);
@@ -96,7 +101,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	public void addImportAbcdForm(ClickListener listener) {
 		importAbcdForm.addClickListener(listener);
 	}
-	
+
 	public void addImportJsonForm(ClickListener listener) {
 		importJsonForm.addClickListener(listener);
 	}
@@ -116,7 +121,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	public void addExportXsdListener(ClickListener listener) {
 		exportXsd.addClickListener(listener);
 	}
-	
+
 	public void addExportJsonListener(ClickListener listener) {
 		exportJson.addClickListener(listener);
 	}
@@ -139,6 +144,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public void addDownloadXForms(ClickListener listener) {
 		downloadXForms.addClickListener(listener);
+	}
+	
+	public void addRemoveForm(ClickListener listener){
+		removeForm.addClickListener(listener);
 	}
 
 	public IconButton getNewForm() {
@@ -180,11 +189,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	public void addExportXFormsListener(ClickListener listener) {
 		exportXForms.addClickListener(listener);
 	}
-	
+
 	public void addExportXmlListener(ClickListener listener) {
 		exportXml.addClickListener(listener);
 	}
-
 
 	public BrowserWindowOpener getOpener() {
 		return opener;
@@ -196,5 +204,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public IconButton getExportXml() {
 		return exportXml;
+	}
+
+	public IconButton getRemoveForm() {
+		return removeForm;
 	}
 }

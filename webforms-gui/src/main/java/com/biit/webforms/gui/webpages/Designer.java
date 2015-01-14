@@ -205,7 +205,7 @@ public class Designer extends SecuredWebPage {
 				}
 			}
 		});
-		upperMenu.addnewSystemFieldButtonListener(new ClickListener() {
+		upperMenu.addNewSystemFieldButtonListener(new ClickListener() {
 			private static final long serialVersionUID = -6530079827949983018L;
 
 			@Override

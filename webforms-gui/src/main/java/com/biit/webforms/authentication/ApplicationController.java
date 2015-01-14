@@ -1258,12 +1258,9 @@ public class ApplicationController {
 		// Can downgrade
 		boolean userCanDowngradeStatus = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
 				UserSessionHandler.getUser(), formView, WebformsActivity.FORM_STATUS_DOWNGRADE);
-		// Or if you have admin rights.
-		boolean userIsAdmin = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
-				UserSessionHandler.getUser(), formView, WebformsActivity.ADMIN_RIGHTS);
 
 		if (!formView.getStatus().isMovingForward(value)) {
-			if (!(userCanDowngradeStatus || userIsAdmin)) {
+			if (!(userCanDowngradeStatus)) {
 				throw new NotEnoughRightsToChangeStatusException();
 			}
 		}

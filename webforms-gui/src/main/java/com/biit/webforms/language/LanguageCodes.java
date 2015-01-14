@@ -49,10 +49,6 @@ public enum LanguageCodes implements ILanguageCode {
 	ERROR_MESSAGE_FILES_UPLOAD_NOT_COMPLETED("error.message.files.upload.not.completed"),
 	
 	CAPTION_PROCEED_MODIFY_STATUS("caption.proceed.modify.status"),
-//	TOOLTIP_EDIT_FORM_DESIGN,
-//	TOOLTIP_EDIT_FORM_FLOW,
-//	TOOLTIP_VALIDATE_FORM,
-//	TOOLTIP_IMPACT_ANALISYS,
 	
 	CAPTION_ANSWER_TYPE_INPUT_FIELD("caption.answerType.inputField"),
 	CAPTION_ANSWER_TYPE_SINGLE_SELECT_LIST("caption.answerType.singleSelectList"),
@@ -145,6 +141,8 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_GENERATING_FILE("caption.generating.file"),
 	CAPTION_GENERATED_FILE("caption.generated.file"),
 	CAPTION_COMPARE_CONTENT("caption.compare.content"), 
+	CAPTION_REMOVE_FORM("caption.form.remove"),
+	CAPTION_REMOVE_BLOCK("caption.block.remove"),
 
 	CAPTION_WAITING_VALIDATION("caption.waiting.validation"),	
 	CAPTION_CONTENT_ANALYSIS("caption.content.analysis"),
@@ -268,6 +266,7 @@ public enum LanguageCodes implements ILanguageCode {
 	WARNING_DESCRIPTION_NEW_VERSION_WHEN_DESIGN("warning.description.new.version.when.design"),
 	WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY("warning.description.origin.included.in.destiny"), 
 	WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME("warning.description.repeated.category.name"),
+	WARNING_REMOVE_ELEMENT("warning.element.remove"),
 	
 	//Flow
 	TABLE_RULE_TITLE_ORIGIN("table.rule.title.origin"),

@@ -114,6 +114,9 @@ public enum ThemeIcons implements IThemeIcon {
 	VALIDATE_CONDITIONS("alert.svg"), 
 	
 	FORM_MANAGER_IMPORT_JSON_FORM("file.json.svg"), 
+	
+	DELETE_FORM("element.delete.svg"),	
+	DELETE_BUILDING_BLOCK("element.delete.svg"),
 	;
 
 	private String value;

@@ -112,7 +112,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		newQuestionButton.addClickListener(listener);
 	}
 
-	public void addnewSystemFieldButtonListener(ClickListener listener) {
+	public void addNewSystemFieldButtonListener(ClickListener listener) {
 		newSystemFieldButton.addClickListener(listener);
 	}
 

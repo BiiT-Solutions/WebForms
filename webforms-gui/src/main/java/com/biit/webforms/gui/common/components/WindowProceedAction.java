@@ -7,14 +7,14 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-public class WindowProceedAction extends WindowAcceptCancel{
+public class WindowProceedAction extends WindowAcceptCancel {
 	private static final long serialVersionUID = -2111506182459100300L;
 	private static final String width = "450px";
 	private static final String height = "200px";
-	
+
 	private Label label;
-	
-	public WindowProceedAction(LanguageCodes code, final AcceptActionListener listener){
+
+	public WindowProceedAction(LanguageCodes code, final AcceptActionListener listener) {
 		super();
 		setContent(generateContent(code.translation()));
 		setResizable(false);
@@ -23,9 +23,9 @@ public class WindowProceedAction extends WindowAcceptCancel{
 		setModal(true);
 		setWidth(width);
 		setHeight(height);
-		
+
 		addAcceptActionListener(new AcceptActionListener() {
-			
+
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				listener.acceptAction(window);
@@ -34,8 +34,9 @@ public class WindowProceedAction extends WindowAcceptCancel{
 		});
 		showCentered();
 	}
-	
-	public WindowProceedAction(LanguageCodes code, final AcceptActionListener acceptListener, final CancelActionListener cancelListener){
+
+	public WindowProceedAction(LanguageCodes code, final AcceptActionListener acceptListener,
+			final CancelActionListener cancelListener) {
 		super();
 		setContent(generateContent(code.translation()));
 		setResizable(false);
@@ -44,9 +45,9 @@ public class WindowProceedAction extends WindowAcceptCancel{
 		setModal(true);
 		setWidth(width);
 		setHeight(height);
-		
+
 		addAcceptActionListener(new AcceptActionListener() {
-			
+
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				acceptListener.acceptAction(window);
@@ -58,10 +59,10 @@ public class WindowProceedAction extends WindowAcceptCancel{
 	}
 
 	private Component generateContent(String text) {
-		
-		label = new Label("<div style=\"text-align: center;\">"+text+"</div>");
+
+		label = new Label("<div style=\"text-align: center;\">" + text + "</div>");
 		label.setContentMode(ContentMode.HTML);
-		
+
 		VerticalLayout rootLayout = new VerticalLayout();
 		rootLayout.setSizeFull();
 
@@ -69,6 +70,5 @@ public class WindowProceedAction extends WindowAcceptCancel{
 		rootLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
 		return rootLayout;
 	}
-	
 
 }

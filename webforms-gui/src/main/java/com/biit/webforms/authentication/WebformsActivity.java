@@ -35,9 +35,13 @@ public enum WebformsActivity implements IActivity {
 
 	FORM_ANALYSIS("FormAnalysis"),
 
-	ADMIN_RIGHTS("AdminRights"),
+	ADMIN_FORMS("AdminRights"),
 
-	EVICT_CACHE("EvictCache");
+	EVICT_CACHE("EvictCache"),
+	
+	FORM_REMOVE("FormRemove"),
+	
+	BLOCK_REMOVE("BlockRemove");
 
 	private String tag;
 

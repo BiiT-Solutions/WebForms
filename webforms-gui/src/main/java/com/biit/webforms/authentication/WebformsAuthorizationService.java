@@ -26,12 +26,13 @@ public class WebformsAuthorizationService extends AuthorizationService {
 	/**
 	 * Read
 	 */
-	private static final WebformsActivity[] WEBFORMS_READ = {
+	private static final WebformsActivity[] READ_ONLY = {
 
 	WebformsActivity.READ,
 
 	};
-	private static final WebformsActivity[] WEBFORMS_MANAGE_EDIT_BUILDING_BLOCKS = {
+
+	private static final WebformsActivity[] MANAGE_BUILDING_BLOCKS = {
 
 	WebformsActivity.BUILDING_BLOCK_EDITING,
 
@@ -39,7 +40,13 @@ public class WebformsAuthorizationService extends AuthorizationService {
 
 	};
 
-	private static final WebformsActivity[] WEBFORMS_MANAGE_EDIT_FORMS = {
+	private static final WebformsActivity[] BUILDING_BLOCKS_EXTRA_PERMISSIONS = {
+
+	WebformsActivity.BLOCK_REMOVE
+
+	};
+
+	private static final WebformsActivity[] MANAGE_FORMS = {
 
 	WebformsActivity.FORM_EDITING,
 
@@ -51,11 +58,11 @@ public class WebformsAuthorizationService extends AuthorizationService {
 
 	};
 
-	private static final WebformsActivity[] WEBFORMS_ADMINISTRATOR_EXTRA_PERMISSIONS = {
+	private static final WebformsActivity[] FORMS_ADMINISTRATOR_EXTRA_PERMISSIONS = {
 
 	WebformsActivity.FORM_STATUS_DOWNGRADE,
 
-	WebformsActivity.ADMIN_RIGHTS
+	WebformsActivity.FORM_REMOVE,
 
 	};
 
@@ -72,24 +79,26 @@ public class WebformsAuthorizationService extends AuthorizationService {
 	private static List<IActivity> formManagerPermissions = new ArrayList<IActivity>();
 	private static List<IActivity> readOnlyPermissions = new ArrayList<IActivity>();
 	private static List<IActivity> formAdministratorPermissions = new ArrayList<IActivity>();
+	private static List<IActivity> blockAdministratorPermissions = new ArrayList<IActivity>();
 	private static List<IActivity> applicationAdministratorPermissions = new ArrayList<IActivity>();
 
 	private static WebformsAuthorizationService instance = new WebformsAuthorizationService();
 
 	static {
-		for (IActivity activity : WEBFORMS_READ) {
+		for (IActivity activity : READ_ONLY) {
 			readOnlyPermissions.add(activity);
 		}
-		for (IActivity activity : WEBFORMS_MANAGE_EDIT_BUILDING_BLOCKS) {
+		for (IActivity activity : MANAGE_BUILDING_BLOCKS) {
 			buildingBlockManagerPermissions.add(activity);
-			formAdministratorPermissions.add(activity);
 		}
-		for (IActivity activity : WEBFORMS_MANAGE_EDIT_FORMS) {
+		for (IActivity activity : MANAGE_FORMS) {
 			formManagerPermissions.add(activity);
+		}
+		for (IActivity activity : FORMS_ADMINISTRATOR_EXTRA_PERMISSIONS) {
 			formAdministratorPermissions.add(activity);
 		}
-		for (IActivity activity : WEBFORMS_ADMINISTRATOR_EXTRA_PERMISSIONS) {
-			formAdministratorPermissions.add(activity);
+		for (IActivity activity : BUILDING_BLOCKS_EXTRA_PERMISSIONS) {
+			blockAdministratorPermissions.add(activity);
 		}
 		for (IActivity activity : APPLICATION_ADMINISTRATOR) {
 			applicationAdministratorPermissions.add(activity);
@@ -112,8 +121,9 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		Set<IActivity> activities = new HashSet<IActivity>();
 		WebformsRoles webFormRole = WebformsRoles.parseTag(role.getName());
 		switch (webFormRole) {
-		case ADMIN:
+		case FORM_ADMIN:
 			activities.addAll(formAdministratorPermissions);
+			activities.addAll(blockAdministratorPermissions);
 			activities.addAll(buildingBlockManagerPermissions);
 			activities.addAll(formManagerPermissions);
 			activities.addAll(readOnlyPermissions);

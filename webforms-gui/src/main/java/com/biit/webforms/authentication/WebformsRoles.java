@@ -11,7 +11,7 @@ public enum WebformsRoles {
 
 	BLOCK_EDIT("webforms2_manage-building_blocks"),
 	
-	ADMIN("webforms2_manage-forms_administration"),
+	FORM_ADMIN("webforms2_manage-forms_administration"),
 	
 	APPLICATION_ADMIN("webforms2_application-administration");
 	

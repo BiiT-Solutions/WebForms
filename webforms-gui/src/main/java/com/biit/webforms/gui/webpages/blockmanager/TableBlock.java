@@ -158,4 +158,9 @@ public class TableBlock extends Table {
 		setColumnExpandRatio(TreeTableBlockProperties.MODIFIED_BY, 1.2f);
 		setColumnExpandRatio(TreeTableBlockProperties.MODIFICATION_DATE, 1);
 	}
+
+	public void refreshTableData() {
+		removeAllItems();
+		initializeBlockTable();
+	}
 }
