@@ -8,7 +8,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -51,11 +53,27 @@ public class FormFlowViewer extends Panel {
 	private Form form;
 	private TreeObject filter;
 	private ImgType imgType;
+	private List<ZoomChangedListener> listeners;
 
 	public FormFlowViewer(GraphvizApp.ImgType imgType, float resize) {
 		this.imgType = imgType;
+		this.listeners = new ArrayList<ZoomChangedListener>();
 		setResize(resize);
 		init();
+	}
+	
+	public void addZoomChangedListener(ZoomChangedListener listener){
+		listeners.add(listener);
+	}
+	
+	public void removeZoomChangedListener(ZoomChangedListener listener){
+		listeners.remove(listener);
+	}
+	
+	public void fireZoomChangedListeners(float zoom){
+		for(ZoomChangedListener listener: listeners){
+			listener.zoomChanged(zoom);
+		}
 	}
 
 	private void init() {
@@ -126,10 +144,7 @@ public class FormFlowViewer extends Panel {
 	}
 
 	/**
-	 * Resize the image.
-	 * 
-	 * @param resizePercentage
-	 *            % of the new image.
+	 * setter
 	 */
 	private void setResize(float resizePercentage) {
 		if (resizePercentage >= MIN_AUGMENT) {
@@ -137,6 +152,7 @@ public class FormFlowViewer extends Panel {
 		} else {
 			this.resize = 1.0f;
 		}
+		fireZoomChangedListeners(resize);
 	}
 
 	private void setResizeFactor(float resize) {
@@ -151,7 +167,6 @@ public class FormFlowViewer extends Panel {
 	}
 
 	private void zoomInOut(final float resizeFactor) {
-
 		JavaScript.getCurrent().addFunction("getElementAndZoom", new JavaScriptFunction() {
 			private static final long serialVersionUID = 6587969690665052777L;
 
@@ -238,7 +253,6 @@ public class FormFlowViewer extends Panel {
 		public InputStream getStream() {
 			// Return a stream from the buffer.
 			try {
-				// TODO remove
 				if (inputStream == null) {
 					byte[] imageData = GraphvizApp.generateImage(form, filter, imgType);
 					inputStream = new ByteArrayInputStream(imageData);
