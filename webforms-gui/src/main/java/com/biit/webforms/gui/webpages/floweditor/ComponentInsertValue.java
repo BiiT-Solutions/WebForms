@@ -140,7 +140,6 @@ public class ComponentInsertValue extends CustomComponent {
 		this.currentQuestion = question;
 
 		value.removeAllValidators();
-		// value.setValue("");
 
 		insertValueLayout.removeComponent(datePeriodUnit);
 		updateValueComponent();

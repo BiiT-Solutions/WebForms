@@ -25,6 +25,8 @@ public enum AnswerSubformatUi {
 	FLOAT(AnswerSubformat.FLOAT, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_FLOAT, LanguageCodes.INPUT_PROMPT_FLOAT),
 
 	DATE(AnswerSubformat.DATE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE, LanguageCodes.INPUT_PROMPT_DATE),
+	
+	DATE_PERIOD(AnswerSubformat.DATE_PERIOD, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE, LanguageCodes.INPUT_PROMPT_DATE_PERIOD),
 
 	DATE_PAST(AnswerSubformat.DATE_PAST, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE_PAST,
 			LanguageCodes.INPUT_PROMPT_DATE),
