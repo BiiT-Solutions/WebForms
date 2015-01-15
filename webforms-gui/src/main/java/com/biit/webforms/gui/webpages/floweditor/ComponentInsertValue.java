@@ -273,7 +273,8 @@ public class ComponentInsertValue extends CustomComponent {
 
 	protected void openWindowTokenBetween() {
 		WindowTokenBetween window = new WindowTokenBetween();
-		window.setQuestion(currentQuestion, (DatePeriodUnit) datePeriodUnit.getValue(), value.getValue().toString());
+		window.setQuestion(currentQuestion, (DatePeriodUnit) datePeriodUnit.getValue(),
+				value.getValue() != null ? value.getValue() : null);
 		window.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
