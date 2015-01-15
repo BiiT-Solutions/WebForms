@@ -140,27 +140,61 @@ public class TokenBetween extends TokenComplex {
 			TokenBetween token = new TokenBetween();
 			token.setType(TokenTypes.BETWEEN);
 			token.question = question;
-			token.setContent(datePeriodUnit,valueStart,valueEnd);
+			token.setContent(datePeriodUnit, valueStart, valueEnd);
 			return token;
 		} catch (NotValidTokenType e) {
 			WebformsLogger.errorMessage(TokenComparationValue.class.getName(), e);
 			return null;
 		}
 	}
-	
-	public void setContent(DatePeriodUnit datePeriodUnit, String valueStart, String valueEnd){
-		if(datePeriodUnit == null){
+
+	public void setContent(DatePeriodUnit datePeriodUnit, String valueStart, String valueEnd) {
+		if (datePeriodUnit == null) {
 			subformat = question.getAnswerSubformat();
-		}else{
+		} else {
 			subformat = AnswerSubformat.DATE_PERIOD;
 		}
 		this.datePeriodUnit = datePeriodUnit;
 		this.valueStart = valueStart;
 		this.valueEnd = valueEnd;
 	}
-	
+
 	@Override
 	public String getExpressionEditorRepresentation() {
 		return toString();
+	}
+
+	/**
+	 * Compares two token between. it must be of token between type.
+	 */
+	@Override
+	public boolean isContentEqual(Token token) {
+		if (token instanceof TokenBetween) {
+			TokenBetween between = (TokenBetween) token;
+			if (super.isContentEqual(token)) {
+				if (!question.getPathName().equals(between.question.getPathName())) {
+					return false;
+				}
+
+				if (subformat != between.subformat) {
+					return false;
+				}
+
+				if (datePeriodUnit != null && datePeriodUnit != between.datePeriodUnit) {
+					return false;
+				}
+
+				if (valueStart != null && !valueStart.equals(between.valueStart)) {
+					return false;
+				}
+
+				if (valueEnd != null && !valueEnd.equals(between.valueEnd)) {
+					return false;
+				}
+
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -8,7 +8,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -27,23 +29,22 @@ import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.Scrollable;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.JavaScriptFunction;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * A layout that contains an image representing the flow of a form.
  * 
- * Extends panel to allow the use of the {@link Scrollable} interface to allow the move through the image.
+ * Extends panel to allow the use of the {@link Scrollable} interface to allow
+ * the move through the image.
  */
 public class FormFlowViewer extends Panel {
 	private final static long serialVersionUID = -4866123421361857895L;
 	private static final float MIN_AUGMENT = 1.0f;
-	private VerticalLayout layout = new VerticalLayout();
+
 	private Image image = null;
 	private float resize = MIN_AUGMENT;
 	private FlowImageSource imagesource;
@@ -52,20 +53,53 @@ public class FormFlowViewer extends Panel {
 	private Form form;
 	private TreeObject filter;
 	private ImgType imgType;
+	private List<ZoomChangedListener> listeners;
 
 	public FormFlowViewer(GraphvizApp.ImgType imgType, float resize) {
 		this.imgType = imgType;
+		this.listeners = new ArrayList<ZoomChangedListener>();
 		setResize(resize);
 		init();
+	}
+	
+	public void addZoomChangedListener(ZoomChangedListener listener){
+		listeners.add(listener);
+	}
+	
+	public void removeZoomChangedListener(ZoomChangedListener listener){
+		listeners.remove(listener);
+	}
+	
+	public void fireZoomChangedListeners(float zoom){
+		for(ZoomChangedListener listener: listeners){
+			listener.zoomChanged(zoom);
+		}
 	}
 
 	private void init() {
 		setId("FormFlowPanel");
 		setImmediate(true);
-		layout.setSizeFull();
-		layout.setMargin(false);
-		layout.setImmediate(true);
-		setContent(layout);
+
+		imageLayout = new HorizontalLayout();
+		imageLayout.setId("flowImageLayout");
+		imageLayout.addLayoutClickListener(new LayoutClickListener() {
+			private static final long serialVersionUID = 4564788374245664728L;
+
+			@Override
+			public void layoutClick(LayoutClickEvent event) {
+				if (event.isDoubleClick()) {
+					return;
+				}
+				if (event.getButton() == MouseButton.LEFT) {
+					zoomInOut(event.getRelativeX(), event.getRelativeY(), 2.0f);
+				}
+				if (event.getButton() == MouseButton.RIGHT) {
+					zoomInOut(event.getRelativeX(), event.getRelativeY(), 1.0f / 2.0f);
+				}
+			}
+		});
+		setContent(imageLayout);
+
 		setSizeFull();
 	}
 
@@ -110,10 +144,7 @@ public class FormFlowViewer extends Panel {
 	}
 
 	/**
-	 * Resize the image.
-	 * 
-	 * @param resizePercentage
-	 *            % of the new image.
+	 * setter
 	 */
 	private void setResize(float resizePercentage) {
 		if (resizePercentage >= MIN_AUGMENT) {
@@ -121,6 +152,7 @@ public class FormFlowViewer extends Panel {
 		} else {
 			this.resize = 1.0f;
 		}
+		fireZoomChangedListeners(resize);
 	}
 
 	private void setResizeFactor(float resize) {
@@ -135,7 +167,6 @@ public class FormFlowViewer extends Panel {
 	}
 
 	private void zoomInOut(final float resizeFactor) {
-
 		JavaScript.getCurrent().addFunction("getElementAndZoom", new JavaScriptFunction() {
 			private static final long serialVersionUID = 6587969690665052777L;
 
@@ -200,33 +231,11 @@ public class FormFlowViewer extends Panel {
 		setScrollLeft(0);
 		setScrollTop(0);
 
-		imageLayout = new HorizontalLayout();
-		imageLayout.setId("flowImageLayout");
-		imageLayout.addLayoutClickListener(new LayoutClickListener() {
-			private static final long serialVersionUID = 4564788374245664728L;
-
-			@Override
-			public void layoutClick(LayoutClickEvent event) {
-				if (event.isDoubleClick()) {
-					return;
-				}
-				if (event.getButton() == MouseButton.LEFT) {
-					zoomInOut(event.getRelativeX(), event.getRelativeY(), 2.0f);
-				}
-				if (event.getButton() == MouseButton.RIGHT) {
-					zoomInOut(event.getRelativeX(), event.getRelativeY(), 1.0f / 2.0f);
-				}
-			}
-		});
+		imageLayout.removeAllComponents();
 		imageLayout.setWidth(100.0f * resize, Unit.PERCENTAGE);
 		imageLayout.setHeight(100.0f * resize, Unit.PERCENTAGE);
 		imageLayout.addComponent(image);
 
-		// Add image to layout.
-		layout.removeAllComponents();
-		layout.addComponent(imageLayout);
-		layout.setComponentAlignment(imageLayout, Alignment.MIDDLE_CENTER);
-		layout.markAsDirtyRecursive();
 		image.markAsDirty();
 	}
 
@@ -244,7 +253,6 @@ public class FormFlowViewer extends Panel {
 		public InputStream getStream() {
 			// Return a stream from the buffer.
 			try {
-				// TODO remove
 				if (inputStream == null) {
 					byte[] imageData = GraphvizApp.generateImage(form, filter, imgType);
 					inputStream = new ByteArrayInputStream(imageData);

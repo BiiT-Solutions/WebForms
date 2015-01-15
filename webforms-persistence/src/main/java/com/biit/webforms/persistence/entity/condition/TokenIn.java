@@ -178,4 +178,31 @@ public class TokenIn extends TokenComplex {
 	public String getExpressionEditorRepresentation() {
 		return toString();
 	}
+	
+	/**
+	 * Compares two token ComparationValue. it must be of token between type.
+	 */
+	@Override
+	public boolean isContentEqual(Token token) {
+		if (token instanceof TokenBetween) {
+			TokenIn tokenIn = (TokenIn) token;
+			if (super.isContentEqual(token)) {
+				if (!question.getPathName().equals(tokenIn.question.getPathName())) {
+					return false;
+				}
+				
+				if (values.size() != tokenIn.values.size()) {
+					return false;
+				}
+
+				for(int i=0;i<values.size();i++){
+					if(!values.get(i).isContentEqual(tokenIn.values.get(i))){
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+	}
 }

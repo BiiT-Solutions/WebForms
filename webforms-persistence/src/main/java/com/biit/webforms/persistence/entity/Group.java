@@ -55,4 +55,12 @@ public class Group extends BaseRepeatableGroup {
 		}
 		return currentCounter;
 	}
+	
+	@Override
+	public boolean isContentEqual(TreeObject treeObject) {
+		if (treeObject instanceof Group) {
+			return super.isContentEqual(treeObject);
+		}
+		return false;
+	}
 }

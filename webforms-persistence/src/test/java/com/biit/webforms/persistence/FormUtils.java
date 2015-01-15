@@ -1,0 +1,151 @@
+package com.biit.webforms.persistence;
+
+import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.InvalidAnswerFormatException;
+import com.biit.form.exceptions.NotValidChildException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SystemField;
+import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+
+public class FormUtils {
+
+	private static final Long ORGANIZATION_ID = 0L;
+	private static final String FORM_COMPLETE_LABEL = "complete form test";
+	public static final String CATEGORY_1 = "category1";
+	public static final String CATEGORY_2 = "category2";
+	public static final String SYSTEM_FIELD_1 = "sysfield1";
+	public static final String SYSTEM_FIELD_1_NAME = "sys.field";
+	public static final String INFO_TEXT_1 = "infoText1";
+	public static final String IPSUM_LOREM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque imperdiet lacus vitae pulvinar dictum. Nulla sed mollis felis. Nullam vitae tempus turpis, vitae efficitur elit. Maecenas ultricies, ante nec consequat pulvinar,";
+	public static final String GROUP_1 = "group1";
+	public static final String INPUT_TEXT_TEXT = "question1";
+	public static final String INPUT_TEXT_NUMBER_FLOAT = "questionNumberFloat";
+	public static final String INPUT_TEXT_POSTAL_CODE = "questionPostalCode";
+	public static final String INPUT_TEXT_TEXT_BSN = "questionBsn";
+	public static final String INPUT_TEXT_DATE_BIRTHDAY = "questionBirthday";
+	public static final String RADIO_BUTTON = "questionRadioButton";
+	public static final String MULTI_CHECKBOX = "questionMultiCheckbox";
+	public static final String LIST = "questionList";
+	public static final String ANSWER_A = "answerA";
+	public static final String ANSWER_B = "answerB";
+	public static final String ANSWER_C = "answerC";
+	public static final String ANSWER_D = "answerD";
+	public static final String ANSWER_E = "answerE";
+	public static final String ANSWER_F = "answerF";
+	public static final String ANSWER_G = "answerG";
+	public static final String ANSWER_H = "answerH";
+	public static final String ANSWER_I = "answerI";
+	public static final String ANSWER_J = "answerJ";
+
+	public static Form createCompleteForm() throws FieldTooLongException, NotValidChildException,
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+		Form form = new Form();
+		form.setOrganizationId(ORGANIZATION_ID);
+		form.setLabel(FORM_COMPLETE_LABEL);
+
+		form.addChild(createCategory(CATEGORY_1));
+		form.addChild(createCategory(CATEGORY_2));
+		
+		((Group)form.getChild(CATEGORY_2,GROUP_1)).setRepeatable(true);
+
+		return form;
+	}
+
+	/**
+	 * Creates a category with @param{name} as name and label.
+	 * 
+	 * @param name
+	 * @return
+	 * @throws CharacterNotAllowedException
+	 * @throws FieldTooLongException
+	 * @throws NotValidChildException
+	 * @throws InvalidAnswerSubformatException 
+	 * @throws InvalidAnswerFormatException 
+	 */
+	public static Category createCategory(String name) throws FieldTooLongException, CharacterNotAllowedException,
+			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+		Category category = new Category();
+		category.setName(name);
+		category.setLabel(name);
+
+		category.addChild(createSystemField(SYSTEM_FIELD_1));
+		category.addChild(createInfoText(INFO_TEXT_1));
+		category.addChild(createGroup(GROUP_1));
+
+		return category;
+	}
+
+	private static TreeObject createGroup(String name) throws FieldTooLongException, CharacterNotAllowedException, NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+		Group group = new Group();
+		group.setName(name);
+		group.setLabel(name);
+		
+		group.addChild(createTextField(INPUT_TEXT_TEXT,AnswerFormat.TEXT,AnswerSubformat.TEXT));
+		group.addChild(createTextField(INPUT_TEXT_NUMBER_FLOAT,AnswerFormat.NUMBER,AnswerSubformat.FLOAT));
+		group.addChild(createTextField(INPUT_TEXT_POSTAL_CODE,AnswerFormat.POSTAL_CODE,AnswerSubformat.POSTAL_CODE));
+		group.addChild(createTextField(INPUT_TEXT_TEXT_BSN,AnswerFormat.TEXT,AnswerSubformat.BSN));
+		group.addChild(createTextField(INPUT_TEXT_DATE_BIRTHDAY,AnswerFormat.DATE,AnswerSubformat.DATE_BIRTHDAY));
+		group.addChild(createQuestionAnswers(RADIO_BUTTON, AnswerType.SINGLE_SELECTION_RADIO, ANSWER_A,ANSWER_B,ANSWER_C));
+		group.addChild(createQuestionAnswers(MULTI_CHECKBOX, AnswerType.MULTIPLE_SELECTION, ANSWER_D,ANSWER_E,ANSWER_F,ANSWER_G));
+		group.addChild(createQuestionAnswers(LIST, AnswerType.SINGLE_SELECTION_LIST, ANSWER_H,ANSWER_I,ANSWER_J));
+		
+		return group;
+	}
+
+	private static TreeObject createTextField(String name, AnswerFormat format, AnswerSubformat subformat) throws FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+		Question question = new Question();
+		question.setName(name);
+		question.setLabel(name);
+		
+		question.setAnswerType(AnswerType.INPUT);
+		question.setAnswerFormat(format);
+		question.setAnswerSubformat(subformat);
+		
+		return question;
+	}
+	
+	private static TreeObject createAnswer(String name) throws FieldTooLongException, CharacterNotAllowedException{
+		Answer answer = new Answer();
+		answer.setName(name);
+		answer.setLabel(name);
+		return answer;
+	}
+	
+	private static TreeObject createQuestionAnswers(String name, AnswerType answerType, String...answers) throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException{
+		Question question = new Question();
+		question.setName(name);
+		question.setLabel(name);
+		
+		question.setAnswerType(answerType);
+		for(String answer: answers){
+			question.addChild(createAnswer(answer));
+		}
+		return question;
+	}
+
+	private static TreeObject createSystemField(String systemField1) throws FieldTooLongException,
+			CharacterNotAllowedException {
+		SystemField systemField = new SystemField();
+		systemField.setName(systemField1);
+		systemField.setFieldName(SYSTEM_FIELD_1_NAME);
+		return systemField;
+	}
+
+	private static TreeObject createInfoText(String infoText) throws FieldTooLongException, CharacterNotAllowedException {
+		Text text = new Text();
+		text.setName(infoText);
+		text.setDescription(IPSUM_LOREM);
+		return text;
+	}
+	
+}

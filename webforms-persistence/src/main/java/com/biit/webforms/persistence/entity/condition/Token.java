@@ -215,4 +215,11 @@ public class Token extends StorableObject {
 	public String getExpressionEditorRepresentation() {
 		return type.getExpressionEditorRepresentation();
 	}
+
+	public boolean isContentEqual(Token token) {
+		if(type!=token.type){
+			return false;
+		}
+		return true;
+	}
 }

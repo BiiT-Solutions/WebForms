@@ -20,6 +20,7 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormFlowViewer;
+import com.biit.webforms.gui.components.ZoomChangedListener;
 import com.biit.webforms.gui.webpages.floweditor.DestinyFilter;
 import com.biit.webforms.gui.webpages.floweditor.OriginFilter;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
@@ -66,16 +67,21 @@ public class FlowEditor extends SecuredWebPage {
 	private UpperMenuFlowEditor upperMenu;
 	private TableFlows tableFlows;
 	private FormFlowViewer formFlowViewer;
+	private FormFlowViewerZoomListener formFlowViewerZoomListener;
 	private SearchFormElementField tableFilterOrigin;
 	private SearchFormElementField tableFilterDestiny;
 	private SearchFormElementField flowViewerFilter;
 	private Slider zoomSlider;
+	private ZoomSliderValueChangeListener zoomSliderValueChangeListener;
 
 	private OriginFilter originFilter;
 	private OriginFilter destinyFilter;
 
 	@Override
 	protected void initContent() {
+		formFlowViewerZoomListener = new FormFlowViewerZoomListener();
+		zoomSliderValueChangeListener = new ZoomSliderValueChangeListener();
+		
 		if (UserSessionHandler.getController().getFormInUse() != null
 				&& !WebformsAuthorizationService.getInstance().isFormEditable(
 						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
@@ -233,6 +239,7 @@ public class FlowEditor extends SecuredWebPage {
 		formFlowViewer = new FormFlowViewer(ImgType.SVG, 1.0f);
 		formFlowViewer.setSizeFull();
 		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getFormInUse(), null);
+		formFlowViewer.addZoomChangedListener(formFlowViewerZoomListener);
 
 		Component flowViewerControlBar = createFlowViewerControlBar();
 
@@ -241,6 +248,29 @@ public class FlowEditor extends SecuredWebPage {
 		i.setExpandRatio(formFlowViewer, 1.0f);
 
 		return i;
+	}
+	
+	private class FormFlowViewerZoomListener implements ZoomChangedListener{
+
+		@Override
+		public void zoomChanged(float zoom) {
+			zoomSlider.removeValueChangeListener(zoomSliderValueChangeListener);
+			zoomSlider.setValue((double) zoom);
+			zoomSlider.addValueChangeListener(zoomSliderValueChangeListener);
+		}
+		
+	}
+	
+	private class ZoomSliderValueChangeListener implements ValueChangeListener {
+		private static final long serialVersionUID = 5649221005286915625L;
+
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+			double currentValue = (double) event.getProperty().getValue();
+			formFlowViewer.removeZoomChangedListener(formFlowViewerZoomListener);
+			formFlowViewer.setZoom((float) currentValue);
+			formFlowViewer.addZoomChangedListener(formFlowViewerZoomListener);
+		}
 	}
 
 	private Component createFlowViewerControlBar() {
@@ -269,6 +299,9 @@ public class FlowEditor extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				formFlowViewer.setZoom(1.0f);
 				formFlowViewer.redraw();
+				zoomSlider.removeValueChangeListener(zoomSliderValueChangeListener);
+				zoomSlider.setValue(1.0);
+				zoomSlider.addValueChangeListener(zoomSliderValueChangeListener);
 			}
 		});
 
@@ -278,15 +311,7 @@ public class FlowEditor extends SecuredWebPage {
 		zoomSlider.setMax(ZOOM_MAX_VALUE);
 		zoomSlider.setValue(ZOOM_MIN_VALUE);
 		zoomSlider.setWidth("100%");
-		zoomSlider.addValueChangeListener(new ValueChangeListener() {
-			private static final long serialVersionUID = 5649221005286915625L;
-
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				double currentValue = (double) event.getProperty().getValue();
-				formFlowViewer.setZoom((float) currentValue);
-			}
-		});
+		zoomSlider.addValueChangeListener(zoomSliderValueChangeListener);
 
 		horizontalLayout.addComponent(flowViewerFilter);
 		horizontalLayout.addComponent(redrawButton);

@@ -71,4 +71,11 @@ public class TokenInValue extends StorableObject {
 	public void setTokenIn(TokenIn tokenIn) {
 		this.tokenIn = tokenIn;
 	}
+
+	public boolean isContentEqual(TokenInValue tokenInValue) {
+		if(answerValue.isContentEqual(tokenInValue.answerValue)){
+			return true;
+		}
+		return false;
+	}
 }
