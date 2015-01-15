@@ -8,39 +8,46 @@ import com.biit.webforms.enumerations.AnswerSubformat;
 
 public enum AnswerSubformatUi {
 
-	TEXT(AnswerSubformat.TEXT, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_TEXT),
+	// AMOUNT(AnswerSubformat.AMOUNT, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_AMOUNT, LanguageCodes.INPUT_PROMPT_AMOUNT),
 
-	EMAIL(AnswerSubformat.EMAIL, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_EMAIL),
+	TEXT(AnswerSubformat.TEXT, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_TEXT, LanguageCodes.INPUT_PROMPT_TEXT),
 
-	PHONE(AnswerSubformat.PHONE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_PHONE),
+	EMAIL(AnswerSubformat.EMAIL, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_EMAIL, LanguageCodes.INPUT_PROMPT_EMAIL),
 
-	IBAN(AnswerSubformat.IBAN, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_IBAN),
+	PHONE(AnswerSubformat.PHONE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_PHONE, LanguageCodes.INPUT_PROMPT_PHONE),
 
-	BSN(AnswerSubformat.BSN, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_BSN),
+	IBAN(AnswerSubformat.IBAN, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_IBAN, LanguageCodes.INPUT_PROMPT_IBAN),
 
-	NUMBER(AnswerSubformat.NUMBER, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_NUMBER),
+	BSN(AnswerSubformat.BSN, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_BSN, LanguageCodes.INPUT_PROMPT_BSN),
 
-	FLOAT(AnswerSubformat.FLOAT, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_FLOAT),
+	NUMBER(AnswerSubformat.NUMBER, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_NUMBER, LanguageCodes.INPUT_PROMPT_NUMBER),
 
-	DATE(AnswerSubformat.DATE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE),
+	FLOAT(AnswerSubformat.FLOAT, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_FLOAT, LanguageCodes.INPUT_PROMPT_FLOAT),
 
-	DATE_PAST(AnswerSubformat.DATE_PAST, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE_PAST),
+	DATE(AnswerSubformat.DATE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE, LanguageCodes.INPUT_PROMPT_DATE),
 
-	DATE_FUTURE(AnswerSubformat.DATE_FUTURE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE_FUTURE),
+	DATE_PAST(AnswerSubformat.DATE_PAST, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE_PAST,
+			LanguageCodes.INPUT_PROMPT_DATE),
 
-	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_POSTAL_CODE),
-	
-	//Date period is only an internal unit and is not used in Ui.
-	//	DATE_PERIOD(AnswerSubformat.DATE_PERIOD, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE_PERIOD),
-	
+	DATE_FUTURE(AnswerSubformat.DATE_FUTURE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE_FUTURE,
+			LanguageCodes.INPUT_PROMPT_DATE),
+
+	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_POSTAL_CODE,
+			LanguageCodes.INPUT_PROMPT_POSTAL_CODE),
+
+	// Date period is only an internal unit and is not used in Ui.
+	// DATE_PERIOD(AnswerSubformat.DATE_PERIOD, LanguageCodes.CAPTION_ANSWER_SUBFORMAT_DATE_PERIOD),
+
 	;
 
 	private final AnswerSubformat subformat;
 	private final LanguageCodes translationCode;
+	private final LanguageCodes inputprompt;
 
-	private AnswerSubformatUi(AnswerSubformat subformat, LanguageCodes translationCode) {
+	private AnswerSubformatUi(AnswerSubformat subformat, LanguageCodes translationCode, LanguageCodes inputprompt) {
 		this.subformat = subformat;
 		this.translationCode = translationCode;
+		this.inputprompt = inputprompt;
 	}
 
 	public AnswerSubformat getSubformat() {
@@ -72,5 +79,9 @@ public enum AnswerSubformatUi {
 			}
 		}
 		return values.toArray(new AnswerSubformatUi[] {});
+	}
+
+	public String getInputPrompt() {
+		return inputprompt.translation();
 	}
 }

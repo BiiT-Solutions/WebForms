@@ -74,6 +74,7 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.utils.conversor.ConversorAbcdFormToForm;
+import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
@@ -1175,9 +1176,20 @@ public class ApplicationController {
 		return simpleFormDaoAbcd;
 	}
 
-	public void validateCompatibility(Form currentForm, SimpleFormView abcdForm) {
-		// TODO Auto-generated method stub
-
+	public void validateCompatibility(Form currentForm, IBaseFormView abcdSimpleForm) throws BadAbcdLink {
+		try {
+			com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.read(abcdSimpleForm.getId());
+			ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(currentForm);
+			ValidateReport report = new ValidateReport();
+			validator.validate(abcdForm, report);
+			if (!report.isValid()) {
+				throw new BadAbcdLink("Abcd form '" + abcdSimpleForm.getLabel() + "' is not a valid link for form '"
+						+ currentForm.getLabel() + "'.");
+			}
+		} catch (UnexpectedDatabaseException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+		}
 	}
 
 	/**

@@ -69,6 +69,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_ANSWER_SUBFORMAT_AMMOUNT("caption.answer.subformat.ammount"),
 	CAPTION_ANSWER_SUBFORMAT_NUMBER("caption.answer.subformat.number"),
 	CAPTION_ANSWER_SUBFORMAT_FLOAT("caption.answer.subformat.float"),
+	CAPTION_ANSWER_SUBFORMAT_AMOUNT("caption.answer.subformat.amount"),
 	CAPTION_ANSWER_SUBFORMAT_DATE("caption.answer.subformat.date"), 
 	CAPTION_ANSWER_SUBFORMAT_DATE_PAST("caption.answer.subformat.date.past"),
 	CAPTION_ANSWER_SUBFORMAT_DATE_FUTURE("caption.answer.subformat.date.future"),
@@ -473,6 +474,22 @@ public enum LanguageCodes implements ILanguageCode {
 	VALIDATION_QUESTION_NOT_FOUND("validation.question.not.found"),
 	VALIDATION_REDUNDANT_LOGIC("validation.redundant.logic"),
 	VALIDATION_TOKEN_USES_NON_FINAL_ANSWER("validation.token.uses.non.final.answer"),
+	VALIDATION_NULL_VALUE("validation.null.value"),
+	
+	WARNING_ABCD_FORM_LINKED_NOT_VALID("abcd.form.linked.not.valid"),
+	WARNING_ABCD_FORM_LINKED_NOT_VALID_DESCRIPTION("abcd.form.linked.not.valid.description"),
+	
+	INPUT_PROMPT_FLOAT("input.prompt.float"),
+	INPUT_PROMPT_NUMBER("input.prompt.number"),
+	INPUT_PROMPT_AMOUNT("input.prompt.number"),
+	INPUT_PROMPT_DATE_PERIOD("input.prompt.number"),
+	INPUT_PROMPT_BSN("input.prompt.bsn"),
+	INPUT_PROMPT_DATE("input.prompt.date"),
+	INPUT_PROMPT_TEXT("input.prompt.text"),
+	INPUT_PROMPT_EMAIL("input.prompt.email"),
+	INPUT_PROMPT_POSTAL_CODE("input.prompt.postalcode"),
+	INPUT_PROMPT_IBAN("input.prompt.iban"),
+	INPUT_PROMPT_PHONE("input.prompt.phone"),
 	;
 
 	private String value;

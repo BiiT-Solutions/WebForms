@@ -1,6 +1,8 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.biit.webforms.authentication.UserSessionHandler;
@@ -12,12 +14,15 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.floweditor.listeners.InsertTokenListener;
+import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.validator.NullValidator;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -25,16 +30,18 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * This class holds all the representation of the form to introduce a token
- * value. Previously this was part of Condition Editor controls.
+ * This class holds all the representation of the form to introduce a token value. Previously this was part of Condition
+ * Editor controls.
  */
 public class ComponentInsertValue extends CustomComponent {
 	private static final long serialVersionUID = -5236675580401960488L;
+	private static final String DATE_FORMAT = "dd/MM/yyyy";
 	private static final String FULL = "100%";
 	private static final String EXPAND = null;
 
@@ -47,7 +54,7 @@ public class ComponentInsertValue extends CustomComponent {
 	private VerticalLayout insertValueLayout;
 
 	private ComboBox datePeriodUnit;
-	private TextField value;
+	private AbstractField<?> value;
 	private Button insertEqValue, insertNeValue, insertLtValue, insertGtValue, insertLeValue, insertGeValue,
 			insertBetweenButton;
 
@@ -84,6 +91,9 @@ public class ComponentInsertValue extends CustomComponent {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
+				insertValueLayout.removeComponent(datePeriodUnit);
+				updateValueComponent();
+				insertValueLayout.addComponentAsFirst(datePeriodUnit);
 				updateDateValidatorAndInputPrompt();
 			}
 		});
@@ -130,9 +140,10 @@ public class ComponentInsertValue extends CustomComponent {
 		this.currentQuestion = question;
 
 		value.removeAllValidators();
-		value.setValue("");
+		// value.setValue("");
 
 		insertValueLayout.removeComponent(datePeriodUnit);
+		updateValueComponent();
 		if (question.getAnswerFormat() == AnswerFormat.DATE) {
 			insertValueLayout.addComponentAsFirst(datePeriodUnit);
 			if (question.getAnswerSubformat() == AnswerSubformat.DATE_PERIOD) {
@@ -146,7 +157,7 @@ public class ComponentInsertValue extends CustomComponent {
 		} else {
 			datePeriodUnit.setNullSelectionAllowed(true);
 			datePeriodUnit.setValue(null);
-			value.setInputPrompt(question.getAnswerSubformat().getHint());
+			((TextField) value).setInputPrompt(AnswerSubformatUi.get(question.getAnswerSubformat()).getInputPrompt());
 			value.addValidator(new ValidatorPattern(question.getAnswerSubformat().getRegex()));
 		}
 
@@ -180,25 +191,50 @@ public class ComponentInsertValue extends CustomComponent {
 	}
 
 	private String getValue() {
-		if (!value.isValid()) {
+		if (!value.isValid() || value.getValue() == null) {
 			return null;
 		} else {
-			return value.getValue();
+			if (value instanceof DateField) {
+				return new SimpleDateFormat(DATE_FORMAT).format(((Date) value.getValue()));
+			} else {
+				return value.getValue().toString();
+			}
 		}
 	}
 
 	private void updateDateValidatorAndInputPrompt() {
 		value.removeAllValidators();
-
 		if (currentQuestion != null && currentQuestion.getAnswerSubformat() != null) {
-			if (datePeriodUnit.getValue() == null) {
-				value.setInputPrompt(currentQuestion.getAnswerSubformat().getHint());
-				value.addValidator(new ValidatorPattern(currentQuestion.getAnswerSubformat().getRegex()));
-			} else {
-				value.setInputPrompt(AnswerSubformat.DATE_PERIOD.getHint());
+			if (datePeriodUnit.getValue() != null) {
+				((TextField) value).setInputPrompt(AnswerSubformat.DATE_PERIOD.getHint());
 				value.addValidator(new ValidatorPattern(AnswerSubformat.DATE_PERIOD.getRegex()));
+			} else {
+				value.addValidator(new NullValidator(LanguageCodes.VALIDATION_NULL_VALUE.translation(), false));
 			}
 		}
+	}
+
+	private void updateValueComponent() {
+		if (value != null) {
+			insertValueLayout.removeComponent(value);
+		}
+
+		if (getCurrentQuestion().getAnswerFormat().equals(AnswerFormat.DATE)
+				&& (getCurrentValueAnswerSubformat().equals(AnswerSubformat.DATE)
+						|| getCurrentValueAnswerSubformat().equals(AnswerSubformat.DATE_PAST)
+						|| getCurrentValueAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE) || getCurrentValueAnswerSubformat()
+						.equals(AnswerSubformat.DATE_BIRTHDAY))) {
+			value = new DateField();
+		} else {
+			value = new TextField();
+		}
+		value.setImmediate(true);
+		value.setWidth(FULL);
+		if (value instanceof TextField) {
+			((TextField) value).setNullRepresentation("");
+		}
+
+		insertValueLayout.addComponentAsFirst(value);
 	}
 
 	private Button createTokenComparationValueButton(String caption, final TokenTypes type) {
@@ -238,7 +274,7 @@ public class ComponentInsertValue extends CustomComponent {
 
 	protected void openWindowTokenBetween() {
 		WindowTokenBetween window = new WindowTokenBetween();
-		window.setQuestion(currentQuestion, (DatePeriodUnit) datePeriodUnit.getValue(), value.getValue());
+		window.setQuestion(currentQuestion, (DatePeriodUnit) datePeriodUnit.getValue(), value.getValue().toString());
 		window.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
@@ -270,7 +306,7 @@ public class ComponentInsertValue extends CustomComponent {
 		}
 	}
 
-	public TextField getValueField() {
+	public AbstractField<?> getValueField() {
 		return value;
 	}
 }

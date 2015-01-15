@@ -9,6 +9,7 @@ import com.biit.form.validators.ValidateBaseForm;
 import com.biit.form.validators.reports.DuplicatedNestedName;
 import com.biit.form.validators.reports.DuplicatedNestedNameWithChild;
 import com.biit.form.validators.reports.InvalidTreeObjectName;
+import com.biit.form.validators.reports.NullValueReport;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.utils.validation.Report;
@@ -242,6 +243,7 @@ public class Validation extends SecuredWebPage {
 
 		// Translate the reports.
 		for (Report report : reports) {
+			boolean nullReportAdded = false;
 			if (report instanceof DuplicatedNestedName) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_DUPLICATED_NAMES, new Object[] {
 						((DuplicatedNestedName) report).getChild().getName(),
@@ -350,6 +352,12 @@ public class Validation extends SecuredWebPage {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_TOKEN_USES_NON_FINAL_ANSWER,
 						new Object[] { ((TokenUsesNonFinalAnswer) report).getFlow(),
 								((TokenUsesNonFinalAnswer) report).getToken().getAnswer().getPathAnswerValue() }));
+			} else if (report instanceof NullValueReport) {
+				// Only advise once.
+				if (!nullReportAdded) {
+					text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_NULL_VALUE));
+					nullReportAdded = true;
+				}
 			} else {
 				text.append(report.getReport());
 			}

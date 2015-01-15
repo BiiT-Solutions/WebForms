@@ -22,6 +22,7 @@ import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -29,7 +30,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 
@@ -259,7 +259,7 @@ public class ConditionEditorControls extends TabSheet {
 		((Filterable) treeObjectTable.getContainerDataSource()).removeContainerFilter(filter);
 	}
 
-	public TextField getValueField() {
+	public AbstractField<?> getValueField() {
 		return insertValue.getValueField();
 	}
 }
