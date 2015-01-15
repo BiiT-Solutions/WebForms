@@ -150,4 +150,26 @@ public class TokenComparationAnswer extends Token {
 	public void setAnswer(Answer answer) {
 		this.answer = answer;
 	}
+	
+	/**
+	 * Compares two token ComparationAnswer. it must be of token between type.
+	 */
+	@Override
+	public boolean isContentEqual(Token token) {
+		if (token instanceof TokenBetween) {
+			TokenComparationAnswer comparationAnswer = (TokenComparationAnswer) token;
+			if (super.isContentEqual(token)) {
+				if (!question.getPathName().equals(comparationAnswer.question.getPathName())) {
+					return false;
+				}
+				
+				if (!answer.getPathName().equals(comparationAnswer.answer.getPathName())) {
+					return false;
+				}
+
+				return true;
+			}
+		}
+		return false;
+	}
 }

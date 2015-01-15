@@ -3,13 +3,15 @@
 	<test name="WebformsPersistanceTest" enabled="true" preserve-order="true">
 		<groups>
 			<run>
-				<exclude name="ehCache" />
-				<include name="ruleTest" />
+				<!-- <exclude name="ehCache" />
+				<include name="ruleTest" /> -->
+				<include name="formElements" />
 			</run>
 		</groups>
 		<classes>
 			<class name="com.biit.webforms.persistence.EhCacheTest" />
 			<class name="com.biit.webforms.persistence.RuleTest" />
+			<class name="com.biit.webforms.persistence.FormElements" />
 		</classes>
 	</test>
 </suite>

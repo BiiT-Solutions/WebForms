@@ -419,4 +419,44 @@ public class Flow extends StorableObject {
 	public void setGenerated(boolean value) {
 		this.generated = value;
 	}
+
+	public boolean isContentEqual(Flow formRule) {
+		
+		if(!origin.getPathName().equals(formRule.origin.getPathName())){
+			return false;
+		}
+		
+		if(flowType!=formRule.flowType){
+			return false;
+		}
+
+		if((destiny!=null && formRule.destiny==null )|| (destiny==null)&& formRule.destiny!=null){
+			return false;
+		}
+		
+		if(destiny!=null && formRule.destiny!=null && !destiny.getPathName().equals(formRule.destiny.getPathName())){
+			return false;
+		}
+
+		if(others!=formRule.others){
+			return false;
+		}
+
+		if((condition!=null && formRule.condition==null)||(condition==null && formRule.condition!=null)){
+			return false;
+		}
+		
+		if(condition!=null && formRule.condition!=null){		
+			if(condition.size()!=formRule.condition.size()){
+				return false;
+			}
+			for(int i=0; i<condition.size();i++){
+				if(!condition.get(i).isContentEqual(formRule.condition.get(i))){
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
 }

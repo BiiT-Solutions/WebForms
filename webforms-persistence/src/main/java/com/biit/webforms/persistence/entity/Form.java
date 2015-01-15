@@ -458,6 +458,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return sb.toString();
 	}
 
+	public Set<Flow> getFlows(String originPath, String destinyPath) {
+		return getFlows(getChild(originPath),getChild(destinyPath));
+	}
+	
 	public Set<Flow> getFlows(TreeObject origin, TreeObject destiny) {
 		Set<Flow> selectedFlows = new HashSet<Flow>();
 		for (Flow flow : rules) {
@@ -508,5 +512,71 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public String getLabelWithouthSpaces() {
 		return getLabel().replace(" ", "_");
+	}
+	
+	/**
+	 * Compares the content of treeObject - Needs to be an instance of Form
+	 * 
+	 * @param treeObject
+	 * @return
+	 */
+	public boolean isContentEqual(TreeObject treeObject) {
+		if (treeObject instanceof Form) {
+			if(super.isContentEqual(treeObject)){
+				Form form = (Form) treeObject;
+
+				if(status!=null && status!=form.status){
+					return false;
+				}
+				if(description!=null && !description.equals(form.description)){
+					return false;
+				}
+
+				if((rules==null && form.rules!=null)||(rules!=null && form.rules==null)){
+					return false;
+				}
+				
+				//They have the same number of rules
+				if(rules!=null && form.rules!=null && rules.size()!=form.rules.size()){
+					return false;
+				}
+				if(rules!=null){
+					for(Flow rule: rules){
+						String originPath = rule.getOrigin().getPathName();
+						String destinyPath = null;
+						if(rule.getDestiny()!=null){
+							destinyPath = rule.getDestiny().getPathName();
+						}
+						Set<Flow> formRules = form.getFlows(originPath,destinyPath);
+						
+						boolean foundEqualFlow = false;
+						for(Flow formRule: formRules){
+							if(rule.isContentEqual(formRule)){
+								foundEqualFlow=true;
+								break;
+							}
+						}
+						if(!foundEqualFlow){
+							return false;
+						}
+					}
+				}
+
+				if(linkedFormLabel!=null && !linkedFormLabel.equals(form.linkedFormLabel)){
+					return false;
+				}
+				
+				if(linkedFormVersions!=null && !linkedFormVersions.equals(form.linkedFormVersions)){
+					return false;
+				}
+				
+				if(linkedFormOrganizationId!=null && !linkedFormVersions.equals(form.linkedFormOrganizationId)){
+					return false;
+				}
+				
+				return true;
+			}
+		}
+		return false;
 	}
 }

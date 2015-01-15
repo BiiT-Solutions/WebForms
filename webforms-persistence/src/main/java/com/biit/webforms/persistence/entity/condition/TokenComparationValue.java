@@ -205,4 +205,34 @@ public class TokenComparationValue extends Token {
 	public void setValue(String value) {
 		this.value = value;
 	}
+	
+	/**
+	 * Compares two token ComparationValue. it must be of token between type.
+	 */
+	@Override
+	public boolean isContentEqual(Token token) {
+		if (token instanceof TokenBetween) {
+			TokenComparationValue comparationValue = (TokenComparationValue) token;
+			if (super.isContentEqual(token)) {
+				if (!question.getPathName().equals(comparationValue.question.getPathName())) {
+					return false;
+				}
+				
+				if (subformat != comparationValue.subformat) {
+					return false;
+				}
+
+				if (datePeriodUnit != null && datePeriodUnit != comparationValue.datePeriodUnit) {
+					return false;
+				}
+
+				if (value != null && !value.equals(comparationValue.value)) {
+					return false;
+				}
+
+				return true;
+			}
+		}
+		return false;
+	}
 }

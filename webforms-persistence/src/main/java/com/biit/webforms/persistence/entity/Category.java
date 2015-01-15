@@ -82,14 +82,12 @@ public class Category extends BaseCategory {
 	 * @param category
 	 * @return
 	 */
-	public boolean isContentEqual(Category category) {
-		if (!getName().equals(category.getName())) {
-			return false;
+	
+	@Override
+	public boolean isContentEqual(TreeObject treeObject) {
+		if (treeObject instanceof Category) {
+			return super.isContentEqual(treeObject);
 		}
-		if ((getLabel() == null && category.getLabel() != null) || (getLabel() != null && category.getLabel() == null)
-				|| (getLabel() != null && category.getLabel() != null && !(getLabel().equals(category.getLabel())))) {
-			return false;
-		}
-		return true;
+		return false;
 	}
 }
