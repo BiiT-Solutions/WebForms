@@ -32,7 +32,7 @@ public class WebformsConfigurationReader {
 
 	private static final String REGEX_PHONE = "regexPhone";
 
-	private static final String DEFAULT_REGEX_PHONE = "\\(\\+[0-9]{2}\\)( *[0-9]{3}){3}";
+	private static final String DEFAULT_REGEX_PHONE = "[\\+]{0,1}[0-9]{5,14}";
 
 	private static final String REGEX_IBAN = "regexIban";
 
@@ -124,7 +124,7 @@ public class WebformsConfigurationReader {
 	private String regexDateBirthday;
 
 	private String datePattern;
-	
+
 	private boolean booleanSimplificationEnabled;
 
 	private static WebformsConfigurationReader instance;
@@ -183,8 +183,9 @@ public class WebformsConfigurationReader {
 			xFormsDatabaseName = prop.getProperty(XFORMS_DATABASE_TAG, DEFAULT_XFORMS_DATABASE);
 			xFormsDatabaseHost = prop.getProperty(XFORMS_DATABASE_HOST_TAG, DEFAULT_HOST);
 			orbeonFormRunnerUrl = prop.getProperty(XFORMS_FORM_RUNNER_TAG, DEFAULT_ORBEON_FORM_RUNNER_URL);
-			xmlBaseAddress = prop.getProperty(XML_BASE_ADDRESS,DEFAULT_XML_BASE_ADDRESS);
-			jsonExportEnabled = Boolean.parseBoolean(prop.getProperty(JSON_EXPORT_ENABLED, DEFAULT_JSON_EXPORT_ENABLED));
+			xmlBaseAddress = prop.getProperty(XML_BASE_ADDRESS, DEFAULT_XML_BASE_ADDRESS);
+			jsonExportEnabled = Boolean
+					.parseBoolean(prop.getProperty(JSON_EXPORT_ENABLED, DEFAULT_JSON_EXPORT_ENABLED));
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -283,7 +284,7 @@ public class WebformsConfigurationReader {
 		return xmlBaseAddress;
 	}
 
-	public boolean isJsonExportEnabled(){
+	public boolean isJsonExportEnabled() {
 		return jsonExportEnabled;
 	}
 }

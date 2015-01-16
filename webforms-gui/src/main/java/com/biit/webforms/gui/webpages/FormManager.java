@@ -12,6 +12,7 @@ import com.biit.abcd.logger.AbcdLogger;
 import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.abcd.security.AbcdActivity;
 import com.biit.abcd.security.AbcdAuthorizationService;
+import com.biit.form.IBaseFormView;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -25,6 +26,7 @@ import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.authentication.exception.BadAbcdLink;
 import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.authentication.exception.NotValidAbcdForm;
 import com.biit.webforms.enumerations.FormWorkStatus;
@@ -443,7 +445,7 @@ public class FormManager extends SecuredWebPage {
 	 */
 	private void linkAbcdForm() {
 		final Form form = loadForm(getSelectedForm());
-		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
+
 		List<SimpleFormView> availableForms;
 		if (form.getLinkedFormLabel() == null) {
 			// Not linked yet. Show all available forms.
@@ -457,7 +459,8 @@ public class FormManager extends SecuredWebPage {
 							form.getLinkedFormOrganizationId());
 		}
 
-		// Not linked yet. Show all available forms.
+		// Let user choose the version.
+		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
 		for (SimpleFormView simpleFormView : availableForms) {
 			if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 					simpleFormView.getOrganizationId(), AbcdActivity.READ)
@@ -474,6 +477,15 @@ public class FormManager extends SecuredWebPage {
 			public void acceptAction(WindowAcceptCancel window) {
 				WindowLinkAbcdForm linkWindow = (WindowLinkAbcdForm) window;
 
+				for (IBaseFormView abcdForm : linkWindow.getValue()) {
+					try {
+						UserSessionHandler.getController().validateCompatibility(form, abcdForm);
+					} catch (BadAbcdLink e) {
+						MessageManager.showWarning(LanguageCodes.WARNING_ABCD_FORM_LINKED_NOT_VALID,
+								LanguageCodes.WARNING_ABCD_FORM_LINKED_NOT_VALID_DESCRIPTION);
+						break;
+					}
+				}
 				form.setLinkedForms(linkWindow.getValue());
 				try {
 					UserSessionHandler.getController().saveForm(form);

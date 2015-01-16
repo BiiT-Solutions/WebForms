@@ -134,7 +134,7 @@ public class TokenComparationAnswer extends Token {
 	public String getExpressionEditorRepresentation() {
 		String referenceString = null;
 		if (question != null) {
-			referenceString = question.getPathName().replaceAll("[^A-Za-z0-9_./]", "_");
+			referenceString = question.getPathName();
 		}
 		String answerString = null;
 		if (answer != null) {

@@ -1,17 +1,28 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
+import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.converter.Converter.ConversionException;
+import com.vaadin.data.validator.NullValidator;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -19,6 +30,7 @@ import com.vaadin.ui.VerticalLayout;
 public class WindowTokenBetween extends WindowAcceptCancel {
 	private static final long serialVersionUID = 8169533634156722082L;
 	private static final DatePeriodUnit DATE_FORMAT_DEFAULT_DATE_PERIOD = DatePeriodUnit.YEAR;
+	private static final String DATE_FORMAT = "dd/MM/yyyy";
 
 	private static final String FULL = "100%";
 	private static final String EXPAND = null;
@@ -31,8 +43,8 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 	private Question question;
 	private Label questionLabel;
 	private ComboBox datePeriod;
-	private TextField valueStart;
-	private TextField valueEnd;
+	private AbstractField<?> valueStart;
+	private AbstractField<?> valueEnd;
 
 	public WindowTokenBetween() {
 		super();
@@ -77,7 +89,7 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				updateDateValidatorAndInputPrompt();
+				updateDates();
 			}
 		});
 
@@ -113,24 +125,52 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 		return valueField;
 	}
 
+	private AbstractField<?> updateValueField(AbstractField<?> value) {
+		if (value != null) {
+			rootLayout.removeComponent(value);
+		}
+		if (question == null || !question.getAnswerFormat().equals(AnswerFormat.DATE) || datePeriod.getValue() != null) {
+			value = new TextField();
+			value.setWidth(FULL);
+			((TextField) value).setValue("");
+		} else {
+			value = new DateField();
+			value.setWidth(FULL);
+			value.setValue(null);
+		}
+		value.removeAllValidators();
+		value.setImmediate(true);
+		value.setRequired(true);
+		rootLayout.addComponent(value);
+		rootLayout.setComponentAlignment(value, Alignment.MIDDLE_CENTER);
+		return value;
+	}
+
 	public void setQuestion(Question question) {
 		this.question = question;
-		update();
+		updateQuestion();
 	}
 
-	public void setQuestion(Question question, DatePeriodUnit datePeriod, String value) {
+	public void setQuestion(Question question, DatePeriodUnit datePeriod, Object value) {
 		setQuestion(question);
 		this.datePeriod.setValue(datePeriod);
-		this.valueStart.setValue(value);
+		if (valueStart instanceof TextField) {
+			((TextField) valueStart).setValue(value.toString());
+		} else {
+			try {
+				((DateField) valueStart).setValue((Date) value);
+			} catch (Exception e) {
+				valueStart.setValue(null);
+			}
+		}
 	}
 
-	private void update() {
+	private void updateQuestion() {
 		if (question != null) {
 			questionLabel.setValue(question.getName());
 		}
 
-		valueStart.setValue("");
-		valueEnd.setValue("");
+		updateDates();
 
 		rootLayout.removeComponent(datePeriod);
 		if (question.getAnswerFormat() == AnswerFormat.DATE) {
@@ -150,6 +190,27 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 		}
 	}
 
+	private void updateDates() {
+		valueStart = updateValueField(valueStart);
+		valueEnd = updateValueField(valueEnd);
+		valueStart.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = 1715304718376682642L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				valueStart.isValid();
+			}
+		});
+		valueEnd.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = 1715304718376682642L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				valueEnd.isValid();
+			}
+		});
+	}
+
 	private void updateDateValidatorAndInputPrompt() {
 		updateDateValidatorAndInputPrompt(valueStart);
 		updateDateValidatorAndInputPrompt(valueEnd);
@@ -160,22 +221,27 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 		updateValidatorAndInputPrompt(valueEnd);
 	}
 
-	private void updateValidatorAndInputPrompt(TextField value) {
-		value.setInputPrompt(question.getAnswerSubformat().getHint());
+	private void updateValidatorAndInputPrompt(AbstractField<?> value) {
+		if (value instanceof TextField) {
+			((TextField) value).setInputPrompt(AnswerSubformatUi.get(question.getAnswerSubformat()).getInputPrompt());
+		}
 		value.addValidator(new ValidatorPattern(question.getAnswerSubformat().getRegex()));
 	}
 
-	private void updateDateValidatorAndInputPrompt(TextField value) {
+	private void updateDateValidatorAndInputPrompt(AbstractField<?> value) {
 		value.removeAllValidators();
 
-		if (question != null && question.getAnswerSubformat() != null) {
-			if (datePeriod.getValue() == null) {
-				value.setInputPrompt(question.getAnswerSubformat().getHint());
+		if (value instanceof TextField) {
+			if (!question.getAnswerFormat().equals(AnswerFormat.DATE)) {
+				((TextField) value).setInputPrompt(AnswerSubformatUi.get(question.getAnswerSubformat())
+						.getInputPrompt());
 				value.addValidator(new ValidatorPattern(question.getAnswerSubformat().getRegex()));
 			} else {
-				value.setInputPrompt(AnswerSubformat.DATE_PERIOD.getHint());
+				((TextField) value).setInputPrompt(AnswerSubformatUi.get(AnswerSubformat.DATE_PERIOD).getInputPrompt());
 				value.addValidator(new ValidatorPattern(AnswerSubformat.DATE_PERIOD.getRegex()));
 			}
+		} else {
+			value.addValidator(new NullValidator(LanguageCodes.VALIDATION_NULL_VALUE.translation(), false));
 		}
 	}
 
@@ -188,11 +254,27 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 	}
 
 	public String getValueStart() {
-		return valueStart.getValue();
+		if (valueStart.getValue() == null) {
+			return "";
+		} else {
+			if (valueStart instanceof DateField) {
+				return new SimpleDateFormat(DATE_FORMAT).format(((Date) valueStart.getValue()));
+			} else {
+				return valueStart.getValue().toString();
+			}
+		}
 	}
 
 	public String getValueEnd() {
-		return valueEnd.getValue();
+		if (valueEnd.getValue() == null) {
+			return "";
+		} else {
+			if (valueEnd instanceof DateField) {
+				return new SimpleDateFormat(DATE_FORMAT).format(((Date) valueEnd.getValue()));
+			} else {
+				return valueEnd.getValue().toString();
+			}
+		}
 	}
 
 	public DatePeriodUnit getDatePeriodUnit() {
@@ -202,9 +284,27 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 	public void setToken(TokenBetween token) {
 		setQuestion(token.getQuestion());
 		datePeriod.setValue(token.getDatePeriodUnit());
-		valueStart.setValue(token.getValueStart());
-		valueEnd.setValue(token.getValueEnd());
+		if (valueStart instanceof TextField) {
+			((TextField) valueStart).setValue(token.getValueStart());
+		} else {
+			DateFormat format = new SimpleDateFormat(DATE_FORMAT);
+			try {
+				((DateField) valueStart).setValue(format.parse(token.getValueStart()));
+			} catch (ReadOnlyException | ConversionException | ParseException e) {
+				valueStart.setValue(null);
+			}
+		}
+
+		if (valueEnd instanceof TextField) {
+			((TextField) valueEnd).setValue(token.getValueEnd());
+		} else {
+			DateFormat format = new SimpleDateFormat(DATE_FORMAT);
+			try {
+				((DateField) valueEnd).setValue(format.parse(token.getValueEnd()));
+			} catch (ReadOnlyException | ConversionException | ParseException e) {
+				valueEnd.setValue(null);
+			}
+		}
 	}
-	
-	
+
 }

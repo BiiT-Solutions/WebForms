@@ -16,7 +16,7 @@ public enum AnswerFormat {
 
 	DATE(AnswerSubformat.DATE, new AnswerSubformat[] { AnswerSubformat.DATE, AnswerSubformat.DATE_PAST,
 			AnswerSubformat.DATE_FUTURE, AnswerSubformat.DATE_PERIOD, AnswerSubformat.DATE_BIRTHDAY }, new TokenTypes[] { TokenTypes.EQ,
-			TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN, TokenTypes.IN }),
+			TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN}),
 
 	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, new AnswerSubformat[] { AnswerSubformat.POSTAL_CODE }, new TokenTypes[] {
 			TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN, TokenTypes.IN })

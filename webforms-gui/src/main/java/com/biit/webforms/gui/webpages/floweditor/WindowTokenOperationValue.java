@@ -1,23 +1,34 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.converter.Converter.ConversionException;
+import com.vaadin.data.validator.NullValidator;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 
 public class WindowTokenOperationValue extends WindowAcceptCancel {
 	private static final long serialVersionUID = 697691525922280194L;
+	private static final String DATE_FORMAT = "dd/MM/yyyy";
 	private static final String WIDTH = "650px";
 	private static final String HEIGHT = "250px";
 	private static final Object DEFAULT_DATE_PERIOD_UNIT = DatePeriodUnit.YEAR;
@@ -27,8 +38,9 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 	private Label treeElementLabel;
 	private ComboBox datePeriodUnit;
 	private ComboBox operator;
-	private TextField value;
+	private AbstractField<?> value;
 	private TokenComparationValue token;
+	private HorizontalLayout rootLayout;
 
 	public WindowTokenOperationValue() {
 		super();
@@ -45,8 +57,8 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 		setHeight(HEIGHT);
 	}
 
-	private Component generate() {
-		HorizontalLayout rootLayout = new HorizontalLayout();
+	private HorizontalLayout generate() {
+		rootLayout = new HorizontalLayout();
 		rootLayout.setWidth(null);
 		rootLayout.setMargin(true);
 		rootLayout.setSpacing(true);
@@ -64,25 +76,21 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 			datePeriodUnit.addItem(datePeriod.getDatePeriodUnit());
 			datePeriodUnit.setItemCaption(datePeriod.getDatePeriodUnit(), datePeriod.getRepresentation());
 		}
+		datePeriodUnit.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = -333682134124174959L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				updateValueField();
+			}
+		});
 
 		operator = new ComboBox();
 		operator.setNullSelectionAllowed(false);
 		operator.setTextInputAllowed(false);
 		operator.setWidth(OPERATOR_WIDTH);
 
-		value = new TextField();
-		value.removeAllValidators();
-		value.setValue(null);
-		value.setImmediate(true);
-		value.setRequired(true);
-		value.addValueChangeListener(new ValueChangeListener() {
-			private static final long serialVersionUID = 1715304718376682642L;
-
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				value.isValid();
-			}
-		});
+		updateValueField();
 
 		rootLayout.addComponent(treeElementLabel);
 		rootLayout.addComponent(datePeriodUnit);
@@ -95,6 +103,33 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 		return rootLayout;
 	}
 
+	private void updateValueField() {
+		if (value != null) {
+			rootLayout.removeComponent(value);
+		}
+		if (token == null || !token.getQuestion().getAnswerFormat().equals(AnswerFormat.DATE)
+				|| datePeriodUnit.getValue() != null) {
+			value = new TextField();
+			((TextField) value).setValue("");
+		} else {
+			value = new DateField();
+			value.setValue(null);
+		}
+		value.removeAllValidators();
+		value.setImmediate(true);
+		value.setRequired(true);
+		value.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = 1715304718376682642L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				value.isValid();
+			}
+		});
+
+		rootLayout.addComponent(value);
+	}
+
 	public TokenTypes getOperator() {
 		return (TokenTypes) operator.getValue();
 	}
@@ -103,7 +138,7 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 		if (token.getQuestion().getAnswerFormat() == AnswerFormat.DATE
 				&& token.getQuestion().getAnswerSubformat() != AnswerSubformat.DATE_PERIOD) {
 			// Date time or period format
-			if (AnswerSubformat.DATE_PERIOD.getRegex().matcher(value.getValue()).matches()) {
+			if (AnswerSubformat.DATE_PERIOD.getRegex().matcher(value.getValue().toString()).matches()) {
 				return AnswerSubformat.DATE_PERIOD;
 			}
 		}
@@ -111,7 +146,15 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 	}
 
 	public String getValue() {
-		return value.getValue();
+		if (!value.isValid() || value.getValue() == null) {
+			return null;
+		} else {
+			if (value instanceof DateField) {
+				return new SimpleDateFormat(DATE_FORMAT).format(((Date) value.getValue()));
+			} else {
+				return value.getValue().toString();
+			}
+		}
 	}
 
 	/**
@@ -141,11 +184,11 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 				datePeriodUnit.setNullSelectionAllowed(true);
 			}
 			datePeriodUnit.setValue(token.getDatePeriodUnit());
-			if(token.getSubformat()==AnswerSubformat.DATE_PERIOD && token.getDatePeriodUnit()==null){
-				//If there is an error on DB.
+			if (token.getSubformat() == AnswerSubformat.DATE_PERIOD && token.getDatePeriodUnit() == null) {
+				// If there is an error on DB.
 				datePeriodUnit.setValue(DEFAULT_DATE_PERIOD_UNIT);
 			}
-			
+
 			datePeriodUnit.addValueChangeListener(new ValueChangeListener() {
 				private static final long serialVersionUID = 2809186951838524143L;
 
@@ -159,22 +202,40 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 		}
 
 		for (TokenTypes type : token.getQuestion().getAnswerFormat().getValidTokenTypes()) {
-			addTokenType(type);
+			if (!type.equals(TokenTypes.BETWEEN) && !type.equals(TokenTypes.IN)) {
+				addTokenType(type);
+			}
 		}
 		operator.setValue(token.getType());
 
 		updateHintAndValidators();
-		value.setValue(token.getValue());
+		if (value instanceof TextField) {
+			((TextField) value).setValue(token.getValue());
+		} else {
+			DateFormat format = new SimpleDateFormat(DATE_FORMAT);
+			try {
+				((DateField) value).setValue(format.parse(token.getValue()));
+			} catch (ReadOnlyException | ConversionException | ParseException e) {
+				value.setValue(null);
+			}
+		}
 	}
 
-	protected void updateHintAndValidators() {
+	private void updateHintAndValidators() {
+		// Set field.
+		updateValueField();
 		value.removeAllValidators();
-		if (datePeriodUnit.getValue() == null) {
-			value.setInputPrompt(token.getQuestion().getAnswerSubformat().getHint());
-			value.addValidator(new ValidatorPattern(token.getQuestion().getAnswerSubformat().getRegex()));
+		if (value instanceof TextField) {
+			if (datePeriodUnit.getValue() == null) {
+				((TextField) value).setInputPrompt(AnswerSubformatUi.get(token.getQuestion().getAnswerSubformat())
+						.getInputPrompt());
+				value.addValidator(new ValidatorPattern(token.getQuestion().getAnswerSubformat().getRegex()));
+			} else {
+				((TextField) value).setInputPrompt(AnswerSubformatUi.get(AnswerSubformat.DATE_PERIOD).getInputPrompt());
+				value.addValidator(new ValidatorPattern(AnswerSubformat.DATE_PERIOD.getRegex()));
+			}
 		} else {
-			value.setInputPrompt(AnswerSubformat.DATE_PERIOD.getHint());
-			value.addValidator(new ValidatorPattern(AnswerSubformat.DATE_PERIOD.getRegex()));
+			value.addValidator(new NullValidator(LanguageCodes.VALIDATION_NULL_VALUE.translation(), false));
 		}
 	}
 

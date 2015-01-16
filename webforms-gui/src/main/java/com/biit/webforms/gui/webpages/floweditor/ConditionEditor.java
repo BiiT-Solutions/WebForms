@@ -32,11 +32,11 @@ import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * token conditions. Contains the right side controls and the current token
- * condition display.
+ * token conditions. Contains the right side controls and the current token condition display.
  * 
  */
 public class ConditionEditor extends CustomComponent {
@@ -61,22 +61,26 @@ public class ConditionEditor extends CustomComponent {
 		VerticalLayout checkAndTokens = generateCheckAndTokens();
 		controls = generateControls();
 		// Text field needs to remove the shortcuts of the tokenDisplay.
-		controls.getValueField().addFocusListener(new FocusListener() {
-			private static final long serialVersionUID = -5045926489824179125L;
+		if (controls.getValueField() instanceof TextField) {
+			((TextField) controls.getValueField()).addFocusListener(new FocusListener() {
+				private static final long serialVersionUID = -5045926489824179125L;
 
-			@Override
-			public void focus(FocusEvent event) {
-				tokenDisplay.disableShortcuts();
-			}
-		});
-		controls.getValueField().addBlurListener(new BlurListener() {
-			private static final long serialVersionUID = 619744746840638011L;
+				@Override
+				public void focus(FocusEvent event) {
+					tokenDisplay.disableShortcuts();
+				}
+			});
+		}
+		if (controls.getValueField() instanceof TextField) {
+			((TextField) controls.getValueField()).addBlurListener(new BlurListener() {
+				private static final long serialVersionUID = 619744746840638011L;
 
-			@Override
-			public void blur(BlurEvent event) {
-				tokenDisplay.enableShortcuts();
-			}
-		});
+				@Override
+				public void blur(BlurEvent event) {
+					tokenDisplay.enableShortcuts();
+				}
+			});
+		}
 
 		horizontalLayout.addComponent(checkAndTokens);
 		horizontalLayout.addComponent(controls);
@@ -131,11 +135,11 @@ public class ConditionEditor extends CustomComponent {
 
 			@Override
 			public void validationMessage(String message) {
-//				if (message.length() > 0) {
-//					statusLabel.setErrorText(message);
-//				} else {
-//					statusLabel.setValue(message);
-//				}
+				// if (message.length() > 0) {
+				// statusLabel.setErrorText(message);
+				// } else {
+				// statusLabel.setValue(message);
+				// }
 			}
 		});
 
@@ -264,7 +268,7 @@ public class ConditionEditor extends CustomComponent {
 		super.setEnabled(enabled);
 		controls.setEnabled(enabled);
 	}
-	
+
 	protected boolean isConditionValid() {
 		// Translation
 		try {

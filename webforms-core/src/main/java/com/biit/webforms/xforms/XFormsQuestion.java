@@ -53,9 +53,11 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	@Override
 	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
 			StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"")
-				.append(getBindingName()).append("\" ");
-		binding.append("ref=\"").append(getXPath()).append("\" ");
+		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"").append(getBindingName())
+				.append("\" ");
+		// Reference must be always to a name and not to a complete xpath, if the xpath is used, in a loop all repeated
+		// questions would always have the same answers selected.
+		binding.append("ref=\"").append(getName()).append("\" ");
 		getXFormsType(binding);
 		isMandatory(binding);
 		getConstraints(binding);

@@ -120,7 +120,7 @@ public class TokenBetween extends TokenComplex {
 		if (question != null) {
 			referenceString = question.getPathName();
 			if (subformat == AnswerSubformat.DATE_PERIOD) {
-				referenceString += "(" + datePeriodUnit + ")";
+				referenceString += " (" + datePeriodUnit + ")";
 			}
 		}
 		String answerStart = null;
@@ -132,7 +132,7 @@ public class TokenBetween extends TokenComplex {
 			answerEnd = valueEnd;
 		}
 
-		return referenceString + " " + getType() + " (" + answerStart + "," + answerEnd + ")";
+		return referenceString + " " + getType() + " (" + answerStart + ", " + answerEnd + ")";
 	}
 
 	public static Token getBetween(Question question, DatePeriodUnit datePeriodUnit, String valueStart, String valueEnd) {
