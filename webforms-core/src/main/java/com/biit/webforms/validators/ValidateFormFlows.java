@@ -20,8 +20,12 @@ public class ValidateFormFlows extends SimpleValidator<Form> {
 		if (!validateFlow.validate(form.getFlows(), getReport()) && isStopOnFail()) {
 			return;
 		}
-		OthersUnicityValidator othersUnicityValidator = new OthersUnicityValidator();
+		OthersOrphanAndUnicityValidator othersUnicityValidator = new OthersOrphanAndUnicityValidator();
 		othersUnicityValidator.validate(form, getReport());
+		
+		AllBaseQuestionHaveFlowInValidator allBaseQuestionHaveFlowInValidator = new AllBaseQuestionHaveFlowInValidator();
+		allBaseQuestionHaveFlowInValidator.validate(form, getReport());
+		
 //		FlowOriginDestinyUnicityValidator flowOriginDestinyUnicityValidator = new FlowOriginDestinyUnicityValidator();
 //		flowOriginDestinyUnicityValidator.validate(form, getReport());
 	}
