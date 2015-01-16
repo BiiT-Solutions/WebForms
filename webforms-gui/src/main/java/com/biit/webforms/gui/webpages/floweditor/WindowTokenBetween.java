@@ -232,7 +232,7 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 		value.removeAllValidators();
 
 		if (value instanceof TextField) {
-			if (datePeriod.getValue() == null) {
+			if (!question.getAnswerFormat().equals(AnswerFormat.DATE)) {
 				((TextField) value).setInputPrompt(AnswerSubformatUi.get(question.getAnswerSubformat())
 						.getInputPrompt());
 				value.addValidator(new ValidatorPattern(question.getAnswerSubformat().getRegex()));
@@ -296,13 +296,13 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 		}
 
 		if (valueEnd instanceof TextField) {
-			((TextField) valueEnd).setValue(token.getValueStart());
+			((TextField) valueEnd).setValue(token.getValueEnd());
 		} else {
 			DateFormat format = new SimpleDateFormat(DATE_FORMAT);
 			try {
 				((DateField) valueEnd).setValue(format.parse(token.getValueEnd()));
 			} catch (ReadOnlyException | ConversionException | ParseException e) {
-				valueStart.setValue(null);
+				valueEnd.setValue(null);
 			}
 		}
 	}
