@@ -1,5 +1,9 @@
 package com.biit.webforms.persistence;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
@@ -8,13 +12,25 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.enumerations.FlowType;
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
+import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
 public class FormUtils {
@@ -48,17 +64,59 @@ public class FormUtils {
 	public static final String ANSWER_J = "answerJ";
 
 	public static Form createCompleteForm() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
+			BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin,
+			FlowWithoutDestiny, NotValidTokenType {
 		Form form = new Form();
 		form.setOrganizationId(ORGANIZATION_ID);
 		form.setLabel(FORM_COMPLETE_LABEL);
 
 		form.addChild(createCategory(CATEGORY_1));
 		form.addChild(createCategory(CATEGORY_2));
-		
-		((Group)form.getChild(CATEGORY_2,GROUP_1)).setRepeatable(true);
+
+		((Group) form.getChild(CATEGORY_2, GROUP_1)).setRepeatable(true);
+
+		// Create empty go to end form
+		form.addFlow(createEndFormflow(form.getChild(CATEGORY_1, SYSTEM_FIELD_1), false, emptyCondition()));
+		// Create others flow
+		form.addFlow(createEndFormflow(form.getChild(CATEGORY_1, SYSTEM_FIELD_1), true, emptyCondition()));
+		// Create flow from A to B empty condition.
+		form.addFlow(createFlow(form.getChild(CATEGORY_1, SYSTEM_FIELD_1),form.getChild(CATEGORY_1, INFO_TEXT_1),false,emptyCondition()));
+		// Create flow from A to B empty condition.
+		Token token1 = token(form.getChild(CATEGORY_1, GROUP_1, INPUT_TEXT_NUMBER_FLOAT), TokenTypes.LT, "3.0",AnswerSubformat.FLOAT);
+		form.addFlow(createFlow(form.getChild(CATEGORY_2, SYSTEM_FIELD_1),form.getChild(CATEGORY_2, INFO_TEXT_1),false,condition(token1)));
 
 		return form;
+	}
+	
+	public static Token token(TreeObject question,TokenTypes type, String value, AnswerSubformat subformat) throws NotValidTokenType{
+		TokenComparationValue token = new TokenComparationValue(type);
+		token.setQuestion((Question) question);
+		token.setValue(value);
+		token.setSubformat(subformat);
+		return token;
+	}
+
+	public static List<Token> emptyCondition() {
+		return new ArrayList<>();
+	}
+	
+	public static List<Token> condition(Token ... tokens){
+		return Arrays.asList(tokens);
+	}
+	
+	public static Flow createFlow(TreeObject origin,TreeObject destiny, boolean others, List<Token> conditions) throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny{
+		Flow flow = new Flow();
+		flow.setContent(origin, FlowType.NORMAL, destiny, others, conditions);
+		return flow;
+	}
+
+	public static Flow createEndFormflow(TreeObject origin, boolean others, List<Token> condition)
+			throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+		Flow flow = new Flow();
+		flow.setContent(origin, FlowType.END_FORM, null, others, condition);
+		return flow;
 	}
 
 	/**
@@ -69,8 +127,8 @@ public class FormUtils {
 	 * @throws CharacterNotAllowedException
 	 * @throws FieldTooLongException
 	 * @throws NotValidChildException
-	 * @throws InvalidAnswerSubformatException 
-	 * @throws InvalidAnswerFormatException 
+	 * @throws InvalidAnswerSubformatException
+	 * @throws InvalidAnswerFormatException
 	 */
 	public static Category createCategory(String name) throws FieldTooLongException, CharacterNotAllowedException,
 			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
@@ -85,49 +143,55 @@ public class FormUtils {
 		return category;
 	}
 
-	private static TreeObject createGroup(String name) throws FieldTooLongException, CharacterNotAllowedException, NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+	private static TreeObject createGroup(String name) throws FieldTooLongException, CharacterNotAllowedException,
+			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
 		Group group = new Group();
 		group.setName(name);
 		group.setLabel(name);
-		
-		group.addChild(createTextField(INPUT_TEXT_TEXT,AnswerFormat.TEXT,AnswerSubformat.TEXT));
-		group.addChild(createTextField(INPUT_TEXT_NUMBER_FLOAT,AnswerFormat.NUMBER,AnswerSubformat.FLOAT));
-		group.addChild(createTextField(INPUT_TEXT_POSTAL_CODE,AnswerFormat.POSTAL_CODE,AnswerSubformat.POSTAL_CODE));
-		group.addChild(createTextField(INPUT_TEXT_TEXT_BSN,AnswerFormat.TEXT,AnswerSubformat.BSN));
-		group.addChild(createTextField(INPUT_TEXT_DATE_BIRTHDAY,AnswerFormat.DATE,AnswerSubformat.DATE_BIRTHDAY));
-		group.addChild(createQuestionAnswers(RADIO_BUTTON, AnswerType.SINGLE_SELECTION_RADIO, ANSWER_A,ANSWER_B,ANSWER_C));
-		group.addChild(createQuestionAnswers(MULTI_CHECKBOX, AnswerType.MULTIPLE_SELECTION, ANSWER_D,ANSWER_E,ANSWER_F,ANSWER_G));
-		group.addChild(createQuestionAnswers(LIST, AnswerType.SINGLE_SELECTION_LIST, ANSWER_H,ANSWER_I,ANSWER_J));
-		
+
+		group.addChild(createTextField(INPUT_TEXT_TEXT, AnswerFormat.TEXT, AnswerSubformat.TEXT));
+		group.addChild(createTextField(INPUT_TEXT_NUMBER_FLOAT, AnswerFormat.NUMBER, AnswerSubformat.FLOAT));
+		group.addChild(createTextField(INPUT_TEXT_POSTAL_CODE, AnswerFormat.POSTAL_CODE, AnswerSubformat.POSTAL_CODE));
+		group.addChild(createTextField(INPUT_TEXT_TEXT_BSN, AnswerFormat.TEXT, AnswerSubformat.BSN));
+		group.addChild(createTextField(INPUT_TEXT_DATE_BIRTHDAY, AnswerFormat.DATE, AnswerSubformat.DATE_BIRTHDAY));
+		group.addChild(createQuestionAnswers(RADIO_BUTTON, AnswerType.SINGLE_SELECTION_RADIO, ANSWER_A, ANSWER_B,
+				ANSWER_C));
+		group.addChild(createQuestionAnswers(MULTI_CHECKBOX, AnswerType.MULTIPLE_SELECTION, ANSWER_D, ANSWER_E,
+				ANSWER_F, ANSWER_G));
+		group.addChild(createQuestionAnswers(LIST, AnswerType.SINGLE_SELECTION_LIST, ANSWER_H, ANSWER_I, ANSWER_J));
+
 		return group;
 	}
 
-	private static TreeObject createTextField(String name, AnswerFormat format, AnswerSubformat subformat) throws FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+	private static TreeObject createTextField(String name, AnswerFormat format, AnswerSubformat subformat)
+			throws FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
+			InvalidAnswerSubformatException {
 		Question question = new Question();
 		question.setName(name);
 		question.setLabel(name);
-		
+
 		question.setAnswerType(AnswerType.INPUT);
 		question.setAnswerFormat(format);
 		question.setAnswerSubformat(subformat);
-		
+
 		return question;
 	}
-	
-	private static TreeObject createAnswer(String name) throws FieldTooLongException, CharacterNotAllowedException{
+
+	private static TreeObject createAnswer(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		Answer answer = new Answer();
 		answer.setName(name);
 		answer.setLabel(name);
 		return answer;
 	}
-	
-	private static TreeObject createQuestionAnswers(String name, AnswerType answerType, String...answers) throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException{
+
+	private static TreeObject createQuestionAnswers(String name, AnswerType answerType, String... answers)
+			throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException {
 		Question question = new Question();
 		question.setName(name);
 		question.setLabel(name);
-		
+
 		question.setAnswerType(answerType);
-		for(String answer: answers){
+		for (String answer : answers) {
 			question.addChild(createAnswer(answer));
 		}
 		return question;
@@ -141,11 +205,19 @@ public class FormUtils {
 		return systemField;
 	}
 
-	private static TreeObject createInfoText(String infoText) throws FieldTooLongException, CharacterNotAllowedException {
+	private static TreeObject createInfoText(String infoText) throws FieldTooLongException,
+			CharacterNotAllowedException {
 		Text text = new Text();
 		text.setName(infoText);
 		text.setDescription(IPSUM_LOREM);
 		return text;
 	}
-	
+
+	public static Token token(Question question, String type, String answer) {
+		return TokenComparationAnswer.getToken(question, TokenTypes.fromString(type), question.getAnswer(answer));
+	}
+
+	public static Token token(Question question, String type, AnswerSubformat subformat, String value) {
+		return TokenComparationValue.getToken(TokenTypes.fromString(type), question, subformat, null, value);
+	}
 }

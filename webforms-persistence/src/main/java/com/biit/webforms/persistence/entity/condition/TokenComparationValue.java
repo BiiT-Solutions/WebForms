@@ -211,9 +211,10 @@ public class TokenComparationValue extends Token {
 	 */
 	@Override
 	public boolean isContentEqual(Token token) {
-		if (token instanceof TokenBetween) {
+		if (token instanceof TokenComparationValue) {
 			TokenComparationValue comparationValue = (TokenComparationValue) token;
 			if (super.isContentEqual(token)) {
+				System.out.println(question+" "+comparationValue.question);
 				if (!question.getPathName().equals(comparationValue.question.getPathName())) {
 					return false;
 				}

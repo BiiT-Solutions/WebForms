@@ -148,15 +148,19 @@ public class Form extends BaseForm implements IWebformsFormView {
 			throw new NotValidTreeObjectException("Copy data for Form only supports the same type copy");
 		}
 	}
-
+	
 	public Form createNewVersion(User user) throws NotValidStorableObjectException, CharacterNotAllowedException {
+		return createNewVersion(user.getUserId());
+	}
+
+	public Form createNewVersion(Long userId) throws NotValidStorableObjectException, CharacterNotAllowedException {
 		Form newVersion = (Form) generateCopy(false, true);
 		newVersion.setVersion(newVersion.getVersion() + 1);
 		newVersion.setLastVersion(true);
 		this.setLastVersion(false);
 		newVersion.resetIds();
-		newVersion.setCreatedBy(user);
-		newVersion.setUpdatedBy(user);
+		newVersion.setCreatedBy(userId);
+		newVersion.setUpdatedBy(userId);
 		newVersion.setStatus(FormWorkStatus.DESIGN);
 		return newVersion;
 	}
