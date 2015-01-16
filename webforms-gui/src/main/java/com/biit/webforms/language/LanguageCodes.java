@@ -494,6 +494,12 @@ public enum LanguageCodes implements ILanguageCode {
 	INPUT_PROMPT_POSTAL_CODE("input.prompt.postalcode"),
 	INPUT_PROMPT_IBAN("input.prompt.iban"),
 	INPUT_PROMPT_PHONE("input.prompt.phone"),
+	
+	CLEAN_FLOW_REPORT_TITLE("clean.flow.report.title"),
+	CLEAN_FLOW_REPORT_CAPTION("clean.flow.report.caption"),
+	CLEAN_FLOW_REPORT_OTHERS_RULE("clean.flow.report.others.rule"),
+	CLEAN_FLOW_REPORT_USELESS_FLOW("clean.flow.report.useless.flow"),
+	CLEAN_FLOW_REPORT_NO_RULES_CHANGED("clean.flow.report.no.rules.changed"),
 	;
 
 	private String value;

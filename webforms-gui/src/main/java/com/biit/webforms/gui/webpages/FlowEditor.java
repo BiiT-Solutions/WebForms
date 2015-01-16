@@ -17,8 +17,9 @@ import com.biit.webforms.flow.FlowCleaner;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
-import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
+import com.biit.webforms.gui.common.components.WindowTextArea;
+import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormFlowViewer;
@@ -426,8 +427,26 @@ public class FlowEditor extends SecuredWebPage {
 		flowCleaner.cleanFlow();
 		tableFlows.setRows(UserSessionHandler.getController().getFormInUseFlows());
 		if (!flowCleaner.getOtherFlowsRemoved().isEmpty() || !flowCleaner.getUselessFlowRemoved().isEmpty()) {
-			WindowTextArea report = new WindowTextArea("");
-			report.setCaption("");
+			StringBuilder report = new StringBuilder();
+			for (Flow flow : flowCleaner.getOtherFlowsRemoved()) {
+				report.append(ServerTranslate.translate(LanguageCodes.CLEAN_FLOW_REPORT_OTHERS_RULE, new Object[] {
+						flow.getOrigin().getPathName(), flow.getOrigin().getPathName() }));
+				report.append(System.lineSeparator());
+			}
+			for (Flow flow : flowCleaner.getUselessFlowRemoved()) {
+				report.append(ServerTranslate.translate(LanguageCodes.CLEAN_FLOW_REPORT_USELESS_FLOW, new Object[] {
+						flow.getOrigin().getPathName(), flow.getOrigin().getPathName() }));
+				report.append(System.lineSeparator());
+			}
+			WindowTextArea reportWindow = new WindowTextArea(LanguageCodes.CLEAN_FLOW_REPORT_CAPTION.translation());
+			reportWindow.setCaption(LanguageCodes.CLEAN_FLOW_REPORT_TITLE.translation());
+			reportWindow.setValue(report.toString());
+			reportWindow.setTextReadOnly(true);
+			reportWindow.showCentered();
+			reportWindow.setWidth("80%");
+			reportWindow.setHeight("80%");
+		} else {
+			MessageManager.showInfo(LanguageCodes.CLEAN_FLOW_REPORT_NO_RULES_CHANGED);
 		}
 	}
 
