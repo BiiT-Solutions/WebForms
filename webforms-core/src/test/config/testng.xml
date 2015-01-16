@@ -7,6 +7,8 @@
  			 	<include name="testFlowDomain" />
 				<include name="booleanExpressions" />
 				<include name="linkValidation" />
+				<include name="missingFlowIn" />
+				<include name="orphanToken" />
 				<include name="xforms" />
 				<include name="xmlGeneration" />
 			</run>
@@ -17,6 +19,8 @@
 			<class name="com.biit.webforms.xforms.expressions.BooleanExpressionTest" />
 			<class name="com.biit.webforms.xforms.expressions.XFormExporter" />
 			<class name="com.biit.webforms.validators.LinkValidationTests" />
+			<class name="com.biit.webforms.validators.MissingFlowInTest" />
+			<class name="com.biit.webforms.validators.OrphanToken" />
 			<class name="com.biit.webforms.utils.exporters.xml.XmlGenerationTest" />
 		</classes>
 	</test>
