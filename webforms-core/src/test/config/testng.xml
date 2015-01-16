@@ -9,6 +9,7 @@
 				<include name="linkValidation" />
 				<include name="xforms" />
 				<include name="xmlGeneration" />
+				<include name="flowCleaner" />
 			</run>
 		</groups>
 		<classes>
@@ -18,6 +19,7 @@
 			<class name="com.biit.webforms.xforms.expressions.XFormExporter" />
 			<class name="com.biit.webforms.validators.LinkValidationTests" />
 			<class name="com.biit.webforms.utils.exporters.xml.XmlGenerationTest" />
+			<class name="com.biit.webforms.flow.FlowCleanerTest" />
 		</classes>
 	</test>
 </suite>

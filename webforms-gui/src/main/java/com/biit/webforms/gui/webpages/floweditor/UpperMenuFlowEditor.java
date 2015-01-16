@@ -10,7 +10,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuFlowEditor extends UpperMenuWebforms {
 	private static final long serialVersionUID = 4521719649478606926L;
 
-	private IconButton saveButton, newFlowButton, editFlowButton, cloneFlowButton, removeFlowButton;
+	private IconButton saveButton, newFlowButton, editFlowButton, cloneFlowButton, removeFlowButton, cleanFlowButton;
 
 	public UpperMenuFlowEditor() {
 
@@ -29,12 +29,16 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		removeFlowButton = new IconButton(LanguageCodes.CAPTION_REMOVE_RULE, ThemeIcons.RULE_REMOVE,
 				LanguageCodes.TOOLTIP_REMOVE_RULE, IconSize.BIG);
 
+		cleanFlowButton = new IconButton(LanguageCodes.CAPTION_CLEAN_FLOW, ThemeIcons.RULE_CLEAN_FLOW,
+				LanguageCodes.TOOLTIP_CLEAN_FLOW, IconSize.BIG);
+
 		addIconButton(saveButton);
 		addIconButton(newFlowButton);
 		addIconButton(editFlowButton);
 		addIconButton(cloneFlowButton);
 		addIconButton(removeFlowButton);
-		
+		addIconButton(cleanFlowButton);
+
 		setConfirmationNeeded(true);
 	}
 
@@ -58,6 +62,10 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 		removeFlowButton.addClickListener(listener);
 	}
 
+	public void addCleanFlowButtonListener(ClickListener listener) {
+		cleanFlowButton.addClickListener(listener);
+	}
+
 	public IconButton getSaveButton() {
 		return saveButton;
 	}
@@ -76,5 +84,9 @@ public class UpperMenuFlowEditor extends UpperMenuWebforms {
 
 	public IconButton getRemoveFlowButton() {
 		return removeFlowButton;
+	}
+
+	public IconButton getCleanFlowButton() {
+		return cleanFlowButton;
 	}
 }

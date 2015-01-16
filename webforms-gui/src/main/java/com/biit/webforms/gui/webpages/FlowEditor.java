@@ -13,9 +13,11 @@ import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.flow.FlowCleaner;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.WindowTextArea;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
@@ -81,7 +83,7 @@ public class FlowEditor extends SecuredWebPage {
 	protected void initContent() {
 		formFlowViewerZoomListener = new FormFlowViewerZoomListener();
 		zoomSliderValueChangeListener = new ZoomSliderValueChangeListener();
-		
+
 		if (UserSessionHandler.getController().getFormInUse() != null
 				&& !WebformsAuthorizationService.getInstance().isFormEditable(
 						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
@@ -230,6 +232,7 @@ public class FlowEditor extends SecuredWebPage {
 		upperMenu.getEditFlowButton().setEnabled(canEdit && !selectedNew && !multipleSelection && somethingSelected);
 		upperMenu.getCloneFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected);
 		upperMenu.getRemoveFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected);
+		upperMenu.getCleanFlowButton().setEnabled(canEdit);
 	}
 
 	private Component createRightComponent() {
@@ -249,8 +252,8 @@ public class FlowEditor extends SecuredWebPage {
 
 		return i;
 	}
-	
-	private class FormFlowViewerZoomListener implements ZoomChangedListener{
+
+	private class FormFlowViewerZoomListener implements ZoomChangedListener {
 
 		@Override
 		public void zoomChanged(float zoom) {
@@ -258,9 +261,9 @@ public class FlowEditor extends SecuredWebPage {
 			zoomSlider.setValue((double) zoom);
 			zoomSlider.addValueChangeListener(zoomSliderValueChangeListener);
 		}
-		
+
 	}
-	
+
 	private class ZoomSliderValueChangeListener implements ValueChangeListener {
 		private static final long serialVersionUID = 5649221005286915625L;
 
@@ -406,11 +409,29 @@ public class FlowEditor extends SecuredWebPage {
 				removeSelectedFlows();
 			}
 		});
+		upperMenu.addCleanFlowButtonListener(new ClickListener() {
+			private static final long serialVersionUID = 5705204419397542939L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				cleanFlowOfForm();
+			}
+		});
 
 		return upperMenu;
 	}
 
-	protected void removeSelectedFlows() {
+	private void cleanFlowOfForm() {
+		FlowCleaner flowCleaner = new FlowCleaner(UserSessionHandler.getController().getFormInUse());
+		flowCleaner.cleanFlow();
+		tableFlows.setRows(UserSessionHandler.getController().getFormInUseFlows());
+		if (!flowCleaner.getOtherFlowsRemoved().isEmpty() || !flowCleaner.getUselessFlowRemoved().isEmpty()) {
+			WindowTextArea report = new WindowTextArea("");
+			report.setCaption("");
+		}
+	}
+
+	private void removeSelectedFlows() {
 		@SuppressWarnings("unchecked")
 		Set<Object> selectedObjects = (Set<Object>) tableFlows.getValue();
 		Set<Flow> flowsToDelete = new HashSet<Flow>();
@@ -426,7 +447,7 @@ public class FlowEditor extends SecuredWebPage {
 	/**
 	 * This method opens the new flow window
 	 */
-	protected void addNewFlowAction() {
+	private void addNewFlowAction() {
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		if (canEdit) {
@@ -439,7 +460,7 @@ public class FlowEditor extends SecuredWebPage {
 	 * 
 	 * @param flow
 	 */
-	protected void editFlowAction(Flow flow) {
+	private void editFlowAction(Flow flow) {
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		if (canEdit) {

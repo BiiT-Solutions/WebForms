@@ -1,0 +1,186 @@
+{
+  "class": "com.biit.webforms.persistence.entity.Form",
+  "comparationId": "1e7fa585-0016-4321-a3bc-a76508962f50",
+  "creationTime": "Jan 16, 2015 1:10:03 PM",
+  "updateTime": "Jan 16, 2015 1:12:18 PM",
+  "createdBy": 10195,
+  "updatedBy": 10195,
+  "name": "form",
+  "label": "FormCleanFlow",
+  "children": [
+    {
+      "class": "com.biit.webforms.persistence.entity.Category",
+      "comparationId": "298e0a21-d811-44a3-91f5-6e70dc640970",
+      "creationTime": "Jan 16, 2015 1:10:07 PM",
+      "updateTime": "Jan 16, 2015 1:11:11 PM",
+      "createdBy": 10195,
+      "updatedBy": 10195,
+      "name": "Category",
+      "label": "Category",
+      "children": [
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "2e38311a-ea23-4af0-85fb-c8adbe0d5543",
+          "creationTime": "Jan 16, 2015 1:10:11 PM",
+          "updateTime": "Jan 16, 2015 1:10:27 PM",
+          "createdBy": 10195,
+          "updatedBy": 10195,
+          "name": "Question",
+          "label": "Question",
+          "children": [
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "1b9dcedf-8721-4a01-8aca-4b641dc6e226",
+              "creationTime": "Jan 16, 2015 1:10:26 PM",
+              "updateTime": "Jan 16, 2015 1:10:26 PM",
+              "createdBy": 10195,
+              "updatedBy": 10195,
+              "name": "Answer",
+              "label": "Answer",
+              "children": [],
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "aea3c803-53cf-489c-88c1-62ae8983f4dd",
+              "creationTime": "Jan 16, 2015 1:10:26 PM",
+              "updateTime": "Jan 16, 2015 1:10:27 PM",
+              "createdBy": 10195,
+              "updatedBy": 10195,
+              "name": "Answer2",
+              "label": "Answer2",
+              "children": [],
+              "description": ""
+            }
+          ],
+          "answerType": "SINGLE_SELECTION_RADIO",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "12117898-cda6-4a24-8be7-8473b6b403eb",
+          "creationTime": "Jan 16, 2015 1:10:14 PM",
+          "updateTime": "Jan 16, 2015 1:11:11 PM",
+          "createdBy": 10195,
+          "updatedBy": 10195,
+          "name": "Question2",
+          "label": "Question2",
+          "children": [
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "d1d463c0-510d-41bc-9d84-9b5c18c23e69",
+              "creationTime": "Jan 16, 2015 1:10:28 PM",
+              "updateTime": "Jan 16, 2015 1:10:28 PM",
+              "createdBy": 10195,
+              "updatedBy": 10195,
+              "name": "Answer",
+              "label": "Answer",
+              "children": [],
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "f0d3e7c0-aa7e-42a6-9d39-29beee507300",
+              "creationTime": "Jan 16, 2015 1:10:28 PM",
+              "updateTime": "Jan 16, 2015 1:10:35 PM",
+              "createdBy": 10195,
+              "updatedBy": 10195,
+              "name": "Answer2",
+              "label": "Answer2",
+              "children": [],
+              "description": ""
+            }
+          ],
+          "answerType": "SINGLE_SELECTION_RADIO",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        },
+        {
+          "class": "com.biit.webforms.persistence.entity.Question",
+          "comparationId": "873340c7-874e-4285-bc7d-e362174b2cf4",
+          "creationTime": "Jan 16, 2015 1:11:02 PM",
+          "updateTime": "Jan 16, 2015 1:11:10 PM",
+          "createdBy": 10195,
+          "updatedBy": 10195,
+          "name": "Question3",
+          "label": "Question3",
+          "children": [
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "31ce520e-c471-4604-a9a3-f042ab85a917",
+              "creationTime": "Jan 16, 2015 1:11:09 PM",
+              "updateTime": "Jan 16, 2015 1:11:09 PM",
+              "createdBy": 10195,
+              "updatedBy": 10195,
+              "name": "Answer",
+              "label": "Answer",
+              "children": [],
+              "description": ""
+            },
+            {
+              "class": "com.biit.webforms.persistence.entity.Answer",
+              "comparationId": "390109fb-b814-45ba-98de-f11206ab0545",
+              "creationTime": "Jan 16, 2015 1:11:09 PM",
+              "updateTime": "Jan 16, 2015 1:11:10 PM",
+              "createdBy": 10195,
+              "updatedBy": 10195,
+              "name": "Answer2",
+              "label": "Answer2",
+              "children": [],
+              "description": ""
+            }
+          ],
+          "answerType": "SINGLE_SELECTION_RADIO",
+          "mandatory": true,
+          "horizontal": false,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "version": 1,
+  "organizationId": 25501,
+  "description": "",
+  "flows": [
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "78c17423-6837-4c41-9455-755542f04be4",
+      "creationTime": "Jan 16, 2015 1:11:26 PM",
+      "updateTime": "Jan 16, 2015 1:11:26 PM",
+      "createdBy": 10195,
+      "updatedBy": 10195,
+      "origin_id": [
+        "Category",
+        "Question2"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "Question3"
+      ],
+      "others": true
+    },
+    {
+      "class": "com.biit.webforms.persistence.entity.Flow",
+      "comparationId": "74384a2c-89b1-465d-abbf-66bf1d47b372",
+      "creationTime": "Jan 16, 2015 1:10:45 PM",
+      "updateTime": "Jan 16, 2015 1:10:45 PM",
+      "createdBy": 10195,
+      "updatedBy": 10195,
+      "origin_id": [
+        "Category",
+        "Question"
+      ],
+      "flowType": "NORMAL",
+      "destiny_id": [
+        "Category",
+        "Question2"
+      ],
+      "others": false,
+      "condition": []
+    }
+  ]
+}
