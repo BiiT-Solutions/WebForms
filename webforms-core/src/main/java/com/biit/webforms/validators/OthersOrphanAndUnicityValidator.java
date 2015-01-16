@@ -9,11 +9,21 @@ import com.biit.form.TreeObject;
 import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.validators.reports.OthersOrphanAt;
 import com.biit.webforms.validators.reports.OthersUnicityBrokenAt;
 
-public class OthersUnicityValidator extends SimpleValidator<Form> {
+/**
+ * 
+ * Checks that there is only only one other flow for each normal flow from one
+ * question.
+ * 
+ * Checks that there are no orphan "others" flows (Single others flow without a
+ * normal flow from one question.
+ * 
+ */
+public class OthersOrphanAndUnicityValidator extends SimpleValidator<Form> {
 
-	public OthersUnicityValidator() {
+	public OthersOrphanAndUnicityValidator() {
 		super(Form.class);
 	}
 
@@ -38,6 +48,9 @@ public class OthersUnicityValidator extends SimpleValidator<Form> {
 				}
 			}
 			assertTrue(othersCount <= 1, new OthersUnicityBrokenAt(origin));
+			if(othersCount == 1){
+				assertTrue(flowsOfOrigin.size() != 1, new OthersOrphanAt(origin));
+			}
 		}
 	}
 

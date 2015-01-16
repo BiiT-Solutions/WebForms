@@ -31,6 +31,7 @@ import com.biit.webforms.validators.ValidateLogic;
 import com.biit.webforms.validators.reports.BackwardFlow;
 import com.biit.webforms.validators.reports.DifferentDateUnitForQuestionsReport;
 import com.biit.webforms.validators.reports.FlowOriginIsNotMandatory;
+import com.biit.webforms.validators.reports.FormElementWithouthFlowIn;
 import com.biit.webforms.validators.reports.IncompleteLogicReport;
 import com.biit.webforms.validators.reports.InvalidFlowCondition;
 import com.biit.webforms.validators.reports.InvalidFlowSubformat;
@@ -45,6 +46,7 @@ import com.biit.webforms.validators.reports.MultipleEndLoopsFromSameElement;
 import com.biit.webforms.validators.reports.MultipleFlowsWithSameOriginAndDestiny;
 import com.biit.webforms.validators.reports.NoSubanswersAllowed;
 import com.biit.webforms.validators.reports.NotValidCondition;
+import com.biit.webforms.validators.reports.OthersOrphanAt;
 import com.biit.webforms.validators.reports.OthersUnicityBrokenAt;
 import com.biit.webforms.validators.reports.QuestionNotFound;
 import com.biit.webforms.validators.reports.RedundantLogicReport;
@@ -352,6 +354,12 @@ public class Validation extends SecuredWebPage {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_TOKEN_USES_NON_FINAL_ANSWER,
 						new Object[] { ((TokenUsesNonFinalAnswer) report).getFlow(),
 								((TokenUsesNonFinalAnswer) report).getToken().getAnswer().getPathAnswerValue() }));
+			} else if (report instanceof OthersOrphanAt) {
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_OTHERS_ORPHAN,
+						new Object[] { ((OthersOrphanAt) report).getOrigin().getPathName() }));
+			} else if (report instanceof FormElementWithouthFlowIn){
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_ELEMENT_NO_FLOW_IN,
+						new Object[] { ((FormElementWithouthFlowIn) report).getOrigin().getPathName() }));
 			} else if (report instanceof NullValueReport) {
 				// Only advise once.
 				if (!nullReportAdded) {

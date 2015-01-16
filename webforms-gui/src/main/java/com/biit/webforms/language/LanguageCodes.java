@@ -473,6 +473,8 @@ public enum LanguageCodes implements ILanguageCode {
 	VALIDATION_NO_SUBANSWERS_ALLOWED("validation.no.subanswers.allowed"),
 	VALIDATION_NOT_VALID_CONDITION("valdiation.not.valid.condition"),
 	VALIDATION_OTHERS_UNICITY_BROKEN("validation.others.unicity.broken"),
+	VALIDATION_OTHERS_ORPHAN("validation.others.orphan"),
+	VALIDATION_ELEMENT_NO_FLOW_IN("validation.element.no.flow.in"),
 	VALIDATION_QUESTION_NOT_FOUND("validation.question.not.found"),
 	VALIDATION_REDUNDANT_LOGIC("validation.redundant.logic"),
 	VALIDATION_TOKEN_USES_NON_FINAL_ANSWER("validation.token.uses.non.final.answer"),
