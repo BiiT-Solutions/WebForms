@@ -5,11 +5,11 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
 
-public class WindowTextArea extends WindowAcceptCancel{
+public class WindowTextArea extends WindowAcceptCancel {
 	private static final long serialVersionUID = 4740162877392137594L;
 
-	private static final String width = "300px";
-	private static final String height = "300px";
+	private static final String WIDTH = "300px";
+	private static final String HEIGHT = "300px";
 
 	private TextArea textArea;
 
@@ -20,10 +20,11 @@ public class WindowTextArea extends WindowAcceptCancel{
 		setDraggable(false);
 		setClosable(false);
 		setModal(true);
-		setWidth(width);
-		setHeight(height);
+		setWidth(WIDTH);
+		setHeight(HEIGHT);
+		getAcceptButton().setVisible(false);
 	}
-	
+
 	public String getValue() {
 		return textArea.getValue();
 	}
@@ -43,5 +44,10 @@ public class WindowTextArea extends WindowAcceptCancel{
 
 	public void setValue(String value) {
 		textArea.setValue(value);
+	}
+
+	
+	public void setTextReadOnly(boolean readOnly) {
+		textArea.setReadOnly(readOnly);
 	}
 }

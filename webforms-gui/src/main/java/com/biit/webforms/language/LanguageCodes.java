@@ -296,6 +296,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_REDRAW("caption.redraw"),
 	CAPTION_CLONE_RULE("caption.clone.rule"),
 	CAPTION_REMOVE_RULE("caption.remove.rule"),
+	CAPTION_CLEAN_FLOW("caption.clean.flow"),
 	CAPTION_INSERT_QUESTION_REFENCE("caption.insert.question.reference"),
 	CAPTION_INSERT_ANSWER_REFENCE("caption.insert.answer.reference"),
 	CAPTION_OTHERS("caption.others"),
@@ -313,6 +314,7 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_REDRAW("tooltip.redraw"),
 	TOOLTIP_CLONE_RULE("tooltip.clone.rule"),
 	TOOLTIP_REMOVE_RULE("tooltip.remove.rule"),
+	TOOLTIP_CLEAN_FLOW("tooltip.clean.flow"),
 	TOOLTIP_INSERT_QUESTION_REFENCE("tooltip.insert.question.reference"),
 	TOOLTIP_INSERT_ANSWER_REFENCE("tooltip.insert.answer.reference"),
 	TOOLTIP_PRINT_FLOW("tooltip.print.flow"),
@@ -492,6 +494,12 @@ public enum LanguageCodes implements ILanguageCode {
 	INPUT_PROMPT_POSTAL_CODE("input.prompt.postalcode"),
 	INPUT_PROMPT_IBAN("input.prompt.iban"),
 	INPUT_PROMPT_PHONE("input.prompt.phone"),
+	
+	CLEAN_FLOW_REPORT_TITLE("clean.flow.report.title"),
+	CLEAN_FLOW_REPORT_CAPTION("clean.flow.report.caption"),
+	CLEAN_FLOW_REPORT_OTHERS_RULE("clean.flow.report.others.rule"),
+	CLEAN_FLOW_REPORT_USELESS_FLOW("clean.flow.report.useless.flow"),
+	CLEAN_FLOW_REPORT_NO_RULES_CHANGED("clean.flow.report.no.rules.changed"),
 	;
 
 	private String value;

@@ -65,6 +65,7 @@ public enum ThemeIcons implements IThemeIcon {
 	RULE_CLONE("flow.rule.duplicate.svg"), 
 	RULE_REMOVE("flow.rule.remove.svg"), 
 	RULE_DIAGRAM_REDRAW("flow.diagram.refresh.svg"),
+	RULE_CLEAN_FLOW("flow.clean.svg"),
 
 	CONDITION_HELPER_FORM_REFERENCE("flow.helper.form.svg"), 
 	CONDITION_HELPER_CONTROLS("flow.helper.control.svg"),

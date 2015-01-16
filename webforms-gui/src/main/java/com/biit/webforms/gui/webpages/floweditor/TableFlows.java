@@ -136,9 +136,13 @@ public class TableFlows extends Table {
 		addCleanRow();
 	}
 
+	public void setRows(Set<Flow> rules) {
+		removeAllItems();
+		addRows(rules);
+	}
+
 	/**
-	 * Adds a new row, moves the 'insert new rule' to the end and selects as
-	 * current value the new row.
+	 * Adds a new row, moves the 'insert new rule' to the end and selects as current value the new row.
 	 * 
 	 * @param newRule
 	 */

@@ -11,6 +11,7 @@
 				<include name="orphanToken" />
 				<include name="xforms" />
 				<include name="xmlGeneration" />
+				<include name="flowCleaner" />
 			</run>
 		</groups>
 		<classes>
@@ -22,6 +23,7 @@
 			<class name="com.biit.webforms.validators.MissingFlowInTest" />
 			<class name="com.biit.webforms.validators.OrphanToken" />
 			<class name="com.biit.webforms.utils.exporters.xml.XmlGenerationTest" />
+			<class name="com.biit.webforms.flow.FlowCleanerTest" />
 		</classes>
 	</test>
 </suite>
