@@ -148,7 +148,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 			throw new NotValidTreeObjectException("Copy data for Form only supports the same type copy");
 		}
 	}
-	
+
 	public Form createNewVersion(User user) throws NotValidStorableObjectException, CharacterNotAllowedException {
 		return createNewVersion(user.getUserId());
 	}
@@ -247,8 +247,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the
-	 * implicit rules (question without rule goes to the next element)
+	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
+	 * goes to the next element)
 	 * 
 	 * @return
 	 */
@@ -377,15 +377,16 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 	}
 
-	public void removeRule(Flow dbRule) {
+	public boolean removeRule(Flow dbRule) {
+		int currentRules = rules.size();
 		rules.remove(dbRule);
+		return currentRules == rules.size();
 	}
 
 	/**
-	 * This is the only function that has to be used to link forms. This
-	 * controls that the linked element and versions are present at the same
-	 * time or not when modifying data. It is assumed that all linked forms have
-	 * the same name and organization.
+	 * This is the only function that has to be used to link forms. This controls that the linked element and versions
+	 * are present at the same time or not when modifying data. It is assumed that all linked forms have the same name
+	 * and organization.
 	 * 
 	 * @param linkedForms
 	 */
@@ -463,9 +464,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	public Set<Flow> getFlows(String originPath, String destinyPath) {
-		return getFlows(getChild(originPath),getChild(destinyPath));
+		return getFlows(getChild(originPath), getChild(destinyPath));
 	}
-	
+
 	public Set<Flow> getFlows(TreeObject origin, TreeObject destiny) {
 		Set<Flow> selectedFlows = new HashSet<Flow>();
 		for (Flow flow : rules) {
@@ -476,8 +477,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 		return selectedFlows;
 	}
-	
-	public static Form fromJson(String jsonString){
+
+	public static Form fromJson(String jsonString) {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
 		gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
@@ -488,7 +489,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldDeserializer());
 		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerDeserializer());
 		Gson gson = gsonBuilder.create();
-		
+
 		return (Form) gson.fromJson(jsonString, Form.class);
 	}
 
@@ -510,14 +511,14 @@ public class Form extends BaseForm implements IWebformsFormView {
 		gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInSerializer());
 		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
 		Gson gson = gsonBuilder.create();
-		
+
 		return gson.toJson(this);
 	}
 
 	public String getLabelWithouthSpaces() {
 		return getLabel().replace(" ", "_");
 	}
-	
+
 	/**
 	 * Compares the content of treeObject - Needs to be an instance of Form
 	 * 
@@ -526,58 +527,58 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 */
 	public boolean isContentEqual(TreeObject treeObject) {
 		if (treeObject instanceof Form) {
-			if(super.isContentEqual(treeObject)){
+			if (super.isContentEqual(treeObject)) {
 				Form form = (Form) treeObject;
 
-				if(status!=null && status!=form.status){
+				if (status != null && status != form.status) {
 					return false;
 				}
-				if(description!=null && !description.equals(form.description)){
+				if (description != null && !description.equals(form.description)) {
 					return false;
 				}
 
-				if((rules==null && form.rules!=null)||(rules!=null && form.rules==null)){
+				if ((rules == null && form.rules != null) || (rules != null && form.rules == null)) {
 					return false;
 				}
-				
-				//They have the same number of rules
-				if(rules!=null && form.rules!=null && rules.size()!=form.rules.size()){
+
+				// They have the same number of rules
+				if (rules != null && form.rules != null && rules.size() != form.rules.size()) {
 					return false;
 				}
-				if(rules!=null){
-					for(Flow rule: rules){
+				if (rules != null) {
+					for (Flow rule : rules) {
 						String originPath = rule.getOrigin().getPathName();
 						String destinyPath = null;
-						if(rule.getDestiny()!=null){
+						if (rule.getDestiny() != null) {
 							destinyPath = rule.getDestiny().getPathName();
 						}
-						Set<Flow> formRules = form.getFlows(originPath,destinyPath);
-						
+						Set<Flow> formRules = form.getFlows(originPath, destinyPath);
+
 						boolean foundEqualFlow = false;
-						for(Flow formRule: formRules){
-							if(rule.isContentEqual(formRule)){
-								foundEqualFlow=true;
+						for (Flow formRule : formRules) {
+							if (rule.isContentEqual(formRule)) {
+								foundEqualFlow = true;
 								break;
 							}
 						}
-						if(!foundEqualFlow){
+						if (!foundEqualFlow) {
 							return false;
 						}
 					}
 				}
 
-				if(linkedFormLabel!=null && !linkedFormLabel.equals(form.linkedFormLabel)){
+				if (linkedFormLabel != null && !linkedFormLabel.equals(form.linkedFormLabel)) {
 					return false;
 				}
-				
-				if(linkedFormVersions!=null && !linkedFormVersions.equals(form.linkedFormVersions)){
+
+				if (linkedFormVersions != null && !linkedFormVersions.equals(form.linkedFormVersions)) {
 					return false;
 				}
-				
-				if(linkedFormOrganizationId!=null && !linkedFormVersions.equals(form.linkedFormOrganizationId)){
+
+				if (linkedFormOrganizationId != null && !linkedFormVersions.equals(form.linkedFormOrganizationId)) {
 					return false;
 				}
-				
+
 				return true;
 			}
 		}
