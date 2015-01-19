@@ -3,6 +3,6 @@
   	<defaultCache eternal="true" maxElementsInMemory="100" overflowToDisk="false" />     	
 	<cache name="org.hibernate.cache.spi.UpdateTimestampsCache" maxElementsInMemory="5000" eternal="true" overflowToDisk="true" />
 	<cache name="org.hibernate.cache.internal.StandardQueryCache" maxElementsInMemory="500" eternal="false" timeToLiveSeconds="120" overflowToDisk="true" />
-	<cache name="forms" maxElementsInMemory="100" eternal="false" timeToIdleSeconds="600" timeToLiveSeconds="1200" overflowToDisk="false" diskPersistent="false"  memoryStoreEvictionPolicy="LFU" />  
-	<cache name="buildingBlocks" maxElementsInMemory="500" eternal="false" timeToIdleSeconds="600" timeToLiveSeconds="1200" overflowToDisk="false" diskPersistent="false"  memoryStoreEvictionPolicy="LFU" />  
+	<cache name="forms" copyOnRead="true" copyOnWrite="true" maxElementsInMemory="100" eternal="false" timeToIdleSeconds="600" timeToLiveSeconds="1200" overflowToDisk="false" diskPersistent="false" memoryStoreEvictionPolicy="LFU" />  
+	<cache name="buildingBlocks" copyOnRead="true" copyOnWrite="true" maxElementsInMemory="500" eternal="false" timeToIdleSeconds="600" timeToLiveSeconds="1200" overflowToDisk="false" diskPersistent="false" memoryStoreEvictionPolicy="LFU" />  
 </ehcache>

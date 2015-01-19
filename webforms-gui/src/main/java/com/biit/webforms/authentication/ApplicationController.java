@@ -418,16 +418,13 @@ public class ApplicationController {
 		if (form == null) {
 			formInUse = null;
 		} else {
-			try {
-				formInUse = (Form) form.generateCopy(true, true);
-				// Lock new form
-				UiAccesser.lockForm(formInUse, user);
-				WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-						+ " setFormInUse Form: " + formInUse);
-				setUnsavedFormChanges(false);
-				setLastEditedForm(formInUse);
-			} catch (NotValidStorableObjectException | CharacterNotAllowedException e) {
-			}
+			formInUse = form;
+			// Lock new form
+			UiAccesser.lockForm(formInUse, user);
+			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
+					+ " setFormInUse Form: " + formInUse);
+			setUnsavedFormChanges(false);
+			setLastEditedForm(formInUse);
 		}
 	}
 

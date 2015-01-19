@@ -69,7 +69,7 @@ public class UiAccesser {
 			return;
 		}
 
-		if (!formsInUse.containsKey(form)) {
+		if (!formsInUse.containsKey(form.getComparationId())) {
 			WebformsLogger.info(UiAccesser.class.getName(), "User '" + user.getEmailAddress() + "' has locked '" + form
 					+ "'");
 			formsInUse.put(form.getComparationId(), user);
