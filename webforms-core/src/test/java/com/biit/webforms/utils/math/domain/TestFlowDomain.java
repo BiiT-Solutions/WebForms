@@ -390,7 +390,7 @@ public class TestFlowDomain {
 
 	private Form loadForm(String filename) throws IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
-		String result = IOUtils.toString(classLoader.getResourceAsStream(filename));
+		String result = IOUtils.toString(classLoader.getResourceAsStream(filename),"UTF-8");
 
 		return Form.fromJson(result);
 	}
