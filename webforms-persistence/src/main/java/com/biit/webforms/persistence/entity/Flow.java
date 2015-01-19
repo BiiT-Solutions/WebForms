@@ -43,6 +43,8 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
 @Entity
 @Table(name = "flow")
 public class Flow extends StorableObject {
+	private static final long serialVersionUID = 2814442921737652036L;
+
 	private static final String TOKEN_SEPARATOR = " ";
 
 	/*

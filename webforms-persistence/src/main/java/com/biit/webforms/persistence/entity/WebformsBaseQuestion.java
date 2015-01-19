@@ -6,6 +6,7 @@ import com.biit.form.exceptions.DependencyExistException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 public abstract class WebformsBaseQuestion extends BaseQuestion {
+	private static final long serialVersionUID = 5749191470931873398L;
 
 	public WebformsBaseQuestion() {
 		super();

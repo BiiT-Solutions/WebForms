@@ -29,6 +29,7 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 @Entity
 @Table(name = "token_in")
 public class TokenIn extends TokenComplex {
+	private static final long serialVersionUID = -1264101992865476909L;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(nullable = false)
