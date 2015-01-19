@@ -27,6 +27,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatExc
 @Entity
 @Table(name = "tree_questions")
 public class Question extends WebformsBaseQuestion implements FlowConditionScript {
+	private static final long serialVersionUID = -7243001035969348318L;
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 	public static final boolean DEFAULT_HORIZONTAL = false;
 	public static final boolean DEFAULT_MANDATORY = true;

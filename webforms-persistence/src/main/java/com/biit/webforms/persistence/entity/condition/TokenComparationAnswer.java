@@ -20,6 +20,7 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 @Entity
 @Table(name = "token_comparation_answer")
 public class TokenComparationAnswer extends Token {
+	private static final long serialVersionUID = 2099093205161281219L;
 
 	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE };
 

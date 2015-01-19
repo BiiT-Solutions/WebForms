@@ -77,6 +77,8 @@ import com.liferay.portal.model.User;
 		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
 @Polymorphism(type = PolymorphismType.EXPLICIT)
 public class Form extends BaseForm implements IWebformsFormView {
+	private static final long serialVersionUID = 5220239269341014315L;
+
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
 	@Enumerated(EnumType.STRING)

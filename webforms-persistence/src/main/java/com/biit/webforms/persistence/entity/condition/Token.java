@@ -28,6 +28,7 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 @Table(name = "token")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Token extends StorableObject {
+	private static final long serialVersionUID = 113069074950725476L;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)

@@ -14,6 +14,7 @@ import com.liferay.portal.model.User;
 @Table(name = "tree_blocks")
 @Polymorphism(type = PolymorphismType.EXPLICIT)
 public class Block extends Form implements IWebformsBlockView {
+	private static final long serialVersionUID = -5029214862461479704L;
 
 	public Block() {
 		super();

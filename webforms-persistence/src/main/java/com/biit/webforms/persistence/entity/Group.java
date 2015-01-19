@@ -11,6 +11,7 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 @Entity
 @Table(name = "tree_groups")
 public class Group extends BaseRepeatableGroup {
+	private static final long serialVersionUID = 5363295280240190378L;
 	private static final boolean DEFAULT_REPEATABLE = false;
 
 	public Group() {

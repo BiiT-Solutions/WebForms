@@ -1,0 +1,15 @@
+{
+  "class": "com.biit.webforms.persistence.entity.Form",
+  "comparationId": "31a19cf4-f729-42b1-b4a2-a4ac2a525111",
+  "creationTime": "Jan 16, 2015 1:47:38 PM",
+  "updateTime": "Jan 16, 2015 1:47:38 PM",
+  "createdBy": 10735,
+  "updatedBy": 10735,
+  "name": "form",
+  "label": "test_validator_missing_flow_in",
+  "children": [],
+  "version": 1,
+  "organizationId": 10785,
+  "description": "",
+  "flows": []
+}

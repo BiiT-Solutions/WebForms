@@ -13,6 +13,7 @@ import com.biit.webforms.logger.WebformsLogger;
 @Entity
 @Table(name = "tree_system_fields")
 public class SystemField extends WebformsBaseQuestion {
+	private static final long serialVersionUID = -5714738729351011443L;
 
 	@Override
 	public String getLabel() {

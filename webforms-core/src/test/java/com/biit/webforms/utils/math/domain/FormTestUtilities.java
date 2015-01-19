@@ -1,8 +1,11 @@
 package com.biit.webforms.utils.math.domain;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.io.IOUtils;
 
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
@@ -288,5 +291,4 @@ public class FormTestUtilities {
 	public static Token token(Question question, String type, AnswerSubformat subformat, String value) {
 		return TokenComparationValue.getToken(TokenTypes.fromString(type), question, subformat, null, value);
 	}
-
 }
