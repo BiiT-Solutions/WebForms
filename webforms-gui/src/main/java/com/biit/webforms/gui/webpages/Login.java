@@ -6,6 +6,8 @@ import java.util.jar.Manifest;
 
 import javax.servlet.ServletContext;
 
+import org.apache.http.client.ClientProtocolException;
+
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
@@ -20,6 +22,8 @@ import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.liferay.portal.model.User;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
@@ -70,8 +74,25 @@ public class Login extends WebPageComponent {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		if (((ApplicationUi) getUI()).getUser() != null && ((ApplicationUi) getUI()).getPassword() != null) {
-			checkUserAndPassword(((ApplicationUi) getUI()).getUser(), ((ApplicationUi) getUI()).getPassword());
+		// When accessing from Liferay, user and password are already set.
+		if (((ApplicationUi) getUI()).getUser() != null && ((ApplicationUi) getUI()).getUser().length() > 0
+				&& ((ApplicationUi) getUI()).getPassword() != null
+				&& ((ApplicationUi) getUI()).getPassword().length() > 0) {
+			try {
+				User user = checkUserAndPassword(((ApplicationUi) getUI()).getUser(),
+						((ApplicationUi) getUI()).getPassword());
+				if (user != null) {
+					// Try to go to the last page and last form if uses has no logged out.
+					if (UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()) != null) {
+						ApplicationUi.navigateTo(UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()));
+					} else {
+						ApplicationUi.navigateTo(WebMap.getMainPage());
+					}
+				}
+			} catch (InvalidCredentialsException | NotConnectedToWebServiceException | PBKDF2EncryptorException
+					| IOException | AuthenticationRequired | WebServiceAccessError e) {
+				// User not valid, do nothing.
+			}
 		}
 	}
 
@@ -101,7 +122,26 @@ public class Login extends WebPageComponent {
 				// limit the enters to only from the password field from this
 				// form
 				if (target == passwordField) {
-					checkUserAndPassword((String) usernameField.getValue(), (String) passwordField.getValue());
+					try {
+						User user = checkUserAndPassword((String) usernameField.getValue(),
+								(String) passwordField.getValue());
+						if (user != null) {
+							ApplicationUi.navigateTo(WebMap.getMainPage());
+						}
+					} catch (InvalidCredentialsException | AuthenticationRequired e) {
+						passwordField.setComponentError(new UserError(ServerTranslate.translate(
+								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER,
+								new Object[] { (String) usernameField.getValue() })));
+						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
+								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE);
+					} catch (IOException | WebServiceAccessError | NotConnectedToWebServiceException e) {
+						WebformsLogger.errorMessage(this.getClass().getName(), e);
+						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
+								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
+					} catch (PBKDF2EncryptorException e) {
+						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_ENCRYPTINGPASSWORD,
+								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
+					}
 				}
 				// If write user name and press enter, go to pass field.
 				if (target == usernameField) {
@@ -116,7 +156,28 @@ public class Login extends WebPageComponent {
 
 					@Override
 					public void buttonClick(ClickEvent event) {
-						checkUserAndPassword((String) usernameField.getValue(), (String) passwordField.getValue());
+						try {
+							User user = checkUserAndPassword((String) usernameField.getValue(),
+									(String) passwordField.getValue());
+							if (user != null) {
+								ApplicationUi.navigateTo(WebMap.getMainPage());
+							}
+						} catch (InvalidCredentialsException | AuthenticationRequired e) {
+							passwordField.setComponentError(new UserError(ServerTranslate.translate(
+									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER,
+									new Object[] { (String) usernameField.getValue() })));
+							MessageManager.showError(
+									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
+									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE);
+						} catch (IOException | WebServiceAccessError | NotConnectedToWebServiceException e) {
+							WebformsLogger.errorMessage(this.getClass().getName(), e);
+							MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
+									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
+						} catch (PBKDF2EncryptorException e) {
+							MessageManager.showError(
+									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_ENCRYPTINGPASSWORD,
+									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
+						}
 					}
 				});
 		loginButton.setWidth(FIELD_SIZE);
@@ -132,24 +193,12 @@ public class Login extends WebPageComponent {
 		return panel;
 	}
 
-	private void checkUserAndPassword(String userMail, String password) {
+	private User checkUserAndPassword(String userMail, String password) throws JsonParseException,
+			JsonMappingException, ClientProtocolException, InvalidCredentialsException,
+			NotConnectedToWebServiceException, PBKDF2EncryptorException, IOException, AuthenticationRequired,
+			WebServiceAccessError {
 		// Try to log in the user when the button is clicked
-		User user = null;
-		try {
-			user = AuthenticationService.getInstance().authenticate(userMail, password);
-		} catch (InvalidCredentialsException | AuthenticationRequired e) {
-			passwordField.setComponentError(new UserError(ServerTranslate.translate(
-					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER, new Object[] { userMail })));
-			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
-					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE);
-		} catch (IOException | WebServiceAccessError | NotConnectedToWebServiceException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
-					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
-		} catch (PBKDF2EncryptorException e) {
-			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_ENCRYPTINGPASSWORD,
-					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
-		}
+		User user = AuthenticationService.getInstance().authenticate(userMail, password);
 
 		if (user != null) {
 			WebBrowser browser = (WebBrowser) UI.getCurrent().getPage().getWebBrowser();
@@ -172,8 +221,8 @@ public class Login extends WebPageComponent {
 			// current user (inlogged)
 			UserSessionHandler.setUser(user);
 			UserSessionHandler.checkOnlyOneSession(user, UI.getCurrent(), browser.getAddress());
-			ApplicationUi.navigateTo(WebMap.getMainPage());
 		}
+		return user;
 	}
 
 	private String getVersion() {

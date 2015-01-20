@@ -667,6 +667,9 @@ public class FormManager extends SecuredWebPage {
 
 			upperMenu.getImpactAnalysis().setEnabled(rowNotNullAndForm);
 
+			upperMenu.getRemoveForm().setVisible(
+					WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+							UserSessionHandler.getUser(), WebformsActivity.FORM_REMOVE));
 			upperMenu.getRemoveForm().setEnabled(
 					rowNotNullAndForm
 							&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(

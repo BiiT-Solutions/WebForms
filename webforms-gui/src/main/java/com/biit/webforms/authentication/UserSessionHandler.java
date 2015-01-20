@@ -18,6 +18,8 @@ public class UserSessionHandler {
 	private static HashMap<Long, List<UI>> usersSession = new HashMap<>();
 	// User Id --> IP (current UI ip connected)
 	private static HashMap<Long, String> usersIp = new HashMap<>();
+	// User Id --> Last Page visited
+	private static HashMap<Long, WebMap> userLastPage = new HashMap<>();
 
 	// Store the user object of the currently inlogged user
 
@@ -115,6 +117,7 @@ public class UserSessionHandler {
 		if (getUser() != null) {
 			usersSession.remove(getUser().getUserId());
 			usersIp.remove(getUser().getUserId());
+			userLastPage.remove(getUser().getUserId());
 		}
 		setUser(null);
 	}
@@ -123,4 +126,21 @@ public class UserSessionHandler {
 		return getCurrent().controller;
 	}
 
+	public static WebMap getUserLastPage(User user) {
+		return userLastPage.get(user.getUserId());
+	}
+
+	public static void setUserLastPage(WebMap page) {
+		setUserLastPage(getUser(), page);
+	}
+
+	public static void setUserLastPage(User user, WebMap page) {
+		if (user != null) {
+			if (!WebMap.getMainPage().equals(page)) {
+				userLastPage.put(user.getUserId(), page);
+			} else {
+				userLastPage.remove(user.getUserId());
+			}
+		}
+	}
 }

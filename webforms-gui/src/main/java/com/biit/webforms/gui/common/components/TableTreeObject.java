@@ -173,8 +173,7 @@ public class TableTreeObject extends TreeTable {
 		for (TreeObject child : element.getChildren()) {
 			removeRow(child);
 		}
-		removeItem(element);
-		
+		removeItem(element);		
 	}
 
 	/**
