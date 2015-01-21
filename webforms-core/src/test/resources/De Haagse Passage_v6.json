@@ -1,4 +1,4 @@
-{
+ï»¿{
   "class": "com.biit.webforms.persistence.entity.Form",
   "comparationId": "79e26f21-5e9c-4e97-850c-66c4d3aa1b8c",
   "creationTime": "Oct 13, 2014 2:34:54 PM",
@@ -1683,8 +1683,8 @@
       "updateTime": "Dec 15, 2014 11:55:40 AM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "name": "Financiën",
-      "label": "Financiën",
+      "name": "FinanciÃ«n",
+      "label": "FinanciÃ«n",
       "children": [
         {
           "class": "com.biit.webforms.persistence.entity.Question",
@@ -1910,7 +1910,7 @@
               "name": "Financien.Uitgaven.OnverstandigWelVeroorloven",
               "label": "Soms. Maar kan het mij veroorloven.",
               "children": [],
-              "description": "Af en toe geeft u geld uit aan dingen die u niet echt nodig heeft, maar daardoor komt u niet in financiële problemen."
+              "description": "Af en toe geeft u geld uit aan dingen die u niet echt nodig heeft, maar daardoor komt u niet in financiÃ«le problemen."
             },
             {
               "class": "com.biit.webforms.persistence.entity.Answer",
@@ -2014,7 +2014,7 @@
           "createdBy": 10735,
           "updatedBy": 10735,
           "name": "Hulp",
-          "label": "Heeft u hulp bij het beheer van de financiën",
+          "label": "Heeft u hulp bij het beheer van de financiÃ«n",
           "children": [
             {
               "class": "com.biit.webforms.persistence.entity.Answer",
@@ -2102,7 +2102,7 @@
           "createdBy": 10735,
           "updatedBy": 10735,
           "name": "Vroeger",
-          "label": "Heeft u eerder  hulp gehad bij uw financiën?",
+          "label": "Heeft u eerder  hulp gehad bij uw financiÃ«n?",
           "children": [
             {
               "class": "com.biit.webforms.persistence.entity.Answer",
@@ -4979,7 +4979,7 @@
               "createdBy": 10735,
               "updatedBy": 10735,
               "name": "Sociaal.VriendenR.Een",
-              "label": "Misschien één of twee.",
+              "label": "Misschien Ã©Ã©n of twee.",
               "children": [],
               "description": ""
             },
@@ -5081,7 +5081,7 @@
                   "createdBy": 10735,
                   "updatedBy": 10735,
                   "name": "Sociaal.Veiligheid.Reden.Druk",
-                  "label": "Ik heb last van van financiële of materiële druk (ex partner, buren, familie etc)",
+                  "label": "Ik heb last van van financiÃ«le of materiÃ«le druk (ex partner, buren, familie etc)",
                   "children": [],
                   "description": ""
                 }
@@ -5658,7 +5658,7 @@
               "createdBy": 10735,
               "updatedBy": 10735,
               "name": "Justitie.Strafblad.Vergrijpen",
-              "label": "Ja. Ik heb een strafblad met één of meerdere vergrijpen.",
+              "label": "Ja. Ik heb een strafblad met Ã©Ã©n of meerdere vergrijpen.",
               "children": [],
               "description": ""
             },
@@ -5682,7 +5682,7 @@
               "createdBy": 10735,
               "updatedBy": 10735,
               "name": "Justitie.Strafblad.Actueel",
-              "label": "Ja. Ik heb nog één of meer zaken lopen bij justitie.",
+              "label": "Ja. Ik heb nog Ã©Ã©n of meer zaken lopen bij justitie.",
               "children": [],
               "description": ""
             }
@@ -7486,12 +7486,12 @@
       "createdBy": 10735,
       "updatedBy": 10735,
       "origin_id": [
-        "Financiën",
+        "FinanciÃ«n",
         "Inkomen"
       ],
       "flowType": "NORMAL",
       "destiny_id": [
-        "Financiën",
+        "FinanciÃ«n",
         "Bron"
       ],
       "others": true
@@ -8666,7 +8666,7 @@
       "createdBy": 10735,
       "updatedBy": 10735,
       "origin_id": [
-        "Financiën",
+        "FinanciÃ«n",
         "Vroeger"
       ],
       "flowType": "NORMAL",
@@ -8878,7 +8878,7 @@
       ],
       "flowType": "NORMAL",
       "destiny_id": [
-        "Financiën",
+        "FinanciÃ«n",
         "Inkomen"
       ],
       "others": false,
@@ -9178,7 +9178,7 @@
       "createdBy": 10735,
       "updatedBy": 10735,
       "origin_id": [
-        "Financiën",
+        "FinanciÃ«n",
         "Vroeger"
       ],
       "flowType": "NORMAL",
@@ -10389,12 +10389,12 @@
       "createdBy": 10735,
       "updatedBy": 10735,
       "origin_id": [
-        "Financiën",
+        "FinanciÃ«n",
         "Inkomen"
       ],
       "flowType": "NORMAL",
       "destiny_id": [
-        "Financiën",
+        "FinanciÃ«n",
         "Schulden"
       ],
       "others": false,
@@ -10408,11 +10408,11 @@
           "updatedBy": 10735,
           "type": "EQ",
           "question_id": [
-            "Financiën",
+            "FinanciÃ«n",
             "Inkomen"
           ],
           "answer_id": [
-            "Financiën",
+            "FinanciÃ«n",
             "Inkomen",
             "Financien.Inkomen.Geen"
           ]

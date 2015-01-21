@@ -2,9 +2,11 @@ package com.biit.webforms.gui.webpages.formmanager;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 
 public class WindowDownloaderJson extends WindowDownloader {
@@ -16,7 +18,12 @@ public class WindowDownloaderJson extends WindowDownloader {
 
 			@Override
 			public InputStream getInputStream() {
-				return new ByteArrayInputStream(form.toJson().getBytes());
+				try {
+					return new ByteArrayInputStream(form.toJson().getBytes("UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+					return null;
+				}
 			}
 		});
 		setIndeterminate(true);
