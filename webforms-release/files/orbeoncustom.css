@@ -41,6 +41,16 @@ body.orbeon {
   margin-top: 30px !important;
 }
 
+.fr-radio-horizontal label.radio {
+  display: inline;
+  float: none;
+  position: relative;
+}
+
+.fr-radio-horizontal label.radio input[type="radio"] {
+  position: absolute;
+}
+
 .orbeon hr {
   margin: 0px;
 }
