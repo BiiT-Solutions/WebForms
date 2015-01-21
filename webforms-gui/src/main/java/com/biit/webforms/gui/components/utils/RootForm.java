@@ -7,7 +7,7 @@ import com.biit.form.IBaseFormView;
 import com.biit.webforms.persistence.entity.Form;
 
 public class RootForm extends Form {
-
+	private static final long serialVersionUID = -3232630711812754521L;
 	private String label;
 	private List<IBaseFormView> childForms;
 

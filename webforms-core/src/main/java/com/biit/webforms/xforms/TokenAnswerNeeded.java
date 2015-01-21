@@ -14,7 +14,7 @@ import com.biit.webforms.persistence.entity.condition.Token;
  * must not been stored in database.
  */
 public class TokenAnswerNeeded extends Token {
-
+	private static final long serialVersionUID = 1610423674018638342L;
 	private Question question;
 	private boolean dateField;
 

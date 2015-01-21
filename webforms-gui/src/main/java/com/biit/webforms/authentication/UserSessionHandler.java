@@ -21,8 +21,6 @@ public class UserSessionHandler {
 	// User Id --> Last Page visited
 	private static HashMap<Long, WebMap> userLastPage = new HashMap<>();
 
-	// Store the user object of the currently inlogged user
-
 	/**
 	 * Initializes the {@link UserSessionHandler} for the given {@link Application}
 	 * 

@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.biit.form.BaseAnswer;
 import com.biit.form.BaseQuestion;
-import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.persistence.entity.Answer;
@@ -36,36 +35,34 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	 */
 	@Override
 	public void getSectionBody(StringBuilder stringBuilder) {
-		for (TreeObject answer : getSource().getChildren()) {
-			// An itemset for standard answers.
-			if (answer.getChildren().isEmpty()) {
-				stringBuilder.append("<xf:itemset ref=\"$form-resources/");
-				stringBuilder.append(getPath() + "/item\" >");
-				stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
-				stringBuilder.append("<xf:value ref=\"value\" />");
-				stringBuilder.append("<xf:hint ref=\"hint\" />");
-				stringBuilder.append("</xf:itemset>");
-			} else {
-				int subanswerParentsCounter = ((Question) getSource().getParent())
-						.getAnswerWithSubanswersIndex((BaseAnswer) answer);
-				// Parent answer.
-				stringBuilder.append("<xf:itemset ref=\"$form-resources/");
-				stringBuilder.append(getPath() + "/item" + subanswerParentsCounter + "\" class=\"" + ANSWER_CSS_CLASS
-						+ "\" >");
-				stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
-				stringBuilder.append("<xf:value ref=\"value\" />");
-				stringBuilder.append("<xf:hint ref=\"hint\" />");
-				stringBuilder.append("</xf:itemset>");
+		// An itemset for standard answers.
+		if (getSource().getChildren().isEmpty()) {
+			stringBuilder.append("<xf:itemset ref=\"$form-resources/");
+			stringBuilder.append(getParent().getPath() + "/item\" >");
+			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
+			stringBuilder.append("<xf:value ref=\"value\" />");
+			stringBuilder.append("<xf:hint ref=\"hint\" />");
+			stringBuilder.append("</xf:itemset>");
+		} else {
+			int subanswerParentsCounter = ((Question) getSource().getParent())
+					.getAnswerWithSubanswersIndex((BaseAnswer) getSource());
+			// Parent answer.
+			stringBuilder.append("<xf:itemset ref=\"$form-resources/");
+			stringBuilder.append(getParent().getPath() + "/item" + subanswerParentsCounter + "\" class=\"" + ANSWER_CSS_CLASS
+					+ "\" >");
+			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
+			stringBuilder.append("<xf:value ref=\"value\" />");
+			stringBuilder.append("<xf:hint ref=\"hint\" />");
+			stringBuilder.append("</xf:itemset>");
 
-				// Subanswer
-				stringBuilder.append("<xf:itemset ref=\"$form-resources/");
-				stringBuilder.append(getPath() + "/item" + subanswerParentsCounter + "/subitem"
-						+ subanswerParentsCounter + "\" class=\"" + SUBANSWER_CSS_CLASS + "\" >");
-				stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
-				stringBuilder.append("<xf:value ref=\"value\" />");
-				stringBuilder.append("<xf:hint ref=\"hint\" />");
-				stringBuilder.append("</xf:itemset>");
-			}
+			// Subanswer
+			stringBuilder.append("<xf:itemset ref=\"$form-resources/");
+			stringBuilder.append(getParent().getPath() + "/item" + subanswerParentsCounter + "/subitem" + subanswerParentsCounter
+					+ "\" class=\"" + SUBANSWER_CSS_CLASS + "\" >");
+			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
+			stringBuilder.append("<xf:value ref=\"value\" />");
+			stringBuilder.append("<xf:hint ref=\"hint\" />");
+			stringBuilder.append("</xf:itemset>");
 		}
 	}
 

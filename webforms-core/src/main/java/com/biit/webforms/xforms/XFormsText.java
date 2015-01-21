@@ -43,8 +43,8 @@ public class XFormsText extends XFormsQuestion {
 	}
 
 	@Override
-	protected String createElementAnswersItems() {
-		return "";
+	protected void createElementAnswersItems(StringBuilder stringBuilder) {
+		// DO nothing
 	}
 
 	@Override
