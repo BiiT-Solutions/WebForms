@@ -1,0 +1,58 @@
+body.orbeon {
+  margin-top: 40px;
+  margin-left: 80px;
+}
+
+.xforms-output > label > b {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 18px !important;
+  font-style: normal;
+  font-weight: bold;
+  display: inline !important;
+  margin-top: -20px;
+}
+
+.fr-grid-content > .xforms-control {
+  display: block !important;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.fr-grid-content > .xforms-control > .xforms-label,
+.fr-grid-content > .xforms-control > .xforms-output-output,
+.fr-grid-content > .xbl-component > .xforms-label {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px !important;
+  font-style: normal;
+  font-weight: bold;
+  margin-top: -20px;
+  margin-bottom: 5px;
+}
+
+.fr-grid-content > .xbl-component > .xforms-label {
+  margin-top: 0px !important;
+}
+
+.fr-grid-content > .xforms-input > .xforms-label {
+  margin-top: 0px !important;
+}
+
+.fr-radio-horizontal {
+  margin-top: 30px !important;
+}
+
+.orbeon hr {
+  margin: 0px;
+}
+
+.subanswer-parent > label {
+  font-weight: bold;
+}
+
+.subanswer-parent > label > input {
+  display: none;
+}
+
+.subanswer-child > label {
+  margin-left: 15px;
+}

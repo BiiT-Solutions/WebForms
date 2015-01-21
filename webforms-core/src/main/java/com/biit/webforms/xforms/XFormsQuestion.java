@@ -187,7 +187,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		body.append("<xh:td>");
 
 		// Add element info.
-		body.append(createElement());
+		body.append(createElementBody());
 
 		// Close row.
 		body.append("</xh:td>");
@@ -200,17 +200,17 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * @return
 	 * @throws InvalidFlowInForm
 	 */
-	private String createElement() {
-		String section = "";
-		section += "<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName()
-				+ "\" " + " bind=\"" + getBindingId() + "\">";
-		section += getBodyLabel();
-		section += getBodyHint();
-		section += getBodyAlert();
-		section += getBodyHelp();
-		section += createElementAnswersItems();
-		section += "</xf:" + getElementFormDefinition() + " >";
-		return section;
+	private String createElementBody() {
+		StringBuilder section = new StringBuilder();
+		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName()
+				+ "\" " + " bind=\"" + getBindingId() + "\">");
+		section.append(getBodyLabel());
+		section.append(getBodyHint());
+		section.append(getBodyAlert());
+		section.append(getBodyHelp());
+		createElementAnswersItems(section);
+		section.append("</xf:" + getElementFormDefinition() + " >");
+		return section.toString();
 	}
 
 	/**
@@ -265,22 +265,26 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * @param element
 	 * @return
 	 */
-	protected String createElementAnswersItems() {
-		String row = "";
+	protected void createElementAnswersItems(StringBuilder row) {
 		if (!getChildren().isEmpty()) {
 			// Combobox has a dummy element selected as default. Is added before
 			// the itemset declaration.
 			if (((Question) getSource()).getAnswerType().equals(AnswerType.SINGLE_SELECTION_LIST)) {
-				row += "<xf:item><xf:label>[Select...]</xf:label><xf:value/></xf:item>";
+				row.append("<xf:item><xf:label>[Select...]</xf:label><xf:value/></xf:item>");
 			}
-			row += "<xf:itemset ref=\"$form-resources/";
-			row += getPath() + "/item\">";
-			row += "<xf:label ref=\"label\" " + isHtmlText() + " />";
-			row += "<xf:value ref=\"value\"/>";
-			row += "<xf:hint ref=\"hint\"/>";
-			row += "</xf:itemset>";
+
+			// Only one itemset for elements without subanswers.
+			boolean simpleElementsAdded = false;
+			for (XFormsObject<? extends TreeObject> answer : getChildren()) {
+				if (!answer.getChildren().isEmpty() || !simpleElementsAdded) {
+					answer.getSectionBody(row);
+					if (answer.getChildren().isEmpty()) {
+						simpleElementsAdded = true;
+					}
+				}
+
+			}
 		}
-		return row;
 	}
 
 	/**

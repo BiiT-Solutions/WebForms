@@ -60,6 +60,10 @@
 										<copy todir="${temporal-folder}/database/"overwrite="true">
 											<fileset dir="./database" includes="**/*" />
 										</copy>
+										<!-- copy other scripts -->
+										<copy todir="${temporal-folder}/files/"overwrite="true">
+											<fileset dir="./files" includes="**/*" />
+										</copy>
 										<!-- create the final file -->
 										<zip basedir="${temporal-folder}/"
 											destfile="../${destination-file}-${project.version}.zip" />

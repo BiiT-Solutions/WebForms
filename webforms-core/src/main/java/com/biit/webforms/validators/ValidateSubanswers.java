@@ -21,8 +21,9 @@ public class ValidateSubanswers extends SimpleValidator<TreeObject> {
 		if (element instanceof BaseAnswer) {
 			if (!element.getChildren().isEmpty()) {
 				Question parent = ((Question) element.getParent());
-				assertTrue(parent.getAnswerType().equals(AnswerType.SINGLE_SELECTION_RADIO), new NoSubanswersAllowed(
-						parent));
+				assertTrue(parent.getAnswerType().equals(AnswerType.SINGLE_SELECTION_RADIO)
+						|| parent.getAnswerType().equals(AnswerType.MULTIPLE_SELECTION),
+						new NoSubanswersAllowed(parent));
 			}
 		} else {
 			for (TreeObject child : element.getChildren()) {

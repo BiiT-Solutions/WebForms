@@ -3,16 +3,22 @@ package com.biit.webforms.xforms;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.biit.form.BaseAnswer;
+import com.biit.form.BaseQuestion;
+import com.biit.form.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Flow;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
 public class XFormsAnswer extends XFormsObject<Answer> {
+	private final static String ANSWER_CSS_CLASS = "subanswer-parent";
+	private final static String SUBANSWER_CSS_CLASS = "subanswer-child";
 
 	public XFormsAnswer(XFormsHelper xFormsHelper, Answer answer) throws NotValidTreeObjectException,
 			NotValidChildException {
@@ -25,9 +31,42 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 		// Do nothing.
 	}
 
+	/**
+	 * Calculates the section body for answers and also for subanswers.
+	 */
 	@Override
-	public void getSectionBody(StringBuilder binding) {
-		// Do nothing.
+	public void getSectionBody(StringBuilder stringBuilder) {
+		for (TreeObject answer : getSource().getChildren()) {
+			// An itemset for standard answers.
+			if (answer.getChildren().isEmpty()) {
+				stringBuilder.append("<xf:itemset ref=\"$form-resources/");
+				stringBuilder.append(getPath() + "/item\" >");
+				stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
+				stringBuilder.append("<xf:value ref=\"value\" />");
+				stringBuilder.append("<xf:hint ref=\"hint\" />");
+				stringBuilder.append("</xf:itemset>");
+			} else {
+				int subanswerParentsCounter = ((Question) getSource().getParent())
+						.getAnswerWithSubanswersIndex((BaseAnswer) answer);
+				// Parent answer.
+				stringBuilder.append("<xf:itemset ref=\"$form-resources/");
+				stringBuilder.append(getPath() + "/item" + subanswerParentsCounter + "\" class=\"" + ANSWER_CSS_CLASS
+						+ "\" >");
+				stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
+				stringBuilder.append("<xf:value ref=\"value\" />");
+				stringBuilder.append("<xf:hint ref=\"hint\" />");
+				stringBuilder.append("</xf:itemset>");
+
+				// Subanswer
+				stringBuilder.append("<xf:itemset ref=\"$form-resources/");
+				stringBuilder.append(getPath() + "/item" + subanswerParentsCounter + "/subitem"
+						+ subanswerParentsCounter + "\" class=\"" + SUBANSWER_CSS_CLASS + "\" >");
+				stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
+				stringBuilder.append("<xf:value ref=\"value\" />");
+				stringBuilder.append("<xf:hint ref=\"hint\" />");
+				stringBuilder.append("</xf:itemset>");
+			}
+		}
 	}
 
 	/**
@@ -55,26 +94,44 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	 */
 	@Override
 	protected String getResources() throws NotExistingDynamicFieldException {
-		String resource = "<item>";
+		return getResource("item", getSource().getChildren().isEmpty() ? null
+				: ((BaseQuestion) getSource().getParent()).getAnswerWithSubanswersIndex(getSource()));
+	}
+
+	/**
+	 * Set answers resource and subanswers.
+	 * 
+	 * @param prefix
+	 *            the name of the xml element
+	 * @param index
+	 *            if not null, a numeric sufix is added to the label.
+	 * @return
+	 * @throws NotExistingDynamicFieldException
+	 */
+	private String getResource(String prefix, Integer index) throws NotExistingDynamicFieldException {
+		String resource = "<" + prefix + (index != null ? index.toString() : "") + ">";
 
 		resource += getLabel();
 		resource += getHint();
 		resource += getValue();
 
-		resource += "</item>";
+		// Add subanswers also.
+		for (XFormsObject<?> child : getChildren()) {
+			resource += ((XFormsAnswer) child).getResource("subitem", index);
+		}
+
+		resource += "</" + prefix + (index != null ? index.toString() : "") + ">";
 		return resource;
 	}
 
 	@Override
 	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -87,4 +144,38 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	protected String getCalculateStructure(String flow) {
 		return "";
 	}
+
+	/**
+	 * Defines the structure of the element in the body part of the XForms. For answers with subanswers, add the needed
+	 * CSS class.
+	 * 
+	 * @param treeObject
+	 * @return
+	 * @throws InvalidFlowInForm
+	 */
+	@Override
+	protected String getBodyStructure(String structure, boolean html) {
+		String text = "<xf:" + structure + " ref=\"$form-resources/" + getPath() + "/" + structure + "\"";
+		if (html) {
+			text += " mediatype=\"text/html\"";
+		}
+		text += " />";
+		return text;
+	}
+
+	/**
+	 * Some elements needs to insert HTML text. Adds the tags to allow html code in the element.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	protected String isHtmlText() {
+		switch (((Question) getSource().getParent()).getAnswerType()) {
+		case MULTIPLE_SELECTION:
+			return "mediatype=\"text/html\"";
+		default:
+			return "";
+		}
+	}
+
 }

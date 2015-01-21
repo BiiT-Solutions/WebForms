@@ -386,7 +386,8 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getNewAnswerButton().setEnabled(canEdit && selectedRowHierarchyAllows(Answer.class));
 			upperMenu.getNewSubanswerButton().setEnabled(
 					canEdit && selectedRowIsAnswer && selectedRowHierarchyAllows(Answer.class)
-							&& isParentQuestionOfType(table.getSelectedRow(), AnswerType.SINGLE_SELECTION_RADIO));
+							&& (isParentQuestionOfType(table.getSelectedRow(), AnswerType.SINGLE_SELECTION_RADIO) 
+									|| isParentQuestionOfType(table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
 			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
@@ -395,7 +396,7 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			// Disable everthing as a security measure.
+			// Disable everything as a security measure.
 			upperMenu.getSaveButton().setEnabled(false);
 			upperMenu.getSaveAsBlockButton().setEnabled(false);
 			upperMenu.getInsertBlockButton().setEnabled(false);
