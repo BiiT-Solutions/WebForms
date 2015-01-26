@@ -5,15 +5,14 @@
 	<display-name>WebForms Designer</display-name>
 
 	<context-param>
+		<description>WebForms Designer</description>
 		<param-name>heartbeatInterval</param-name>
 		<!-- 20 minutes that means full expiration time is 60 minutes -->
 		<param-value>1200</param-value>
 	</context-param>
 
 	<context-param>
-		<description>
-			WebForms Designer
-		</description>
+		<description>WebForms Designer</description>
 		<param-name>productionMode</param-name>
 		<param-value>true</param-value>
 	</context-param>

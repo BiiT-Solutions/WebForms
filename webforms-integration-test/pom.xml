@@ -159,6 +159,12 @@
 			<artifactId>spring-core</artifactId>
 			<version>${org.springframework.version}</version>
 		</dependency>
+		<!-- Vaadin TestBench (Requires license) -->
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-testbench</artifactId>
+			<version>${vaadin-testbench.version}</version>
+		</dependency>
 	</dependencies>
 
 	<!-- 'mvn install -Prelease' test all application with jenkins -->

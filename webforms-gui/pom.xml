@@ -50,10 +50,10 @@
 
 
 	<dependencies>
-	    <dependency>
-		   <groupId>org.vaadin.addons</groupId>
-		   <artifactId>stepper</artifactId>
-		   <version>${stepper.version}</version>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>stepper</artifactId>
+			<version>${stepper.version}</version>
 		</dependency>
 		<!-- Core -->
 		<dependency>
@@ -68,12 +68,6 @@
 			<artifactId>abcd-core</artifactId>
 			<version>${abcd.version}</version>
 			<type>jar</type>
-		</dependency>
-		<!-- Liferay Authentication -->
-		<dependency>
-			<groupId>com.biit.liferay</groupId>
-			<artifactId>liferay-authentication-client</artifactId>
-			<version>${liferay-authentication-client.version}</version>
 		</dependency>
 		<!-- DESEncryption -->
 		<dependency>
@@ -157,19 +151,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire.version}</version>
-				<configuration>
-					<useFile>false</useFile>
-					<trimStackTrace>false</trimStackTrace>
-					<suiteXmlFiles>
-						<suiteXmlFile>src/test/config/testng.xml</suiteXmlFile>
-					</suiteXmlFiles>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
+				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>${jetty-maven-plugin.version}</version>
 				<configuration>
@@ -269,11 +251,9 @@
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>com.vaadin</groupId>
-										<artifactId>
-											vaadin-maven-plugin
+										<artifactId>vaadin-maven-plugin
 										</artifactId>
-										<versionRange>
-											[${vaadin.version},)
+										<versionRange>[${vaadin.version},)
 										</versionRange>
 										<goals>
 											<goal>clean</goal>

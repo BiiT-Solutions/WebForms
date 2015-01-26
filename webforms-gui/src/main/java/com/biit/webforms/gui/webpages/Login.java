@@ -50,6 +50,8 @@ public class Login extends WebPageComponent {
 	private VerticalLayout rootLayout;
 	private TextField usernameField;
 	private PasswordField passwordField;
+	private static final String NAME_LOGIN_FIELD_ID = "userNameLoginForm";
+	private static final String PASS_LOGIN_FIELD_ID = "userPassLoginForm";
 
 	public Login() {
 		rootLayout = new VerticalLayout();
@@ -106,12 +108,14 @@ public class Login extends WebPageComponent {
 		usernameField.setRequired(true);
 		usernameField.setRequiredError(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_ERROR_EMAIL));
 		usernameField.setWidth(FIELD_SIZE);
+		usernameField.setId(NAME_LOGIN_FIELD_ID);
 
 		passwordField = new PasswordField(
 				ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_PASSWORD));
 		passwordField.setRequired(true);
 		passwordField.setWidth(FIELD_SIZE);
 		passwordField.setRequiredError(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_ERROR_PASSWORD));
+		passwordField.setId(PASS_LOGIN_FIELD_ID);
 
 		// If you press enter. Login operation.
 		passwordField.addShortcutListener(new ShortcutListener("Shortcut Name", ShortcutAction.KeyCode.ENTER, null) {

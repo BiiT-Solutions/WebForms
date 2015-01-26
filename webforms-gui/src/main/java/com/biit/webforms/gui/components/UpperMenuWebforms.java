@@ -30,6 +30,8 @@ public class UpperMenuWebforms extends UpperMenu {
 	private IconButton settingsButton;
 	private boolean confirmationNeeded;
 	private IconButton logoutButton;
+	private final static String SETTINGS_BUTTON_ID = "settingsButton";
+	private final static String LOGOUT_BUTTON_ID = "logoutButton";
 
 	public UpperMenuWebforms() {
 		super();
@@ -144,12 +146,14 @@ public class UpperMenuWebforms extends UpperMenu {
 						});
 					}
 				});
+		logoutButton.setId(LOGOUT_BUTTON_ID);
 
 		settingsButton = generateSubMenu(ThemeIcons.SETTINGS, LanguageCodes.COMMON_CAPTION_SETTINGS,
 				LanguageCodes.COMMON_TOOLTIP_SETTINGS, aboutUsButton, clearCacheButton, logoutButton);
 
 		settingsButton.setHeight("100%");
 		settingsButton.setWidth(BUTTON_WIDTH);
+		settingsButton.setId(SETTINGS_BUTTON_ID);
 
 		addRightFixedButton(formManagerButton);
 		addRightFixedButton(blockManagerButton);
@@ -163,8 +167,8 @@ public class UpperMenuWebforms extends UpperMenu {
 	public void setConfirmationNeeded(boolean confirmationNeeded) {
 		this.confirmationNeeded = confirmationNeeded;
 	}
-	
-	public void hideLogoutButton(boolean hide){
+
+	public void hideLogoutButton(boolean hide) {
 		hideButton(settingsButton, logoutButton, !hide);
 	}
 }
