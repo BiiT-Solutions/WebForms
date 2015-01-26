@@ -10,6 +10,7 @@ public class Login extends VaadinGuiWebpage {
 	private final static String LOGIN_URL = "http://localhost:9081";
 	private final static String USER_NAME_LOGIN_FORM = "userNameLoginForm";
 	private final static String USER_PASS_LOGIN_FORM = "userPassLoginForm";
+	private final static String USER_PASS_LOGIN_BUTTON_ID = "loginButton";
 
 	private TextFieldElement getUserNameLoginForm() {
 		return $(TextFieldElement.class).id(USER_NAME_LOGIN_FORM);
@@ -20,7 +21,7 @@ public class Login extends VaadinGuiWebpage {
 	}
 
 	private ButtonElement getLoginButton() {
-		return $(ButtonElement.class).id("loginButton");
+		return $(ButtonElement.class).id(USER_PASS_LOGIN_BUTTON_ID);
 	}
 
 	public void login(String userName, String password) {

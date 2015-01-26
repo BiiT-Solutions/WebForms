@@ -52,6 +52,7 @@ public class Login extends WebPageComponent {
 	private PasswordField passwordField;
 	private static final String NAME_LOGIN_FIELD_ID = "userNameLoginForm";
 	private static final String PASS_LOGIN_FIELD_ID = "userPassLoginForm";
+	private final static String USER_PASS_LOGIN_BUTTON_ID = "loginButton";
 
 	public Login() {
 		rootLayout = new VerticalLayout();
@@ -185,6 +186,7 @@ public class Login extends WebPageComponent {
 					}
 				});
 		loginButton.setWidth(FIELD_SIZE);
+		loginButton.setId(USER_PASS_LOGIN_BUTTON_ID);
 
 		// Alignment and sizes.
 		FormLayout layout = new FormLayout();
