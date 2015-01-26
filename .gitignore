@@ -12,3 +12,5 @@ tmp
 *.zip
 styles.css
 /webforms-gui/*.pdf
+/webforms-integration-test/src/main/webapp
+
