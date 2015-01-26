@@ -146,6 +146,22 @@
         primary key (ID)
     );
 
+    create table tree_blocks_references (
+        ID bigint not null,
+        comparationId varchar(190) not null,
+        createdBy DOUBLE,
+        creationTime datetime not null,
+        updateTime datetime,
+        updatedBy DOUBLE,
+        label varchar(1000),
+        name varchar(190),
+        originalReference varchar(190) not null,
+        sortSeq bigint not null,
+        parent_ID bigint,
+        reference_ID bigint,
+        primary key (ID)
+    );
+
     create table tree_categories (
         ID bigint not null,
         comparationId varchar(190) not null,
@@ -310,6 +326,15 @@
     alter table tree_blocks 
         add constraint UK_r7xwfhjrx5jwbwhtd8kyp563s  unique (label, version, organizationId);
 
+    alter table tree_blocks_references 
+        add constraint UK_c05p17352l2g9xgohisrxqejo  unique (label);
+
+    alter table tree_blocks_references 
+        add constraint UK_c8un1l38a1eplwrsrc1j45i9a  unique (ID);
+
+    alter table tree_blocks_references 
+        add constraint UK_7wyh0kt2iv3j3w9mxvi12v3tq  unique (comparationId);
+
     alter table tree_categories 
         add constraint UK_ec3bvy7lletc6jmyvyfwuroqv  unique (ID);
 
@@ -408,6 +433,11 @@
         add constraint FK_1ja0iuwo6243fkd998qr2uwds 
         foreign key (tokenIn_ID) 
         references token_in (ID);
+
+    alter table tree_blocks_references 
+        add constraint FK_c2brjl6vkdwug1svsxaf3vol3 
+        foreign key (reference_ID) 
+        references tree_blocks (ID);
 
 	CREATE TABLE `hibernate_sequence` (
 		`next_val` bigint(20) DEFAULT NULL

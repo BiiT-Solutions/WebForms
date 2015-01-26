@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -26,6 +27,7 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.Polymorphism;
 import org.hibernate.annotations.PolymorphismType;
 
+import com.biit.form.BaseCategory;
 import com.biit.form.BaseForm;
 import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
@@ -78,6 +80,8 @@ import com.liferay.portal.model.User;
 @Polymorphism(type = PolymorphismType.EXPLICIT)
 public class Form extends BaseForm implements IWebformsFormView {
 	private static final long serialVersionUID = 5220239269341014315L;
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
+			Arrays.asList(BaseCategory.class, BlockReference.class));
 
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
@@ -88,10 +92,6 @@ public class Form extends BaseForm implements IWebformsFormView {
 	private String description;
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "form")
-	// @JoinTable(joinColumns = @JoinColumn(name = "form_ID"),
-	// inverseJoinColumns = @JoinColumn(name = "rule_ID"), indexes = {
-	// @Index(columnList = "form_ID") })
-	// @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	private Set<Flow> rules;
 
 	private String linkedFormLabel;
@@ -124,6 +124,11 @@ public class Form extends BaseForm implements IWebformsFormView {
 		setCreatedBy(user);
 		setUpdatedBy(user);
 		setOrganizationId(organizationId);
+	}
+
+	@Override
+	protected List<Class<? extends TreeObject>> getAllowedChildren() {
+		return ALLOWED_CHILDS;
 	}
 
 	@Override

@@ -15,6 +15,8 @@ import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.Block;
+import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
@@ -37,8 +39,10 @@ public class FormUtils {
 
 	private static final Long ORGANIZATION_ID = 0L;
 	private static final String FORM_COMPLETE_LABEL = "complete form test";
+	public static final String BLOCK_1 = "block1";
 	public static final String CATEGORY_1 = "category1";
 	public static final String CATEGORY_2 = "category2";
+	public static final String CATEGORY_IN_BLOCK = "categoryInBlock";
 	public static final String SYSTEM_FIELD_1 = "sysfield1";
 	public static final String SYSTEM_FIELD_1_NAME = "sys.field";
 	public static final String INFO_TEXT_1 = "infoText1";
@@ -72,6 +76,7 @@ public class FormUtils {
 		form.setLabel(FORM_COMPLETE_LABEL);
 
 		form.addChild(createCategory(CATEGORY_1));
+		form.addChild(createReferencedBlock(BLOCK_1));
 		form.addChild(createCategory(CATEGORY_2));
 
 		((Group) form.getChild(CATEGORY_2, GROUP_1)).setRepeatable(true);
@@ -81,15 +86,19 @@ public class FormUtils {
 		// Create others flow
 		form.addFlow(createEndFormflow(form.getChild(CATEGORY_1, SYSTEM_FIELD_1), true, emptyCondition()));
 		// Create flow from A to B empty condition.
-		form.addFlow(createFlow(form.getChild(CATEGORY_1, SYSTEM_FIELD_1),form.getChild(CATEGORY_1, INFO_TEXT_1),false,emptyCondition()));
+		form.addFlow(createFlow(form.getChild(CATEGORY_1, SYSTEM_FIELD_1), form.getChild(CATEGORY_1, INFO_TEXT_1),
+				false, emptyCondition()));
 		// Create flow from A to B empty condition.
-		Token token1 = token(form.getChild(CATEGORY_1, GROUP_1, INPUT_TEXT_NUMBER_FLOAT), TokenTypes.LT, "3.0",AnswerSubformat.FLOAT);
-		form.addFlow(createFlow(form.getChild(CATEGORY_2, SYSTEM_FIELD_1),form.getChild(CATEGORY_2, INFO_TEXT_1),false,condition(token1)));
+		Token token1 = token(form.getChild(CATEGORY_1, GROUP_1, INPUT_TEXT_NUMBER_FLOAT), TokenTypes.LT, "3.0",
+				AnswerSubformat.FLOAT);
+		form.addFlow(createFlow(form.getChild(CATEGORY_2, SYSTEM_FIELD_1), form.getChild(CATEGORY_2, INFO_TEXT_1),
+				false, condition(token1)));
 
 		return form;
 	}
-	
-	public static Token token(TreeObject question,TokenTypes type, String value, AnswerSubformat subformat) throws NotValidTokenType{
+
+	public static Token token(TreeObject question, TokenTypes type, String value, AnswerSubformat subformat)
+			throws NotValidTokenType {
 		TokenComparationValue token = new TokenComparationValue(type);
 		token.setQuestion((Question) question);
 		token.setValue(value);
@@ -100,12 +109,14 @@ public class FormUtils {
 	public static List<Token> emptyCondition() {
 		return new ArrayList<>();
 	}
-	
-	public static List<Token> condition(Token ... tokens){
+
+	public static List<Token> condition(Token... tokens) {
 		return Arrays.asList(tokens);
 	}
-	
-	public static Flow createFlow(TreeObject origin,TreeObject destiny, boolean others, List<Token> conditions) throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny{
+
+	public static Flow createFlow(TreeObject origin, TreeObject destiny, boolean others, List<Token> conditions)
+			throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
 		Flow flow = new Flow();
 		flow.setContent(origin, FlowType.NORMAL, destiny, others, conditions);
 		return flow;
@@ -117,6 +128,18 @@ public class FormUtils {
 		Flow flow = new Flow();
 		flow.setContent(origin, FlowType.END_FORM, null, others, condition);
 		return flow;
+	}
+
+	public static BlockReference createReferencedBlock(String name) throws NotValidChildException,
+			FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
+			InvalidAnswerSubformatException {
+		Block block = new Block();
+		block.addChild(createCategory(CATEGORY_IN_BLOCK));
+		block.setOrganizationId(ORGANIZATION_ID);
+		block.setLabel(BLOCK_1);
+		BlockReference blockReference = new BlockReference();
+		blockReference.setReference(block);
+		return blockReference;
 	}
 
 	/**

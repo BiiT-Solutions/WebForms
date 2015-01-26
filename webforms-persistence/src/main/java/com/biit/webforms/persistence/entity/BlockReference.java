@@ -1,0 +1,143 @@
+package com.biit.webforms.persistence.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.Polymorphism;
+import org.hibernate.annotations.PolymorphismType;
+
+import com.biit.form.TreeObject;
+import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.enumerations.FormWorkStatus;
+
+@Entity
+@Table(name = "tree_blocks_references", uniqueConstraints = { @UniqueConstraint(columnNames = { "label" }) })
+@Polymorphism(type = PolymorphismType.EXPLICIT)
+public class BlockReference extends TreeObject implements IWebformsBlockView {
+	private static final long serialVersionUID = -4300039254232003868L;
+
+	public static final String DEFAULT_TECHNICAL_NAME = "block_reference";
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>();
+
+	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	private Block reference;
+
+	public BlockReference() {
+		super();
+	}
+
+	public Block getReference() {
+		return reference;
+	}
+
+	public void setReference(Block reference) {
+		this.reference = reference;
+	}
+
+	@Override
+	public void setStatus(FormWorkStatus status) {
+		if (reference != null) {
+			reference.setStatus(status);
+		}
+	}
+
+	@Override
+	public FormWorkStatus getStatus() {
+		if (reference != null) {
+			return reference.getStatus();
+		}
+		return null;
+	}
+
+	@Override
+	public void resetIds() {
+		// Overridden version to also reset ids of rules.
+		super.resetIds();
+		if (reference != null) {
+			reference.resetIds();
+		}
+	}
+
+	@Override
+	public Set<Integer> getLinkedFormVersions() {
+		return null;
+	}
+
+	@Override
+	public Long getLinkedFormOrganizationId() {
+		return null;
+	}
+
+	@Override
+	public String getLinkedFormLabel() {
+		return null;
+	}
+
+	@Override
+	public Long getOrganizationId() {
+		if (reference != null) {
+			return reference.getOrganizationId();
+		}
+		return null;
+	}
+
+	@Override
+	public Integer getVersion() {
+		if (reference != null) {
+			return reference.getVersion();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isLastVersion() {
+		if (reference != null) {
+			return reference.isLastVersion();
+		}
+		return true;
+	}
+
+	@Override
+	public void checkDependencies() throws DependencyExistException {
+		if (reference != null) {
+			reference.checkDependencies();
+		}
+	}
+
+	@Override
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
+		if (object instanceof BlockReference) {
+			// Nothing to copy except basic information data.
+			copyBasicInfo(object);
+			if (((BlockReference) object).getReference() != null) {
+				Block reference = new Block();
+				reference.copyData(((BlockReference) object).getReference());
+				setReference(reference);
+			}
+		} else {
+			throw new NotValidTreeObjectException("Copy data for a Block Reference only supports the same type copy");
+		}
+	}
+
+	@Override
+	protected List<Class<? extends TreeObject>> getAllowedChildren() {
+		return ALLOWED_CHILDS;
+	}
+
+	@Override
+	protected String getDefaultTechnicalName() {
+		return DEFAULT_TECHNICAL_NAME;
+	}
+
+}
