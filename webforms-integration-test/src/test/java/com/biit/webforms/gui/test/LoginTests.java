@@ -37,7 +37,12 @@ public class LoginTests extends WebFormsTester {
 		Assert.assertTrue(getFormManager().getNewFormButton().isEnabled());
 		// close New menu
 		getFormManager().getNewButton().click();
-		Assert.assertNull(getFormManager().getRemoveForm());
+		
+		
+//		Assert.assertNull(getFormManager().getRemoveForm());
+		
+		
+		
 		getFormManager().logOut();
 	}
 	
@@ -47,7 +52,7 @@ public class LoginTests extends WebFormsTester {
 		Assert.assertFalse(getFormManager().getNewFormButton().isEnabled());
 		// close New menu
 		getFormManager().getNewButton().click();
-		Assert.assertNull(getFormManager().getRemoveForm());
+//		Assert.assertNull(getFormManager().getRemoveForm());
 		getFormManager().logOut();
 	}
 	
