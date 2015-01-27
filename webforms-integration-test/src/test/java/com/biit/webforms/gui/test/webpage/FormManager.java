@@ -8,8 +8,12 @@ import com.vaadin.testbench.elements.TreeTableElement;
 
 public class FormManager extends VaadinGuiWebpage {
 
-	private final static String SETTINGS_BUTTON_ID = "settingsButton";
 	private final static String LOGOUT_BUTTON_ID = "logoutButton";
+	private final static String SETTINGS_BUTTON_ID = "settingsButton";
+	private final static String BLOCKS_BUTTON_CAPTION = "Blocks";
+	private final static String NEW_BUTTON_CAPTION = "New";
+	private final static String FORM_BUTTON_CAPTION = "Form";
+	private final static String REMOVE_FORM_BUTTON_CAPTION = "Remove Form";
 
 	private final NewFormWindow newFormWindow;
 	private final Proceed proceed;
@@ -22,20 +26,37 @@ public class FormManager extends VaadinGuiWebpage {
 		addWindow(proceed);
 	}
 
-	public void logOut() {
-		$(ButtonElement.class).caption("Settings").first().click();
-//		$(ButtonElement.class).id(SETTINGS_BUTTON_ID).click();
-		$(ButtonElement.class).caption("Log Out").first().click();
-//		$(ButtonElement.class).id(LOGOUT_BUTTON_ID).click();
+	public void createNewForm(String formName) {
+		openNewFormWindow();
+		newFormWindow.createNewForm(formName);
+	}
+	
+	public void deleteForm(int row) {
+		getFormTable().getCell(row, 0).click();
+		getRemoveForm().click();
+		proceed.clickAccept();
+	}
+	
+	public ButtonElement getBlocks() {
+		return $(ButtonElement.class).caption(BLOCKS_BUTTON_CAPTION).first();
 	}
 
-	public ButtonElement getNewMenu() {
-		return $(ButtonElement.class).caption("New").first();
+	public TreeTableElement getFormTable() {
+		return $(TreeTableElement.class).first();
+	}
+
+	public ButtonElement getLogOut() {
+		getSettingsMenu().click();
+		return $(ButtonElement.class).id(LOGOUT_BUTTON_ID);
 	}
 
 	public ButtonElement getNewForm() {
 		getNewMenu().click();
-		return $(ButtonElement.class).caption("Form").first();
+		return $(ButtonElement.class).caption(FORM_BUTTON_CAPTION).first();
+	}
+
+	public ButtonElement getNewMenu() {
+		return $(ButtonElement.class).caption(NEW_BUTTON_CAPTION).first();
 	}
 
 	/**
@@ -44,43 +65,31 @@ public class FormManager extends VaadinGuiWebpage {
 	 * @return
 	 */
 	public ButtonElement getRemoveForm() {
-		if ($(ButtonElement.class).caption("Remove Form").exists()) {
-			return $(ButtonElement.class).caption("Remove Form").first();
+		if ($(ButtonElement.class).caption(REMOVE_FORM_BUTTON_CAPTION).exists()) {
+			return $(ButtonElement.class).caption(REMOVE_FORM_BUTTON_CAPTION).first();
 		}
 		return null;
 	}
 
-	private void openNewForm() {
-		getNewForm().click();
-	}
-
-	public void createNewForm(String formName) {
-		openNewForm();
-		newFormWindow.createNewForm(formName);
-	}
-
-	public TreeTableElement getFormTable() {
-		return $(TreeTableElement.class).first();
+	public ButtonElement getSettingsMenu() {
+		return $(ButtonElement.class).id(SETTINGS_BUTTON_ID);
 	}
 
 	@Override
 	public String getWebpageUrl() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void deleteForm(int row) {
-		getFormTable().getCell(row, 0).click();
-		getRemoveForm().click();
-		proceed.clickAccept();
+	public void logOut() {
+		getLogOut().click();
 	}
-
-	public ButtonElement getBlocks() {
-		return $(ButtonElement.class).caption("Blocks").first();
-	}
-
+	
 	public void openBlocks() {
 		getBlocks().click();
+	}
+
+	private void openNewFormWindow() {
+		getNewForm().click();
 	}
 
 }
