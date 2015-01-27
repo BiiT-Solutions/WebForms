@@ -17,6 +17,7 @@ public class FormManager extends VaadinGuiWebpage {
 	private final static String FORM_BUTTON_CAPTION = "Form";
 	private final static String REMOVE_FORM_BUTTON_CAPTION = "Remove Form";
 	private final static String EXPORT_BUTTON_CAPTION = "Export";
+	private final static String LOG_OUT_BUTTON_CAPTION = "Log Out";
 	private final static String ACCEPT_BUTTON_CAPTION = "Accept";
 
 	private final NewFormWindow newFormWindow;
@@ -59,7 +60,17 @@ public class FormManager extends VaadinGuiWebpage {
 
 	public ButtonElement getLogOutButton() {
 		getSettingsMenu().click();
-		return $(ButtonElement.class).id(LOGOUT_BUTTON_ID);
+		if ($(ButtonElement.class).caption(LOG_OUT_BUTTON_CAPTION).exists()) {
+			return $(ButtonElement.class).id(LOGOUT_BUTTON_ID);
+		} else {
+			// Click again to make sure the menu is displayed
+			getSettingsMenu().click();
+			if ($(ButtonElement.class).caption(LOG_OUT_BUTTON_CAPTION).exists()) {
+				return $(ButtonElement.class).id(LOGOUT_BUTTON_ID);
+			} else {
+				return null;
+			}
+		}
 	}
 
 	public ButtonElement getNewFormButton() {

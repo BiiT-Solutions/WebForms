@@ -4,7 +4,7 @@ import com.biit.gui.tester.VaadinGuiWindow;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
-public class NewBlockWindow extends VaadinGuiWindow {
+public class NewBlockWindow extends NewSomething {
 
 	private TextFieldElement getNewBlockNameTextField() {
 		return $(TextFieldElement.class).caption("Name").first();
