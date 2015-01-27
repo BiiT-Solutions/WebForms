@@ -22,20 +22,20 @@ public class LoginTests extends WebFormsTester {
 		checkNotificationIsError(getNotification());
 	}
 
-//	@Test
-//	public void testLoginWithRightsToManageForm() {
-//		loginFormAdmin1();
-//		getFormManager().createNewForm(NEW_FORM_NAME);
-//		getFormManager().deleteForm(1);
-//		getFormManager().logOut();
-//	}
+	@Test
+	public void testLoginWithRightsToManageForm() {
+		loginFormAdmin1();
+		getFormManager().createNewForm(NEW_FORM_NAME);
+		getFormManager().deleteForm(1);
+		getFormManager().logOut();
+	}
 
 	@Test
 	public void testLoginWithRightsToManageButNotDeleteForm() {
 		loginFormEdit1();
-		Assert.assertTrue(getFormManager().getNewForm().isEnabled());
+		Assert.assertTrue(getFormManager().getNewFormButton().isEnabled());
 		// close New menu
-		getFormManager().getNewMenu().click();
+		getFormManager().getNewButton().click();
 		Assert.assertNull(getFormManager().getRemoveForm());
 		getFormManager().logOut();
 	}
@@ -43,9 +43,9 @@ public class LoginTests extends WebFormsTester {
 	@Test
 	public void testLoginWithoutRightsToManageForm() {
 		loginRead1();
-		Assert.assertFalse(getFormManager().getNewForm().isEnabled());
+		Assert.assertFalse(getFormManager().getNewFormButton().isEnabled());
 		// close New menu
-		getFormManager().getNewMenu().click();
+		getFormManager().getNewButton().click();
 		Assert.assertNull(getFormManager().getRemoveForm());
 		getFormManager().logOut();
 	}

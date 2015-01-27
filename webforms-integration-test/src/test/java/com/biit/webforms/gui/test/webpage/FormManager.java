@@ -1,5 +1,7 @@
 package com.biit.webforms.gui.test.webpage;
 
+import org.testng.Assert;
+
 import com.biit.gui.tester.VaadinGuiWebpage;
 import com.biit.webforms.gui.test.window.NewFormWindow;
 import com.biit.webforms.gui.test.window.Proceed;
@@ -14,48 +16,58 @@ public class FormManager extends VaadinGuiWebpage {
 	private final static String NEW_BUTTON_CAPTION = "New";
 	private final static String FORM_BUTTON_CAPTION = "Form";
 	private final static String REMOVE_FORM_BUTTON_CAPTION = "Remove Form";
+	private final static String EXPORT_BUTTON_CAPTION = "Export";
+	private final static String ACCEPT_BUTTON_CAPTION = "Accept";
 
 	private final NewFormWindow newFormWindow;
-	private final Proceed proceed;
 
 	public FormManager() {
 		super();
 		newFormWindow = new NewFormWindow();
-		proceed = new Proceed();
 		addWindow(newFormWindow);
-		addWindow(proceed);
+	}
+
+	public NewFormWindow getNewFormWindow() {
+		return newFormWindow;
 	}
 
 	public void createNewForm(String formName) {
 		openNewFormWindow();
-		newFormWindow.createNewForm(formName);
+		getNewFormWindow().createNewForm(formName);
 	}
-	
+
 	public void deleteForm(int row) {
+		// To avoid errors, first we select other element of the table
+		getFormTable().getCell(0, 0).click();
 		getFormTable().getCell(row, 0).click();
+		Assert.assertNotNull(getRemoveForm());
 		getRemoveForm().click();
-		proceed.clickAccept();
+		getAcceptButton().click();
 	}
-	
-	public ButtonElement getBlocks() {
+
+	public ButtonElement getBlocksButton() {
 		return $(ButtonElement.class).caption(BLOCKS_BUTTON_CAPTION).first();
+	}
+
+	public ButtonElement getAcceptButton() {
+		return $(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first();
 	}
 
 	public TreeTableElement getFormTable() {
 		return $(TreeTableElement.class).first();
 	}
 
-	public ButtonElement getLogOut() {
+	public ButtonElement getLogOutButton() {
 		getSettingsMenu().click();
 		return $(ButtonElement.class).id(LOGOUT_BUTTON_ID);
 	}
 
-	public ButtonElement getNewForm() {
-		getNewMenu().click();
+	public ButtonElement getNewFormButton() {
+		getNewButton().click();
 		return $(ButtonElement.class).caption(FORM_BUTTON_CAPTION).first();
 	}
 
-	public ButtonElement getNewMenu() {
+	public ButtonElement getNewButton() {
 		return $(ButtonElement.class).caption(NEW_BUTTON_CAPTION).first();
 	}
 
@@ -71,6 +83,13 @@ public class FormManager extends VaadinGuiWebpage {
 		return null;
 	}
 
+	public ButtonElement getExportButton() {
+		if ($(ButtonElement.class).caption(EXPORT_BUTTON_CAPTION).exists()) {
+			return $(ButtonElement.class).caption(EXPORT_BUTTON_CAPTION).first();
+		}
+		return null;
+	}
+
 	public ButtonElement getSettingsMenu() {
 		return $(ButtonElement.class).id(SETTINGS_BUTTON_ID);
 	}
@@ -81,15 +100,17 @@ public class FormManager extends VaadinGuiWebpage {
 	}
 
 	public void logOut() {
-		getLogOut().click();
+		getLogOutButton().click();
+		if ($(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).exists()) {
+			$(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first().click();
+		}
 	}
-	
+
 	public void openBlocks() {
-		getBlocks().click();
+		getBlocksButton().click();
 	}
 
 	private void openNewFormWindow() {
-		getNewForm().click();
+		getNewFormButton().click();
 	}
-
 }
