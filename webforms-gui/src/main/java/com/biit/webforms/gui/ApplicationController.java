@@ -125,18 +125,18 @@ public class ApplicationController {
 		try {
 			newform = new Form(formLabel, getUser(), organizationId);
 		} catch (FieldTooLongException | CharacterNotAllowedException ex) {
-			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " createForm " + ex.getMessage());
+			WebformsLogger.severe(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+					+ "' createForm '" + ex.getMessage() + "'.");
 			throw ex;
 		}
 
 		// Check if database contains a form with the same name.
 		try {
 			if (formDao.getForm(formLabel, organizationId) != null) {
-				FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel
-						+ " already exists");
-				WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-						+ " createForm " + ex.getMessage());
+				FormWithSameNameException ex = new FormWithSameNameException("Form with name '" + formLabel
+						+ "' already exists.");
+				WebformsLogger.severe(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+						+ "' createForm " + ex.getMessage());
 				throw ex;
 			}
 		} catch (UnexpectedDatabaseException e) {
@@ -154,8 +154,8 @@ public class ApplicationController {
 			if (formDao.getForm(formLabel, organizationId) != null) {
 				FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel
 						+ " already exists");
-				WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-						+ " createForm " + ex.getMessage());
+				WebformsLogger.severe(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+						+ "' createForm " + ex.getMessage());
 				throw ex;
 			}
 
@@ -203,7 +203,7 @@ public class ApplicationController {
 
 	public Block createBlock(String blockName, Long organizationId) throws CharacterNotAllowedException,
 			FieldTooLongException, FormWithSameNameException, UnexpectedDatabaseException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " createBlock "
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' createBlock "
 				+ blockName);
 		logInfoStart("createBlock", blockName, organizationId);
 
@@ -212,17 +212,17 @@ public class ApplicationController {
 		try {
 			newBlock = new Block(blockName, getUser(), organizationId);
 		} catch (FieldTooLongException | CharacterNotAllowedException ex) {
-			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " createBlock " + ex.getMessage());
+			WebformsLogger.warning(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+					+ "' createBlock " + ex.getMessage());
 			throw ex;
 		}
 
 		// Check if database contains a form with the same name.
 		if (blockDao.getBlock(blockName, organizationId) != null) {
-			FormWithSameNameException ex = new FormWithSameNameException("Block with name: " + blockName
-					+ " already exists");
-			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " createBlock " + ex.getMessage());
+			FormWithSameNameException ex = new FormWithSameNameException("Block with name '" + blockName
+					+ "' already exists");
+			WebformsLogger.warning(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+					+ "' createBlock " + ex.getMessage());
 			throw ex;
 		}
 
@@ -352,12 +352,12 @@ public class ApplicationController {
 
 	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException,
 			NotValidStorableObjectException, CharacterNotAllowedException, UnexpectedDatabaseException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-				+ " createNewFormVersion " + form);
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+				+ "' createNewFormVersion " + form);
 
 		if (form.getStatus() == FormWorkStatus.DESIGN) {
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " createNewFormVersion " + form + " tried to create a new form version that is still in design");
+			WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+					+ "' createNewFormVersion " + form + " tried to create a new form version that is still in design");
 			throw new NewVersionWithoutFinalDesignException();
 		}
 
@@ -365,8 +365,8 @@ public class ApplicationController {
 		try {
 			newFormVersion = form.createNewVersion(getUser());
 		} catch (CharacterNotAllowedException | NotValidStorableObjectException ex) {
-			WebformsLogger.severe(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " createForm " + ex.getMessage());
+			WebformsLogger.severe(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+					+ "' createForm " + ex.getMessage());
 			throw ex;
 		}
 
@@ -383,14 +383,14 @@ public class ApplicationController {
 	}
 
 	public void changeFormDescription(Form form, String text) throws FieldTooLongException, UnexpectedDatabaseException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-				+ " changeFormDescription " + form + " " + text);
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+				+ "' changeFormDescription " + form + " " + text);
 		try {
 			form.setDescription(text);
 			formDao.makePersistent(form);
 		} catch (FieldTooLongException e) {
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " changeFormDescription " + e.getMessage());
+			WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+					+ "' changeFormDescription " + e.getMessage());
 			throw e;
 		} catch (UnexpectedDatabaseException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -423,8 +423,8 @@ public class ApplicationController {
 			formInUse = form;
 			// Lock new form
 			UiAccesser.lockForm(formInUse, user);
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-					+ " setFormInUse Form: " + formInUse);
+			WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+					+ "' setFormInUse Form '" + formInUse+"'.");
 			setUnsavedFormChanges(false);
 			setLastEditedForm(formInUse);
 		}
@@ -452,7 +452,7 @@ public class ApplicationController {
 
 	public void clearFormInUse() {
 		if (formInUse != null) {
-			WebformsLogger.info(ApplicationController.class.getName(), "User: '" + getUserEmailAddress()
+			WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
 					+ "' clearFormInUse");
 			UiAccesser.releaseForm(formInUse, user);
 			formInUse = null;
@@ -548,9 +548,9 @@ public class ApplicationController {
 	 */
 	public TreeObject insertTreeObject(Class<? extends TreeObject> classType, TreeObject parent, String name)
 			throws NotValidChildException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-				+ " insertTreeObject of type '" + classType.getName() + "' to '" + parent + "' with name '" + name
-				+ "' START");
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+				+ "' insertTreeObject of type '" + classType.getName() + "' to '" + parent.getPath() + "' with name '"
+				+ name + "' START");
 
 		TreeObject treeObject = null;
 		try {
@@ -562,14 +562,14 @@ public class ApplicationController {
 			treeObject.setUpdatedBy(UserSessionHandler.getUser());
 			parent.addChild(treeObject);
 			setUnsavedFormChanges(true);
-			WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " inserted '"
-					+ treeObject + "' into '" + parent + "'");
+			WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+					+ "' inserted '" + treeObject + "' into '" + parent.getPathName() + "'");
 		} catch (FieldTooLongException | InstantiationException | IllegalAccessException | CharacterNotAllowedException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		} catch (NotValidChildException e) {
 			WebformsLogger.severe(this.getClass().getName(), "Element of type '" + classType.getName()
-					+ "' could not be inserted in '" + parent + "'");
+					+ "' could not be inserted in '" + parent.getPathName() + "'");
 			throw e;
 		}
 
@@ -615,8 +615,8 @@ public class ApplicationController {
 	 * @throws DependencyExistException
 	 */
 	public void removeTreeObject(TreeObject row) throws DependencyExistException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress()
-				+ " removeTreeObject " + row + " of " + row.getAncestor(Form.class));
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+				+ "' removeTreeObject " + row + " of " + row.getAncestor(Form.class));
 
 		row.remove();
 		setUnsavedFormChanges(true);
@@ -628,7 +628,7 @@ public class ApplicationController {
 	 * @param row
 	 */
 	public void moveUp(TreeObject row) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " moveUp " + row
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' moveUp " + row
 				+ " START");
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
@@ -647,7 +647,7 @@ public class ApplicationController {
 	 * @param row
 	 */
 	public void moveDown(TreeObject row) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " moveDown "
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' moveDown "
 				+ row);
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
@@ -820,7 +820,7 @@ public class ApplicationController {
 	 */
 	public void insertBlock(TreeObject element) throws CategoryWithSameNameAlreadyExistsInForm,
 			EmptyBlockCannotBeInserted {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " insertBlock "
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' insertBlock "
 				+ formInUse + " " + element);
 
 		if (element instanceof Block) {
@@ -871,8 +871,8 @@ public class ApplicationController {
 	 */
 	public void moveTo(TreeObject origin, TreeObject destiny) throws NotValidChildException,
 			SameOriginAndDestinationException, DestinyIsContainedAtOrigin, ChildrenNotFoundException {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " move " + origin
-				+ " to " + destiny);
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move '"
+				+ origin + "' to '" + destiny + "'.");
 		if (origin.equals(destiny)) {
 			throw new SameOriginAndDestinationException("Origin and destination are the same element");
 		}
@@ -887,8 +887,8 @@ public class ApplicationController {
 			TreeObject.move(origin, destiny);
 			setUnsavedFormChanges(true);
 		} catch (NotValidChildException | ChildrenNotFoundException e) {
-			WebformsLogger.warning(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " move "
-					+ origin + " to " + destiny + " could not be done.");
+			WebformsLogger.warning(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move '"
+					+ origin + "' to '" + destiny + "' could not be done.");
 			throw e;
 		}
 	}
@@ -954,8 +954,8 @@ public class ApplicationController {
 	 * @param flow
 	 */
 	public void updateFlow(Flow flow) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User: " + getUserEmailAddress() + " updateFlow "
-				+ flow + " in " + getFormInUse() + "START");
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' updateFlow '"
+				+ flow + "' in '" + getFormInUse() + "' START");
 		flow.setUpdateTime();
 		flow.setUpdatedBy(getUser());
 		setUnsavedFormChanges(true);
@@ -1035,11 +1035,11 @@ public class ApplicationController {
 	}
 
 	protected String getUserInfo() {
-		String userInfo = new String("User: ");
+		String userInfo = new String("User '");
 		if (getUser() == null) {
-			return userInfo + "NO USER";
+			return userInfo + "' NO USER";
 		} else {
-			return userInfo + getUser().getEmailAddress();
+			return userInfo + getUser().getEmailAddress() + "'";
 		}
 	}
 
