@@ -17,9 +17,10 @@ import com.vaadin.testbench.elements.NotificationElement;
 public class VaadinGuiTester extends TestBenchTestCase {
 
 	// Activates screenshots on application failure
-	private boolean takeScreeenshots = false;
-	private final static String SCREENSHOTS_PATH = System
-			.getProperty("java.io.tmpdir");
+	private boolean takeScreeenshots = true;
+	private final static String SCREENSHOTS_PATH = System.getProperty("java.io.tmpdir");
+	private final static String SCREENSHOTS_ERROR_PATH = "/errors";
+	private final static String SCREENSHOTS_REFERENCE_PATH = "/reference";
 	private static final String FIREFOX_LANGUAGE_PROPERTY = "intl.accept_languages";
 	private static final String FIREFOX_LANGUAGE_VALUE = "en_US";
 	private static final String APPLICATION_URL_NEW_UI = "http://localhost:9081/?restartApplication";
@@ -54,8 +55,8 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	}
 
 	private static void setScreenshotsParameters(String path) {
-		Parameters.setScreenshotErrorDirectory(path + "/errors");
-		Parameters.setScreenshotReferenceDirectory(path + "/reference");
+		Parameters.setScreenshotErrorDirectory(path + SCREENSHOTS_ERROR_PATH);
+		Parameters.setScreenshotReferenceDirectory(path + SCREENSHOTS_REFERENCE_PATH);
 		Parameters.setMaxScreenshotRetries(2);
 		Parameters.setScreenshotComparisonTolerance(1.0);
 		Parameters.setScreenshotRetryDelay(10);

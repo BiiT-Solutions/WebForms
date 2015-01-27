@@ -29,24 +29,24 @@ public class LoginTests extends WebFormsTester {
 //		getFormManager().deleteForm(1);
 //		getFormManager().logOut();
 //	}
-//
-//	@Test
-//	public void testLoginWithRightsToManageButNotDeleteForm() {
-//		loginFormEdit1();
-//		Assert.assertTrue(getFormManager().getNewForm().isEnabled());
-//		// close New menu
-//		getFormManager().getNewMenu().click();
-//		Assert.assertNull(getFormManager().getRemoveForm());
-//		getFormManager().logOut();
-//	}
-//
-//	@Test
-//	public void testLoginWithoutRightsToManageForm() {
-//		loginRead1();
-//		Assert.assertFalse(getFormManager().getNewForm().isEnabled());
-//		// close New menu
-//		getFormManager().getNewMenu().click();
-//		Assert.assertNull(getFormManager().getRemoveForm());
-//		getFormManager().logOut();
-//	}
+
+	@Test
+	public void testLoginWithRightsToManageButNotDeleteForm() {
+		loginFormEdit1();
+		Assert.assertTrue(getFormManager().getNewForm().isEnabled());
+		// close New menu
+		getFormManager().getNewMenu().click();
+		Assert.assertNull(getFormManager().getRemoveForm());
+		getFormManager().logOut();
+	}
+	
+	@Test
+	public void testLoginWithoutRightsToManageForm() {
+		loginRead1();
+		Assert.assertFalse(getFormManager().getNewForm().isEnabled());
+		// close New menu
+		getFormManager().getNewMenu().click();
+		Assert.assertNull(getFormManager().getRemoveForm());
+		getFormManager().logOut();
+	}
 }
