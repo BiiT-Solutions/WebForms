@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UiAccesser;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
 import com.biit.webforms.gui.common.utils.MessageManager;

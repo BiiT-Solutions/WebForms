@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.common.components.WindowTextArea;

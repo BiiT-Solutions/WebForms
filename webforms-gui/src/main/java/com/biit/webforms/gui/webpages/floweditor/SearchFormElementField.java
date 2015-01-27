@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.OpenSearchComponentListener;
 import com.biit.webforms.gui.common.components.SearchButtonField;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;

@@ -413,10 +413,12 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 	}
 
+	@Override
 	public String getLinkedFormLabel() {
 		return linkedFormLabel;
 	}
 
+	@Override
 	public Set<Integer> getLinkedFormVersions() {
 		return linkedFormVersions;
 	}
@@ -425,6 +427,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		getLinkedFormVersions().add(versionNumber);
 	}
 
+	@Override
 	public Long getLinkedFormOrganizationId() {
 		return linkedFormOrganizationId;
 	}
@@ -532,6 +535,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 * @param treeObject
 	 * @return
 	 */
+	@Override
 	public boolean isContentEqual(TreeObject treeObject) {
 		if (treeObject instanceof Form) {
 			if (super.isContentEqual(treeObject)) {

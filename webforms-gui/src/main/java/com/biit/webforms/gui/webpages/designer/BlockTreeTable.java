@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.TableTreeObjectLabel;

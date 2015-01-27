@@ -1,4 +1,4 @@
-package com.biit.webforms.authentication;
+package com.biit.webforms.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +28,9 @@ import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.validation.ValidateReport;
+import com.biit.webforms.authentication.FormWithSameNameException;
+import com.biit.webforms.authentication.WebformsActivity;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.BadAbcdLink;
 import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
 import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
@@ -43,11 +46,10 @@ import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.enumerations.TokenTypes;
-import com.biit.webforms.gui.ApplicationUi;
-import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
+import com.biit.webforms.gui.entity.CompleteFormView;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.language.LanguageCodes;
@@ -430,6 +432,10 @@ public class ApplicationController {
 
 	public Form getFormInUse() {
 		return formInUse;
+	}
+
+	public CompleteFormView getCompleteFormView() {
+		return new CompleteFormView(getFormInUse());
 	}
 
 	public Form getLastEditedForm() {

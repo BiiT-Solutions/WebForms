@@ -1,6 +1,5 @@
 package com.biit.webforms.gui;
 
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.annotations.PreserveOnRefresh;

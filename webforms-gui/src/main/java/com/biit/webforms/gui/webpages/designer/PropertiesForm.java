@@ -1,8 +1,8 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.StorableObjectProperties;

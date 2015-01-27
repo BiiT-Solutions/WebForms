@@ -6,8 +6,8 @@ import java.sql.SQLException;
 
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;

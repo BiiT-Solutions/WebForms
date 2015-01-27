@@ -11,8 +11,8 @@ import org.xml.sax.SAXException;
 
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.liferay.security.IActivity;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;

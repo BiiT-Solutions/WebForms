@@ -1,11 +1,11 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerSubformatUi;
