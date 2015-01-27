@@ -7,8 +7,9 @@ import org.testng.annotations.Test;
 public class LoginTests extends WebFormsTester {
 
 	private static final String BADUSERNAME = "badUserName@bad.com";
-	private static final String BAPSSWORD = "badPassword";
+	private static final String BADPASSWORD = "badPassword";
 	private static final String NEW_FORM_NAME = "new_form_1";
+	private static final String NEW_BLOCK_NAME = "new_block_1";
 
 	@Test
 	public void testLoginLogout() {
@@ -18,7 +19,7 @@ public class LoginTests extends WebFormsTester {
 
 	@Test
 	public void testLoginFail() {
-		login(BADUSERNAME, BAPSSWORD);
+		login(BADUSERNAME, BADPASSWORD);
 		checkNotificationIsError(getNotification());
 	}
 
@@ -34,19 +35,29 @@ public class LoginTests extends WebFormsTester {
 	public void testLoginWithRightsToManageButNotDeleteForm() {
 		loginFormEdit1();
 		Assert.assertTrue(getFormManager().getNewFormButton().isEnabled());
-		// close New menu
+		// Close New menu
 		getFormManager().getNewButton().click();
 		Assert.assertNull(getFormManager().getRemoveForm());
+		getFormManager().getNewButton().click();
 		getFormManager().logOut();
 	}
-	
+
 	@Test
 	public void testLoginWithoutRightsToManageForm() {
 		loginRead1();
 		Assert.assertFalse(getFormManager().getNewFormButton().isEnabled());
-		// close New menu
+		// Close New menu
 		getFormManager().getNewButton().click();
 		Assert.assertNull(getFormManager().getRemoveForm());
+		getFormManager().getNewButton().click();
 		getFormManager().logOut();
 	}
+
+	// @Test
+	// public void testLoginWithRightsToManageBlock() {
+	// loginFormAdmin1();
+	// getBlockManager().createNewForm(NEW_BLOCK_NAME);
+	// getBlockManager().deleteForm(1);
+	// getBlockManager().logOut();
+	// }
 }
