@@ -23,8 +23,10 @@ public class FormManager extends VaadinGuiWebpage {
 	}
 
 	public void logOut() {
-		$(ButtonElement.class).id(SETTINGS_BUTTON_ID).click();
-		$(ButtonElement.class).id(LOGOUT_BUTTON_ID).click();
+		$(ButtonElement.class).caption("Settings").first().click();
+//		$(ButtonElement.class).id(SETTINGS_BUTTON_ID).click();
+		$(ButtonElement.class).caption("Log Out").first().click();
+//		$(ButtonElement.class).id(LOGOUT_BUTTON_ID).click();
 	}
 
 	public ButtonElement getNewMenu() {
