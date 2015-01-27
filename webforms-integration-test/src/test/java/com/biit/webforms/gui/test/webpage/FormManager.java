@@ -60,17 +60,7 @@ public class FormManager extends VaadinGuiWebpage {
 
 	public ButtonElement getLogOutButton() {
 		getSettingsMenu().click();
-		if ($(ButtonElement.class).caption(LOG_OUT_BUTTON_CAPTION).exists()) {
-			return $(ButtonElement.class).id(LOGOUT_BUTTON_ID);
-		} else {
-			// Click again to force the display of the submenu
-			getSettingsMenu().click();
-			if ($(ButtonElement.class).caption(LOG_OUT_BUTTON_CAPTION).exists()) {
-				return $(ButtonElement.class).id(LOGOUT_BUTTON_ID);
-			} else {
-				return null;
-			}
-		}
+		return $(ButtonElement.class).id(LOGOUT_BUTTON_ID);
 	}
 
 	public ButtonElement getNewFormButton() {
