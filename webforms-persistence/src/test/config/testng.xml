@@ -6,12 +6,14 @@
 				<exclude name="ehCache" />
 				<include name="ruleTest" />
 				<include name="formElements" />
+				<include name="removeElement" />
 			</run>
 		</groups>
 		<classes>
 			<class name="com.biit.webforms.persistence.EhCacheTest" />
 			<class name="com.biit.webforms.persistence.RuleTest" />
 			<class name="com.biit.webforms.persistence.FormElements" />
+			<class name="com.biit.webforms.persistence.RemoveTest" />
 		</classes>
 	</test>
 </suite>
