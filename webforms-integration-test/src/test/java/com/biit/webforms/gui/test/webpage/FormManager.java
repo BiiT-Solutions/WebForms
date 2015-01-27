@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.test.webpage;
 
 import com.biit.gui.tester.VaadinGuiWebpage;
-import com.biit.webforms.gui.test.window.NewForm;
+import com.biit.webforms.gui.test.window.NewFormWindow;
 import com.biit.webforms.gui.test.window.Proceed;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.TreeTableElement;
@@ -11,12 +11,12 @@ public class FormManager extends VaadinGuiWebpage {
 	private final static String SETTINGS_BUTTON_ID = "settingsButton";
 	private final static String LOGOUT_BUTTON_ID = "logoutButton";
 
-	private final NewForm newFormWindow;
+	private final NewFormWindow newFormWindow;
 	private final Proceed proceed;
 
 	public FormManager() {
 		super();
-		newFormWindow = new NewForm();
+		newFormWindow = new NewFormWindow();
 		proceed = new Proceed();
 		addWindow(newFormWindow);
 		addWindow(proceed);
@@ -68,9 +68,17 @@ public class FormManager extends VaadinGuiWebpage {
 	}
 
 	public void deleteForm(int row) {
-		getFormTable().getRow(row).click();
+		getFormTable().getCell(row, 0).click();
 		getRemoveForm().click();
 		proceed.clickAccept();
+	}
+
+	public ButtonElement getBlocks() {
+		return $(ButtonElement.class).caption("Blocks").first();
+	}
+
+	public void openBlocks() {
+		getBlocks().click();
 	}
 
 }
