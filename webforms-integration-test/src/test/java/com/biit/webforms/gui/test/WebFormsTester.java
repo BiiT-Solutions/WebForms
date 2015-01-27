@@ -1,6 +1,7 @@
 package com.biit.webforms.gui.test;
 
 import com.biit.gui.tester.VaadinGuiTester;
+import com.biit.webforms.gui.test.webpage.BlockManager;
 import com.biit.webforms.gui.test.webpage.FormManager;
 import com.biit.webforms.gui.test.webpage.Login;
 
@@ -22,6 +23,7 @@ public class WebFormsTester extends VaadinGuiTester {
 
 	private final Login loginPage;
 	private final FormManager formManager;
+	private final BlockManager blockManager;
 
 	public WebFormsTester() {
 		super();
@@ -29,6 +31,8 @@ public class WebFormsTester extends VaadinGuiTester {
 		addWebpage(loginPage);
 		formManager = new FormManager();
 		addWebpage(formManager);
+		blockManager = new BlockManager();
+		addWebpage(blockManager);
 	}
 
 	public Login getLoginPage() {
@@ -37,6 +41,10 @@ public class WebFormsTester extends VaadinGuiTester {
 
 	public FormManager getFormManager() {
 		return formManager;
+	}
+	
+	public BlockManager getBlockManager() {
+		return blockManager;
 	}
 
 	public void login(String username, String password) {

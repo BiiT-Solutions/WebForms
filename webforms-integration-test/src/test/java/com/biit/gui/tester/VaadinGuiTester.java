@@ -17,7 +17,7 @@ import com.vaadin.testbench.elements.NotificationElement;
 public class VaadinGuiTester extends TestBenchTestCase {
 
 	// Activates screenshots on application failure
-	private boolean takeScreeenshots = true;
+	private boolean takeScreeenshots = false;
 	private final static String SCREENSHOTS_PATH = System.getProperty("java.io.tmpdir");
 	private final static String SCREENSHOTS_ERROR_PATH = "/errors";
 	private final static String SCREENSHOTS_REFERENCE_PATH = "/reference";
@@ -45,7 +45,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
 		}
 	}
 
-	@AfterClass(inheritGroups = true, alwaysRun = true)
+	@AfterClass(alwaysRun = true)
 	public void destroyDriver() {
 		// Do not call 'driver.quit' if you want to take screenshots when the
 		// application fails
