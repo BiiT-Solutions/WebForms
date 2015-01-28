@@ -165,6 +165,14 @@ public class Designer extends SecuredWebPage {
 				openInsertBlock();
 			}
 		});
+		upperMenu.addLinkBlockButtonListener(new ClickListener() {
+			private static final long serialVersionUID = -4308973502774054307L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				openLinkBlock();
+			}
+		});
 		upperMenu.addNewCategoryButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 742624238392918737L;
 
@@ -341,7 +349,7 @@ public class Designer extends SecuredWebPage {
 		return upperMenu;
 	}
 
-	protected void finishForm() {
+	private void finishForm() {
 		new WindowProceedAction(LanguageCodes.TEXT_PROCEED_FORM_CLOSE, new AcceptActionListener() {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
@@ -385,10 +393,14 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getNewSystemFieldButton().setEnabled(canEdit && selectedRowHierarchyAllows(SystemField.class));
 			upperMenu.getNewTextButton().setEnabled(canEdit && selectedRowHierarchyAllows(Text.class));
 			upperMenu.getNewAnswerButton().setEnabled(canEdit && selectedRowHierarchyAllows(Answer.class));
-			upperMenu.getNewSubanswerButton().setEnabled(
-					canEdit && selectedRowIsAnswer && selectedRowHierarchyAllows(Answer.class)
-							&& (isParentQuestionOfType(table.getSelectedRow(), AnswerType.SINGLE_SELECTION_RADIO) 
-									|| isParentQuestionOfType(table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
+			upperMenu.getNewSubanswerButton()
+					.setEnabled(
+							canEdit
+									&& selectedRowIsAnswer
+									&& selectedRowHierarchyAllows(Answer.class)
+									&& (isParentQuestionOfType(table.getSelectedRow(),
+											AnswerType.SINGLE_SELECTION_RADIO) || isParentQuestionOfType(
+											table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
 			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
 			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
@@ -415,12 +427,12 @@ public class Designer extends SecuredWebPage {
 		}
 	}
 
-	protected boolean selectedRowHierarchyAllows(Class<? extends TreeObject> cls) {
+	private boolean selectedRowHierarchyAllows(Class<? extends TreeObject> cls) {
 		TreeObject selectedRow = table.getSelectedRow();
 		return selectedRow != null && (selectedRow.getAncestorThatAccepts(cls) != null);
 	}
 
-	protected boolean isParentQuestionOfType(TreeObject answer, AnswerType type) {
+	private boolean isParentQuestionOfType(TreeObject answer, AnswerType type) {
 		if (answer != null && answer.getParent() != null && answer.getParent() instanceof Question) {
 			return ((Question) answer.getParent()).getAnswerType().equals(type);
 		} else if (answer != null && answer.getParent() != null && answer.getParent() instanceof Answer) {
@@ -432,7 +444,7 @@ public class Designer extends SecuredWebPage {
 	/**
 	 * Opens Save as New block window (String field)
 	 */
-	protected void openNewBlockWindow() {
+	private void openNewBlockWindow() {
 		final WindowNameGroup newBlockWindow = new WindowNameGroup(LanguageCodes.COMMON_CAPTION_NAME.translation(),
 				LanguageCodes.COMMON_CAPTION_GROUP.translation(),
 				new IActivity[] { WebformsActivity.BUILDING_BLOCK_EDITING });
@@ -471,7 +483,7 @@ public class Designer extends SecuredWebPage {
 	/**
 	 * Opens Insert Block window
 	 */
-	protected void openInsertBlock() {
+	private void openInsertBlock() {
 		final WindowBlocks windowBlocks = new WindowBlocks(LanguageCodes.CAPTION_INSERT_NEW_BLOCK);
 		windowBlocks.showCentered();
 		windowBlocks.addAcceptActionListener(new AcceptActionListener() {
@@ -493,11 +505,34 @@ public class Designer extends SecuredWebPage {
 			}
 		});
 	}
+	
+	private void openLinkBlock(){
+		final WindowBlocks windowBlocks = new WindowBlocks(LanguageCodes.CAPTION_LINK_BLOCK);
+		windowBlocks.showCentered();
+		windowBlocks.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				// Insert block in form
+				try {
+					UserSessionHandler.getController().linkBlock(windowBlocks.getSelectedBlock());
+					clearAndUpdateFormTable();
+					window.close();
+				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
+							LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
+				} catch (EmptyBlockCannotBeInserted e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
+							LanguageCodes.WARNING_DESCRIPTION_EMPTY_BLOCK);
+				}
+			}
+		});
+	}
 
 	/**
 	 * Opens move element window.
 	 */
-	protected void openMoveWindow() {
+	private void openMoveWindow() {
 		final WindowTreeObject moveWindow = new WindowTreeObject(LanguageCodes.CAPTION_WINDOW_MOVE, getCurrentForm(),
 				Form.class, Category.class, Group.class);
 		moveWindow.showCentered();
@@ -531,7 +566,7 @@ public class Designer extends SecuredWebPage {
 		});
 	}
 
-	protected void clearAndUpdateFormTable() {
+	private void clearAndUpdateFormTable() {
 		// Clear and update form
 		TreeObject currentSelection = table.getSelectedRow();
 		table.setValue(null);
@@ -540,7 +575,7 @@ public class Designer extends SecuredWebPage {
 		table.select(currentSelection);
 	}
 
-	protected Form getCurrentForm() {
+	private Form getCurrentForm() {
 		return UserSessionHandler.getController().getFormInUse();
 	}
 }

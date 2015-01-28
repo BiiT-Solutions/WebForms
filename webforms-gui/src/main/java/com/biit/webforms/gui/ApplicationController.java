@@ -628,7 +628,7 @@ public class ApplicationController {
 	 * @param row
 	 */
 	public void moveUp(TreeObject row) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' moveUp " + row
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move Up " + row
 				+ " START");
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
@@ -647,7 +647,7 @@ public class ApplicationController {
 	 * @param row
 	 */
 	public void moveDown(TreeObject row) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' moveDown "
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move Down "
 				+ row);
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
@@ -820,7 +820,57 @@ public class ApplicationController {
 	 */
 	public void insertBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm,
 			EmptyBlockCannotBeInserted {
-		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' insertBlock "
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' insert Block "
+				+ formInUse + " " + block);
+
+		if (block instanceof Block) {
+			if (block.getChildren().isEmpty()) {
+				throw new EmptyBlockCannotBeInserted();
+			}
+			try {
+				if (formInUse.findChild(block.getChild(0).getName()) != null) {
+					// Element found, throw exception.
+					throw new CategoryWithSameNameAlreadyExistsInForm();
+				}
+			} catch (ChildrenNotFoundException e) {
+				// Not possible.
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+		} else {
+			// Check name uniqueness first
+			Category category = (Category) block.getAncestor(Category.class);
+			if (formInUse.findChild(category.getName()) != null) {
+				// Element found, throw exception.
+				throw new CategoryWithSameNameAlreadyExistsInForm();
+			}
+		}
+
+		try {
+			Block blockToInsert = (Block) block.getAncestor(Block.class);
+			Block copiedBlock = (Block) blockToInsert.generateFormCopiedSimplification(block);
+			copiedBlock.resetIds();
+
+			formInUse.addChildren(copiedBlock.getChildren());
+			formInUse.addFlows(copiedBlock.getFlows());
+
+			setUnsavedFormChanges(true);
+		} catch (NotValidStorableObjectException | NotValidChildException | CharacterNotAllowedException e) {
+			// Impossible.
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+	}
+	
+	/**
+	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
+	 * hierarchy seed and introduces to current form as a new category.
+	 * 
+	 * @param selectedRow
+	 * @throws CategoryWithSameNameAlreadyExistsInForm
+	 * @throws EmptyBlockCannotBeInserted
+	 */
+	public void linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm,
+			EmptyBlockCannotBeInserted {
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' link Block "
 				+ formInUse + " " + block);
 
 		if (block instanceof Block) {

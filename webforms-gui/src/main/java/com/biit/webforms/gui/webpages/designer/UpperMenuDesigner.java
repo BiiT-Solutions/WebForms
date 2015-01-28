@@ -16,10 +16,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	private static final long serialVersionUID = -368255188051163986L;
 
 	private final IconButton saveButton;
-	private final IconButton blockMenu, saveAsBlockButton, insertBlockButton;
-	private final IconButton newCategoryButton, newGroupButton,
-			newQuestionButton, newTextButton, newSystemFieldButton, newAnswerButton, newSubanswerButton, moveButton,
-			deleteButton, upButton, downButton, finish, exportToJavaCode;
+	private final IconButton blockMenu, saveAsBlockButton, insertBlockButton, linkBlockButton;
+	private final IconButton newCategoryButton, newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton,
+			newAnswerButton, newSubanswerButton, moveButton, deleteButton, upButton, downButton, finish,
+			exportToJavaCode;
 
 	public UpperMenuDesigner() {
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
@@ -30,6 +30,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 		insertBlockButton = new IconButton(LanguageCodes.COMMON_CAPTION_INSERT_BLOCK, ThemeIcons.BUILDING_BLOCK_ADD,
 				LanguageCodes.COMMON_TOOLTIP_INSERT_BLOCK, IconSize.BIG);
+		linkBlockButton = new IconButton(LanguageCodes.COMMON_CAPTION_LINK_BLOCK, ThemeIcons.BUILDING_BLOCK_LINK,
+				LanguageCodes.COMMON_TOOLTIP_LINK_BLOCK, IconSize.BIG);
 
 		newCategoryButton = new IconButton(LanguageCodes.CAPTION_NEW_CATEGORY, ThemeIcons.DESIGNER_NEW_CATEGORY,
 				LanguageCodes.TOOLTIP_NEW_CATEGORY);
@@ -55,8 +57,9 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				LanguageCodes.COMMON_TOOLTIP_DELETE);
 		finish = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
 				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
-		
-		exportToJavaCode = new IconButton(LanguageCodes.APPLICATION_NAME, ThemeIcons.ALERT, LanguageCodes.APPLICATION_NAME);
+
+		exportToJavaCode = new IconButton(LanguageCodes.APPLICATION_NAME, ThemeIcons.ALERT,
+				LanguageCodes.APPLICATION_NAME);
 		exportToJavaCode.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 5531403001527645029L;
 
@@ -71,7 +74,9 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		exportToJavaCode.setVisible(false);
 
 		addIconButton(saveButton);
-		blockMenu = addSubMenu(ThemeIcons.BUILDING_BLOCK_MENU,LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER,LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, saveAsBlockButton,insertBlockButton);
+		blockMenu = addSubMenu(ThemeIcons.BUILDING_BLOCK_MENU, LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER,
+				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, saveAsBlockButton, insertBlockButton,
+				linkBlockButton);
 		addIconButton(newCategoryButton);
 		addIconButton(newGroupButton);
 		addIconButton(newQuestionButton);
@@ -98,6 +103,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public void addInsertBlockButtonListener(ClickListener listener) {
 		insertBlockButton.addClickListener(listener);
+	}
+
+	public void addLinkBlockButtonListener(ClickListener listener) {
+		linkBlockButton.addClickListener(listener);
 	}
 
 	public void addNewCategoryButtonListener(ClickListener listener) {
@@ -154,6 +163,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public IconButton getInsertBlockButton() {
 		return insertBlockButton;
+	}
+
+	public IconButton getLinkBlockButton() {
+		return linkBlockButton;
 	}
 
 	public IconButton getNewCategoryButton() {
