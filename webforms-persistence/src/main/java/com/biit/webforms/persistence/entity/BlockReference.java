@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -30,11 +29,16 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	public static final String DEFAULT_TECHNICAL_NAME = "block_reference";
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>();
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Block reference;
 
 	public BlockReference() {
 		super();
+	}
+
+	public BlockReference(Block reference) {
+		super();
+		this.reference = reference;
 	}
 
 	public Block getReference() {
@@ -138,6 +142,27 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	@Override
 	protected String getDefaultTechnicalName() {
 		return DEFAULT_TECHNICAL_NAME;
+	}
+
+	@Override
+	public String toString() {
+		if (reference != null) {
+			return "[" + reference.getLabel() + "]";
+		}
+		return "[empty]";
+	}
+
+	@Override
+	public String getLabel() {
+		if (reference != null) {
+			return reference.getLabel();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return getDefaultTechnicalName();
 	}
 
 }

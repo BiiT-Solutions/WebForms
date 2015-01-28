@@ -503,6 +503,8 @@ public enum LanguageCodes implements ILanguageCode {
 	CLEAN_FLOW_REPORT_OTHERS_RULE("clean.flow.report.others.rule"),
 	CLEAN_FLOW_REPORT_USELESS_FLOW("clean.flow.report.useless.flow"),
 	CLEAN_FLOW_REPORT_NO_RULES_CHANGED("clean.flow.report.no.rules.changed"),
+	
+	ERROR_LINK_BLOCK_NOT_COMPLETE("error.link.block.not.complete"),
 	;
 
 	private String value;

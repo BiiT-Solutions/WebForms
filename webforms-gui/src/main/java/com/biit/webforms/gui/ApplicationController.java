@@ -58,6 +58,7 @@ import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
+import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
@@ -424,7 +425,7 @@ public class ApplicationController {
 			// Lock new form
 			UiAccesser.lockForm(formInUse, user);
 			WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
-					+ "' setFormInUse Form '" + formInUse+"'.");
+					+ "' setFormInUse Form '" + formInUse + "'.");
 			setUnsavedFormChanges(false);
 			setLastEditedForm(formInUse);
 		}
@@ -628,8 +629,8 @@ public class ApplicationController {
 	 * @param row
 	 */
 	public void moveUp(TreeObject row) {
-		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move Up " + row
-				+ " START");
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move Up "
+				+ row + " START");
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
 			int index = parent.getChildren().indexOf(row);
@@ -859,7 +860,7 @@ public class ApplicationController {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
-	
+
 	/**
 	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
 	 * hierarchy seed and introduces to current form as a new category.
@@ -868,12 +869,12 @@ public class ApplicationController {
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
 	 * @throws EmptyBlockCannotBeInserted
 	 */
-	public void linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm,
-			EmptyBlockCannotBeInserted {
-		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' link Block "
-				+ formInUse + " " + block);
+	public void linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm, EmptyBlockCannotBeInserted {
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' link Block '"
+				+ block + "' in '" + formInUse + "' ");
 
 		if (block instanceof Block) {
+			// Check valid block.
 			if (block.getChildren().isEmpty()) {
 				throw new EmptyBlockCannotBeInserted();
 			}
@@ -886,27 +887,18 @@ public class ApplicationController {
 				// Not possible.
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
-		} else {
-			// Check name uniqueness first
-			Category category = (Category) block.getAncestor(Category.class);
-			if (formInUse.findChild(category.getName()) != null) {
-				// Element found, throw exception.
-				throw new CategoryWithSameNameAlreadyExistsInForm();
+
+			// Create a block link and insert it.
+			try {
+				BlockReference blockReference = new BlockReference((Block) block);
+				formInUse.addChild(blockReference);
+				setUnsavedFormChanges(true);
+			} catch (NotValidChildException e) {
+				// Impossible.
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
-		}
-
-		try {
-			Block blockToInsert = (Block) block.getAncestor(Block.class);
-			Block copiedBlock = (Block) blockToInsert.generateFormCopiedSimplification(block);
-			copiedBlock.resetIds();
-
-			formInUse.addChildren(copiedBlock.getChildren());
-			formInUse.addFlows(copiedBlock.getFlows());
-
-			setUnsavedFormChanges(true);
-		} catch (NotValidStorableObjectException | NotValidChildException | CharacterNotAllowedException e) {
-			// Impossible.
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		} else {
+			MessageManager.showError(LanguageCodes.ERROR_LINK_BLOCK_NOT_COMPLETE);
 		}
 	}
 

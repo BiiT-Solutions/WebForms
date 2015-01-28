@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.xml.bind.TypeConstraintException;
 
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
@@ -35,10 +34,10 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	@Override
 	protected void initializeSets(List<Form> forms) {
 		super.initializeSets(forms);
-		for (Form form : forms) {
-			// Initializes the sets for lazy-loading (within the same session)+
-			Hibernate.initialize(form.getFlows());
-		}
+		// for (Form form : forms) {
+		// // Initializes the sets for lazy-loading (within the same session)
+		// //Hibernate.initialize(form.getFlows());
+		// }
 	}
 
 	@Override

@@ -83,7 +83,7 @@ public class Designer extends SecuredWebPage {
 		table.setIconProvider(new IconProviderTreeObjectWebforms());
 		table.setSizeFull();
 		table.setSelectable(true);
-		table.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);
+		table.loadTreeObject(getCurrentForm(), null);
 		table.collapseFrom(Category.class);
 		table.setValue(null);
 		table.addValueChangeListener(new ValueChangeListener() {
@@ -120,7 +120,7 @@ public class Designer extends SecuredWebPage {
 		getWorkingArea().addComponent(rootLayout);
 
 		// Init
-		table.setValue(UserSessionHandler.getController().getCompleteFormView());
+		table.setValue(getCurrentForm());
 	}
 
 	@Override
@@ -576,6 +576,6 @@ public class Designer extends SecuredWebPage {
 	}
 
 	private Form getCurrentForm() {
-		return UserSessionHandler.getController().getFormInUse();
+		return UserSessionHandler.getController().getCompleteFormView();
 	}
 }

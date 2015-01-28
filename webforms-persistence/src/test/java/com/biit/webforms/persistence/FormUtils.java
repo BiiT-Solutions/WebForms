@@ -67,7 +67,7 @@ public class FormUtils {
 	public static final String ANSWER_I = "answerI";
 	public static final String ANSWER_J = "answerJ";
 
-	public static Form createCompleteForm() throws FieldTooLongException, NotValidChildException,
+	public static Form createCompleteForm(Block withBlock) throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin,
 			FlowWithoutDestiny, NotValidTokenType {
@@ -76,7 +76,9 @@ public class FormUtils {
 		form.setLabel(FORM_COMPLETE_LABEL);
 
 		form.addChild(createCategory(CATEGORY_1));
-		form.addChild(createReferencedBlock(BLOCK_1));
+		if (withBlock != null) {
+			form.addChild(createReferencedBlock(BLOCK_1, withBlock));
+		}
 		form.addChild(createCategory(CATEGORY_2));
 
 		((Group) form.getChild(CATEGORY_2, GROUP_1)).setRepeatable(true);
@@ -130,16 +132,21 @@ public class FormUtils {
 		return flow;
 	}
 
-	public static BlockReference createReferencedBlock(String name) throws NotValidChildException,
+	public static BlockReference createReferencedBlock(String name, Block block) throws NotValidChildException,
 			FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
 			InvalidAnswerSubformatException {
+		BlockReference blockReference = new BlockReference();
+		blockReference.setReference(block);
+		return blockReference;
+	}
+
+	public static Block createBlock() throws NotValidChildException, FieldTooLongException,
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
 		Block block = new Block();
 		block.addChild(createCategory(CATEGORY_IN_BLOCK));
 		block.setOrganizationId(ORGANIZATION_ID);
 		block.setLabel(BLOCK_1);
-		BlockReference blockReference = new BlockReference();
-		blockReference.setReference(block);
-		return blockReference;
+		return block;
 	}
 
 	/**

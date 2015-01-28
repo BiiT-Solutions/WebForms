@@ -16,6 +16,8 @@ import com.liferay.portal.model.User;
 public class Block extends Form implements IWebformsBlockView {
 	private static final long serialVersionUID = -5029214862461479704L;
 
+	public static final String DEFAULT_TECHNICAL_NAME = "block";
+
 	public Block() {
 		super();
 	}
@@ -23,6 +25,11 @@ public class Block extends Form implements IWebformsBlockView {
 	public Block(String name, User user, Long organizationId) throws FieldTooLongException,
 			CharacterNotAllowedException {
 		super(name, user, organizationId);
+	}
+
+	@Override
+	protected String getDefaultTechnicalName() {
+		return DEFAULT_TECHNICAL_NAME;
 	}
 
 }

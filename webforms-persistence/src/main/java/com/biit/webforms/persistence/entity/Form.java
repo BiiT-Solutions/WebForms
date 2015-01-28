@@ -24,6 +24,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Polymorphism;
 import org.hibernate.annotations.PolymorphismType;
 
@@ -91,7 +93,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	@Lob
 	private String description;
 
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "form")
+	@OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true, mappedBy = "form")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private Set<Flow> rules;
 
 	private String linkedFormLabel;
