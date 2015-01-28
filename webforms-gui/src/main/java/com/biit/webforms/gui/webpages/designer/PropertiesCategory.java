@@ -56,8 +56,11 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
 		name.addValidator(new ValidatorTreeObjectNameLength());
 		name.setValue(instance.getName());
+		name.setEnabled(!instance.isReadOnly());
+		
 		label.setValue(instance.getLabel());
 		label.addValidator(new LengthValidator(instance.getMaxLabelLength()));
+		label.setEnabled(!instance.isReadOnly());
 	}
 
 	@Override

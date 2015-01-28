@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">     
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" name="webformscache">     
   	<defaultCache eternal="true" maxElementsInMemory="100" overflowToDisk="false" />     	
 	<cache name="org.hibernate.cache.spi.UpdateTimestampsCache" maxElementsInMemory="5000" eternal="true" overflowToDisk="true" />
 	<cache name="org.hibernate.cache.internal.StandardQueryCache" maxElementsInMemory="500" eternal="false" timeToLiveSeconds="120" overflowToDisk="true" />

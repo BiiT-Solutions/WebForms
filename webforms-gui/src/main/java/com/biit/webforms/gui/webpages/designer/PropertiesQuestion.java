@@ -161,15 +161,29 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
 		name.addValidator(new ValidatorTreeObjectNameLength());
 		name.setValue(instance.getName());
+		name.setEnabled(!instance.isReadOnly());
 
 		label.setValue(instance.getLabel());
 		label.addValidator(new LengthValidator(instance.getMaxLabelLength()));
+		label.setEnabled(!instance.isReadOnly());
+		
 		description.setValue(instance.getDescription());
+		description.setEnabled(!instance.isReadOnly());
+		
 		mandatory.setValue(instance.isMandatory());
+		mandatory.setEnabled(!instance.isReadOnly());
+		
 		answerTypeComboBox.setValue(instance.getAnswerType());
+		answerTypeComboBox.setEnabled(!instance.isReadOnly());
+		
 		answerFormat.setValue(instance.getAnswerFormat());
+		answerFormat.setEnabled(!instance.isReadOnly());
+		
 		answerSubformat.setValue(instance.getAnswerSubformat());
+		answerSubformat.setEnabled(!instance.isReadOnly());
+		
 		horizontal.setValue(instance.isHorizontal());
+		horizontal.setEnabled(!instance.isReadOnly());
 	}
 
 	@Override

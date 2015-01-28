@@ -818,17 +818,17 @@ public class ApplicationController {
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
 	 * @throws EmptyBlockCannotBeInserted
 	 */
-	public void insertBlock(TreeObject element) throws CategoryWithSameNameAlreadyExistsInForm,
+	public void insertBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm,
 			EmptyBlockCannotBeInserted {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' insertBlock "
-				+ formInUse + " " + element);
+				+ formInUse + " " + block);
 
-		if (element instanceof Block) {
-			if (element.getChildren().isEmpty()) {
+		if (block instanceof Block) {
+			if (block.getChildren().isEmpty()) {
 				throw new EmptyBlockCannotBeInserted();
 			}
 			try {
-				if (formInUse.findChild(element.getChild(0).getName()) != null) {
+				if (formInUse.findChild(block.getChild(0).getName()) != null) {
 					// Element found, throw exception.
 					throw new CategoryWithSameNameAlreadyExistsInForm();
 				}
@@ -838,7 +838,7 @@ public class ApplicationController {
 			}
 		} else {
 			// Check name uniqueness first
-			Category category = (Category) element.getAncestor(Category.class);
+			Category category = (Category) block.getAncestor(Category.class);
 			if (formInUse.findChild(category.getName()) != null) {
 				// Element found, throw exception.
 				throw new CategoryWithSameNameAlreadyExistsInForm();
@@ -846,8 +846,8 @@ public class ApplicationController {
 		}
 
 		try {
-			Block blockToInsert = (Block) element.getAncestor(Block.class);
-			Block copiedBlock = (Block) blockToInsert.generateFormCopiedSimplification(element);
+			Block blockToInsert = (Block) block.getAncestor(Block.class);
+			Block copiedBlock = (Block) blockToInsert.generateFormCopiedSimplification(block);
 			copiedBlock.resetIds();
 
 			formInUse.addChildren(copiedBlock.getChildren());

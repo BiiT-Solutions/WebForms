@@ -120,7 +120,7 @@ public class Designer extends SecuredWebPage {
 		getWorkingArea().addComponent(rootLayout);
 
 		// Init
-		table.setValue(UserSessionHandler.getController().getFormInUse());
+		table.setValue(UserSessionHandler.getController().getCompleteFormView());
 	}
 
 	@Override
