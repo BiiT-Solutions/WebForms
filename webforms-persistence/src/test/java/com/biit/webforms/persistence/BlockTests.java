@@ -39,9 +39,9 @@ public class BlockTests extends AbstractTransactionalTestNGSpringContextTests {
 			UnexpectedDatabaseException {
 		if (block == null) {
 			block = FormUtils.createBlock();
+			block.setLabel("CacheBlock");
 			Assert.assertNotNull(block);
 			blockDao.makePersistent(block);
-			Assert.assertEquals(1, blockDao.getRowCount());
 		}
 	}
 

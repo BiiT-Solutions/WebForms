@@ -106,11 +106,9 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 
 	@Override
 	@CachePut(value = "buildingBlocks", key = "#entity.getId()", condition = "#entity.getId() != null")
+	// Clear all forms (maybe some of them have a BlockReference to this block)
+	@CacheEvict(value = "forms", allEntries = true)
 	public Block makePersistent(Block entity) throws UnexpectedDatabaseException {
-		// Clear all forms (maybe some of them have a BlockReference to this block)
-		// @CacheEvict(value = "forms", allEntries = true) is not working here ¿?
-		formDao.evictAllCache();
-
 		// For solving Hibernate bug
 		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
 		// list of children
@@ -223,7 +221,6 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	@Override
 	@Cacheable(value = "buildingBlocks", key = "#id")
 	public Block read(Long id) throws UnexpectedDatabaseException {
-		System.out.println("asdasdasdasdasdasdasdasdasdadsadads");
 		return super.read(id);
 	}
 }

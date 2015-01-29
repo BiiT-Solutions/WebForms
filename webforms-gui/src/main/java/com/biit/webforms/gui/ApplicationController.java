@@ -1313,7 +1313,6 @@ public class ApplicationController {
 	}
 
 	public Block loadBlock(IWebformsBlockView blockView) {
-		System.out.println("4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~");
 		try {
 			return blockDao.read(blockView.getId());
 		} catch (UnexpectedDatabaseException e) {
