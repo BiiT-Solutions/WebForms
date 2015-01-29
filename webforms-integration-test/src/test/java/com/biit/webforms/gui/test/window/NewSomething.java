@@ -17,7 +17,7 @@ public class NewSomething extends VaadinGuiWindow{
 		return $(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first();
 	}
 	
-	public void createNewForm(String formName) {
+	public void createNewThing(String formName) {
 		getNewFormNameTextField().setValue(formName);
 		getAcceptButton().click();
 	}

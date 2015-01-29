@@ -4,21 +4,15 @@ import org.testng.Assert;
 
 import com.biit.gui.tester.VaadinGuiWebpage;
 import com.biit.webforms.gui.test.window.NewFormWindow;
-import com.biit.webforms.gui.test.window.Proceed;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.TreeTableElement;
 
 public class FormManager extends VaadinGuiWebpage {
 
-	private final static String LOGOUT_BUTTON_ID = "logoutButton";
-	private final static String SETTINGS_BUTTON_ID = "settingsButton";
-	private final static String BLOCKS_BUTTON_CAPTION = "Blocks";
-	private final static String NEW_BUTTON_CAPTION = "New";
-	private final static String FORM_BUTTON_CAPTION = "Form";
-	private final static String REMOVE_FORM_BUTTON_CAPTION = "Remove Form";
-	private final static String EXPORT_BUTTON_CAPTION = "Export";
-	private final static String LOG_OUT_BUTTON_CAPTION = "Log Out";
-	private final static String ACCEPT_BUTTON_CAPTION = "Accept";
+	private static final String NEW_BUTTON_CAPTION = "New";
+	private static final String FORM_BUTTON_CAPTION = "Form";
+	private static final String REMOVE_FORM_BUTTON_CAPTION = "Remove Form";
+	private static final String EXPORT_BUTTON_CAPTION = "Export";
 
 	private final NewFormWindow newFormWindow;
 
@@ -43,24 +37,11 @@ public class FormManager extends VaadinGuiWebpage {
 		getFormTable().getCell(row, 0).click();
 		Assert.assertNotNull(getRemoveForm());
 		getRemoveForm().click();
-		getAcceptButton().click();
-	}
-
-	public ButtonElement getBlocksButton() {
-		return $(ButtonElement.class).caption(BLOCKS_BUTTON_CAPTION).first();
-	}
-
-	public ButtonElement getAcceptButton() {
-		return $(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first();
+		clickAcceptButtonIfExists();
 	}
 
 	public TreeTableElement getFormTable() {
 		return $(TreeTableElement.class).first();
-	}
-
-	public ButtonElement getLogOutButton() {
-		getSettingsMenu().click();
-		return $(ButtonElement.class).id(LOGOUT_BUTTON_ID);
 	}
 
 	public ButtonElement getNewFormButton() {
@@ -91,24 +72,9 @@ public class FormManager extends VaadinGuiWebpage {
 		return null;
 	}
 
-	public ButtonElement getSettingsMenu() {
-		return $(ButtonElement.class).id(SETTINGS_BUTTON_ID);
-	}
-
 	@Override
 	public String getWebpageUrl() {
 		return null;
-	}
-
-	public void logOut() {
-		getLogOutButton().click();
-		if ($(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).exists()) {
-			$(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first().click();
-		}
-	}
-
-	public void openBlocks() {
-		getBlocksButton().click();
 	}
 
 	private void openNewFormWindow() {

@@ -6,10 +6,12 @@ import java.util.List;
 import org.openqa.selenium.WebDriver;
 
 import com.vaadin.testbench.TestBenchTestCase;
+import com.vaadin.testbench.elements.ButtonElement;
 
 public abstract class VaadinGuiWebpage extends TestBenchTestCase {
 
 	private final List<VaadinGuiWindow> windows;
+	private static final String ACCEPT_BUTTON_CAPTION = "Accept";
 
 	public VaadinGuiWebpage() {
 		windows = new ArrayList<VaadinGuiWindow>();
@@ -32,5 +34,19 @@ public abstract class VaadinGuiWebpage extends TestBenchTestCase {
 	}
 
 	public abstract String getWebpageUrl();
+	
+	public ButtonElement getAcceptButton() {
+		if ($(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).exists()) {
+			return $(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first();
+		} else {
+			return null;
+		}
+	}
+	
+	public void clickAcceptButtonIfExists(){
+		if(getAcceptButton() != null){
+			getAcceptButton().click();
+		}
+	}
 
 }

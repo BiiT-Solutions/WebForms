@@ -14,7 +14,7 @@ public class LoginTests extends WebFormsTester {
 	@Test
 	public void testLoginLogout() {
 		loginRead1();
-		getFormManager().logOut();
+		logOut();
 	}
 
 	@Test
@@ -28,7 +28,7 @@ public class LoginTests extends WebFormsTester {
 		loginFormAdmin1();
 		getFormManager().createNewForm(NEW_FORM_NAME);
 		getFormManager().deleteForm(1);
-		getFormManager().logOut();
+		logOut();
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class LoginTests extends WebFormsTester {
 		// Close New menu
 		getFormManager().getNewButton().click();
 		Assert.assertNull(getFormManager().getRemoveForm());
-		getFormManager().logOut();
+		logOut();
 	}
 
 	@Test
@@ -48,14 +48,33 @@ public class LoginTests extends WebFormsTester {
 		// Close New menu
 		getFormManager().getNewButton().click();
 		Assert.assertNull(getFormManager().getRemoveForm());
-		getFormManager().logOut();
+		logOut();
 	}
 
-	// @Test
-	// public void testLoginWithRightsToManageBlock() {
-	// loginFormAdmin1();
-	// getBlockManager().createNewForm(NEW_BLOCK_NAME);
-	// getBlockManager().deleteForm(1);
-	// getBlockManager().logOut();
-	// }
+	@Test
+	public void testLoginWithRightsToManageBlockButNotDeleteBlock() {
+		loginBlockEdit1();
+		goToBlockManager();
+		Assert.assertTrue(getBlockManager().getNewBlockButton().isEnabled());
+		Assert.assertFalse(getBlockManager().getRemoveBlockButton().isEnabled());
+		logOut();
+	}
+
+	@Test
+	public void testLoginWithRightsToManageBlock() {
+		loginFormAdmin1();
+		goToBlockManager();
+		getBlockManager().createNewBlock(NEW_BLOCK_NAME);
+		getBlockManager().deleteBlock(0);
+		logOut();
+	}
+	
+	@Test
+	public void testLoginWithoutRightsToManageBlock() {
+		loginRead1();
+		goToBlockManager();
+		Assert.assertFalse(getBlockManager().getNewBlockButton().isEnabled());
+		Assert.assertFalse(getBlockManager().getRemoveBlockButton().isEnabled());
+		logOut();
+	}
 }
