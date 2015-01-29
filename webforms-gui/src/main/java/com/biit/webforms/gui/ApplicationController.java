@@ -93,6 +93,7 @@ public class ApplicationController {
 
 	private Form lastEditedForm;
 	private Form formInUse;
+	private CompleteFormView completeFormView;
 
 	private boolean unsavedFormChanges = false;
 
@@ -436,7 +437,10 @@ public class ApplicationController {
 	}
 
 	public CompleteFormView getCompleteFormView() {
-		return new CompleteFormView(getFormInUse());
+		if (completeFormView == null || !getFormInUse().getComparationId().equals(completeFormView.getComparationId())) {
+			completeFormView = new CompleteFormView(getFormInUse());
+		}
+		return completeFormView;
 	}
 
 	public Form getLastEditedForm() {
@@ -470,7 +474,7 @@ public class ApplicationController {
 	public Category addNewCategory() {
 		try {
 			setUnsavedFormChanges(true);
-			return (Category) insertTreeObject(Category.class, getFormInUse(), "Category");
+			return (Category) insertTreeObject(Category.class, getCompleteFormView(), "Category");
 		} catch (NotValidChildException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -549,9 +553,15 @@ public class ApplicationController {
 	 */
 	public TreeObject insertTreeObject(Class<? extends TreeObject> classType, TreeObject parent, String name)
 			throws NotValidChildException {
+
+		// Block references cannot have new childs.
+		if (parent instanceof BlockReference || parent.isReadOnly()) {
+			throw new NotValidChildException("Block References are read only and cannot be modified. ");
+		}
+
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
-				+ "' insertTreeObject of type '" + classType.getName() + "' to '" + parent.getPath() + "' with name '"
-				+ name + "' START");
+				+ "' insertTreeObject of type '" + classType.getName() + "' to '" + parent + "' with name '" + name
+				+ "' START");
 
 		TreeObject treeObject = null;
 		try {
@@ -564,7 +574,7 @@ public class ApplicationController {
 			parent.addChild(treeObject);
 			setUnsavedFormChanges(true);
 			WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
-					+ "' inserted '" + treeObject + "' into '" + parent.getPathName() + "'");
+					+ "' inserted '" + treeObject + "' into '" + parent + "' ('" + parent.getPathName() + "')");
 		} catch (FieldTooLongException | InstantiationException | IllegalAccessException | CharacterNotAllowedException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -631,6 +641,11 @@ public class ApplicationController {
 	public void moveUp(TreeObject row) {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move Up "
 				+ row + " START");
+		// Move the BlockReference and not the element if exists.
+		BlockReference blockReference = getCompleteFormView().getBlockReference(row);
+		if (blockReference != null) {
+			row = blockReference;
+		}
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
 			int index = parent.getChildren().indexOf(row);
@@ -650,6 +665,11 @@ public class ApplicationController {
 	public void moveDown(TreeObject row) {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move Down "
 				+ row);
+		// Move the BlockReference and not the element if exists.
+		BlockReference blockReference = getCompleteFormView().getBlockReference(row);
+		if (blockReference != null) {
+			row = blockReference;
+		}
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
 			int index = parent.getChildren().indexOf(row);
@@ -985,7 +1005,7 @@ public class ApplicationController {
 		setUnsavedFormChanges(true);
 
 		if (!getFormInUse().containsFlow(flow)) {
-			addFlowToForm(flow, getFormInUse());
+			addFlowToForm(flow, getCompleteFormView());
 		}
 	}
 
@@ -1029,7 +1049,7 @@ public class ApplicationController {
 		Set<Flow> clones = cloneFlows(selectedFlows);
 		for (Flow clone : clones) {
 			clone.resetIds();
-			addFlowToForm(clone, UserSessionHandler.getController().getFormInUse());
+			addFlowToForm(clone, getCompleteFormView());
 			setUnsavedFormChanges(true);
 		}
 		return clones;
@@ -1060,7 +1080,7 @@ public class ApplicationController {
 	 * @param selectedFlows
 	 */
 	public void removeFlows(Set<Flow> selectedFlows) {
-		removeFlows(getFormInUse(), selectedFlows);
+		removeFlows(getCompleteFormView(), selectedFlows);
 	}
 
 	private void removeFlows(Form form, Set<Flow> flows) {
@@ -1102,7 +1122,7 @@ public class ApplicationController {
 	}
 
 	public Set<Flow> getFormInUseFlows() {
-		return getFormInUse().getFlows();
+		return getCompleteFormView().getFlows();
 	}
 
 	public void logOut() {

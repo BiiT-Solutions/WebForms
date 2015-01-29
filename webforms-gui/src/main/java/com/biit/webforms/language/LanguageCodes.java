@@ -505,6 +505,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CLEAN_FLOW_REPORT_NO_RULES_CHANGED("clean.flow.report.no.rules.changed"),
 	
 	ERROR_LINK_BLOCK_NOT_COMPLETE("error.link.block.not.complete"),
+	ERROR_READ_ONLY_ELEMENT("error.read.only.element"),
 	;
 
 	private String value;

@@ -1,24 +1,36 @@
 package com.biit.webforms.gui.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 
+/**
+ * This class is a wrapper of a Form class that translates any block reference to a view of its elements.
+ */
 public class CompleteFormView extends Form implements IWebformsFormView {
 	private static final long serialVersionUID = -426480388117580446L;
 	private Form form;
 
+	// Original block -> copied block
+	private Map<Block, Block> copiedBlocks;
+
 	public CompleteFormView(Form form) {
 		this.form = form;
+		copiedBlocks = new HashMap<>();
 	}
 
 	@Override
@@ -28,24 +40,34 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		for (TreeObject child : form.getChildren()) {
 			if (child instanceof BlockReference) {
 				try {
-					Block copiedBlock = new Block();
-					System.out.println("1.- "+ child.getChildren());
-					copiedBlock.copyData(((BlockReference) child).getReference());
-					copiedBlock.resetIds();
-					// Building block is not editable by the user directly.
-					copiedBlock.setReadOnly(true);
-					System.out.println("2.- "+ copiedBlock.getChildren());
+					Block copiedBlock = getCopyOfBlock(((BlockReference) child).getReference());
 					children.addAll(copiedBlock.getChildren());
-				} catch (NotValidStorableObjectException e) {
+				} catch (NotValidStorableObjectException | CharacterNotAllowedException e) {
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			} else {
 				children.add(child);
 			}
 		}
-		System.out.println("---------------------------------");
-		System.out.println(children);
 		return children;
+	}
+
+	/**
+	 * Ensures to have only one copy of a block.
+	 * 
+	 * @param block
+	 * @return
+	 * @throws NotValidStorableObjectException
+	 * @throws CharacterNotAllowedException
+	 */
+	public Block getCopyOfBlock(Block block) throws NotValidStorableObjectException, CharacterNotAllowedException {
+		if (copiedBlocks.get(block) == null) {
+			Block copiedBlock = (Block) block.generateCopy(true, true);
+			// Building block is not editable by the user directly.
+			copiedBlock.setReadOnly(true);
+			copiedBlocks.put(block, copiedBlock);
+		}
+		return copiedBlocks.get(block);
 	}
 
 	@Override
@@ -93,6 +115,56 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			return true;
 		}
 		return form.isLastVersion();
+	}
+
+	@Override
+	public Set<Flow> getFlows() {
+		if (form == null) {
+			return null;
+		}
+		return form.getFlows();
+	}
+
+	@Override
+	public void addFlow(Flow rule) {
+		if (form != null) {
+			form.addFlow(rule);
+		}
+	}
+
+	@Override
+	public void addChild(TreeObject child) throws NotValidChildException {
+		if (form != null) {
+			form.addChild(child);
+		}
+	}
+
+	@Override
+	public String getComparationId() {
+		if (form != null) {
+			return form.getComparationId();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the BlockReference parent object for an element if exists.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public BlockReference getBlockReference(TreeObject element) {
+		if (element == null) {
+			return null;
+		}
+		for (TreeObject child : form.getChildren()) {
+			if (child instanceof BlockReference) {
+				if (child.isDescendant(element)) {
+					return (BlockReference) child;
+				}
+			}
+		}
+		return null;
 	}
 
 }

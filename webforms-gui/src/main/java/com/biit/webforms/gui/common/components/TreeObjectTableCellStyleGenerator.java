@@ -5,13 +5,13 @@ import com.biit.form.BaseCategory;
 import com.biit.form.BaseForm;
 import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
+import com.biit.form.TreeObject;
 import com.biit.webforms.gui.common.components.TableTreeObject.TreeObjectTableProperties;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
 
 /**
- * Cell Style generator for FormTreeTable. Adds style for column name in each
- * row depending on the itemId.
+ * Cell Style generator for FormTreeTable. Adds style for column name in each row depending on the itemId.
  * 
  */
 public class TreeObjectTableCellStyleGenerator implements CellStyleGenerator {
@@ -19,24 +19,26 @@ public class TreeObjectTableCellStyleGenerator implements CellStyleGenerator {
 
 	@Override
 	public String getStyle(Table source, Object itemId, Object propertyId) {
-		if (propertyId == TreeObjectTableProperties.ELEMENT_NAME) {
-			if (itemId instanceof BaseForm) {
-				return "tree-cell-form";
-			}
-			if (itemId instanceof BaseCategory) {
-				return "tree-cell-category";
-			}
-			if (itemId instanceof BaseGroup) {
-				return "tree-cell-group";
-			}
-			if (itemId instanceof BaseQuestion) {
-				return "tree-cell-question";
-			}
-			if (itemId instanceof BaseAnswer) {
-				return "tree-cell-answer";
+		String styles = "";
+		if (itemId instanceof TreeObject) {
+			if (((TreeObject) itemId).isReadOnly()) {
+				styles += "tree-cell-disabled ";
 			}
 		}
-		return "";
+		if (propertyId == TreeObjectTableProperties.ELEMENT_NAME) {
+			if (itemId instanceof BaseForm) {
+				styles += "tree-cell-form";
+			} else if (itemId instanceof BaseCategory) {
+				styles += "tree-cell-category";
+			} else if (itemId instanceof BaseGroup) {
+				styles += "tree-cell-group";
+			} else if (itemId instanceof BaseQuestion) {
+				styles += "tree-cell-question";
+			} else if (itemId instanceof BaseAnswer) {
+				styles += "tree-cell-answer";
+			}
+		}
+		return styles;
 	}
 
 }

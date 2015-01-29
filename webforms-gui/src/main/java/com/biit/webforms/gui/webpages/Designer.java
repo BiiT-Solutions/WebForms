@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.biit.form.BaseAnswer;
+import com.biit.form.BaseCategory;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
@@ -294,11 +295,10 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
-				TreeObject parent = row.getParent();
 				try {
 					table.selectPreviousRow();
 					UserSessionHandler.getController().removeTreeObject(row);
-					table.updateRow(parent);
+					table.updateRow(table.getParentRowItem(row));
 				} catch (DependencyExistException e) {
 					table.setValue(row);
 					MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
@@ -313,7 +313,7 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
 				UserSessionHandler.getController().moveUp(row);
-				table.redrawRow(table.getSelectedRow().getParent());
+				table.redrawRow(table.getParentRowItem(row));
 				table.setValue(row);
 			}
 		});
@@ -325,7 +325,7 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
 				UserSessionHandler.getController().moveDown(row);
-				table.redrawRow(table.getSelectedRow().getParent());
+				table.redrawRow(table.getParentRowItem(row));
 				table.setValue(row);
 			}
 		});
@@ -368,13 +368,16 @@ public class Designer extends SecuredWebPage {
 	 * Function to update active/Visible state of upper menu buttons.
 	 */
 	private void updateUpperMenu() {
-		TreeObject selectedRow = table.getSelectedRow();
+		TreeObject selectedElement = table.getSelectedRow();
 
 		try {
 			boolean formIsBlock = getCurrentForm() instanceof Block;
 			boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
-			boolean rowIsNull = selectedRow == null;
-			boolean rowIsForm = selectedRow instanceof Form;
+			boolean rowIsNull = selectedElement == null;
+			boolean rowIsForm = selectedElement instanceof Form;
+			boolean rowIsBlockReference = selectedElement == null || selectedElement.isReadOnly();
+			boolean rowIsBlockReferenceCategory = selectedElement == null || selectedElement.isReadOnly()
+					&& (selectedElement instanceof BaseCategory);
 			boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 					UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 			boolean canStoreBlock = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
@@ -387,24 +390,33 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock && !rowIsForm);
 			upperMenu.getInsertBlockButton().setEnabled(canEdit);
 			upperMenu.getInsertBlockButton().setVisible(!formIsBlock);
-			upperMenu.getNewCategoryButton().setEnabled(canEdit && (formIsBlockAndNoCategories || (!formIsBlock)));
-			upperMenu.getNewGroupButton().setEnabled(canEdit && selectedRowHierarchyAllows(Group.class));
-			upperMenu.getNewQuestionButton().setEnabled(canEdit && selectedRowHierarchyAllows(Question.class));
-			upperMenu.getNewSystemFieldButton().setEnabled(canEdit && selectedRowHierarchyAllows(SystemField.class));
-			upperMenu.getNewTextButton().setEnabled(canEdit && selectedRowHierarchyAllows(Text.class));
-			upperMenu.getNewAnswerButton().setEnabled(canEdit && selectedRowHierarchyAllows(Answer.class));
+			upperMenu.getNewCategoryButton().setEnabled(
+					canEdit && (formIsBlockAndNoCategories || (!formIsBlock)) && !rowIsBlockReference);
+			upperMenu.getNewGroupButton().setEnabled(
+					canEdit && selectedRowHierarchyAllows(Group.class) && !rowIsBlockReference);
+			upperMenu.getNewQuestionButton().setEnabled(
+					canEdit && selectedRowHierarchyAllows(Question.class) && !rowIsBlockReference);
+			upperMenu.getNewSystemFieldButton().setEnabled(
+					canEdit && selectedRowHierarchyAllows(SystemField.class) && !rowIsBlockReference);
+			upperMenu.getNewTextButton().setEnabled(
+					canEdit && selectedRowHierarchyAllows(Text.class) && !rowIsBlockReference);
+			upperMenu.getNewAnswerButton().setEnabled(
+					canEdit && selectedRowHierarchyAllows(Answer.class) && !rowIsBlockReference);
 			upperMenu.getNewSubanswerButton()
 					.setEnabled(
 							canEdit
+									&& !rowIsBlockReference
 									&& selectedRowIsAnswer
 									&& selectedRowHierarchyAllows(Answer.class)
 									&& (isParentQuestionOfType(table.getSelectedRow(),
 											AnswerType.SINGLE_SELECTION_RADIO) || isParentQuestionOfType(
 											table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
-			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
-			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
-			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
-			upperMenu.getDownButton().setEnabled(canEdit && !rowIsForm);
+			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm && !rowIsBlockReference);
+			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm && !rowIsBlockReference);
+			upperMenu.getUpButton().setEnabled(
+					canEdit && !rowIsForm && !rowIsForm && (!rowIsBlockReference || rowIsBlockReferenceCategory));
+			upperMenu.getDownButton().setEnabled(
+					canEdit && !rowIsForm && (!rowIsBlockReference || rowIsBlockReferenceCategory));
 			upperMenu.getFinish().setVisible(!formIsBlock);
 			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 		} catch (IOException | AuthenticationRequired e) {
@@ -505,8 +517,8 @@ public class Designer extends SecuredWebPage {
 			}
 		});
 	}
-	
-	private void openLinkBlock(){
+
+	private void openLinkBlock() {
 		final WindowBlocks windowBlocks = new WindowBlocks(LanguageCodes.CAPTION_LINK_BLOCK);
 		windowBlocks.showCentered();
 		windowBlocks.addAcceptActionListener(new AcceptActionListener() {
@@ -543,15 +555,19 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject whatToMove = table.getSelectedRow();
 					TreeObject whereToMove = moveWindow.getSelectedTreeObject();
-					UserSessionHandler.getController().moveTo(whatToMove, whereToMove);
-					window.close();
-					table.setValue(null);
-					table.removeRow(whatToMove);
-					table.loadTreeObject(whatToMove, whereToMove, false);
-					table.expand(whereToMove);
-					// FIX to force a jump to this point in table.
-					table.setValue(null);
-					table.setValue(whatToMove);
+					if (!whereToMove.isReadOnly()) {
+						UserSessionHandler.getController().moveTo(whatToMove, whereToMove);
+						window.close();
+						table.setValue(null);
+						table.removeRow(whatToMove);
+						table.loadTreeObject(whatToMove, whereToMove, false);
+						table.expand(whereToMove);
+						// FIX to force a jump to this point in table.
+						table.setValue(null);
+						table.setValue(whatToMove);
+					} else {
+						MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+					}
 				} catch (NotValidChildException e) {
 					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_VALID,
 							LanguageCodes.WARNING_DESCRIPTION_NOT_VALID);
@@ -578,4 +594,5 @@ public class Designer extends SecuredWebPage {
 	private Form getCurrentForm() {
 		return UserSessionHandler.getController().getCompleteFormView();
 	}
+
 }

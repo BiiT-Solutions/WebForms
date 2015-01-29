@@ -125,9 +125,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 			// Nothing to copy except basic information data.
 			copyBasicInfo(object);
 			if (((BlockReference) object).getReference() != null) {
-				Block reference = new Block();
-				reference.copyData(((BlockReference) object).getReference());
-				setReference(reference);
+				setReference(((BlockReference) object).getReference());
 			}
 		} else {
 			throw new NotValidTreeObjectException("Copy data for a Block Reference only supports the same type copy");
@@ -163,6 +161,14 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	@Override
 	public String getName() {
 		return getDefaultTechnicalName();
+	}
+
+	@Override
+	public List<TreeObject> getChildren() {
+		if (reference == null) {
+			return new ArrayList<TreeObject>();
+		}
+		return reference.getChildren();
 	}
 
 }
