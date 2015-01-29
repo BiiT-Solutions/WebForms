@@ -2,6 +2,7 @@ package com.biit.webforms.gui.test;
 
 import com.biit.gui.tester.VaadinGuiTester;
 import com.biit.webforms.gui.test.webpage.BlockManager;
+import com.biit.webforms.gui.test.webpage.Designer;
 import com.biit.webforms.gui.test.webpage.FormManager;
 import com.biit.webforms.gui.test.webpage.Login;
 import com.vaadin.testbench.elements.ButtonElement;
@@ -31,12 +32,18 @@ public class WebFormsTester extends VaadinGuiTester {
 	private final Login loginPage;
 	private final FormManager formManager;
 	private final BlockManager blockManager;
+	private final Designer designer;
 
 	private static final String FORMS_BUTTON_CAPTION = "Forms";
 	private static final String BLOCKS_BUTTON_CAPTION = "Blocks";
 	private static final String SETTINGS_BUTTON_CAPTION = "Settings";
+	private static final String INFO_BUTTON_CAPTION = "Info";
 	private static final String LOGOUT_BUTTON_CAPTION = "Log Out";
 	private static final String ACCEPT_BUTTON_CAPTION = "Accept";
+	private static final String CANCEL_BUTTON_CAPTION = "Cancel";
+	private static final String CLOSE_BUTTON_CAPTION = "Close";
+	
+	private static final String DESIGN_BUTTON_CAPTION = "Design";
 
 	public WebFormsTester() {
 		super();
@@ -46,6 +53,8 @@ public class WebFormsTester extends VaadinGuiTester {
 		addWebpage(formManager);
 		blockManager = new BlockManager();
 		addWebpage(blockManager);
+		designer = new Designer();
+		addWebpage(designer);
 	}
 
 	public Login getLoginPage() {
@@ -58,6 +67,10 @@ public class WebFormsTester extends VaadinGuiTester {
 
 	public BlockManager getBlockManager() {
 		return blockManager;
+	}
+	
+	public Designer getDesigner() {
+		return designer;
 	}
 
 	public void login(String username, String password) {
@@ -97,6 +110,11 @@ public class WebFormsTester extends VaadinGuiTester {
 		showSettingsMenu();
 		return $(ButtonElement.class).caption(LOGOUT_BUTTON_CAPTION).first();
 	}
+	
+	public ButtonElement getInfoButton() {
+		showSettingsMenu();
+		return $(ButtonElement.class).caption(INFO_BUTTON_CAPTION).first();
+	}
 
 	public ButtonElement getAcceptButton() {
 		if ($(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).exists()) {
@@ -105,11 +123,31 @@ public class WebFormsTester extends VaadinGuiTester {
 			return null;
 		}
 	}
+	
+	public ButtonElement getCancelButton() {
+		if ($(ButtonElement.class).caption(CANCEL_BUTTON_CAPTION).exists()) {
+			return $(ButtonElement.class).caption(CANCEL_BUTTON_CAPTION).first();
+		} else {
+			return null;
+		}
+	}
+	
+	public ButtonElement getCloseButton() {
+		if ($(ButtonElement.class).caption(CLOSE_BUTTON_CAPTION).exists()) {
+			return $(ButtonElement.class).caption(CLOSE_BUTTON_CAPTION).first();
+		} else {
+			return null;
+		}
+	}
+	
+	public ButtonElement getDesignButton() {
+		return $(ButtonElement.class).caption(DESIGN_BUTTON_CAPTION).first();
+	}
 
 	public void showSettingsMenu() {
 		getSettingsButton().click();
 	}
-
+	
 	public void logOut() {
 		getLogoutButton().click();
 		clickAcceptButtonIfExists();
@@ -121,11 +159,53 @@ public class WebFormsTester extends VaadinGuiTester {
 		}
 	}
 	
+	public void clickCancelButtonIfExists() {
+		if (getCancelButton() != null) {
+			getCancelButton().click();
+		}
+	}
+	
+	public void clickCloseButtonIfExists() {
+		if (getCloseButton() != null) {
+			getCloseButton().click();
+		}
+	}
+	
 	public void goToFormManager(){
 		getFormsButton().click();
 	}
 	
+	public void goToDesigner(){
+		getDesignButton().click();
+	}
+	
 	public void goToBlockManager(){
 		getBlocksButton().click();
+	}
+	
+	public void createNewForm(String formName) {
+		loginFormAdmin1();
+		getFormManager().createNewForm(formName);
+		logOut();
+	}
+
+	public void deleteForm() {
+		loginFormAdmin1();
+		getFormManager().deleteForm(1);
+		logOut();
+	}
+	
+	public void createNewBlock(String blockName) {
+		loginFormAdmin1();
+		goToBlockManager();
+		getBlockManager().createNewBlock(blockName);
+		logOut();
+	}
+
+	public void deleteBlock() {
+		loginFormAdmin1();
+		goToBlockManager();
+		getBlockManager().deleteBlock(0);
+		logOut();
 	}
 }

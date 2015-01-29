@@ -3,8 +3,10 @@ package com.biit.webforms.gui.test.webpage;
 import org.testng.Assert;
 
 import com.biit.gui.tester.VaadinGuiWebpage;
+import com.biit.webforms.gui.test.exceptions.OrganizationNotEditableException;
 import com.biit.webforms.gui.test.window.NewFormWindow;
 import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.TreeTableElement;
 
 public class FormManager extends VaadinGuiWebpage {
@@ -30,6 +32,12 @@ public class FormManager extends VaadinGuiWebpage {
 		openNewFormWindow();
 		getNewFormWindow().createNewForm(formName);
 	}
+	
+	public void createNewFormWithOrganization(String formName, String organizationName)
+			throws OrganizationNotEditableException {
+		openNewFormWindow();
+		getNewFormWindow().createNewFormWithOrganization(formName, organizationName);
+	}
 
 	public void deleteForm(int row) {
 		// To avoid errors, first we select other element of the table
@@ -42,6 +50,10 @@ public class FormManager extends VaadinGuiWebpage {
 
 	public TreeTableElement getFormTable() {
 		return $(TreeTableElement.class).first();
+	}
+	
+	public ComboBoxElement getFormStatusComboBox() {
+		return $(ComboBoxElement.class).first();
 	}
 
 	public ButtonElement getNewFormButton() {

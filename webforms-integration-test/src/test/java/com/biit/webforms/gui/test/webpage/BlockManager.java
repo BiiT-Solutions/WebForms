@@ -45,12 +45,16 @@ public class BlockManager extends VaadinGuiWebpage {
 	}
 
 	public void deleteBlock(int row) {
-		getFormTable().getCell(row, 0).click();
+		selectBlock(row);
 		getRemoveBlockButton().click();
 		clickAcceptButtonIfExists();
 	}
 
 	public TableElement getFormTable() {
 		return $(TableElement.class).first();
+	}
+	
+	public void selectBlock(int row){
+		getFormTable().getCell(row, 0).click();
 	}
 }

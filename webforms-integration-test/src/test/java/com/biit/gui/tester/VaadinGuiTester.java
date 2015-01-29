@@ -24,6 +24,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	private static final String FIREFOX_LANGUAGE_PROPERTY = "intl.accept_languages";
 	private static final String FIREFOX_LANGUAGE_VALUE = "en_US";
 	private static final String APPLICATION_URL_NEW_UI = "http://localhost:8081/?restartApplication";
+	private static final String NOTIFICATION_TYPE_WARNING = "warning";
 	private static final String NOTIFICATION_TYPE_ERROR = "error";
 
 	private final List<VaadinGuiWebpage> webpages;
@@ -77,5 +78,9 @@ public class VaadinGuiTester extends TestBenchTestCase {
 
 	public static void checkNotificationIsError(NotificationElement notification) {
 		Assert.assertEquals(NOTIFICATION_TYPE_ERROR, notification.getType());
+	}
+	
+	public static void checkNotificationIsWarning(NotificationElement notification) {
+		Assert.assertEquals(NOTIFICATION_TYPE_WARNING, notification.getType());
 	}
 }
