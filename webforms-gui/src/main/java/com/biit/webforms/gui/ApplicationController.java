@@ -460,7 +460,7 @@ public class ApplicationController {
 			WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
 					+ "' clearFormInUse");
 			UiAccesser.releaseForm(formInUse, user);
-			formInUse = null;
+			clearParameters();
 			setUnsavedFormChanges(false);
 		}
 	}
@@ -689,7 +689,11 @@ public class ApplicationController {
 		form.setUpdatedBy(getUser());
 		form.setUpdateTime();
 		try {
-			formDao.makePersistent(form);
+			if (form instanceof Block) {
+				blockDao.makePersistent((Block) form);
+			} else {
+				formDao.makePersistent(form);
+			}
 			setUnsavedFormChanges(false);
 		} catch (UnexpectedDatabaseException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -1309,6 +1313,7 @@ public class ApplicationController {
 	}
 
 	public Block loadBlock(IWebformsBlockView blockView) {
+		System.out.println("4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~4~~");
 		try {
 			return blockDao.read(blockView.getId());
 		} catch (UnexpectedDatabaseException e) {
@@ -1356,5 +1361,12 @@ public class ApplicationController {
 		formDao.evictAllCache();
 		blockDao.evictAllCache();
 		formDaoAbcd.evictAllCache();
+		clearParameters();
+	}
+
+	public void clearParameters() {
+		lastEditedForm = null;
+		formInUse = null;
+		completeFormView = null;
 	}
 }

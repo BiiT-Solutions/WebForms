@@ -214,7 +214,7 @@ public class FormUtils {
 		return answer;
 	}
 
-	private static TreeObject createQuestionAnswers(String name, AnswerType answerType, String... answers)
+	public static TreeObject createQuestionAnswers(String name, AnswerType answerType, String... answers)
 			throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException {
 		Question question = new Question();
 		question.setName(name);

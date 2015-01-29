@@ -4,6 +4,7 @@
 		<groups>
 			<run>
 				<exclude name="ehCache" />
+				<include name="blockTest" />
 				<include name="ruleTest" />
 				<include name="formElements" />
 			</run>
@@ -12,6 +13,7 @@
 			<class name="com.biit.webforms.persistence.EhCacheTest" />
 			<class name="com.biit.webforms.persistence.RuleTest" />
 			<class name="com.biit.webforms.persistence.FormElements" />
+			<class name="com.biit.webforms.persistence.BlockTests" />
 		</classes>
 	</test>
 </suite>
