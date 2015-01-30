@@ -15,11 +15,16 @@ import com.liferay.portal.model.User;
 @Polymorphism(type = PolymorphismType.EXPLICIT)
 public class Block extends Form implements IWebformsBlockView {
 	private static final long serialVersionUID = -5029214862461479704L;
-
+	private static final String DEFAULT_LABEL = "Block";
 	public static final String DEFAULT_TECHNICAL_NAME = "block";
 
 	public Block() {
 		super();
+	}
+
+	@Override
+	protected String getDefaultLabel() {
+		return DEFAULT_LABEL;
 	}
 
 	public Block(String name, User user, Long organizationId) throws FieldTooLongException,

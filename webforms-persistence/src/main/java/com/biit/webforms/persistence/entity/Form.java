@@ -463,8 +463,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 		Integer counter = 0;
 
 		sb.append("Form form = new Form();").append(System.lineSeparator());
-		sb.append("form.setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
-		sb.append("form.setDescription(\"").append(this.getDescription()).append("\");").append(System.lineSeparator());
+		sb.append("form.setLabel(\"").append(getLabel()).append("\");").append(System.lineSeparator());
+		sb.append("form.setDescription(\"").append(getDescription()).append("\");").append(System.lineSeparator());
 
 		for (TreeObject child : getChildren()) {
 			int tempCounter = counter + 1;

@@ -121,9 +121,7 @@ public class BlockManager extends SecuredWebPage {
 
 			@Override
 			public void lockForm() {
-				System.out.println("--------------------");
 				UserSessionHandler.getController().setFormInUse(loadBlock(getSelectedBlock()));
-				System.out.println(UserSessionHandler.getController().getLastEditedForm());
 			}
 		});
 		return bottomMenu;

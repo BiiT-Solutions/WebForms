@@ -41,7 +41,7 @@ public class TableTreeObjectLabel extends TableTreeObject {
 	 * @param label
 	 */
 	@SuppressWarnings("unchecked")
-	protected void setLabelToItem(Item item, String label) {
+	private void setLabelToItem(Item item, String label) {
 		if (label.length() > LABEL_MAX_LENGTH) {
 			label = label.substring(0, LABEL_MAX_LENGTH - 1);
 			label += "...";
