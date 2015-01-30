@@ -47,6 +47,7 @@ public class PopoverConnector extends WindowConnector implements NativePreviewHa
 			/*
 			 * fade in the modality curtain unless in fullscreen mode.
 			 */
+			@SuppressWarnings("deprecation")
 			com.google.gwt.user.client.Element modalityCurtain = getWidget().getModalityCurtain();
 			modalityCurtain.removeClassName("v-touchkit-opacity-transition");
 			DOM.sinkEvents(modalityCurtain, Event.TOUCHEVENTS);

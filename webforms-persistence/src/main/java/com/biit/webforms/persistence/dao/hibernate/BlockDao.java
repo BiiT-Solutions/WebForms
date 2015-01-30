@@ -10,7 +10,6 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,15 +18,11 @@ import org.springframework.stereotype.Repository;
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.persistence.dao.IBlockDao;
-import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Flow;
 
 @Repository
 public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
-
-	@Autowired
-	private IFormDao formDao;
 
 	public BlockDao() {
 		super(Block.class);
@@ -80,7 +75,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	// @Cacheable(value = "buildingBlocks")
+	//@Cacheable(value = "buildingBlocks")
 	public List<Block> getAll(Long organizationId) throws UnexpectedDatabaseException {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();

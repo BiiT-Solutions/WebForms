@@ -1,11 +1,8 @@
 package com.biit.webforms.utils.math.domain;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.commons.io.IOUtils;
 
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;

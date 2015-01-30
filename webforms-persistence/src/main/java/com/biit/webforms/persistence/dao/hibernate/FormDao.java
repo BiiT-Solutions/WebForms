@@ -63,6 +63,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	 * @return
 	 * @throws UnexpectedDatabaseException
 	 */
+	@Override
 	public List<Form> getAll(Class<?> cls, Organization organization) throws UnexpectedDatabaseException {
 		if (!Form.class.isAssignableFrom(cls)) {
 			throw new TypeConstraintException("FormDao can only filter subclasses of " + Form.class.getName());

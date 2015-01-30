@@ -28,8 +28,11 @@ public class FormComparation {
 	private Set<BaseQuestion> updatedBaseQuestions;
 	private Set<BaseQuestion> removedBaseQuestions;
 
+	@SuppressWarnings("unused")
 	private Set<Flow> addedFlow;
+	@SuppressWarnings("unused")
 	private Set<Flow> updatedFlow;
+	@SuppressWarnings("unused")
 	private Set<Flow> removedFlow;
 
 	public FormComparation(Form oldForm, Form newForm) {
