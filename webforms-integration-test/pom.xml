@@ -21,7 +21,7 @@
 		<original.database>webforms</original.database>
 		<test.database>webformstest</test.database>
 		<!-- Jetty client configuration -->
-		<jetty.test.port>8081</jetty.test.port>
+		<jetty.test.port>9081</jetty.test.port>
 		<jetty.test.stop.port>8866</jetty.test.stop.port>
 	</properties>
 
