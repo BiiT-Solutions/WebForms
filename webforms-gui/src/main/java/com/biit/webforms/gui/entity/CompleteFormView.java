@@ -125,6 +125,16 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			return flows;
 		}
 
+		for (TreeObject child : form.getChildren()) {
+			if (child instanceof BlockReference) {
+				Block block = ((BlockReference) child).getReference();
+				for (Flow flow : block.getFlows()) {
+					flow.setReadOnly(true);
+					flows.add(flow);
+				}
+			}
+		}
+
 		flows.addAll(form.getFlows());
 		return flows;
 	}
@@ -206,9 +216,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		}
 		return null;
 	}
-	
+
 	@Override
-	public String getDescription(){
+	public String getDescription() {
 		if (form != null) {
 			return form.getDescription();
 		}

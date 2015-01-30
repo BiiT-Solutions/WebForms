@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.biit.abcd.core.SpringContextHelper;
 import com.biit.abcd.logger.AbcdLogger;
-import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.abcd.security.AbcdActivity;
 import com.biit.abcd.security.AbcdAuthorizationService;
 import com.biit.form.IBaseFormView;
@@ -59,6 +58,7 @@ import com.biit.webforms.pdfgenerator.FormPdfGenerator;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
+import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
@@ -446,7 +446,7 @@ public class FormManager extends SecuredWebPage {
 	private void linkAbcdForm() {
 		final Form form = loadForm(getSelectedForm());
 
-		List<SimpleFormView> availableForms;
+		List<com.biit.abcd.persistence.entity.SimpleFormView> availableForms;
 		if (form.getLinkedFormLabel() == null) {
 			// Not linked yet. Show all available forms.
 			availableForms = UserSessionHandler.getController().getSimpleFormDaoAbcd().getAll();
@@ -461,7 +461,7 @@ public class FormManager extends SecuredWebPage {
 
 		// Let user choose the version.
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
-		for (SimpleFormView simpleFormView : availableForms) {
+		for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
 			if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 					simpleFormView.getOrganizationId(), AbcdActivity.READ)
 					&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
@@ -520,7 +520,7 @@ public class FormManager extends SecuredWebPage {
 
 				// Try to import the form.
 				try {
-					SimpleFormView abcdForm = importAbcdForm.getForm();
+					com.biit.abcd.persistence.entity.SimpleFormView abcdForm = importAbcdForm.getForm();
 					Form importedForm = UserSessionHandler.getController().importAbcdForm(abcdForm, newFormName,
 							abcdForm.getOrganizationId());
 					formTable.refreshTableData();
@@ -604,9 +604,7 @@ public class FormManager extends SecuredWebPage {
 						Form newForm = UserSessionHandler.getController().createFormAndPersist(
 								newFormWindow.getValue(), newFormWindow.getOrganization().getOrganizationId());
 						newForm.setLastVersion(true);
-						formTable.refreshTableData();
-						formTable.defaultSort();
-						formTable.selectForm(newForm);
+						addFormToTable(newForm);
 						newFormWindow.close();
 					}
 				} catch (FieldTooLongException e) {
@@ -622,6 +620,12 @@ public class FormManager extends SecuredWebPage {
 				}
 			}
 		});
+	}
+
+	private void addFormToTable(Form form) {
+		SimpleFormView simpleForm = SimpleFormView.getSimpleFormView(form);
+		formTable.refreshTableData();
+		formTable.setValue(simpleForm);
 	}
 
 	@Override

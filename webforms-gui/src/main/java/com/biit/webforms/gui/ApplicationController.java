@@ -228,7 +228,7 @@ public class ApplicationController {
 			throw ex;
 		}
 
-		// Persist form.
+		// Persist block.
 		try {
 			blockDao.makePersistent(newBlock);
 		} catch (ConstraintViolationException cve) {

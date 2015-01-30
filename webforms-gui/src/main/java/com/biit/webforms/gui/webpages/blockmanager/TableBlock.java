@@ -1,7 +1,6 @@
 package com.biit.webforms.gui.webpages.blockmanager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -55,11 +54,13 @@ public class TableBlock extends Table {
 				blocks.addAll(simpleBlockDao.getAll(organization.getOrganizationId()));
 			}
 
-			Collections.sort(blocks, new SimpleBlockViewUpdateDateComparator());
+			// Collections.sort(blocks, new SimpleBlockViewUpdateDateComparator());
 
 			for (SimpleBlockView block : blocks) {
 				addRow(block);
 			}
+
+			defaultSort();
 		} catch (Exception e) {
 			e.printStackTrace();
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
@@ -200,6 +201,13 @@ public class TableBlock extends Table {
 
 			setValue(simpleFormView);
 		}
+	}
+
+	/**
+	 * Overridden version of sort for this table. Sorts by name ascendency.
+	 */
+	public void defaultSort() {
+		sort(new Object[] { TreeTableBlockProperties.BLOCK_LABEL }, new boolean[] { true });
 	}
 
 }

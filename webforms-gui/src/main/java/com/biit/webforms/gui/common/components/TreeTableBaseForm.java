@@ -97,7 +97,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		setColumnExpandRatio(TreeTableBaseFormProperties.MODIFICATION_DATE, 1);
 	}
 
-	protected Item addRow(IBaseFormView form) {
+	public Item addRow(IBaseFormView form) {
 		if (form != null) {
 			Item item = addItem(form);
 			updateRow(form);

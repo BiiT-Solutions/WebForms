@@ -232,7 +232,9 @@ public class BlockManager extends SecuredWebPage {
 	}
 
 	private void addBlockToTable(Block newBlock) {
-		blockTable.addRow(SimpleBlockView.getSimpleBlockView(newBlock));
-		blockTable.setValue(newBlock);
+		SimpleBlockView simpleBlock = SimpleBlockView.getSimpleBlockView(newBlock);
+		blockTable.addRow(simpleBlock);
+		blockTable.defaultSort();
+		blockTable.setValue(simpleBlock);
 	}
 }
