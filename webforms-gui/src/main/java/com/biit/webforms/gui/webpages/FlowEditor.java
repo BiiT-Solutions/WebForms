@@ -117,8 +117,8 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private Component createLeftComponent() {
-		VerticalLayout i = new VerticalLayout();
-		i.setSizeFull();
+		VerticalLayout layout = new VerticalLayout();
+		layout.setSizeFull();
 
 		Component tableFilterBar = createTableFilterBar();
 
@@ -157,18 +157,18 @@ public class FlowEditor extends SecuredWebPage {
 			}
 		});
 
-		i.addComponent(tableFilterBar);
-		i.addComponent(tableFlows);
-		i.setExpandRatio(tableFlows, 1.0f);
+		layout.addComponent(tableFilterBar);
+		layout.addComponent(tableFlows);
+		layout.setExpandRatio(tableFlows, 1.0f);
 
-		return i;
+		return layout;
 	}
 
 	private Component createTableFilterBar() {
-		HorizontalLayout i = new HorizontalLayout();
-		i.setMargin(true);
-		i.setSpacing(true);
-		i.setWidth("100%");
+		HorizontalLayout layout = new HorizontalLayout();
+		layout.setMargin(true);
+		layout.setSpacing(true);
+		layout.setWidth("100%");
 
 		tableFilterOrigin = new SearchFormElementField(Form.class, Category.class, Group.class, BaseQuestion.class);
 		tableFilterOrigin.setCaption(LanguageCodes.CAPTION_FILTER_ORIGIN.translation());
@@ -190,55 +190,58 @@ public class FlowEditor extends SecuredWebPage {
 
 			@Override
 			public void currentElement(Object object) {
-				Filterable f = (Filterable) tableFlows.getContainerDataSource();
+				Filterable filterable = (Filterable) tableFlows.getContainerDataSource();
 				if (destinyFilter != null) {
-					f.removeContainerFilter(destinyFilter);
+					filterable.removeContainerFilter(destinyFilter);
 				}
 				destinyFilter = new DestinyFilter((TreeObject) tableFilterDestiny.getValue(), tableFlows.getNewFlowId());
-				f.addContainerFilter(destinyFilter);
+				filterable.addContainerFilter(destinyFilter);
 			}
 		});
 
-		i.addComponent(tableFilterOrigin);
-		i.addComponent(tableFilterDestiny);
-		i.setExpandRatio(tableFilterOrigin, 0.5f);
-		i.setExpandRatio(tableFilterDestiny, 0.5f);
-		i.setComponentAlignment(tableFilterOrigin, Alignment.MIDDLE_LEFT);
-		i.setComponentAlignment(tableFilterDestiny, Alignment.MIDDLE_RIGHT);
+		layout.addComponent(tableFilterOrigin);
+		layout.addComponent(tableFilterDestiny);
+		layout.setExpandRatio(tableFilterOrigin, 0.5f);
+		layout.setExpandRatio(tableFilterDestiny, 0.5f);
+		layout.setComponentAlignment(tableFilterOrigin, Alignment.MIDDLE_LEFT);
+		layout.setComponentAlignment(tableFilterDestiny, Alignment.MIDDLE_RIGHT);
 
-		return i;
+		return layout;
 	}
 
 	private void updateUiState() {
 
-		boolean somethingSelected = false;
-		boolean selectedNew = false;
 		@SuppressWarnings("unchecked")
 		Set<Object> itemIds = (Set<Object>) tableFlows.getValue();
-		if (itemIds == null || itemIds.isEmpty()) {
-			somethingSelected = false;
-		} else {
-			somethingSelected = true;
-		}
+		boolean somethingSelected = !itemIds.isEmpty();
 		boolean multipleSelection = itemIds.size() > 1;
+		boolean selectedNew = false;
 		for (Object itemId : itemIds) {
 			selectedNew = itemId != null && itemId.equals(tableFlows.getNewFlowId());
 		}
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 
+		Object selectedRow = null;
+		if (somethingSelected) {
+			selectedRow = itemIds.iterator().next();
+		}
+		boolean elementIsReadOnly = (selectedRow != null) && (selectedRow instanceof Flow)
+				&& ((Flow) selectedRow).isReadOnly();
+
 		// Top button state
 		upperMenu.getSaveButton().setEnabled(canEdit);
 		upperMenu.getNewFlowButton().setEnabled(canEdit);
-		upperMenu.getEditFlowButton().setEnabled(canEdit && !selectedNew && !multipleSelection && somethingSelected);
+		upperMenu.getEditFlowButton().setEnabled(
+				canEdit && !selectedNew && !multipleSelection && somethingSelected && !elementIsReadOnly);
 		upperMenu.getCloneFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected);
-		upperMenu.getRemoveFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected);
+		upperMenu.getRemoveFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected && !elementIsReadOnly);
 		upperMenu.getCleanFlowButton().setEnabled(canEdit);
 	}
 
 	private Component createRightComponent() {
-		VerticalLayout i = new VerticalLayout();
-		i.setSizeFull();
+		VerticalLayout layout = new VerticalLayout();
+		layout.setSizeFull();
 
 		formFlowViewer = new FormFlowViewer(ImgType.SVG, 1.0f);
 		formFlowViewer.setSizeFull();
@@ -247,11 +250,11 @@ public class FlowEditor extends SecuredWebPage {
 
 		Component flowViewerControlBar = createFlowViewerControlBar();
 
-		i.addComponent(flowViewerControlBar);
-		i.addComponent(formFlowViewer);
-		i.setExpandRatio(formFlowViewer, 1.0f);
+		layout.addComponent(flowViewerControlBar);
+		layout.addComponent(formFlowViewer);
+		layout.setExpandRatio(formFlowViewer, 1.0f);
 
-		return i;
+		return layout;
 	}
 
 	private class FormFlowViewerZoomListener implements ZoomChangedListener {
@@ -375,8 +378,7 @@ public class FlowEditor extends SecuredWebPage {
 					Flow selectedFlow = null;
 					if (tableFlows.getValue() instanceof Flow) {
 						selectedFlow = (Flow) tableFlows.getValue();
-					}
-					if (tableFlows.getValue() instanceof Set<?>) {
+					} else if (tableFlows.getValue() instanceof Set<?>) {
 						selectedFlow = (Flow) ((Set<Object>) tableFlows.getValue()).iterator().next();
 					}
 					editFlowAction(selectedFlow);

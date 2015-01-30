@@ -207,7 +207,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	public boolean containsFlow(Flow rule) {
-		return rules.contains(rule);
+		return getFlows().contains(rule);
 	}
 
 	public Set<Flow> getFlows() {
@@ -269,7 +269,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		if (!allBaseQuestions.isEmpty()) {
 			Object[] baseQuestions = allBaseQuestions.toArray();
 			computedView.setFirstElement((TreeObject) baseQuestions[0]);
-			computedView.addFlows(rules);
+			computedView.addFlows(getFlows());
 
 			int numQuestions = baseQuestions.length - 1;
 
@@ -307,7 +307,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public Set<StorableObject> getAllInnerStorableObjects() {
 		Set<StorableObject> innerStorableObjects = new HashSet<>();
 		innerStorableObjects.addAll(super.getAllInnerStorableObjects());
-		for (Flow rule : rules) {
+		for (Flow rule : getFlows()) {
 			innerStorableObjects.add(rule);
 			innerStorableObjects.addAll(rule.getAllInnerStorableObjects());
 		}
@@ -482,7 +482,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public Set<Flow> getFlows(TreeObject origin, TreeObject destiny) {
 		Set<Flow> selectedFlows = new HashSet<Flow>();
-		for (Flow flow : rules) {
+		for (Flow flow : getFlows()) {
 			if (flow.getOrigin().equals(origin)
 					&& ((flow.getDestiny() != null && flow.getDestiny().equals(destiny)) || (flow.getDestiny() == null && destiny == null))) {
 				selectedFlows.add(flow);
