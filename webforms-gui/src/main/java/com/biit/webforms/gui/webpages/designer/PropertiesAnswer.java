@@ -58,31 +58,31 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 	protected void initValues() {
 		super.initValues();
 
-		value.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
+		value.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
 		value.addValidator(new ValidatorTreeObjectNameLength());
-		value.addValidator(new ValidatorDuplicateValueAnswer(instance));
-		value.setValue(instance.getValue());
-		value.setEnabled(!instance.isReadOnly());
+		value.addValidator(new ValidatorDuplicateValueAnswer(getInstance()));
+		value.setValue(getInstance().getValue());
+		value.setEnabled(!getInstance().isReadOnly());
 		
-		label.setValue(instance.getLabel());
-		label.addValidator(new LengthValidator(instance.getMaxLabelLength()));
-		label.setEnabled(!instance.isReadOnly());
+		label.setValue(getInstance().getLabel());
+		label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
+		label.setEnabled(!getInstance().isReadOnly());
 		
-		description.setValue(instance.getDescription());
-		description.setEnabled(!instance.isReadOnly());
+		description.setValue(getInstance().getDescription());
+		description.setEnabled(!getInstance().isReadOnly());
 	}
 
 	@Override
 	public void updateElement() {
-		String tempValue = instance.getValue();
-		String tempLabel = instance.getLabel();
+		String tempValue = getInstance().getValue();
+		String tempLabel = getInstance().getLabel();
 		if (value.isValid()) {
 			tempValue = value.getValue();
 		}
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		UserSessionHandler.getController().updateAnswer(instance, tempValue, tempLabel, description.getValue());
+		UserSessionHandler.getController().updateAnswer(getInstance(), tempValue, tempLabel, description.getValue());
 
 		super.updateElement();
 	}

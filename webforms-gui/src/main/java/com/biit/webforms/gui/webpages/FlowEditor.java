@@ -85,9 +85,9 @@ public class FlowEditor extends SecuredWebPage {
 		formFlowViewerZoomListener = new FormFlowViewerZoomListener();
 		zoomSliderValueChangeListener = new ZoomSliderValueChangeListener();
 
-		if (UserSessionHandler.getController().getFormInUse() != null
+		if (UserSessionHandler.getController().getCompleteFormView() != null
 				&& !WebformsAuthorizationService.getInstance().isFormEditable(
-						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+						UserSessionHandler.getController().getCompleteFormView(), UserSessionHandler.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
@@ -111,7 +111,7 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private void initializeContent() {
-		Set<Flow> flows = UserSessionHandler.getController().getFormInUseFlows();
+		Set<Flow> flows = UserSessionHandler.getController().getCompleteFormView().getFlows();
 		tableFlows.addRows(flows);
 		tableFlows.sortByUpdateDate(false);
 	}
@@ -242,7 +242,7 @@ public class FlowEditor extends SecuredWebPage {
 
 		formFlowViewer = new FormFlowViewer(ImgType.SVG, 1.0f);
 		formFlowViewer.setSizeFull();
-		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getFormInUse(), null);
+		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getCompleteFormView(), null);
 		formFlowViewer.addZoomChangedListener(formFlowViewerZoomListener);
 
 		Component flowViewerControlBar = createFlowViewerControlBar();
@@ -331,7 +331,7 @@ public class FlowEditor extends SecuredWebPage {
 
 	protected void filterFlowDiagram(TreeObject filter) {
 		zoomSlider.setValue(ZOOM_MIN_VALUE);
-		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getFormInUse(), filter);
+		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getCompleteFormView(), filter);
 	}
 
 	@Override
@@ -423,9 +423,9 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private void cleanFlowOfForm() {
-		FlowCleaner flowCleaner = new FlowCleaner(UserSessionHandler.getController().getFormInUse());
+		FlowCleaner flowCleaner = new FlowCleaner(UserSessionHandler.getController().getCompleteFormView());
 		flowCleaner.cleanFlow();
-		tableFlows.setRows(UserSessionHandler.getController().getFormInUseFlows());
+		tableFlows.setRows(UserSessionHandler.getController().getCompleteFormView().getFlows());
 		if (!flowCleaner.getOtherFlowsRemoved().isEmpty() || !flowCleaner.getUselessFlowRemoved().isEmpty()) {
 			StringBuilder report = new StringBuilder();
 			for (Flow flow : flowCleaner.getOtherFlowsRemoved()) {

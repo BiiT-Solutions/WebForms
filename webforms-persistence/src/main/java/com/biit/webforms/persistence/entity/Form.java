@@ -202,7 +202,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	public void addFlow(Flow rule) {
-		this.rules.add(rule);
+		rules.add(rule);
 		rule.setForm(this);
 	}
 

@@ -59,23 +59,23 @@ public class PropertiesText extends StorableObjectProperties<Text> {
 	protected void initValues() {
 		super.initValues();
 		
-		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
-		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
+		name.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
+		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(getInstance()));
 		name.addValidator(new ValidatorTreeObjectNameLength());
-		name.setValue(instance.getName());
-		name.setEnabled(!instance.isReadOnly());
+		name.setValue(getInstance().getName());
+		name.setEnabled(!getInstance().isReadOnly());
 		
-		description.setValue(instance.getDescription());
-		description.setEnabled(!instance.isReadOnly());
+		description.setValue(getInstance().getDescription());
+		description.setEnabled(!getInstance().isReadOnly());
 	}
 
 	@Override
 	public void updateElement() {
 		try {
 			if(name.isValid()){
-				instance.setName(name.getValue());
+				getInstance().setName(name.getValue());
 			}
-			instance.setDescription(description.getValue());
+			getInstance().setDescription(description.getValue());
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

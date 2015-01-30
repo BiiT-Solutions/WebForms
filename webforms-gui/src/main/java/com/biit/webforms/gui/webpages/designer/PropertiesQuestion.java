@@ -74,7 +74,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 			public void valueChange(ValueChangeEvent event) {
 				AnswerType selectedType = (AnswerType) answerTypeComboBox.getValue();
 				// No Input fields must put the format to null or input fields that has not any format already selected
-				if (selectedType.getDefaultAnswerFormat() == null || instance.getAnswerFormat() == null) {
+				if (selectedType.getDefaultAnswerFormat() == null || getInstance().getAnswerFormat() == null) {
 					answerFormat.setValue(selectedType.getDefaultAnswerFormat());
 					answerFormat.setEnabled(selectedType.isAnswerFormatEnabled());
 				}
@@ -157,33 +157,33 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	@Override
 	protected void initValues() {
 		super.initValues();
-		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
-		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
+		name.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
+		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(getInstance()));
 		name.addValidator(new ValidatorTreeObjectNameLength());
-		name.setValue(instance.getName());
-		name.setEnabled(!instance.isReadOnly());
+		name.setValue(getInstance().getName());
+		name.setEnabled(!getInstance().isReadOnly());
 
-		label.setValue(instance.getLabel());
-		label.addValidator(new LengthValidator(instance.getMaxLabelLength()));
-		label.setEnabled(!instance.isReadOnly());
+		label.setValue(getInstance().getLabel());
+		label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
+		label.setEnabled(!getInstance().isReadOnly());
 		
-		description.setValue(instance.getDescription());
-		description.setEnabled(!instance.isReadOnly());
+		description.setValue(getInstance().getDescription());
+		description.setEnabled(!getInstance().isReadOnly());
 		
-		mandatory.setValue(instance.isMandatory());
-		mandatory.setEnabled(!instance.isReadOnly());
+		mandatory.setValue(getInstance().isMandatory());
+		mandatory.setEnabled(!getInstance().isReadOnly());
 		
-		answerTypeComboBox.setValue(instance.getAnswerType());
-		answerTypeComboBox.setEnabled(!instance.isReadOnly());
+		answerTypeComboBox.setValue(getInstance().getAnswerType());
+		answerTypeComboBox.setEnabled(!getInstance().isReadOnly());
 		
-		answerFormat.setValue(instance.getAnswerFormat());
-		answerFormat.setEnabled(!instance.isReadOnly());
+		answerFormat.setValue(getInstance().getAnswerFormat());
+		answerFormat.setEnabled(!getInstance().isReadOnly());
 		
-		answerSubformat.setValue(instance.getAnswerSubformat());
-		answerSubformat.setEnabled(!instance.isReadOnly());
+		answerSubformat.setValue(getInstance().getAnswerSubformat());
+		answerSubformat.setEnabled(!getInstance().isReadOnly());
 		
-		horizontal.setValue(instance.isHorizontal());
-		horizontal.setEnabled(!instance.isReadOnly());
+		horizontal.setValue(getInstance().isHorizontal());
+		horizontal.setEnabled(!getInstance().isReadOnly());
 	}
 
 	@Override
@@ -194,15 +194,15 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 	@Override
 	public void updateElement() {
-		String tempName = instance.getName();
-		String tempLabel = instance.getLabel();
+		String tempName = getInstance().getName();
+		String tempLabel = getInstance().getLabel();
 		if (name.isValid()) {
 			tempName = name.getValue();
 		}
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		UserSessionHandler.getController().updateQuestion(instance, tempName, tempLabel, description.getValue(),
+		UserSessionHandler.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(),
 				mandatory.getValue(), (AnswerType) answerTypeComboBox.getValue(),
 				(AnswerFormat) answerFormat.getValue(), (AnswerSubformat) answerSubformat.getValue(),
 				horizontal.getValue());

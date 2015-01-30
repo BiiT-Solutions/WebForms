@@ -51,15 +51,15 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 	protected void initValues() {
 		super.initValues();
 		
-		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
-		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
+		name.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
+		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(getInstance()));
 		name.addValidator(new ValidatorTreeObjectNameLength());
-		name.setValue(instance.getName());
-		name.setEnabled(!instance.isReadOnly());
+		name.setValue(getInstance().getName());
+		name.setEnabled(!getInstance().isReadOnly());
 		
-		field.setValue(instance.getFieldName());
-		field.addValidator(new LengthValidator(instance.getMaxLabelLength()));
-		field.setEnabled(!instance.isReadOnly());
+		field.setValue(getInstance().getFieldName());
+		field.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
+		field.setEnabled(!getInstance().isReadOnly());
 	}
 
 	@Override
@@ -72,10 +72,10 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 	public void updateElement() {
 		try {
 			if(name.isValid()){
-				instance.setName(name.getValue());
+				getInstance().setName(name.getValue());
 			}
 			if(field.isValid()){
-				instance.setFieldName(field.getValue());
+				getInstance().setFieldName(field.getValue());
 			}
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

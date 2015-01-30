@@ -1125,10 +1125,6 @@ public class ApplicationController {
 		return functionInfo;
 	}
 
-	public Set<Flow> getFormInUseFlows() {
-		return getCompleteFormView().getFlows();
-	}
-
 	public void logOut() {
 		WebformsLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
 				+ "' has logged out.");

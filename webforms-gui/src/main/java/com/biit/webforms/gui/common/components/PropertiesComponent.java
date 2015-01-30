@@ -22,7 +22,6 @@ public class PropertiesComponent extends CustomComponent implements Component.Fo
 	private boolean fireListeners;
 
 	public PropertiesComponent() {
-
 		propertiesComponents = new HashMap<Class<?>, PropertiesForClassComponent<?>>();
 		propertyUpdateListeners = new ArrayList<PropertieUpdateListener>();
 		elementAddedListener = new ArrayList<ElementAddedListener>();

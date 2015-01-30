@@ -47,10 +47,8 @@ public class Flow extends StorableObject {
 
 	private static final String TOKEN_SEPARATOR = " ";
 
-	/*
-	 * Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
-	 * attached to that column, you have to state the name.
-	 */
+	// Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
+	// attached to that column, you have to state the name.
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "origin_id", nullable = false)
 	private TreeObject origin;
@@ -75,11 +73,14 @@ public class Flow extends StorableObject {
 	@Transient
 	private boolean generated;
 
+	private transient boolean readOnly;
+
 	public Flow() {
 		super();
 		flowType = FlowType.NORMAL;
 		condition = new ArrayList<Token>();
 		generated = false;
+		readOnly = false;
 	}
 
 	public TreeObject getOrigin() {
@@ -423,42 +424,47 @@ public class Flow extends StorableObject {
 	}
 
 	public boolean isContentEqual(Flow formRule) {
-		
-		if(!origin.getPathName().equals(formRule.origin.getPathName())){
-			return false;
-		}
-		
-		if(flowType!=formRule.flowType){
+
+		if (!origin.getPathName().equals(formRule.origin.getPathName())) {
 			return false;
 		}
 
-		if((destiny!=null && formRule.destiny==null )|| (destiny==null)&& formRule.destiny!=null){
-			return false;
-		}
-		
-		if(destiny!=null && formRule.destiny!=null && !destiny.getPathName().equals(formRule.destiny.getPathName())){
+		if (flowType != formRule.flowType) {
 			return false;
 		}
 
-		if(others!=formRule.others){
+		if ((destiny != null && formRule.destiny == null) || (destiny == null) && formRule.destiny != null) {
 			return false;
 		}
 
-		if((condition!=null && formRule.condition==null)||(condition==null && formRule.condition!=null)){
+		if (destiny != null && formRule.destiny != null
+				&& !destiny.getPathName().equals(formRule.destiny.getPathName())) {
 			return false;
 		}
-		
-		if(condition!=null && formRule.condition!=null){		
-			if(condition.size()!=formRule.condition.size()){
+
+		if (others != formRule.others) {
+			return false;
+		}
+
+		if ((condition != null && formRule.condition == null) || (condition == null && formRule.condition != null)) {
+			return false;
+		}
+
+		if (condition != null && formRule.condition != null) {
+			if (condition.size() != formRule.condition.size()) {
 				return false;
 			}
-			for(int i=0; i<condition.size();i++){
-				if(!condition.get(i).isContentEqual(formRule.condition.get(i))){
+			for (int i = 0; i < condition.size(); i++) {
+				if (!condition.get(i).isContentEqual(formRule.condition.get(i))) {
 					return false;
 				}
 			}
 		}
-		
+
 		return true;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
 	}
 }

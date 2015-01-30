@@ -2,6 +2,7 @@ package com.biit.webforms.gui.entity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -119,10 +120,13 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 
 	@Override
 	public Set<Flow> getFlows() {
+		Set<Flow> flows = new HashSet<>();
 		if (form == null) {
-			return null;
+			return flows;
 		}
-		return form.getFlows();
+
+		flows.addAll(form.getFlows());
+		return flows;
 	}
 
 	@Override
@@ -147,6 +151,14 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		return null;
 	}
 
+	@Override
+	public Long getOrganizationId() {
+		if (form != null) {
+			return form.getOrganizationId();
+		}
+		return null;
+	}
+
 	/**
 	 * Returns the BlockReference parent object for an element if exists.
 	 * 
@@ -165,6 +177,42 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			}
 		}
 		return null;
+	}
+
+	public Form getForm() {
+		return form;
+	}
+
+	@Override
+	public String getLabel() {
+		if (form != null) {
+			return form.getLabel();
+		}
+		return getDefaultLabel();
+	}
+
+	@Override
+	public Integer getVersion() {
+		if (form != null) {
+			return form.getVersion();
+		}
+		return null;
+	}
+
+	@Override
+	public Long getId() {
+		if (form != null) {
+			return form.getId();
+		}
+		return null;
+	}
+	
+	@Override
+	public String getDescription(){
+		if (form != null) {
+			return form.getDescription();
+		}
+		return "";
 	}
 
 }
