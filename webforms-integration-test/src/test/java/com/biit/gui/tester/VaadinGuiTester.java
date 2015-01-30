@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
@@ -16,11 +18,13 @@ import com.vaadin.testbench.elements.NotificationElement;
 
 public class VaadinGuiTester extends TestBenchTestCase {
 
-//	private static final String FIREFOX_LANGUAGE_PROPERTY = "intl.accept_languages";
-//	private static final String FIREFOX_LANGUAGE_VALUE = "en_US";
+	private static final String FIREFOX_LANGUAGE_PROPERTY = "intl.accept_languages";
+	private static final String FIREFOX_LANGUAGE_VALUE = "en_US";
 	private static final String APPLICATION_URL_NEW_UI = "http://localhost:9081/?restartApplication";
 	private static final String NOTIFICATION_TYPE_WARNING = "warning";
 	private static final String NOTIFICATION_TYPE_ERROR = "error";
+	// This parameter set to 'true' activates phantomJs driver instead of firefox driver
+	private boolean headlessTesting = true;
 
 	private final List<VaadinGuiWebpage> webpages;
 
@@ -30,17 +34,16 @@ public class VaadinGuiTester extends TestBenchTestCase {
 
 	@BeforeClass(inheritGroups = true, alwaysRun = true)
 	public void createDriver() {
-
-		// FirefoxProfile profile = new FirefoxProfile();
-		// profile.setPreference(FIREFOX_LANGUAGE_PROPERTY,
-		// FIREFOX_LANGUAGE_VALUE);
-		// setDriver(TestBench.createDriver(new FirefoxDriver(profile)));
-
-		DesiredCapabilities caps = new DesiredCapabilities();
-		caps.setJavascriptEnabled(true);
-		caps.setCapability("takesScreenshot", true);
-
-		setDriver(TestBench.createDriver(new PhantomJSDriver(caps)));
+		if (headlessTesting) {
+			DesiredCapabilities caps = new DesiredCapabilities();
+			caps.setJavascriptEnabled(true);
+			caps.setCapability("takesScreenshot", true);
+			setDriver(TestBench.createDriver(new PhantomJSDriver(caps)));
+		} else {
+			FirefoxProfile profile = new FirefoxProfile();
+			profile.setPreference(FIREFOX_LANGUAGE_PROPERTY, FIREFOX_LANGUAGE_VALUE);
+			setDriver(TestBench.createDriver(new FirefoxDriver(profile)));
+		}
 		getDriver().manage().window().setSize(new Dimension(1280, 720));
 		for (VaadinGuiWebpage webpage : webpages) {
 			webpage.setDriver(getDriver());
