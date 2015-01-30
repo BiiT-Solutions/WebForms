@@ -1364,7 +1364,6 @@ public class ApplicationController {
 	}
 
 	public void clearParameters() {
-		lastEditedForm = null;
 		formInUse = null;
 		completeFormView = null;
 	}

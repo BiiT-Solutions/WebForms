@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import com.biit.form.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
@@ -16,6 +17,7 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.ISimpleBlockViewDao;
+import com.biit.webforms.persistence.entity.IWebformsBlockView;
 import com.biit.webforms.persistence.entity.SimpleBlockView;
 import com.biit.webforms.utils.DateManager;
 import com.liferay.portal.model.Organization;
@@ -163,4 +165,41 @@ public class TableBlock extends Table {
 		removeAllItems();
 		initializeBlockTable();
 	}
+
+	/**
+	 * Selects the first row.
+	 */
+	public void selectFirstRow() {
+		setValue(firstItemId());
+	}
+
+	/**
+	 * This function selects the last form used by the user or the first.
+	 */
+	public void selectLastUsedBlock() {
+		try {
+			System.out.println("--> " + UserSessionHandler.getController().getLastEditedForm());
+			if (UserSessionHandler.getController().getLastEditedForm() != null) {
+				// Update form with new object if the form has change.
+				selectBlock(UserSessionHandler.getController().getLastEditedForm());
+			} else {
+				// Select default one.
+				selectFirstRow();
+			}
+		} catch (Exception e) {
+			// Select default one.
+			selectFirstRow();
+		}
+	}
+
+	public void selectBlock(IBaseFormView block) {
+		if (block == null || block.getName() == null) {
+			setValue(null);
+		} else {
+			SimpleBlockView simpleFormView = SimpleBlockView.getSimpleBlockView((IWebformsBlockView) block);
+
+			setValue(simpleFormView);
+		}
+	}
+
 }

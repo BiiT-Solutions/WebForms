@@ -80,6 +80,7 @@ public class BlockManager extends SecuredWebPage {
 		updateMenus();
 
 		getWorkingArea().addComponent(blockTable);
+		blockTable.selectLastUsedBlock();
 	}
 
 	private void updateMenus() {
@@ -120,7 +121,9 @@ public class BlockManager extends SecuredWebPage {
 
 			@Override
 			public void lockForm() {
+				System.out.println("--------------------");
 				UserSessionHandler.getController().setFormInUse(loadBlock(getSelectedBlock()));
+				System.out.println(UserSessionHandler.getController().getLastEditedForm());
 			}
 		});
 		return bottomMenu;
