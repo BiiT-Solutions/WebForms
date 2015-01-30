@@ -82,6 +82,10 @@ public class WebformsConfigurationReader {
 
 	private static final String DEFAULT_JSON_EXPORT_ENABLED = "false";
 
+	private static final String BUILDING_BLOCK_LINKS = "button.link.block.visible";
+
+	private static final String DEFAULT_BUILDING_BLOCK_LINKS = "true";
+
 	// XForms
 	private final String XFORMS_USER_TAG = "orbeonUser";
 	private final String XFORMS_PASSWORD_TAG = "orbeonPassword";
@@ -135,6 +139,8 @@ public class WebformsConfigurationReader {
 	private String xFormsDatabaseHost;
 	private String orbeonFormRunnerUrl;
 
+	private boolean bottonLinkBloksEnabled;
+
 	private String xmlBaseAddress;
 
 	private boolean jsonExportEnabled;
@@ -186,6 +192,8 @@ public class WebformsConfigurationReader {
 			xmlBaseAddress = prop.getProperty(XML_BASE_ADDRESS, DEFAULT_XML_BASE_ADDRESS);
 			jsonExportEnabled = Boolean
 					.parseBoolean(prop.getProperty(JSON_EXPORT_ENABLED, DEFAULT_JSON_EXPORT_ENABLED));
+			bottonLinkBloksEnabled = Boolean.parseBoolean(prop.getProperty(BUILDING_BLOCK_LINKS,
+					DEFAULT_BUILDING_BLOCK_LINKS));
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -286,5 +294,9 @@ public class WebformsConfigurationReader {
 
 	public boolean isJsonExportEnabled() {
 		return jsonExportEnabled;
+	}
+
+	public boolean isBottonLinkBloksEnabled() {
+		return bottonLinkBloksEnabled;
 	}
 }

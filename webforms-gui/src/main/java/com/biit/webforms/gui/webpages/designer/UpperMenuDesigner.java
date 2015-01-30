@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
@@ -76,7 +77,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(saveButton);
 		blockMenu = addSubMenu(ThemeIcons.BUILDING_BLOCK_MENU, LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER,
 				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, saveAsBlockButton, insertBlockButton,
-				linkBlockButton);
+				linkBlockButton);		
 		addIconButton(newCategoryButton);
 		addIconButton(newGroupButton);
 		addIconButton(newQuestionButton);
@@ -91,6 +92,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(finish);
 		addIconButton(exportToJavaCode);
 		setConfirmationNeeded(true);
+		
+		linkBlockButton.setVisible(WebformsConfigurationReader.getInstance().isBottonLinkBloksEnabled());
 	}
 
 	public void addSaveButtonListener(ClickListener listener) {
