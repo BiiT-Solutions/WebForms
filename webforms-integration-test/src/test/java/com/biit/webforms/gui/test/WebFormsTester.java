@@ -1,5 +1,12 @@
 package com.biit.webforms.gui.test;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+
 import com.biit.gui.tester.VaadinGuiTester;
 import com.biit.webforms.gui.test.webpage.BlockManager;
 import com.biit.webforms.gui.test.webpage.Designer;
@@ -29,6 +36,8 @@ public class WebFormsTester extends VaadinGuiTester {
 
 	protected final String USER_PASSWORD = "asd123";
 
+	private static final String SCREENSHOT_TYPE = ".jpeg";
+
 	private final Login loginPage;
 	private final FormManager formManager;
 	private final BlockManager blockManager;
@@ -42,7 +51,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	private static final String ACCEPT_BUTTON_CAPTION = "Accept";
 	private static final String CANCEL_BUTTON_CAPTION = "Cancel";
 	private static final String CLOSE_BUTTON_CAPTION = "Close";
-	
+
 	private static final String DESIGN_BUTTON_CAPTION = "Design";
 
 	public WebFormsTester() {
@@ -68,7 +77,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	public BlockManager getBlockManager() {
 		return blockManager;
 	}
-	
+
 	public Designer getDesigner() {
 		return designer;
 	}
@@ -110,7 +119,7 @@ public class WebFormsTester extends VaadinGuiTester {
 		showSettingsMenu();
 		return $(ButtonElement.class).caption(LOGOUT_BUTTON_CAPTION).first();
 	}
-	
+
 	public ButtonElement getInfoButton() {
 		showSettingsMenu();
 		return $(ButtonElement.class).caption(INFO_BUTTON_CAPTION).first();
@@ -123,7 +132,7 @@ public class WebFormsTester extends VaadinGuiTester {
 			return null;
 		}
 	}
-	
+
 	public ButtonElement getCancelButton() {
 		if ($(ButtonElement.class).caption(CANCEL_BUTTON_CAPTION).exists()) {
 			return $(ButtonElement.class).caption(CANCEL_BUTTON_CAPTION).first();
@@ -131,7 +140,7 @@ public class WebFormsTester extends VaadinGuiTester {
 			return null;
 		}
 	}
-	
+
 	public ButtonElement getCloseButton() {
 		if ($(ButtonElement.class).caption(CLOSE_BUTTON_CAPTION).exists()) {
 			return $(ButtonElement.class).caption(CLOSE_BUTTON_CAPTION).first();
@@ -139,7 +148,7 @@ public class WebFormsTester extends VaadinGuiTester {
 			return null;
 		}
 	}
-	
+
 	public ButtonElement getDesignButton() {
 		return $(ButtonElement.class).caption(DESIGN_BUTTON_CAPTION).first();
 	}
@@ -147,7 +156,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	public void showSettingsMenu() {
 		getSettingsButton().click();
 	}
-	
+
 	public void logOut() {
 		getLogoutButton().click();
 		clickAcceptButtonIfExists();
@@ -158,31 +167,31 @@ public class WebFormsTester extends VaadinGuiTester {
 			getAcceptButton().click();
 		}
 	}
-	
+
 	public void clickCancelButtonIfExists() {
 		if (getCancelButton() != null) {
 			getCancelButton().click();
 		}
 	}
-	
+
 	public void clickCloseButtonIfExists() {
 		if (getCloseButton() != null) {
 			getCloseButton().click();
 		}
 	}
-	
-	public void goToFormManager(){
+
+	public void goToFormManager() {
 		getFormsButton().click();
 	}
-	
-	public void goToDesigner(){
+
+	public void goToDesigner() {
 		getDesignButton().click();
 	}
-	
-	public void goToBlockManager(){
+
+	public void goToBlockManager() {
 		getBlocksButton().click();
 	}
-	
+
 	public void createNewForm(String formName) {
 		loginFormAdmin1();
 		getFormManager().createNewForm(formName);
@@ -194,7 +203,7 @@ public class WebFormsTester extends VaadinGuiTester {
 		getFormManager().deleteForm(1);
 		logOut();
 	}
-	
+
 	public void createNewBlock(String blockName) {
 		loginFormAdmin1();
 		goToBlockManager();
@@ -207,5 +216,21 @@ public class WebFormsTester extends VaadinGuiTester {
 		goToBlockManager();
 		getBlockManager().deleteBlock(0);
 		logOut();
+	}
+
+	/**
+	 * Takes a screenshot of the webpage and stores it in the Temp folder
+	 * 
+	 * @param screenshotName
+	 */
+	public void takeScreenshot(String screenshotName) {
+		File scrFile = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
+		try {
+			FileUtils.copyFile(scrFile, new File(System.getProperty("java.io.tmpdir") + screenshotName
+					+ SCREENSHOT_TYPE), true);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

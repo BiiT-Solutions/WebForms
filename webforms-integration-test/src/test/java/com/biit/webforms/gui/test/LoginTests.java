@@ -35,8 +35,8 @@ public class LoginTests extends WebFormsTester {
 	public void testLoginWithRightsToManageButNotDeleteForm() {
 		loginFormEdit1();
 		Assert.assertTrue(getFormManager().getNewFormButton().isEnabled());
-		// Close New menu
-		getFormManager().getNewButton().click();
+		// Close New popover menu -- IMPORTANT !!
+		getFormManager().closeNewPopover();
 		Assert.assertNull(getFormManager().getRemoveForm());
 		logOut();
 	}
@@ -45,8 +45,8 @@ public class LoginTests extends WebFormsTester {
 	public void testLoginWithoutRightsToManageForm() {
 		loginRead1();
 		Assert.assertFalse(getFormManager().getNewFormButton().isEnabled());
-		// Close New menu
-		getFormManager().getNewButton().click();
+		// Close New popover menu -- IMPORTANT !!
+		getFormManager().closeNewPopover();
 		Assert.assertNull(getFormManager().getRemoveForm());
 		logOut();
 	}
@@ -68,7 +68,7 @@ public class LoginTests extends WebFormsTester {
 		getBlockManager().deleteBlock(0);
 		logOut();
 	}
-	
+
 	@Test
 	public void testLoginWithoutRightsToManageBlock() {
 		loginRead1();

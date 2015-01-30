@@ -1,5 +1,7 @@
 package com.biit.webforms.gui.test.webpage;
 
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import com.biit.gui.tester.VaadinGuiWebpage;
@@ -15,6 +17,7 @@ public class FormManager extends VaadinGuiWebpage {
 	private static final String FORM_BUTTON_CAPTION = "Form";
 	private static final String REMOVE_FORM_BUTTON_CAPTION = "Remove Form";
 	private static final String EXPORT_BUTTON_CAPTION = "Export";
+	private static final String VERSION_BUTTON_CAPTION = "Version";
 
 	private final NewFormWindow newFormWindow;
 
@@ -32,7 +35,7 @@ public class FormManager extends VaadinGuiWebpage {
 		openNewFormWindow();
 		getNewFormWindow().createNewForm(formName);
 	}
-	
+
 	public void createNewFormWithOrganization(String formName, String organizationName)
 			throws OrganizationNotEditableException {
 		openNewFormWindow();
@@ -51,7 +54,7 @@ public class FormManager extends VaadinGuiWebpage {
 	public TreeTableElement getFormTable() {
 		return $(TreeTableElement.class).first();
 	}
-	
+
 	public ComboBoxElement getFormStatusComboBox() {
 		return $(ComboBoxElement.class).first();
 	}
@@ -91,5 +94,17 @@ public class FormManager extends VaadinGuiWebpage {
 
 	private void openNewFormWindow() {
 		getNewFormButton().click();
+	}
+
+	/**
+	 * Workaround to close the popover.<br>
+	 * When the popover is displayed only the element inside the popover can be
+	 * selected.<br>
+	 * To close it, we have focus it and send the close key defined.
+	 */
+	public void closeNewPopover() {
+		getNewFormButton().focus();
+		Actions builder = new Actions(getDriver());
+		builder.sendKeys(Keys.ESCAPE).perform();
 	}
 }
