@@ -41,6 +41,7 @@ import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.utils.RootForm;
+import com.biit.webforms.gui.entity.CompleteFormView;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderJson;
@@ -372,7 +373,7 @@ public class FormManager extends SecuredWebPage {
 		if (form != null) {
 			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
 					UserSessionHandler.getUser(), form.getOrganizationId());
-			OrbeonUtils.saveFormInOrbeon(form, organization, true);
+			OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization, true);
 		}
 	}
 
@@ -393,7 +394,7 @@ public class FormManager extends SecuredWebPage {
 
 	private void exportJson() {
 		Form form = loadForm(getSelectedForm());
-		new WindowDownloaderJson(form, getSelectedForm().getLabel() + ".json");
+		new WindowDownloaderJson(new CompleteFormView(form), getSelectedForm().getLabel() + ".json");
 	}
 
 	private void exportFlowPdf() {
@@ -402,7 +403,7 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					return new ByteArrayInputStream(GraphvizApp.generateImage(loadForm(getSelectedForm()), null,
+					return new ByteArrayInputStream(GraphvizApp.generateImage(new CompleteFormView(loadForm(getSelectedForm())), null,
 							ImgType.PDF));
 				} catch (IOException | InterruptedException e) {
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -421,7 +422,7 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					return FormGeneratorPdf.generatePdf(new FormPdfGenerator(loadForm(getSelectedForm())));
+					return FormGeneratorPdf.generatePdf(new FormPdfGenerator(new CompleteFormView(loadForm(getSelectedForm()))));
 				} catch (IOException | DocumentException e) {
 					WebformsLogger.errorMessage(FormManager.class.getName(), e);
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
