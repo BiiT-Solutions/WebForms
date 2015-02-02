@@ -50,7 +50,7 @@ public class SearchFormElementField extends SearchButtonField {
 
 	protected void openSearchFormElementWindow(TreeObject currentValue) {
 		final WindowTreeObject windowTreeObject = new WindowTreeObject(
-				LanguageCodes.CAPTION_WINDOW_SELECT_FORM_ELEMENT, UserSessionHandler.getController().getFormInUse(),
+				LanguageCodes.CAPTION_WINDOW_SELECT_FORM_ELEMENT, UserSessionHandler.getController().getCompleteFormView(),
 				filterClasses);
 		windowTreeObject.setSelectableFilers(selectFilter);
 		for (Filter filter : filters) {

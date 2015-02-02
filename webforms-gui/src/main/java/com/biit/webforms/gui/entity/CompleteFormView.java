@@ -10,6 +10,7 @@ import java.util.Set;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.form.exceptions.NotValidParentException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
@@ -42,7 +43,15 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			if (child instanceof BlockReference) {
 				try {
 					Block copiedBlock = getCopyOfBlock(((BlockReference) child).getReference());
-					children.addAll(copiedBlock.getChildren());
+					for (TreeObject linkedChild : copiedBlock.getChildren()) {
+						children.add(linkedChild);
+						try {
+							//To the categories set as parent the form. 
+							linkedChild.setParent(this);
+						} catch (NotValidParentException e) {
+							WebformsLogger.errorMessage(this.getClass().getName(), e);
+						}
+					}
 				} catch (NotValidStorableObjectException | CharacterNotAllowedException e) {
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}

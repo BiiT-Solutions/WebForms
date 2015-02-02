@@ -439,6 +439,8 @@ public class ApplicationController {
 	public CompleteFormView getCompleteFormView() {
 		if (completeFormView == null || !getFormInUse().getComparationId().equals(completeFormView.getComparationId())) {
 			completeFormView = new CompleteFormView(getFormInUse());
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+			System.out.println(completeFormView.getComparationId()   + " <-> " + getFormInUse().getComparationId());
 		}
 		return completeFormView;
 	}

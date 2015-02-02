@@ -598,4 +598,32 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 		return false;
 	}
+
+	/**
+	 * Equals by comparationId and class. Comparation by class has been removed to allow the comparation with
+	 * CompleteFormView.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+
+		if (!(obj instanceof StorableObject)) {
+			return false;
+		}
+
+		StorableObject other = (StorableObject) obj;
+		if (getComparationId() == null) {
+			if (other.getComparationId() != null) {
+				return false;
+			}
+		} else if (!getComparationId().equals(other.getComparationId())) {
+			return false;
+		}
+		return true;
+	}
 }
