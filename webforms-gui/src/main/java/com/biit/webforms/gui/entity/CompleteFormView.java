@@ -11,6 +11,8 @@ import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidParentException;
+import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
@@ -30,6 +32,10 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	// Original block -> copied block
 	private Map<Block, Block> copiedBlocks;
 
+	public CompleteFormView() {
+		copiedBlocks = new HashMap<>();
+	}
+
 	public CompleteFormView(Form form) {
 		this.form = form;
 		copiedBlocks = new HashMap<>();
@@ -46,7 +52,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 					for (TreeObject linkedChild : copiedBlock.getChildren()) {
 						children.add(linkedChild);
 						try {
-							//To the categories set as parent the form. 
+							// To the categories set as parent the form.
 							linkedChild.setParent(this);
 						} catch (NotValidParentException e) {
 							WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -240,6 +246,21 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			return form.removeRule(flow);
 		}
 		return false;
+	}
+
+	@Override
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
+		super.copyData(object);
+		if (object instanceof CompleteFormView) {
+			try {
+				form = (Form) ((CompleteFormView) object).getForm().generateCopy(true, true);
+			} catch (CharacterNotAllowedException e) {
+				// Impossible but log it.
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+		} else {
+			throw new NotValidTreeObjectException("Copy data for CompleteFormView only supports the same type copy");
+		}
 	}
 
 }

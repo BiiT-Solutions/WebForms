@@ -428,6 +428,7 @@ public class FlowEditor extends SecuredWebPage {
 		FlowCleaner flowCleaner = new FlowCleaner(UserSessionHandler.getController().getCompleteFormView());
 		flowCleaner.cleanFlow();
 		tableFlows.setRows(UserSessionHandler.getController().getCompleteFormView().getFlows());
+		tableFlows.sortByUpdateDate(false);
 		if (!flowCleaner.getOtherFlowsRemoved().isEmpty() || !flowCleaner.getUselessFlowRemoved().isEmpty()) {
 			StringBuilder report = new StringBuilder();
 			for (Flow flow : flowCleaner.getOtherFlowsRemoved()) {
