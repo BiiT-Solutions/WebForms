@@ -503,7 +503,7 @@ public class FlowEditor extends SecuredWebPage {
 				try {
 					WindowFlow windowFlow = (WindowFlow) window;
 					if (!windowFlow.isConditionValid()) {
-						MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+						MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 								LanguageCodes.WARNING_DESCRIPTION_CONDITION_BAD_FORMED);
 					} else {
 						UserSessionHandler.getController().updateFlowContent(flow, windowFlow.getOrigin(),
@@ -513,20 +513,20 @@ public class FlowEditor extends SecuredWebPage {
 						window.close();
 					}
 				} catch (BadFlowContentException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.WARNING_DESCRIPTION_RULE_BAD_FORMED);
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				} catch (FlowWithoutSource e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.WARNING_DESCRIPTION_ORIGIN_IS_NULL);
 				} catch (FlowSameOriginAndDestinyException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN_AND_DESTINY);
 				} catch (FlowDestinyIsBeforeOrigin e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN);
 				} catch (FlowWithoutDestiny e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_NULL);
 				}
 			}

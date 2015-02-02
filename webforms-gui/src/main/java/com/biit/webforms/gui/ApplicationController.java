@@ -1090,7 +1090,7 @@ public class ApplicationController {
 	private void removeFlows(Form form, Set<Flow> flows) {
 		logInfoStart("removeFlows", form, flows);
 		for (Flow flow : flows) {
-			form.getFlows().remove(flow);
+			form.removeRule(flow);
 		}
 		setUnsavedFormChanges(true);
 	}

@@ -225,4 +225,12 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		return "";
 	}
 
+	@Override
+	public boolean removeRule(Flow flow) {
+		if (form != null && !flow.isReadOnly()) {
+			return form.removeRule(flow);
+		}
+		return false;
+	}
+
 }

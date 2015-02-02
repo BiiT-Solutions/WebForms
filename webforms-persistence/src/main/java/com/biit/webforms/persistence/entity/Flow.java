@@ -127,7 +127,7 @@ public class Flow extends StorableObject {
 		setCondition(condition);
 	}
 
-	public static void checkFlowRestrictions(TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
+	public void checkFlowRestrictions(TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
 			List<Token> condition) throws FlowWithoutSource, BadFlowContentException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
 		// No flow without source
@@ -153,7 +153,11 @@ public class Flow extends StorableObject {
 		// Flow destiny cannot be prior to origin.
 		if (!flowType.isDestinyNull()) {
 			if (!(origin.compareTo(destiny) == -1)) {
-				throw new FlowDestinyIsBeforeOrigin();
+				// Block Reference elements are outside form structure. Parent is not a form, is the block references in
+				// the linked block. Ignore for this check.
+				if (destiny.getAncestor(Block.class) == null) {
+					throw new FlowDestinyIsBeforeOrigin();
+				}
 			}
 		}
 	}

@@ -387,9 +387,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 	}
 
-	public boolean removeRule(Flow dbRule) {
+	public boolean removeRule(Flow flow) {
 		int currentRules = rules.size();
-		rules.remove(dbRule);
+		rules.remove(flow);
 		return currentRules == rules.size();
 	}
 
