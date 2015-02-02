@@ -20,7 +20,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
 
 	private static final String FIREFOX_LANGUAGE_PROPERTY = "intl.accept_languages";
 	private static final String FIREFOX_LANGUAGE_VALUE = "en_US";
-	private static final String APPLICATION_URL_NEW_UI = "http://localhost:9081/?restartApplication";
+	private static final String APPLICATION_URL_NEW_UI = "http://localhost:8081/?restartApplication";
 	private static final String NOTIFICATION_TYPE_WARNING = "warning";
 	private static final String NOTIFICATION_TYPE_ERROR = "error";
 	// This parameter set to 'true' activates phantomJs driver instead of firefox driver
@@ -44,7 +44,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
 			profile.setPreference(FIREFOX_LANGUAGE_PROPERTY, FIREFOX_LANGUAGE_VALUE);
 			setDriver(TestBench.createDriver(new FirefoxDriver(profile)));
 		}
-		getDriver().manage().window().setSize(new Dimension(1280, 720));
+		getDriver().manage().window().setSize(new Dimension(1920, 1080));
 		for (VaadinGuiWebpage webpage : webpages) {
 			webpage.setDriver(getDriver());
 		}

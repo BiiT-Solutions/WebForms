@@ -73,7 +73,8 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				AnswerType selectedType = (AnswerType) answerTypeComboBox.getValue();
-				// No Input fields must put the format to null or input fields that has not any format already selected
+				// No Input fields must put the format to null or input fields
+				// that has not any format already selected
 				if (selectedType.getDefaultAnswerFormat() == null || instance.getAnswerFormat() == null) {
 					answerFormat.setValue(selectedType.getDefaultAnswerFormat());
 					answerFormat.setEnabled(selectedType.isAnswerFormatEnabled());
@@ -146,6 +147,10 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 			answerSubformat.removeAllItems();
 			AnswerFormat format = (AnswerFormat) answerFormat.getValue();
 			for (AnswerSubformatUi subformat : AnswerSubformatUi.values(format)) {
+				// Skip the DATE_PERIOD value
+				if (format.equals(AnswerFormat.DATE) && subformat.equals(AnswerSubformatUi.DATE_PERIOD)) {
+					continue;
+				}
 				answerSubformat.addItem(subformat.getSubformat());
 				answerSubformat.setItemCaption(subformat.getSubformat(), subformat.getTranslationCode().translation());
 			}
