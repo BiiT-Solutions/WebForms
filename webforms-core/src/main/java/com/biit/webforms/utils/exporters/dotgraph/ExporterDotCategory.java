@@ -20,24 +20,24 @@ public class ExporterDotCategory extends ExporterDot<Category> {
 		String cluster = new String();
 		// Cluster tag it's what makes it a separate group
 		cluster += "\tsubgraph cluster_" + filterDotLanguageId(category.getComparationId()) + " {\n";
-		cluster += "\t\tnode [style=filled, fillcolor=" + getFillColor() + "];\n";
+		cluster += "\t\tnode [style=filled, fillcolor=" + getFillColor(category.isReadOnly()) + "];\n";
 		cluster += "\t\tlabel = \"" + filterDotLanguage(category.getName()) + "\";\n";
 
 		cluster += generateDotNodeChilds(category);
 
-		cluster += "\t\tcolor=" + getShapeColor() + ";\n";
-		cluster += "\t\tfontcolor=" + getFontColor() + ";\n";
+		cluster += "\t\tcolor=" + getShapeColor(category.isReadOnly()) + ";\n";
+		cluster += "\t\tfontcolor=" + getFontColor(category.isReadOnly()) + ";\n";
 		cluster += "\t\tpenwidth=" + getPenWidth() + ";\n";
 		cluster += "\t\tstyle=" + BOX_STYLE + ";\n";
 		cluster += "\t\t}\n";
 
 		return cluster;
 	}
-	
+
 	@Override
 	public String generateDotNodeChilds(Category category) {
 		String clusterChilds = new String();
-		
+
 		for (TreeObject child : category.getChildren()) {
 			if (child instanceof Group) {
 				clusterChilds += (new ExporterDotGroup()).generateDotNodeList((Group) child);
@@ -52,7 +52,6 @@ public class ExporterDotCategory extends ExporterDot<Category> {
 		}
 		return clusterChilds;
 	}
-
 
 	@Override
 	public String generateDotNodeFlow(Category structure) {

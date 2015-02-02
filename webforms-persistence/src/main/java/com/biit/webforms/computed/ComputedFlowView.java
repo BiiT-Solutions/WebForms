@@ -75,8 +75,7 @@ public class ComputedFlowView {
 	}
 
 	/**
-	 * Creates a new computed go to next element Flow. Type normal, condition =
-	 * '' -> true
+	 * Creates a new computed go to next element Flow. Type normal, condition = '' -> true
 	 * 
 	 * @param origin
 	 * @param destiny
@@ -86,6 +85,7 @@ public class ComputedFlowView {
 		try {
 			flow.setContent(origin, FlowType.NORMAL, destiny, false, new ArrayList<Token>());
 			flow.setGenerated(true);
+			flow.setReadOnly(origin.isReadOnly() && destiny.isReadOnly());
 			addFlow(flow);
 		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
 				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
