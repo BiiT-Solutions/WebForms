@@ -10,6 +10,7 @@ import org.openqa.selenium.TakesScreenshot;
 import com.biit.gui.tester.VaadinGuiTester;
 import com.biit.webforms.gui.test.webpage.BlockManager;
 import com.biit.webforms.gui.test.webpage.Designer;
+import com.biit.webforms.gui.test.webpage.FlowManager;
 import com.biit.webforms.gui.test.webpage.FormManager;
 import com.biit.webforms.gui.test.webpage.Login;
 import com.vaadin.testbench.elements.ButtonElement;
@@ -42,6 +43,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	private final FormManager formManager;
 	private final BlockManager blockManager;
 	private final Designer designer;
+	private final FlowManager flowManager;
 
 	private static final String FORMS_BUTTON_CAPTION = "Forms";
 	private static final String BLOCKS_BUTTON_CAPTION = "Blocks";
@@ -53,6 +55,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	private static final String CLOSE_BUTTON_CAPTION = "Close";
 
 	private static final String DESIGN_BUTTON_CAPTION = "Design";
+	private static final String FLOW_BUTTON_CAPTION = "Flow";
 
 	public WebFormsTester() {
 		super();
@@ -64,6 +67,8 @@ public class WebFormsTester extends VaadinGuiTester {
 		addWebpage(blockManager);
 		designer = new Designer();
 		addWebpage(designer);
+		flowManager = new FlowManager();
+		addWebpage(flowManager);
 	}
 
 	public Login getLoginPage() {
@@ -80,6 +85,10 @@ public class WebFormsTester extends VaadinGuiTester {
 
 	public Designer getDesigner() {
 		return designer;
+	}
+	
+	public FlowManager getFlowManager() {
+		return flowManager;
 	}
 
 	public void login(String username, String password) {
@@ -152,6 +161,10 @@ public class WebFormsTester extends VaadinGuiTester {
 	public ButtonElement getDesignButton() {
 		return $(ButtonElement.class).caption(DESIGN_BUTTON_CAPTION).first();
 	}
+	
+	public ButtonElement getFlowButton() {
+		return $(ButtonElement.class).caption(FLOW_BUTTON_CAPTION).first();
+	}
 
 	public void showSettingsMenu() {
 		getSettingsButton().click();
@@ -186,6 +199,10 @@ public class WebFormsTester extends VaadinGuiTester {
 
 	public void goToDesigner() {
 		getDesignButton().click();
+	}
+	
+	public void goToFlowManager() {
+		getFlowButton().click();
 	}
 
 	public void goToBlockManager() {

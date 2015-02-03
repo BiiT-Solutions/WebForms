@@ -11,6 +11,7 @@ import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 
 public class FlowCleaner {
+	
 	private Form form;
 	private Set<Flow> otherFlowsRemoved;
 	private Set<Flow> uselessFlowRemoved;
@@ -50,15 +51,18 @@ public class FlowCleaner {
 	}
 
 	private void removeUselessFlows(BaseQuestion question, BaseQuestion nextQuestion, Set<Flow> flows) {
-		// One flow without condition that goes to next element, is the default one, we can remove it.
+		// One flow without condition that goes to next element, is the default
+		// one, we can remove it.
 		if (flows.size() == 1) {
 			Flow flow = flows.iterator().next();
 			// Flow point to nextQuestion.
-			if (flow.getDestiny().equals(nextQuestion)) {
-				// Has no condition.
-				if (flow.getCondition() == null || flow.getCondition().isEmpty()) {
-					form.removeRule(flow);
-					uselessFlowRemoved.add(flow);
+			if ((flow != null) && (flow.getDestiny() != null) && (nextQuestion != null)) {
+				if (flow.getDestiny().equals(nextQuestion)) {
+					// Has no condition.
+					if (flow.getCondition() == null || flow.getCondition().isEmpty()) {
+						form.removeRule(flow);
+						uselessFlowRemoved.add(flow);
+					}
 				}
 			}
 		}

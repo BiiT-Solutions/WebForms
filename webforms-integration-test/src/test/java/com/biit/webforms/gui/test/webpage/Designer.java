@@ -71,6 +71,10 @@ public class Designer extends VaadinGuiWebpage {
 
 	private static final Integer ANSWERS_TO_ADD = 4;
 	private static final Integer SUBANSWERS_TO_ADD = 2;
+	
+	private static final String QUESTION1_NAME = "Question1";
+	private static final String QUESTION2_NAME = "Question2";
+	private static final String QUESTION3_NAME = "Question3";
 
 	private final FormPropertiesView formPropertiesView;
 	private final CategoryPropertiesView categoryPropertiesView;
@@ -399,6 +403,25 @@ public class Designer extends VaadinGuiWebpage {
 		addNewText();
 		addNewField();
 
+		saveDesign();
+	}
+	
+	public void createAndSaveSimpleForm() throws FieldNotEditableException{
+		// Category 1
+		addNewCategory();
+		addNewRadioButtonQuestion();
+		getQuestionPropertiesView().setTechnicalNameFieldValue(QUESTION1_NAME);
+		addNewAnswer();
+		addNewAnswer();
+		// Category 2		
+		addNewCategory();
+		addNewQuestion();
+		getQuestionPropertiesView().setTechnicalNameFieldValue(QUESTION2_NAME);
+		// Category 3
+		addNewCategory();
+		addNewQuestion();
+		getQuestionPropertiesView().setTechnicalNameFieldValue(QUESTION3_NAME);
+		//Save
 		saveDesign();
 	}
 	

@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.common.components;
 
+import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TextArea;
@@ -23,6 +24,8 @@ public class WindowTextArea extends WindowAcceptCancel {
 		setWidth(WIDTH);
 		setHeight(HEIGHT);
 		getAcceptButton().setVisible(false);
+		getCancelButton().setCaption(LanguageCodes.CAPTION_CLOSE.translation());
+		getCancelButton().setDescription(LanguageCodes.CAPTION_CLOSE.translation());
 	}
 
 	public String getValue() {

@@ -21,10 +21,13 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	private static final String FIREFOX_LANGUAGE_PROPERTY = "intl.accept_languages";
 	private static final String FIREFOX_LANGUAGE_VALUE = "en_US";
 	private static final String APPLICATION_URL_NEW_UI = "http://localhost:8081/?restartApplication";
+	private static final String NOTIFICATION_TYPE_HUMANIZED = "humanized";
 	private static final String NOTIFICATION_TYPE_WARNING = "warning";
 	private static final String NOTIFICATION_TYPE_ERROR = "error";
 	// This parameter set to 'true' activates phantomJs driver instead of firefox driver
-	private boolean headlessTesting = true;
+	private boolean headlessTesting = false;
+	private static final Integer WIDTH = 1280;
+	private static final Integer HEIGHT = 720;
 
 	private final List<VaadinGuiWebpage> webpages;
 
@@ -44,7 +47,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
 			profile.setPreference(FIREFOX_LANGUAGE_PROPERTY, FIREFOX_LANGUAGE_VALUE);
 			setDriver(TestBench.createDriver(new FirefoxDriver(profile)));
 		}
-		getDriver().manage().window().setSize(new Dimension(1920, 1080));
+		getDriver().manage().window().setSize(new Dimension(WIDTH, HEIGHT));
 		for (VaadinGuiWebpage webpage : webpages) {
 			webpage.setDriver(getDriver());
 		}
@@ -73,5 +76,13 @@ public class VaadinGuiTester extends TestBenchTestCase {
 
 	public static void checkNotificationIsWarning(NotificationElement notification) {
 		Assert.assertEquals(NOTIFICATION_TYPE_WARNING, notification.getType());
+	}
+	
+	public static void checkNotificationIsHumanized(NotificationElement notification) {
+		Assert.assertEquals(NOTIFICATION_TYPE_HUMANIZED, notification.getType());
+	}
+	
+	public boolean isHeadlessTesting(){
+		return headlessTesting;
 	}
 }
