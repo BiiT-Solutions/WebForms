@@ -45,7 +45,7 @@ public class ApplicationUi extends UI {
 		if (UserSessionHandler.getUser() != null) {
 			// Log user ui expired.
 			WebformsLogger.info(this.getClass().getName(), UserSessionHandler.getUser().getEmailAddress()
-					+ " Ui has expired.");
+					+ " UI has expired.");
 		}
 		UiAccesser.unregister(UserSessionHandler.getController());
 		super.detach();

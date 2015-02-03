@@ -354,9 +354,9 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * @return
 	 */
 	protected String getElementAddedClasses() {
-		if (((Question) getSource()).isHorizontal()) {
-			return " class=\"" + CLASS_RADIO_BUTTON_HORIZONTAL + "\" ";
-		}
+			if (((Question) getSource()).isHorizontal()) {
+				return " class=\"" + CLASS_RADIO_BUTTON_HORIZONTAL + "\" ";
+			}
 		return "";
 	}
 

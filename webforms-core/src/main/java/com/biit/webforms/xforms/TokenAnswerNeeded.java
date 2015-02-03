@@ -2,6 +2,7 @@ package com.biit.webforms.xforms;
 
 import java.util.HashMap;
 
+import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
@@ -15,14 +16,14 @@ import com.biit.webforms.persistence.entity.condition.Token;
  */
 public class TokenAnswerNeeded extends Token {
 	private static final long serialVersionUID = 1610423674018638342L;
-	private Question question;
+	private BaseQuestion question;
 	private boolean dateField;
 
 	public TokenAnswerNeeded() {
 		super();
 	}
 
-	public TokenAnswerNeeded(Question question, boolean dateField) {
+	public TokenAnswerNeeded(BaseQuestion question, boolean dateField) {
 		super();
 		this.question = question;
 		this.dateField = dateField;
@@ -53,7 +54,7 @@ public class TokenAnswerNeeded extends Token {
 		return "answer[" + referenceString + "]";
 	}
 
-	public Question getQuestion() {
+	public BaseQuestion getQuestion() {
 		return question;
 	}
 
