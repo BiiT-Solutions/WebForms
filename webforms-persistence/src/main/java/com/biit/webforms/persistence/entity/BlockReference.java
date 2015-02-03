@@ -68,9 +68,6 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	public void resetIds() {
 		// Overridden version to also reset ids of rules.
 		super.resetIds();
-		if (reference != null) {
-			reference.resetIds();
-		}
 	}
 
 	@Override
@@ -124,9 +121,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 		if (object instanceof BlockReference) {
 			// Nothing to copy except basic information data.
 			copyBasicInfo(object);
-			if (((BlockReference) object).getReference() != null) {
-				setReference(((BlockReference) object).getReference());
-			}
+			setReference(((BlockReference) object).getReference());
 		} else {
 			throw new NotValidTreeObjectException("Copy data for a Block Reference only supports the same type copy");
 		}

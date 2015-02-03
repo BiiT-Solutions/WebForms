@@ -98,6 +98,8 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 		Assert.assertFalse(form.isContentEqual(formV2));
 		formV2.setVersion(form.getVersion());
 		Assert.assertTrue(form.isContentEqual(formV2));
+		
+		formDao.makePersistent(formV2);
 	}
 
 	private void checkEquals(TreeObject obj1, TreeObject obj2) throws ChildrenNotFoundException {
@@ -110,7 +112,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 	}
 
 	public void checkFormStructure(Form form) {
-		// Check the structure is pressent
+		// Check the structure is present
 		Assert.assertNotNull(form.getChild(FormUtils.CATEGORY_1));
 		Assert.assertNotNull(form.getChild(FormUtils.CATEGORY_1, FormUtils.SYSTEM_FIELD_1));
 		Assert.assertNotNull(form.getChild(FormUtils.CATEGORY_1, FormUtils.INFO_TEXT_1));
