@@ -316,10 +316,10 @@ public class FormManager extends SecuredWebPage {
 	 * 
 	 * @return
 	 */
-	private Form loadAndValidateForm() {
-		Form form = loadForm(getSelectedForm());
+	private CompleteFormView loadAndValidateForm() {
+		CompleteFormView form = new CompleteFormView(loadForm(getSelectedForm()));
 
-		// Xforms only can be uses with valid forms.
+		// Xforms only can use with valid forms.
 		ValidateFormComplete validator = new ValidateFormComplete();
 		validator.setStopOnFail(true);
 

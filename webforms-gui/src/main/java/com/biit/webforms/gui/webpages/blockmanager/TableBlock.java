@@ -179,7 +179,6 @@ public class TableBlock extends Table {
 	 */
 	public void selectLastUsedBlock() {
 		try {
-			System.out.println("--> " + UserSessionHandler.getController().getLastEditedForm());
 			if (UserSessionHandler.getController().getLastEditedForm() != null) {
 				// Update form with new object if the form has change.
 				selectBlock(UserSessionHandler.getController().getLastEditedForm());
