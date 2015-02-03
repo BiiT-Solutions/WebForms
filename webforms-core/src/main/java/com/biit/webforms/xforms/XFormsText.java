@@ -2,7 +2,6 @@ package com.biit.webforms.xforms;
 
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
-import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Text;
 
 /**
