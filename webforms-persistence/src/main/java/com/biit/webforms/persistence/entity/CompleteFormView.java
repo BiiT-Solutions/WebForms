@@ -1,4 +1,4 @@
-package com.biit.webforms.gui.entity;
+package com.biit.webforms.persistence.entity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,14 +17,9 @@ import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.Block;
-import com.biit.webforms.persistence.entity.BlockReference;
-import com.biit.webforms.persistence.entity.Flow;
-import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.IWebformsFormView;
 
 /**
- * This class is a wrapper of a Form class that translates any block reference to a view of its elements.
+ * This class is a wrapper of a Form class that translates any block reference to a list of its elements.
  */
 public class CompleteFormView extends Form implements IWebformsFormView {
 	private static final long serialVersionUID = -426480388117580446L;

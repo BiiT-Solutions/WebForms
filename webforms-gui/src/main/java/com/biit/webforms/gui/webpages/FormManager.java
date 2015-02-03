@@ -41,7 +41,6 @@ import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.utils.RootForm;
-import com.biit.webforms.gui.entity.CompleteFormView;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderJson;
@@ -57,6 +56,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.SimpleFormView;
@@ -403,8 +403,8 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					return new ByteArrayInputStream(GraphvizApp.generateImage(new CompleteFormView(loadForm(getSelectedForm())), null,
-							ImgType.PDF));
+					return new ByteArrayInputStream(GraphvizApp.generateImage(new CompleteFormView(
+							loadForm(getSelectedForm())), null, ImgType.PDF));
 				} catch (IOException | InterruptedException e) {
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 					return null;
@@ -422,7 +422,8 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					return FormGeneratorPdf.generatePdf(new FormPdfGenerator(new CompleteFormView(loadForm(getSelectedForm()))));
+					return FormGeneratorPdf.generatePdf(new FormPdfGenerator(new CompleteFormView(
+							loadForm(getSelectedForm()))));
 				} catch (IOException | DocumentException e) {
 					WebformsLogger.errorMessage(FormManager.class.getName(), e);
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
