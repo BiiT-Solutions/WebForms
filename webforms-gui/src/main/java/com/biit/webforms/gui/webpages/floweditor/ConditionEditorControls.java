@@ -78,7 +78,7 @@ public class ConditionEditorControls extends TabSheet {
 	 * Initialize Ui default values.
 	 */
 	private void initializeComposition() {
-		treeObjectTable.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null, Form.class,
+		treeObjectTable.loadTreeObject(UserSessionHandler.getController().getCompleteFormView(), null, Form.class,
 				Category.class, Group.class, Question.class);
 		treeObjectTable.setValue(null);
 	}

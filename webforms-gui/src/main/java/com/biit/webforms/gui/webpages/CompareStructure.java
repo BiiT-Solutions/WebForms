@@ -239,12 +239,12 @@ public class CompareStructure extends SecuredWebPage {
 
 	private boolean isValidCurrentForm() {
 		ValidateBaseForm validator = new ValidateBaseForm();
-		return validator.validate(UserSessionHandler.getController().getFormInUse());
+		return validator.validate(UserSessionHandler.getController().getCompleteFormView());
 	}
 
 	private String generateCurrentXsd() {
 		if (isValidCurrentForm()) {
-			return new WebformsXsdForm(UserSessionHandler.getController().getFormInUse()).toString();
+			return new WebformsXsdForm(UserSessionHandler.getController().getCompleteFormView()).toString();
 		}
 		MessageManager.showError(LanguageCodes.ERROR_MESSAGE_CURRENT_FORM_STRUCTURE_IS_NOT_VALID);
 		return null;

@@ -67,7 +67,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				WindowTextArea window = new WindowTextArea("Java code");
-				window.setValue(UserSessionHandler.getController().getFormInUse().exportToJavaCode(new StringBuilder()));
+				window.setValue(UserSessionHandler.getController().getCompleteFormView().exportToJavaCode(new StringBuilder()));
 				window.setResizable(true);
 				window.showCentered();
 			}

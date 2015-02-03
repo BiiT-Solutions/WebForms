@@ -126,17 +126,17 @@ public class Validation extends SecuredWebPage {
 	protected void validateAbcdLink() {
 
 		ValidateBaseForm structureValidator = new ValidateBaseForm();
-		if (structureValidator.validate(UserSessionHandler.getController().getFormInUse())) {
+		if (structureValidator.validate(UserSessionHandler.getController().getCompleteFormView())) {
 			List<Form> linkedForms;
 			try {
 				linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
-						UserSessionHandler.getController().getFormInUse());
+						UserSessionHandler.getController().getCompleteFormView());
 
 				if (linkedForms.isEmpty()) {
 					setNoLinkedFormsMessage();
 				} else {
 					ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(UserSessionHandler
-							.getController().getFormInUse());
+							.getController().getCompleteFormView());
 					ValidateReport report = new ValidateReport();
 					validator.validate(linkedForms, report);
 					if (report.isValid()) {
@@ -159,13 +159,13 @@ public class Validation extends SecuredWebPage {
 
 	protected void validateFlow() {
 		ValidateFormStructure structureValidator = new ValidateFormStructure();
-		if (structureValidator.validate(UserSessionHandler.getController().getFormInUse())) {
+		if (structureValidator.validate(UserSessionHandler.getController().getCompleteFormView())) {
 			ValidateFormFlows validator = new ValidateFormFlows();
 			ValidateReport report = new ValidateReport();
-			validator.validate(UserSessionHandler.getController().getFormInUse(), report);
+			validator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
 			if (report.isValid()) {
 				ValidateLogic logicValidator = new ValidateLogic();
-				logicValidator.validate(UserSessionHandler.getController().getFormInUse(), report);
+				logicValidator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
 				if (report.isValid()) {
 					setValidationPassedMessage();
 				} else {
@@ -182,7 +182,7 @@ public class Validation extends SecuredWebPage {
 	protected void validateStructure() {
 		ValidateFormStructure validator = new ValidateFormStructure();
 		ValidateReport report = new ValidateReport();
-		validator.validate(UserSessionHandler.getController().getFormInUse(), report);
+		validator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
 		if (report.isValid()) {
 			setValidationPassedMessage();
 		} else {
@@ -193,14 +193,14 @@ public class Validation extends SecuredWebPage {
 	protected void completeValidation() {
 		ValidateFormComplete validator = new ValidateFormComplete();
 		ValidateReport report = new ValidateReport();
-		validator.validate(UserSessionHandler.getController().getFormInUse(), report);
+		validator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
 
 		List<Form> linkedForms;
 		try {
 			linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
-					UserSessionHandler.getController().getFormInUse());
+					UserSessionHandler.getController().getCompleteFormView());
 			ValidateFormAbcdCompatibility validatorLink = new ValidateFormAbcdCompatibility(UserSessionHandler
-					.getController().getFormInUse());
+					.getController().getCompleteFormView());
 			validatorLink.validate(linkedForms, report);
 
 			if (report.isValid()) {
