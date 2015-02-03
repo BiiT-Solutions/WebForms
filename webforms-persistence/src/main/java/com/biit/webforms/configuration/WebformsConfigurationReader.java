@@ -78,7 +78,7 @@ public class WebformsConfigurationReader {
 
 	private static final String DEFAULT_XML_BASE_ADDRESS = "http://dev.biit-solutions.com/";
 
-	private static final String JSON_EXPORT_ENABLED = "jsonExportEnabled";
+	private static final String JSON_EXPORT_ENABLED = "button.json.visible";
 
 	private static final String DEFAULT_JSON_EXPORT_ENABLED = "false";
 
