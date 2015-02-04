@@ -79,7 +79,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 					answerFormat.setValue(selectedType.getDefaultAnswerFormat());
 					answerFormat.setEnabled(selectedType.isAnswerFormatEnabled());
 				}
-				if (!selectedType.isHorizontalEnabled()) {
+				if (selectedType.getDefaultHorizontal() != null) {
 					horizontal.setValue(selectedType.getDefaultHorizontal());
 					horizontal.setEnabled(selectedType.isHorizontalEnabled());
 				}
