@@ -10,6 +10,7 @@ import com.biit.form.BaseCategory;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
@@ -185,6 +186,8 @@ public class Designer extends SecuredWebPage {
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_CATEGORY_NOT_INSERTED_IN_BLOCK);
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -201,6 +204,8 @@ public class Designer extends SecuredWebPage {
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_GROUP_NOT_INSERTED);
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -217,6 +222,8 @@ public class Designer extends SecuredWebPage {
 					table.addRow(newQuestion, newQuestion.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_QUESTION_NOT_INSERTED);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -233,6 +240,8 @@ public class Designer extends SecuredWebPage {
 					table.addRow(newField, newField.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_SYSTEM_FIELD_NOT_INSERTED);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -249,6 +258,8 @@ public class Designer extends SecuredWebPage {
 					table.addRow(newText, newText.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_TEXT_NOT_INSERTED);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -271,6 +282,8 @@ public class Designer extends SecuredWebPage {
 					table.addRow(newAnswer, newAnswer.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -291,6 +304,8 @@ public class Designer extends SecuredWebPage {
 						table.addRow(newAnswer, newAnswer.getParent());
 					} catch (NotValidChildException e) {
 						MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
+					} catch (ElementIsReadOnly e) {
+						MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 					}
 				}
 			}
@@ -308,6 +323,9 @@ public class Designer extends SecuredWebPage {
 				} catch (DependencyExistException | ChildrenNotFoundException e) {
 					table.setValue(row);
 					MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
+				} catch (ElementIsReadOnly e) {
+					table.setValue(row);
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -318,9 +336,14 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
-				UserSessionHandler.getController().moveUp(row);
-				table.redrawRow(table.getParentRowItem(row));
-				table.setValue(row);
+				try {
+					UserSessionHandler.getController().moveUp(row);
+					table.redrawRow(table.getParentRowItem(row));
+					table.setValue(row);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				}
+
 			}
 		});
 
@@ -330,9 +353,14 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
-				UserSessionHandler.getController().moveDown(row);
-				table.redrawRow(table.getParentRowItem(row));
-				table.setValue(row);
+				try {
+					UserSessionHandler.getController().moveDown(row);
+					table.redrawRow(table.getParentRowItem(row));
+					table.setValue(row);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				}
+
 			}
 		});
 
@@ -521,6 +549,8 @@ public class Designer extends SecuredWebPage {
 				} catch (EmptyBlockCannotBeInserted e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
 							LanguageCodes.WARNING_DESCRIPTION_EMPTY_BLOCK);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -544,6 +574,8 @@ public class Designer extends SecuredWebPage {
 				} catch (EmptyBlockCannotBeInserted e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
 							LanguageCodes.WARNING_DESCRIPTION_EMPTY_BLOCK);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -585,6 +617,8 @@ public class Designer extends SecuredWebPage {
 				} catch (DestinyIsContainedAtOrigin | ChildrenNotFoundException e) {
 					MessageManager.showError(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
 							LanguageCodes.WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});

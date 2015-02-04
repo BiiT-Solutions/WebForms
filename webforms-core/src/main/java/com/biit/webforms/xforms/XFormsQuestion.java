@@ -16,10 +16,10 @@ import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -328,8 +328,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		Flow flow = new Flow();
 		try {
 			flow.setContent(origin, FlowType.NORMAL, destiny, false, new ArrayList<Token>());
-		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
-				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
+		} catch (BadFlowContentException | FlowWithoutSourceException | FlowSameOriginAndDestinyException
+				| FlowDestinyIsBeforeOriginException | FlowWithoutDestinyException e) {
 			// Impossible
 			WebformsLogger.errorMessage(XFormsQuestion.class.getName(), e);
 		}

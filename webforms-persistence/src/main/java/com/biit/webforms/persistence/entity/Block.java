@@ -8,9 +8,10 @@ import org.hibernate.annotations.PolymorphismType;
 
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.webforms.persistence.entity.exceptions.OnlyOneChildIsAllowed;
+import com.biit.webforms.persistence.entity.exceptions.OnlyOneChildIsAllowedException;
 import com.liferay.portal.model.User;
 
 @Entity
@@ -41,9 +42,9 @@ public class Block extends Form implements IWebformsBlockView {
 	}
 
 	@Override
-	public void addChild(TreeObject child) throws NotValidChildException {
+	public void addChild(TreeObject child) throws NotValidChildException, ElementIsReadOnly {
 		if (!getChildren().isEmpty()) {
-			throw new OnlyOneChildIsAllowed("Building blocks only can have one category. ");
+			throw new OnlyOneChildIsAllowedException("Building blocks only can have one category. ");
 		}
 		super.addChild(child);
 	}

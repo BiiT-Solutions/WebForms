@@ -40,10 +40,11 @@ import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.vaadin.data.Container.Filterable;
@@ -399,8 +400,14 @@ public class FlowEditor extends SecuredWebPage {
 							selectedFlows.add((Flow) selectedObject);
 						}
 					}
-					Set<Flow> clones = UserSessionHandler.getController().cloneFlowsAndInsertIntoForm(selectedFlows);
-					addOrUpdateFlowInTableAction(clones.toArray(new Flow[0]));
+					Set<Flow> clones;
+					try {
+						clones = UserSessionHandler.getController().cloneFlowsAndInsertIntoForm(selectedFlows);
+						addOrUpdateFlowInTableAction(clones.toArray(new Flow[0]));
+					} catch (FlowNotAllowedException e) {
+						// Not possible.
+						WebformsLogger.errorMessage(this.getClass().getName(), e);
+					}
 				}
 			}
 		});
@@ -504,8 +511,8 @@ public class FlowEditor extends SecuredWebPage {
 				try {
 					WindowFlow windowFlow = (WindowFlow) window;
 					if (!windowFlow.isConditionValid()) {
-						MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-								LanguageCodes.WARNING_DESCRIPTION_CONDITION_BAD_FORMED);
+						MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+								LanguageCodes.ERROR_DESCRIPTION_CONDITION_BAD_FORMED);
 					} else {
 						UserSessionHandler.getController().updateFlowContent(flow, windowFlow.getOrigin(),
 								windowFlow.getFlowType(), windowFlow.getDestiny(), windowFlow.isOthers(),
@@ -514,21 +521,24 @@ public class FlowEditor extends SecuredWebPage {
 						window.close();
 					}
 				} catch (BadFlowContentException e) {
-					MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.WARNING_DESCRIPTION_RULE_BAD_FORMED);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_DESCRIPTION_RULE_BAD_FORMED);
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
-				} catch (FlowWithoutSource e) {
-					MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.WARNING_DESCRIPTION_ORIGIN_IS_NULL);
+				} catch (FlowWithoutSourceException e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_DESCRIPTION_ORIGIN_IS_NULL);
 				} catch (FlowSameOriginAndDestinyException e) {
-					MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN_AND_DESTINY);
-				} catch (FlowDestinyIsBeforeOrigin e) {
-					MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN);
-				} catch (FlowWithoutDestiny e) {
-					MessageManager.showError(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_NULL);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_DESCRIPTION_SAME_ORIGIN_AND_DESTINY);
+				} catch (FlowDestinyIsBeforeOriginException e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN);
+				} catch (FlowWithoutDestinyException e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_DESCRIPTION_DESTINY_IS_NULL);
+				} catch (FlowNotAllowedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});

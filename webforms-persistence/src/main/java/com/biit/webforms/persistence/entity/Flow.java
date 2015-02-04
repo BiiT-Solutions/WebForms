@@ -35,10 +35,10 @@ import com.biit.webforms.persistence.entity.condition.TokenComplex;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 
 @Entity
 @Table(name = "flow")
@@ -116,8 +116,8 @@ public class Flow extends StorableObject {
 	}
 
 	public void setContent(TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
-			List<Token> condition) throws BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			List<Token> condition) throws BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		checkFlowRestrictions(origin, flowType, destiny, others, condition);
 
 		this.origin = origin;
@@ -128,15 +128,15 @@ public class Flow extends StorableObject {
 	}
 
 	public static void checkFlowRestrictions(TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
-			List<Token> condition) throws FlowWithoutSource, BadFlowContentException,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			List<Token> condition) throws FlowWithoutSourceException, BadFlowContentException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		// No flow without source
 		if (origin == null) {
-			throw new FlowWithoutSource();
+			throw new FlowWithoutSourceException();
 		}
 		// If flow type doesn't need destiny, destiny must be null and otherwise
 		if ((flowType.isDestinyNull() && destiny != null) || (!flowType.isDestinyNull() && destiny == null)) {
-			throw new FlowWithoutDestiny();
+			throw new FlowWithoutDestinyException();
 		}
 
 		if (others && (condition == null || !condition.isEmpty())) {
@@ -153,7 +153,7 @@ public class Flow extends StorableObject {
 		// Flow destiny cannot be prior to origin.
 		if (!flowType.isDestinyNull()) {
 			if (!(origin.compareTo(destiny) == -1)) {			
-				throw new FlowDestinyIsBeforeOrigin();
+				throw new FlowDestinyIsBeforeOriginException();
 			}
 		}
 	}

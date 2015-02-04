@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -29,10 +30,10 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
 public class FormUtils {
@@ -69,15 +70,15 @@ public class FormUtils {
 
 	public static Form createCompleteForm() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin,
-			FlowWithoutDestiny, NotValidTokenType {
+			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
+			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly {
 		return createCompleteForm(null);
 	}
 
 	public static Form createCompleteForm(Block withBlock) throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin,
-			FlowWithoutDestiny, NotValidTokenType {
+			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
+			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly {
 		Form form = new Form();
 		form.setOrganizationId(ORGANIZATION_ID);
 		form.setLabel(FORM_COMPLETE_LABEL);
@@ -124,16 +125,16 @@ public class FormUtils {
 	}
 
 	public static Flow createFlow(TreeObject origin, TreeObject destiny, boolean others, List<Token> conditions)
-			throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		Flow flow = new Flow();
 		flow.setContent(origin, FlowType.NORMAL, destiny, others, conditions);
 		return flow;
 	}
 
 	public static Flow createEndFormflow(TreeObject origin, boolean others, List<Token> condition)
-			throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		Flow flow = new Flow();
 		flow.setContent(origin, FlowType.END_FORM, null, others, condition);
 		return flow;
@@ -148,7 +149,8 @@ public class FormUtils {
 	}
 
 	public static Block createBlock() throws NotValidChildException, FieldTooLongException,
-			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
+			ElementIsReadOnly {
 		Block block = new Block();
 		block.addChild(createCategory(CATEGORY_IN_BLOCK));
 		block.setOrganizationId(ORGANIZATION_ID);
@@ -166,9 +168,10 @@ public class FormUtils {
 	 * @throws NotValidChildException
 	 * @throws InvalidAnswerSubformatException
 	 * @throws InvalidAnswerFormatException
+	 * @throws ElementIsReadOnly
 	 */
 	public static Category createCategory(String name) throws FieldTooLongException, CharacterNotAllowedException,
-			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly {
 		Category category = new Category();
 		category.setName(name);
 		category.setLabel(name);
@@ -181,7 +184,7 @@ public class FormUtils {
 	}
 
 	private static TreeObject createGroup(String name) throws FieldTooLongException, CharacterNotAllowedException,
-			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly {
 		Group group = new Group();
 		group.setName(name);
 		group.setLabel(name);
@@ -222,7 +225,7 @@ public class FormUtils {
 	}
 
 	public static TreeObject createQuestionAnswers(String name, AnswerType answerType, String... answers)
-			throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException {
+			throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException, ElementIsReadOnly {
 		Question question = new Question();
 		question.setName(name);
 		question.setLabel(name);

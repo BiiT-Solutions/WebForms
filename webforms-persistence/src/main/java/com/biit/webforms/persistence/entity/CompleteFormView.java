@@ -12,6 +12,7 @@ import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidParentException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -19,6 +20,7 @@ import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 
 /**
  * This class is a wrapper of a Form class that translates any block reference to a list of its elements.
@@ -184,15 +186,30 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		return flows;
 	}
 
+	/**
+	 * Not allowed rules are the rules that comes from linked block and end in another linked block.
+	 * 
+	 * @param rule
+	 * @throws FlowNotAllowedException 
+	 */
 	@Override
-	public void addFlow(Flow rule) {
+	public void addFlow(Flow rule) throws FlowNotAllowedException {
 		if (form != null) {
+			BlockReference blockReferenceOfSource = getBlockReference(rule.getOrigin());
+			BlockReference blockReferenceOfDestination = getBlockReference(rule.getDestiny());
+
+			// Are in the same linked block.
+			if (blockReferenceOfSource != null && blockReferenceOfDestination != null
+					&& blockReferenceOfSource.equals(blockReferenceOfDestination)) {
+				throw new FlowNotAllowedException("");
+			}
+
 			form.addFlow(rule);
 		}
 	}
 
 	@Override
-	public void addChild(TreeObject child) throws NotValidChildException {
+	public void addChild(TreeObject child) throws NotValidChildException, ElementIsReadOnly {
 		if (form != null) {
 			form.addChild(child);
 		}
@@ -298,7 +315,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		createCopyOfBlocks();
 	}
 
-	public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException {
+	public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException,
+			ElementIsReadOnly {
 		// Check if it is inside a linked block.
 		BlockReference blockReference = getBlockReference(element);
 		if (blockReference == null) {

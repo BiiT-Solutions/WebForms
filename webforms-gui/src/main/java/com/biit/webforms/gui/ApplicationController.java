@@ -19,6 +19,7 @@ import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.validators.ValidateBaseForm;
@@ -71,10 +72,11 @@ import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.utils.conversor.ConversorAbcdFormToForm;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
@@ -253,10 +255,11 @@ public class ApplicationController {
 	 * @throws FormWithSameNameException
 	 * @throws FieldTooLongException
 	 * @throws UnexpectedDatabaseException
+	 * @throws ElementIsReadOnly
 	 */
 	public Form importAbcdForm(SimpleFormView simpleFormView, String importLabel, Long organizationId)
 			throws NotValidAbcdForm, FieldTooLongException, FormWithSameNameException, CharacterNotAllowedException,
-			UnexpectedDatabaseException {
+			UnexpectedDatabaseException, ElementIsReadOnly {
 		logInfoStart("importAbcdForm", simpleFormView, importLabel, organizationId);
 
 		// Try to create a new form with the name and the organization
@@ -473,8 +476,9 @@ public class ApplicationController {
 	 * 
 	 * @return
 	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
 	 */
-	public Category addNewCategory() throws NotValidChildException {
+	public Category addNewCategory() throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
 		return (Category) insertTreeObject(Category.class, getCompleteFormView(), "Category");
 	}
@@ -485,8 +489,9 @@ public class ApplicationController {
 	 * @param parent
 	 * @return
 	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
 	 */
-	public Group addNewGroup(TreeObject parent) throws NotValidChildException {
+	public Group addNewGroup(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
 		return (Group) insertTreeObject(Group.class, parent, "Group");
 	}
@@ -497,8 +502,9 @@ public class ApplicationController {
 	 * @param parent
 	 * @return
 	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
 	 */
-	public Question addNewQuestion(TreeObject parent) throws NotValidChildException {
+	public Question addNewQuestion(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
 		return (Question) insertTreeObject(Question.class, parent, "Question");
 	}
@@ -509,8 +515,9 @@ public class ApplicationController {
 	 * @param parent
 	 * @return
 	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
 	 */
-	public SystemField addNewSystemField(TreeObject parent) throws NotValidChildException {
+	public SystemField addNewSystemField(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
 		return (SystemField) insertTreeObject(SystemField.class, parent, "SystemField");
 	}
@@ -521,8 +528,9 @@ public class ApplicationController {
 	 * @param parent
 	 * @return
 	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
 	 */
-	public Text addNewText(TreeObject parent) throws NotValidChildException {
+	public Text addNewText(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
 		return (Text) insertTreeObject(Text.class, parent, "Text");
 	}
@@ -533,8 +541,9 @@ public class ApplicationController {
 	 * @param parent
 	 * @return
 	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
 	 */
-	public Answer addNewAnswer(TreeObject parent) throws NotValidChildException {
+	public Answer addNewAnswer(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
 		return (Answer) insertTreeObject(Answer.class, parent, "Answer");
 	}
@@ -547,9 +556,10 @@ public class ApplicationController {
 	 * @param name
 	 * @return
 	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
 	 */
 	public TreeObject insertTreeObject(Class<? extends TreeObject> classType, TreeObject parent, String name)
-			throws NotValidChildException {
+			throws NotValidChildException, ElementIsReadOnly {
 
 		// Block references cannot have new childs.
 		if (parent instanceof BlockReference || parent.isReadOnly()) {
@@ -622,8 +632,10 @@ public class ApplicationController {
 	 * @param row
 	 * @throws DependencyExistException
 	 * @throws ChildrenNotFoundException
+	 * @throws ElementIsReadOnly
 	 */
-	public void removeTreeObject(TreeObject row) throws DependencyExistException, ChildrenNotFoundException {
+	public void removeTreeObject(TreeObject row) throws DependencyExistException, ChildrenNotFoundException,
+			ElementIsReadOnly {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
 				+ "' removeTreeObject " + row + " of " + row.getAncestor(Form.class));
 
@@ -635,8 +647,9 @@ public class ApplicationController {
 	 * Moves a element of a tree object up.
 	 * 
 	 * @param row
+	 * @throws ElementIsReadOnly
 	 */
-	public void moveUp(TreeObject row) {
+	public void moveUp(TreeObject row) throws ElementIsReadOnly {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move Up "
 				+ row + " START");
 		// Move the BlockReference and not the element if exists.
@@ -656,8 +669,9 @@ public class ApplicationController {
 	 * Moves a element of a tree object down.
 	 * 
 	 * @param row
+	 * @throws ElementIsReadOnly
 	 */
-	public void moveDown(TreeObject row) {
+	public void moveDown(TreeObject row) throws ElementIsReadOnly {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move Down "
 				+ row);
 		// Move the BlockReference and not the element if exists.
@@ -834,9 +848,10 @@ public class ApplicationController {
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
 	 * @throws EmptyBlockCannotBeInserted
+	 * @throws ElementIsReadOnly
 	 */
 	public void insertBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm,
-			EmptyBlockCannotBeInserted {
+			EmptyBlockCannotBeInserted, ElementIsReadOnly {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' insert Block "
 				+ formInUse + " " + block);
 
@@ -884,8 +899,10 @@ public class ApplicationController {
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
 	 * @throws EmptyBlockCannotBeInserted
+	 * @throws ElementIsReadOnly
 	 */
-	public void linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm, EmptyBlockCannotBeInserted {
+	public void linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm, EmptyBlockCannotBeInserted,
+			ElementIsReadOnly {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' link Block '"
 				+ block + "' in '" + formInUse + "' ");
 
@@ -926,9 +943,10 @@ public class ApplicationController {
 	 * @throws NotValidChildException
 	 * @throws SameOriginAndDestinationException
 	 * @throws DestinyIsContainedAtOrigin
+	 * @throws ElementIsReadOnly
 	 */
 	public void moveTo(TreeObject origin, TreeObject destiny) throws NotValidChildException,
-			SameOriginAndDestinationException, DestinyIsContainedAtOrigin, ChildrenNotFoundException {
+			SameOriginAndDestinationException, DestinyIsContainedAtOrigin, ChildrenNotFoundException, ElementIsReadOnly {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move '"
 				+ origin + "' to '" + destiny + "'.");
 		if (origin.equals(destiny)) {
@@ -963,8 +981,9 @@ public class ApplicationController {
 	 * 
 	 * @param flow
 	 * @param form
+	 * @throws FlowNotAllowedException
 	 */
-	public void addFlowToForm(Flow flow, Form form) {
+	public void addFlowToForm(Flow flow, Form form) throws FlowNotAllowedException {
 		logInfoStart("addFlowToForm", flow, form);
 		form.addFlow(flow);
 		setUnsavedFormChanges(true);
@@ -980,14 +999,16 @@ public class ApplicationController {
 	 * @param destiny
 	 * @param conditionString
 	 * @throws BadFlowContentException
-	 * @throws FlowWithoutSource
+	 * @throws FlowWithoutSourceException
 	 * @throws FlowSameOriginAndDestinyException
-	 * @throws FlowDestinyIsBeforeOrigin
-	 * @throws FlowWithoutDestiny
+	 * @throws FlowDestinyIsBeforeOriginException
+	 * @throws FlowWithoutDestinyException
+	 * @throws FlowNotAllowedException
 	 */
 	public void updateFlowContent(Flow flow, TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
-			List<Token> condition) throws BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			List<Token> condition) throws BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
+			FlowNotAllowedException {
 		logInfoStart("updateFlowContent", flow, origin, flowType, destiny, others, condition);
 
 		flow.setContent(origin, flowType, destiny, others, condition);
@@ -1039,8 +1060,9 @@ public class ApplicationController {
 	 * 
 	 * @param selectedFlows
 	 * @return
+	 * @throws FlowNotAllowedException
 	 */
-	public Set<Flow> cloneFlowsAndInsertIntoForm(Set<Flow> selectedFlows) {
+	public Set<Flow> cloneFlowsAndInsertIntoForm(Set<Flow> selectedFlows) throws FlowNotAllowedException {
 		logInfoStart("cloneFlowsAndInsertIntoForm", selectedFlows);
 		Set<Flow> clones = cloneFlows(selectedFlows);
 		for (Flow clone : clones) {

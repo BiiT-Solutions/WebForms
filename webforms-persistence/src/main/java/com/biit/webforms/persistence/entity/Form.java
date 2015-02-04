@@ -42,13 +42,15 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenInValue;
-import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToForm;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
+import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToFormException;
 import com.biit.webforms.serialization.AnswerDeserializer;
 import com.biit.webforms.serialization.AnswerSerializer;
 import com.biit.webforms.serialization.BaseRepeatableGroupDeserializer;
@@ -201,7 +203,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		this.status = status;
 	}
 
-	public void addFlow(Flow rule) {
+	public void addFlow(Flow rule) throws FlowNotAllowedException {
 		rules.add(rule);
 		rule.setForm(this);
 	}
@@ -286,14 +288,15 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return computedView;
 	}
 
-	public String getReference(TreeObject element) throws ReferenceNotPertainsToForm {
+	public String getReference(TreeObject element) throws ReferenceNotPertainsToFormException {
 		List<TreeObject> parentList = new ArrayList<>();
 		TreeObject parent;
 		while ((parent = element.getParent()) != null) {
 			parentList.add(parent);
 		}
 		if (!parentList.get(parentList.size() - 1).equals(this)) {
-			throw new ReferenceNotPertainsToForm("TreeObject: '" + element + "' doesn't belong to '" + this + "'");
+			throw new ReferenceNotPertainsToFormException("TreeObject: '" + element + "' doesn't belong to '" + this
+					+ "'");
 		}
 
 		String reference = "<" + element.getName() + ">";
@@ -372,7 +375,12 @@ public class Form extends BaseForm implements IWebformsFormView {
 					continue;
 				}
 			}
-			addFlow(copiedRule);
+			try {
+				addFlow(copiedRule);
+			} catch (FlowNotAllowedException e) {
+				// Impossible
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
 		}
 	}
 

@@ -325,15 +325,15 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_TO_XFORMS("tooltip.export.xforms"),
 	
 	WARNING_CAPTION_RULE_ORIGIN_INVALID("warning.caption.rule.origin.invalid"),
-	WARNING_CAPTION_RULE_NOT_CORRECT("warning.caption.rule.not.correct"),
+	ERROR_CAPTION_RULE_NOT_CORRECT("warning.caption.rule.not.correct"),
 	
 	WARNING_DESCRIPTION_CAN_ONLY_SELECT_QUESTIONS("warning.description.can.only.select.questions"),
-	WARNING_DESCRIPTION_DESTINY_IS_NULL("warning.description.destiny.is.null"), 
-	WARNING_DESCRIPTION_ORIGIN_IS_NULL("warning.description.origin.is.null"),
-	WARNING_DESCRIPTION_SAME_ORIGIN_AND_DESTINY("warning.description.same.origin.and.destiny"),
-	WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN("warning.description.destiny.is.before.origin"),
-	WARNING_DESCRIPTION_RULE_BAD_FORMED("warning.description.rule.bad.formed"),
-	WARNING_DESCRIPTION_CONDITION_BAD_FORMED("warning.description.condition.bad.formed"),
+	ERROR_DESCRIPTION_DESTINY_IS_NULL("warning.description.destiny.is.null"), 
+	ERROR_DESCRIPTION_ORIGIN_IS_NULL("warning.description.origin.is.null"),
+	ERROR_DESCRIPTION_SAME_ORIGIN_AND_DESTINY("warning.description.same.origin.and.destiny"),
+	ERROR_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN("warning.description.destiny.is.before.origin"),
+	ERROR_DESCRIPTION_RULE_BAD_FORMED("warning.description.rule.bad.formed"),
+	ERROR_DESCRIPTION_CONDITION_BAD_FORMED("warning.description.condition.bad.formed"),
 	
 	ERROR_MESSAGE_VALUE_HAS_WRONG_FORMAT("error.message.value.has.wrong.format"),
 	ERROR_MESSAGE_FIELDS_ARE_NOT_FILLED_CORRECTLY("error.message.fields.are.not.filled.correctly"),

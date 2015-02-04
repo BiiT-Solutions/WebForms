@@ -9,16 +9,17 @@ import org.testng.annotations.Test;
 
 import com.biit.form.BaseQuestion;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.utils.math.domain.exceptions.BadFormedExpressions;
 import com.biit.webforms.utils.math.domain.exceptions.DifferentDateUnitForQuestions;
@@ -31,8 +32,8 @@ public class TestFlowDomain {
 
 	@Test
 	public void testFlowDomain() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
-			BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin,
-			FlowWithoutDestiny, BadFormedExpressions, IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
+			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
+			FlowWithoutDestinyException, BadFormedExpressions, IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions, ElementIsReadOnly {
 		Form form = FormTestUtilities.createFormTest1();
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu1"));
 
@@ -40,9 +41,9 @@ public class TestFlowDomain {
 
 	@Test(dependsOnMethods = { "testFlowDomain" }, expectedExceptions = { IncompleteLogic.class })
 	public void testFlowDomainNotCompleteLogicOnlyQuestionAnswer() throws FieldTooLongException,
-			NotValidChildException, CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny, BadFormedExpressions,
-			IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
+			NotValidChildException, CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, BadFormedExpressions,
+			IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions, ElementIsReadOnly {
 
 		Form form = FormTestUtilities.createFormTest2();
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu1"));
@@ -50,9 +51,9 @@ public class TestFlowDomain {
 
 	@Test(dependsOnMethods = { "testFlowDomainNotCompleteLogicOnlyQuestionAnswer" })
 	public void testFlowDomainCompleteLogicWithOr() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny, BadFormedExpressions,
-			IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, BadFormedExpressions,
+			IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions, ElementIsReadOnly {
 
 		Form form = FormTestUtilities.createFormTest3();
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu1"));
@@ -60,9 +61,9 @@ public class TestFlowDomain {
 
 	@Test(dependsOnMethods = { "testFlowDomainCompleteLogicWithOr" }, expectedExceptions = { RedundantLogic.class })
 	public void testFlowDomainOverlappedLogicQuestionAnswer() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny, BadFormedExpressions,
-			IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions {
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, BadFormedExpressions,
+			IncompleteLogic, RedundantLogic, DifferentDateUnitForQuestions, ElementIsReadOnly {
 
 		Form form = FormTestUtilities.createFormTest4();
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu1"));
@@ -70,10 +71,10 @@ public class TestFlowDomain {
 
 	@Test(dependsOnMethods = { "testFlowDomainOverlappedLogicQuestionAnswer" })
 	public void testAndOrQuestionAnswer() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny, BadFormedExpressions,
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, BadFormedExpressions,
 			IncompleteLogic, RedundantLogic, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			DifferentDateUnitForQuestions {
+			DifferentDateUnitForQuestions, ElementIsReadOnly {
 
 		Form form = FormTestUtilities.createFormTest6();
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("cat1", "qu3"));

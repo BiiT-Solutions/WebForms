@@ -11,10 +11,10 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 
 public class ComputedFlowView {
 
@@ -87,8 +87,8 @@ public class ComputedFlowView {
 			flow.setGenerated(true);
 			flow.setReadOnly(origin.isReadOnly() && destiny.isReadOnly());
 			addFlow(flow);
-		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
-				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
+		} catch (BadFlowContentException | FlowWithoutSourceException | FlowSameOriginAndDestinyException
+				| FlowDestinyIsBeforeOriginException | FlowWithoutDestinyException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -100,8 +100,8 @@ public class ComputedFlowView {
 			flow.setContent(origin, FlowType.END_FORM, null, false, new ArrayList<Token>());
 			flow.setGenerated(true);
 			addFlow(flow);
-		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
-				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
+		} catch (BadFlowContentException | FlowWithoutSourceException | FlowSameOriginAndDestinyException
+				| FlowDestinyIsBeforeOriginException | FlowWithoutDestinyException e) {
 			// Imposible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

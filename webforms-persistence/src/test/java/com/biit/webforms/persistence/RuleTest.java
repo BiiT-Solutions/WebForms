@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
@@ -22,7 +23,6 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
-import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
@@ -34,10 +34,11 @@ import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -58,7 +59,9 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 
 	@Test
 	public void testRule() throws FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
-			InvalidAnswerSubformatException, NotValidChildException, UnexpectedDatabaseException {
+			InvalidAnswerSubformatException, NotValidChildException, UnexpectedDatabaseException, ElementIsReadOnly,
+			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException {
 		Form form = createForm();
 
 		int prevForm = formDao.getRowCount();
@@ -84,7 +87,9 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		formDao.makeTransient(dbForm);
 	}
 
-	private Form createForm() {
+	private Form createForm() throws ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
+			FlowNotAllowedException {
 		try {
 			Form form = new Form();
 			form.setLabel(FORM_NAME);
@@ -118,7 +123,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 			List<Token> condition = Arrays.asList(new Token[] {
 					TokenComparationValue.getTokenEqual(question1, AnswerSubformat.TEXT, null, "test"), Token.and(),
 					TokenComparationAnswer.getTokenEqual(question2, answer1) });
-			Flow rule1 = createRule(question1, FlowType.NORMAL, question2, false, condition);
+			Flow rule1 = FormUtils.createFlow(question1, question2, false, condition);
 
 			form.addFlow(rule1);
 
@@ -130,22 +135,10 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		}
 	}
 
-	private Flow createRule(Question question1, FlowType ruletype, Question question2, boolean others,
-			List<Token> condition) {
-
-		try {
-			Flow rule = new Flow();
-			rule.setContent(question1, ruletype, question2, others, condition);
-			return rule;
-		} catch (BadFlowContentException | FlowWithoutSource | FlowSameOriginAndDestinyException
-				| FlowDestinyIsBeforeOrigin | FlowWithoutDestiny e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	@Test(expectedExceptions = { DependencyExistException.class })
-	public void removeFlowWithQuestion() throws UnexpectedDatabaseException, DependencyExistException {
+	public void removeFlowWithQuestion() throws UnexpectedDatabaseException, DependencyExistException,
+			ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException {
 		Form form = createForm();
 		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"
 				+ QUESTION_WITH_ANSWERS);
@@ -154,7 +147,9 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 	}
 
 	@Test(expectedExceptions = { DependencyExistException.class })
-	public void removeFlowWithQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException {
+	public void removeFlowWithQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException,
+			ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException {
 		Form form = createForm();
 		formDao.makePersistent(form);
 
@@ -169,7 +164,9 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 	}
 
 	@Test
-	public void removeFlowAndQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException {
+	public void removeFlowAndQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException,
+			ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException {
 		Form form = createForm();
 		formDao.makePersistent(form);
 

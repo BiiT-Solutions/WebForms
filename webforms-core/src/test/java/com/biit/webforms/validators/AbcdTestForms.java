@@ -8,6 +8,7 @@ import com.biit.abcd.persistence.entity.Form;
 import com.biit.abcd.persistence.entity.Group;
 import com.biit.abcd.persistence.entity.Question;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -15,7 +16,7 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 public class AbcdTestForms {
 
-	public static Form generateTestForm1() throws FieldTooLongException, InvalidAnswerFormatException, CharacterNotAllowedException, NotValidChildException{
+	public static Form generateTestForm1() throws FieldTooLongException, InvalidAnswerFormatException, CharacterNotAllowedException, NotValidChildException, ElementIsReadOnly{
 		Form form = new Form();
 		form.setLabel("test_1");
 		Category el_1  = new Category();

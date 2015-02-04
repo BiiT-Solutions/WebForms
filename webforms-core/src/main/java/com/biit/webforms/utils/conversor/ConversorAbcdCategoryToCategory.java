@@ -4,12 +4,14 @@ import com.biit.abcd.persistence.entity.Category;
 import com.biit.abcd.persistence.entity.Group;
 import com.biit.abcd.persistence.entity.Question;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.logger.WebformsLogger;
 
-public class ConversorAbcdCategoryToCategory extends ConversorTreeObject<Category, com.biit.webforms.persistence.entity.Category> {
-	
-	private ConversorAbcdGroupToGroup conversorGroup = new ConversorAbcdGroupToGroup(); 
+public class ConversorAbcdCategoryToCategory extends
+		ConversorTreeObject<Category, com.biit.webforms.persistence.entity.Category> {
+
+	private ConversorAbcdGroupToGroup conversorGroup = new ConversorAbcdGroupToGroup();
 	private ConversorAbcdQuestionToQuestion conversorQuestion = new ConversorAbcdQuestionToQuestion();
 
 	@Override
@@ -37,7 +39,7 @@ public class ConversorAbcdCategoryToCategory extends ConversorTreeObject<Categor
 			}
 			try {
 				destiny.addChild(convertedChild);
-			} catch (NotValidChildException e) {
+			} catch (NotValidChildException | ElementIsReadOnly e) {
 				// Impossible
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}

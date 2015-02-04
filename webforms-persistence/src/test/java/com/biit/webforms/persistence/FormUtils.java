@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -29,10 +30,11 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
 public class FormUtils {
@@ -44,6 +46,8 @@ public class FormUtils {
 	public static final String CATEGORY_2 = "category2";
 	public static final String CATEGORY_IN_BLOCK_1 = "categoryInBlock1";
 	public static final String CATEGORY_IN_BLOCK_2 = "categoryInBlock2";
+	public static final String QUESTION_IN_BLOCK_11 = "questionInBlock1";
+	public static final String QUESTION_IN_BLOCK_12 = "questionInBlock2";
 	public static final String SYSTEM_FIELD_1 = "sysfield1";
 	public static final String SYSTEM_FIELD_1_NAME = "sys.field";
 	public static final String INFO_TEXT_1 = "infoText1";
@@ -70,18 +74,48 @@ public class FormUtils {
 
 	public static Form createCompleteForm() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin,
-			FlowWithoutDestiny, NotValidTokenType {
+			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
+			FlowNotAllowedException {
 		return createCompleteForm(null);
 	}
 
 	public static Form createCompleteForm(Block withBlock) throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin,
-			FlowWithoutDestiny, NotValidTokenType {
+			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
+			FlowNotAllowedException {
+		return createCompleteForm(withBlock, FORM_COMPLETE_LABEL);
+	}
+
+	/**
+	 * Creates a form with two categories.
+	 * 
+	 * @param withBlock
+	 * @param label
+	 * @return
+	 * @throws FieldTooLongException
+	 * @throws NotValidChildException
+	 * @throws CharacterNotAllowedException
+	 * @throws InvalidAnswerFormatException
+	 * @throws InvalidAnswerSubformatException
+	 * @throws BadFlowContentException
+	 * @throws FlowWithoutSourceException
+	 * @throws FlowSameOriginAndDestinyException
+	 * @throws FlowDestinyIsBeforeOriginException
+	 * @throws FlowWithoutDestinyException
+	 * @throws NotValidTokenType
+	 * @throws ElementIsReadOnly
+	 * @throws FlowNotAllowedException
+	 */
+	public static Form createCompleteForm(Block withBlock, String label) throws FieldTooLongException,
+			NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException,
+			InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
+			NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException {
 		Form form = new Form();
 		form.setOrganizationId(ORGANIZATION_ID);
-		form.setLabel(FORM_COMPLETE_LABEL);
+		form.setLabel(label);
 
 		form.addChild(createCategory(CATEGORY_1));
 		if (withBlock != null) {
@@ -125,16 +159,16 @@ public class FormUtils {
 	}
 
 	public static Flow createFlow(TreeObject origin, TreeObject destiny, boolean others, List<Token> conditions)
-			throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		Flow flow = new Flow();
 		flow.setContent(origin, FlowType.NORMAL, destiny, others, conditions);
 		return flow;
 	}
 
 	public static Flow createEndFormflow(TreeObject origin, boolean others, List<Token> condition)
-			throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		Flow flow = new Flow();
 		flow.setContent(origin, FlowType.END_FORM, null, others, condition);
 		return flow;
@@ -149,9 +183,13 @@ public class FormUtils {
 	}
 
 	public static Block createBlock() throws NotValidChildException, FieldTooLongException,
-			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
+			ElementIsReadOnly {
 		Block block = new Block();
-		block.addChild(createCategory(CATEGORY_IN_BLOCK_1));
+		Category category = createCategory(CATEGORY_IN_BLOCK_1);
+		block.addChild(category);
+		category.addChild(createQuestionAnswers(QUESTION_IN_BLOCK_11, AnswerType.INPUT));
+		category.addChild(createQuestionAnswers(QUESTION_IN_BLOCK_12, AnswerType.INPUT));
 		block.setOrganizationId(ORGANIZATION_ID);
 		block.setLabel(BLOCK_1);
 		return block;
@@ -167,9 +205,10 @@ public class FormUtils {
 	 * @throws NotValidChildException
 	 * @throws InvalidAnswerSubformatException
 	 * @throws InvalidAnswerFormatException
+	 * @throws ElementIsReadOnly
 	 */
 	public static Category createCategory(String name) throws FieldTooLongException, CharacterNotAllowedException,
-			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly {
 		Category category = new Category();
 		category.setName(name);
 		category.setLabel(name);
@@ -182,7 +221,7 @@ public class FormUtils {
 	}
 
 	private static TreeObject createGroup(String name) throws FieldTooLongException, CharacterNotAllowedException,
-			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly {
 		Group group = new Group();
 		group.setName(name);
 		group.setLabel(name);
@@ -223,7 +262,7 @@ public class FormUtils {
 	}
 
 	public static TreeObject createQuestionAnswers(String name, AnswerType answerType, String... answers)
-			throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException {
+			throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException, ElementIsReadOnly {
 		Question question = new Question();
 		question.setName(name);
 		question.setLabel(name);
@@ -258,4 +297,5 @@ public class FormUtils {
 	public static Token token(Question question, String type, AnswerSubformat subformat, String value) {
 		return TokenComparationValue.getToken(TokenTypes.fromString(type), question, subformat, null, value);
 	}
+
 }
