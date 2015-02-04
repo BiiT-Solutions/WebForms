@@ -236,18 +236,21 @@ public class WebFormsTester extends VaadinGuiTester {
 	}
 
 	/**
-	 * Takes a screenshot of the webpage and stores it in the Temp folder
+	 * Takes a screenshot of the webpage and stores it in the Temp folder.<br>
+	 * Only works when using the phantomJS driver.
 	 * 
 	 * @param screenshotName
 	 */
 	public void takeScreenshot(String screenshotName) {
-		File scrFile = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
-		try {
-			FileUtils.copyFile(scrFile, new File(System.getProperty("java.io.tmpdir") + File.separator + screenshotName
-					+ SCREENSHOT_TYPE), true);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (isHeadlessTesting()) {
+			File scrFile = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
+			try {
+				FileUtils.copyFile(scrFile, new File(System.getProperty("java.io.tmpdir") + File.separator
+						+ screenshotName + SCREENSHOT_TYPE), true);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

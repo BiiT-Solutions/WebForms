@@ -75,6 +75,8 @@ public class Designer extends VaadinGuiWebpage {
 	private static final String QUESTION1_NAME = "Question1";
 	private static final String QUESTION2_NAME = "Question2";
 	private static final String QUESTION3_NAME = "Question3";
+	private static final String ANSWER1_NAME = "Q1Answer1";
+	private static final String ANSWER2_NAME = "Q1Answer2";
 
 	private final FormPropertiesView formPropertiesView;
 	private final CategoryPropertiesView categoryPropertiesView;
@@ -394,13 +396,21 @@ public class Designer extends VaadinGuiWebpage {
 		saveDesign();
 	}
 
+	/**
+	 * Creates a form with three categories and one question per category.<br>
+	 * The question of the first category also has two answers.
+	 * 
+	 * @throws FieldNotEditableException
+	 */
 	public void createAndSaveSimpleForm() throws FieldNotEditableException {
 		// Category 1
 		addNewCategory();
 		addNewRadioButtonQuestion();
 		getQuestionPropertiesView().setTechnicalNameFieldValue(QUESTION1_NAME);
 		addNewAnswer();
+		getAnswerPropertiesView().setValue(ANSWER1_NAME);
 		addNewAnswer();
+		getAnswerPropertiesView().setValue(ANSWER2_NAME);
 		// Category 2
 		addNewCategory();
 		addNewQuestion();

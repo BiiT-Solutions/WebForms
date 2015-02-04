@@ -2,7 +2,7 @@ package com.biit.webforms.gui.test.webpage;
 
 import com.biit.gui.tester.VaadinGuiWebpage;
 import com.biit.webforms.gui.test.window.FlowCleanedWindow;
-import com.biit.webforms.gui.test.window.NewRuleWindow;
+import com.biit.webforms.gui.test.window.FlowRuleWindow;
 import com.biit.webforms.gui.test.window.SelectFormElementWindow;
 import com.vaadin.testbench.elements.ImageElement;
 import com.vaadin.testbench.elements.TableElement;
@@ -18,22 +18,22 @@ public class FlowManager extends VaadinGuiWebpage {
 	
 	private static final String REDRAW_BUTTON_CAPTION = "Redraw";
 
-	private final NewRuleWindow newRuleWindow;
+	private final FlowRuleWindow flowRuleWindow;
 	private final SelectFormElementWindow selectFormElementWindow;
 	private final FlowCleanedWindow flowCleanedWindow;
 
 	public FlowManager() {
 		super();
-		newRuleWindow = new NewRuleWindow();
-		addWindow(newRuleWindow);
+		flowRuleWindow = new FlowRuleWindow();
+		addWindow(flowRuleWindow);
 		selectFormElementWindow = new SelectFormElementWindow();
 		addWindow(selectFormElementWindow);
 		flowCleanedWindow = new FlowCleanedWindow();
 		addWindow(flowCleanedWindow);
 	}
 
-	public NewRuleWindow getNewRuleWindow() {
-		return newRuleWindow;
+	public FlowRuleWindow getFlowRuleWindow() {
+		return flowRuleWindow;
 	}
 
 	public SelectFormElementWindow getSelectFormElementWindow() {
@@ -94,15 +94,15 @@ public class FlowManager extends VaadinGuiWebpage {
 	 */
 	public void createSimpleFlowRule(String startNodeName, String endNodeName) {
 		clickNewRuleButton();
-		getNewRuleWindow().clickFromButton();
+		getFlowRuleWindow().clickFromButton();
 		getSelectFormElementWindow().searchForElement(startNodeName);
 		getSelectFormElementWindow().selectElementInTable(startNodeName);
 		getSelectFormElementWindow().clickAccceptButton();
-		getNewRuleWindow().clickToButton();
+		getFlowRuleWindow().clickToButton();
 		getSelectFormElementWindow().searchForElement(endNodeName);
 		getSelectFormElementWindow().selectElementInTable(endNodeName);
 		getSelectFormElementWindow().clickAccceptButton();
-		getNewRuleWindow().clickAcceptButton();
+		getFlowRuleWindow().clickAcceptButton();
 	}
 
 }
