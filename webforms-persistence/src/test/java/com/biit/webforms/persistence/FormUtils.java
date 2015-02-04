@@ -42,7 +42,8 @@ public class FormUtils {
 	public static final String BLOCK_1 = "block1";
 	public static final String CATEGORY_1 = "category1";
 	public static final String CATEGORY_2 = "category2";
-	public static final String CATEGORY_IN_BLOCK = "categoryInBlock";
+	public static final String CATEGORY_IN_BLOCK_1 = "categoryInBlock1";
+	public static final String CATEGORY_IN_BLOCK_2 = "categoryInBlock2";
 	public static final String SYSTEM_FIELD_1 = "sysfield1";
 	public static final String SYSTEM_FIELD_1_NAME = "sys.field";
 	public static final String INFO_TEXT_1 = "infoText1";
@@ -150,7 +151,7 @@ public class FormUtils {
 	public static Block createBlock() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
 		Block block = new Block();
-		block.addChild(createCategory(CATEGORY_IN_BLOCK));
+		block.addChild(createCategory(CATEGORY_IN_BLOCK_1));
 		block.setOrganizationId(ORGANIZATION_ID);
 		block.setLabel(BLOCK_1);
 		return block;

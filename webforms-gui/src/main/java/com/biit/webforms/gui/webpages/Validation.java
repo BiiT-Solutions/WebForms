@@ -307,7 +307,17 @@ public class Validation extends SecuredWebPage {
 										((LinkedFormAbcdElementIsBaseQuestionNotBaseGroup) report).getAbcdChild()
 												.getPathName() }));
 			} else if (report instanceof LinkedFormAbcdElementNotFound) {
-
+				text.append(ServerTranslate
+						.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_ELEMENT_NOT_FOUND,
+								new Object[] {
+										((LinkedFormAbcdElementNotFound) report).getAbcdform()
+												.getLabel(),
+										((LinkedFormAbcdElementNotFound) report).getAbcdform()
+												.getVersion(),
+										((LinkedFormAbcdElementNotFound) report).getAbcdChild()
+												.getPathName(),
+										((LinkedFormAbcdElementNotFound) report).getWebform()
+												.getLabel() }));
 			} else if (report instanceof LinkedFormAbcdGroupRepeatableStatusIsDifferent) {
 				text.append(ServerTranslate
 						.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_GROUP_REPEATABLE_STATUS_IS_DIFFERENT,
@@ -357,7 +367,7 @@ public class Validation extends SecuredWebPage {
 			} else if (report instanceof OthersOrphanAt) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_OTHERS_ORPHAN,
 						new Object[] { ((OthersOrphanAt) report).getOrigin().getPathName() }));
-			} else if (report instanceof FormElementWithouthFlowIn){
+			} else if (report instanceof FormElementWithouthFlowIn) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_ELEMENT_NO_FLOW_IN,
 						new Object[] { ((FormElementWithouthFlowIn) report).getOrigin().getPathName() }));
 			} else if (report instanceof NullValueReport) {

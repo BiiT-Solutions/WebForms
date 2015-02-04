@@ -14,6 +14,7 @@ import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Form;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
@@ -128,7 +129,7 @@ public class TableTreeObject extends TreeTable {
 			parent = getRowItem(parent);
 			if (parent != null) {
 				// Parent Form must be translated to CompleteFormView.
-				if (parent instanceof BaseForm) {
+				if (parent instanceof BaseForm && !(parent instanceof Block)) {
 					parent = UserSessionHandler.getController().getCompleteFormView();
 				}
 				// This status must be true before setting the relationship.
@@ -367,7 +368,7 @@ public class TableTreeObject extends TreeTable {
 			return null;
 		}
 		// There is not a Form, only CompleteFormView.
-		if (element instanceof Form) {
+		if (element instanceof Form && !(element instanceof Block)) {
 			return UserSessionHandler.getController().getCompleteFormView();
 		}
 		return element;

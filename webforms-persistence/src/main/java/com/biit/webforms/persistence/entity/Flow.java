@@ -152,9 +152,7 @@ public class Flow extends StorableObject {
 		}
 		// Flow destiny cannot be prior to origin.
 		if (!flowType.isDestinyNull()) {
-			if (!(origin.compareTo(destiny) == -1)) {
-				origin.compareTo(destiny);
-				
+			if (!(origin.compareTo(destiny) == -1)) {			
 				throw new FlowDestinyIsBeforeOrigin();
 			}
 		}

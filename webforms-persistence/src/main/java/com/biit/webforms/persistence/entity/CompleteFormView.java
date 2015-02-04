@@ -10,6 +10,8 @@ import java.util.Set;
 
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ChildrenNotFoundException;
+import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidParentException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -294,6 +296,20 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	public void setForm(Form form) {
 		this.form = form;
 		createCopyOfBlocks();
+	}
+
+	public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException {
+		//Check if it is inside a linked block. 
+		BlockReference blockReference = getBlockReference(element);
+		if (blockReference == null) {
+			//Standard remove for a normal element.
+			element.remove();
+		} else {
+			blockReference.checkTreeDependencies();
+			//If no exception, remove reference from form. 
+			form.getChildren().remove(blockReference);
+			form.getElementsToDelete().add(blockReference);
+		}
 	}
 
 }

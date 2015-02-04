@@ -29,8 +29,7 @@ public class ConversorAbcdQuestionToQuestion extends
 		try {
 			destiny.setAnswerFormat(conversorAnswerFormat.convert(origin.getAnswerFormat()));
 		} catch (InvalidAnswerFormatException e) {
-			// Impossible
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			//Controlled by ABCD.
 		}
 
 		// Convert and assign children

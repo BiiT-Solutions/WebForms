@@ -23,7 +23,7 @@ import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
 @Test(groups = { "xforms" })
-public class XFormExporterTest {
+public class XFormExporterTests {
 
 	@Test
 	public void exportToXForms() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,

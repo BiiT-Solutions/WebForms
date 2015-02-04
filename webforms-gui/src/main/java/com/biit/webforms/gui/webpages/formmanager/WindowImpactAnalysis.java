@@ -14,6 +14,7 @@ import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.SimpleFormView;
@@ -61,7 +62,7 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 							loadForm(getSelectedVersion()), loadForm(form), ImgType.PDF);
 
 					byte[] zipFile = zipFiles(removedElementsFile, addedAndUpdatedElementsFile);
-					
+
 					return new ByteArrayInputStream(zipFile);
 				} catch (IOException | InterruptedException e) {
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -170,6 +171,6 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 	private Form loadForm(IWebformsFormView formView) {
 		Form form = UserSessionHandler.getController().loadForm(formView);
 		form.setLastVersion(formView.isLastVersion());
-		return form;
+		return new CompleteFormView(form);
 	}
 }

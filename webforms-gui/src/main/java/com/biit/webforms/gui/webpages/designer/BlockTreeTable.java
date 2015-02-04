@@ -33,7 +33,7 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 
 	public BlockTreeTable() {
 		super();
-		// Add Vaadin conext to Spring, and get beans for DAOs.
+		// Add Vaadin context to Spring, and get beans for DAOs.
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		blockDao = (IBlockDao) helper.getBean("blockDao");
 

@@ -246,6 +246,7 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_NEW_SUBANSWER("tooltip.new.subanswer"),
 	TOOLTIP_SAVE_AS_BLOCK("tooltip.save.as.block"),
 	
+	ERROR_CATEGORY_NOT_INSERTED_IN_BLOCK("error.category.not.inserted.in.block"),
 	ERROR_SUBCATEGORY_NOT_INSERTED("error.subcategory.not.inserted"),
 	ERROR_GROUP_NOT_INSERTED("error.group.not.inserted"),
 	ERROR_QUESTION_NOT_INSERTED("error.question.not.inserted"),
@@ -465,6 +466,7 @@ public enum LanguageCodes implements ILanguageCode {
 	VALIDATION_INCOMPLETE_LOGIN_REPORT("validation.incomplete.login.report"),
 	VALIDATION_INVALID_FLOW_CONDITION("validation.invalid.flow.condition"),	
 	VALIDATION_INVALID_FLOW_SUBFORMAT("validation.invalid.flow.subformat"),
+	VALIDATION_LINKED_FORM_ABCD_ELEMENT_NOT_FOUND("validation.linked.form.abcd.element.not.found"),
 	VALIDATION_LINKED_FORM_ABCD_ANSWER_NOT_FOUND("validation.linked.form.abcd.answer.not.found"),
 	VALIDATION_LINKED_FORM_ABCD_ELEMENT_IS_GROUP_NOT_QUESTION("validation.linked.form.abcd.element.is.group.not.question"),
 	VALIDATION_LINKED_FORM_ABCD_ELEMENT_IS_QUESTION_NOT_GROUP("validation.linked.form.abcd.element.is.question.not.group"),

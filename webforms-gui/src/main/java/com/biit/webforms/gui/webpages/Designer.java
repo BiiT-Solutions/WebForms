@@ -179,8 +179,13 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				Category newCategory = UserSessionHandler.getController().addNewCategory();
-				table.addRow(newCategory, newCategory.getParent());
+				try {
+					Category newCategory = UserSessionHandler.getController().addNewCategory();
+					table.addRow(newCategory, newCategory.getParent());
+				} catch (NotValidChildException e) {
+					MessageManager.showError(LanguageCodes.ERROR_CATEGORY_NOT_INSERTED_IN_BLOCK);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				}
 			}
 		});
 		upperMenu.addNewGroupButtonListener(new ClickListener() {
@@ -195,6 +200,7 @@ public class Designer extends SecuredWebPage {
 					table.addRow(newGroup, newGroup.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_GROUP_NOT_INSERTED);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});
@@ -299,7 +305,7 @@ public class Designer extends SecuredWebPage {
 					table.selectPreviousRow();
 					UserSessionHandler.getController().removeTreeObject(row);
 					table.updateRow(table.getParentRowItem(row));
-				} catch (DependencyExistException e) {
+				} catch (DependencyExistException | ChildrenNotFoundException e) {
 					table.setValue(row);
 					MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
 				}
@@ -412,7 +418,9 @@ public class Designer extends SecuredWebPage {
 											AnswerType.SINGLE_SELECTION_RADIO) || isParentQuestionOfType(
 											table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
 			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm && !rowIsBlockReference);
-			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm && !rowIsBlockReference);
+			upperMenu.getDeleteButton().setEnabled(
+					canEdit && !rowIsNull && !rowIsForm
+							&& (!rowIsBlockReference || selectedElement instanceof Category));
 			upperMenu.getUpButton().setEnabled(
 					canEdit && !rowIsForm && !rowIsForm && (!rowIsBlockReference || rowIsBlockReferenceCategory));
 			upperMenu.getDownButton().setEnabled(
@@ -468,7 +476,7 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				if (newBlockWindow.getValue() == null || newBlockWindow.getValue().isEmpty()) {
-					MessageManager.showWarning(LanguageCodes.COMMON_WARNING_TITLE_BLOCK_NOT_CREATED,
+					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_BLOCK_NOT_CREATED,
 							LanguageCodes.COMMON_WARNING_DESCRIPTION_BLOCK_NEEDS_NAME);
 					return;
 				}
@@ -569,13 +577,13 @@ public class Designer extends SecuredWebPage {
 						MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 					}
 				} catch (NotValidChildException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_VALID,
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_NOT_VALID,
 							LanguageCodes.WARNING_DESCRIPTION_NOT_VALID);
 				} catch (SameOriginAndDestinationException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
 							LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN);
 				} catch (DestinyIsContainedAtOrigin | ChildrenNotFoundException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
 							LanguageCodes.WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY);
 				}
 			}

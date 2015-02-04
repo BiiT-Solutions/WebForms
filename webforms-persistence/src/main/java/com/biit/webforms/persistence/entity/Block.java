@@ -6,8 +6,11 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Polymorphism;
 import org.hibernate.annotations.PolymorphismType;
 
+import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.persistence.entity.exceptions.OnlyOneChildIsAllowed;
 import com.liferay.portal.model.User;
 
 @Entity
@@ -35,6 +38,14 @@ public class Block extends Form implements IWebformsBlockView {
 	@Override
 	protected String getDefaultTechnicalName() {
 		return DEFAULT_TECHNICAL_NAME;
+	}
+
+	@Override
+	public void addChild(TreeObject child) throws NotValidChildException {
+		if (!getChildren().isEmpty()) {
+			throw new OnlyOneChildIsAllowed("Building blocks only can have one category. ");
+		}
+		super.addChild(child);
 	}
 
 }

@@ -76,7 +76,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 				// No Input fields must put the format to null or input fields that has not any format already selected
 				if (selectedType.getDefaultAnswerFormat() == null || getInstance().getAnswerFormat() == null) {
 					answerFormat.setValue(selectedType.getDefaultAnswerFormat());
-					answerFormat.setEnabled(selectedType.isAnswerFormatEnabled());
+					answerFormat.setEnabled(selectedType.isAnswerFormatEnabled() && !getInstance().isReadOnly());
 				}
 				if (!selectedType.isHorizontalEnabled()) {
 					horizontal.setValue(selectedType.getDefaultHorizontal());
@@ -149,7 +149,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 				answerSubformat.addItem(subformat.getSubformat());
 				answerSubformat.setItemCaption(subformat.getSubformat(), subformat.getTranslationCode().translation());
 			}
-			answerSubformat.setEnabled(true);
+			answerSubformat.setEnabled(!getInstance().isReadOnly());
 			answerSubformat.setValue(format.getDefaultSubformat());
 		}
 	}
@@ -176,11 +176,9 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		answerTypeComboBox.setValue(getInstance().getAnswerType());
 		answerTypeComboBox.setEnabled(!getInstance().isReadOnly());
 		
-		answerFormat.setValue(getInstance().getAnswerFormat());
-		answerFormat.setEnabled(!getInstance().isReadOnly());
-		
+		//AnswerFormat enabled is controlled in other part of the code. 
+		answerFormat.setValue(getInstance().getAnswerFormat());		
 		answerSubformat.setValue(getInstance().getAnswerSubformat());
-		answerSubformat.setEnabled(!getInstance().isReadOnly());
 		
 		horizontal.setValue(getInstance().isHorizontal());
 		horizontal.setEnabled(!getInstance().isReadOnly());

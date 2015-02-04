@@ -471,15 +471,9 @@ public class ApplicationController {
 	 * @return
 	 * @throws NotValidChildException
 	 */
-	public Category addNewCategory() {
-		try {
-			setUnsavedFormChanges(true);
-			return (Category) insertTreeObject(Category.class, getCompleteFormView(), "Category");
-		} catch (NotValidChildException e) {
-			// Impossible
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}
-		return null;
+	public Category addNewCategory() throws NotValidChildException {
+		setUnsavedFormChanges(true);
+		return (Category) insertTreeObject(Category.class, getCompleteFormView(), "Category");
 	}
 
 	/**
@@ -624,12 +618,13 @@ public class ApplicationController {
 	 * 
 	 * @param row
 	 * @throws DependencyExistException
+	 * @throws ChildrenNotFoundException
 	 */
-	public void removeTreeObject(TreeObject row) throws DependencyExistException {
+	public void removeTreeObject(TreeObject row) throws DependencyExistException, ChildrenNotFoundException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
 				+ "' removeTreeObject " + row + " of " + row.getAncestor(Form.class));
 
-		row.remove();
+		getCompleteFormView().removeTreeObject(row);
 		setUnsavedFormChanges(true);
 	}
 
