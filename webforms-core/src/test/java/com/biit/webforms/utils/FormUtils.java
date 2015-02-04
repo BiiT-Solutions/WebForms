@@ -31,6 +31,7 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
@@ -70,15 +71,17 @@ public class FormUtils {
 
 	public static Form createCompleteForm() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
-			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly {
+			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
+			FlowNotAllowedException {
 		return createCompleteForm(null);
 	}
 
 	public static Form createCompleteForm(Block withBlock) throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
-			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly {
+			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
+			FlowNotAllowedException {
 		Form form = new Form();
 		form.setOrganizationId(ORGANIZATION_ID);
 		form.setLabel(FORM_COMPLETE_LABEL);

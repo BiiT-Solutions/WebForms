@@ -27,6 +27,7 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
@@ -36,7 +37,7 @@ public class FormTestUtilities {
 
 	public static Form createFormTest1() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly {
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly, FlowNotAllowedException {
 
 		// Structure
 		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
@@ -74,10 +75,11 @@ public class FormTestUtilities {
 	 * @throws FlowDestinyIsBeforeOriginException
 	 * @throws FlowWithoutDestinyException
 	 * @throws ElementIsReadOnly 
+	 * @throws FlowNotAllowedException 
 	 */
 	public static Form createFormTest2() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly {
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly, FlowNotAllowedException {
 		// Structure
 		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
 		Question qu2 = createQuestionAnswer("qu2", "d", "e");
@@ -100,7 +102,7 @@ public class FormTestUtilities {
 
 	public static Form createFormTest3() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly {
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly, FlowNotAllowedException {
 		// Structure
 		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
 		Question qu2 = createQuestionAnswer("qu2", "d", "e");
@@ -123,7 +125,7 @@ public class FormTestUtilities {
 
 	public static Form createFormTest4() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly {
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly, FlowNotAllowedException {
 
 		// Structure
 		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
@@ -152,7 +154,7 @@ public class FormTestUtilities {
 	public static Form createFormTest5() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
-			InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly {
+			InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly, FlowNotAllowedException {
 
 		// Structure
 		Question qu1 = createQuestionValue("qu1", AnswerFormat.NUMBER, AnswerSubformat.FLOAT);
@@ -179,7 +181,7 @@ public class FormTestUtilities {
 	public static Form createFormTest6()throws FieldTooLongException, NotValidChildException,
 	CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
 	FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
-	InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly  {
+			InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly, FlowNotAllowedException  {
 		// Structure
 		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
 		Question qu2 = createQuestionAnswer("qu2", "d", "e");

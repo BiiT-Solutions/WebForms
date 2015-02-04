@@ -12,6 +12,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
@@ -31,7 +32,7 @@ public class XFormExporterTests {
 			InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType,
 			NotValidTreeObjectException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError, ElementIsReadOnly {
+			PostCodeRuleSyntaxError, ElementIsReadOnly, FlowNotAllowedException {
 		Form form = FormUtils.createCompleteForm();
 		new XFormsExporter(form).generateXFormsLanguage();
 	}

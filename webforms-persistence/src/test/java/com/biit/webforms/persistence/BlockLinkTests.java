@@ -40,7 +40,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatExc
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContextTest.xml" })
-@Test(groups = { "blockTest" })
+@Test(groups = { "blockLink" })
 public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTests {
 
 	@Autowired
@@ -175,11 +175,11 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
 			NotValidTokenType, FlowNotAllowedException {
 		Block block1 = FormUtils.createBlock();
-		block1.setLabel("LinkedBlock21");
+		block1.setLabel("LinkedBlock41");
 		blockDao.makePersistent(block1);
 
 		Block block2 = FormUtils.createBlock();
-		block2.setLabel("LinkedBlock21");
+		block2.setLabel("LinkedBlock41");
 		blockDao.makePersistent(block2);
 
 		BlockReference blockReference1 = new BlockReference(block1);
@@ -212,17 +212,17 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			NotValidTokenType, FlowNotAllowedException {
 		Block block1 = FormUtils.createBlock();
-		block1.setLabel("LinkedBlock21");
+		block1.setLabel("LinkedBlock51");
 		blockDao.makePersistent(block1);
 
 		Block block2 = FormUtils.createBlock();
-		block2.setLabel("LinkedBlock21");
+		block2.setLabel("LinkedBlock51");
 		blockDao.makePersistent(block2);
 
 		BlockReference blockReference1 = new BlockReference(block1);
 		BlockReference blockReference2 = new BlockReference(block2);
 
-		Form form = FormUtils.createCompleteForm(null, "form4");
+		Form form = FormUtils.createCompleteForm(null, "form5");
 		form.addChild(blockReference1);
 		form.addChild(blockReference2);
 		formDao.makePersistent(form);
@@ -247,17 +247,17 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			NotValidTokenType, FlowNotAllowedException {
 		Block block1 = FormUtils.createBlock();
-		block1.setLabel("LinkedBlock21");
+		block1.setLabel("LinkedBlock61");
 		blockDao.makePersistent(block1);
 
 		Block block2 = FormUtils.createBlock();
-		block2.setLabel("LinkedBlock21");
+		block2.setLabel("LinkedBlock62");
 		blockDao.makePersistent(block2);
 
 		BlockReference blockReference1 = new BlockReference(block1);
 		BlockReference blockReference2 = new BlockReference(block2);
 
-		Form form = FormUtils.createCompleteForm(null, "form4");
+		Form form = FormUtils.createCompleteForm(null, "form6");
 		form.addChild(blockReference1);
 		form.addChild(blockReference2);
 		formDao.makePersistent(form);
