@@ -86,7 +86,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	public Designer getDesigner() {
 		return designer;
 	}
-	
+
 	public FlowManager getFlowManager() {
 		return flowManager;
 	}
@@ -161,7 +161,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	public ButtonElement getDesignButton() {
 		return $(ButtonElement.class).caption(DESIGN_BUTTON_CAPTION).first();
 	}
-	
+
 	public ButtonElement getFlowButton() {
 		return $(ButtonElement.class).caption(FLOW_BUTTON_CAPTION).first();
 	}
@@ -200,7 +200,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	public void goToDesigner() {
 		getDesignButton().click();
 	}
-	
+
 	public void goToFlowManager() {
 		getFlowButton().click();
 	}
@@ -243,7 +243,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	public void takeScreenshot(String screenshotName) {
 		File scrFile = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
 		try {
-			FileUtils.copyFile(scrFile, new File(System.getProperty("java.io.tmpdir") + screenshotName
+			FileUtils.copyFile(scrFile, new File(System.getProperty("java.io.tmpdir") + File.separator + screenshotName
 					+ SCREENSHOT_TYPE), true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
