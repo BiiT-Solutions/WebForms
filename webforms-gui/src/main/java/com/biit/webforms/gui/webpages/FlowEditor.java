@@ -428,12 +428,12 @@ public class FlowEditor extends SecuredWebPage {
 			StringBuilder report = new StringBuilder();
 			for (Flow flow : flowCleaner.getOtherFlowsRemoved()) {
 				report.append(ServerTranslate.translate(LanguageCodes.CLEAN_FLOW_REPORT_OTHERS_RULE, new Object[] {
-						flow.getOrigin().getPathName(), flow.getOrigin().getPathName() }));
+						flow.getOrigin().getPathName(), flow.getDestiny().getPathName() }));
 				report.append(System.lineSeparator());
 			}
 			for (Flow flow : flowCleaner.getUselessFlowRemoved()) {
 				report.append(ServerTranslate.translate(LanguageCodes.CLEAN_FLOW_REPORT_USELESS_FLOW, new Object[] {
-						flow.getOrigin().getPathName(), flow.getOrigin().getPathName() }));
+						flow.getOrigin().getPathName(), flow.getDestiny().getPathName() }));
 				report.append(System.lineSeparator());
 			}
 			WindowTextArea reportWindow = new WindowTextArea(LanguageCodes.CLEAN_FLOW_REPORT_CAPTION.translation());

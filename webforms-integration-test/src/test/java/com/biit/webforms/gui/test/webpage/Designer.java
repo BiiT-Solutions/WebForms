@@ -71,7 +71,7 @@ public class Designer extends VaadinGuiWebpage {
 
 	private static final Integer ANSWERS_TO_ADD = 4;
 	private static final Integer SUBANSWERS_TO_ADD = 2;
-	
+
 	private static final String QUESTION1_NAME = "Question1";
 	private static final String QUESTION2_NAME = "Question2";
 	private static final String QUESTION3_NAME = "Question3";
@@ -271,7 +271,7 @@ public class Designer extends VaadinGuiWebpage {
 		}
 	}
 
-	private void createAllTypesOfInputQuestions() throws FieldNotEditableException{
+	private void createAllTypesOfInputQuestions() throws FieldNotEditableException {
 		addNewInputTextSubformatTextQuestion();
 		addNewInputTextSubformatEmailQuestion();
 		addNewInputTextSubformatPhoneQuestion();
@@ -283,7 +283,7 @@ public class Designer extends VaadinGuiWebpage {
 		addNewInputDateSubformatPastQuestion();
 		addNewInputDateSubformatFutureQuestion();
 		addNewInputPostalcodeSubformatPostalcodeQuestion();
-		
+
 		addNewInputTextSubformatTextQuestion();
 		setQuestionNotMandatory();
 		addNewInputTextSubformatEmailQuestion();
@@ -311,27 +311,16 @@ public class Designer extends VaadinGuiWebpage {
 	private void createAllTypesOfListQuestions() throws FieldNotEditableException {
 		addNewListQuestion();
 		addAnswers(ANSWERS_TO_ADD);
-		
+
 		addNewListQuestion();
 		setQuestionNotMandatory();
 		addAnswers(ANSWERS_TO_ADD);
-		
-		// Waiting for bug to be solved
-//		addNewListQuestion();
-//		setQuestionHorizontal();
-//		addAnswers(ANSWERS_TO_ADD);
-//		
-//		addNewListQuestion();
-//		setQuestionHorizontal();
-//		setQuestionNotMandatory();
-//		addAnswers(ANSWERS_TO_ADD);
-
 	}
 
-	private void createAllTypesOfMultiCheckboxQuestions() throws FieldNotEditableException{
+	private void createAllTypesOfMultiCheckboxQuestions() throws FieldNotEditableException {
 		addNewMultiCheckboxQuestion();
 		addAnswersWithSubanswers(ANSWERS_TO_ADD, SUBANSWERS_TO_ADD);
-		
+
 		addNewMultiCheckboxQuestion();
 		setQuestionNotMandatory();
 		addAnswersWithSubanswers(ANSWERS_TO_ADD, SUBANSWERS_TO_ADD);
@@ -345,7 +334,7 @@ public class Designer extends VaadinGuiWebpage {
 		createAllTypesOfTextAreaQuestions();
 		createAllTypesOfInputQuestions();
 	}
-	
+
 	private void createAllTypesOfRadioButtonQuestions() throws FieldNotEditableException {
 		addNewRadioButtonQuestion();
 		addAnswersWithSubanswers(ANSWERS_TO_ADD, SUBANSWERS_TO_ADD);
@@ -353,26 +342,25 @@ public class Designer extends VaadinGuiWebpage {
 		addNewRadioButtonQuestion();
 		setQuestionNotMandatory();
 		addAnswersWithSubanswers(ANSWERS_TO_ADD, SUBANSWERS_TO_ADD);
-		
-		// Waiting for bug to be solved
-//		addNewRadioButtonQuestion();
-//		setQuestionHorizontal();
-//		addAnswersWithSubanswers(ANSWERS_TO_ADD, SUBANSWERS_TO_ADD);
-//
-//		addNewRadioButtonQuestion();
-//		setQuestionHorizontal();
-//		setQuestionNotMandatory();
-//		addAnswersWithSubanswers(ANSWERS_TO_ADD, SUBANSWERS_TO_ADD);
+
+		addNewRadioButtonQuestion();
+		setQuestionHorizontal();
+		addAnswersWithSubanswers(ANSWERS_TO_ADD, SUBANSWERS_TO_ADD);
+
+		addNewRadioButtonQuestion();
+		setQuestionHorizontal();
+		setQuestionNotMandatory();
+		addAnswersWithSubanswers(ANSWERS_TO_ADD, SUBANSWERS_TO_ADD);
 
 	}
-	
-	private void createAllTypesOfTextAreaQuestions() throws FieldNotEditableException{
+
+	private void createAllTypesOfTextAreaQuestions() throws FieldNotEditableException {
 		addNewTextAreaQuestion();
-		
+
 		addNewTextAreaQuestion();
 		setQuestionNotMandatory();
 	}
-	
+
 	public void createCompleteFormAndSave() throws FieldNotEditableException {
 		// Edit some form properties
 		getFormPropertiesView().setNameValue(FORM_NAME_EDITED);
@@ -405,15 +393,15 @@ public class Designer extends VaadinGuiWebpage {
 
 		saveDesign();
 	}
-	
-	public void createAndSaveSimpleForm() throws FieldNotEditableException{
+
+	public void createAndSaveSimpleForm() throws FieldNotEditableException {
 		// Category 1
 		addNewCategory();
 		addNewRadioButtonQuestion();
 		getQuestionPropertiesView().setTechnicalNameFieldValue(QUESTION1_NAME);
 		addNewAnswer();
 		addNewAnswer();
-		// Category 2		
+		// Category 2
 		addNewCategory();
 		addNewQuestion();
 		getQuestionPropertiesView().setTechnicalNameFieldValue(QUESTION2_NAME);
@@ -421,10 +409,10 @@ public class Designer extends VaadinGuiWebpage {
 		addNewCategory();
 		addNewQuestion();
 		getQuestionPropertiesView().setTechnicalNameFieldValue(QUESTION3_NAME);
-		//Save
+		// Save
 		saveDesign();
 	}
-	
+
 	public void finishForm() {
 		getFinishButton().click();
 	}
@@ -545,7 +533,7 @@ public class Designer extends VaadinGuiWebpage {
 			getQuestionPropertiesView().clickHorizontalCheckBox();
 		}
 	}
-	
+
 	public void setQuestionNotHorizontal() throws FieldNotEditableException {
 		if (getQuestionPropertiesView().getHorizontalCheckBoxValue().equals(CHECKBOX_RETURN_CHECKED)) {
 			getQuestionPropertiesView().clickHorizontalCheckBox();
