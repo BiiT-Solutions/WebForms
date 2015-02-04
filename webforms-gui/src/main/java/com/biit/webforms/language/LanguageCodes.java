@@ -508,6 +508,9 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	ERROR_LINK_BLOCK_NOT_COMPLETE("error.link.block.not.complete"),
 	ERROR_READ_ONLY_ELEMENT("error.read.only.element"),
+	
+	ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE("error.element.cannot.be.removed.title"),
+	ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_BLOCK_DESCRIPTION("error.element.cannot.be.removed.linked.block.description"),
 	;
 
 	private String value;

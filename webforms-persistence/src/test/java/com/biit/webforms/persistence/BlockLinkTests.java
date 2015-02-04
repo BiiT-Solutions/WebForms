@@ -18,6 +18,7 @@ import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
@@ -147,7 +148,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
 			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType,
-			UnexpectedDatabaseException, FlowNotAllowedException {
+			UnexpectedDatabaseException, FlowNotAllowedException, ElementCannotBeRemovedException {
 		Block block = FormUtils.createBlock();
 		block.setLabel("LinkedBlock4");
 		blockDao.makePersistent(block);
@@ -173,7 +174,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			ElementIsReadOnly, UnexpectedDatabaseException, BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
-			NotValidTokenType, FlowNotAllowedException {
+			NotValidTokenType, FlowNotAllowedException, ElementCannotBeRemovedException {
 		Block block1 = FormUtils.createBlock();
 		block1.setLabel("LinkedBlock41");
 		blockDao.makePersistent(block1);
@@ -210,7 +211,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
 			UnexpectedDatabaseException, NotValidChildException, ElementIsReadOnly, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			NotValidTokenType, FlowNotAllowedException {
+			NotValidTokenType, FlowNotAllowedException, ElementCannotBeRemovedException {
 		Block block1 = FormUtils.createBlock();
 		block1.setLabel("LinkedBlock51");
 		blockDao.makePersistent(block1);
@@ -245,7 +246,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
 			UnexpectedDatabaseException, NotValidChildException, ElementIsReadOnly, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			NotValidTokenType, FlowNotAllowedException {
+			NotValidTokenType, FlowNotAllowedException, ElementCannotBeRemovedException {
 		Block block1 = FormUtils.createBlock();
 		block1.setLabel("LinkedBlock61");
 		blockDao.makePersistent(block1);
@@ -275,9 +276,28 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		blockDao.makeTransient(block2);
 	}
 
-	@Test
-	public void blockCannotBeRemovedIfFormIsLinkingIt() {
+	@Test(expectedExceptions = ElementCannotBeRemovedException.class)
+	public void blockCannotBeRemovedIfFormIsLinkingIt() throws BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
+			UnexpectedDatabaseException, NotValidChildException, ElementIsReadOnly, FieldTooLongException,
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
+			NotValidTokenType, FlowNotAllowedException, ElementCannotBeRemovedException {
+		Block block1 = FormUtils.createBlock();
+		block1.setLabel("LinkedBlock61");
+		blockDao.makePersistent(block1);
 
+		BlockReference blockReference1 = new BlockReference(block1);
+
+		Form form = FormUtils.createCompleteForm(null, "form6");
+		form.addChild(blockReference1);
+		formDao.makePersistent(form);
+
+		try {
+			blockDao.makeTransient(block1);
+		} finally {
+			formDao.makeTransient(form);
+			blockDao.makeTransient(block1);
+		}
 	}
 
 }

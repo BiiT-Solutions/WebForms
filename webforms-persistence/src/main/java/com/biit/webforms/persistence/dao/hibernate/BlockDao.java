@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -13,10 +14,12 @@ import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 
 import com.biit.form.persistence.dao.hibernate.TreeObjectDao;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Flow;
@@ -75,7 +78,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	}
 
 	@Override
-	//@Cacheable(value = "buildingBlocks")
+	// @Cacheable(value = "buildingBlocks")
 	public List<Block> getAll(Long organizationId) throws UnexpectedDatabaseException {
 		Session session = getSessionFactory().getCurrentSession();
 		session.beginTransaction();
@@ -217,5 +220,33 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	@Cacheable(value = "buildingBlocks", key = "#id")
 	public Block read(Long id) throws UnexpectedDatabaseException {
 		return super.read(id);
+	}
+
+	@Override
+	@Caching(evict = { @CacheEvict(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null") })
+	public void makeTransient(Block block) throws UnexpectedDatabaseException, ElementCannotBeRemovedException {
+		// Check the block is not linked.
+		if (getLinkedBlocksTo(block) > 0) {
+			throw new ElementCannotBeRemovedException("Building block is linked in one or more form.");
+		}
+		super.makeTransient(block);
+	}
+
+	private int getLinkedBlocksTo(Block block) throws UnexpectedDatabaseException {
+		if (block == null || block.getId() == null) {
+			return 0;
+		}
+		Session session = getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		try {
+			Query query = session.createQuery("SELECT count(*) FROM BlockReference WHERE reference_ID=:blockId");
+			query.setLong("blockId", block.getId());
+			Long count = (Long) query.uniqueResult();
+			session.getTransaction().commit();
+			return count.intValue();
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			throw new UnexpectedDatabaseException(e.getMessage(), e);
+		}
 	}
 }

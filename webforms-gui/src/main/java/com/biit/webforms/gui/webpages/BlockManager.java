@@ -6,11 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.biit.abcd.core.SpringContextHelper;
-import com.biit.abcd.logger.AbcdLogger;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.FormWithSameNameException;
 import com.biit.webforms.authentication.WebformsActivity;
@@ -175,7 +175,10 @@ public class BlockManager extends SecuredWebPage {
 			}
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-			AbcdLogger.errorMessage(this.getClass().getName(), e);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		} catch (ElementCannotBeRemovedException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE,
+					LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_BLOCK_DESCRIPTION);
 		}
 	}
 

@@ -19,6 +19,7 @@ import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -61,7 +62,8 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 	public void testRule() throws FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
 			InvalidAnswerSubformatException, NotValidChildException, UnexpectedDatabaseException, ElementIsReadOnly,
 			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException {
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException,
+			ElementCannotBeRemovedException {
 		Form form = createForm();
 
 		int prevForm = formDao.getRowCount();
@@ -149,7 +151,8 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 	@Test(expectedExceptions = { DependencyExistException.class })
 	public void removeFlowWithQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException,
 			ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException {
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException,
+			ElementCannotBeRemovedException {
 		Form form = createForm();
 		formDao.makePersistent(form);
 
@@ -166,7 +169,8 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 	@Test
 	public void removeFlowAndQuestionPersisted() throws UnexpectedDatabaseException, DependencyExistException,
 			ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException {
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException,
+			ElementCannotBeRemovedException {
 		Form form = createForm();
 		formDao.makePersistent(form);
 

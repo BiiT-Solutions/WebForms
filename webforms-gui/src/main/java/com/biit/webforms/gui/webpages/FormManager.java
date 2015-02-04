@@ -19,6 +19,7 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.validation.ValidateReport;
@@ -295,6 +296,9 @@ public class FormManager extends SecuredWebPage {
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			AbcdLogger.errorMessage(this.getClass().getName(), e);
+		} catch (ElementCannotBeRemovedException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 

@@ -16,6 +16,7 @@ import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.persistence.dao.IBlockDao;
@@ -71,7 +72,8 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			UnexpectedDatabaseException, ChildrenNotFoundException, BadFlowContentException,
 			FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
-			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException {
+			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
+			ElementCannotBeRemovedException {
 		int prevForms = formDao.getRowCount();
 		Form form = FormUtils.createCompleteForm(block);
 		formDao.makePersistent(form);

@@ -26,6 +26,7 @@ import com.biit.form.validators.ValidateBaseForm;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.validation.ValidateReport;
@@ -715,7 +716,7 @@ public class ApplicationController {
 	}
 
 	public void saveAsBlock(TreeObject element, String blockLabel, Long organizationId) throws FieldTooLongException,
-			FormWithSameNameException, UnexpectedDatabaseException {
+			FormWithSameNameException, UnexpectedDatabaseException, ElementCannotBeRemovedException {
 		logInfoStart("saveAsBlock ", element, blockLabel, organizationId);
 
 		Block block = null;

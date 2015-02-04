@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import com.biit.form.persistence.dao.hibernate.BaseFormDao;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Flow;
@@ -50,8 +51,8 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.getId()") })
-	public void makeTransient(Form form) throws UnexpectedDatabaseException {
+	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.getId()", condition = "#form.getId() != null") })
+	public void makeTransient(Form form) throws UnexpectedDatabaseException, ElementCannotBeRemovedException {
 		super.makeTransient(form);
 	}
 
