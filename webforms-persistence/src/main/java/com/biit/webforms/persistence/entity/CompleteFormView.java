@@ -299,14 +299,17 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException {
-		//Check if it is inside a linked block. 
+		// Check if it is inside a linked block.
 		BlockReference blockReference = getBlockReference(element);
 		if (blockReference == null) {
-			//Standard remove for a normal element.
+			// Standard remove for a normal element.
 			element.remove();
 		} else {
 			blockReference.checkTreeDependencies();
-			//If no exception, remove reference from form. 
+			// if no exception, remove reference from form.
+			// blockReference.getChildren() causes to remove also the elements of the block, this is undesired, then we
+			// need to remove first the reference of the block before removing it.
+			blockReference.setReference(null);
 			form.getChildren().remove(blockReference);
 			form.getElementsToDelete().add(blockReference);
 		}

@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -164,6 +165,11 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 			return new ArrayList<TreeObject>();
 		}
 		return reference.getChildren();
+	}
+
+	@Override
+	public Set<StorableObject> getAllInnerStorableObjects() {
+		return new HashSet<>();
 	}
 
 }

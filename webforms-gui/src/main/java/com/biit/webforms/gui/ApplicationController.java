@@ -437,6 +437,9 @@ public class ApplicationController {
 	}
 
 	public CompleteFormView getCompleteFormView() {
+		if (formInUse == null) {
+			return null;
+		}
 		if (completeFormView == null || !getFormInUse().getComparationId().equals(completeFormView.getComparationId())) {
 			completeFormView = new CompleteFormView(getFormInUse());
 		}
@@ -643,10 +646,7 @@ public class ApplicationController {
 		}
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
-			int index = parent.getChildren().indexOf(row);
-			if (index > 0) {
-				parent.getChildren().remove(index);
-				parent.getChildren().add(index - 1, row);
+			if (parent.moveChildUp(row)) {
 				setUnsavedFormChanges(true);
 			}
 		}
@@ -667,10 +667,7 @@ public class ApplicationController {
 		}
 		if (row.getParent() != null) {
 			TreeObject parent = row.getParent();
-			int index = parent.getChildren().indexOf(row);
-			if (index < parent.getChildren().size() - 1) {
-				parent.getChildren().remove(index);
-				parent.getChildren().add(index + 1, row);
+			if (parent.moveChildDown(row)) {
 				setUnsavedFormChanges(true);
 			}
 		}
