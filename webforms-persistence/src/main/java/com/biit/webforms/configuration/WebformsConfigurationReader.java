@@ -155,13 +155,14 @@ public class WebformsConfigurationReader {
 	}
 
 	/**
-	 * Read database config from resource and update default connection parameters.
+	 * Read database config from resource and update default connection
+	 * parameters.
 	 */
 	private void readConfig() {
 		Properties prop = new Properties();
 		try {
 			prop = PropertiesFile.load(DATABASE_CONFIG_FILE);
-			graphvizBinPath = prop.getProperty(GRAPHVIZ_TAG, DEFAULT_GRAPHVIZ_VALUE);
+			graphvizBinPath = getGraphvizBinPathOsBased(prop);
 			regexText = prop.getProperty(REGEX_TEXT, DEFAULT_REGEX_TEXT);
 			regexPhone = prop.getProperty(REGEX_PHONE, DEFAULT_REGEX_PHONE);
 			regexIban = prop.getProperty(REGEX_IBAN, DEFAULT_REGEX_IBAN);
@@ -188,6 +189,15 @@ public class WebformsConfigurationReader {
 					.parseBoolean(prop.getProperty(JSON_EXPORT_ENABLED, DEFAULT_JSON_EXPORT_ENABLED));
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+	}
+	
+	private String getGraphvizBinPathOsBased(Properties prop) {
+		String OS = System.getProperty("os.name").toLowerCase();
+		if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0) {
+			return DEFAULT_GRAPHVIZ_VALUE;
+		} else {
+			return prop.getProperty(GRAPHVIZ_TAG, DEFAULT_GRAPHVIZ_VALUE);
 		}
 	}
 
@@ -252,7 +262,8 @@ public class WebformsConfigurationReader {
 	}
 
 	/**
-	 * Enable or disable the boolean simplification for reduce the length of Orbeon relevant rules.
+	 * Enable or disable the boolean simplification for reduce the length of
+	 * Orbeon relevant rules.
 	 * 
 	 * @return
 	 */
