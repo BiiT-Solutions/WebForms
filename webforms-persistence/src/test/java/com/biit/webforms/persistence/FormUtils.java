@@ -116,6 +116,8 @@ public class FormUtils {
 		Form form = new Form();
 		form.setOrganizationId(ORGANIZATION_ID);
 		form.setLabel(label);
+		form.setCreatedBy(0l);
+		form.setUpdatedBy(0l);
 
 		form.addChild(createCategory(CATEGORY_1));
 		if (withBlock != null) {

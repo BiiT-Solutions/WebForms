@@ -25,6 +25,7 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -153,7 +154,8 @@ public class ApplicationController {
 	}
 
 	public Form importFormFromJson(String json, String formLabel, Long organizationId)
-			throws FormWithSameNameException, UnexpectedDatabaseException, FieldTooLongException {
+			throws FormWithSameNameException, UnexpectedDatabaseException, FieldTooLongException,
+			ElementCannotBePersistedException {
 		// Check if database contains a form with the same name.
 		try {
 			if (formDao.getForm(formLabel, organizationId) != null) {
@@ -184,9 +186,11 @@ public class ApplicationController {
 	 * @throws FieldTooLongException
 	 * @throws FormWithSameNameException
 	 * @throws UnexpectedDatabaseException
+	 * @throws ElementCannotBePersistedException
 	 */
 	public Form createFormAndPersist(String formLabel, Long organizationId) throws FieldTooLongException,
-			FormWithSameNameException, CharacterNotAllowedException, UnexpectedDatabaseException {
+			FormWithSameNameException, CharacterNotAllowedException, UnexpectedDatabaseException,
+			ElementCannotBePersistedException {
 		logInfoStart("createFormAndPersist", formLabel, organizationId);
 
 		// Create new form
@@ -207,7 +211,7 @@ public class ApplicationController {
 	}
 
 	public Block createBlock(String blockName, Long organizationId) throws CharacterNotAllowedException,
-			FieldTooLongException, FormWithSameNameException, UnexpectedDatabaseException {
+			FieldTooLongException, FormWithSameNameException, UnexpectedDatabaseException, ElementCannotBePersistedException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' createBlock "
 				+ blockName);
 		logInfoStart("createBlock", blockName, organizationId);
@@ -257,10 +261,11 @@ public class ApplicationController {
 	 * @throws FieldTooLongException
 	 * @throws UnexpectedDatabaseException
 	 * @throws ElementIsReadOnly
+	 * @throws ElementCannotBePersistedException
 	 */
 	public Form importAbcdForm(SimpleFormView simpleFormView, String importLabel, Long organizationId)
 			throws NotValidAbcdForm, FieldTooLongException, FormWithSameNameException, CharacterNotAllowedException,
-			UnexpectedDatabaseException, ElementIsReadOnly {
+			UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException {
 		logInfoStart("importAbcdForm", simpleFormView, importLabel, organizationId);
 
 		// Try to create a new form with the name and the organization
@@ -357,7 +362,8 @@ public class ApplicationController {
 	}
 
 	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException,
-			NotValidStorableObjectException, CharacterNotAllowedException, UnexpectedDatabaseException {
+			NotValidStorableObjectException, CharacterNotAllowedException, UnexpectedDatabaseException,
+			ElementCannotBePersistedException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
 				+ "' createNewFormVersion " + form);
 
@@ -388,7 +394,8 @@ public class ApplicationController {
 		return newFormVersion;
 	}
 
-	public void changeFormDescription(Form form, String text) throws FieldTooLongException, UnexpectedDatabaseException {
+	public void changeFormDescription(Form form, String text) throws FieldTooLongException,
+			UnexpectedDatabaseException, ElementCannotBePersistedException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
 				+ "' changeFormDescription " + form + " " + text);
 		try {
@@ -688,11 +695,11 @@ public class ApplicationController {
 		}
 	}
 
-	public void saveForm() throws UnexpectedDatabaseException {
+	public void saveForm() throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		saveForm(formInUse);
 	}
 
-	public void saveForm(Form form) throws UnexpectedDatabaseException {
+	public void saveForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		form.setUpdatedBy(getUser());
 		form.setUpdateTime();
 		try {
@@ -708,7 +715,7 @@ public class ApplicationController {
 		}
 	}
 
-	public void finishForm(Form form) throws UnexpectedDatabaseException {
+	public void finishForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		logInfoStart("finishForm", form);
 		form.setStatus(FormWorkStatus.FINAL_DESIGN);
 		setUnsavedFormChanges(false);
@@ -716,7 +723,8 @@ public class ApplicationController {
 	}
 
 	public void saveAsBlock(TreeObject element, String blockLabel, Long organizationId) throws FieldTooLongException,
-			FormWithSameNameException, UnexpectedDatabaseException, ElementCannotBeRemovedException {
+			FormWithSameNameException, UnexpectedDatabaseException, ElementCannotBeRemovedException,
+			ElementCannotBePersistedException {
 		logInfoStart("saveAsBlock ", element, blockLabel, organizationId);
 
 		Block block = null;
@@ -1346,7 +1354,7 @@ public class ApplicationController {
 	}
 
 	public void changeFormStatus(IWebformsFormView formView, FormWorkStatus value)
-			throws NotEnoughRightsToChangeStatusException {
+			throws NotEnoughRightsToChangeStatusException, ElementCannotBePersistedException {
 		// Can downgrade
 		boolean userCanDowngradeStatus = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
 				UserSessionHandler.getUser(), formView, WebformsActivity.FORM_STATUS_DOWNGRADE);

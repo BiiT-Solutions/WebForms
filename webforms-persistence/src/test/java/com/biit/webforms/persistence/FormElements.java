@@ -15,6 +15,7 @@ import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -48,7 +49,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 
 	public void createBuildingBlock() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			UnexpectedDatabaseException, ElementIsReadOnly {
+			UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException {
 		if (block == null) {
 			block = FormUtils.createBlock();
 			Assert.assertNotNull(block);
@@ -62,7 +63,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
 			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType,
-			UnexpectedDatabaseException, ElementIsReadOnly, FlowNotAllowedException {
+			UnexpectedDatabaseException, ElementIsReadOnly, FlowNotAllowedException, ElementCannotBePersistedException {
 		createBuildingBlock();
 		FormUtils.createCompleteForm(block);
 	}
@@ -73,7 +74,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 			UnexpectedDatabaseException, ChildrenNotFoundException, BadFlowContentException,
 			FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
 			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
-			ElementCannotBeRemovedException {
+			ElementCannotBeRemovedException, ElementCannotBePersistedException {
 		int prevForms = formDao.getRowCount();
 		Form form = FormUtils.createCompleteForm(block);
 		formDao.makePersistent(form);
@@ -95,7 +96,8 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 			InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException,
 			ChildrenNotFoundException, BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
-			NotValidStorableObjectException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException {
+			NotValidStorableObjectException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
+			ElementCannotBePersistedException {
 		Form form = FormUtils.createCompleteForm(block);
 		Form formV2 = form.createNewVersion(USER_ID);
 

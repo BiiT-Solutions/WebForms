@@ -18,6 +18,7 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -502,6 +503,10 @@ public class FormManager extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});
@@ -547,6 +552,10 @@ public class FormManager extends SecuredWebPage {
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				} catch (ElementIsReadOnly e) {
 					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 
 			}
@@ -584,6 +593,10 @@ public class FormManager extends SecuredWebPage {
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+		} catch (ElementCannotBePersistedException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+					LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 
@@ -626,6 +639,10 @@ public class FormManager extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});

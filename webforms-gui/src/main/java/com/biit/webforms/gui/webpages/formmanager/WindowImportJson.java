@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.FormWithSameNameException;
@@ -146,6 +147,10 @@ public class WindowImportJson extends WindowAcceptCancel {
 				} catch (FieldTooLongException e) {
 					MessageManager
 					.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});

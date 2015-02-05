@@ -14,6 +14,7 @@ import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.enumerations.AnswerType;
@@ -37,7 +38,7 @@ public class BlockTests extends AbstractTransactionalTestNGSpringContextTests {
 
 	public void createBuildingBlock() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			UnexpectedDatabaseException, ElementIsReadOnly {
+			UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException {
 		if (block == null) {
 			block = FormUtils.createBlock();
 			block.setLabel("CacheBlock");
@@ -48,7 +49,8 @@ public class BlockTests extends AbstractTransactionalTestNGSpringContextTests {
 
 	@Test
 	public void blockCache() throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException,
-			InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException, ElementIsReadOnly {
+			InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException,
+			ElementIsReadOnly, ElementCannotBePersistedException {
 		createBuildingBlock();
 
 		int elements = block.getAllInnerStorableObjects().size();

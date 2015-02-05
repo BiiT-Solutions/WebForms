@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.biit.abcd.core.SpringContextHelper;
 import com.biit.form.BaseAnswer;
 import com.biit.form.BaseCategory;
 import com.biit.form.TreeObject;
@@ -14,6 +15,7 @@ import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -43,16 +45,19 @@ import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.designer.WindowBlocks;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
@@ -67,6 +72,14 @@ public class Designer extends SecuredWebPage {
 	private UpperMenuDesigner upperMenu;
 	private TableTreeObjectLabel table;
 	private DesignerPropertiesComponent properties;
+
+	private ISimpleFormViewDao simpleFormViewDao;
+
+	public Designer() {
+		super();
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		simpleFormViewDao = (ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms");
+	}
 
 	@Override
 	protected void initContent() {
@@ -149,6 +162,10 @@ public class Designer extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});
@@ -316,17 +333,25 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				TreeObject row = table.getSelectedRow();
-				try {
-					table.selectPreviousRow();
-					UserSessionHandler.getController().removeTreeObject(row);
-					table.updateRow(table.getParentRowItem(row));
-				} catch (DependencyExistException | ChildrenNotFoundException e) {
-					table.setValue(row);
-					MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
-				} catch (ElementIsReadOnly e) {
-					table.setValue(row);
-					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				// Do not remove any element of a block if a form is linking it.
+				if (!(UserSessionHandler.getController().getFormInUse() instanceof Block)
+						|| !isBlockLinkedByFormInUse((Block) UserSessionHandler.getController().getFormInUse())) {
+					TreeObject row = table.getSelectedRow();
+					// Do not remove an element of a block if is in use in any flow.
+					try {
+						table.selectPreviousRow();
+						UserSessionHandler.getController().removeTreeObject(row);
+						table.updateRow(table.getParentRowItem(row));
+					} catch (DependencyExistException | ChildrenNotFoundException e) {
+						table.setValue(row);
+						MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
+					} catch (ElementIsReadOnly e) {
+						table.setValue(row);
+						MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+					}
+				} else {
+					MessageManager.showError(LanguageCodes.ERROR_FORM_WITH_BLOCK_IS_IN_USE,
+							LanguageCodes.ERROR_FORM_WITH_BLOCK_IS_IN_USE_DESCRIPTION);
 				}
 			}
 		});
@@ -344,7 +369,6 @@ public class Designer extends SecuredWebPage {
 				} catch (ElementIsReadOnly e) {
 					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
-
 			}
 		});
 
@@ -361,7 +385,6 @@ public class Designer extends SecuredWebPage {
 				} catch (ElementIsReadOnly e) {
 					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
-
 			}
 		});
 
@@ -394,6 +417,10 @@ public class Designer extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});
@@ -527,6 +554,10 @@ public class Designer extends SecuredWebPage {
 				} catch (ElementCannotBeRemovedException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE);
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});
@@ -639,6 +670,16 @@ public class Designer extends SecuredWebPage {
 
 	private Form getCurrentForm() {
 		return UserSessionHandler.getController().getCompleteFormView();
+	}
+
+	public boolean isBlockLinkedByFormInUse(Block block) {
+		List<SimpleFormView> forms = simpleFormViewDao.getFormsThatUse(block);
+		for (SimpleFormView form : forms) {
+			if (WebformsAuthorizationService.getInstance().isFormInUse(form)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -17,6 +17,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 
 import com.biit.form.persistence.dao.hibernate.BaseFormDao;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.webforms.logger.WebformsLogger;
@@ -104,7 +105,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 
 	@Override
 	@CachePut(value = "forms", key = "#form.getId()", condition = "#form.getId() != null")
-	public Form makePersistent(Form form) throws UnexpectedDatabaseException {
+	public Form makePersistent(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		// For solving Hibernate bug
 		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
 		// list of children

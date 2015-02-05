@@ -9,6 +9,7 @@ import com.biit.abcd.core.SpringContextHelper;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -225,7 +226,7 @@ public class BlockManager extends SecuredWebPage {
 				} catch (CharacterNotAllowedException e) {
 					// Impossible
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
-				} catch (UnexpectedDatabaseException e) {
+				} catch (UnexpectedDatabaseException | ElementCannotBePersistedException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 					WebformsLogger.errorMessage(this.getClass().getName(), e);

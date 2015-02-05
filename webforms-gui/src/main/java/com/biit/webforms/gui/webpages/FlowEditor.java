@@ -9,6 +9,7 @@ import java.util.Set;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
@@ -357,6 +358,10 @@ public class FlowEditor extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 
 			}
