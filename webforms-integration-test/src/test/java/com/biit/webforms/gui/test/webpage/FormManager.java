@@ -17,7 +17,6 @@ public class FormManager extends VaadinGuiWebpage {
 	private static final String FORM_BUTTON_CAPTION = "Form";
 	private static final String REMOVE_FORM_BUTTON_CAPTION = "Remove Form";
 	private static final String EXPORT_BUTTON_CAPTION = "Export";
-	private static final String VERSION_BUTTON_CAPTION = "Version";
 
 	private final NewFormWindow newFormWindow;
 

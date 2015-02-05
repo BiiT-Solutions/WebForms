@@ -5,7 +5,7 @@ import com.biit.webforms.gui.test.exceptions.FieldNotEditableException;
 public class CommonAnswerSubanswerProperties extends CommonTreeElementProperties {
 	
 	private static final String VALUE_FIELD_CAPTION = "Value";
-	private static final String LABEL_TEXT_AREA_CAPTION = "Label";
+	private static final String LABEL_FIELD_CAPTION = "Label";
 	private static final String DESCRIPTION_TEXT_AREA_CAPTION = "Description";
 
 	
@@ -17,19 +17,19 @@ public class CommonAnswerSubanswerProperties extends CommonTreeElementProperties
 		setTextFieldValue(VALUE_FIELD_CAPTION, value);
 	}
 	
-	public String getLabelTextAraValue(){
-		return getTextAreaValue(LABEL_TEXT_AREA_CAPTION);
+	public String getLabel(){
+		return getTextFieldValue(LABEL_FIELD_CAPTION);
 	}
 	
-	public void setLabelTextAreaValue(String value) throws FieldNotEditableException{
-		setTextAreaValue(LABEL_TEXT_AREA_CAPTION, value);
+	public void setLabel(String value) throws FieldNotEditableException{
+		setTextFieldValue(LABEL_FIELD_CAPTION, value);
 	}
 	
-	public String getDescriptionTextAreaValue(){
+	public String getDescription(){
 		return getTextAreaValue(DESCRIPTION_TEXT_AREA_CAPTION);
 	}
 	
-	public void setDescriptionTextAreaValue(String value) throws FieldNotEditableException {
+	public void setDescription(String value) throws FieldNotEditableException {
 		setTextAreaValue(DESCRIPTION_TEXT_AREA_CAPTION, value);
 	}
 }

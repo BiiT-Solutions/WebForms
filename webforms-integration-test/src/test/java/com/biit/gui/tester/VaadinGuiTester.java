@@ -26,8 +26,8 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	private static final String NOTIFICATION_TYPE_ERROR = "error";
 	// This parameter set to 'true' activates phantomJs driver instead of firefox driver
 	private boolean headlessTesting = true;
-	private static final Integer WIDTH = 1280;
-	private static final Integer HEIGHT = 720;
+	private static final Integer WIDTH = 1600;
+	private static final Integer HEIGHT = 900;
 
 	private final List<VaadinGuiWebpage> webpages;
 
