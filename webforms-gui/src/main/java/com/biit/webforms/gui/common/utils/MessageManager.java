@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.common.utils;
 
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.logger.WebformsLogger;

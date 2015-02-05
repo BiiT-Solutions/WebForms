@@ -4,7 +4,7 @@ import java.util.Locale;
 
 import org.springframework.util.StringUtils;
 
-import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.logger.WebformsLogger;

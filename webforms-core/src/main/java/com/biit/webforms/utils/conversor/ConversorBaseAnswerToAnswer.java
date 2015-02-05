@@ -2,6 +2,7 @@ package com.biit.webforms.utils.conversor;
 
 import com.biit.form.BaseAnswer;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
@@ -24,7 +25,7 @@ public class ConversorBaseAnswerToAnswer extends ConversorTreeObject<BaseAnswer,
 				BaseAnswer convertedChild = convert((BaseAnswer) child);
 				try {
 					destiny.addChild(convertedChild);
-				} catch (NotValidChildException e) {
+				} catch (NotValidChildException | ElementIsReadOnly e) {
 					// Impossible
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}

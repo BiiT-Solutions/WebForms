@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.biit.form.IBaseFormView;
-import com.biit.webforms.authentication.ApplicationController;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.liferay.portal.model.User;

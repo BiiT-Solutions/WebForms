@@ -15,7 +15,6 @@ public class ValidateFormFlows extends SimpleValidator<Form> {
 
 	@Override
 	protected void validateImplementation(Form form) {
-
 		ValidateFlow validateFlow = new ValidateFlow();
 		if (!validateFlow.validate(form.getFlows(), getReport()) && isStopOnFail()) {
 			return;

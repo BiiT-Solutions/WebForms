@@ -3,10 +3,10 @@ package com.biit.webforms.gui.components;
 import java.io.IOException;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.WindowAboutUs;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;

@@ -12,19 +12,25 @@ import org.testng.annotations.Test;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,18 +42,43 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 	@Autowired
 	private IFormDao formDao;
 
+	@Autowired
+	private IBlockDao blockDao;
+
+	private Block block;
+
+	public void createBuildingBlock() throws NotValidChildException, FieldTooLongException,
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
+			UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException {
+		if (block == null) {
+			block = FormUtils.createBlock();
+			Assert.assertNotNull(block);
+			blockDao.makePersistent(block);
+			Assert.assertEquals(1, blockDao.getRowCount());
+		}
+	}
+
 	@Test
 	public void testGenerateCompleteForm() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny, NotValidTokenType {
-		FormUtils.createCompleteForm();
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
+			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType,
+			UnexpectedDatabaseException, ElementIsReadOnly, FlowNotAllowedException, ElementCannotBePersistedException {
+		createBuildingBlock();
+		FormUtils.createCompleteForm(block);
 	}
 
 	@Test(dependsOnMethods = { "testGenerateCompleteForm" })
 	public void testPersistCompleteForm() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			UnexpectedDatabaseException, ChildrenNotFoundException, BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny, NotValidTokenType {
-		Form form = FormUtils.createCompleteForm();
+			UnexpectedDatabaseException, ChildrenNotFoundException, BadFlowContentException,
+			FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
+			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
+			ElementCannotBeRemovedException, ElementCannotBePersistedException {
+		int prevForms = formDao.getRowCount();
+		Form form = FormUtils.createCompleteForm(block);
 		formDao.makePersistent(form);
+		Assert.assertEquals(formDao.getRowCount(), prevForms + 1);
 		Assert.assertNotNull(form.getId());
 
 		Form dbForm = formDao.read(form.getId());
@@ -57,22 +88,27 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 		Assert.assertTrue(form.isContentEqual(dbForm));
 
 		formDao.makeTransient(form);
-		Assert.assertEquals(formDao.getRowCount(), 0);
+		Assert.assertEquals(formDao.getRowCount(), prevForms);
 	}
-	
+
 	@Test(dependsOnMethods = { "testPersistCompleteForm" })
-	public void testNewVersion() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			UnexpectedDatabaseException, ChildrenNotFoundException, BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny, NotValidStorableObjectException, NotValidTokenType {
-		Form form = FormUtils.createCompleteForm();
+	public void testNewVersion() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
+			InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException,
+			ChildrenNotFoundException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
+			NotValidStorableObjectException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
+			ElementCannotBePersistedException {
+		Form form = FormUtils.createCompleteForm(block);
 		Form formV2 = form.createNewVersion(USER_ID);
-		
+
 		checkFormStructure(formV2);
 		checkEquals(form, formV2);
-		//Different version content is not equal
+		// Different version content is not equal
 		Assert.assertFalse(form.isContentEqual(formV2));
 		formV2.setVersion(form.getVersion());
 		Assert.assertTrue(form.isContentEqual(formV2));
+
+		formDao.makePersistent(formV2);
 	}
 
 	private void checkEquals(TreeObject obj1, TreeObject obj2) throws ChildrenNotFoundException {
@@ -85,7 +121,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 	}
 
 	public void checkFormStructure(Form form) {
-		// Check the structure is pressent
+		// Check the structure is present
 		Assert.assertNotNull(form.getChild(FormUtils.CATEGORY_1));
 		Assert.assertNotNull(form.getChild(FormUtils.CATEGORY_1, FormUtils.SYSTEM_FIELD_1));
 		Assert.assertNotNull(form.getChild(FormUtils.CATEGORY_1, FormUtils.INFO_TEXT_1));

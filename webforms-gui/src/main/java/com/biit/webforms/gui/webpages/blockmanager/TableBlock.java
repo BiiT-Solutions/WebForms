@@ -1,21 +1,22 @@
 package com.biit.webforms.gui.webpages.blockmanager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import com.biit.form.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UiAccesser;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.ISimpleBlockViewDao;
+import com.biit.webforms.persistence.entity.IWebformsBlockView;
 import com.biit.webforms.persistence.entity.SimpleBlockView;
 import com.biit.webforms.utils.DateManager;
 import com.liferay.portal.model.Organization;
@@ -53,11 +54,13 @@ public class TableBlock extends Table {
 				blocks.addAll(simpleBlockDao.getAll(organization.getOrganizationId()));
 			}
 
-			Collections.sort(blocks, new SimpleBlockViewUpdateDateComparator());
+			// Collections.sort(blocks, new SimpleBlockViewUpdateDateComparator());
 
 			for (SimpleBlockView block : blocks) {
 				addRow(block);
 			}
+
+			defaultSort();
 		} catch (Exception e) {
 			e.printStackTrace();
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
@@ -163,4 +166,47 @@ public class TableBlock extends Table {
 		removeAllItems();
 		initializeBlockTable();
 	}
+
+	/**
+	 * Selects the first row.
+	 */
+	public void selectFirstRow() {
+		setValue(firstItemId());
+	}
+
+	/**
+	 * This function selects the last form used by the user or the first.
+	 */
+	public void selectLastUsedBlock() {
+		try {
+			if (UserSessionHandler.getController().getLastEditedForm() != null) {
+				// Update form with new object if the form has change.
+				selectBlock(UserSessionHandler.getController().getLastEditedForm());
+			} else {
+				// Select default one.
+				selectFirstRow();
+			}
+		} catch (Exception e) {
+			// Select default one.
+			selectFirstRow();
+		}
+	}
+
+	public void selectBlock(IBaseFormView block) {
+		if (block == null || block.getName() == null) {
+			setValue(null);
+		} else {
+			SimpleBlockView simpleFormView = SimpleBlockView.getSimpleBlockView((IWebformsBlockView) block);
+
+			setValue(simpleFormView);
+		}
+	}
+
+	/**
+	 * Overridden version of sort for this table. Sorts by name ascendency.
+	 */
+	public void defaultSort() {
+		sort(new Object[] { TreeTableBlockProperties.BLOCK_LABEL }, new boolean[] { true });
+	}
+
 }

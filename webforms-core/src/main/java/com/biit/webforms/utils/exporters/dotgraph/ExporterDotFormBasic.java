@@ -39,7 +39,7 @@ public abstract class ExporterDotFormBasic<T> extends ExporterDot<T> {
 			break;
 		}
 
-		dotRule += "\t" + origin + " -> " + destiny + " [label = \"" + label + "\" color=" + getLinkColor()
+		dotRule += "\t" + origin + " -> " + destiny + " [label = \"" + label + "\", fontcolor=" + getFontColor(rule.isReadOnly()) +", color=" + getLinkColor(rule.isReadOnly())
 				+ ", penwidth=" + getPenWidth() + "];\n";
 
 		return dotRule;

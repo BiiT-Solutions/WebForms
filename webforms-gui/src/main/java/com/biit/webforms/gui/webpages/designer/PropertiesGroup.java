@@ -1,8 +1,8 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Group;
@@ -58,26 +58,31 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 	protected void initValues() {
 		super.initValues();
 
-		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
-		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
+		name.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
+		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(getInstance()));
 		name.addValidator(new ValidatorTreeObjectNameLength());
-		name.setValue(instance.getName());
-		label.setValue(instance.getLabel());
-		label.addValidator(new LengthValidator(instance.getMaxLabelLength()));
-		repeatable.setValue(instance.isRepeatable());
+		name.setValue(getInstance().getName());
+		name.setEnabled(!getInstance().isReadOnly());
+		
+		label.setValue(getInstance().getLabel());
+		label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
+		label.setEnabled(!getInstance().isReadOnly());
+		
+		repeatable.setValue(getInstance().isRepeatable());
+		repeatable.setEnabled(!getInstance().isReadOnly());
 	}
 
 	@Override
 	public void updateElement() {
-		String tempName = instance.getName();
-		String tempLabel = instance.getLabel();
+		String tempName = getInstance().getName();
+		String tempLabel = getInstance().getLabel();
 		if (name.isValid()) {
 			tempName = name.getValue();
 		}
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		UserSessionHandler.getController().updateGroup(instance, tempName, tempLabel, repeatable.getValue());
+		UserSessionHandler.getController().updateGroup(getInstance(), tempName, tempLabel, repeatable.getValue());
 
 		super.updateElement();
 	}

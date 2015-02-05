@@ -20,7 +20,7 @@ public class ExporterDotGroup extends ExporterDot<Group> {
 		String cluster = new String();
 		// Cluster tag it's what makes it a separate group
 		cluster += "\tsubgraph cluster_" + filterDotLanguageId(group.getComparationId()) + " {\n";
-		cluster += "\t\tnode [style=filled, fillcolor=" + getFillColor() + "];\n";
+		cluster += "\t\tnode [style=filled, fillcolor=" + getFillColor(group.isReadOnly()) + "];\n";
 		if (group.isRepeatable()) {
 			cluster += "\t\tlabel = \"" + filterDotLanguage(group.getName() + " (Loop)") + "\";\n";
 		} else {
@@ -29,8 +29,8 @@ public class ExporterDotGroup extends ExporterDot<Group> {
 
 		cluster += generateDotNodeChilds(group);
 
-		cluster += "\t\tcolor=" + getShapeColor() + ";\n";
-		cluster += "\t\tfontcolor=" + getFontColor() + ";\n";
+		cluster += "\t\tcolor=" + getShapeColor(group.isReadOnly()) + ";\n";
+		cluster += "\t\tfontcolor=" + getFontColor(group.isReadOnly()) + ";\n";
 		cluster += "\t\tpenwidth=" + getPenWidth() + ";\n";
 		cluster += "\t\tstyle=" + getGroupStyle(group) + ";\n";
 

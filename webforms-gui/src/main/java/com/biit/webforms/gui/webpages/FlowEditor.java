@@ -9,11 +9,12 @@ import java.util.Set;
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.flow.FlowCleaner;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -40,10 +41,11 @@ import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.vaadin.data.Container.Filterable;
@@ -83,9 +85,9 @@ public class FlowEditor extends SecuredWebPage {
 		formFlowViewerZoomListener = new FormFlowViewerZoomListener();
 		zoomSliderValueChangeListener = new ZoomSliderValueChangeListener();
 
-		if (UserSessionHandler.getController().getFormInUse() != null
+		if (UserSessionHandler.getController().getCompleteFormView() != null
 				&& !WebformsAuthorizationService.getInstance().isFormEditable(
-						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+						UserSessionHandler.getController().getCompleteFormView(), UserSessionHandler.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
@@ -109,14 +111,14 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private void initializeContent() {
-		Set<Flow> flows = UserSessionHandler.getController().getFormInUseFlows();
+		Set<Flow> flows = UserSessionHandler.getController().getCompleteFormView().getFlows();
 		tableFlows.addRows(flows);
 		tableFlows.sortByUpdateDate(false);
 	}
 
 	private Component createLeftComponent() {
-		VerticalLayout i = new VerticalLayout();
-		i.setSizeFull();
+		VerticalLayout layout = new VerticalLayout();
+		layout.setSizeFull();
 
 		Component tableFilterBar = createTableFilterBar();
 
@@ -155,18 +157,18 @@ public class FlowEditor extends SecuredWebPage {
 			}
 		});
 
-		i.addComponent(tableFilterBar);
-		i.addComponent(tableFlows);
-		i.setExpandRatio(tableFlows, 1.0f);
+		layout.addComponent(tableFilterBar);
+		layout.addComponent(tableFlows);
+		layout.setExpandRatio(tableFlows, 1.0f);
 
-		return i;
+		return layout;
 	}
 
 	private Component createTableFilterBar() {
-		HorizontalLayout i = new HorizontalLayout();
-		i.setMargin(true);
-		i.setSpacing(true);
-		i.setWidth("100%");
+		HorizontalLayout layout = new HorizontalLayout();
+		layout.setMargin(true);
+		layout.setSpacing(true);
+		layout.setWidth("100%");
 
 		tableFilterOrigin = new SearchFormElementField(Form.class, Category.class, Group.class, BaseQuestion.class);
 		tableFilterOrigin.setCaption(LanguageCodes.CAPTION_FILTER_ORIGIN.translation());
@@ -188,68 +190,71 @@ public class FlowEditor extends SecuredWebPage {
 
 			@Override
 			public void currentElement(Object object) {
-				Filterable f = (Filterable) tableFlows.getContainerDataSource();
+				Filterable filterable = (Filterable) tableFlows.getContainerDataSource();
 				if (destinyFilter != null) {
-					f.removeContainerFilter(destinyFilter);
+					filterable.removeContainerFilter(destinyFilter);
 				}
 				destinyFilter = new DestinyFilter((TreeObject) tableFilterDestiny.getValue(), tableFlows.getNewFlowId());
-				f.addContainerFilter(destinyFilter);
+				filterable.addContainerFilter(destinyFilter);
 			}
 		});
 
-		i.addComponent(tableFilterOrigin);
-		i.addComponent(tableFilterDestiny);
-		i.setExpandRatio(tableFilterOrigin, 0.5f);
-		i.setExpandRatio(tableFilterDestiny, 0.5f);
-		i.setComponentAlignment(tableFilterOrigin, Alignment.MIDDLE_LEFT);
-		i.setComponentAlignment(tableFilterDestiny, Alignment.MIDDLE_RIGHT);
+		layout.addComponent(tableFilterOrigin);
+		layout.addComponent(tableFilterDestiny);
+		layout.setExpandRatio(tableFilterOrigin, 0.5f);
+		layout.setExpandRatio(tableFilterDestiny, 0.5f);
+		layout.setComponentAlignment(tableFilterOrigin, Alignment.MIDDLE_LEFT);
+		layout.setComponentAlignment(tableFilterDestiny, Alignment.MIDDLE_RIGHT);
 
-		return i;
+		return layout;
 	}
 
 	private void updateUiState() {
 
-		boolean somethingSelected = false;
-		boolean selectedNew = false;
 		@SuppressWarnings("unchecked")
 		Set<Object> itemIds = (Set<Object>) tableFlows.getValue();
-		if (itemIds == null || itemIds.isEmpty()) {
-			somethingSelected = false;
-		} else {
-			somethingSelected = true;
-		}
+		boolean somethingSelected = !itemIds.isEmpty();
 		boolean multipleSelection = itemIds.size() > 1;
+		boolean selectedNew = false;
 		for (Object itemId : itemIds) {
 			selectedNew = itemId != null && itemId.equals(tableFlows.getNewFlowId());
 		}
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 
+		Object selectedRow = null;
+		if (somethingSelected) {
+			selectedRow = itemIds.iterator().next();
+		}
+		boolean elementIsReadOnly = (selectedRow != null) && (selectedRow instanceof Flow)
+				&& ((Flow) selectedRow).isReadOnly();
+
 		// Top button state
 		upperMenu.getSaveButton().setEnabled(canEdit);
 		upperMenu.getNewFlowButton().setEnabled(canEdit);
-		upperMenu.getEditFlowButton().setEnabled(canEdit && !selectedNew && !multipleSelection && somethingSelected);
+		upperMenu.getEditFlowButton().setEnabled(
+				canEdit && !selectedNew && !multipleSelection && somethingSelected && !elementIsReadOnly);
 		upperMenu.getCloneFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected);
-		upperMenu.getRemoveFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected);
+		upperMenu.getRemoveFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected && !elementIsReadOnly);
 		upperMenu.getCleanFlowButton().setEnabled(canEdit);
 	}
 
 	private Component createRightComponent() {
-		VerticalLayout i = new VerticalLayout();
-		i.setSizeFull();
+		VerticalLayout layout = new VerticalLayout();
+		layout.setSizeFull();
 
 		formFlowViewer = new FormFlowViewer(ImgType.SVG, 1.0f);
 		formFlowViewer.setSizeFull();
-		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getFormInUse(), null);
+		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getCompleteFormView(), null);
 		formFlowViewer.addZoomChangedListener(formFlowViewerZoomListener);
 
 		Component flowViewerControlBar = createFlowViewerControlBar();
 
-		i.addComponent(flowViewerControlBar);
-		i.addComponent(formFlowViewer);
-		i.setExpandRatio(formFlowViewer, 1.0f);
+		layout.addComponent(flowViewerControlBar);
+		layout.addComponent(formFlowViewer);
+		layout.setExpandRatio(formFlowViewer, 1.0f);
 
-		return i;
+		return layout;
 	}
 
 	private class FormFlowViewerZoomListener implements ZoomChangedListener {
@@ -329,7 +334,7 @@ public class FlowEditor extends SecuredWebPage {
 
 	protected void filterFlowDiagram(TreeObject filter) {
 		zoomSlider.setValue(FormFlowViewer.MIN_AUGMENT);
-		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getFormInUse(), filter);
+		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getCompleteFormView(), filter);
 	}
 
 	@Override
@@ -351,6 +356,10 @@ public class FlowEditor extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 
 			}
@@ -373,8 +382,7 @@ public class FlowEditor extends SecuredWebPage {
 					Flow selectedFlow = null;
 					if (tableFlows.getValue() instanceof Flow) {
 						selectedFlow = (Flow) tableFlows.getValue();
-					}
-					if (tableFlows.getValue() instanceof Set<?>) {
+					} else if (tableFlows.getValue() instanceof Set<?>) {
 						selectedFlow = (Flow) ((Set<Object>) tableFlows.getValue()).iterator().next();
 					}
 					editFlowAction(selectedFlow);
@@ -395,8 +403,14 @@ public class FlowEditor extends SecuredWebPage {
 							selectedFlows.add((Flow) selectedObject);
 						}
 					}
-					Set<Flow> clones = UserSessionHandler.getController().cloneFlowsAndInsertIntoForm(selectedFlows);
-					addOrUpdateFlowInTableAction(clones.toArray(new Flow[0]));
+					Set<Flow> clones;
+					try {
+						clones = UserSessionHandler.getController().cloneFlowsAndInsertIntoForm(selectedFlows);
+						addOrUpdateFlowInTableAction(clones.toArray(new Flow[0]));
+					} catch (FlowNotAllowedException e) {
+						// Not possible.
+						WebformsLogger.errorMessage(this.getClass().getName(), e);
+					}
 				}
 			}
 		});
@@ -421,9 +435,10 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private void cleanFlowOfForm() {
-		FlowCleaner flowCleaner = new FlowCleaner(UserSessionHandler.getController().getFormInUse());
+		FlowCleaner flowCleaner = new FlowCleaner(UserSessionHandler.getController().getCompleteFormView());
 		flowCleaner.cleanFlow();
-		tableFlows.setRows(UserSessionHandler.getController().getFormInUseFlows());
+		tableFlows.setRows(UserSessionHandler.getController().getCompleteFormView().getFlows());
+		tableFlows.sortByUpdateDate(false);
 		if (!flowCleaner.getOtherFlowsRemoved().isEmpty() || !flowCleaner.getUselessFlowRemoved().isEmpty()) {
 			StringBuilder report = new StringBuilder();
 			for (Flow flow : flowCleaner.getOtherFlowsRemoved()) {
@@ -499,8 +514,8 @@ public class FlowEditor extends SecuredWebPage {
 				try {
 					WindowFlow windowFlow = (WindowFlow) window;
 					if (!windowFlow.isConditionValid()) {
-						MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-								LanguageCodes.WARNING_DESCRIPTION_CONDITION_BAD_FORMED);
+						MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+								LanguageCodes.ERROR_DESCRIPTION_CONDITION_BAD_FORMED);
 					} else {
 						UserSessionHandler.getController().updateFlowContent(flow, windowFlow.getOrigin(),
 								windowFlow.getFlowType(), windowFlow.getDestiny(), windowFlow.isOthers(),
@@ -509,21 +524,24 @@ public class FlowEditor extends SecuredWebPage {
 						window.close();
 					}
 				} catch (BadFlowContentException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.WARNING_DESCRIPTION_RULE_BAD_FORMED);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_DESCRIPTION_RULE_BAD_FORMED);
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
-				} catch (FlowWithoutSource e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.WARNING_DESCRIPTION_ORIGIN_IS_NULL);
+				} catch (FlowWithoutSourceException e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_DESCRIPTION_ORIGIN_IS_NULL);
 				} catch (FlowSameOriginAndDestinyException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN_AND_DESTINY);
-				} catch (FlowDestinyIsBeforeOrigin e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN);
-				} catch (FlowWithoutDestiny e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.WARNING_DESCRIPTION_DESTINY_IS_NULL);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_DESCRIPTION_SAME_ORIGIN_AND_DESTINY);
+				} catch (FlowDestinyIsBeforeOriginException e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN);
+				} catch (FlowWithoutDestinyException e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_DESCRIPTION_DESTINY_IS_NULL);
+				} catch (FlowNotAllowedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
+							LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});

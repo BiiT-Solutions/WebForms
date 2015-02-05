@@ -1,12 +1,13 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
 import com.biit.form.IBaseFormView;
-import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.NotEnoughRightsToChangeStatusException;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.UiAccesser;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.TreeTableBaseForm;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -17,6 +18,7 @@ import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.FormWorkStatusUi;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.liferay.portal.model.Organization;
@@ -177,6 +179,10 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 			statusComboBox.setValue(form.getStatus());
 			MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
 					LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
+		} catch (ElementCannotBePersistedException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+					LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 

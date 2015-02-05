@@ -23,6 +23,7 @@ public enum LanguageCodes implements ILanguageCode {
 	COMMON_CAPTION_DOWN("caption.down"),
 	COMMON_CAPTION_EXPORT_TO_PDF("caption.exportToPdf"),
 	COMMON_CAPTION_INSERT_BLOCK("caption.insert.block"),
+	COMMON_CAPTION_LINK_BLOCK("caption.link.block"),
 	COMMON_CAPTION_GROUP("common.caption.group"),
 	CAPTION_EDIT_FORM_DESIGN("caption.edit.form.design"),
 	CAPTION_EDIT_FORM_FLOW("caption.edit.form.flow"),
@@ -107,6 +108,7 @@ public enum LanguageCodes implements ILanguageCode {
 	COMMON_TOOLTIP_DOWN("tooltip.down"),
 	COMMON_TOOLTIP_EXPORT_TO_PDF("tooltip.exportToPdf"),
 	COMMON_TOOLTIP_INSERT_BLOCK("tooltip.insert.block"),
+	COMMON_TOOLTIP_LINK_BLOCK("tooltip.link.block"),
 	TOOLTIP_EDIT_FORM_DESIGN("tooltip.edit.form.design"),
 	TOOLTIP_EDIT_FORM_FLOW("tooltip.edit.form.flow"),
 	TOOLTIP_VALIDATE_FORM("tooltip.validate.form"),
@@ -226,6 +228,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_PROPERTIES_SYSTEM_FIELD("caption.properties.system.field"),
 	CAPTION_SAVE_AS_BLOCK("caption.save.as.block"),
 	CAPTION_INSERT_NEW_BLOCK("caption.insert.new.block"),
+	CAPTION_LINK_BLOCK("caption.link.block"),
 	CAPTION_WINDOW_MOVE("caption.window.move"),
 	CAPTION_ORGANIZATION("caption.organization"),
 	CAPTION_VALIDATE_DUPLICATE_NAME("caption.validate.duplicate.name"),
@@ -243,6 +246,7 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_NEW_SUBANSWER("tooltip.new.subanswer"),
 	TOOLTIP_SAVE_AS_BLOCK("tooltip.save.as.block"),
 	
+	ERROR_CATEGORY_NOT_INSERTED_IN_BLOCK("error.category.not.inserted.in.block"),
 	ERROR_SUBCATEGORY_NOT_INSERTED("error.subcategory.not.inserted"),
 	ERROR_GROUP_NOT_INSERTED("error.group.not.inserted"),
 	ERROR_QUESTION_NOT_INSERTED("error.question.not.inserted"),
@@ -321,15 +325,15 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_TO_XFORMS("tooltip.export.xforms"),
 	
 	WARNING_CAPTION_RULE_ORIGIN_INVALID("warning.caption.rule.origin.invalid"),
-	WARNING_CAPTION_RULE_NOT_CORRECT("warning.caption.rule.not.correct"),
+	ERROR_CAPTION_RULE_NOT_CORRECT("warning.caption.rule.not.correct"),
 	
 	WARNING_DESCRIPTION_CAN_ONLY_SELECT_QUESTIONS("warning.description.can.only.select.questions"),
-	WARNING_DESCRIPTION_DESTINY_IS_NULL("warning.description.destiny.is.null"), 
-	WARNING_DESCRIPTION_ORIGIN_IS_NULL("warning.description.origin.is.null"),
-	WARNING_DESCRIPTION_SAME_ORIGIN_AND_DESTINY("warning.description.same.origin.and.destiny"),
-	WARNING_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN("warning.description.destiny.is.before.origin"),
-	WARNING_DESCRIPTION_RULE_BAD_FORMED("warning.description.rule.bad.formed"),
-	WARNING_DESCRIPTION_CONDITION_BAD_FORMED("warning.description.condition.bad.formed"),
+	ERROR_DESCRIPTION_DESTINY_IS_NULL("warning.description.destiny.is.null"), 
+	ERROR_DESCRIPTION_ORIGIN_IS_NULL("warning.description.origin.is.null"),
+	ERROR_DESCRIPTION_SAME_ORIGIN_AND_DESTINY("warning.description.same.origin.and.destiny"),
+	ERROR_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN("warning.description.destiny.is.before.origin"),
+	ERROR_DESCRIPTION_RULE_BAD_FORMED("warning.description.rule.bad.formed"),
+	ERROR_DESCRIPTION_CONDITION_BAD_FORMED("warning.description.condition.bad.formed"),
 	
 	ERROR_MESSAGE_VALUE_HAS_WRONG_FORMAT("error.message.value.has.wrong.format"),
 	ERROR_MESSAGE_FIELDS_ARE_NOT_FILLED_CORRECTLY("error.message.fields.are.not.filled.correctly"),
@@ -462,6 +466,7 @@ public enum LanguageCodes implements ILanguageCode {
 	VALIDATION_INCOMPLETE_LOGIN_REPORT("validation.incomplete.login.report"),
 	VALIDATION_INVALID_FLOW_CONDITION("validation.invalid.flow.condition"),	
 	VALIDATION_INVALID_FLOW_SUBFORMAT("validation.invalid.flow.subformat"),
+	VALIDATION_LINKED_FORM_ABCD_ELEMENT_NOT_FOUND("validation.linked.form.abcd.element.not.found"),
 	VALIDATION_LINKED_FORM_ABCD_ANSWER_NOT_FOUND("validation.linked.form.abcd.answer.not.found"),
 	VALIDATION_LINKED_FORM_ABCD_ELEMENT_IS_GROUP_NOT_QUESTION("validation.linked.form.abcd.element.is.group.not.question"),
 	VALIDATION_LINKED_FORM_ABCD_ELEMENT_IS_QUESTION_NOT_GROUP("validation.linked.form.abcd.element.is.question.not.group"),
@@ -500,6 +505,19 @@ public enum LanguageCodes implements ILanguageCode {
 	CLEAN_FLOW_REPORT_OTHERS_RULE("clean.flow.report.others.rule"),
 	CLEAN_FLOW_REPORT_USELESS_FLOW("clean.flow.report.useless.flow"),
 	CLEAN_FLOW_REPORT_NO_RULES_CHANGED("clean.flow.report.no.rules.changed"),
+	
+	ERROR_LINK_BLOCK_NOT_COMPLETE("error.link.block.not.complete"),
+	ERROR_READ_ONLY_ELEMENT("error.read.only.element"),
+	
+	ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE("error.element.cannot.be.removed.title"),
+	ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_BLOCK_DESCRIPTION("error.element.cannot.be.removed.linked.block.description"),
+	ERROR_ELEMENT_CANNOT_BE_REMOVED_BLOCK_ELEMENT_DESCRIPTION("error.element.cannot.be.removed.linked.block.element.description"),
+	
+	ERROR_FORM_WITH_BLOCK_IS_IN_USE("error.form.with.block.is.in.use"),
+	ERROR_FORM_WITH_BLOCK_IS_IN_USE_DESCRIPTION("error.form.with.block.is.in.use.description"),
+	
+	ERROR_ELEMENT_CANNOT_BE_SAVED("error.element.cannot.be.saved"),
+	ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION("error.element.cannot.be.saved.description"),
 	;
 
 	private String value;

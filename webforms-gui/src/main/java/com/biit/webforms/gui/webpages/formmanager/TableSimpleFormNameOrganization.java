@@ -1,8 +1,8 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
 import com.biit.form.IBaseFormView;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.language.LanguageCodes;
 import com.liferay.portal.model.Organization;
 import com.vaadin.data.Item;

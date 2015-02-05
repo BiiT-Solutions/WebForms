@@ -3,10 +3,10 @@ package com.biit.webforms.gui.components;
 import java.io.IOException;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.common.components.UpperMenu;
@@ -30,8 +30,6 @@ public class UpperMenuWebforms extends UpperMenu {
 	private IconButton settingsButton;
 	private boolean confirmationNeeded;
 	private IconButton logoutButton;
-	private final static String SETTINGS_BUTTON_ID = "settingsButton";
-	private final static String LOGOUT_BUTTON_ID = "logoutButton";
 
 	public UpperMenuWebforms() {
 		super();

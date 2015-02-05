@@ -3,6 +3,7 @@ package com.biit.webforms.utils.conversor;
 import com.biit.abcd.persistence.entity.Category;
 import com.biit.abcd.persistence.entity.Form;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.logger.WebformsLogger;
@@ -35,7 +36,7 @@ public class ConversorAbcdFormToForm extends ConversorTreeObject<Form, com.biit.
 			com.biit.webforms.persistence.entity.Category convertedChild = conversorCategory.convert((Category) child);
 			try {
 				destiny.addChild(convertedChild);
-			} catch (NotValidChildException e) {
+			} catch (NotValidChildException | ElementIsReadOnly e) {
 				// Impossible
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}

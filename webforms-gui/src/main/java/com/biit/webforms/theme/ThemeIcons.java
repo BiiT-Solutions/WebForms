@@ -26,7 +26,8 @@ public enum ThemeIcons implements IThemeIcon {
 	FORM_VALIDATE("form.validate.svg"), 
 	FORM_FINISH("form.protect.svg"),
 
-	BUILDING_BLOCK_ADD("building.block.add.svg"), 
+	BUILDING_BLOCK_ADD("building.block.add.svg"),
+	BUILDING_BLOCK_LINK("building.block.link.svg"),
 	BUILDING_BLOCK_SAVE("building.block.save.svg"),
 
 	DESIGNER_QUESTION_TYPE_CHECKLIST("question.checkmark.svg"), 

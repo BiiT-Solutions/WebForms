@@ -8,6 +8,7 @@ import com.biit.abcd.persistence.entity.Answer;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -25,7 +26,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatExc
 public class LinkValidationTests {
 
 	public Form generateTestForm1() throws FieldTooLongException, InvalidAnswerFormatException,
-			CharacterNotAllowedException, NotValidChildException, InvalidAnswerSubformatException {
+			CharacterNotAllowedException, NotValidChildException, InvalidAnswerSubformatException, ElementIsReadOnly {
 		Form form = new Form();
 		form.setLabel("test_1");
 		form.setDescription("");
@@ -206,7 +207,7 @@ public class LinkValidationTests {
 	@Test
 	public void testSubsetFunction() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ChildrenNotFoundException, DependencyExistException {
+			ChildrenNotFoundException, DependencyExistException, ElementIsReadOnly {
 		Form formA = generateTestForm1();
 		Form formB = generateTestForm1();
 
@@ -264,7 +265,7 @@ public class LinkValidationTests {
 	@Test
 	public void testLinkValidation() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ChildrenNotFoundException, DependencyExistException {
+			ChildrenNotFoundException, DependencyExistException, ElementIsReadOnly {
 
 		com.biit.abcd.persistence.entity.Form abcdForm = AbcdTestForms.generateTestForm1();
 		Form webformsForm = generateTestForm1();
@@ -276,7 +277,7 @@ public class LinkValidationTests {
 	@Test
 	public void testLinkValidationExtraCategory() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ChildrenNotFoundException, DependencyExistException {
+			ChildrenNotFoundException, DependencyExistException, ElementIsReadOnly {
 
 		com.biit.abcd.persistence.entity.Form abcdForm = AbcdTestForms.generateTestForm1();
 		Form webformsForm = generateTestForm1();
@@ -290,7 +291,7 @@ public class LinkValidationTests {
 	@Test
 	public void testLinkValidationExtraGroup() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ChildrenNotFoundException, DependencyExistException {
+			ChildrenNotFoundException, DependencyExistException, ElementIsReadOnly {
 
 		com.biit.abcd.persistence.entity.Form abcdForm = AbcdTestForms.generateTestForm1();
 		Form webformsForm = generateTestForm1();
@@ -304,7 +305,7 @@ public class LinkValidationTests {
 	@Test
 	public void testLinkValidationExtraQuestion() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ChildrenNotFoundException, DependencyExistException {
+			ChildrenNotFoundException, DependencyExistException, ElementIsReadOnly {
 
 		com.biit.abcd.persistence.entity.Form abcdForm = AbcdTestForms.generateTestForm1();
 		Form webformsForm = generateTestForm1();
@@ -318,7 +319,7 @@ public class LinkValidationTests {
 	@Test
 	public void testLinkValidationRemovedCategory() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ChildrenNotFoundException, DependencyExistException {
+			ChildrenNotFoundException, DependencyExistException, ElementIsReadOnly {
 
 		com.biit.abcd.persistence.entity.Form abcdForm = AbcdTestForms.generateTestForm1();
 		Form webformsForm = generateTestForm1();
@@ -332,7 +333,7 @@ public class LinkValidationTests {
 	@Test
 	public void testLinkValidationRemovedQuestion() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ChildrenNotFoundException, DependencyExistException {
+			ChildrenNotFoundException, DependencyExistException, ElementIsReadOnly {
 
 		com.biit.abcd.persistence.entity.Form abcdForm = AbcdTestForms.generateTestForm1();
 		Form webformsForm = generateTestForm1();
@@ -346,7 +347,7 @@ public class LinkValidationTests {
 	@Test
 	public void testLinkValidationRemovedGroup() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ChildrenNotFoundException, DependencyExistException {
+			ChildrenNotFoundException, DependencyExistException, ElementIsReadOnly {
 
 		com.biit.abcd.persistence.entity.Form abcdForm = AbcdTestForms.generateTestForm1();
 		Form webformsForm = generateTestForm1();
@@ -360,7 +361,7 @@ public class LinkValidationTests {
 	@Test
 	public void testLinkValidationChangeGroupName() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ChildrenNotFoundException, DependencyExistException {
+			ChildrenNotFoundException, DependencyExistException, ElementIsReadOnly {
 
 		com.biit.abcd.persistence.entity.Form abcdForm = AbcdTestForms.generateTestForm1();
 		Form webformsForm = generateTestForm1();
@@ -374,7 +375,7 @@ public class LinkValidationTests {
 	@Test
 	public void testLinkValidationChangeQuestionType() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ChildrenNotFoundException, DependencyExistException {
+			ChildrenNotFoundException, DependencyExistException, ElementIsReadOnly {
 
 		com.biit.abcd.persistence.entity.Form abcdForm = AbcdTestForms.generateTestForm1();
 		Form webformsForm = generateTestForm1();
@@ -388,7 +389,7 @@ public class LinkValidationTests {
 	@Test
 	public void testLinkValidationChangeQuestionTypeStillValid() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ChildrenNotFoundException, DependencyExistException {
+			ChildrenNotFoundException, DependencyExistException, ElementIsReadOnly {
 
 		com.biit.abcd.persistence.entity.Form abcdForm = AbcdTestForms.generateTestForm1();
 		Form webformsForm = generateTestForm1();

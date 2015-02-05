@@ -14,9 +14,9 @@ import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ValidateReport;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.exception.BadAbcdLink;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -126,17 +126,17 @@ public class Validation extends SecuredWebPage {
 	protected void validateAbcdLink() {
 
 		ValidateBaseForm structureValidator = new ValidateBaseForm();
-		if (structureValidator.validate(UserSessionHandler.getController().getFormInUse())) {
+		if (structureValidator.validate(UserSessionHandler.getController().getCompleteFormView())) {
 			List<Form> linkedForms;
 			try {
 				linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
-						UserSessionHandler.getController().getFormInUse());
+						UserSessionHandler.getController().getCompleteFormView());
 
 				if (linkedForms.isEmpty()) {
 					setNoLinkedFormsMessage();
 				} else {
 					ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(UserSessionHandler
-							.getController().getFormInUse());
+							.getController().getCompleteFormView());
 					ValidateReport report = new ValidateReport();
 					validator.validate(linkedForms, report);
 					if (report.isValid()) {
@@ -159,13 +159,13 @@ public class Validation extends SecuredWebPage {
 
 	protected void validateFlow() {
 		ValidateFormStructure structureValidator = new ValidateFormStructure();
-		if (structureValidator.validate(UserSessionHandler.getController().getFormInUse())) {
+		if (structureValidator.validate(UserSessionHandler.getController().getCompleteFormView())) {
 			ValidateFormFlows validator = new ValidateFormFlows();
 			ValidateReport report = new ValidateReport();
-			validator.validate(UserSessionHandler.getController().getFormInUse(), report);
+			validator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
 			if (report.isValid()) {
 				ValidateLogic logicValidator = new ValidateLogic();
-				logicValidator.validate(UserSessionHandler.getController().getFormInUse(), report);
+				logicValidator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
 				if (report.isValid()) {
 					setValidationPassedMessage();
 				} else {
@@ -182,7 +182,7 @@ public class Validation extends SecuredWebPage {
 	protected void validateStructure() {
 		ValidateFormStructure validator = new ValidateFormStructure();
 		ValidateReport report = new ValidateReport();
-		validator.validate(UserSessionHandler.getController().getFormInUse(), report);
+		validator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
 		if (report.isValid()) {
 			setValidationPassedMessage();
 		} else {
@@ -193,14 +193,14 @@ public class Validation extends SecuredWebPage {
 	protected void completeValidation() {
 		ValidateFormComplete validator = new ValidateFormComplete();
 		ValidateReport report = new ValidateReport();
-		validator.validate(UserSessionHandler.getController().getFormInUse(), report);
+		validator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
 
 		List<Form> linkedForms;
 		try {
 			linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
-					UserSessionHandler.getController().getFormInUse());
+					UserSessionHandler.getController().getCompleteFormView());
 			ValidateFormAbcdCompatibility validatorLink = new ValidateFormAbcdCompatibility(UserSessionHandler
-					.getController().getFormInUse());
+					.getController().getCompleteFormView());
 			validatorLink.validate(linkedForms, report);
 
 			if (report.isValid()) {
@@ -307,7 +307,17 @@ public class Validation extends SecuredWebPage {
 										((LinkedFormAbcdElementIsBaseQuestionNotBaseGroup) report).getAbcdChild()
 												.getPathName() }));
 			} else if (report instanceof LinkedFormAbcdElementNotFound) {
-
+				text.append(ServerTranslate
+						.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_ELEMENT_NOT_FOUND,
+								new Object[] {
+										((LinkedFormAbcdElementNotFound) report).getAbcdform()
+												.getLabel(),
+										((LinkedFormAbcdElementNotFound) report).getAbcdform()
+												.getVersion(),
+										((LinkedFormAbcdElementNotFound) report).getAbcdChild()
+												.getPathName(),
+										((LinkedFormAbcdElementNotFound) report).getWebform()
+												.getLabel() }));
 			} else if (report instanceof LinkedFormAbcdGroupRepeatableStatusIsDifferent) {
 				text.append(ServerTranslate
 						.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_GROUP_REPEATABLE_STATUS_IS_DIFFERENT,
@@ -357,7 +367,7 @@ public class Validation extends SecuredWebPage {
 			} else if (report instanceof OthersOrphanAt) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_OTHERS_ORPHAN,
 						new Object[] { ((OthersOrphanAt) report).getOrigin().getPathName() }));
-			} else if (report instanceof FormElementWithouthFlowIn){
+			} else if (report instanceof FormElementWithouthFlowIn) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_ELEMENT_NO_FLOW_IN,
 						new Object[] { ((FormElementWithouthFlowIn) report).getOrigin().getPathName() }));
 			} else if (report instanceof NullValueReport) {

@@ -1,8 +1,8 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Category;
@@ -52,25 +52,28 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 	protected void initValues() {
 		super.initValues();
 
-		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
-		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
+		name.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
+		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(getInstance()));
 		name.addValidator(new ValidatorTreeObjectNameLength());
-		name.setValue(instance.getName());
-		label.setValue(instance.getLabel());
-		label.addValidator(new LengthValidator(instance.getMaxLabelLength()));
+		name.setValue(getInstance().getName());
+		name.setEnabled(!getInstance().isReadOnly());
+		
+		label.setValue(getInstance().getLabel());
+		label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
+		label.setEnabled(!getInstance().isReadOnly());
 	}
 
 	@Override
 	public void updateElement() {
-		String tempName = instance.getName();
-		String tempLabel = instance.getLabel();
+		String tempName = getInstance().getName();
+		String tempLabel = getInstance().getLabel();
 		if (name.isValid()) {
 			tempName = name.getValue();
 		}
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		UserSessionHandler.getController().updateCategory(instance, tempName, tempLabel);
+		UserSessionHandler.getController().updateCategory(getInstance(), tempName, tempLabel);
 
 		super.updateElement();
 	}

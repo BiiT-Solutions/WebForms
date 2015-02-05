@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.xml.bind.TypeConstraintException;
 
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
@@ -18,7 +17,9 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 
 import com.biit.form.persistence.dao.hibernate.BaseFormDao;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Flow;
@@ -35,10 +36,10 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	@Override
 	protected void initializeSets(List<Form> forms) {
 		super.initializeSets(forms);
-		for (Form form : forms) {
-			// Initializes the sets for lazy-loading (within the same session)+
-			Hibernate.initialize(form.getFlows());
-		}
+		// for (Form form : forms) {
+		// // Initializes the sets for lazy-loading (within the same session)
+		// //Hibernate.initialize(form.getFlows());
+		// }
 	}
 
 	@Override
@@ -51,8 +52,8 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.getId()") })
-	public void makeTransient(Form form) throws UnexpectedDatabaseException {
+	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.getId()", condition = "#form.getId() != null") })
+	public void makeTransient(Form form) throws UnexpectedDatabaseException, ElementCannotBeRemovedException {
 		super.makeTransient(form);
 	}
 
@@ -64,6 +65,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	 * @return
 	 * @throws UnexpectedDatabaseException
 	 */
+	@Override
 	public List<Form> getAll(Class<?> cls, Organization organization) throws UnexpectedDatabaseException {
 		if (!Form.class.isAssignableFrom(cls)) {
 			throw new TypeConstraintException("FormDao can only filter subclasses of " + Form.class.getName());
@@ -103,7 +105,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 
 	@Override
 	@CachePut(value = "forms", key = "#form.getId()", condition = "#form.getId() != null")
-	public Form makePersistent(Form form) throws UnexpectedDatabaseException {
+	public Form makePersistent(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		// For solving Hibernate bug
 		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
 		// list of children

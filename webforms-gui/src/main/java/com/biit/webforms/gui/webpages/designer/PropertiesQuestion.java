@@ -1,11 +1,11 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerSubformatUi;
@@ -75,9 +75,9 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 				AnswerType selectedType = (AnswerType) answerTypeComboBox.getValue();
 				// No Input fields must put the format to null or input fields
 				// that has not any format already selected
-				if (selectedType.getDefaultAnswerFormat() == null || instance.getAnswerFormat() == null) {
+				if (selectedType.getDefaultAnswerFormat() == null || getInstance().getAnswerFormat() == null) {
 					answerFormat.setValue(selectedType.getDefaultAnswerFormat());
-					answerFormat.setEnabled(selectedType.isAnswerFormatEnabled());
+					answerFormat.setEnabled(selectedType.isAnswerFormatEnabled() && !getInstance().isReadOnly());
 				}
 				if (selectedType.getDefaultHorizontal() != null) {
 					horizontal.setValue(selectedType.getDefaultHorizontal());
@@ -154,7 +154,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 				answerSubformat.addItem(subformat.getSubformat());
 				answerSubformat.setItemCaption(subformat.getSubformat(), subformat.getTranslationCode().translation());
 			}
-			answerSubformat.setEnabled(true);
+			answerSubformat.setEnabled(!getInstance().isReadOnly());
 			answerSubformat.setValue(format.getDefaultSubformat());
 		}
 	}
@@ -162,19 +162,31 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	@Override
 	protected void initValues() {
 		super.initValues();
-		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
-		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
+		name.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
+		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(getInstance()));
 		name.addValidator(new ValidatorTreeObjectNameLength());
-		name.setValue(instance.getName());
+		name.setValue(getInstance().getName());
+		name.setEnabled(!getInstance().isReadOnly());
 
-		label.setValue(instance.getLabel());
-		label.addValidator(new LengthValidator(instance.getMaxLabelLength()));
-		description.setValue(instance.getDescription());
-		mandatory.setValue(instance.isMandatory());
-		answerTypeComboBox.setValue(instance.getAnswerType());
-		answerFormat.setValue(instance.getAnswerFormat());
-		answerSubformat.setValue(instance.getAnswerSubformat());
-		horizontal.setValue(instance.isHorizontal());
+		label.setValue(getInstance().getLabel());
+		label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
+		label.setEnabled(!getInstance().isReadOnly());
+		
+		description.setValue(getInstance().getDescription());
+		description.setEnabled(!getInstance().isReadOnly());
+		
+		mandatory.setValue(getInstance().isMandatory());
+		mandatory.setEnabled(!getInstance().isReadOnly());
+		
+		answerTypeComboBox.setValue(getInstance().getAnswerType());
+		answerTypeComboBox.setEnabled(!getInstance().isReadOnly());
+		
+		//AnswerFormat enabled is controlled in other part of the code. 
+		answerFormat.setValue(getInstance().getAnswerFormat());		
+		answerSubformat.setValue(getInstance().getAnswerSubformat());
+		
+		horizontal.setValue(getInstance().isHorizontal());
+		horizontal.setEnabled(!getInstance().isReadOnly());
 	}
 
 	@Override
@@ -185,15 +197,15 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 	@Override
 	public void updateElement() {
-		String tempName = instance.getName();
-		String tempLabel = instance.getLabel();
+		String tempName = getInstance().getName();
+		String tempLabel = getInstance().getLabel();
 		if (name.isValid()) {
 			tempName = name.getValue();
 		}
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		UserSessionHandler.getController().updateQuestion(instance, tempName, tempLabel, description.getValue(),
+		UserSessionHandler.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(),
 				mandatory.getValue(), (AnswerType) answerTypeComboBox.getValue(),
 				(AnswerFormat) answerFormat.getValue(), (AnswerSubformat) answerSubformat.getValue(),
 				horizontal.getValue());

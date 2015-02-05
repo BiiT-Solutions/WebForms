@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -23,9 +24,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Polymorphism;
 import org.hibernate.annotations.PolymorphismType;
 
+import com.biit.form.BaseCategory;
 import com.biit.form.BaseForm;
 import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
@@ -38,13 +42,15 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenInValue;
-import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToForm;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
+import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToFormException;
 import com.biit.webforms.serialization.AnswerDeserializer;
 import com.biit.webforms.serialization.AnswerSerializer;
 import com.biit.webforms.serialization.BaseRepeatableGroupDeserializer;
@@ -78,6 +84,8 @@ import com.liferay.portal.model.User;
 @Polymorphism(type = PolymorphismType.EXPLICIT)
 public class Form extends BaseForm implements IWebformsFormView {
 	private static final long serialVersionUID = 5220239269341014315L;
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
+			Arrays.asList(BaseCategory.class, BlockReference.class));
 
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
@@ -87,11 +95,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	@Lob
 	private String description;
 
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "form")
-	// @JoinTable(joinColumns = @JoinColumn(name = "form_ID"),
-	// inverseJoinColumns = @JoinColumn(name = "rule_ID"), indexes = {
-	// @Index(columnList = "form_ID") })
-	// @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	@OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true, mappedBy = "form")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private Set<Flow> rules;
 
 	private String linkedFormLabel;
@@ -124,6 +129,11 @@ public class Form extends BaseForm implements IWebformsFormView {
 		setCreatedBy(user);
 		setUpdatedBy(user);
 		setOrganizationId(organizationId);
+	}
+
+	@Override
+	protected List<Class<? extends TreeObject>> getAllowedChildren() {
+		return ALLOWED_CHILDS;
 	}
 
 	@Override
@@ -193,13 +203,13 @@ public class Form extends BaseForm implements IWebformsFormView {
 		this.status = status;
 	}
 
-	public void addFlow(Flow rule) {
-		this.rules.add(rule);
+	public void addFlow(Flow rule) throws FlowNotAllowedException {
+		rules.add(rule);
 		rule.setForm(this);
 	}
 
 	public boolean containsFlow(Flow rule) {
-		return rules.contains(rule);
+		return getFlows().contains(rule);
 	}
 
 	public Set<Flow> getFlows() {
@@ -261,7 +271,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		if (!allBaseQuestions.isEmpty()) {
 			Object[] baseQuestions = allBaseQuestions.toArray();
 			computedView.setFirstElement((TreeObject) baseQuestions[0]);
-			computedView.addFlows(rules);
+			computedView.addFlows(getFlows());
 
 			int numQuestions = baseQuestions.length - 1;
 
@@ -278,14 +288,15 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return computedView;
 	}
 
-	public String getReference(TreeObject element) throws ReferenceNotPertainsToForm {
+	public String getReference(TreeObject element) throws ReferenceNotPertainsToFormException {
 		List<TreeObject> parentList = new ArrayList<>();
 		TreeObject parent;
 		while ((parent = element.getParent()) != null) {
 			parentList.add(parent);
 		}
 		if (!parentList.get(parentList.size() - 1).equals(this)) {
-			throw new ReferenceNotPertainsToForm("TreeObject: '" + element + "' doesn't belong to '" + this + "'");
+			throw new ReferenceNotPertainsToFormException("TreeObject: '" + element + "' doesn't belong to '" + this
+					+ "'");
 		}
 
 		String reference = "<" + element.getName() + ">";
@@ -299,7 +310,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public Set<StorableObject> getAllInnerStorableObjects() {
 		Set<StorableObject> innerStorableObjects = new HashSet<>();
 		innerStorableObjects.addAll(super.getAllInnerStorableObjects());
-		for (Flow rule : rules) {
+		for (Flow rule : getFlows()) {
 			innerStorableObjects.add(rule);
 			innerStorableObjects.addAll(rule.getAllInnerStorableObjects());
 		}
@@ -364,7 +375,12 @@ public class Form extends BaseForm implements IWebformsFormView {
 					continue;
 				}
 			}
-			addFlow(copiedRule);
+			try {
+				addFlow(copiedRule);
+			} catch (FlowNotAllowedException e) {
+				// Impossible
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
 		}
 	}
 
@@ -379,9 +395,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 	}
 
-	public boolean removeRule(Flow dbRule) {
+	public boolean removeRule(Flow flow) {
 		int currentRules = rules.size();
-		rules.remove(dbRule);
+		rules.remove(flow);
 		return currentRules == rules.size();
 	}
 
@@ -408,10 +424,12 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 	}
 
+	@Override
 	public String getLinkedFormLabel() {
 		return linkedFormLabel;
 	}
 
+	@Override
 	public Set<Integer> getLinkedFormVersions() {
 		return linkedFormVersions;
 	}
@@ -420,6 +438,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		getLinkedFormVersions().add(versionNumber);
 	}
 
+	@Override
 	public Long getLinkedFormOrganizationId() {
 		return linkedFormOrganizationId;
 	}
@@ -452,8 +471,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 		Integer counter = 0;
 
 		sb.append("Form form = new Form();").append(System.lineSeparator());
-		sb.append("form.setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
-		sb.append("form.setDescription(\"").append(this.getDescription()).append("\");").append(System.lineSeparator());
+		sb.append("form.setLabel(\"").append(getLabel()).append("\");").append(System.lineSeparator());
+		sb.append("form.setDescription(\"").append(getDescription()).append("\");").append(System.lineSeparator());
 
 		for (TreeObject child : getChildren()) {
 			int tempCounter = counter + 1;
@@ -471,7 +490,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public Set<Flow> getFlows(TreeObject origin, TreeObject destiny) {
 		Set<Flow> selectedFlows = new HashSet<Flow>();
-		for (Flow flow : rules) {
+		for (Flow flow : getFlows()) {
 			if (flow.getOrigin().equals(origin)
 					&& ((flow.getDestiny() != null && flow.getDestiny().equals(destiny)) || (flow.getDestiny() == null && destiny == null))) {
 				selectedFlows.add(flow);
@@ -499,6 +518,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
+		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
 		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectSerializer<Category>());
 		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
@@ -527,6 +547,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 * @param treeObject
 	 * @return
 	 */
+	@Override
 	public boolean isContentEqual(TreeObject treeObject) {
 		if (treeObject instanceof Form) {
 			if (super.isContentEqual(treeObject)) {
@@ -585,5 +606,33 @@ public class Form extends BaseForm implements IWebformsFormView {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Equals by comparationId and class. Comparation by class has been removed to allow the comparation with
+	 * CompleteFormView.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+
+		if (!(obj instanceof StorableObject)) {
+			return false;
+		}
+
+		StorableObject other = (StorableObject) obj;
+		if (getComparationId() == null) {
+			if (other.getComparationId() != null) {
+				return false;
+			}
+		} else if (!getComparationId().equals(other.getComparationId())) {
+			return false;
+		}
+		return true;
 	}
 }

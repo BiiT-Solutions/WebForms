@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.biit.form.TreeObject;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.TokenTypes;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.FilterTreeObjectTableContainsName;
 import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.gui.common.components.TableWithSearch;
@@ -78,7 +78,7 @@ public class ConditionEditorControls extends TabSheet {
 	 * Initialize Ui default values.
 	 */
 	private void initializeComposition() {
-		treeObjectTable.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null, Form.class,
+		treeObjectTable.loadTreeObject(UserSessionHandler.getController().getCompleteFormView(), null, Form.class,
 				Category.class, Group.class, Question.class);
 		treeObjectTable.setValue(null);
 	}

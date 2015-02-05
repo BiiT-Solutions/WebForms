@@ -14,8 +14,8 @@ import com.biit.liferay.access.exceptions.WebServiceAccessError;
 import com.biit.liferay.security.AuthenticationService;
 import com.biit.liferay.security.exceptions.InvalidCredentialsException;
 import com.biit.security.exceptions.PBKDF2EncryptorException;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WebPageComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
@@ -81,6 +81,9 @@ public class Login extends WebPageComponent {
 		if (((ApplicationUi) getUI()).getUser() != null && ((ApplicationUi) getUI()).getUser().length() > 0
 				&& ((ApplicationUi) getUI()).getPassword() != null
 				&& ((ApplicationUi) getUI()).getPassword().length() > 0) {
+			WebformsLogger.info(this.getClass().getName(),
+					"Autologin with user '" + ((ApplicationUi) getUI()).getUser() + "' and password with length of "
+							+ ((ApplicationUi) getUI()).getPassword().length());
 			try {
 				User user = checkUserAndPassword(((ApplicationUi) getUI()).getUser(),
 						((ApplicationUi) getUI()).getPassword());
@@ -94,8 +97,14 @@ public class Login extends WebPageComponent {
 				}
 			} catch (InvalidCredentialsException | NotConnectedToWebServiceException | PBKDF2EncryptorException
 					| IOException | AuthenticationRequired | WebServiceAccessError e) {
-				// User not valid, do nothing.
+				WebformsLogger.info(this.getClass().getName(),
+						"Autologin with user '" + ((ApplicationUi) getUI()).getUser()
+								+ "' failed! Wrong user or password.");
 			}
+		}
+		if (((ApplicationUi) getUI()).getUser() != null && ((ApplicationUi) getUI()).getUser().length() > 0) {
+			WebformsLogger.info(this.getClass().getName(), "Autologin with user '" + ((ApplicationUi) getUI()).getUser()
+					+ "' but no password provided!");
 		}
 	}
 

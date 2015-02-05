@@ -42,7 +42,7 @@ public class FlowCleaner {
 		// Others is not allowed if is the only question.
 		if (flows.size() == 1) {
 			Flow flow = flows.iterator().next();
-			if (flow.isOthers()) {
+			if (!flow.isReadOnly() && flow.isOthers()) {
 				flow.setOthers(false);
 				// Add a copy because maybe changed by other rules.
 				otherFlowsRemoved.add(flow.generateCopy());
@@ -57,11 +57,11 @@ public class FlowCleaner {
 			Flow flow = flows.iterator().next();
 			// Flow point to nextQuestion.
 			if ((flow != null) && (flow.getDestiny() != null) && (nextQuestion != null)) {
-				if (flow.getDestiny().equals(nextQuestion)) {
-					// Has no condition.
-					if (flow.getCondition() == null || flow.getCondition().isEmpty()) {
-						form.removeRule(flow);
-						uselessFlowRemoved.add(flow);
+			if (!flow.isReadOnly() && flow.getDestiny().equals(nextQuestion)) {
+				// Has no condition.
+				if (flow.getCondition() == null || flow.getCondition().isEmpty()) {
+					form.removeRule(flow);
+					uselessFlowRemoved.add(flow);
 					}
 				}
 			}

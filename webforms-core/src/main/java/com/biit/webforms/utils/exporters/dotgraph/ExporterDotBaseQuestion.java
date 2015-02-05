@@ -36,22 +36,24 @@ public class ExporterDotBaseQuestion extends ExporterDot<BaseQuestion> {
 
 			if (question.getAnswerType() == AnswerType.MULTIPLE_SELECTION) {
 				return getDotId(question) + " [label=\"" + filterDotLanguage(question.getName()) + " \\n ("
-						+ filterDotLanguage(question.getAnswerType().toString()) + ")\", color=" + getFontColor()
-						+ ", penwidth=" + getPenWidth() + ", fontcolor=" + getFontColor() + "]";
+						+ filterDotLanguage(question.getAnswerType().toString()) + ")\", color="
+						+ getFontColor(baseQuestion.isReadOnly()) + ", penwidth=" + getPenWidth() + ", fontcolor="
+						+ getFontColor(baseQuestion.isReadOnly()) + "]";
 			} else {
 				return getDotId(question) + " [label=\"" + filterDotLanguage(question.getName()) + "\", color="
-						+ getFontColor() + ", penwidth=" + getPenWidth() + ", fontcolor=" + getFontColor() + "]";
+						+ getFontColor(baseQuestion.isReadOnly()) + ", penwidth=" + getPenWidth() + ", fontcolor="
+						+ getFontColor(baseQuestion.isReadOnly()) + "]";
 			}
 		}
 		if (baseQuestion instanceof SystemField) {
 			return getDotId(baseQuestion) + " [label=\"" + filterDotLanguage(baseQuestion.getName()) + " \\n ("
-					+ "system-field" + ")\", color=" + getFontColor() + ", penwidth=" + getPenWidth() + ", fontcolor="
-					+ getFontColor() + "]";
+					+ "system-field" + ")\", color=" + getFontColor(baseQuestion.isReadOnly()) + ", penwidth="
+					+ getPenWidth() + ", fontcolor=" + getFontColor(baseQuestion.isReadOnly()) + "]";
 		}
 		if (baseQuestion instanceof Text) {
 			return getDotId(baseQuestion) + " [label=\"" + filterDotLanguage(baseQuestion.getName()) + " \\n ("
-					+ "info-text" + ")\", color=" + getFontColor() + ", penwidth=" + getPenWidth() + ", fontcolor="
-					+ getFontColor() + "]";
+					+ "info-text" + ")\", color=" + getFontColor(baseQuestion.isReadOnly()) + ", penwidth="
+					+ getPenWidth() + ", fontcolor=" + getFontColor(baseQuestion.isReadOnly()) + "]";
 		}
 		WebformsLogger.severe(this.getClass().getName(), "received not known base question class "
 				+ baseQuestion.getClass().getName() + " '" + baseQuestion + "'");

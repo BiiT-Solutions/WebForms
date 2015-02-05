@@ -67,4 +67,9 @@ public class XFormsText extends XFormsQuestion {
 		return "";
 	}
 
+	@Override
+	protected String getElementAddedClasses() {
+		return "";
+	}
+
 }

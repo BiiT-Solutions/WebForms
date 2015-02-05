@@ -130,12 +130,14 @@ class XFormsHelper {
 			// This element is a fork, has more than one flow.
 			if (flowsFromOrigin != null && flowsFromOrigin.size() > 1) {
 				tokens.addAll(flow.getCondition());
-				if (!tokens.isEmpty()) {
-					tokens.add(Token.and());
+				if (flow.getOrigin() instanceof Question) {
+					if (!tokens.isEmpty()) {
+						tokens.add(Token.and());
+					}
+					tokens.add(new TokenAnswerNeeded((BaseQuestion) flow.getOrigin(), ((Question) flow.getOrigin())
+							.getAnswerFormat() != null
+							&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 				}
-				tokens.add(new TokenAnswerNeeded((Question) flow.getOrigin(), ((Question) flow.getOrigin())
-						.getAnswerFormat() != null
-						&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 				return tokens;
 			}
 

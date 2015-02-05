@@ -74,7 +74,7 @@ public class XFormsSystemField extends XFormsQuestion {
 	}
 
 	/**
-	 * System fields always are hidden.S
+	 * System fields always are hidden.
 	 */
 	@Override
 	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
@@ -83,6 +83,11 @@ public class XFormsSystemField extends XFormsQuestion {
 		// will be broken.
 		getXFormsHelper().addVisibilityOfElement(getSource(), super.getAllFlowsVisibility());
 		return "false";
+	}
+	
+	@Override
+	protected String getElementAddedClasses() {
+		return "";
 	}
 
 }

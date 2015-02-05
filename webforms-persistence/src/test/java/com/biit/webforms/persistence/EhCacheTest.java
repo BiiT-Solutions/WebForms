@@ -9,7 +9,9 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
@@ -26,14 +28,15 @@ public class EhCacheTest extends AbstractTransactionalTestNGSpringContextTests {
 	private IFormDao formDao;
 
 	@Test
-	public void testSecondLevelCache() throws FieldTooLongException, UnexpectedDatabaseException {
+	public void testSecondLevelCache() throws FieldTooLongException, UnexpectedDatabaseException,
+			ElementCannotBeRemovedException, ElementCannotBePersistedException {
 		Form form = new Form();
 		form.setLabel(DUMMY_FORM);
 		form.setOrganizationId(ORGANIZATION_ID);
 		formDao.makePersistent(form);
 
 		// fetch the form entity from database first time
-		form = formDao.getForm(DUMMY_FORM,ORGANIZATION_ID);
+		form = formDao.getForm(DUMMY_FORM, ORGANIZATION_ID);
 		Assert.assertNotNull(form);
 
 		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getEntityFetchCount(), 0);
@@ -41,7 +44,7 @@ public class EhCacheTest extends AbstractTransactionalTestNGSpringContextTests {
 		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getSecondLevelCacheHitCount(), 0);
 
 		// Here entity is already in second level cache (session has been closed) so no database query will be hit
-		form = formDao.getForm(DUMMY_FORM,ORGANIZATION_ID);
+		form = formDao.getForm(DUMMY_FORM, ORGANIZATION_ID);
 		Assert.assertNotNull(form);
 
 		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getEntityFetchCount(), 0);

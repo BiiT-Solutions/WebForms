@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>com.biit</groupId>
 		<artifactId>webforms</artifactId>
-		<version>2.3.10</version>
+		<version>2.4.1</version>
 	</parent>
 
 	<properties>
@@ -20,8 +20,10 @@
 		<!-- Replace original database for a database for testing -->
 		<original.database>webforms</original.database>
 		<test.database>webformstest</test.database>
+		<abcd.original.database>abcd</abcd.original.database>
+		<abcd.test.database>abcdtest</abcd.test.database>
 		<!-- Jetty client configuration -->
-		<jetty.test.port>8081</jetty.test.port>
+		<jetty.test.port>9081</jetty.test.port>
 		<jetty.test.stop.port>8866</jetty.test.stop.port>
 	</properties>
 
@@ -198,6 +200,12 @@
 										</copy>
 										<!-- Modify database connection to use test database -->
 										<replace
+											token="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${abcd.original.database}?"
+											value="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${abcd.test.database}?"
+											dir="target/classes">
+											<include name="**/*.properties" />
+										</replace>
+										<replace
 											token="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${original.database}?"
 											value="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${test.database}?"
 											dir="target/classes">
@@ -288,6 +296,7 @@
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-failsafe-plugin</artifactId>
 						<version>${maven-failsafe-plugin.version}</version>
 						<configuration>

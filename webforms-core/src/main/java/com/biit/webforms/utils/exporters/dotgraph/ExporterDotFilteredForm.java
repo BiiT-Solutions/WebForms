@@ -43,7 +43,7 @@ public class ExporterDotFilteredForm extends ExporterDotFormBasic<FilteredForm> 
 		String dotFlow = new String();
 		ComputedFlowView computedRuleView = structure.getFlows();
 		if (structure.hasStartAsDependency() && computedRuleView.getFirstElement() != null) {
-			dotFlow += "\tstart -> " + getDotId(computedRuleView.getFirstElement()) + "[color=" + getLinkColor()
+			dotFlow += "\tstart -> " + getDotId(computedRuleView.getFirstElement()) + "[color=" + getLinkColor(false)
 					+ "];\n";
 		}
 		for (Flow rule : structure.getFilteredFlows()) {
