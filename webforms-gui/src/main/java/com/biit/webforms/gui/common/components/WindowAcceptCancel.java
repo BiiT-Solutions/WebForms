@@ -192,4 +192,8 @@ public class WindowAcceptCancel extends Window {
 	protected IconButton getAcceptButton(){
 		return acceptButton;
 	}
+	
+	protected IconButton getCancelButton(){
+		return cancelButton;
+	}
 }

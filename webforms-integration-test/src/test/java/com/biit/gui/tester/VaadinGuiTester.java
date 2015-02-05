@@ -3,28 +3,31 @@ package com.biit.gui.tester;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
-import com.vaadin.testbench.Parameters;
 import com.vaadin.testbench.TestBench;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.NotificationElement;
 
 public class VaadinGuiTester extends TestBenchTestCase {
 
-	// Activates screenshots on application failure
-	private boolean takeScreeenshots = false;
-	private final static String SCREENSHOTS_PATH = System.getProperty("java.io.tmpdir");
-	private final static String SCREENSHOTS_ERROR_PATH = "/errors";
-	private final static String SCREENSHOTS_REFERENCE_PATH = "/reference";
 	private static final String FIREFOX_LANGUAGE_PROPERTY = "intl.accept_languages";
 	private static final String FIREFOX_LANGUAGE_VALUE = "en_US";
 	private static final String APPLICATION_URL_NEW_UI = "http://localhost:9081/?restartApplication";
+	private static final String NOTIFICATION_TYPE_HUMANIZED = "humanized";
+	private static final String NOTIFICATION_TYPE_WARNING = "warning";
 	private static final String NOTIFICATION_TYPE_ERROR = "error";
+	// This parameter set to 'true' activates phantomJs driver instead of firefox driver
+	private boolean headlessTesting = true;
+	private static final Integer WIDTH = 1280;
+	private static final Integer HEIGHT = 720;
 
 	private final List<VaadinGuiWebpage> webpages;
 
@@ -34,12 +37,17 @@ public class VaadinGuiTester extends TestBenchTestCase {
 
 	@BeforeClass(inheritGroups = true, alwaysRun = true)
 	public void createDriver() {
-		if (takeScreeenshots) {
-			setScreenshotsParameters(SCREENSHOTS_PATH);
+		if (headlessTesting) {
+			DesiredCapabilities caps = new DesiredCapabilities();
+			caps.setJavascriptEnabled(true);
+			caps.setCapability("takesScreenshot", true);
+			setDriver(TestBench.createDriver(new PhantomJSDriver(caps)));
+		} else {
+			FirefoxProfile profile = new FirefoxProfile();
+			profile.setPreference(FIREFOX_LANGUAGE_PROPERTY, FIREFOX_LANGUAGE_VALUE);
+			setDriver(TestBench.createDriver(new FirefoxDriver(profile)));
 		}
-		FirefoxProfile profile = new FirefoxProfile();
-		profile.setPreference(FIREFOX_LANGUAGE_PROPERTY, FIREFOX_LANGUAGE_VALUE);
-		setDriver(TestBench.createDriver(new FirefoxDriver(profile)));
+		getDriver().manage().window().setSize(new Dimension(WIDTH, HEIGHT));
 		for (VaadinGuiWebpage webpage : webpages) {
 			webpage.setDriver(getDriver());
 		}
@@ -47,20 +55,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
 
 	@AfterClass(alwaysRun = true)
 	public void destroyDriver() {
-		// Do not call 'driver.quit' if you want to take screenshots when the
-		// application fails
-		if (!takeScreeenshots) {
-			getDriver().quit();
-		}
-	}
-
-	private static void setScreenshotsParameters(String path) {
-		Parameters.setScreenshotErrorDirectory(path + SCREENSHOTS_ERROR_PATH);
-		Parameters.setScreenshotReferenceDirectory(path + SCREENSHOTS_REFERENCE_PATH);
-		Parameters.setMaxScreenshotRetries(2);
-		Parameters.setScreenshotComparisonTolerance(1.0);
-		Parameters.setScreenshotRetryDelay(10);
-		Parameters.setScreenshotComparisonCursorDetection(true);
+		getDriver().quit();
 	}
 
 	public void addWebpage(VaadinGuiWebpage webpage) {
@@ -77,5 +72,17 @@ public class VaadinGuiTester extends TestBenchTestCase {
 
 	public static void checkNotificationIsError(NotificationElement notification) {
 		Assert.assertEquals(NOTIFICATION_TYPE_ERROR, notification.getType());
+	}
+
+	public static void checkNotificationIsWarning(NotificationElement notification) {
+		Assert.assertEquals(NOTIFICATION_TYPE_WARNING, notification.getType());
+	}
+	
+	public static void checkNotificationIsHumanized(NotificationElement notification) {
+		Assert.assertEquals(NOTIFICATION_TYPE_HUMANIZED, notification.getType());
+	}
+	
+	public boolean isHeadlessTesting(){
+		return headlessTesting;
 	}
 }

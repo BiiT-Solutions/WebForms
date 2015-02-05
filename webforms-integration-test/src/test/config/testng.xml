@@ -3,11 +3,15 @@
 	<test name="WebFormsTest" enabled="true" preserve-order="true">
 		<groups>
 			<run>
-				<exclude name="login" />
+				<include name="login" />
+				<include name="basicFunctionality" />
+				<include name="formFlow" />
 			</run>
 		</groups>
 		<classes>
 			<class name="com.biit.webforms.gui.test.LoginTests" />
+			<class name="com.biit.webforms.gui.test.BasicFuncionalityTests" />
+			<class name="com.biit.webforms.gui.test.FormFlowTests" />
 		</classes>
 	</test>
 </suite>

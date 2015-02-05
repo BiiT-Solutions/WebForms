@@ -66,8 +66,6 @@ public class FlowEditor extends SecuredWebPage {
 	private static final long serialVersionUID = -6257723403353946354L;
 	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
 			Arrays.asList(WebformsActivity.READ));
-	private static final double ZOOM_MIN_VALUE = 1.0f;
-	private static final double ZOOM_MAX_VALUE = 50.0f;
 
 	private UpperMenuFlowEditor upperMenu;
 	private TableFlows tableFlows;
@@ -262,9 +260,9 @@ public class FlowEditor extends SecuredWebPage {
 	private class FormFlowViewerZoomListener implements ZoomChangedListener {
 
 		@Override
-		public void zoomChanged(float zoom) {
+		public void zoomChanged(double zoom) {
 			zoomSlider.removeValueChangeListener(zoomSliderValueChangeListener);
-			zoomSlider.setValue((double) zoom);
+			zoomSlider.setValue(zoom);
 			zoomSlider.addValueChangeListener(zoomSliderValueChangeListener);
 		}
 
@@ -316,9 +314,9 @@ public class FlowEditor extends SecuredWebPage {
 
 		zoomSlider = new Slider();
 		zoomSlider.setCaption(LanguageCodes.CAPTION_ZOOM_SLIDER.translation());
-		zoomSlider.setMin(ZOOM_MIN_VALUE);
-		zoomSlider.setMax(ZOOM_MAX_VALUE);
-		zoomSlider.setValue(ZOOM_MIN_VALUE);
+		zoomSlider.setMin(FormFlowViewer.MIN_AUGMENT);
+		zoomSlider.setMax(FormFlowViewer.MAX_AUGMENT);
+		zoomSlider.setValue(FormFlowViewer.MIN_AUGMENT);
 		zoomSlider.setWidth("100%");
 		zoomSlider.addValueChangeListener(zoomSliderValueChangeListener);
 
@@ -335,7 +333,7 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	protected void filterFlowDiagram(TreeObject filter) {
-		zoomSlider.setValue(ZOOM_MIN_VALUE);
+		zoomSlider.setValue(FormFlowViewer.MIN_AUGMENT);
 		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getCompleteFormView(), filter);
 	}
 
@@ -445,12 +443,12 @@ public class FlowEditor extends SecuredWebPage {
 			StringBuilder report = new StringBuilder();
 			for (Flow flow : flowCleaner.getOtherFlowsRemoved()) {
 				report.append(ServerTranslate.translate(LanguageCodes.CLEAN_FLOW_REPORT_OTHERS_RULE, new Object[] {
-						flow.getOrigin().getPathName(), flow.getOrigin().getPathName() }));
+						flow.getOrigin().getPathName(), flow.getDestiny().getPathName() }));
 				report.append(System.lineSeparator());
 			}
 			for (Flow flow : flowCleaner.getUselessFlowRemoved()) {
 				report.append(ServerTranslate.translate(LanguageCodes.CLEAN_FLOW_REPORT_USELESS_FLOW, new Object[] {
-						flow.getOrigin().getPathName(), flow.getOrigin().getPathName() }));
+						flow.getOrigin().getPathName(), flow.getDestiny().getPathName() }));
 				report.append(System.lineSeparator());
 			}
 			WindowTextArea reportWindow = new WindowTextArea(LanguageCodes.CLEAN_FLOW_REPORT_CAPTION.translation());

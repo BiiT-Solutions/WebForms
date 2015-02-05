@@ -3,7 +3,7 @@ package com.biit.webforms.enumerations;
 public enum AnswerType {
 	SINGLE_SELECTION_RADIO(null, true, false, true, true),
 
-	SINGLE_SELECTION_LIST(null, true, false, true, false),
+	SINGLE_SELECTION_LIST(null, true, null, true, false),
 
 	MULTIPLE_SELECTION(null, true, null, true, true),
 
@@ -35,7 +35,7 @@ public enum AnswerType {
 		return defaultHorizontal != null;
 	}
 
-	public boolean getDefaultHorizontal() {
+	public Boolean getDefaultHorizontal() {
 		if (defaultHorizontal != null) {
 			return defaultHorizontal;
 		}

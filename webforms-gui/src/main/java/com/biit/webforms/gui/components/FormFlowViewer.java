@@ -43,10 +43,11 @@ import com.vaadin.ui.Panel;
  */
 public class FormFlowViewer extends Panel {
 	private final static long serialVersionUID = -4866123421361857895L;
-	private static final float MIN_AUGMENT = 1.0f;
+	public static final double MIN_AUGMENT = 1.0f;
+	public static final double MAX_AUGMENT = 50.0f;
 
 	private Image image = null;
-	private float resize = MIN_AUGMENT;
+	private double resize = MIN_AUGMENT;
 	private FlowImageSource imagesource;
 	private static ByteArrayInputStream defaultImage = null;
 	private HorizontalLayout imageLayout;
@@ -70,7 +71,7 @@ public class FormFlowViewer extends Panel {
 		listeners.remove(listener);
 	}
 	
-	public void fireZoomChangedListeners(float zoom){
+	public void fireZoomChangedListeners(double zoom){
 		for(ZoomChangedListener listener: listeners){
 			listener.zoomChanged(zoom);
 		}
@@ -146,27 +147,26 @@ public class FormFlowViewer extends Panel {
 	/**
 	 * setter
 	 */
-	private void setResize(float resizePercentage) {
-		if (resizePercentage >= MIN_AUGMENT) {
-			this.resize = resizePercentage;
-		} else {
-			this.resize = 1.0f;
-		}
+	private void setResize(double resizePercentage) {
+		resizePercentage = Math.max(resizePercentage, MIN_AUGMENT);
+		resizePercentage = Math.min(resizePercentage, MAX_AUGMENT);
+		this.resize = resizePercentage;
+		
 		fireZoomChangedListeners(resize);
 	}
 
-	private void setResizeFactor(float resize) {
+	private void setResizeFactor(double resize) {
 		setResize(resize);
 		if (imagesource != null) {
 			addImage();
 		}
 	}
 
-	public void setZoom(float zoomFactor) {
+	public void setZoom(double zoomFactor) {
 		zoomInOut(zoomFactor);
 	}
 
-	private void zoomInOut(final float resizeFactor) {
+	private void zoomInOut(final double resizeFactor) {
 		JavaScript.getCurrent().addFunction("getElementAndZoom", new JavaScriptFunction() {
 			private static final long serialVersionUID = 6587969690665052777L;
 
@@ -196,18 +196,38 @@ public class FormFlowViewer extends Panel {
 						+ "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
 	}
 
-	private void zoomInOut(final int x, final int y, final float resizeFactor) {
+	private void zoomInOut(final int x, final int y, final double resizeFactor) {
 
 		JavaScript.getCurrent().addFunction("getElementAndZoom", new JavaScriptFunction() {
 			private static final long serialVersionUID = 6587969690665052777L;
 
 			@Override
 			public void call(final JSONArray arguments) throws JSONException {
+				
+				if(resize == MIN_AUGMENT && resizeFactor<=1.0f){
+					return;
+				}
+				if(resize == MAX_AUGMENT && resizeFactor>=1.0f){
+					return;
+				}
+				
+				double newResizeFactor = resize * resizeFactor;
+				double tempResizeFactor = resizeFactor;
+				if(newResizeFactor > MAX_AUGMENT){
+					tempResizeFactor = MAX_AUGMENT / resize;
+					newResizeFactor = MAX_AUGMENT;
+				}
+				
+				if(newResizeFactor < MIN_AUGMENT){
+					tempResizeFactor = MIN_AUGMENT / resize;
+					newResizeFactor = MIN_AUGMENT;
+				}
+				
 				int panelX = arguments.getInt(0);
 				int panelY = arguments.getInt(1);
 
-				int newClickSizeX = (int) (x * resizeFactor);
-				int newClickSizeY = (int) (y * resizeFactor);
+				int newClickSizeX = (int) (x * tempResizeFactor);
+				int newClickSizeY = (int) (y * tempResizeFactor);
 				int halfPanelX = (int) (panelX / 2.0f);
 				int halfPanelY = (int) (panelY / 2.0f);
 				int positionX = newClickSizeX - halfPanelX;
@@ -215,11 +235,9 @@ public class FormFlowViewer extends Panel {
 				positionX = Math.max(positionX, 0);
 				positionY = Math.max(positionY, 0);
 
-				if (resize * resizeFactor >= 1.0) {
-					setResizeFactor(resize * resizeFactor);
-					setScrollLeft(positionX);
-					setScrollTop(positionY);
-				}
+				setResizeFactor(newResizeFactor);
+				setScrollLeft(positionX);
+				setScrollTop(positionY);
 			}
 		});
 		JavaScript.getCurrent().execute(
@@ -232,8 +250,8 @@ public class FormFlowViewer extends Panel {
 		setScrollTop(0);
 
 		imageLayout.removeAllComponents();
-		imageLayout.setWidth(100.0f * resize, Unit.PERCENTAGE);
-		imageLayout.setHeight(100.0f * resize, Unit.PERCENTAGE);
+		imageLayout.setWidth((float) (100.0f * resize), Unit.PERCENTAGE);
+		imageLayout.setHeight((float) (100.0f * resize), Unit.PERCENTAGE);
 		imageLayout.addComponent(image);
 
 		image.markAsDirty();

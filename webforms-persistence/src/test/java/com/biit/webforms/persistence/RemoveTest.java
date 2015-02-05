@@ -10,8 +10,10 @@ import org.testng.annotations.Test;
 
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.persistence.dao.IFormDao;
@@ -44,7 +46,8 @@ public class RemoveTest extends AbstractTransactionalTestNGSpringContextTests {
 	private IFormDao formDao;
 
 	public Form createForm() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
-			InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException {
+			InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException,
+			ElementIsReadOnly {
 		Form form = new Form();
 		form.setOrganizationId(++organizationId);
 		form.setLabel(FORM_COMPLETE_LABEL);
@@ -77,11 +80,13 @@ public class RemoveTest extends AbstractTransactionalTestNGSpringContextTests {
 	 * @throws CharacterNotAllowedException
 	 * @throws InvalidAnswerFormatException
 	 * @throws InvalidAnswerSubformatException
+	 * @throws ElementIsReadOnly
+	 * @throws ElementCannotBePersistedException
 	 */
 	@Test
 	public void removeElements() throws DependencyExistException, UnexpectedDatabaseException, FieldTooLongException,
 			NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException,
-			InvalidAnswerSubformatException {
+			InvalidAnswerSubformatException, ElementIsReadOnly, ElementCannotBePersistedException {
 		Form form = createForm();
 
 		formDao.makePersistent(form);

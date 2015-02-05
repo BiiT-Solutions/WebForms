@@ -146,14 +146,12 @@ public class UpperMenuWebforms extends UpperMenu {
 						});
 					}
 				});
-		logoutButton.setId(LOGOUT_BUTTON_ID);
 
 		settingsButton = generateSubMenu(ThemeIcons.SETTINGS, LanguageCodes.COMMON_CAPTION_SETTINGS,
 				LanguageCodes.COMMON_TOOLTIP_SETTINGS, aboutUsButton, clearCacheButton, logoutButton);
 
 		settingsButton.setHeight("100%");
 		settingsButton.setWidth(BUTTON_WIDTH);
-		settingsButton.setId(SETTINGS_BUTTON_ID);
 
 		addRightFixedButton(formManagerButton);
 		addRightFixedButton(blockManagerButton);

@@ -1,24 +1,23 @@
 package com.biit.webforms.gui.test.webpage;
 
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import com.biit.gui.tester.VaadinGuiWebpage;
+import com.biit.webforms.gui.test.exceptions.OrganizationNotEditableException;
 import com.biit.webforms.gui.test.window.NewFormWindow;
-import com.biit.webforms.gui.test.window.Proceed;
 import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.TreeTableElement;
 
 public class FormManager extends VaadinGuiWebpage {
 
-	private final static String LOGOUT_BUTTON_ID = "logoutButton";
-	private final static String SETTINGS_BUTTON_ID = "settingsButton";
-	private final static String BLOCKS_BUTTON_CAPTION = "Blocks";
-	private final static String NEW_BUTTON_CAPTION = "New";
-	private final static String FORM_BUTTON_CAPTION = "Form";
-	private final static String REMOVE_FORM_BUTTON_CAPTION = "Remove Form";
-	private final static String EXPORT_BUTTON_CAPTION = "Export";
-	private final static String LOG_OUT_BUTTON_CAPTION = "Log Out";
-	private final static String ACCEPT_BUTTON_CAPTION = "Accept";
+	private static final String NEW_BUTTON_CAPTION = "New";
+	private static final String FORM_BUTTON_CAPTION = "Form";
+	private static final String REMOVE_FORM_BUTTON_CAPTION = "Remove Form";
+	private static final String EXPORT_BUTTON_CAPTION = "Export";
+	private static final String VERSION_BUTTON_CAPTION = "Version";
 
 	private final NewFormWindow newFormWindow;
 
@@ -37,30 +36,27 @@ public class FormManager extends VaadinGuiWebpage {
 		getNewFormWindow().createNewForm(formName);
 	}
 
+	public void createNewFormWithOrganization(String formName, String organizationName)
+			throws OrganizationNotEditableException {
+		openNewFormWindow();
+		getNewFormWindow().createNewFormWithOrganization(formName, organizationName);
+	}
+
 	public void deleteForm(int row) {
 		// To avoid errors, first we select other element of the table
 		getFormTable().getCell(0, 0).click();
 		getFormTable().getCell(row, 0).click();
 		Assert.assertNotNull(getRemoveForm());
 		getRemoveForm().click();
-		getAcceptButton().click();
-	}
-
-	public ButtonElement getBlocksButton() {
-		return $(ButtonElement.class).caption(BLOCKS_BUTTON_CAPTION).first();
-	}
-
-	public ButtonElement getAcceptButton() {
-		return $(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first();
+		clickAcceptButtonIfExists();
 	}
 
 	public TreeTableElement getFormTable() {
 		return $(TreeTableElement.class).first();
 	}
 
-	public ButtonElement getLogOutButton() {
-		getSettingsMenu().click();
-		return $(ButtonElement.class).id(LOGOUT_BUTTON_ID);
+	public ComboBoxElement getFormStatusComboBox() {
+		return $(ComboBoxElement.class).first();
 	}
 
 	public ButtonElement getNewFormButton() {
@@ -91,27 +87,24 @@ public class FormManager extends VaadinGuiWebpage {
 		return null;
 	}
 
-	public ButtonElement getSettingsMenu() {
-		return $(ButtonElement.class).id(SETTINGS_BUTTON_ID);
-	}
-
 	@Override
 	public String getWebpageUrl() {
 		return null;
 	}
 
-	public void logOut() {
-		getLogOutButton().click();
-		if ($(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).exists()) {
-			$(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first().click();
-		}
-	}
-
-	public void openBlocks() {
-		getBlocksButton().click();
-	}
-
 	private void openNewFormWindow() {
 		getNewFormButton().click();
+	}
+
+	/**
+	 * Workaround to close the popover.<br>
+	 * When the popover is displayed only the element inside the popover can be
+	 * selected.<br>
+	 * To close it, we have focus it and send the close key defined.
+	 */
+	public void closeNewPopover() {
+		getNewFormButton().focus();
+		Actions builder = new Actions(getDriver());
+		builder.sendKeys(Keys.ESCAPE).perform();
 	}
 }
