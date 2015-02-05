@@ -30,8 +30,6 @@ public class UpperMenuWebforms extends UpperMenu {
 	private IconButton settingsButton;
 	private boolean confirmationNeeded;
 	private IconButton logoutButton;
-	private final static String SETTINGS_BUTTON_ID = "settingsButton";
-	private final static String LOGOUT_BUTTON_ID = "logoutButton";
 
 	public UpperMenuWebforms() {
 		super();
