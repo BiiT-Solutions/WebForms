@@ -253,4 +253,8 @@ public class WebformsAuthorizationService extends AuthorizationService {
 		return (!formIsInUse && !isAuthorizedToForm(form, user))
 				|| (formIsInUse && UiAccesser.getUserUsingForm(form) != user);
 	}
+
+	public boolean isFormInUse(IBaseFormView form) {
+		return UiAccesser.getUserUsingForm(form) != null;
+	}
 }

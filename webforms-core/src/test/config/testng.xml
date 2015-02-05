@@ -18,7 +18,7 @@
 			<class name="com.biit.webforms.utils.math.domain.range.TestDomain" />
 			<class name="com.biit.webforms.utils.math.domain.TestFlowDomain" />
 			<class name="com.biit.webforms.xforms.expressions.BooleanExpressionTest" />
-			<class name="com.biit.webforms.xforms.expressions.XFormExporter" />
+			<class name="com.biit.webforms.xforms.XFormExporterTests" />
 			<class name="com.biit.webforms.validators.LinkValidationTests" />
 			<class name="com.biit.webforms.validators.MissingFlowInTest" />
 			<class name="com.biit.webforms.validators.OrphanToken" />

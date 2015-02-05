@@ -3,7 +3,7 @@
 	<test name="WebFormsTest" enabled="true" preserve-order="true">
 		<groups>
 			<run>
-				<include name="login" />
+				<exclude name="login" />
 			</run>
 		</groups>
 		<classes>

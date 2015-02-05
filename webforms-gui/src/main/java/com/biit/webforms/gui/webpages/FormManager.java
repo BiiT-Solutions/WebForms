@@ -9,21 +9,22 @@ import java.util.List;
 
 import com.biit.abcd.core.SpringContextHelper;
 import com.biit.abcd.logger.AbcdLogger;
-import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.abcd.security.AbcdActivity;
 import com.biit.abcd.security.AbcdAuthorizationService;
 import com.biit.form.IBaseFormView;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.authentication.FormWithSameNameException;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.BadAbcdLink;
@@ -31,6 +32,7 @@ import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignEx
 import com.biit.webforms.authentication.exception.NotValidAbcdForm;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -57,8 +59,10 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
+import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
@@ -293,6 +297,9 @@ public class FormManager extends SecuredWebPage {
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			AbcdLogger.errorMessage(this.getClass().getName(), e);
+		} catch (ElementCannotBeRemovedException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 
@@ -315,10 +322,10 @@ public class FormManager extends SecuredWebPage {
 	 * 
 	 * @return
 	 */
-	private Form loadAndValidateForm() {
-		Form form = loadForm(getSelectedForm());
+	private CompleteFormView loadAndValidateForm() {
+		CompleteFormView form = new CompleteFormView(loadForm(getSelectedForm()));
 
-		// Xforms only can be uses with valid forms.
+		// Xforms only can use with valid forms.
 		ValidateFormComplete validator = new ValidateFormComplete();
 		validator.setStopOnFail(true);
 
@@ -372,7 +379,7 @@ public class FormManager extends SecuredWebPage {
 		if (form != null) {
 			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
 					UserSessionHandler.getUser(), form.getOrganizationId());
-			OrbeonUtils.saveFormInOrbeon(form, organization, true);
+			OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization, true);
 		}
 	}
 
@@ -393,7 +400,7 @@ public class FormManager extends SecuredWebPage {
 
 	private void exportJson() {
 		Form form = loadForm(getSelectedForm());
-		new WindowDownloaderJson(form, getSelectedForm().getLabel() + ".json");
+		new WindowDownloaderJson(new CompleteFormView(form), getSelectedForm().getLabel() + ".json");
 	}
 
 	private void exportFlowPdf() {
@@ -402,8 +409,8 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					return new ByteArrayInputStream(GraphvizApp.generateImage(loadForm(getSelectedForm()), null,
-							ImgType.PDF));
+					return new ByteArrayInputStream(GraphvizApp.generateImage(new CompleteFormView(
+							loadForm(getSelectedForm())), null, ImgType.PDF));
 				} catch (IOException | InterruptedException e) {
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 					return null;
@@ -421,7 +428,8 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					return FormGeneratorPdf.generatePdf(new FormPdfGenerator(loadForm(getSelectedForm())));
+					return FormGeneratorPdf.generatePdf(new FormPdfGenerator(new CompleteFormView(
+							loadForm(getSelectedForm()))));
 				} catch (IOException | DocumentException e) {
 					WebformsLogger.errorMessage(FormManager.class.getName(), e);
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
@@ -446,7 +454,7 @@ public class FormManager extends SecuredWebPage {
 	private void linkAbcdForm() {
 		final Form form = loadForm(getSelectedForm());
 
-		List<SimpleFormView> availableForms;
+		List<com.biit.abcd.persistence.entity.SimpleFormView> availableForms;
 		if (form.getLinkedFormLabel() == null) {
 			// Not linked yet. Show all available forms.
 			availableForms = UserSessionHandler.getController().getSimpleFormDaoAbcd().getAll();
@@ -461,7 +469,7 @@ public class FormManager extends SecuredWebPage {
 
 		// Let user choose the version.
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
-		for (SimpleFormView simpleFormView : availableForms) {
+		for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
 			if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 					simpleFormView.getOrganizationId(), AbcdActivity.READ)
 					&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
@@ -495,6 +503,10 @@ public class FormManager extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});
@@ -520,7 +532,7 @@ public class FormManager extends SecuredWebPage {
 
 				// Try to import the form.
 				try {
-					SimpleFormView abcdForm = importAbcdForm.getForm();
+					com.biit.abcd.persistence.entity.SimpleFormView abcdForm = importAbcdForm.getForm();
 					Form importedForm = UserSessionHandler.getController().importAbcdForm(abcdForm, newFormName,
 							abcdForm.getOrganizationId());
 					formTable.refreshTableData();
@@ -538,6 +550,12 @@ public class FormManager extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 
 			}
@@ -575,6 +593,10 @@ public class FormManager extends SecuredWebPage {
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+		} catch (ElementCannotBePersistedException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+					LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 
@@ -604,9 +626,7 @@ public class FormManager extends SecuredWebPage {
 						Form newForm = UserSessionHandler.getController().createFormAndPersist(
 								newFormWindow.getValue(), newFormWindow.getOrganization().getOrganizationId());
 						newForm.setLastVersion(true);
-						formTable.refreshTableData();
-						formTable.defaultSort();
-						formTable.selectForm(newForm);
+						addFormToTable(newForm);
 						newFormWindow.close();
 					}
 				} catch (FieldTooLongException e) {
@@ -619,9 +639,19 @@ public class FormManager extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});
+	}
+
+	private void addFormToTable(Form form) {
+		SimpleFormView simpleForm = SimpleFormView.getSimpleFormView(form);
+		formTable.refreshTableData();
+		formTable.setValue(simpleForm);
 	}
 
 	@Override

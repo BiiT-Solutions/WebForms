@@ -201,6 +201,26 @@ public class SimpleFormView implements IWebformsFormView {
 		return view;
 	}
 
+	public static SimpleFormView getSimpleFormView(IWebformsBlockView form) {
+		SimpleFormView view = new SimpleFormView();
+		view.name = form.getName();
+		view.label = form.getLabel();
+		view.version = form.getVersion();
+		view.id = form.getId();
+		view.creationTime = form.getCreationTime();
+		view.createdBy = form.getCreatedBy();
+		view.updateTime = form.getUpdateTime();
+		view.updatedBy = form.getUpdatedBy();
+		view.comparationId = form.getComparationId();
+		view.organizationId = form.getOrganizationId();
+		view.linkedFormLabel = form.getLinkedFormLabel();
+		view.linkedFormVersions = new HashSet<Integer>(form.getLinkedFormVersions());
+		view.linkedFormOrganizationId = form.getLinkedFormOrganizationId();
+		view.status = form.getStatus();
+
+		return view;
+	}
+
 	@Override
 	public String toString() {
 		return name + " " + label + " " + version;

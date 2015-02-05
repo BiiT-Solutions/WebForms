@@ -3,6 +3,7 @@ package com.biit.webforms.utils.conversor;
 import com.biit.abcd.persistence.entity.Question;
 import com.biit.form.BaseAnswer;
 import com.biit.form.TreeObject;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.logger.WebformsLogger;
@@ -29,8 +30,7 @@ public class ConversorAbcdQuestionToQuestion extends
 		try {
 			destiny.setAnswerFormat(conversorAnswerFormat.convert(origin.getAnswerFormat()));
 		} catch (InvalidAnswerFormatException e) {
-			// Impossible
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			//Controlled by ABCD.
 		}
 
 		// Convert and assign children
@@ -39,7 +39,7 @@ public class ConversorAbcdQuestionToQuestion extends
 				BaseAnswer convertedChild = conversorAnswer.convert((BaseAnswer) child);
 				try {
 					destiny.addChild(convertedChild);
-				} catch (NotValidChildException e) {
+				} catch (NotValidChildException | ElementIsReadOnly e) {
 					// Impossible
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}

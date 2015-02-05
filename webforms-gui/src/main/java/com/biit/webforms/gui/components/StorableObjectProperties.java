@@ -2,7 +2,7 @@ package com.biit.webforms.gui.components;
 
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.entity.StorableObject;
-import com.biit.webforms.authentication.UserSessionHandler;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.PropertiesForClassComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
@@ -14,7 +14,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	private static final long serialVersionUID = -1986275953105055523L;
 	protected TextField createdBy, creationTime, updatedBy, updateTime;
 
-	protected T instance;
+	private T instance;
 
 	public StorableObjectProperties(Class<? extends T> type) {
 		super(type);
@@ -62,21 +62,22 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		String valueCreatedBy = "";
 		String valueUpdatedBy = "";
 		try {
-			valueCreatedBy = instance.getCreatedBy() == null ? "" : LiferayServiceAccess.getInstance()
-					.getUserById(instance.getCreatedBy()).getEmailAddress();
+			valueCreatedBy = getInstance().getCreatedBy() == null ? "" : LiferayServiceAccess.getInstance()
+					.getUserById(getInstance().getCreatedBy()).getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
-			valueCreatedBy = instance.getCreatedBy() + "";
+			valueCreatedBy = getInstance().getCreatedBy() + "";
 		}
 
 		try {
-			valueUpdatedBy = instance.getUpdatedBy() == null ? "" : LiferayServiceAccess.getInstance()
-					.getUserById(instance.getUpdatedBy()).getEmailAddress();
+			valueUpdatedBy = getInstance().getUpdatedBy() == null ? "" : LiferayServiceAccess.getInstance()
+					.getUserById(getInstance().getUpdatedBy()).getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
-			valueUpdatedBy = instance.getUpdatedBy() + "";
+			valueUpdatedBy = getInstance().getUpdatedBy() + "";
 		}
 
-		String valueCreationTime = instance.getCreationTime() == null ? "" : instance.getCreationTime().toString();
-		String valueUpdatedTime = instance.getUpdateTime() == null ? "" : instance.getUpdateTime().toString();
+		String valueCreationTime = getInstance().getCreationTime() == null ? "" : getInstance().getCreationTime()
+				.toString();
+		String valueUpdatedTime = getInstance().getUpdateTime() == null ? "" : getInstance().getUpdateTime().toString();
 
 		createdBy.setValue(valueCreatedBy);
 		creationTime.setValue(valueCreationTime);
@@ -86,19 +87,26 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 
 	@Override
 	protected void setElementAbstract(T element) {
-		instance = element;
+		setInstance(element);
 		initValues();
 	}
 
-
 	@Override
 	public void updateElement() {
-		instance.setUpdatedBy(UserSessionHandler.getUser());
-		instance.setUpdateTime();
-//		// Update common ui fields.
-//		initValues();
+		getInstance().setUpdatedBy(UserSessionHandler.getUser());
+		getInstance().setUpdateTime();
+		// // Update common ui fields.
+		// initValues();
 
-		firePropertyUpdateListener(instance);
+		firePropertyUpdateListener(getInstance());
+	}
+
+	protected T getInstance() {
+		return instance;
+	}
+
+	protected void setInstance(T instance) {
+		this.instance = instance;
 	}
 
 }

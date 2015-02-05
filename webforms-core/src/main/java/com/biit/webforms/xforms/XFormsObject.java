@@ -110,7 +110,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	protected String getXPath() {
 		if (getParent() != null) {
 			if (getParent() instanceof XFormsRepeatableGroup) {
-				//Repeatable groups are composed by a section + iterator. We need both elements in the XPath. 
+				// Repeatable groups are composed by a section + iterator. We need both elements in the XPath.
 				return getParent().getXPath() + "/" + ((XFormsRepeatableGroup) getParent()).getIteratorControlName()
 						+ "/" + getName();
 			} else {
@@ -604,13 +604,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 					}
 				}
 				// If is not used in condition, add as needed.
-				if (!originUsedInCondition) {
-					if (existPreviousCondition(flowvisibility)) {
-						flowvisibility.add(Token.and());
+				if (flow.getOrigin() instanceof Question) {
+					if (!originUsedInCondition) {
+						if (existPreviousCondition(flowvisibility)) {
+							flowvisibility.add(Token.and());
+						}
+						flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin(), ((Question) flow
+								.getOrigin()).getAnswerFormat() != null
+								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 					}
-					flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin(), ((Question) flow.getOrigin())
-							.getAnswerFormat() != null
-							&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 				}
 			}
 

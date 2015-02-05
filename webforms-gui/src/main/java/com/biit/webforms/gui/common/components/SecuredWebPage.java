@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.WebMap;

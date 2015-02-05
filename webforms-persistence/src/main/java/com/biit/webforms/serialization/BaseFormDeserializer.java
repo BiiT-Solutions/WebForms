@@ -11,6 +11,7 @@ public class BaseFormDeserializer<T extends BaseForm> extends TreeObjectDeserial
 		super(specificClass);
 	}
 
+	@Override
 	public void deserialize(JsonElement json,
 			JsonDeserializationContext context, T element) {
 		JsonObject jobject = (JsonObject) json;

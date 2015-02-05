@@ -33,7 +33,7 @@ public class ExporterDotFormAddedElements extends ExporterDotForm {
 		String dotFlow = new String();
 		ComputedFlowView computedRuleView = form.getComputedFlowsView();
 		if (computedRuleView.getFirstElement() != null) {
-			dotFlow += "\tstart -> " + getDotId(computedRuleView.getFirstElement()) + "[color=" + getLinkColor()
+			dotFlow += "\tstart -> " + getDotId(computedRuleView.getFirstElement()) + "[color=" + getLinkColor(computedRuleView.getFirstElement().isReadOnly())
 					+ "];\n";
 		}
 		for (Flow rule : computedRuleView.getFlows()) {

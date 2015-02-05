@@ -16,6 +16,7 @@ public class OrbeonPreviewFrame extends UI {
 	private static final long serialVersionUID = -4957704029911500631L;
 	private String form;
 	private String application;
+	@SuppressWarnings("unused")
 	private String version;
 
 	public String getApplication() {

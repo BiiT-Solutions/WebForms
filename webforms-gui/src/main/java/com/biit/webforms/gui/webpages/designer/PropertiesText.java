@@ -2,8 +2,8 @@ package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -59,20 +59,23 @@ public class PropertiesText extends StorableObjectProperties<Text> {
 	protected void initValues() {
 		super.initValues();
 		
-		name.addValidator(new ValidatorTreeObjectName(instance.getNameAllowedPattern()));
-		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(instance));
+		name.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
+		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(getInstance()));
 		name.addValidator(new ValidatorTreeObjectNameLength());
-		name.setValue(instance.getName());
-		description.setValue(instance.getDescription());
+		name.setValue(getInstance().getName());
+		name.setEnabled(!getInstance().isReadOnly());
+		
+		description.setValue(getInstance().getDescription());
+		description.setEnabled(!getInstance().isReadOnly());
 	}
 
 	@Override
 	public void updateElement() {
 		try {
 			if(name.isValid()){
-				instance.setName(name.getValue());
+				getInstance().setName(name.getValue());
 			}
-			instance.setDescription(description.getValue());
+			getInstance().setDescription(description.getValue());
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

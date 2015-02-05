@@ -35,10 +35,10 @@ import com.biit.webforms.persistence.entity.condition.TokenComplex;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 
 @Entity
 @Table(name = "flow")
@@ -47,10 +47,8 @@ public class Flow extends StorableObject {
 
 	private static final String TOKEN_SEPARATOR = " ";
 
-	/*
-	 * Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
-	 * attached to that column, you have to state the name.
-	 */
+	// Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
+	// attached to that column, you have to state the name.
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "origin_id", nullable = false)
 	private TreeObject origin;
@@ -75,11 +73,14 @@ public class Flow extends StorableObject {
 	@Transient
 	private boolean generated;
 
+	private transient boolean readOnly;
+
 	public Flow() {
 		super();
 		flowType = FlowType.NORMAL;
 		condition = new ArrayList<Token>();
 		generated = false;
+		readOnly = false;
 	}
 
 	public TreeObject getOrigin() {
@@ -115,8 +116,8 @@ public class Flow extends StorableObject {
 	}
 
 	public void setContent(TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
-			List<Token> condition) throws BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			List<Token> condition) throws BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		checkFlowRestrictions(origin, flowType, destiny, others, condition);
 
 		this.origin = origin;
@@ -127,15 +128,15 @@ public class Flow extends StorableObject {
 	}
 
 	public static void checkFlowRestrictions(TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
-			List<Token> condition) throws FlowWithoutSource, BadFlowContentException,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			List<Token> condition) throws FlowWithoutSourceException, BadFlowContentException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		// No flow without source
 		if (origin == null) {
-			throw new FlowWithoutSource();
+			throw new FlowWithoutSourceException();
 		}
 		// If flow type doesn't need destiny, destiny must be null and otherwise
 		if ((flowType.isDestinyNull() && destiny != null) || (!flowType.isDestinyNull() && destiny == null)) {
-			throw new FlowWithoutDestiny();
+			throw new FlowWithoutDestinyException();
 		}
 
 		if (others && (condition == null || !condition.isEmpty())) {
@@ -151,8 +152,8 @@ public class Flow extends StorableObject {
 		}
 		// Flow destiny cannot be prior to origin.
 		if (!flowType.isDestinyNull()) {
-			if (!(origin.compareTo(destiny) == -1)) {
-				throw new FlowDestinyIsBeforeOrigin();
+			if (!(origin.compareTo(destiny) == -1)) {			
+				throw new FlowDestinyIsBeforeOriginException();
 			}
 		}
 	}
@@ -423,42 +424,51 @@ public class Flow extends StorableObject {
 	}
 
 	public boolean isContentEqual(Flow formRule) {
-		
-		if(!origin.getPathName().equals(formRule.origin.getPathName())){
-			return false;
-		}
-		
-		if(flowType!=formRule.flowType){
+
+		if (!origin.getPathName().equals(formRule.origin.getPathName())) {
 			return false;
 		}
 
-		if((destiny!=null && formRule.destiny==null )|| (destiny==null)&& formRule.destiny!=null){
-			return false;
-		}
-		
-		if(destiny!=null && formRule.destiny!=null && !destiny.getPathName().equals(formRule.destiny.getPathName())){
+		if (flowType != formRule.flowType) {
 			return false;
 		}
 
-		if(others!=formRule.others){
+		if ((destiny != null && formRule.destiny == null) || (destiny == null) && formRule.destiny != null) {
 			return false;
 		}
 
-		if((condition!=null && formRule.condition==null)||(condition==null && formRule.condition!=null)){
+		if (destiny != null && formRule.destiny != null
+				&& !destiny.getPathName().equals(formRule.destiny.getPathName())) {
 			return false;
 		}
-		
-		if(condition!=null && formRule.condition!=null){		
-			if(condition.size()!=formRule.condition.size()){
+
+		if (others != formRule.others) {
+			return false;
+		}
+
+		if ((condition != null && formRule.condition == null) || (condition == null && formRule.condition != null)) {
+			return false;
+		}
+
+		if (condition != null && formRule.condition != null) {
+			if (condition.size() != formRule.condition.size()) {
 				return false;
 			}
-			for(int i=0; i<condition.size();i++){
-				if(!condition.get(i).isContentEqual(formRule.condition.get(i))){
+			for (int i = 0; i < condition.size(); i++) {
+				if (!condition.get(i).isContentEqual(formRule.condition.get(i))) {
 					return false;
 				}
 			}
 		}
-		
+
 		return true;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
 	}
 }

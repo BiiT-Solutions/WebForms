@@ -7,18 +7,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.biit.form.BaseCategory;
 import com.biit.form.BaseForm;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.Block;
+import com.biit.webforms.persistence.entity.Form;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.Tree.CollapseEvent;
 import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
+import com.vaadin.ui.TreeTable;
 
 /**
  * TreeObjectTable component
@@ -37,7 +41,7 @@ public class TableTreeObject extends TreeTable {
 	public TableTreeObject() {
 		initContainerProperties();
 		setImmediate(true);
-		
+
 		// Quick and dirty fix to jumping around table bug
 		addExpandListener(new ExpandListener() {
 			private static final long serialVersionUID = -6212747624453604935L;
@@ -65,20 +69,18 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Loads a tree object structure recursively. At the end of the process
-	 * selects the root element inserted. element. It can also be specified an
-	 * array of filterClasses. If this is not specified, then every kind of
-	 * element is allowed. Else only the elements in the hierarchy whose path
-	 * is made of valid elements.
+	 * Loads a tree object structure recursively. At the end of the process selects the root element inserted. element.
+	 * It can also be specified an array of filterClasses. If this is not specified, then every kind of element is
+	 * allowed. Else only the elements in the hierarchy whose path is made of valid elements.
 	 * 
 	 * @param element
 	 * @param parent
 	 */
-	public void loadTreeObject(TreeObject element, TreeObject parent, Class<?> ... filterClases) {
+	public void loadTreeObject(TreeObject element, TreeObject parent, Class<?>... filterClases) {
 		loadTreeObject(element, parent, true, filterClases);
 	}
 
-	public void loadTreeObject(TreeObject element, TreeObject parent, boolean select, Class<?> ... filterClases) {
+	public void loadTreeObject(TreeObject element, TreeObject parent, boolean select, Class<?>... filterClases) {
 		if (element != null) {
 			if (isAdmitedInFilter(element, filterClases)) {
 				addRow(element, parent, select);
@@ -91,7 +93,7 @@ public class TableTreeObject extends TreeTable {
 		}
 	}
 
-	private boolean isAdmitedInFilter(TreeObject element, Class<?> ... filterClases) {
+	private boolean isAdmitedInFilter(TreeObject element, Class<?>... filterClases) {
 		if (filterClases == null || filterClases.length == 0) {
 			// No filter, then everything is admited.
 			return true;
@@ -111,8 +113,7 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Adds a new row to the table. Default configuration makes that adding a
-	 * new row also selects.
+	 * Adds a new row to the table. Default configuration makes that adding a new row also selects.
 	 * 
 	 * @param element
 	 * @param parent
@@ -125,7 +126,12 @@ public class TableTreeObject extends TreeTable {
 	public Item addRow(TreeObject element, TreeObject parent, boolean selectRow) {
 		if (element != null) {
 			Item item = addItem(element);
+			parent = getRowItem(parent);
 			if (parent != null) {
+				// Parent Form must be translated to CompleteFormView.
+				if (parent instanceof BaseForm && !(parent instanceof Block)) {
+					parent = UserSessionHandler.getController().getCompleteFormView();
+				}
 				// This status must be true before setting the relationship.
 				setChildrenAllowed(parent, true);
 				setParent(element, parent);
@@ -166,19 +172,19 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	public void removeRow(TreeObject element) {
-		if(getChildren(getParent(element)).size()==1){
-			setChildrenAllowed(getParent(element), false);
+		if (getChildren(getParentRowItem(element)).size() == 1) {
+			setChildrenAllowed(getParentRowItem(element), false);
 		}
-		
+
 		for (TreeObject child : element.getChildren()) {
 			removeRow(child);
 		}
-		removeItem(element);		
+		removeItem(element);
 	}
 
 	/**
-	 * Adds item to table. This function is a specialization of
-	 * {@link TreeTable#addItemAfter(Object, Object)} for form members.
+	 * Adds item to table. This function is a specialization of {@link TreeTable#addItemAfter(Object, Object)} for form
+	 * members.
 	 * 
 	 * @param element
 	 */
@@ -197,8 +203,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Gets Name property to show form a TreeObject element. If the name can't
-	 * be defined, then raises a {@link UnsupportedOperationException}
+	 * Gets Name property to show form a TreeObject element. If the name can't be defined, then raises a
+	 * {@link UnsupportedOperationException}
 	 * 
 	 * @param element
 	 * @return
@@ -272,8 +278,7 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Collapse the tree in a specific hierarchy level to inner levels. The
-	 * level is specified by a class.
+	 * Collapse the tree in a specific hierarchy level to inner levels. The level is specified by a class.
 	 * 
 	 * @param collapseFrom
 	 */
@@ -282,7 +287,8 @@ public class TableTreeObject extends TreeTable {
 			if (item.getClass() == collapseFrom) {
 				this.setCollapsed(item, true);
 			} else {
-				if (this.getParent(item) != null && this.isCollapsed(this.getParent(item))) {
+				if (this.getParent(getRowItem((TreeObject) item)) != null
+						&& this.isCollapsed(this.getParent(getRowItem((TreeObject) item)))) {
 					this.setCollapsed(item, true);
 				}
 			}
@@ -294,17 +300,17 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	public void selectPreviousRow() {
-		TreeObject currentRow = getSelectedRow();
-		if (currentRow instanceof BaseForm) {
+		TreeObject selectedElement = getSelectedRow();
+		if (selectedElement instanceof BaseForm) {
 			// Do nothing, this is the form and the first row.
 			return;
 		}
-		int index = currentRow.getParent().getChildren().indexOf(currentRow);
+		int index = getParentRowItem(selectedElement).getChildren().indexOf(selectedElement);
 		if (index == 0) {
-			setValue(currentRow.getParent());
+			setValue(getParentRowItem(selectedElement));
 		} else {
 			try {
-				setValue(currentRow.getParent().getChild(index - 1));
+				setValue(getParentRowItem(selectedElement).getChild(index - 1));
 			} catch (ChildrenNotFoundException e) {
 				// Impossible
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -328,6 +334,44 @@ public class TableTreeObject extends TreeTable {
 
 	public void setIconProvider(IconProvider<TreeObject> iconProvider) {
 		this.iconProvider = iconProvider;
+	}
+
+	/**
+	 * Return the parent row of the row of the element. Form is translated to CompleteFormView.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public TreeObject getParentRowItem(TreeObject element) {
+		if (element == null) {
+			return null;
+		}
+
+		// BlockReferences does not exist in the table, the parent of an element inside it is therefore the
+		// Completeformview.
+		if (UserSessionHandler.getController().getCompleteFormView().getBlockReference(element) != null
+				&& element instanceof BaseCategory) {
+			return UserSessionHandler.getController().getCompleteFormView();
+		}
+
+		return (TreeObject) getParent(element);
+	}
+
+	/**
+	 * Return the row of an item. Form is translated to CompleteFormView.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public TreeObject getRowItem(TreeObject element) {
+		if (element == null) {
+			return null;
+		}
+		// There is not a Form, only CompleteFormView.
+		if (element instanceof Form && !(element instanceof Block)) {
+			return UserSessionHandler.getController().getCompleteFormView();
+		}
+		return element;
 	}
 
 }

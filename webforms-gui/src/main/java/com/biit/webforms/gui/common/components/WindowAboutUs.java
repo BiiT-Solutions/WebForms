@@ -8,8 +8,8 @@ import javax.servlet.ServletContext;
 
 import com.biit.security.DESEncryptor;
 import com.biit.security.exceptions.DESEncryptorException;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;

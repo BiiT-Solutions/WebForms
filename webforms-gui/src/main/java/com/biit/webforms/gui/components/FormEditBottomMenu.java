@@ -3,8 +3,8 @@ package com.biit.webforms.gui.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.BottomMenu;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;

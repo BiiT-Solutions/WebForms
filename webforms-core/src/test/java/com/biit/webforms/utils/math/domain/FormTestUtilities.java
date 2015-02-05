@@ -1,15 +1,13 @@
 package com.biit.webforms.utils.math.domain;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -28,17 +26,18 @@ import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestiny;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSource;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
 public class FormTestUtilities {
 
 	public static Form createFormTest1() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly, FlowNotAllowedException {
 
 		// Structure
 		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
@@ -71,14 +70,16 @@ public class FormTestUtilities {
 	 * @throws NotValidChildException
 	 * @throws CharacterNotAllowedException
 	 * @throws BadFlowContentException
-	 * @throws FlowWithoutSource
+	 * @throws FlowWithoutSourceException
 	 * @throws FlowSameOriginAndDestinyException
-	 * @throws FlowDestinyIsBeforeOrigin
-	 * @throws FlowWithoutDestiny
+	 * @throws FlowDestinyIsBeforeOriginException
+	 * @throws FlowWithoutDestinyException
+	 * @throws ElementIsReadOnly 
+	 * @throws FlowNotAllowedException 
 	 */
 	public static Form createFormTest2() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly, FlowNotAllowedException {
 		// Structure
 		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
 		Question qu2 = createQuestionAnswer("qu2", "d", "e");
@@ -100,8 +101,8 @@ public class FormTestUtilities {
 	}
 
 	public static Form createFormTest3() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly, FlowNotAllowedException {
 		// Structure
 		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
 		Question qu2 = createQuestionAnswer("qu2", "d", "e");
@@ -123,8 +124,8 @@ public class FormTestUtilities {
 	}
 
 	public static Form createFormTest4() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, ElementIsReadOnly, FlowNotAllowedException {
 
 		// Structure
 		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
@@ -151,9 +152,9 @@ public class FormTestUtilities {
 	}
 
 	public static Form createFormTest5() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny,
-			InvalidAnswerFormatException, InvalidAnswerSubformatException {
+			CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
+			InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly, FlowNotAllowedException {
 
 		// Structure
 		Question qu1 = createQuestionValue("qu1", AnswerFormat.NUMBER, AnswerSubformat.FLOAT);
@@ -178,9 +179,9 @@ public class FormTestUtilities {
 	}
 
 	public static Form createFormTest6()throws FieldTooLongException, NotValidChildException,
-	CharacterNotAllowedException, BadFlowContentException, FlowWithoutSource,
-	FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOrigin, FlowWithoutDestiny,
-	InvalidAnswerFormatException, InvalidAnswerSubformatException  {
+	CharacterNotAllowedException, BadFlowContentException, FlowWithoutSourceException,
+	FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
+			InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly, FlowNotAllowedException  {
 		// Structure
 		Question qu1 = createQuestionAnswer("qu1", "a", "b", "c");
 		Question qu2 = createQuestionAnswer("qu2", "d", "e");
@@ -212,7 +213,7 @@ public class FormTestUtilities {
 	}
 
 	public static Form createForm(String name, Category... categories) throws FieldTooLongException,
-			NotValidChildException {
+			NotValidChildException, ElementIsReadOnly {
 		Form form = new Form();
 		form.setLabel(name);
 
@@ -224,7 +225,7 @@ public class FormTestUtilities {
 	}
 
 	public static Category createCategory(String name, TreeObject... elements) throws FieldTooLongException,
-			NotValidChildException, CharacterNotAllowedException {
+			NotValidChildException, CharacterNotAllowedException, ElementIsReadOnly {
 		Category category = new Category(name);
 
 		for (TreeObject element : elements) {
@@ -235,7 +236,7 @@ public class FormTestUtilities {
 	}
 
 	public static Question createQuestionAnswer(String name, String... answers) throws FieldTooLongException,
-			CharacterNotAllowedException, NotValidChildException {
+			CharacterNotAllowedException, NotValidChildException, ElementIsReadOnly {
 		Question question = new Question(name);
 		question.setAnswerType(AnswerType.SINGLE_SELECTION_RADIO);
 
@@ -257,8 +258,8 @@ public class FormTestUtilities {
 	}
 
 	public static Flow createNormalFlow(BaseQuestion origin, BaseQuestion destiny, boolean others, Token... tokens)
-			throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		List<Token> condition = new ArrayList<Token>();
 		condition.addAll(Arrays.asList(tokens));
 		Flow flow = new Flow();
@@ -267,8 +268,8 @@ public class FormTestUtilities {
 	}
 
 	public static Flow createEndFlow(BaseQuestion origin, boolean others, Token... tokens)
-			throws BadFlowContentException, FlowWithoutSource, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOrigin, FlowWithoutDestiny {
+			throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		List<Token> condition = new ArrayList<Token>();
 		condition.addAll(Arrays.asList(tokens));
 		Flow flow = new Flow();

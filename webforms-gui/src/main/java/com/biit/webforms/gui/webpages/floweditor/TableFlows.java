@@ -127,6 +127,8 @@ public class TableFlows extends Table {
 		setColumnCollapsed(TableRuleProperties.UPDATE_DATE, true);
 
 		((IndexedContainer) getContainerDataSource()).setItemSorter(new TableRulesSorter());
+		
+		setCellStyleGenerator(new FlowTableCellStyleGenerator());
 	}
 
 	public void addRows(Set<Flow> rules) {

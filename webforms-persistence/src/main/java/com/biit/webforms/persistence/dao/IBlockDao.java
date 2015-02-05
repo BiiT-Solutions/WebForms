@@ -11,4 +11,6 @@ public interface IBlockDao extends IBaseFormDao<Block> {
 	Block getBlock(String blockLabel, Long organizationId) throws UnexpectedDatabaseException;
 
 	List<Block> getAll(Long organizationId) throws UnexpectedDatabaseException;
+
+	int getFormFlowsCountUsingElement(List<Long> ids) throws UnexpectedDatabaseException;
 }

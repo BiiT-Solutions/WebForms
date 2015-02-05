@@ -8,8 +8,8 @@ import java.util.List;
 import com.biit.form.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -97,7 +97,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		setColumnExpandRatio(TreeTableBaseFormProperties.MODIFICATION_DATE, 1);
 	}
 
-	protected Item addRow(IBaseFormView form) {
+	public Item addRow(IBaseFormView form) {
 		if (form != null) {
 			Item item = addItem(form);
 			updateRow(form);

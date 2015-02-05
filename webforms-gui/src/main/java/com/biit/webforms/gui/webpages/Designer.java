@@ -5,17 +5,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.biit.abcd.core.SpringContextHelper;
 import com.biit.form.BaseAnswer;
+import com.biit.form.BaseCategory;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
+import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.authentication.FormWithSameNameException;
-import com.biit.webforms.authentication.UserSessionHandler;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
@@ -24,6 +28,7 @@ import com.biit.webforms.authentication.exception.EmptyBlockCannotBeInserted;
 import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -40,16 +45,20 @@ import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.designer.WindowBlocks;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
@@ -64,6 +73,14 @@ public class Designer extends SecuredWebPage {
 	private UpperMenuDesigner upperMenu;
 	private TableTreeObjectLabel table;
 	private DesignerPropertiesComponent properties;
+
+	private ISimpleFormViewDao simpleFormViewDao;
+
+	public Designer() {
+		super();
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		simpleFormViewDao = (ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms");
+	}
 
 	@Override
 	protected void initContent() {
@@ -83,7 +100,7 @@ public class Designer extends SecuredWebPage {
 		table.setIconProvider(new IconProviderTreeObjectWebforms());
 		table.setSizeFull();
 		table.setSelectable(true);
-		table.loadTreeObject(UserSessionHandler.getController().getFormInUse(), null);
+		table.loadTreeObject(getCurrentForm(), null);
 		table.collapseFrom(Category.class);
 		table.setValue(null);
 		table.addValueChangeListener(new ValueChangeListener() {
@@ -120,7 +137,7 @@ public class Designer extends SecuredWebPage {
 		getWorkingArea().addComponent(rootLayout);
 
 		// Init
-		table.setValue(UserSessionHandler.getController().getFormInUse());
+		table.setValue(getCurrentForm());
 	}
 
 	@Override
@@ -146,6 +163,10 @@ public class Designer extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});
@@ -165,13 +186,28 @@ public class Designer extends SecuredWebPage {
 				openInsertBlock();
 			}
 		});
+		upperMenu.addLinkBlockButtonListener(new ClickListener() {
+			private static final long serialVersionUID = -4308973502774054307L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				openLinkBlock();
+			}
+		});
 		upperMenu.addNewCategoryButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 742624238392918737L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				Category newCategory = UserSessionHandler.getController().addNewCategory();
-				table.addRow(newCategory, newCategory.getParent());
+				try {
+					Category newCategory = UserSessionHandler.getController().addNewCategory();
+					table.addRow(newCategory, newCategory.getParent());
+				} catch (NotValidChildException e) {
+					MessageManager.showError(LanguageCodes.ERROR_CATEGORY_NOT_INSERTED_IN_BLOCK);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				}
 			}
 		});
 		upperMenu.addNewGroupButtonListener(new ClickListener() {
@@ -186,6 +222,9 @@ public class Designer extends SecuredWebPage {
 					table.addRow(newGroup, newGroup.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_GROUP_NOT_INSERTED);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -202,6 +241,8 @@ public class Designer extends SecuredWebPage {
 					table.addRow(newQuestion, newQuestion.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_QUESTION_NOT_INSERTED);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -218,6 +259,8 @@ public class Designer extends SecuredWebPage {
 					table.addRow(newField, newField.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_SYSTEM_FIELD_NOT_INSERTED);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -234,6 +277,8 @@ public class Designer extends SecuredWebPage {
 					table.addRow(newText, newText.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_TEXT_NOT_INSERTED);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -256,6 +301,8 @@ public class Designer extends SecuredWebPage {
 					table.addRow(newAnswer, newAnswer.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -276,6 +323,8 @@ public class Designer extends SecuredWebPage {
 						table.addRow(newAnswer, newAnswer.getParent());
 					} catch (NotValidChildException e) {
 						MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
+					} catch (ElementIsReadOnly e) {
+						MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 					}
 				}
 			}
@@ -285,15 +334,36 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				TreeObject row = table.getSelectedRow();
-				TreeObject parent = row.getParent();
-				try {
-					table.selectPreviousRow();
-					UserSessionHandler.getController().removeTreeObject(row);
-					table.updateRow(parent);
-				} catch (DependencyExistException e) {
-					table.setValue(row);
-					MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
+				// Do not remove any element of a block if a form that is linking it is in use.
+				if (!(UserSessionHandler.getController().getFormInUse() instanceof Block)
+						|| !isBlockLinkedByFormInUse((Block) UserSessionHandler.getController().getFormInUse())) {
+					TreeObject row = table.getSelectedRow();
+					// Do not remove an element of a block if is in use in any flow.
+					try {
+						if ((UserSessionHandler.getController().getFormInUse() instanceof Block)
+								&& UserSessionHandler.getController().existFormThatUseElementInFlow(row)) {
+							MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE,
+									LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_BLOCK_ELEMENT_DESCRIPTION);
+						} else {
+							try {
+								table.selectPreviousRow();
+								UserSessionHandler.getController().removeTreeObject(row);
+								table.updateRow(table.getParentRowItem(row));
+							} catch (DependencyExistException | ChildrenNotFoundException e) {
+								table.setValue(row);
+								MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
+							} catch (ElementIsReadOnly e) {
+								table.setValue(row);
+								MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+							}
+						}
+					} catch (ReadOnlyException | UnexpectedDatabaseException e) {
+						MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+								LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+					}
+				} else {
+					MessageManager.showError(LanguageCodes.ERROR_FORM_WITH_BLOCK_IS_IN_USE,
+							LanguageCodes.ERROR_FORM_WITH_BLOCK_IS_IN_USE_DESCRIPTION);
 				}
 			}
 		});
@@ -304,9 +374,13 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
-				UserSessionHandler.getController().moveUp(row);
-				table.redrawRow(table.getSelectedRow().getParent());
-				table.setValue(row);
+				try {
+					UserSessionHandler.getController().moveUp(row);
+					table.redrawRow(table.getParentRowItem(row));
+					table.setValue(row);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				}
 			}
 		});
 
@@ -316,9 +390,13 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
-				UserSessionHandler.getController().moveDown(row);
-				table.redrawRow(table.getSelectedRow().getParent());
-				table.setValue(row);
+				try {
+					UserSessionHandler.getController().moveDown(row);
+					table.redrawRow(table.getParentRowItem(row));
+					table.setValue(row);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				}
 			}
 		});
 
@@ -341,7 +419,7 @@ public class Designer extends SecuredWebPage {
 		return upperMenu;
 	}
 
-	protected void finishForm() {
+	private void finishForm() {
 		new WindowProceedAction(LanguageCodes.TEXT_PROCEED_FORM_CLOSE, new AcceptActionListener() {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
@@ -351,6 +429,10 @@ public class Designer extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});
@@ -360,13 +442,16 @@ public class Designer extends SecuredWebPage {
 	 * Function to update active/Visible state of upper menu buttons.
 	 */
 	private void updateUpperMenu() {
-		TreeObject selectedRow = table.getSelectedRow();
+		TreeObject selectedElement = table.getSelectedRow();
 
 		try {
 			boolean formIsBlock = getCurrentForm() instanceof Block;
 			boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
-			boolean rowIsNull = selectedRow == null;
-			boolean rowIsForm = selectedRow instanceof Form;
+			boolean rowIsNull = selectedElement == null;
+			boolean rowIsForm = selectedElement instanceof Form;
+			boolean rowIsBlockReference = selectedElement == null || selectedElement.isReadOnly();
+			boolean rowIsBlockReferenceCategory = selectedElement == null || selectedElement.isReadOnly()
+					&& (selectedElement instanceof BaseCategory);
 			boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 					UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 			boolean canStoreBlock = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
@@ -379,20 +464,35 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock && !rowIsForm);
 			upperMenu.getInsertBlockButton().setEnabled(canEdit);
 			upperMenu.getInsertBlockButton().setVisible(!formIsBlock);
-			upperMenu.getNewCategoryButton().setEnabled(canEdit && (formIsBlockAndNoCategories || (!formIsBlock)));
-			upperMenu.getNewGroupButton().setEnabled(canEdit && selectedRowHierarchyAllows(Group.class));
-			upperMenu.getNewQuestionButton().setEnabled(canEdit && selectedRowHierarchyAllows(Question.class));
-			upperMenu.getNewSystemFieldButton().setEnabled(canEdit && selectedRowHierarchyAllows(SystemField.class));
-			upperMenu.getNewTextButton().setEnabled(canEdit && selectedRowHierarchyAllows(Text.class));
-			upperMenu.getNewAnswerButton().setEnabled(canEdit && selectedRowHierarchyAllows(Answer.class));
-			upperMenu.getNewSubanswerButton().setEnabled(
-					canEdit && selectedRowIsAnswer && selectedRowHierarchyAllows(Answer.class)
-							&& (isParentQuestionOfType(table.getSelectedRow(), AnswerType.SINGLE_SELECTION_RADIO) 
-									|| isParentQuestionOfType(table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
-			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
-			upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm);
-			upperMenu.getUpButton().setEnabled(canEdit && !rowIsForm && !rowIsForm);
-			upperMenu.getDownButton().setEnabled(canEdit && !rowIsForm);
+			upperMenu.getNewCategoryButton().setEnabled(
+					canEdit && (formIsBlockAndNoCategories || (!formIsBlock)) && !rowIsBlockReference);
+			upperMenu.getNewGroupButton().setEnabled(
+					canEdit && selectedRowHierarchyAllows(Group.class) && !rowIsBlockReference);
+			upperMenu.getNewQuestionButton().setEnabled(
+					canEdit && selectedRowHierarchyAllows(Question.class) && !rowIsBlockReference);
+			upperMenu.getNewSystemFieldButton().setEnabled(
+					canEdit && selectedRowHierarchyAllows(SystemField.class) && !rowIsBlockReference);
+			upperMenu.getNewTextButton().setEnabled(
+					canEdit && selectedRowHierarchyAllows(Text.class) && !rowIsBlockReference);
+			upperMenu.getNewAnswerButton().setEnabled(
+					canEdit && selectedRowHierarchyAllows(Answer.class) && !rowIsBlockReference);
+			upperMenu.getNewSubanswerButton()
+					.setEnabled(
+							canEdit
+									&& !rowIsBlockReference
+									&& selectedRowIsAnswer
+									&& selectedRowHierarchyAllows(Answer.class)
+									&& (isParentQuestionOfType(table.getSelectedRow(),
+											AnswerType.SINGLE_SELECTION_RADIO) || isParentQuestionOfType(
+											table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
+			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm && !rowIsBlockReference);
+			upperMenu.getDeleteButton().setEnabled(
+					canEdit && !rowIsNull && !rowIsForm
+							&& (!rowIsBlockReference || selectedElement instanceof Category));
+			upperMenu.getUpButton().setEnabled(
+					canEdit && !rowIsForm && !rowIsForm && (!rowIsBlockReference || rowIsBlockReferenceCategory));
+			upperMenu.getDownButton().setEnabled(
+					canEdit && !rowIsForm && (!rowIsBlockReference || rowIsBlockReferenceCategory));
 			upperMenu.getFinish().setVisible(!formIsBlock);
 			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 		} catch (IOException | AuthenticationRequired e) {
@@ -415,12 +515,12 @@ public class Designer extends SecuredWebPage {
 		}
 	}
 
-	protected boolean selectedRowHierarchyAllows(Class<? extends TreeObject> cls) {
+	private boolean selectedRowHierarchyAllows(Class<? extends TreeObject> cls) {
 		TreeObject selectedRow = table.getSelectedRow();
 		return selectedRow != null && (selectedRow.getAncestorThatAccepts(cls) != null);
 	}
 
-	protected boolean isParentQuestionOfType(TreeObject answer, AnswerType type) {
+	private boolean isParentQuestionOfType(TreeObject answer, AnswerType type) {
 		if (answer != null && answer.getParent() != null && answer.getParent() instanceof Question) {
 			return ((Question) answer.getParent()).getAnswerType().equals(type);
 		} else if (answer != null && answer.getParent() != null && answer.getParent() instanceof Answer) {
@@ -432,7 +532,7 @@ public class Designer extends SecuredWebPage {
 	/**
 	 * Opens Save as New block window (String field)
 	 */
-	protected void openNewBlockWindow() {
+	private void openNewBlockWindow() {
 		final WindowNameGroup newBlockWindow = new WindowNameGroup(LanguageCodes.COMMON_CAPTION_NAME.translation(),
 				LanguageCodes.COMMON_CAPTION_GROUP.translation(),
 				new IActivity[] { WebformsActivity.BUILDING_BLOCK_EDITING });
@@ -444,7 +544,7 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				if (newBlockWindow.getValue() == null || newBlockWindow.getValue().isEmpty()) {
-					MessageManager.showWarning(LanguageCodes.COMMON_WARNING_TITLE_BLOCK_NOT_CREATED,
+					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_BLOCK_NOT_CREATED,
 							LanguageCodes.COMMON_WARNING_DESCRIPTION_BLOCK_NEEDS_NAME);
 					return;
 				}
@@ -463,6 +563,13 @@ public class Designer extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				} catch (ElementCannotBeRemovedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				} catch (ElementCannotBePersistedException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});
@@ -471,7 +578,7 @@ public class Designer extends SecuredWebPage {
 	/**
 	 * Opens Insert Block window
 	 */
-	protected void openInsertBlock() {
+	private void openInsertBlock() {
 		final WindowBlocks windowBlocks = new WindowBlocks(LanguageCodes.CAPTION_INSERT_NEW_BLOCK);
 		windowBlocks.showCentered();
 		windowBlocks.addAcceptActionListener(new AcceptActionListener() {
@@ -489,6 +596,33 @@ public class Designer extends SecuredWebPage {
 				} catch (EmptyBlockCannotBeInserted e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
 							LanguageCodes.WARNING_DESCRIPTION_EMPTY_BLOCK);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				}
+			}
+		});
+	}
+
+	private void openLinkBlock() {
+		final WindowBlocks windowBlocks = new WindowBlocks(LanguageCodes.CAPTION_LINK_BLOCK);
+		windowBlocks.showCentered();
+		windowBlocks.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				// Insert block in form
+				try {
+					UserSessionHandler.getController().linkBlock(windowBlocks.getSelectedBlock());
+					clearAndUpdateFormTable();
+					window.close();
+				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
+							LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
+				} catch (EmptyBlockCannotBeInserted e) {
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
+							LanguageCodes.WARNING_DESCRIPTION_EMPTY_BLOCK);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
@@ -497,7 +631,7 @@ public class Designer extends SecuredWebPage {
 	/**
 	 * Opens move element window.
 	 */
-	protected void openMoveWindow() {
+	private void openMoveWindow() {
 		final WindowTreeObject moveWindow = new WindowTreeObject(LanguageCodes.CAPTION_WINDOW_MOVE, getCurrentForm(),
 				Form.class, Category.class, Group.class);
 		moveWindow.showCentered();
@@ -508,30 +642,36 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject whatToMove = table.getSelectedRow();
 					TreeObject whereToMove = moveWindow.getSelectedTreeObject();
-					UserSessionHandler.getController().moveTo(whatToMove, whereToMove);
-					window.close();
-					table.setValue(null);
-					table.removeRow(whatToMove);
-					table.loadTreeObject(whatToMove, whereToMove, false);
-					table.expand(whereToMove);
-					// FIX to force a jump to this point in table.
-					table.setValue(null);
-					table.setValue(whatToMove);
+					if (!whereToMove.isReadOnly()) {
+						UserSessionHandler.getController().moveTo(whatToMove, whereToMove);
+						window.close();
+						table.setValue(null);
+						table.removeRow(whatToMove);
+						table.loadTreeObject(whatToMove, whereToMove, false);
+						table.expand(whereToMove);
+						// FIX to force a jump to this point in table.
+						table.setValue(null);
+						table.setValue(whatToMove);
+					} else {
+						MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+					}
 				} catch (NotValidChildException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_NOT_VALID,
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_NOT_VALID,
 							LanguageCodes.WARNING_DESCRIPTION_NOT_VALID);
 				} catch (SameOriginAndDestinationException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
 							LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN);
 				} catch (DestinyIsContainedAtOrigin | ChildrenNotFoundException e) {
-					MessageManager.showWarning(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
 							LanguageCodes.WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});
 	}
 
-	protected void clearAndUpdateFormTable() {
+	private void clearAndUpdateFormTable() {
 		// Clear and update form
 		TreeObject currentSelection = table.getSelectedRow();
 		table.setValue(null);
@@ -540,7 +680,18 @@ public class Designer extends SecuredWebPage {
 		table.select(currentSelection);
 	}
 
-	protected Form getCurrentForm() {
-		return UserSessionHandler.getController().getFormInUse();
+	private Form getCurrentForm() {
+		return UserSessionHandler.getController().getCompleteFormView();
 	}
+
+	public boolean isBlockLinkedByFormInUse(Block block) {
+		List<SimpleFormView> forms = simpleFormViewDao.getFormsThatUse(block);
+		for (SimpleFormView form : forms) {
+			if (WebformsAuthorizationService.getInstance().isFormInUse(form)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
