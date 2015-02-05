@@ -279,7 +279,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		blockDao.makePersistent(block1);
 
 		Block block2 = FormUtils.createBlock();
-		block2.setLabel("LinkedBlock41");
+		block2.setLabel("LinkedBlock42");
 		blockDao.makePersistent(block2);
 
 		BlockReference blockReference1 = new BlockReference(block1);

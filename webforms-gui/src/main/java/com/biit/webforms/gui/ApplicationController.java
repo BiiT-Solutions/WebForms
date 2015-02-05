@@ -211,7 +211,8 @@ public class ApplicationController {
 	}
 
 	public Block createBlock(String blockName, Long organizationId) throws CharacterNotAllowedException,
-			FieldTooLongException, FormWithSameNameException, UnexpectedDatabaseException, ElementCannotBePersistedException {
+			FieldTooLongException, FormWithSameNameException, UnexpectedDatabaseException,
+			ElementCannotBePersistedException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' createBlock "
 				+ blockName);
 		logInfoStart("createBlock", blockName, organizationId);
@@ -1385,5 +1386,18 @@ public class ApplicationController {
 	public void clearParameters() {
 		formInUse = null;
 		completeFormView = null;
+	}
+
+	/**
+	 * Defines if any form is using an element in its flow (as origin or destination).
+	 * 
+	 * @param element
+	 * @return
+	 * @throws UnexpectedDatabaseException
+	 */
+	public boolean existFormThatUseElementInFlow(TreeObject element) throws UnexpectedDatabaseException {
+		List<Long> ids = new ArrayList<>();
+		ids.add(element.getId());
+		return blockDao.getFormFlowsCountUsingElement(ids) > 0;
 	}
 }

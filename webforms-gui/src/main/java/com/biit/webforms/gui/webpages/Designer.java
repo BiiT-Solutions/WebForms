@@ -55,6 +55,7 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.VaadinServlet;
@@ -333,21 +334,32 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				// Do not remove any element of a block if a form is linking it.
+				// Do not remove any element of a block if a form that is linking it is in use.
 				if (!(UserSessionHandler.getController().getFormInUse() instanceof Block)
 						|| !isBlockLinkedByFormInUse((Block) UserSessionHandler.getController().getFormInUse())) {
 					TreeObject row = table.getSelectedRow();
 					// Do not remove an element of a block if is in use in any flow.
 					try {
-						table.selectPreviousRow();
-						UserSessionHandler.getController().removeTreeObject(row);
-						table.updateRow(table.getParentRowItem(row));
-					} catch (DependencyExistException | ChildrenNotFoundException e) {
-						table.setValue(row);
-						MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
-					} catch (ElementIsReadOnly e) {
-						table.setValue(row);
-						MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+						if ((UserSessionHandler.getController().getFormInUse() instanceof Block)
+								&& UserSessionHandler.getController().existFormThatUseElementInFlow(row)) {
+							MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE,
+									LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_BLOCK_ELEMENT_DESCRIPTION);
+						} else {
+							try {
+								table.selectPreviousRow();
+								UserSessionHandler.getController().removeTreeObject(row);
+								table.updateRow(table.getParentRowItem(row));
+							} catch (DependencyExistException | ChildrenNotFoundException e) {
+								table.setValue(row);
+								MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
+							} catch (ElementIsReadOnly e) {
+								table.setValue(row);
+								MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+							}
+						}
+					} catch (ReadOnlyException | UnexpectedDatabaseException e) {
+						MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+								LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 					}
 				} else {
 					MessageManager.showError(LanguageCodes.ERROR_FORM_WITH_BLOCK_IS_IN_USE,

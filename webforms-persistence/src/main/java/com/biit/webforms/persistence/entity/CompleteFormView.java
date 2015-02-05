@@ -198,7 +198,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			BlockReference blockReferenceOfSource = getBlockReference(rule.getOrigin());
 			BlockReference blockReferenceOfDestination = getBlockReference(rule.getDestiny());
 
-			// Are in the same linked block.
+			// Flows in the same linked block are not allowed. 
 			if (blockReferenceOfSource != null && blockReferenceOfDestination != null
 					&& blockReferenceOfSource.equals(blockReferenceOfDestination)) {
 				throw new FlowNotAllowedException("");
