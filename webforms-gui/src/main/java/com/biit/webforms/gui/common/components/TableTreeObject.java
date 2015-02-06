@@ -129,7 +129,7 @@ public class TableTreeObject extends TreeTable {
 			parent = getRowItem(parent);
 			if (parent != null) {
 				// Parent Form must be translated to CompleteFormView.
-				if (parent instanceof BaseForm && !(parent instanceof Block)) {
+				if (parent instanceof BaseForm) {
 					parent = UserSessionHandler.getController().getCompleteFormView();
 				}
 				// This status must be true before setting the relationship.
