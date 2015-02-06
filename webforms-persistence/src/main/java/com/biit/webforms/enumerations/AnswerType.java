@@ -1,30 +1,32 @@
 package com.biit.webforms.enumerations;
 
 public enum AnswerType {
-	SINGLE_SELECTION_RADIO(null, true, false, true, true),
+	SINGLE_SELECTION_RADIO(null, true, true, false, true, true),
 
-	SINGLE_SELECTION_LIST(null, true, null, true, false),
+	SINGLE_SELECTION_LIST(null, true, false, null, true, false),
 
-	MULTIPLE_SELECTION(null, true, null, true, true),
+	MULTIPLE_SELECTION(null, true, true, null, true, true),
 
 	// Uses answer format.
-	INPUT(AnswerFormat.TEXT, false, null, true, false),
+	INPUT(AnswerFormat.TEXT, false, false, null, true, false),
 
-	TEXT_AREA(null, false, null, false, false);
+	TEXT_AREA(null, false, false, null, false, false);
 
 	private AnswerFormat defaultAnswerFormat;
 	private boolean childrenAllowed;
+	private boolean subChildrenAllowed;
 	private Boolean defaultHorizontal;
 	private Boolean defaultMandatory;
 	private boolean nestedAnswerAllowed;
 
-	AnswerType(AnswerFormat defaultAnswerType, boolean childrenAllowed, Boolean defaultHorizontal,
-			Boolean defaultMandatory, boolean nestedAnswerAllowed) {
+	AnswerType(AnswerFormat defaultAnswerType, boolean childrenAllowed, boolean subchildrenAllowed,
+			Boolean defaultHorizontal, Boolean defaultMandatory, boolean nestedAnswerAllowed) {
 		this.defaultAnswerFormat = defaultAnswerType;
 		this.childrenAllowed = childrenAllowed;
 		this.defaultHorizontal = defaultHorizontal;
 		this.defaultMandatory = defaultMandatory;
 		this.nestedAnswerAllowed = nestedAnswerAllowed;
+		this.subChildrenAllowed = subchildrenAllowed;
 	}
 
 	public boolean isAnswerFormatEnabled() {
@@ -67,5 +69,9 @@ public enum AnswerType {
 
 	public boolean isNestedAnswerAllowed() {
 		return nestedAnswerAllowed;
+	}
+
+	public boolean isSubChildrenAllowed() {
+		return subChildrenAllowed;
 	}
 }

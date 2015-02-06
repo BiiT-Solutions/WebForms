@@ -151,16 +151,7 @@ public class TableTreeObject extends TreeTable {
 		Item item = getItem(element);
 		if (item != null) {
 			// Remove children of table if they are no longer related.
-			Collection<?> immutableList = getChildren(element);
-			if (immutableList != null && (!immutableList.isEmpty())) {
-				List<Object> children = new ArrayList<Object>();
-				children.addAll(immutableList);
-				for (Object child : children) {
-					if (!element.getChildren().contains(child)) {
-						removeRow((TreeObject) child);
-					}
-				}
-			}
+			removeUnexistingChildren(element);
 
 			if (element.getChildren().isEmpty()) {
 				setChildrenAllowed(element, false);
@@ -168,6 +159,25 @@ public class TableTreeObject extends TreeTable {
 
 			// Update
 			setValuesToItem(item, element);
+		}
+	}
+
+	/**
+	 * Removes any row of the table of a child of element that does not exists any more.
+	 * 
+	 * @param element
+	 */
+	private void removeUnexistingChildren(TreeObject element) {
+		Collection<?> immutableList = getChildren(element);
+		if (immutableList != null && (!immutableList.isEmpty())) {
+			List<Object> children = new ArrayList<Object>();
+			children.addAll(immutableList);
+			for (Object child : children) {
+				removeUnexistingChildren((TreeObject) child);
+				if (!element.getChildren().contains(child)) {
+					removeRow((TreeObject) child);
+				}
+			}
 		}
 	}
 
