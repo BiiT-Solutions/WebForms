@@ -8,11 +8,11 @@ public class FormPropertiesView extends CommonTreeElementProperties {
 	private static final String VERSION_FIELD_CAPTION = "Version";
 	private static final String DESCRIPTION_TEXT_AREA_CAPTION = "Description";
 
-	public String getNameValue() {
+	public String getName() {
 		return getTextFieldValue(NAME_FIELD_CAPTION);
 	}
 
-	public void setNameValue(String value) throws FieldNotEditableException {
+	public void setName(String value) throws FieldNotEditableException {
 		setTextFieldValue(NAME_FIELD_CAPTION, value);
 	}
 
@@ -24,11 +24,11 @@ public class FormPropertiesView extends CommonTreeElementProperties {
 		setTextFieldValue(VERSION_FIELD_CAPTION, value);
 	}
 
-	public String getDescriptionValue() {
+	public String getDescription() {
 		return getTextAreaValue(DESCRIPTION_TEXT_AREA_CAPTION);
 	}
 
-	public void setDescriptionValue(String value) throws FieldNotEditableException {
+	public void setDescription(String value) throws FieldNotEditableException {
 		setTextAreaValue(DESCRIPTION_TEXT_AREA_CAPTION, value);
 	}
 }

@@ -5,7 +5,6 @@ import org.testng.annotations.Test;
 
 import com.biit.webforms.gui.test.exceptions.OrganizationNotEditableException;
 
-@Test(groups = "basicFunctionality")
 public class BasicFuncionalityTests extends WebFormsTester {
 
 	private static final String NEW_FORM_NAME = "new_form_1";
@@ -13,7 +12,7 @@ public class BasicFuncionalityTests extends WebFormsTester {
 	private static final String ORGANIZATION_NAME = "Bii1";
 	private static final String STATUS_FINISHED = "Final Design";
 
-	@Test
+	@Test(groups = "basicFunctionality")
 	public void testInfoWindow() {
 		loginRead1();
 		getInfoButton().click();
@@ -21,7 +20,7 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		logOut();
 	}
 
-	@Test
+	@Test(groups = "basicFunctionality")
 	public void editFormOrganizationWithoutPermissions() {
 		loginFormAdmin1();
 		try {
@@ -35,10 +34,10 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		logOut();
 	}
 
-	@Test
+	@Test(groups = "basicFunctionality")
 	public void editFormWithoutPermissions() {
 		// For testing the form edition we need a to create a form
-		createNewForm(NEW_FORM_NAME);
+		createNewFormAndLogout(NEW_FORM_NAME);
 		// Starting the real test
 		loginRead1();
 		goToDesigner();
@@ -51,10 +50,10 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		deleteForm();
 	}
 
-	@Test
+	@Test(groups = "basicFunctionality")
 	public void editFormWithPermissions() {
 		// For testing the form edition we need a to create a form
-		createNewForm(NEW_FORM_NAME);
+		createNewFormAndLogout(NEW_FORM_NAME);
 		// Starting the real test
 		loginFormEdit1();
 		goToDesigner();
@@ -67,10 +66,10 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		deleteForm();
 	}
 
-	@Test
+	@Test(groups = "basicFunctionality")
 	public void editBlockWithoutPermissions() {
 		// For testing the block edition we need a to create a block
-		createNewBlock(NEW_BLOCK_NAME);
+		createNewBlockAndLogout(NEW_BLOCK_NAME);
 		// Starting the real test
 		loginRead1();
 		goToBlockManager();
@@ -85,10 +84,10 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		deleteBlock();
 	}
 
-	@Test
+	@Test(groups = "basicFunctionality")
 	public void editBlockWithPermissions() {
 		// For testing the block edition we need a to create a block
-		createNewBlock(NEW_BLOCK_NAME);
+		createNewBlockAndLogout(NEW_BLOCK_NAME);
 		// Starting the real test
 		loginBlockEdit1();
 		goToBlockManager();
@@ -103,7 +102,7 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		deleteBlock();
 	}
 
-	@Test
+	@Test(groups = "basicFunctionality")
 	public void createFormfinishFormCheckStatus() {
 		loginFormEdit1();
 		getFormManager().createNewForm(NEW_FORM_NAME);

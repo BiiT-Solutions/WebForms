@@ -3,7 +3,6 @@ package com.biit.webforms.gui.test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(groups = "formFlow")
 public class FormFlowTests extends WebFormsTester {
 
 	private static final String NEW_FORM_NAME = "new_form_1";
@@ -26,7 +25,7 @@ public class FormFlowTests extends WebFormsTester {
 
 	private static final String VALID_FLOW_TAG = "Valid";
 
-	@Test
+	@Test(groups = "formFlow")
 	public void validFormWithEverything() {
 		try {
 			loginFormEdit1();
@@ -45,7 +44,7 @@ public class FormFlowTests extends WebFormsTester {
 		}
 	}
 
-	@Test
+	@Test(groups = "formFlow")
 	public void validStartEndFlow() {
 		try {
 			loginFormEdit1();
@@ -69,7 +68,7 @@ public class FormFlowTests extends WebFormsTester {
 		}
 	}
 
-	@Test
+	@Test(groups = "formFlow")
 	public void cloneFlow() {
 		try {
 			loginFormEdit1();
@@ -98,7 +97,7 @@ public class FormFlowTests extends WebFormsTester {
 		}
 	}
 
-	@Test
+	@Test(groups = "formFlow")
 	public void removeFlow() {
 		try {
 			loginFormEdit1();
@@ -127,7 +126,7 @@ public class FormFlowTests extends WebFormsTester {
 		}
 	}
 
-	@Test
+	@Test(groups = "formFlow")
 	public void cleanSimpleFlow() {
 		try {
 			loginFormEdit1();
@@ -161,7 +160,7 @@ public class FormFlowTests extends WebFormsTester {
 		}
 	}
 
-	@Test
+	@Test(groups = "formFlow")
 	public void cleanSimpleOthersFlow() {
 		try {
 			loginFormEdit1();
@@ -197,7 +196,7 @@ public class FormFlowTests extends WebFormsTester {
 		}
 	}
 
-	@Test
+	@Test(groups = "formFlow")
 	public void cleanSimpleOthersFlow2() {
 		try {
 			loginFormEdit1();
@@ -233,37 +232,36 @@ public class FormFlowTests extends WebFormsTester {
 		}
 	}
 
-	// TO FIX
-	// @Test
-	// public void createQuestionsFlow() {
-	// try {
-	// loginFormEdit1();
-	// getFormManager().createNewForm(NEW_FORM_NAME);
-	// // Create a couple of categories and questions
-	// goToDesigner();
-	// getDesigner().createAndSaveSimpleForm();
-	// // Create a flow
-	// goToFlowManager();
-	// getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-	// getFlowManager().createSimpleFlowRule(QUESTION2_NAME, QUESTION3_NAME);
-	// // Clean the rule
-	// getFlowManager().clickRedrawButton();
-	// if (isHeadlessTesting()) {
-	// takeScreenshot(CLEAN_SIMPLE_OTHERS_FLOW_2_TEST_SCREENSHOT);
-	// }
-	// getFlowManager().saveFlow();
-	// logOut();
-	// // Delete the form created for the test
-	// deleteForm();
-	//
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// // If any unexpected exception is thrown the test should fail
-	// Assert.fail();
-	// }
-	// }
+	// TODO FIX bug in webforms
+	public void createQuestionsFlow() {
+		try {
+			loginFormEdit1();
+			getFormManager().createNewForm(NEW_FORM_NAME);
+			// Create a couple of categories and questions
+			goToDesigner();
+			getDesigner().createAndSaveSimpleForm();
+			// Create a flow
+			goToFlowManager();
+			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+			getFlowManager().createSimpleFlowRule(QUESTION2_NAME, QUESTION3_NAME);
+			// Clean the rule
+			getFlowManager().clickRedrawButton();
+			if (isHeadlessTesting()) {
+				takeScreenshot(CLEAN_SIMPLE_OTHERS_FLOW_2_TEST_SCREENSHOT);
+			}
+			getFlowManager().saveFlow();
+			logOut();
+			// Delete the form created for the test
+			deleteForm();
 
-	@Test
+		} catch (Exception e) {
+			e.printStackTrace();
+			// If any unexpected exception is thrown the test should fail
+			Assert.fail();
+		}
+	}
+
+	@Test(groups = "formFlow")
 	public void createQuestionEqualsAnswerFlow() {
 		try {
 			loginFormEdit1();
@@ -297,7 +295,7 @@ public class FormFlowTests extends WebFormsTester {
 		}
 	}
 
-	@Test
+	@Test(groups = "formFlow")
 	public void createQuestionNotEqualsAnswerFlow() {
 		try {
 			loginFormEdit1();
@@ -333,7 +331,7 @@ public class FormFlowTests extends WebFormsTester {
 		}
 	}
 
-	@Test
+	@Test(groups = "formFlow")
 	public void createAnswersInQuestionFlow() {
 		try {
 			loginFormEdit1();

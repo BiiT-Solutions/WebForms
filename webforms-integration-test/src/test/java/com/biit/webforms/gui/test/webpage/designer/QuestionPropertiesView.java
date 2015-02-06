@@ -11,11 +11,11 @@ public class QuestionPropertiesView extends CommonCategoryGroupQuestionPropertie
 	private static final String HORIZONTAL_CHECKBOX_CAPTION = "Horizontal";
 	private static final String MANDATORY_CHECKBOX_CAPTION = "Mandatory";
 
-	public String getDescriptionTextAreaValue() {
+	public String getDescription() {
 		return getTextAreaValue(DESCRIPTION_TEXT_AREA_CAPTION);
 	}
 
-	public void setDescriptionTextAreaValue(String value) throws FieldNotEditableException {
+	public void setDescription(String value) throws FieldNotEditableException {
 		setTextAreaValue(DESCRIPTION_TEXT_AREA_CAPTION, value);
 	}
 
@@ -57,5 +57,13 @@ public class QuestionPropertiesView extends CommonCategoryGroupQuestionPropertie
 
 	public void clickMandatoryCheckBox() throws FieldNotEditableException {
 		clickCheckBox(MANDATORY_CHECKBOX_CAPTION);
+	}
+	
+	public boolean ismandatoryEnabled(){
+		return getCheckBox(MANDATORY_CHECKBOX_CAPTION).isEnabled();
+	}
+	
+	public boolean isHorizontalEnabled(){
+		return getCheckBox(HORIZONTAL_CHECKBOX_CAPTION).isEnabled();
 	}
 }

@@ -209,26 +209,38 @@ public class WebFormsTester extends VaadinGuiTester {
 		getBlocksButton().click();
 	}
 
-	public void createNewForm(String formName) {
+	public void createNewFormAndLogout(String formName) {
 		loginFormAdmin1();
 		getFormManager().createNewForm(formName);
 		logOut();
 	}
+	
+	protected void createNewForm(String formName) {
+		loginFormEdit1();
+		getFormManager().createNewForm(formName);
+	}
+	
+	protected void createNewBlock(String blockName) {
+		loginBlockEdit1();
+		goToBlockManager();
+		getBlockManager().createNewBlock(blockName);
+		getBlockManager().selectBlock(0);
+	}
 
-	public void deleteForm() {
+	protected void deleteForm() {
 		loginFormAdmin1();
 		getFormManager().deleteForm(1);
 		logOut();
 	}
 
-	public void createNewBlock(String blockName) {
+	protected void createNewBlockAndLogout(String blockName) {
 		loginFormAdmin1();
 		goToBlockManager();
 		getBlockManager().createNewBlock(blockName);
 		logOut();
 	}
 
-	public void deleteBlock() {
+	protected void deleteBlock() {
 		loginFormAdmin1();
 		goToBlockManager();
 		getBlockManager().deleteBlock(0);
@@ -241,7 +253,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	 * 
 	 * @param screenshotName
 	 */
-	public void takeScreenshot(String screenshotName) {
+	protected void takeScreenshot(String screenshotName) {
 		if (isHeadlessTesting()) {
 			File scrFile = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
 			try {

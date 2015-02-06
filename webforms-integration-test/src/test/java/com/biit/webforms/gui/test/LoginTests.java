@@ -3,7 +3,6 @@ package com.biit.webforms.gui.test;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(groups = "login")
 public class LoginTests extends WebFormsTester {
 
 	private static final String BADUSERNAME = "badUserName@bad.com";
@@ -11,19 +10,19 @@ public class LoginTests extends WebFormsTester {
 	private static final String NEW_FORM_NAME = "new_form_1";
 	private static final String NEW_BLOCK_NAME = "new_block_1";
 
-	@Test
+	@Test(groups = "login")
 	public void testLoginLogout() {
 		loginRead1();
 		logOut();
 	}
 
-	@Test
+	@Test(groups = "login")
 	public void testLoginFail() {
 		login(BADUSERNAME, BADPASSWORD);
 		checkNotificationIsError(getNotification());
 	}
 
-	@Test
+	@Test(groups = "login")
 	public void testLoginWithRightsToManageForm() {
 		loginFormAdmin1();
 		getFormManager().createNewForm(NEW_FORM_NAME);
@@ -31,7 +30,7 @@ public class LoginTests extends WebFormsTester {
 		logOut();
 	}
 
-	@Test
+	@Test(groups = "login")
 	public void testLoginWithRightsToManageButNotDeleteForm() {
 		loginFormEdit1();
 		Assert.assertTrue(getFormManager().getNewFormButton().isEnabled());
@@ -41,7 +40,7 @@ public class LoginTests extends WebFormsTester {
 		logOut();
 	}
 
-	@Test
+	@Test(groups = "login")
 	public void testLoginWithoutRightsToManageForm() {
 		loginRead1();
 		Assert.assertFalse(getFormManager().getNewFormButton().isEnabled());
@@ -51,7 +50,7 @@ public class LoginTests extends WebFormsTester {
 		logOut();
 	}
 
-	@Test
+	@Test(groups = "login")
 	public void testLoginWithRightsToManageBlockButNotDeleteBlock() {
 		loginBlockEdit1();
 		goToBlockManager();
@@ -60,7 +59,7 @@ public class LoginTests extends WebFormsTester {
 		logOut();
 	}
 
-	@Test
+	@Test(groups = "login")
 	public void testLoginWithRightsToManageBlock() {
 		loginFormAdmin1();
 		goToBlockManager();
@@ -69,7 +68,7 @@ public class LoginTests extends WebFormsTester {
 		logOut();
 	}
 
-	@Test
+	@Test(groups = "login")
 	public void testLoginWithoutRightsToManageBlock() {
 		loginRead1();
 		goToBlockManager();

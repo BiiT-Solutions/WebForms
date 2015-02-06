@@ -5,12 +5,14 @@
 			<run>
 				<include name="login" />
 				<include name="basicFunctionality" />
+				<include name="formBlockDesign" />
 				<include name="formFlow" />
 			</run>
 		</groups>
 		<classes>
 			<class name="com.biit.webforms.gui.test.LoginTests" />
 			<class name="com.biit.webforms.gui.test.BasicFuncionalityTests" />
+			<class name="com.biit.webforms.gui.test.FormBlockDesignTests" />
 			<class name="com.biit.webforms.gui.test.FormFlowTests" />
 		</classes>
 	</test>

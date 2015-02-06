@@ -77,6 +77,8 @@ public class Designer extends VaadinGuiWebpage {
 	private static final String QUESTION3_NAME = "Question3";
 	private static final String ANSWER1_NAME = "Q1Answer1";
 	private static final String ANSWER2_NAME = "Q1Answer2";
+	
+	private static final Integer TREE_TABLE_INIT_ROW = 0;
 
 	private final FormPropertiesView formPropertiesView;
 	private final CategoryPropertiesView categoryPropertiesView;
@@ -365,11 +367,11 @@ public class Designer extends VaadinGuiWebpage {
 
 	public void createCompleteFormAndSave() throws FieldNotEditableException {
 		// Edit some form properties
-		getFormPropertiesView().setNameValue(FORM_NAME_EDITED);
-		getFormPropertiesView().setDescriptionValue(FORM_DESCRIPTION);
-		Assert.assertEquals(FORM_NAME_EDITED, getFormPropertiesView().getNameValue());
+		getFormPropertiesView().setName(FORM_NAME_EDITED);
+		getFormPropertiesView().setDescription(FORM_DESCRIPTION);
+		Assert.assertEquals(FORM_NAME_EDITED, getFormPropertiesView().getName());
 		Assert.assertEquals(FORM_VERSION, getFormPropertiesView().getVersionValue());
-		Assert.assertEquals(FORM_DESCRIPTION, getFormPropertiesView().getDescriptionValue());
+		Assert.assertEquals(FORM_DESCRIPTION, getFormPropertiesView().getDescription());
 
 		// Category 1
 		addNewCategory();
@@ -406,7 +408,7 @@ public class Designer extends VaadinGuiWebpage {
 		// Category 1
 		addNewCategory();
 		addNewRadioButtonQuestion();
-		getQuestionPropertiesView().setTechnicalNameFieldValue(QUESTION1_NAME);
+		getQuestionPropertiesView().setTechnicalName(QUESTION1_NAME);
 		addNewAnswer();
 		getAnswerPropertiesView().setValue(ANSWER1_NAME);
 		addNewAnswer();
@@ -414,11 +416,11 @@ public class Designer extends VaadinGuiWebpage {
 		// Category 2
 		addNewCategory();
 		addNewQuestion();
-		getQuestionPropertiesView().setTechnicalNameFieldValue(QUESTION2_NAME);
+		getQuestionPropertiesView().setTechnicalName(QUESTION2_NAME);
 		// Category 3
 		addNewCategory();
 		addNewQuestion();
-		getQuestionPropertiesView().setTechnicalNameFieldValue(QUESTION3_NAME);
+		getQuestionPropertiesView().setTechnicalName(QUESTION3_NAME);
 		// Save
 		saveDesign();
 	}
@@ -560,5 +562,17 @@ public class Designer extends VaadinGuiWebpage {
 		if (getQuestionPropertiesView().getMandatoryCheckBoxValue().equals(CHECKBOX_RETURN_CHECKED)) {
 			getQuestionPropertiesView().clickMandatoryCheckBox();
 		}
+	}
+
+	public void clickDeleteButton() {
+		getDeleteButton().click();
+	}
+
+	public void goToBeginningOfTreeTable(){
+		clickInTreeTableRow(TREE_TABLE_INIT_ROW);
+	}
+	
+	public void clickInTreeTableRow(int row){
+		getTreeTable().getRow(row).click();
 	}
 }
