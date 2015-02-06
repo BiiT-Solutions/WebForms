@@ -11,7 +11,7 @@ public class BasicFuncionalityTests extends WebFormsTester {
 	private static final String NEW_BLOCK_NAME = "new_block_1";
 	private static final String ORGANIZATION_NAME = "Bii1";
 	private static final String STATUS_FINISHED = "Final Design";
-
+	
 	@Test(groups = "basicFunctionality")
 	public void testInfoWindow() {
 		loginRead1();
@@ -19,7 +19,7 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		clickCloseButtonIfExists();
 		logOut();
 	}
-
+	
 	@Test(groups = "basicFunctionality")
 	public void editFormOrganizationWithoutPermissions() {
 		loginFormAdmin1();
@@ -44,9 +44,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		checkNotificationIsWarning(getNotification());
 		Assert.assertFalse(getDesigner().getSaveButton().isEnabled());
 		logOut();
-		// Test finished
-		// We need to delete the form created for the test, so the database is
-		// clean for the next tests
 		deleteForm();
 	}
 
@@ -60,9 +57,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		getDesigner().addNewCategory();
 		getDesigner().saveDesign();
 		logOut();
-		// Test finished
-		// We need to delete the form created for the test, so the database is
-		// clean for the next tests
 		deleteForm();
 	}
 
@@ -73,14 +67,10 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		// Starting the real test
 		loginRead1();
 		goToBlockManager();
-		getBlockManager().selectBlock(0);
 		goToDesigner();
 		checkNotificationIsWarning(getNotification());
 		Assert.assertFalse(getDesigner().getSaveButton().isEnabled());
 		logOut();
-		// Test finished
-		// We need to delete the block created for the test, so the database is
-		// clean for the next tests
 		deleteBlock();
 	}
 
@@ -91,14 +81,10 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		// Starting the real test
 		loginBlockEdit1();
 		goToBlockManager();
-		getBlockManager().selectBlock(0);
 		goToDesigner();
 		getDesigner().addNewCategory();
 		getDesigner().saveDesign();
 		logOut();
-		// Test finished
-		// We need to delete the form created for the test, so the database is
-		// clean for the next tests
 		deleteBlock();
 	}
 
@@ -112,9 +98,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		// goToFormManager();
 		Assert.assertEquals(getFormManager().getFormStatusComboBox().getValue(), STATUS_FINISHED);
 		logOut();
-		// Test finished
-		// We need to delete the form created for the test, so the database is
-		// clean for the next tests
 		deleteForm();
 	}
 

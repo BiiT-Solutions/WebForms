@@ -45,7 +45,6 @@ public class BlockManager extends VaadinGuiWebpage {
 	}
 
 	public void deleteBlock(int row) {
-		selectBlock(row);
 		getRemoveBlockButton().click();
 		clickAcceptButtonIfExists();
 	}
