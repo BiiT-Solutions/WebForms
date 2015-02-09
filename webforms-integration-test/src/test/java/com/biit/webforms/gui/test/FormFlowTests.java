@@ -51,7 +51,7 @@ public class FormFlowTests extends WebFormsTester {
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
-			getDesigner().createAndSaveSimpleForm();
+			getDesigner().createAndSaveSimpleFormDesign();
 			// Edit the flow
 			goToFlowManager();
 			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
@@ -75,7 +75,7 @@ public class FormFlowTests extends WebFormsTester {
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
-			getDesigner().createAndSaveSimpleForm();
+			getDesigner().createAndSaveSimpleFormDesign();
 			// Edit the flow
 			goToFlowManager();
 			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
@@ -104,7 +104,7 @@ public class FormFlowTests extends WebFormsTester {
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
-			getDesigner().createAndSaveSimpleForm();
+			getDesigner().createAndSaveSimpleFormDesign();
 			// Edit the flow
 			goToFlowManager();
 			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
@@ -133,7 +133,7 @@ public class FormFlowTests extends WebFormsTester {
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
-			getDesigner().createAndSaveSimpleForm();
+			getDesigner().createAndSaveSimpleFormDesign();
 			// Edit the flow
 			goToFlowManager();
 			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
@@ -167,7 +167,7 @@ public class FormFlowTests extends WebFormsTester {
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
-			getDesigner().createAndSaveSimpleForm();
+			getDesigner().createAndSaveSimpleFormDesign();
 			// Create a flow
 			goToFlowManager();
 			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
@@ -203,7 +203,7 @@ public class FormFlowTests extends WebFormsTester {
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
-			getDesigner().createAndSaveSimpleForm();
+			getDesigner().createAndSaveSimpleFormDesign();
 			// Create a flow
 			goToFlowManager();
 			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION3_NAME);
@@ -239,7 +239,7 @@ public class FormFlowTests extends WebFormsTester {
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
-			getDesigner().createAndSaveSimpleForm();
+			getDesigner().createAndSaveSimpleFormDesign();
 			// Create a flow
 			goToFlowManager();
 			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
@@ -268,7 +268,7 @@ public class FormFlowTests extends WebFormsTester {
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
-			getDesigner().createAndSaveSimpleForm();
+			getDesigner().createAndSaveSimpleFormDesign();
 			// Create a flow
 			goToFlowManager();
 			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
@@ -302,7 +302,7 @@ public class FormFlowTests extends WebFormsTester {
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
-			getDesigner().createAndSaveSimpleForm();
+			getDesigner().createAndSaveSimpleFormDesign();
 			// Create a flow
 			goToFlowManager();
 			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
@@ -338,7 +338,7 @@ public class FormFlowTests extends WebFormsTester {
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
-			getDesigner().createAndSaveSimpleForm();
+			getDesigner().createAndSaveSimpleFormDesign();
 			// Create a flow
 			goToFlowManager();
 			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
@@ -364,5 +364,4 @@ public class FormFlowTests extends WebFormsTester {
 			Assert.fail();
 		}
 	}
-
 }
