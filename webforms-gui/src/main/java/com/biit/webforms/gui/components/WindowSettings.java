@@ -81,7 +81,10 @@ public class WindowSettings extends Window {
 								new WindowProceedAction(LanguageCodes.WARNING_CLEAR_CACHE, new AcceptActionListener() {
 									@Override
 									public void acceptAction(WindowAcceptCancel window) {
+										//Remove database cache.
 										formDao.evictAllCache();
+										//Reset Liferay Users pool.
+										WebformsAuthorizationService.getInstance().reset();
 										ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
 										WebformsLogger.info(this.getClass().getName(), "User '"
 												+ UserSessionHandler.getUser().getEmailAddress()
