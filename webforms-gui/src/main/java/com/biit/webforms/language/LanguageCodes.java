@@ -352,12 +352,14 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_VALIDATE_STRUCTURE("caption.validation.structure"),
 	CAPTION_VALIDATE_FLOW("caption.validation.flow"),
 	CAPTION_VALIDATE_ABCD_LINK("caption.validation.abcd.link"),
+	CAPTION_COMPARE_ABCD_LINK("caption.compare.abcd.link"),	
 	
 	TOOLTIP_COMPLETE_VALIDATION("caption.complete.validation"),
 	TOOLTIP_VALIDATE_STRUCTURE("caption.validation.structure"),
 	TOOLTIP_VALIDATE_FLOW("caption.validation.flow"),
 	TOOLTIP_VALIDATE_ABCD_LINK("caption.validation.abcd.link"), 
 	TOOLTIP_VALIDATE_CONDITIONS("tooltip.validate.conditions"),
+	TOOLTIP_COMPARE_ABCD_LINK("tooltip.compare.abcd.link"),
 	
 	MESSAGE_VALIDATION_FINISHED_CORRECTLY("message.validation.finished.correctly"), 
 	MESSAGE_VALIDATION_NO_ABCD_FORMS_LINKED("message.validation.no.abcd.forms.linked"), 

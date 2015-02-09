@@ -77,7 +77,8 @@ public enum ThemeIcons implements IThemeIcon {
 	COMPLETE_VALIDATION("validate.document.svg"),
 	VALIDATE_STRUCTURE("validate.structure.svg"),
 	VALIDATE_FLOW("validate.flow.svg"),
-	VALIDATE_ABCD_LINK("validate.link.svg"), 
+	VALIDATE_ABCD_LINK("validate.link.svg"),
+	COMPARE_ABCD_LINK("form.compare.abcd.svg"),
 	
 	EXPORT_XSD("form.xsd.svg"),
 

@@ -1,33 +1,36 @@
 package com.biit.webforms.validators;
 
-import com.biit.abcd.persistence.entity.Form;
+import com.biit.form.BaseForm;
+import com.biit.form.BaseQuestion;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
-import com.biit.webforms.persistence.entity.Question;
 
 public class QuestionCompatibilityError extends Report {
 
-	public QuestionCompatibilityError(Question question, Form abcdForm, com.biit.abcd.persistence.entity.Question abcdQuestion) {
-		super(ReportLevel.ERROR, generateReport(question,abcdForm,abcdQuestion));
+	public QuestionCompatibilityError(BaseQuestion question1, BaseForm form, BaseQuestion question2) {
+		super(ReportLevel.ERROR, generateReport(question1, form, question2));
 	}
 
-	private static String generateReport(Question question, Form abcdForm, com.biit.abcd.persistence.entity.Question abcdQuestion) {
+	private static String generateReport(BaseQuestion question1, BaseForm form, BaseQuestion question2) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Form '");
-		sb.append(abcdForm.getLabel());
-		sb.append("' Version: ");
-		sb.append(abcdForm.getVersion());
+		sb.append(form.getLabel());
+		sb.append("' Version ");
+		sb.append(form.getVersion());
 		sb.append(" Question '");
-		sb.append(abcdQuestion.getPathName());
-		sb.append("' is not compatible. Type '");
-		sb.append(abcdQuestion.getAnswerType());
-		sb.append("' ");
-		if(abcdQuestion.getAnswerFormat()!=null){
-			sb.append(" Format '");
-			sb.append(abcdQuestion.getAnswerFormat());
+		sb.append(question2.getPathName());
+		sb.append("' is not compatible.");
+		if (question2 instanceof com.biit.abcd.persistence.entity.Question) {
+			sb.append(" '");
+			sb.append(((com.biit.abcd.persistence.entity.Question) question2).getAnswerType());
 			sb.append("' ");
+			if (((com.biit.abcd.persistence.entity.Question) question2).getAnswerFormat() != null) {
+				sb.append(" Format '");
+				sb.append(((com.biit.abcd.persistence.entity.Question) question2).getAnswerFormat());
+				sb.append("' ");
+			}
 		}
-		
+
 		return sb.toString();
 	}
 

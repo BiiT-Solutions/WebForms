@@ -23,6 +23,8 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.webpages.validation.ValidationUpperMenu;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.validators.CompareFormAbcdStructure;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.validators.ValidateFormComplete;
 import com.biit.webforms.validators.ValidateFormFlows;
@@ -119,12 +121,50 @@ public class Validation extends SecuredWebPage {
 				validateAbcdLink();
 			}
 		});
+		upperMenu.addAbcdCompareListener(new ClickListener() {
+			private static final long serialVersionUID = -5210017907012197461L;
 
+			@Override
+			public void buttonClick(ClickEvent event) {
+				compareAbcdForm();
+			}
+		});
 		return upperMenu;
 	}
 
-	protected void validateAbcdLink() {
+	private void compareAbcdForm() {
+		List<Form> linkedForms;
+		try {
+			linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
+					UserSessionHandler.getController().getCompleteFormView());
+			if (linkedForms.isEmpty()) {
+				setNoLinkedFormsMessage();
+			} else {
+				// Select one linked form.
 
+				// Create the report.
+				CompareFormAbcdStructure validator = new CompareFormAbcdStructure(UserSessionHandler
+						.getController().getCompleteFormView());
+				ValidateReport report = new ValidateReport();
+				validator.validate(linkedForms, report);
+				if (report.isValid()) {
+					setLinkedFormsCorrectMessage();
+				} else {
+					setValidationReport(report);
+				}
+			}
+		} catch (UnexpectedDatabaseException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+		} catch (BadAbcdLink e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ABCD_FORM_LINKED_NOT_FOUND);
+		}
+	}
+
+	private void validateAbcdLink() {
 		ValidateBaseForm structureValidator = new ValidateBaseForm();
 		if (structureValidator.validate(UserSessionHandler.getController().getCompleteFormView())) {
 			List<Form> linkedForms;
@@ -146,9 +186,11 @@ public class Validation extends SecuredWebPage {
 					}
 				}
 			} catch (UnexpectedDatabaseException e) {
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
 				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 						LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 			} catch (BadAbcdLink e) {
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
 				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 						LanguageCodes.ERROR_ABCD_FORM_LINKED_NOT_FOUND);
 			}
@@ -157,7 +199,7 @@ public class Validation extends SecuredWebPage {
 		}
 	}
 
-	protected void validateFlow() {
+	private void validateFlow() {
 		ValidateFormStructure structureValidator = new ValidateFormStructure();
 		if (structureValidator.validate(UserSessionHandler.getController().getCompleteFormView())) {
 			ValidateFormFlows validator = new ValidateFormFlows();
@@ -179,7 +221,7 @@ public class Validation extends SecuredWebPage {
 		}
 	}
 
-	protected void validateStructure() {
+	private void validateStructure() {
 		ValidateFormStructure validator = new ValidateFormStructure();
 		ValidateReport report = new ValidateReport();
 		validator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
@@ -190,7 +232,7 @@ public class Validation extends SecuredWebPage {
 		}
 	}
 
-	protected void completeValidation() {
+	private void completeValidation() {
 		ValidateFormComplete validator = new ValidateFormComplete();
 		ValidateReport report = new ValidateReport();
 		validator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
@@ -211,9 +253,11 @@ public class Validation extends SecuredWebPage {
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		} catch (BadAbcdLink e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ABCD_FORM_LINKED_NOT_FOUND);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 
@@ -307,17 +351,11 @@ public class Validation extends SecuredWebPage {
 										((LinkedFormAbcdElementIsBaseQuestionNotBaseGroup) report).getAbcdChild()
 												.getPathName() }));
 			} else if (report instanceof LinkedFormAbcdElementNotFound) {
-				text.append(ServerTranslate
-						.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_ELEMENT_NOT_FOUND,
-								new Object[] {
-										((LinkedFormAbcdElementNotFound) report).getAbcdform()
-												.getLabel(),
-										((LinkedFormAbcdElementNotFound) report).getAbcdform()
-												.getVersion(),
-										((LinkedFormAbcdElementNotFound) report).getAbcdChild()
-												.getPathName(),
-										((LinkedFormAbcdElementNotFound) report).getWebform()
-												.getLabel() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_ELEMENT_NOT_FOUND,
+						new Object[] { ((LinkedFormAbcdElementNotFound) report).getAbcdform().getLabel(),
+								((LinkedFormAbcdElementNotFound) report).getAbcdform().getVersion(),
+								((LinkedFormAbcdElementNotFound) report).getAbcdChild().getPathName(),
+								((LinkedFormAbcdElementNotFound) report).getWebform().getLabel() }));
 			} else if (report instanceof LinkedFormAbcdGroupRepeatableStatusIsDifferent) {
 				text.append(ServerTranslate
 						.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_GROUP_REPEATABLE_STATUS_IS_DIFFERENT,
