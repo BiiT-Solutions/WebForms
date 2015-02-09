@@ -77,7 +77,7 @@ public class LoginTests extends WebFormsTester {
 		loginFormAdmin1();
 		goToBlockManager();
 		getBlockManager().createNewBlock(NEW_BLOCK_NAME);
-		getBlockManager().deleteBlock(0);
+		getBlockManager().deleteBlock();
 		logOut();
 	}
 

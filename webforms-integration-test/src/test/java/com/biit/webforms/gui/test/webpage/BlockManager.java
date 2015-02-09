@@ -1,5 +1,7 @@
 package com.biit.webforms.gui.test.webpage;
 
+import org.openqa.selenium.NoSuchElementException;
+
 import com.biit.gui.tester.VaadinGuiWebpage;
 import com.biit.webforms.gui.test.window.NewBlockWindow;
 import com.vaadin.testbench.elements.ButtonElement;
@@ -36,6 +38,9 @@ public class BlockManager extends VaadinGuiWebpage {
 	}
 
 	public void createNewBlock(String blockName) {
+		if(isBlockAlreadyCreated(blockName)){
+			deleteBlock();
+		}
 		openNewBlockWindow();
 		getNewBlockWindow().createNewBlock(blockName);
 	}
@@ -44,16 +49,25 @@ public class BlockManager extends VaadinGuiWebpage {
 		getNewBlockButton().click();
 	}
 
-	public void deleteBlock(int row) {
+	public void deleteBlock() {
 		getRemoveBlockButton().click();
 		clickAcceptButtonIfExists();
 	}
 
-	public TableElement getFormTable() {
+	public TableElement getBlockTable() {
 		return $(TableElement.class).first();
 	}
-	
-	public void selectBlock(int row){
-		getFormTable().getCell(row, 0).click();
+
+	public void selectBlock(int row) {
+		getBlockTable().getCell(row, 0).click();
+	}
+
+	public boolean isBlockAlreadyCreated(String blockName) {
+		try {
+			getBlockTable().getCell(0, 0).getText().equals(blockName);
+		} catch (NoSuchElementException e) {
+			return false;
+		}
+		return true;
 	}
 }

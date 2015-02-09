@@ -1,6 +1,7 @@
 package com.biit.webforms.gui.test.webpage;
 
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
@@ -81,8 +82,20 @@ public class FormManager extends VaadinGuiWebpage {
 	}
 
 	public void createNewForm(String formName) {
+		if(isFormAlreadyCreated(formName)){
+			deleteForm(1);
+		}
 		openNewFormWindow();
 		getNewFormWindow().createNewForm(formName);
+	}
+	
+	public boolean isFormAlreadyCreated(String formName) {
+		try {
+			getFormTable().getCell(1, 0).getText().equals(formName);
+		} catch (NoSuchElementException e) {
+			return false;
+		}
+		return true;
 	}
 
 	public void createNewFormWithOrganization(String formName, String organizationName)

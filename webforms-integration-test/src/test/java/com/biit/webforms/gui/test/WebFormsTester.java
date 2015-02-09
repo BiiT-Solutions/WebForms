@@ -216,7 +216,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	}
 
 	protected void createNewForm(String formName) {
-		loginFormEdit1();
+		loginFormAdmin1();
 		getFormManager().createNewForm(formName);
 	}
 
@@ -226,7 +226,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	}
 
 	protected void createNewBlock(String blockName) {
-		loginBlockEdit1();
+		loginFormAdmin1();
 		goToBlockManager();
 		getBlockManager().createNewBlock(blockName);
 	}
@@ -250,7 +250,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	protected void deleteBlock() {
 		loginFormAdmin1();
 		goToBlockManager();
-		getBlockManager().deleteBlock(0);
+		getBlockManager().deleteBlock();
 		logOut();
 	}
 

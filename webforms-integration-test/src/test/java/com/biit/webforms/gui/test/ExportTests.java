@@ -20,7 +20,7 @@ public class ExportTests extends WebFormsTester {
 
 	private void generateFormAndFlow() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
@@ -80,13 +80,13 @@ public class ExportTests extends WebFormsTester {
 //		checkCorrectFileGenerationAndFinishTest();
 //	}
 
-//	@Test(groups = "export")
-//	public void exportToJson() {
-//		generateFormAndFlow();
-//		getFormManager().clickExportButton();
-//		getFormManager().clickExportJsonButton();
-//		checkCorrectFileGenerationAndFinishTest();
-//	}
+	@Test(groups = "export")
+	public void exportToJson() {
+		generateFormAndFlow();
+		getFormManager().clickExportButton();
+		getFormManager().clickExportJsonButton();
+		checkCorrectFileGenerationAndFinishTest();
+	}
 
 	// @Test(groups = "export")
 	// public void exportTestXmls() {

@@ -10,10 +10,6 @@ public class FormFlowTests extends WebFormsTester {
 	private static final String QUESTION2_NAME = "Question2";
 	private static final String QUESTION3_NAME = "Question3";
 	private static final String ANSWER1_NAME = "Q1Answer1";
-	private static final String ANSWER2_NAME = "Q1Answer2";
-	private static final String NEW_BLOCK_NAME = "new_block_1";
-	private static final String ORGANIZATION_NAME = "Bii1";
-	private static final String STATUS_FINISHED = "Final Design";
 
 	private static final Integer FIRST_ROW = 0;
 	private static final Integer FIRST_COLUMN = 0;
@@ -28,7 +24,7 @@ public class FormFlowTests extends WebFormsTester {
 	@Test(groups = "formFlow")
 	public void validFormWithEverything() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			goToDesigner();
 			getDesigner().createCompleteFormAndSave();
@@ -47,7 +43,7 @@ public class FormFlowTests extends WebFormsTester {
 	@Test(groups = "formFlow")
 	public void validStartEndFlow() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
@@ -71,7 +67,7 @@ public class FormFlowTests extends WebFormsTester {
 	@Test(groups = "formFlow")
 	public void cloneFlow() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
@@ -100,7 +96,7 @@ public class FormFlowTests extends WebFormsTester {
 	@Test(groups = "formFlow")
 	public void removeFlow() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
@@ -129,7 +125,7 @@ public class FormFlowTests extends WebFormsTester {
 	@Test(groups = "formFlow")
 	public void cleanSimpleFlow() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
@@ -163,7 +159,7 @@ public class FormFlowTests extends WebFormsTester {
 	@Test(groups = "formFlow")
 	public void cleanSimpleOthersFlow() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
@@ -199,7 +195,7 @@ public class FormFlowTests extends WebFormsTester {
 	@Test(groups = "formFlow")
 	public void cleanSimpleOthersFlow2() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
@@ -235,7 +231,7 @@ public class FormFlowTests extends WebFormsTester {
 	// TODO FIX bug in webforms
 	public void createQuestionsFlow() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
@@ -264,7 +260,7 @@ public class FormFlowTests extends WebFormsTester {
 	@Test(groups = "formFlow")
 	public void createQuestionEqualsAnswerFlow() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
@@ -298,7 +294,7 @@ public class FormFlowTests extends WebFormsTester {
 	@Test(groups = "formFlow")
 	public void createQuestionNotEqualsAnswerFlow() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();
@@ -334,7 +330,7 @@ public class FormFlowTests extends WebFormsTester {
 	@Test(groups = "formFlow")
 	public void createAnswersInQuestionFlow() {
 		try {
-			loginFormEdit1();
+			loginFormAdmin1();
 			getFormManager().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesigner();

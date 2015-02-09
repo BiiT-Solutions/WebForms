@@ -79,7 +79,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 					answerFormat.setValue(selectedType.getDefaultAnswerFormat());
 					answerFormat.setEnabled(selectedType.isAnswerFormatEnabled() && !getInstance().isReadOnly());
 				}
-				if (selectedType.getDefaultHorizontal() != null) {
+				if (!selectedType.getDefaultHorizontal()) {
 					horizontal.setValue(selectedType.getDefaultHorizontal());
 					horizontal.setEnabled(selectedType.isHorizontalEnabled());
 				}
@@ -186,7 +186,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		answerSubformat.setValue(getInstance().getAnswerSubformat());
 		
 		horizontal.setValue(getInstance().isHorizontal());
-		horizontal.setEnabled(!getInstance().isReadOnly());
+		horizontal.setEnabled(getInstance().getAnswerType().isHorizontalEnabled() && !getInstance().isReadOnly());
 	}
 
 	@Override
