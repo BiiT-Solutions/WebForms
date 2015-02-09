@@ -11,6 +11,9 @@ public class FormFlowTests extends WebFormsTester {
 	private static final String QUESTION1_NAME = "Question1";
 	private static final String QUESTION2_NAME = "Question2";
 	private static final String QUESTION3_NAME = "Question3";
+	private static final Integer QUESTION1_ROW = 2;
+	private static final Integer QUESTION2_ROW = 3;
+	private static final Integer QUESTION3_ROW = 3;
 	private static final String ANSWER1_NAME = "Q1Answer1";
 
 	private static final Integer FIRST_ROW = 0;
@@ -52,7 +55,7 @@ public class FormFlowTests extends WebFormsTester {
 			getDesigner().createAndSaveSimpleFormDesign();
 			// Edit the flow
 			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
 			getFlowManager().saveFlow();
 			getFlowManager().clickRedrawButton();
 			logOut();
@@ -76,7 +79,7 @@ public class FormFlowTests extends WebFormsTester {
 			getDesigner().createAndSaveSimpleFormDesign();
 			// Edit the flow
 			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
 			getFlowManager().saveFlow();
 			getFlowManager().clickRedrawButton();
 			// Clone rule
@@ -105,7 +108,7 @@ public class FormFlowTests extends WebFormsTester {
 			getDesigner().createAndSaveSimpleFormDesign();
 			// Edit the flow
 			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
 			getFlowManager().saveFlow();
 			getFlowManager().clickRedrawButton();
 			// Clone rule
@@ -133,13 +136,11 @@ public class FormFlowTests extends WebFormsTester {
 		try {
 			getDesigner().createAndSaveSimpleFormDesign();
 		} catch (FieldNotEditableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		// Edit the flow
 		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
 		getFlowManager().saveFlow();
 		getFlowManager().clickRedrawButton();
 		// Clean the rule
@@ -166,13 +167,12 @@ public class FormFlowTests extends WebFormsTester {
 		try {
 			getDesigner().createAndSaveSimpleFormDesign();
 		} catch (FieldNotEditableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		// Create a flow
 		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
 		// Edit the flow (Create the others)
 		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
 		getFlowManager().clickEditRuleButton();
@@ -201,19 +201,18 @@ public class FormFlowTests extends WebFormsTester {
 		try {
 			getDesigner().createAndSaveSimpleFormDesign();
 		} catch (FieldNotEditableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		// Create a flow
 		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION3_NAME);
+		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION3_NAME, QUESTION3_ROW);
 		// Edit the flow (Create the others)
 		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
 		getFlowManager().clickEditRuleButton();
 		getFlowManager().getFlowRuleWindow().clickOthersCheckBox();
 		getFlowManager().getFlowRuleWindow().clickAcceptButton();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
 		// Clean the rule
 		getFlowManager().clickCleanFlowButton();
 		getFlowManager().clickRedrawButton();
@@ -237,8 +236,8 @@ public class FormFlowTests extends WebFormsTester {
 			getDesigner().createAndSaveSimpleFormDesign();
 			// Create a flow
 			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-			getFlowManager().createSimpleFlowRule(QUESTION2_NAME, QUESTION3_NAME);
+			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
+			getFlowManager().createSimpleFlowRule(QUESTION2_NAME, QUESTION2_ROW, QUESTION3_NAME, QUESTION3_ROW);
 			// Clean the rule
 			getFlowManager().clickRedrawButton();
 			if (isHeadlessTesting()) {
@@ -265,13 +264,12 @@ public class FormFlowTests extends WebFormsTester {
 		try {
 			getDesigner().createAndSaveSimpleFormDesign();
 		} catch (FieldNotEditableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		// Create a flow
 		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
 		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
 		getFlowManager().clickEditRuleButton();
 		// Add the question == answer condition
@@ -298,13 +296,12 @@ public class FormFlowTests extends WebFormsTester {
 		try {
 			getDesigner().createAndSaveSimpleFormDesign();
 		} catch (FieldNotEditableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		// Create a flow
 		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
 		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
 		getFlowManager().clickEditRuleButton();
 		// Add the question != answer condition
@@ -333,12 +330,11 @@ public class FormFlowTests extends WebFormsTester {
 		try {
 			getDesigner().createAndSaveSimpleFormDesign();
 		} catch (FieldNotEditableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// Create a flow
 		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
 		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
 		getFlowManager().clickEditRuleButton();
 		// Add the question IN [answer1 answer2] condition

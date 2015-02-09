@@ -1,13 +1,9 @@
 package com.biit.webforms.gui.test.window;
 
-import java.util.List;
-
 import com.biit.gui.tester.VaadinGuiWindow;
 import com.vaadin.testbench.elements.ButtonElement;
-import com.vaadin.testbench.elements.CssLayoutElement;
 import com.vaadin.testbench.elements.CustomComponentElement;
 import com.vaadin.testbench.elements.HorizontalLayoutElement;
-import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 import com.vaadin.testbench.elements.TreeTableElement;
 import com.vaadin.testbench.elements.VerticalLayoutElement;
@@ -51,16 +47,22 @@ public class SelectFormElementWindow extends VaadinGuiWindow {
 		getSearchField().sendKeys(elementName);
 	}
 
-	public void selectElementInTable(String elementName) {
-		List<LabelElement> labels = $$(WindowElement.class).caption(WINDOW_CAPTION).$$(VerticalLayoutElement.class)
-				.$$(CustomComponentElement.class).$$(VerticalLayoutElement.class).$$(TreeTableElement.class)
-				.$$(CustomComponentElement.class).$$(CssLayoutElement.class).$$(LabelElement.class).all();
-		for (LabelElement label : labels) {
-			if(label.getText().equals(elementName)){
-				label.click();
-				break;
-			}
-		}
-	}
+	// public void selectElementInTable(String elementName) {
+	// List<LabelElement> labels =
+	// $$(WindowElement.class).caption(WINDOW_CAPTION).$$(VerticalLayoutElement.class)
+	// .$$(CustomComponentElement.class).$$(VerticalLayoutElement.class).$$(TreeTableElement.class)
+	// .$$(CustomComponentElement.class).$$(CssLayoutElement.class).$$(LabelElement.class).all();
+	// for (LabelElement label : labels) {
+	// if (label.getText().equals(elementName)) {
+	// label.click();
+	// break;
+	// }
+	// }
+	// }
 
+	public void selectElementInTable(Integer row) {
+		$$(WindowElement.class).caption(WINDOW_CAPTION).$$(VerticalLayoutElement.class)
+				.$$(CustomComponentElement.class).$$(VerticalLayoutElement.class).$$(TreeTableElement.class).first()
+				.getCell(row, 0).click();
+	}
 }

@@ -85,6 +85,27 @@ public class FlowManager extends VaadinGuiWebpage {
 		return $(ImageElement.class).first();
 	}
 
+	// /**
+	// * Creates a simple rule from A to B.<br>
+	// * Nodes used here must be defined previously in the designer.
+	// *
+	// * @param startNodeName
+	// * @param endNodeName
+	// */
+	// public void createSimpleFlowRule(String startNodeName, String
+	// endNodeName) {
+	// clickNewRuleButton();
+	// getFlowRuleWindow().clickFromButton();
+	// getSelectFormElementWindow().searchForElement(startNodeName);
+	// getSelectFormElementWindow().selectElementInTable(startNodeName);
+	// getSelectFormElementWindow().clickAccceptButton();
+	// getFlowRuleWindow().clickToButton();
+	// getSelectFormElementWindow().searchForElement(endNodeName);
+	// getSelectFormElementWindow().selectElementInTable(endNodeName);
+	// getSelectFormElementWindow().clickAccceptButton();
+	// getFlowRuleWindow().clickAcceptButton();
+	// }
+	
 	/**
 	 * Creates a simple rule from A to B.<br>
 	 * Nodes used here must be defined previously in the designer.
@@ -92,15 +113,15 @@ public class FlowManager extends VaadinGuiWebpage {
 	 * @param startNodeName
 	 * @param endNodeName
 	 */
-	public void createSimpleFlowRule(String startNodeName, String endNodeName) {
+	public void createSimpleFlowRule(String startNodeName, Integer startNodeRow, String endNodeName, Integer endNodeRow) {
 		clickNewRuleButton();
 		getFlowRuleWindow().clickFromButton();
 		getSelectFormElementWindow().searchForElement(startNodeName);
-		getSelectFormElementWindow().selectElementInTable(startNodeName);
+		getSelectFormElementWindow().selectElementInTable(startNodeRow);
 		getSelectFormElementWindow().clickAccceptButton();
 		getFlowRuleWindow().clickToButton();
 		getSelectFormElementWindow().searchForElement(endNodeName);
-		getSelectFormElementWindow().selectElementInTable(endNodeName);
+		getSelectFormElementWindow().selectElementInTable(endNodeRow);
 		getSelectFormElementWindow().clickAccceptButton();
 		getFlowRuleWindow().clickAcceptButton();
 	}

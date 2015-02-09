@@ -11,6 +11,8 @@ public class ExportTests extends WebFormsTester {
 	private static final String NEW_FORM_NAME = "new_form_1";
 	private static final String QUESTION1_NAME = "Question1";
 	private static final String QUESTION2_NAME = "Question2";
+	private static final Integer QUESTION1_ROW = 2;
+	private static final Integer QUESTION2_ROW = 3;
 	private static final String ANSWER1_NAME = "Q1Answer1";
 
 	private static final Integer FIRST_ROW = 0;
@@ -27,7 +29,7 @@ public class ExportTests extends WebFormsTester {
 			getDesigner().createAndSaveSimpleFormDesign();
 			// Create a flow
 			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
 			getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
 			getFlowManager().clickEditRuleButton();
 			// Add the question IN [answer1 answer2] condition
