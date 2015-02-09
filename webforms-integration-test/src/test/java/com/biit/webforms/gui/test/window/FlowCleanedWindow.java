@@ -14,6 +14,6 @@ public class FlowCleanedWindow extends VaadinGuiWindow {
 	}
 	
 	public void clickCloseButton(){
-		$(ButtonElement.class).caption(CLOSE_BUTTON_CAPTION).first().click();;
+		$(ButtonElement.class).caption(CLOSE_BUTTON_CAPTION).first().click();
 	}
 }

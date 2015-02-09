@@ -72,13 +72,13 @@ public class ExportTests extends WebFormsTester {
 		checkCorrectFileGenerationAndFinishTest();
 	}
 
-//	@Test(groups = "export")
-//	public void exportToXsd() {
-//		generateFormAndFlow();
-//		getFormManager().clickExportButton();
-//		getFormManager().clickExportXsdButton();
-//		checkCorrectFileGenerationAndFinishTest();
-//	}
+	@Test(groups = "export")
+	public void exportToXsd() {
+		generateFormAndFlow();
+		getFormManager().clickExportButton();
+		getFormManager().clickExportXsdButton();
+		checkCorrectFileGenerationAndFinishTest();
+	}
 
 	@Test(groups = "export")
 	public void exportToJson() {
@@ -88,20 +88,21 @@ public class ExportTests extends WebFormsTester {
 		checkCorrectFileGenerationAndFinishTest();
 	}
 
-	// @Test(groups = "export")
-	// public void exportTestXmls() {
-	// try {
-	// generateFormAndFlow();
-	// getFormManager().clickExportButton();
-	// getFormManager().clickExportTestXmlsButton();
-	// getFormManager().getTestXmlWindow().clickAcceptButton();
-	// getFormManager().getDownloadWindow().checkCorrectFileGeneration();
-	// getFormManager().getDownloadWindow().closeWindow();
-	// getFormManager().getTestXmlWindow().closeWindow();
-	// logOut();
-	// deleteForm();
-	// } catch (IncorrectFileGenerationException e) {
-	// Assert.fail();
-	// }
-	// }
+	@Test(groups = "export")
+	public void exportTestXmls() {
+		try {
+			generateFormAndFlow();
+			getFormManager().clickExportButton();
+			getFormManager().clickExportTestXmlsButton();
+			getFormManager().getTestXmlWindow().clickAcceptButton();
+			getFormManager().getDownloadWindow().checkCorrectFileGeneration();
+			getFormManager().getDownloadWindow().closeWindow();
+			getFormManager().getTestXmlWindow().closeWindow();
+			logOut();
+			deleteForm();
+		} catch (IncorrectFileGenerationException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
 }
