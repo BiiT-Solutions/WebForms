@@ -379,7 +379,10 @@ public class FormManager extends SecuredWebPage {
 		if (form != null) {
 			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
 					UserSessionHandler.getUser(), form.getOrganizationId());
-			OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization, true);
+			if (!OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization, true)) {
+				// If xforms is not generated, close the popup.
+				// ((OrbeonPreviewFrame) upperMenu.getOpener().getUI()).closePopUp();
+			}
 		}
 	}
 

@@ -84,6 +84,12 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 				if (!answerType.isChildrenAllowed()) {
 					getChildren().clear();
 				}
+				// Dropdown list does not allow subanswers.
+				if (!answerType.isSubChildrenAllowed()) {
+					for (TreeObject child : getChildren()) {
+						child.getChildren().clear();
+					}
+				}
 			}
 			if (!answerType.isHorizontalEnabled()) {
 				horizontal = answerType.getDefaultHorizontal();
@@ -266,7 +272,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	public int exportToJavaCode(StringBuilder sb, int counter) {
 		String idName = "el_" + counter;
-		
+
 		sb.append("Question ").append(idName).append("  = new Question();").append(System.lineSeparator());
 		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
 		sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
@@ -298,16 +304,20 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE);").append(System.lineSeparator());
 				break;
 			case DATE_BIRTHDAY:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_BIRTHDAY);").append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_BIRTHDAY);")
+						.append(System.lineSeparator());
 				break;
 			case DATE_FUTURE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_FUTURE);").append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_FUTURE);")
+						.append(System.lineSeparator());
 				break;
 			case DATE_PAST:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PAST);").append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PAST);")
+						.append(System.lineSeparator());
 				break;
 			case DATE_PERIOD:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PERIOD);").append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PERIOD);")
+						.append(System.lineSeparator());
 				break;
 			case EMAIL:
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.EMAIL);").append(System.lineSeparator());
@@ -325,7 +335,8 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.PHONE);").append(System.lineSeparator());
 				break;
 			case POSTAL_CODE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSTAL_CODE);").append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSTAL_CODE);")
+						.append(System.lineSeparator());
 				break;
 			case TEXT:
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.TEXT);").append(System.lineSeparator());
@@ -336,16 +347,18 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			sb.append(idName).append(".setAnswerType(AnswerType.MULTIPLE_SELECTION);").append(System.lineSeparator());
 			break;
 		case SINGLE_SELECTION_LIST:
-			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_LIST);").append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_LIST);")
+					.append(System.lineSeparator());
 			break;
 		case SINGLE_SELECTION_RADIO:
-			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_RADIO);").append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_RADIO);")
+					.append(System.lineSeparator());
 			break;
 		case TEXT_AREA:
 			sb.append(idName).append(".setAnswerType(AnswerType.TEXT_AREA);").append(System.lineSeparator());
 			break;
 		}
-		
+
 		if (isHorizontal()) {
 			sb.append(idName).append(".setHorizontal(true);").append(System.lineSeparator());
 		} else {
@@ -356,19 +369,19 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		} else {
 			sb.append(idName).append(".setMandatory(false);").append(System.lineSeparator());
 		}
-		
-		
+
 		int currentCounter = counter;
 		for (TreeObject child : getChildren()) {
-			int tempCounter = currentCounter+1;
+			int tempCounter = currentCounter + 1;
 			currentCounter = ((Answer) child).exportToJavaCode(sb, currentCounter + 1);
 			sb.append("//ques").append(System.lineSeparator());
-			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
+			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");")
+					.append(System.lineSeparator());
 		}
-		
+
 		return currentCounter;
 	}
-	
+
 	/**
 	 * Compares the content of treeObject - Needs to be an instance of Question
 	 * 
@@ -377,21 +390,21 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	 */
 	public boolean isContentEqual(TreeObject treeObject) {
 		if (treeObject instanceof Question) {
-			if(super.isContentEqual(treeObject)){
+			if (super.isContentEqual(treeObject)) {
 				Question question = (Question) treeObject;
-				if(this.getAnswerType()!=question.getAnswerType()){
+				if (this.getAnswerType() != question.getAnswerType()) {
 					return false;
 				}
-				if(this.getAnswerFormat()!=question.getAnswerFormat()){
+				if (this.getAnswerFormat() != question.getAnswerFormat()) {
 					return false;
 				}
-				if(this.getAnswerSubformat()!=question.getAnswerSubformat()){
+				if (this.getAnswerSubformat() != question.getAnswerSubformat()) {
 					return false;
 				}
-				if(this.isMandatory()!=question.isMandatory()){
+				if (this.isMandatory() != question.isMandatory()) {
 					return false;
 				}
-				if(this.isHorizontal()!=question.isHorizontal()){
+				if (this.isHorizontal() != question.isHorizontal()) {
 					return false;
 				}
 				return true;

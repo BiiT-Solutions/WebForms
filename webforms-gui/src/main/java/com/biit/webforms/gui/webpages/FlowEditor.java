@@ -36,6 +36,7 @@ import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.gui.webpages.floweditor.listeners.EditItemAction;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
@@ -351,8 +352,13 @@ public class FlowEditor extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				try {
 					UserSessionHandler.getController().saveForm();
-					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE,
-							LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
+					if (UserSessionHandler.getController().getFormInUse() instanceof Block) {
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
+								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
+					} else {
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE,
+								LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
+					}
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);

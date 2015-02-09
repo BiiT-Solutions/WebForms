@@ -158,8 +158,13 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				try {
 					UserSessionHandler.getController().saveForm();
-					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE,
-							LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
+					if (UserSessionHandler.getController().getFormInUse() instanceof Block) {
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
+								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
+					} else {
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE,
+								LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
+					}
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
@@ -553,8 +558,13 @@ public class Designer extends SecuredWebPage {
 							newBlockWindow.getOrganization().getOrganizationId());
 					newBlockWindow.close();
 
-					MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_CAPTION_SAVE,
-							LanguageCodes.INFO_MESSAGE_DESCRIPTION_SAVE);
+					if (UserSessionHandler.getController().getFormInUse() instanceof Block) {
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
+								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
+					} else {
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE,
+								LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
+					}
 
 				} catch (FieldTooLongException e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);

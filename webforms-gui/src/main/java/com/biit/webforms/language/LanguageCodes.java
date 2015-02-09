@@ -258,8 +258,10 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	VALIDATE_FORM("validate.form"),
 	
-	INFO_MESSAGE_CAPTION_SAVE("info.message.caption.save"),
-	INFO_MESSAGE_DESCRIPTION_SAVE("info.message.description.save"),
+	INFO_MESSAGE_FORM_CAPTION_SAVE("info.message.form.caption.save"),
+	INFO_MESSAGE_FORM_DESCRIPTION_SAVE("info.message.form.description.save"),
+	INFO_MESSAGE_BLOCK_CAPTION_SAVE("info.message.block.caption.save"),
+	INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE("info.message.block.description.save"),
 	INFO_MESSAGE_FORM_IS_READ_ONLY("info.message.form.is.read.only"),
 	
 	TEXT_PROCEED_FORM_CLOSE("text.proceed.form.close"),
