@@ -3,11 +3,12 @@
 	<test name="WebFormsTest" enabled="true" preserve-order="true">
 		<groups>
 			<run>
-				<exclude name="login" />
-				<exclude name="basicFunctionality" />
-				<exclude name="formBlockDesign" />
+				<include name="login" />
+				<include name="basicFunctionality" />
+				<include name="formBlockDesign" />
 				<include name="formFlow" />
-				<exclude name="export" />
+				<include name="export" />
+				<include name="impactAnalysis" />
 			</run>
 		</groups>
 		<classes>
@@ -16,6 +17,7 @@
 			<class name="com.biit.webforms.gui.test.FormBlockDesignTests" />
 			<class name="com.biit.webforms.gui.test.FormFlowTests" />
 			<class name="com.biit.webforms.gui.test.ExportTests" />
+			<class name="com.biit.webforms.gui.test.ImpactAnalysisTests" />
 		</classes>
 	</test>
 </suite>

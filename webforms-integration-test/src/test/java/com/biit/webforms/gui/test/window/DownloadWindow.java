@@ -13,7 +13,8 @@ public class DownloadWindow extends VaadinGuiWindow {
 	public static final String DOWNLOAD_BUTTON_CAPTION = "Download file";
 	public static final String FILE_GENERATION_SUCESSFUL_LABEL = "The file has been generated successfully!";
 	public static final String WINDOW_CAPTION = "Download file.";
-	public static final Integer SLEEP_TIME = 1000;
+	public static final Integer SLEEP_TIME = 2000;
+	private static final String WINDOW_CLOSE_BUTTON_CLASS_NAME = "v-window-closebox";
 
 	private boolean isDownloadMessageCorrect() {
 		if ($(LabelElement.class).exists()
@@ -50,7 +51,7 @@ public class DownloadWindow extends VaadinGuiWindow {
 	}
 
 	public void closeWindow() {
-		$$(WindowElement.class).caption(WINDOW_CAPTION).first().findElement(By.className("v-window-closebox")).click();
+		$$(WindowElement.class).caption(WINDOW_CAPTION).first().findElement(By.className(WINDOW_CLOSE_BUTTON_CLASS_NAME)).click();
 	}
 
 }
