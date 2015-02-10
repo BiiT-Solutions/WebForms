@@ -1,5 +1,7 @@
 package com.biit.webforms.gui.test.window;
 
+import org.junit.Assert;
+
 import com.biit.gui.tester.VaadinGuiWindow;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.CustomComponentElement;
@@ -36,6 +38,7 @@ public class SelectFormElementWindow extends VaadinGuiWindow {
 	}
 
 	public void clickAccceptButton() {
+		Assert.assertTrue(getAcceptButton().isEnabled());
 		getAcceptButton().click();
 	}
 
@@ -61,8 +64,12 @@ public class SelectFormElementWindow extends VaadinGuiWindow {
 	// }
 
 	public void selectElementInTable(Integer row) {
-		$$(WindowElement.class).caption(WINDOW_CAPTION).$$(VerticalLayoutElement.class)
-				.$$(CustomComponentElement.class).$$(VerticalLayoutElement.class).$$(TreeTableElement.class).first()
-				.getCell(row, 0).click();
+		// $$(WindowElement.class).caption(WINDOW_CAPTION).first().sendKeys(Keys.TAB);
+		// for(int i=0; i<row; i++){
+		// $$(WindowElement.class).caption(WINDOW_CAPTION).first().sendKeys(Keys.ARROW_DOWN);
+		// }
+		System.out.println(row);
+		$(WindowElement.class).caption(WINDOW_CAPTION).$$(TreeTableElement.class).first()
+				.getCell(row, 1).click();
 	}
 }

@@ -3,10 +3,10 @@
 	<test name="WebFormsTest" enabled="true" preserve-order="true">
 		<groups>
 			<run>
-				<exclude name="login" />
-				<exclude name="basicFunctionality" />
-				<exclude name="formBlockDesign" />
-				<include name="formFlow" />
+				<include name="login" />
+				<include name="basicFunctionality" />
+				<include name="formBlockDesign" />
+				<exclude name="formFlow" />
 				<exclude name="export" />
 			</run>
 		</groups>

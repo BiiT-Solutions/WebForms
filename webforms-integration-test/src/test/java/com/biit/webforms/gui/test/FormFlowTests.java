@@ -1,6 +1,5 @@
 package com.biit.webforms.gui.test;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.biit.webforms.gui.test.exceptions.FieldNotEditableException;
@@ -26,106 +25,106 @@ public class FormFlowTests extends WebFormsTester {
 
 	private static final String VALID_FLOW_TAG = "Valid";
 
-	@Test(groups = "formFlow")
-	public void validFormWithEverything() {
-		try {
-			loginFormAdmin1();
-			getFormManager().createNewForm(NEW_FORM_NAME);
-			goToDesigner();
-			getDesigner().createCompleteFormAndSave();
-			logOut();
-			// Test finished
-			// We need to delete the form created for the test, so the database
-			// is clean for the next tests
-			deleteForm();
-		} catch (Exception e) {
-			e.printStackTrace();
-			// If any unexpected exception is thrown the test should fail
-			Assert.fail();
-		}
-	}
-
-	@Test(groups = "formFlow")
-	public void validStartEndFlow() {
-		try {
-			loginFormAdmin1();
-			getFormManager().createNewForm(NEW_FORM_NAME);
-			// Create a couple of categories and questions
-			goToDesigner();
-			getDesigner().createAndSaveSimpleFormDesign();
-			// Edit the flow
-			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
-			getFlowManager().saveFlow();
-			getFlowManager().clickRedrawButton();
-			logOut();
-			// Delete the form created for the test
-			deleteForm();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			// If any unexpected exception is thrown the test should fail
-			Assert.fail();
-		}
-	}
-
-	@Test(groups = "formFlow")
-	public void cloneFlow() {
-		try {
-			loginFormAdmin1();
-			getFormManager().createNewForm(NEW_FORM_NAME);
-			// Create a couple of categories and questions
-			goToDesigner();
-			getDesigner().createAndSaveSimpleFormDesign();
-			// Edit the flow
-			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
-			getFlowManager().saveFlow();
-			getFlowManager().clickRedrawButton();
-			// Clone rule
-			getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-			getFlowManager().clickCloneButton();
-			getFlowManager().saveFlow();
-			getFlowManager().clickRedrawButton();
-			logOut();
-			// Delete the form created for the test
-			deleteForm();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			// If any unexpected exception is thrown the test should fail
-			Assert.fail();
-		}
-	}
-
-	@Test(groups = "formFlow")
-	public void removeFlow() {
-		try {
-			loginFormAdmin1();
-			getFormManager().createNewForm(NEW_FORM_NAME);
-			// Create a couple of categories and questions
-			goToDesigner();
-			getDesigner().createAndSaveSimpleFormDesign();
-			// Edit the flow
-			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
-			getFlowManager().saveFlow();
-			getFlowManager().clickRedrawButton();
-			// Clone rule
-			getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-			getFlowManager().clickRemoveButton();
-			getFlowManager().saveFlow();
-			getFlowManager().clickRedrawButton();
-			logOut();
-			// Delete the form created for the test
-			deleteForm();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			// If any unexpected exception is thrown the test should fail
-			Assert.fail();
-		}
-	}
+//	@Test(groups = "formFlow")
+//	public void validFormWithEverything() {
+//		try {
+//			loginFormAdmin1();
+//			getFormManager().createNewForm(NEW_FORM_NAME);
+//			goToDesigner();
+//			getDesigner().createCompleteFormAndSave();
+//			logOut();
+//			// Test finished
+//			// We need to delete the form created for the test, so the database
+//			// is clean for the next tests
+//			deleteForm();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			// If any unexpected exception is thrown the test should fail
+//			Assert.fail();
+//		}
+//	}
+//
+//	@Test(groups = "formFlow")
+//	public void validStartEndFlow() {
+//		try {
+//			loginFormAdmin1();
+//			getFormManager().createNewForm(NEW_FORM_NAME);
+//			// Create a couple of categories and questions
+//			goToDesigner();
+//			getDesigner().createAndSaveSimpleFormDesign();
+//			// Edit the flow
+//			goToFlowManager();
+//			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
+//			getFlowManager().saveFlow();
+//			getFlowManager().clickRedrawButton();
+//			logOut();
+//			// Delete the form created for the test
+//			deleteForm();
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			// If any unexpected exception is thrown the test should fail
+//			Assert.fail();
+//		}
+//	}
+//
+//	@Test(groups = "formFlow")
+//	public void cloneFlow() {
+//		try {
+//			loginFormAdmin1();
+//			getFormManager().createNewForm(NEW_FORM_NAME);
+//			// Create a couple of categories and questions
+//			goToDesigner();
+//			getDesigner().createAndSaveSimpleFormDesign();
+//			// Edit the flow
+//			goToFlowManager();
+//			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
+//			getFlowManager().saveFlow();
+//			getFlowManager().clickRedrawButton();
+//			// Clone rule
+//			getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+//			getFlowManager().clickCloneButton();
+//			getFlowManager().saveFlow();
+//			getFlowManager().clickRedrawButton();
+//			logOut();
+//			// Delete the form created for the test
+//			deleteForm();
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			// If any unexpected exception is thrown the test should fail
+//			Assert.fail();
+//		}
+//	}
+//
+//	@Test(groups = "formFlow")
+//	public void removeFlow() {
+//		try {
+//			loginFormAdmin1();
+//			getFormManager().createNewForm(NEW_FORM_NAME);
+//			// Create a couple of categories and questions
+//			goToDesigner();
+//			getDesigner().createAndSaveSimpleFormDesign();
+//			// Edit the flow
+//			goToFlowManager();
+//			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
+//			getFlowManager().saveFlow();
+//			getFlowManager().clickRedrawButton();
+//			// Clone rule
+//			getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+//			getFlowManager().clickRemoveButton();
+//			getFlowManager().saveFlow();
+//			getFlowManager().clickRedrawButton();
+//			logOut();
+//			// Delete the form created for the test
+//			deleteForm();
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			// If any unexpected exception is thrown the test should fail
+//			Assert.fail();
+//		}
+//	}
 
 	@Test(groups = "formFlow")
 	public void cleanSimpleFlow() {
@@ -158,197 +157,213 @@ public class FormFlowTests extends WebFormsTester {
 		deleteForm();
 	}
 
-	@Test(groups = "formFlow")
-	public void cleanSimpleOthersFlow() {
-		loginFormAdmin1();
-		getFormManager().createNewForm(NEW_FORM_NAME);
-		// Create a couple of categories and questions
-		goToDesigner();
-		try {
-			getDesigner().createAndSaveSimpleFormDesign();
-		} catch (FieldNotEditableException e) {
-			e.printStackTrace();
-		}
-
-		// Create a flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
-		// Edit the flow (Create the others)
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickEditRuleButton();
-		getFlowManager().getFlowRuleWindow().clickOthersCheckBox();
-		getFlowManager().getFlowRuleWindow().clickAcceptButton();
-		getFlowManager().saveFlow();
-		getFlowManager().clickRedrawButton();
-		if (isHeadlessTesting()) {
-			takeScreenshot(CLEAN_SIMPLE_OTHERS_FLOW_TEST_SCREENSHOT);
-		}
-		// Clean the rule
-		getFlowManager().clickCleanFlowButton();
-		getFlowManager().getFlowCleanedWindow().clickCloseButton();
-		getFlowManager().saveFlow();
-		logOut();
-		// Delete the form created for the test
-		deleteForm();
-	}
-
-	@Test(groups = "formFlow")
-	public void cleanSimpleOthersFlow2() {
-		loginFormAdmin1();
-		getFormManager().createNewForm(NEW_FORM_NAME);
-		// Create a couple of categories and questions
-		goToDesigner();
-		try {
-			getDesigner().createAndSaveSimpleFormDesign();
-		} catch (FieldNotEditableException e) {
-			e.printStackTrace();
-		}
-
-		// Create a flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION3_NAME, QUESTION3_ROW);
-		// Edit the flow (Create the others)
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickEditRuleButton();
-		getFlowManager().getFlowRuleWindow().clickOthersCheckBox();
-		getFlowManager().getFlowRuleWindow().clickAcceptButton();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
-		// Clean the rule
-		getFlowManager().clickCleanFlowButton();
-		getFlowManager().clickRedrawButton();
-		if (isHeadlessTesting()) {
-			takeScreenshot(CLEAN_SIMPLE_OTHERS_FLOW_2_TEST_SCREENSHOT);
-		}
-		checkNotificationIsHumanized(getNotification());
-		getFlowManager().saveFlow();
-		logOut();
-		// Delete the form created for the test
-		deleteForm();
-	}
-
-	// TODO FIX bug in webforms
-	public void createQuestionsFlow() {
-		try {
-			loginFormAdmin1();
-			getFormManager().createNewForm(NEW_FORM_NAME);
-			// Create a couple of categories and questions
-			goToDesigner();
-			getDesigner().createAndSaveSimpleFormDesign();
-			// Create a flow
-			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
-			getFlowManager().createSimpleFlowRule(QUESTION2_NAME, QUESTION2_ROW, QUESTION3_NAME, QUESTION3_ROW);
-			// Clean the rule
-			getFlowManager().clickRedrawButton();
-			if (isHeadlessTesting()) {
-				takeScreenshot(CLEAN_SIMPLE_OTHERS_FLOW_2_TEST_SCREENSHOT);
-			}
-			getFlowManager().saveFlow();
-			logOut();
-			// Delete the form created for the test
-			deleteForm();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			// If any unexpected exception is thrown the test should fail
-			Assert.fail();
-		}
-	}
-
-	@Test(groups = "formFlow")
-	public void createQuestionEqualsAnswerFlow() {
-		loginFormAdmin1();
-		getFormManager().createNewForm(NEW_FORM_NAME);
-		// Create a couple of categories and questions
-		goToDesigner();
-		try {
-			getDesigner().createAndSaveSimpleFormDesign();
-		} catch (FieldNotEditableException e) {
-			e.printStackTrace();
-		}
-
-		// Create a flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickEditRuleButton();
-		// Add the question == answer condition
-		getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
-		getFlowManager().getFlowRuleWindow().selectElementInTreeTable(ANSWER1_NAME);
-		getFlowManager().getFlowRuleWindow().clickEqualsButton();
-		Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
-		getFlowManager().getFlowRuleWindow().clickAcceptButton();
-		// Redraw the graph
-		getFlowManager().clickRedrawButton();
-		takeScreenshot(QUESTION_EQUALS_ANSWER_FLOW_TEST_SCREENSHOT);
-		getFlowManager().saveFlow();
-		logOut();
-		// Delete the form created for the test
-		deleteForm();
-	}
-
-	@Test(groups = "formFlow")
-	public void createQuestionNotEqualsAnswerFlow() {
-		loginFormAdmin1();
-		getFormManager().createNewForm(NEW_FORM_NAME);
-		// Create a couple of categories and questions
-		goToDesigner();
-		try {
-			getDesigner().createAndSaveSimpleFormDesign();
-		} catch (FieldNotEditableException e) {
-			e.printStackTrace();
-		}
-
-		// Create a flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickEditRuleButton();
-		// Add the question != answer condition
-		getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
-		getFlowManager().getFlowRuleWindow().selectElementInTreeTable(ANSWER1_NAME);
-		getFlowManager().getFlowRuleWindow().clickNotEqualsButton();
-		Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
-		getFlowManager().getFlowRuleWindow().clickAcceptButton();
-		// Redraw the graph
-		getFlowManager().clickRedrawButton();
-		if (isHeadlessTesting()) {
-			takeScreenshot(QUESTION_NOT_EQUALS_ANSWER_FLOW_TEST_SCREENSHOT);
-		}
-		getFlowManager().saveFlow();
-		logOut();
-		// Delete the form created for the test
-		deleteForm();
-	}
-
-	@Test(groups = "formFlow")
-	public void createAnswersInQuestionFlow() {
-		loginFormAdmin1();
-		getFormManager().createNewForm(NEW_FORM_NAME);
-		// Create a couple of categories and questions
-		goToDesigner();
-		try {
-			getDesigner().createAndSaveSimpleFormDesign();
-		} catch (FieldNotEditableException e) {
-			e.printStackTrace();
-		}
-		// Create a flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW, QUESTION2_NAME, QUESTION2_ROW);
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickEditRuleButton();
-		// Add the question IN [answer1 answer2] condition
-		getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
-		getFlowManager().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
-		getFlowManager().getFlowRuleWindow().clickInButton();
-		Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
-		getFlowManager().getFlowRuleWindow().clickAcceptButton();
-		// Redraw the graph
-		getFlowManager().clickRedrawButton();
-		takeScreenshot(QUESTION_NOT_EQUALS_ANSWER_FLOW_TEST_SCREENSHOT);
-		getFlowManager().saveFlow();
-		logOut();
-		// Delete the form created for the test
-		deleteForm();
-	}
+	// @Test(groups = "formFlow")
+	// public void cleanSimpleOthersFlow() {
+	// loginFormAdmin1();
+	// getFormManager().createNewForm(NEW_FORM_NAME);
+	// // Create a couple of categories and questions
+	// goToDesigner();
+	// try {
+	// getDesigner().createAndSaveSimpleFormDesign();
+	// } catch (FieldNotEditableException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// // Create a flow
+	// goToFlowManager();
+	// getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW,
+	// QUESTION2_NAME, QUESTION2_ROW);
+	// // Edit the flow (Create the others)
+	// getFlowManager().getFlowRulesTable().getCell(FIRST_ROW,
+	// FIRST_COLUMN).click();
+	// getFlowManager().clickEditRuleButton();
+	// getFlowManager().getFlowRuleWindow().clickOthersCheckBox();
+	// getFlowManager().getFlowRuleWindow().clickAcceptButton();
+	// getFlowManager().saveFlow();
+	// getFlowManager().clickRedrawButton();
+	// if (isHeadlessTesting()) {
+	// takeScreenshot(CLEAN_SIMPLE_OTHERS_FLOW_TEST_SCREENSHOT);
+	// }
+	// // Clean the rule
+	// getFlowManager().clickCleanFlowButton();
+	// getFlowManager().getFlowCleanedWindow().clickCloseButton();
+	// getFlowManager().saveFlow();
+	// logOut();
+	// // Delete the form created for the test
+	// deleteForm();
+	// }
+	//
+	// @Test(groups = "formFlow")
+	// public void cleanSimpleOthersFlow2() {
+	// loginFormAdmin1();
+	// getFormManager().createNewForm(NEW_FORM_NAME);
+	// // Create a couple of categories and questions
+	// goToDesigner();
+	// try {
+	// getDesigner().createAndSaveSimpleFormDesign();
+	// } catch (FieldNotEditableException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// // Create a flow
+	// goToFlowManager();
+	// getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW,
+	// QUESTION3_NAME, QUESTION3_ROW);
+	// // Edit the flow (Create the others)
+	// getFlowManager().getFlowRulesTable().getCell(FIRST_ROW,
+	// FIRST_COLUMN).click();
+	// getFlowManager().clickEditRuleButton();
+	// getFlowManager().getFlowRuleWindow().clickOthersCheckBox();
+	// getFlowManager().getFlowRuleWindow().clickAcceptButton();
+	// getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW,
+	// QUESTION2_NAME, QUESTION2_ROW);
+	// // Clean the rule
+	// getFlowManager().clickCleanFlowButton();
+	// getFlowManager().clickRedrawButton();
+	// if (isHeadlessTesting()) {
+	// takeScreenshot(CLEAN_SIMPLE_OTHERS_FLOW_2_TEST_SCREENSHOT);
+	// }
+	// checkNotificationIsHumanized(getNotification());
+	// getFlowManager().saveFlow();
+	// logOut();
+	// // Delete the form created for the test
+	// deleteForm();
+	// }
+	//
+	// // TODO FIX bug in webforms
+	// public void createQuestionsFlow() {
+	// try {
+	// loginFormAdmin1();
+	// getFormManager().createNewForm(NEW_FORM_NAME);
+	// // Create a couple of categories and questions
+	// goToDesigner();
+	// getDesigner().createAndSaveSimpleFormDesign();
+	// // Create a flow
+	// goToFlowManager();
+	// getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW,
+	// QUESTION2_NAME, QUESTION2_ROW);
+	// getFlowManager().createSimpleFlowRule(QUESTION2_NAME, QUESTION2_ROW,
+	// QUESTION3_NAME, QUESTION3_ROW);
+	// // Clean the rule
+	// getFlowManager().clickRedrawButton();
+	// if (isHeadlessTesting()) {
+	// takeScreenshot(CLEAN_SIMPLE_OTHERS_FLOW_2_TEST_SCREENSHOT);
+	// }
+	// getFlowManager().saveFlow();
+	// logOut();
+	// // Delete the form created for the test
+	// deleteForm();
+	//
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// // If any unexpected exception is thrown the test should fail
+	// Assert.fail();
+	// }
+	// }
+	//
+	// @Test(groups = "formFlow")
+	// public void createQuestionEqualsAnswerFlow() {
+	// loginFormAdmin1();
+	// getFormManager().createNewForm(NEW_FORM_NAME);
+	// // Create a couple of categories and questions
+	// goToDesigner();
+	// try {
+	// getDesigner().createAndSaveSimpleFormDesign();
+	// } catch (FieldNotEditableException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// // Create a flow
+	// goToFlowManager();
+	// getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW,
+	// QUESTION2_NAME, QUESTION2_ROW);
+	// getFlowManager().getFlowRulesTable().getCell(FIRST_ROW,
+	// FIRST_COLUMN).click();
+	// getFlowManager().clickEditRuleButton();
+	// // Add the question == answer condition
+	// getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
+	// getFlowManager().getFlowRuleWindow().selectElementInTreeTable(ANSWER1_NAME);
+	// getFlowManager().getFlowRuleWindow().clickEqualsButton();
+	// Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(),
+	// VALID_FLOW_TAG);
+	// getFlowManager().getFlowRuleWindow().clickAcceptButton();
+	// // Redraw the graph
+	// getFlowManager().clickRedrawButton();
+	// takeScreenshot(QUESTION_EQUALS_ANSWER_FLOW_TEST_SCREENSHOT);
+	// getFlowManager().saveFlow();
+	// logOut();
+	// // Delete the form created for the test
+	// deleteForm();
+	// }
+	//
+	// @Test(groups = "formFlow")
+	// public void createQuestionNotEqualsAnswerFlow() {
+	// loginFormAdmin1();
+	// getFormManager().createNewForm(NEW_FORM_NAME);
+	// // Create a couple of categories and questions
+	// goToDesigner();
+	// try {
+	// getDesigner().createAndSaveSimpleFormDesign();
+	// } catch (FieldNotEditableException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// // Create a flow
+	// goToFlowManager();
+	// getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW,
+	// QUESTION2_NAME, QUESTION2_ROW);
+	// getFlowManager().getFlowRulesTable().getCell(FIRST_ROW,
+	// FIRST_COLUMN).click();
+	// getFlowManager().clickEditRuleButton();
+	// // Add the question != answer condition
+	// getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
+	// getFlowManager().getFlowRuleWindow().selectElementInTreeTable(ANSWER1_NAME);
+	// getFlowManager().getFlowRuleWindow().clickNotEqualsButton();
+	// Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(),
+	// VALID_FLOW_TAG);
+	// getFlowManager().getFlowRuleWindow().clickAcceptButton();
+	// // Redraw the graph
+	// getFlowManager().clickRedrawButton();
+	// if (isHeadlessTesting()) {
+	// takeScreenshot(QUESTION_NOT_EQUALS_ANSWER_FLOW_TEST_SCREENSHOT);
+	// }
+	// getFlowManager().saveFlow();
+	// logOut();
+	// // Delete the form created for the test
+	// deleteForm();
+	// }
+	//
+	// @Test(groups = "formFlow")
+	// public void createAnswersInQuestionFlow() {
+	// loginFormAdmin1();
+	// getFormManager().createNewForm(NEW_FORM_NAME);
+	// // Create a couple of categories and questions
+	// goToDesigner();
+	// try {
+	// getDesigner().createAndSaveSimpleFormDesign();
+	// } catch (FieldNotEditableException e) {
+	// e.printStackTrace();
+	// }
+	// // Create a flow
+	// goToFlowManager();
+	// getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION1_ROW,
+	// QUESTION2_NAME, QUESTION2_ROW);
+	// getFlowManager().getFlowRulesTable().getCell(FIRST_ROW,
+	// FIRST_COLUMN).click();
+	// getFlowManager().clickEditRuleButton();
+	// // Add the question IN [answer1 answer2] condition
+	// getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
+	// getFlowManager().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
+	// getFlowManager().getFlowRuleWindow().clickInButton();
+	// Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(),
+	// VALID_FLOW_TAG);
+	// getFlowManager().getFlowRuleWindow().clickAcceptButton();
+	// // Redraw the graph
+	// getFlowManager().clickRedrawButton();
+	// takeScreenshot(QUESTION_NOT_EQUALS_ANSWER_FLOW_TEST_SCREENSHOT);
+	// getFlowManager().saveFlow();
+	// logOut();
+	// // Delete the form created for the test
+	// deleteForm();
+	// }
 }
