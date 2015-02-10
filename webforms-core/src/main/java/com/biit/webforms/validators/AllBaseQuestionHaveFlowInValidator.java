@@ -10,7 +10,7 @@ import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.validators.reports.FormElementWithouthFlowIn;
+import com.biit.webforms.validators.reports.FormElementWithoutFlowIn;
 
 public class AllBaseQuestionHaveFlowInValidator extends SimpleValidator<Form> {
 
@@ -31,7 +31,7 @@ public class AllBaseQuestionHaveFlowInValidator extends SimpleValidator<Form> {
 				TreeObject element = itr.next();
 
 				Set<Flow> flowToElement = flows.getFlowsByDestiny(element);
-				assertTrue(flowToElement != null && !flowToElement.isEmpty(), new FormElementWithouthFlowIn(element));
+				assertTrue(flowToElement != null && !flowToElement.isEmpty(), new FormElementWithoutFlowIn(element));
 			}
 		}
 	}

@@ -5,41 +5,38 @@ import com.biit.form.TreeObject;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
 
-public class LinkedFormAbcdElementIsBaseGroupNotBaseQuestion extends Report {
+public class FormGroupRepeatableStatusIsDifferent extends Report {
 
 	private BaseForm webform;
-	private BaseForm abcdform;
+	private BaseForm abcdForm;
 	private TreeObject abcdChild;
 
-	public LinkedFormAbcdElementIsBaseGroupNotBaseQuestion(BaseForm form, BaseForm abcdForm, TreeObject abcdChild) {
+	public FormGroupRepeatableStatusIsDifferent(BaseForm form, BaseForm abcdForm, TreeObject abcdChild) {
 		super(ReportLevel.ERROR, generateReport(form, abcdForm, abcdChild));
 		this.webform = form;
-		this.abcdform = abcdForm;
 		this.abcdChild = abcdChild;
+		this.abcdForm = abcdForm;
 	}
 
 	private static String generateReport(BaseForm form, BaseForm abcdForm, TreeObject abcdChild) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Form '");
 		sb.append(abcdForm.getLabel());
-		sb.append("' Version '");
-		sb.append(abcdForm.getVersion());
 		sb.append("' element '");
 		sb.append(abcdChild.getPathName());
-		sb.append("' is a group in webforms is found as a question.");
+		sb.append("' has repeatable flag with a different value that the compared version.");
 		return sb.toString();
 	}
 
-	public BaseForm getWebform() {
-		return webform;
-	}
-
-	public BaseForm getAbcdform() {
-		return abcdform;
+	public BaseForm getAbcdForm() {
+		return abcdForm;
 	}
 
 	public TreeObject getAbcdChild() {
 		return abcdChild;
 	}
 
+	public BaseForm getWebform() {
+		return webform;
+	}
 }
