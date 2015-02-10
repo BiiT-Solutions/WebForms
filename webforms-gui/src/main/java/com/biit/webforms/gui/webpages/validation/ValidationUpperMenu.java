@@ -11,7 +11,7 @@ public class ValidationUpperMenu extends UpperMenuWebforms {
 
 	private static final long serialVersionUID = 8072439945816031352L;
 
-	private final IconButton completeValidation, validateStructure, validateFlow, validateAbcdLink;
+	private final IconButton completeValidation, validateStructure, validateFlow, validateAbcdLink, abcdCompare;
 
 	public ValidationUpperMenu() {
 
@@ -26,11 +26,15 @@ public class ValidationUpperMenu extends UpperMenuWebforms {
 
 		validateAbcdLink = new IconButton(LanguageCodes.CAPTION_VALIDATE_ABCD_LINK, ThemeIcons.VALIDATE_ABCD_LINK,
 				LanguageCodes.TOOLTIP_VALIDATE_ABCD_LINK, IconSize.BIG);
+		
+		abcdCompare = new IconButton(LanguageCodes.CAPTION_COMPARE_ABCD_LINK, ThemeIcons.COMPARE_ABCD_LINK,
+				LanguageCodes.TOOLTIP_COMPARE_ABCD_LINK, IconSize.BIG);
 
 		addIconButton(completeValidation);
 		addIconButton(validateStructure);
 		addIconButton(validateFlow);
 		addIconButton(validateAbcdLink);
+		addIconButton(abcdCompare);
 
 		setConfirmationNeeded(true);
 	}
@@ -50,6 +54,10 @@ public class ValidationUpperMenu extends UpperMenuWebforms {
 	public void addValidateAbcdLinkListener(ClickListener listener) {
 		validateAbcdLink.addClickListener(listener);
 	}
+	
+	public void addAbcdCompareListener(ClickListener listener){
+		abcdCompare.addClickListener(listener);
+	}
 
 	public IconButton getCompleteValidation() {
 		return completeValidation;
@@ -65,5 +73,9 @@ public class ValidationUpperMenu extends UpperMenuWebforms {
 
 	public IconButton getValidateAbcdLink() {
 		return validateAbcdLink;
+	}
+
+	public IconButton getAbcdCompare() {
+		return abcdCompare;
 	}
 }

@@ -249,6 +249,10 @@ public class ApplicationController {
 		}
 		return newBlock;
 	}
+	
+	public com.biit.abcd.persistence.entity.Form getAbcdForm(Long id) throws UnexpectedDatabaseException{
+		return formDaoAbcd.read(id);
+	}
 
 	/**
 	 * Function to import abcd forms
@@ -265,7 +269,7 @@ public class ApplicationController {
 	 * @throws ElementIsReadOnly
 	 * @throws ElementCannotBePersistedException
 	 */
-	public Form importAbcdForm(SimpleFormView simpleFormView, String importLabel, Long organizationId)
+	public Form importAbcdForm(IBaseFormView simpleFormView, String importLabel, Long organizationId)
 			throws NotValidAbcdForm, FieldTooLongException, FormWithSameNameException, CharacterNotAllowedException,
 			UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException {
 		logInfoStart("importAbcdForm", simpleFormView, importLabel, organizationId);
