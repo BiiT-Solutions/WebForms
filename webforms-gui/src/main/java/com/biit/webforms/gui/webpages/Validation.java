@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.biit.abcd.persistence.entity.Form;
+import com.biit.abcd.security.AbcdActivity;
+import com.biit.abcd.security.AbcdAuthorizationService;
+import com.biit.form.IBaseFormView;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.form.validators.reports.DuplicatedNestedName;
 import com.biit.form.validators.reports.DuplicatedNestedNameWithChild;
@@ -15,15 +17,20 @@ import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.authentication.WebformsActivity;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.authentication.exception.BadAbcdLink;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
+import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
 import com.biit.webforms.gui.webpages.validation.ValidationUpperMenu;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.validators.CompareFormAbcdStructure;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.validators.ValidateFormComplete;
@@ -131,43 +138,73 @@ public class Validation extends SecuredWebPage {
 		});
 		return upperMenu;
 	}
-
+	
+	/**
+	 * Opens window to link form with abcd form and version.
+	 */
 	private void compareAbcdForm() {
-		List<Form> linkedForms;
-		try {
-			linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
-					UserSessionHandler.getController().getCompleteFormView());
-			if (linkedForms.isEmpty()) {
-				setNoLinkedFormsMessage();
-			} else {
-				// Select one linked form.
+		final Form form = UserSessionHandler.getController().getFormInUse();
 
-				// Create the report.
-				CompareFormAbcdStructure validator = new CompareFormAbcdStructure(UserSessionHandler
-						.getController().getCompleteFormView());
-				ValidateReport report = new ValidateReport();
-				validator.validate(linkedForms, report);
-				if (report.isValid()) {
-					setLinkedFormsCorrectMessage();
-				} else {
-					setValidationReport(report);
+		List<com.biit.abcd.persistence.entity.SimpleFormView> availableForms;
+		if (form.getLinkedFormLabel() != null) {
+			// Already linked form, show only the versions of this form.
+			availableForms = UserSessionHandler
+					.getController()
+					.getSimpleFormDaoAbcd()
+					.getSimpleFormViewByLabelAndOrganization(form.getLinkedFormLabel(),
+							form.getLinkedFormOrganizationId());
+
+
+		// Let user choose the version.
+		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
+		for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
+			if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+					simpleFormView.getOrganizationId(), AbcdActivity.READ)
+					&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+							simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
+				linkAbcdForm.add(simpleFormView);
+			}
+		}
+
+
+		linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleAbcdForms(form));
+		linkAbcdForm.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				WindowLinkAbcdForm linkWindow = (WindowLinkAbcdForm) window;
+
+				for (IBaseFormView abcdForm : linkWindow.getValue()) {
+					// Create the report.
+					CompareFormAbcdStructure validator = new CompareFormAbcdStructure(UserSessionHandler
+							.getController().getCompleteFormView());
+					ValidateReport report = new ValidateReport();
+					try {
+						validator.validate(UserSessionHandler
+								.getController().getAbcdForm(abcdForm.getId()), report);
+						if (report.isValid()) {
+							setLinkedFormsCorrectMessage();
+						} else {
+							setValidationReport(report);
+						}
+					} catch (UnexpectedDatabaseException e) {
+						WebformsLogger.errorMessage(this.getClass().getName(), e);
+						MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+								LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+					}
 				}
 			}
-		} catch (UnexpectedDatabaseException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-		} catch (BadAbcdLink e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-					LanguageCodes.ERROR_ABCD_FORM_LINKED_NOT_FOUND);
+		});
+		linkAbcdForm.showCentered();
+		}else{
+			setNoLinkedFormsMessage();
 		}
 	}
 
 	private void validateAbcdLink() {
 		ValidateBaseForm structureValidator = new ValidateBaseForm();
 		if (structureValidator.validate(UserSessionHandler.getController().getCompleteFormView())) {
-			List<Form> linkedForms;
+			List<com.biit.abcd.persistence.entity.Form> linkedForms;
 			try {
 				linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
 						UserSessionHandler.getController().getCompleteFormView());
@@ -237,7 +274,7 @@ public class Validation extends SecuredWebPage {
 		ValidateReport report = new ValidateReport();
 		validator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
 
-		List<Form> linkedForms;
+		List<com.biit.abcd.persistence.entity.Form> linkedForms;
 		try {
 			linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(
 					UserSessionHandler.getController().getCompleteFormView());
