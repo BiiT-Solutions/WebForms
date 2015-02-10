@@ -214,19 +214,26 @@ public class WebFormsTester extends VaadinGuiTester {
 		getFormManager().createNewForm(formName);
 		logOut();
 	}
-	
+
 	protected void createNewForm(String formName) {
-		loginFormEdit1();
+		loginFormAdmin1();
 		getFormManager().createNewForm(formName);
 	}
-	
-	protected void createNewBlock(String blockName) {
-		loginBlockEdit1();
-		goToBlockManager();
-		getBlockManager().createNewBlock(blockName);
-		getBlockManager().selectBlock(0);
+
+	protected void createNewFormWithAdminRights(String formName) {
+		loginFormAdmin1();
+		getFormManager().createNewForm(formName);
 	}
 
+	protected void createNewBlock(String blockName) {
+		loginFormAdmin1();
+		goToBlockManager();
+		getBlockManager().createNewBlock(blockName);
+	}
+
+	/**
+	 * Logs in as admin and deletes the first form existent
+	 */
 	protected void deleteForm() {
 		loginFormAdmin1();
 		getFormManager().deleteForm(1);
@@ -243,7 +250,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	protected void deleteBlock() {
 		loginFormAdmin1();
 		goToBlockManager();
-		getBlockManager().deleteBlock(0);
+		getBlockManager().deleteBlock();
 		logOut();
 	}
 

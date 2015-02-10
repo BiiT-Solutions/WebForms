@@ -42,6 +42,7 @@ public class WindowFlow extends WindowAcceptCancel {
 	private static final String width = "75%";
 	private static final String height = "100%";
 	private static final String BAR_HEIGHT = "50px";
+	private static final String WINDOW_FLOW_ID = "windowFlow";
 
 	private SearchFormElementField searchOrigin;
 	private SearchFormElementField searchDestiny;
@@ -62,6 +63,7 @@ public class WindowFlow extends WindowAcceptCancel {
 		setModal(true);
 		setWidth(width);
 		setHeight(height);
+		setId(WINDOW_FLOW_ID);
 	}
 
 	public Component generateContent() {

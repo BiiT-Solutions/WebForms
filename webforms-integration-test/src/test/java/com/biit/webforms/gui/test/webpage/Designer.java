@@ -12,6 +12,7 @@ import com.biit.webforms.gui.test.webpage.designer.GroupPropertiesView;
 import com.biit.webforms.gui.test.webpage.designer.QuestionPropertiesView;
 import com.biit.webforms.gui.test.webpage.designer.SubanswerPropertiesView;
 import com.biit.webforms.gui.test.webpage.designer.TextPropertiesView;
+import com.biit.webforms.gui.test.window.NewBlockWindow;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.HorizontalLayoutElement;
 import com.vaadin.testbench.elements.TreeTableElement;
@@ -22,6 +23,7 @@ public class Designer extends VaadinGuiWebpage {
 	private static final String BLOCKS_BUTTON_CAPTION = "Blocks";
 	private static final String SAVE_BLOCK_BUTTON_CAPTION = "Save Block";
 	private static final String INSERT_BLOCK_BUTTON_CAPTION = "Insert Block";
+	private static final String LINK_BLOCK_BUTTON_CAPTION = "Insert Block";
 	private static final String CATEGORY_BUTTON_CAPTION = "Category";
 	private static final String GROUP_BUTTON_CAPTION = "Group";
 	private static final String QUESTION_BUTTON_CAPTION = "Question";
@@ -77,7 +79,7 @@ public class Designer extends VaadinGuiWebpage {
 	private static final String QUESTION3_NAME = "Question3";
 	private static final String ANSWER1_NAME = "Q1Answer1";
 	private static final String ANSWER2_NAME = "Q1Answer2";
-	
+
 	private static final Integer TREE_TABLE_INIT_ROW = 0;
 
 	private final FormPropertiesView formPropertiesView;
@@ -88,6 +90,7 @@ public class Designer extends VaadinGuiWebpage {
 	private final SubanswerPropertiesView subanswerPropertiesView;
 	private final TextPropertiesView textPropertiesView;
 	private final FieldPropertiesView fieldPropertiesView;
+	private final NewBlockWindow newBlockWindow;
 
 	public Designer() {
 		super();
@@ -107,6 +110,8 @@ public class Designer extends VaadinGuiWebpage {
 		addView(textPropertiesView);
 		fieldPropertiesView = new FieldPropertiesView();
 		addView(fieldPropertiesView);
+		newBlockWindow = new NewBlockWindow();
+		addWindow(newBlockWindow);
 	}
 
 	public void addAnswers(int numberOfAnswers) {
@@ -275,6 +280,30 @@ public class Designer extends VaadinGuiWebpage {
 		}
 	}
 
+	public void clickBlocksButton() {
+		getBlocksButton().click();
+	}
+
+	public void clickDeleteButton() {
+		getDeleteButton().click();
+	}
+
+	public void clickInsertBlockButton() {
+		getInsertBlockButton().click();
+	}
+
+	public void clickInTreeTableRow(int row) {
+		getTreeTable().getRow(row).click();
+	}
+
+	public void clickLinkBlockButton() {
+		getLinkBlockButton().click();
+	}
+
+	public void clickSaveBlockButton() {
+		getSaveBlockButton().click();
+	}
+
 	private void createAllTypesOfInputQuestions() throws FieldNotEditableException {
 		addNewInputTextSubformatTextQuestion();
 		addNewInputTextSubformatEmailQuestion();
@@ -365,6 +394,51 @@ public class Designer extends VaadinGuiWebpage {
 		setQuestionNotMandatory();
 	}
 
+	/**
+	 * Creates a form with three categories and one question per category.<br>
+	 * The question of the first category also has two answers.
+	 * 
+	 * @throws FieldNotEditableException
+	 */
+	public void createAndSaveSimpleFormDesign() throws FieldNotEditableException {
+		// Category 1
+		addNewCategory();
+		addNewRadioButtonQuestion();
+		getQuestionPropertiesView().setTechnicalName(QUESTION1_NAME);
+		addNewAnswer();
+		getAnswerPropertiesView().setValue(ANSWER1_NAME);
+		addNewAnswer();
+		getAnswerPropertiesView().setValue(ANSWER2_NAME);
+		// Category 2
+		addNewCategory();
+		addNewGroup();
+		getGroupPropertiesView().clickRepeatableCheckBox();
+		addNewQuestion();
+		getQuestionPropertiesView().setTechnicalName(QUESTION2_NAME);
+		// Category 3
+		addNewCategory();
+		addNewGroup();
+		addNewQuestion();
+		getQuestionPropertiesView().setTechnicalName(QUESTION3_NAME);
+		// Save
+		saveDesign();
+	}
+	
+	public void createAndSaveSimpleBlockDesign() throws FieldNotEditableException {
+		// Category 1
+		addNewCategory();
+		addNewGroup();
+		getGroupPropertiesView().clickRepeatableCheckBox();
+		addNewRadioButtonQuestion();
+		getQuestionPropertiesView().setTechnicalName(QUESTION1_NAME);
+		addNewAnswer();
+		getAnswerPropertiesView().setValue(ANSWER1_NAME);
+		addNewAnswer();
+		getAnswerPropertiesView().setValue(ANSWER2_NAME);
+		// Save
+		saveDesign();
+	}
+
 	public void createCompleteFormAndSave() throws FieldNotEditableException {
 		// Edit some form properties
 		getFormPropertiesView().setName(FORM_NAME_EDITED);
@@ -398,33 +472,6 @@ public class Designer extends VaadinGuiWebpage {
 		saveDesign();
 	}
 
-	/**
-	 * Creates a form with three categories and one question per category.<br>
-	 * The question of the first category also has two answers.
-	 * 
-	 * @throws FieldNotEditableException
-	 */
-	public void createAndSaveSimpleForm() throws FieldNotEditableException {
-		// Category 1
-		addNewCategory();
-		addNewRadioButtonQuestion();
-		getQuestionPropertiesView().setTechnicalName(QUESTION1_NAME);
-		addNewAnswer();
-		getAnswerPropertiesView().setValue(ANSWER1_NAME);
-		addNewAnswer();
-		getAnswerPropertiesView().setValue(ANSWER2_NAME);
-		// Category 2
-		addNewCategory();
-		addNewQuestion();
-		getQuestionPropertiesView().setTechnicalName(QUESTION2_NAME);
-		// Category 3
-		addNewCategory();
-		addNewQuestion();
-		getQuestionPropertiesView().setTechnicalName(QUESTION3_NAME);
-		// Save
-		saveDesign();
-	}
-
 	public void finishForm() {
 		getFinishButton().click();
 	}
@@ -435,6 +482,10 @@ public class Designer extends VaadinGuiWebpage {
 
 	public AnswerPropertiesView getAnswerPropertiesView() {
 		return answerPropertiesView;
+	}
+
+	public ButtonElement getBlocksButton() {
+		return getButtonElement(BLOCKS_BUTTON_CAPTION);
 	}
 
 	@Override
@@ -487,8 +538,20 @@ public class Designer extends VaadinGuiWebpage {
 		return groupPropertiesView;
 	}
 
+	public ButtonElement getInsertBlockButton() {
+		return getButtonElement(INSERT_BLOCK_BUTTON_CAPTION);
+	}
+
+	public ButtonElement getLinkBlockButton() {
+		return getButtonElement(LINK_BLOCK_BUTTON_CAPTION);
+	}
+
 	public ButtonElement getMoveButton() {
 		return getButtonElement(MOVE_BUTTON_CAPTION);
+	}
+
+	public NewBlockWindow getNewBlockWindow() {
+		return newBlockWindow;
 	}
 
 	public ButtonElement getQuestionButton() {
@@ -497,6 +560,10 @@ public class Designer extends VaadinGuiWebpage {
 
 	public QuestionPropertiesView getQuestionPropertiesView() {
 		return questionPropertiesView;
+	}
+
+	public ButtonElement getSaveBlockButton() {
+		return getButtonElement(SAVE_BLOCK_BUTTON_CAPTION);
 	}
 
 	public ButtonElement getSaveButton() {
@@ -532,6 +599,10 @@ public class Designer extends VaadinGuiWebpage {
 		return null;
 	}
 
+	public void goToBeginningOfTreeTable() {
+		clickInTreeTableRow(TREE_TABLE_INIT_ROW);
+	}
+
 	public void saveDesign() {
 		getSaveButton().click();
 	}
@@ -546,15 +617,15 @@ public class Designer extends VaadinGuiWebpage {
 		}
 	}
 
-	public void setQuestionNotHorizontal() throws FieldNotEditableException {
-		if (getQuestionPropertiesView().getHorizontalCheckBoxValue().equals(CHECKBOX_RETURN_CHECKED)) {
-			getQuestionPropertiesView().clickHorizontalCheckBox();
-		}
-	}
-
 	public void setQuestionMandatory() throws FieldNotEditableException {
 		if (getQuestionPropertiesView().getMandatoryCheckBoxValue().equals(CHECKBOX_RETURN_UNCHECKED)) {
 			getQuestionPropertiesView().clickMandatoryCheckBox();
+		}
+	}
+
+	public void setQuestionNotHorizontal() throws FieldNotEditableException {
+		if (getQuestionPropertiesView().getHorizontalCheckBoxValue().equals(CHECKBOX_RETURN_CHECKED)) {
+			getQuestionPropertiesView().clickHorizontalCheckBox();
 		}
 	}
 
@@ -562,17 +633,5 @@ public class Designer extends VaadinGuiWebpage {
 		if (getQuestionPropertiesView().getMandatoryCheckBoxValue().equals(CHECKBOX_RETURN_CHECKED)) {
 			getQuestionPropertiesView().clickMandatoryCheckBox();
 		}
-	}
-
-	public void clickDeleteButton() {
-		getDeleteButton().click();
-	}
-
-	public void goToBeginningOfTreeTable(){
-		clickInTreeTableRow(TREE_TABLE_INIT_ROW);
-	}
-	
-	public void clickInTreeTableRow(int row){
-		getTreeTable().getRow(row).click();
 	}
 }

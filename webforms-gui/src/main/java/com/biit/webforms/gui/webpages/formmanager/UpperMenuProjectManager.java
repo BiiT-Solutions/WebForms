@@ -25,6 +25,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson, exportXml;
 	private final IconButton impactAnalysis, compareContent;
 	private BrowserWindowOpener opener;
+	// Neede due to the existence of a second 'Flow' button at the same time in
+	// the interface
+	private static final String FLOW_BUTTON_ID = "exportFlowButton";
 
 	public UpperMenuProjectManager() {
 		super();
@@ -46,6 +49,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.COMMON_TOOLTIP_EXPORT_TO_PDF, IconSize.BIG);
 		exportFlowPdf = new IconButton(LanguageCodes.CAPTION_PRINT_FLOW, ThemeIcons.EXPORT_FORM_TO_PDF,
 				LanguageCodes.TOOLTIP_PRINT_FLOW, IconSize.BIG);
+		exportFlowPdf.setId(FLOW_BUTTON_ID);
 		exportXsd = new IconButton(LanguageCodes.CAPTION_EXPORT_XSD, ThemeIcons.EXPORT_XSD,
 				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
 		exportJson = new IconButton(LanguageCodes.CAPTION_EXPORT_JSON, ThemeIcons.EXPORT_JSON,
@@ -145,8 +149,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	public void addDownloadXForms(ClickListener listener) {
 		downloadXForms.addClickListener(listener);
 	}
-	
-	public void addRemoveForm(ClickListener listener){
+
+	public void addRemoveForm(ClickListener listener) {
 		removeForm.addClickListener(listener);
 	}
 

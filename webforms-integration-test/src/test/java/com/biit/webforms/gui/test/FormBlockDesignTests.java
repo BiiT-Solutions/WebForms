@@ -32,6 +32,12 @@ public class FormBlockDesignTests extends WebFormsTester {
 		getDesigner().addNewCategory();
 	}
 
+	private void createNewFormAndCategoryWithAdminRights() {
+		createNewFormWithAdminRights(NEW_FORM_NAME);
+		goToDesigner();
+		getDesigner().addNewCategory();
+	}
+
 	/**
 	 * Method to avoid repeating all the code that creates a block and a
 	 * category.<br>
@@ -1875,4 +1881,67 @@ public class FormBlockDesignTests extends WebFormsTester {
 		}
 	}
 
+	@Test(groups = { "formBlockDesign" })
+	public void saveQuestionAsBlock() {
+		createNewFormAndCategoryWithAdminRights();
+		getDesigner().addNewQuestion();
+		getDesigner().clickBlocksButton();
+		getDesigner().clickSaveBlockButton();
+		getDesigner().getNewBlockWindow().createNewBlock(NEW_BLOCK_NAME);
+		checkNotificationIsHumanized(getNotification());
+		saveDesignAndRemoveForm();
+		deleteBlock();
+	}
+
+	@Test(groups = { "formBlockDesign" })
+	public void saveGroupAsBlock() {
+		createNewFormAndCategoryWithAdminRights();
+		getDesigner().addNewGroup();
+		getDesigner().clickBlocksButton();
+		getDesigner().clickSaveBlockButton();
+		getDesigner().getNewBlockWindow().createNewBlock(NEW_BLOCK_NAME);
+		checkNotificationIsHumanized(getNotification());
+		saveDesignAndRemoveForm();
+		deleteBlock();
+	}
+
+	@Test(groups = { "formBlockDesign" })
+	public void saveCategoryAsBlock() {
+		createNewFormAndCategoryWithAdminRights();
+		getDesigner().clickBlocksButton();
+		getDesigner().clickSaveBlockButton();
+		getDesigner().getNewBlockWindow().createNewBlock(NEW_BLOCK_NAME);
+		checkNotificationIsHumanized(getNotification());
+		saveDesignAndRemoveForm();
+		deleteBlock();
+	}
+
+	private void createEmptyFormAndSimpleBlockDesign() {
+		try {
+			// Create empty form
+			createNewFormWithAdminRights(NEW_FORM_NAME);
+			goToBlockManager();
+			// Create block with design
+			getBlockManager().createNewBlock(NEW_BLOCK_NAME);
+			goToDesigner();
+			getDesigner().createAndSaveSimpleBlockDesign();
+			// Import the block design in the form
+		} catch (FieldNotEditableException e) {
+			Assert.fail();
+		}
+	}
+
+	@Test(groups = { "formBlockDesign" })
+	public void importBlock() {
+		createEmptyFormAndSimpleBlockDesign();
+		goToFormManager();
+		goToDesigner();
+		getDesigner().clickBlocksButton();
+		getDesigner().clickInsertBlockButton();
+		clickAcceptButtonIfExists();
+		getDesigner().saveDesign();
+		logOut();
+		deleteForm();
+		deleteBlock();
+	}
 }

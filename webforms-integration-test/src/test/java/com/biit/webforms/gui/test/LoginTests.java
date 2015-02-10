@@ -1,5 +1,6 @@
 package com.biit.webforms.gui.test;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -33,20 +34,32 @@ public class LoginTests extends WebFormsTester {
 	@Test(groups = "login")
 	public void testLoginWithRightsToManageButNotDeleteForm() {
 		loginFormEdit1();
+		getFormManager().clickNewButton();
 		Assert.assertTrue(getFormManager().getNewFormButton().isEnabled());
 		// Close New popover menu -- IMPORTANT !!
 		getFormManager().closeNewPopover();
-		Assert.assertNull(getFormManager().getRemoveForm());
+		try {
+			getFormManager().getRemoveForm();
+			Assert.fail();
+		} catch (NoSuchElementException e) {
+			// Nothing to do
+		}
 		logOut();
 	}
 
 	@Test(groups = "login")
 	public void testLoginWithoutRightsToManageForm() {
 		loginRead1();
+		getFormManager().clickNewButton();
 		Assert.assertFalse(getFormManager().getNewFormButton().isEnabled());
 		// Close New popover menu -- IMPORTANT !!
 		getFormManager().closeNewPopover();
-		Assert.assertNull(getFormManager().getRemoveForm());
+		try {
+			getFormManager().getRemoveForm();
+			Assert.fail();
+		} catch (NoSuchElementException e) {
+			// Nothing to do
+		}
 		logOut();
 	}
 
@@ -64,7 +77,7 @@ public class LoginTests extends WebFormsTester {
 		loginFormAdmin1();
 		goToBlockManager();
 		getBlockManager().createNewBlock(NEW_BLOCK_NAME);
-		getBlockManager().deleteBlock(0);
+		getBlockManager().deleteBlock();
 		logOut();
 	}
 
