@@ -24,8 +24,9 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	private static final String NOTIFICATION_TYPE_HUMANIZED = "humanized";
 	private static final String NOTIFICATION_TYPE_WARNING = "warning";
 	private static final String NOTIFICATION_TYPE_ERROR = "error";
-	// This parameter set to 'true' activates phantomJs driver instead of firefox driver
-	private boolean headlessTesting = false;
+	// This parameter set to 'true' activates phantomJs driver instead of
+	// firefox driver
+	private boolean headlessTesting = true;
 	private static final Integer WIDTH = 1600;
 	private static final Integer HEIGHT = 900;
 
@@ -55,7 +56,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
 
 	@AfterClass(alwaysRun = true)
 	public void destroyDriver() {
-		//getDriver().quit();
+		getDriver().quit();
 	}
 
 	public void addWebpage(VaadinGuiWebpage webpage) {
@@ -77,12 +78,12 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	public static void checkNotificationIsWarning(NotificationElement notification) {
 		Assert.assertEquals(NOTIFICATION_TYPE_WARNING, notification.getType());
 	}
-	
+
 	public static void checkNotificationIsHumanized(NotificationElement notification) {
 		Assert.assertEquals(NOTIFICATION_TYPE_HUMANIZED, notification.getType());
 	}
-	
-	public boolean isHeadlessTesting(){
+
+	public boolean isHeadlessTesting() {
 		return headlessTesting;
 	}
 }
