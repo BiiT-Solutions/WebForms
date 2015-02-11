@@ -26,7 +26,7 @@ public class XFormsPersistence {
 	}
 
 	/**
-	 * In preview we add a prefix to differenciate the stored forms. For production we add the version of the form.
+	 * In preview we add a prefix to differentiate the stored forms. For production we add the version of the form.
 	 * 
 	 * @param form
 	 * @param preview
@@ -34,7 +34,8 @@ public class XFormsPersistence {
 	 */
 	public static String formatFormName(IWebformsFormView form, Organization organization, boolean preview) {
 		if (preview) {
-			return PREVIEW_PREFIX + form.getLabel().replace(" ", "_") + "_v" + form.getVersion() + "_" + organization.getName();
+			return PREVIEW_PREFIX + form.getLabel().replace(" ", "_") + "_v" + form.getVersion() + "_"
+					+ organization.getName();
 		} else {
 			return form.getLabel().replace(" ", "_") + "_v" + form.getVersion() + "_" + organization.getName();
 		}
@@ -61,14 +62,13 @@ public class XFormsPersistence {
 	 * @return true if the connection is ok.
 	 * @throws AccessNotAllowed
 	 */
-	public boolean connect(String password, String user, String database, String server)
-			throws CommunicationsException, SQLException, AccessNotAllowed {
-		boolean error = false;
+	public void connect(String password, String user, String database, String server) throws CommunicationsException,
+			SQLException, AccessNotAllowed {
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 
 		try {
@@ -82,24 +82,21 @@ public class XFormsPersistence {
 									+ database
 									+ "?allowMultiQueries=true&noAccessToProcedureBodies=true&validationQuery=SELECT%201&testOnBorrow=true",
 							user, password);
+		} catch (CommunicationsException ce) {
+			throw ce;
 		} catch (SQLException ex) {
 			switch (ex.getErrorCode()) {
 			case 1044:
 				throw new AccessNotAllowed("User or password is wrong. Check your configuration file. ");
 			default:
-				ex.printStackTrace();
 				WebformsLogger.errorMessage(this.getClass().getName(), ex);
-				break;
+				throw ex;
 			}
-
-			error = true;
-
 		}
-		return !error;
 	}
 
 	public void deleteForm(Form form, Organization organization, boolean preview) {
-		if (form != null) {
+		if (form != null && connection != null) {
 			try (PreparedStatement stmt = connection.prepareStatement("DELETE FROM orbeon_form_definition WHERE app='"
 					+ APP_NAME + "' and form='" + formatFormName(form, organization, preview) + "' and form_version="
 					+ form.getVersion() + ";")) {
@@ -112,51 +109,55 @@ public class XFormsPersistence {
 
 	public void disconnectDatabase() {
 		try {
-			connection.close();
+			if (connection != null) {
+				connection.close();
+			}
 		} catch (NullPointerException | SQLException npe) {
-			npe.printStackTrace();
+			WebformsLogger.errorMessage(this.getClass().getName(), npe);
 		}
 	}
 
 	public void storeForm(Form form, User user, Organization organization, String xmlData, boolean preview)
 			throws SQLException, DuplicatedXFormException {
-		// String xmldata = new XFormsExporter(form).generateXFormsLanguage();
-		// Delete previous form instance.
-		deleteForm(form, organization, preview);
-		// Add new one.
-		try (PreparedStatement stmt = connection
-				.prepareStatement("INSERT INTO orbeon_form_definition (`created`, `last_modified_time`, `last_modified_by`,`app`,`form`, `form_version`, `form_metadata`, `deleted`, `xml`) VALUES (?,?,?,?,?,?,?,?,?);")) {
+		if (connection != null) {
+			// String xmldata = new XFormsExporter(form).generateXFormsLanguage();
+			// Delete previous form instance.
+			deleteForm(form, organization, preview);
+			// Add new one.
+			try (PreparedStatement stmt = connection
+					.prepareStatement("INSERT INTO orbeon_form_definition (`created`, `last_modified_time`, `last_modified_by`,`app`,`form`, `form_version`, `form_metadata`, `deleted`, `xml`) VALUES (?,?,?,?,?,?,?,?,?);")) {
 
-			stmt.setTimestamp(1, form.getCreationTime());
-			// Update time is the date when has been exported to Orbeon.
-			stmt.setTimestamp(2, new java.sql.Timestamp(new java.util.Date().getTime()));
-			if (user != null) {
-				stmt.setString(3, user.getEmailAddress());
-			} else {
-				stmt.setString(3, "");
+				stmt.setTimestamp(1, form.getCreationTime());
+				// Update time is the date when has been exported to Orbeon.
+				stmt.setTimestamp(2, new java.sql.Timestamp(new java.util.Date().getTime()));
+				if (user != null) {
+					stmt.setString(3, user.getEmailAddress());
+				} else {
+					stmt.setString(3, "");
+				}
+				stmt.setString(4, APP_NAME);
+				stmt.setString(5, formatFormName(form, organization, preview));
+				stmt.setInt(6, form.getVersion());
+				stmt.setString(7, getFormMetadata(form, organization));
+				stmt.setString(8, "N");
+				stmt.setString(9, xmlData);
+
+				stmt.executeUpdate();
+
+			} catch (SQLException ex) {
+				try {
+					translateSqlErrorMessage(ex);
+				} catch (DuplicatedKeyException e) {
+					throw new DuplicatedXFormException("Duplicated xform error. Already exist a xform with id '" + "'.");
+				}
+				WebformsLogger.errorMessage(this.getClass().getName(), ex);
+				ex.printStackTrace();
+				throw ex;
+			} catch (NullPointerException npe) {
+				npe.printStackTrace();
+				WebformsLogger.errorMessage(this.getClass().getName(), npe);
+				throw new SQLException("Database connection fail.");
 			}
-			stmt.setString(4, APP_NAME);
-			stmt.setString(5, formatFormName(form, organization, preview));
-			stmt.setInt(6, form.getVersion());
-			stmt.setString(7, getFormMetadata(form, organization));
-			stmt.setString(8, "N");
-			stmt.setString(9, xmlData);
-
-			stmt.executeUpdate();
-
-		} catch (SQLException ex) {
-			try {
-				translateSqlErrorMessage(ex);
-			} catch (DuplicatedKeyException e) {
-				throw new DuplicatedXFormException("Duplicated xform error. Already exist a xform with id '" + "'.");
-			}
-			WebformsLogger.errorMessage(this.getClass().getName(), ex);
-			ex.printStackTrace();
-			throw ex;
-		} catch (NullPointerException npe) {
-			npe.printStackTrace();
-			WebformsLogger.errorMessage(this.getClass().getName(), npe);
-			throw new SQLException("Database connection fail.");
 		}
 	}
 
