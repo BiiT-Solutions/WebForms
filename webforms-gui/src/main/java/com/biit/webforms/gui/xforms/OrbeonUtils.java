@@ -21,6 +21,7 @@ import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 import com.liferay.portal.model.Organization;
+import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 
 public class OrbeonUtils {
 
@@ -57,6 +58,10 @@ public class OrbeonUtils {
 				return false;
 			}
 			xformsConnection.disconnectDatabase();
+		} catch (CommunicationsException ce) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+			WebformsLogger.errorMessage(OrbeonUtils.class.getName(), ce);
 		} catch (SQLException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			WebformsLogger.errorMessage(OrbeonUtils.class.getName(), e);
@@ -69,8 +74,9 @@ public class OrbeonUtils {
 		return true;
 	}
 
-	public static String getXFormsData(Form form) throws NotValidTreeObjectException, NotValidChildException, IOException,
-			NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	public static String getXFormsData(Form form) throws NotValidTreeObjectException, NotValidChildException,
+			IOException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
 		XFormsExporter xformExporter = new XFormsExporter(form);
 		BufferedInputStream in = new BufferedInputStream(xformExporter.generateXFormsLanguage());
 		byte[] contents = new byte[1024];
