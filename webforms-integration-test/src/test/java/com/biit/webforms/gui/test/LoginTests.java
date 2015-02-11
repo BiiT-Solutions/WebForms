@@ -26,20 +26,20 @@ public class LoginTests extends WebFormsTester {
 	@Test(groups = "login")
 	public void testLoginWithRightsToManageForm() {
 		loginFormAdmin1();
-		getFormManager().createNewForm(NEW_FORM_NAME);
-		getFormManager().deleteForm(1);
+		getFormManagerPage().createNewForm(NEW_FORM_NAME);
+		getFormManagerPage().deleteForm(1);
 		logOut();
 	}
 
 	@Test(groups = "login")
 	public void testLoginWithRightsToManageButNotDeleteForm() {
 		loginFormEdit1();
-		getFormManager().clickNewButton();
-		Assert.assertTrue(getFormManager().getNewFormButton().isEnabled());
+		getFormManagerPage().clickNewButton();
+		Assert.assertTrue(getFormManagerPage().getNewFormButton().isEnabled());
 		// Close New popover menu -- IMPORTANT !!
-		getFormManager().closeNewPopover();
+		getFormManagerPage().closeNewPopover();
 		try {
-			getFormManager().getRemoveForm();
+			getFormManagerPage().getRemoveForm();
 			Assert.fail();
 		} catch (NoSuchElementException e) {
 			// Nothing to do
@@ -50,12 +50,12 @@ public class LoginTests extends WebFormsTester {
 	@Test(groups = "login")
 	public void testLoginWithoutRightsToManageForm() {
 		loginRead1();
-		getFormManager().clickNewButton();
-		Assert.assertFalse(getFormManager().getNewFormButton().isEnabled());
+		getFormManagerPage().clickNewButton();
+		Assert.assertFalse(getFormManagerPage().getNewFormButton().isEnabled());
 		// Close New popover menu -- IMPORTANT !!
-		getFormManager().closeNewPopover();
+		getFormManagerPage().closeNewPopover();
 		try {
-			getFormManager().getRemoveForm();
+			getFormManagerPage().getRemoveForm();
 			Assert.fail();
 		} catch (NoSuchElementException e) {
 			// Nothing to do
@@ -66,27 +66,27 @@ public class LoginTests extends WebFormsTester {
 	@Test(groups = "login")
 	public void testLoginWithRightsToManageBlockButNotDeleteBlock() {
 		loginBlockEdit1();
-		goToBlockManager();
-		Assert.assertTrue(getBlockManager().getNewBlockButton().isEnabled());
-		Assert.assertFalse(getBlockManager().getRemoveBlockButton().isEnabled());
+		goToBlockManagerPage();
+		Assert.assertTrue(getBlockManagerPage().getNewBlockButton().isEnabled());
+		Assert.assertFalse(getBlockManagerPage().getRemoveBlockButton().isEnabled());
 		logOut();
 	}
 
 	@Test(groups = "login")
 	public void testLoginWithRightsToManageBlock() {
 		loginFormAdmin1();
-		goToBlockManager();
-		getBlockManager().createNewBlock(NEW_BLOCK_NAME);
-		getBlockManager().deleteBlock();
+		goToBlockManagerPage();
+		getBlockManagerPage().createNewBlock(NEW_BLOCK_NAME);
+		getBlockManagerPage().deleteBlock();
 		logOut();
 	}
 
 	@Test(groups = "login")
 	public void testLoginWithoutRightsToManageBlock() {
 		loginRead1();
-		goToBlockManager();
-		Assert.assertFalse(getBlockManager().getNewBlockButton().isEnabled());
-		Assert.assertFalse(getBlockManager().getRemoveBlockButton().isEnabled());
+		goToBlockManagerPage();
+		Assert.assertFalse(getBlockManagerPage().getNewBlockButton().isEnabled());
+		Assert.assertFalse(getBlockManagerPage().getRemoveBlockButton().isEnabled());
 		logOut();
 	}
 }

@@ -10,6 +10,7 @@
 				<include name="export" />
 				<include name="impactAnalysis" />
 				<include name="xForms" />
+				<include name="validation" />
 			</run>
 		</groups>
 		<classes>
@@ -20,6 +21,7 @@
 			<class name="com.biit.webforms.gui.test.ExportTests" />
 			<class name="com.biit.webforms.gui.test.ImpactAnalysisTests" />
 			<class name="com.biit.webforms.gui.test.XFormsTests" />
+			<class name="com.biit.webforms.gui.test.ValidationTests" />
 		</classes>
 	</test>
 </suite>

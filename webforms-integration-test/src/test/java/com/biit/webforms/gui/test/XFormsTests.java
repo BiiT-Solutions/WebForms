@@ -21,27 +21,27 @@ public class XFormsTests extends WebFormsTester {
 	private void createFormElementsFlowAndFinishDesign() {
 		try {
 			loginFormAdmin1();
-			getFormManager().createNewForm(NEW_FORM_NAME);
+			getFormManagerPage().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
-			goToDesigner();
-			getDesigner().createAndSaveSimpleFormDesign();
+			goToDesignerPage();
+			getDesignerPage().createAndSaveSimpleFormDesign();
 			// Create a flow
-			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-			getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-			getFlowManager().clickEditRuleButton();
+			goToFlowManagerPage();
+			getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+			getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+			getFlowManagerPage().clickEditRuleButton();
 			// Add the question IN [answer1 answer2] condition
-			getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
-			getFlowManager().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
-			getFlowManager().getFlowRuleWindow().clickInButton();
-			Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
-			getFlowManager().getFlowRuleWindow().clickAcceptButton();
+			getFlowManagerPage().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
+			getFlowManagerPage().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
+			getFlowManagerPage().getFlowRuleWindow().clickInButton();
+			Assert.assertEquals(getFlowManagerPage().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
+			getFlowManagerPage().getFlowRuleWindow().clickAcceptButton();
 			// Redraw the graph
-			getFlowManager().clickRedrawButton();
-			getFlowManager().saveFlow();
-			goToFormManager();
-			goToDesigner();
-			getDesigner().finishForm();
+			getFlowManagerPage().clickRedrawButton();
+			getFlowManagerPage().saveFlow();
+			goToFormManagerPage();
+			goToDesignerPage();
+			getDesignerPage().finishForm();
 			clickAcceptButtonIfExists();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -52,11 +52,10 @@ public class XFormsTests extends WebFormsTester {
 	public void performImpactAnalysis() {
 		try {
 			createFormElementsFlowAndFinishDesign();
-			// Analyze the impact between versions
-			getFormManager().clickXFormsButton();
-			getFormManager().clickXFormsDownloadButton();
-			getFormManager().getDownloadWindow().checkCorrectFileGeneration();
-			getFormManager().getDownloadWindow().closeWindow();
+			getFormManagerPage().clickXFormsButton();
+			getFormManagerPage().clickXFormsDownloadButton();
+			getFormManagerPage().getDownloadWindow().checkCorrectFileGeneration();
+			getFormManagerPage().getDownloadWindow().closeWindow();
 			logOut();
 			deleteForm();
 		} catch ( IncorrectFileGenerationException e) {

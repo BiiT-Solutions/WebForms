@@ -15,8 +15,12 @@ public class FlowManager extends VaadinGuiWebpage {
 	private static final String CLONE_BUTTON_CAPTION = "Clone";
 	private static final String REMOVE_BUTTON_CAPTION = "Remove";
 	private static final String CLEAN_FLOW_BUTTON_CAPTION = "Clean Flow";
-	
+
 	private static final String REDRAW_BUTTON_CAPTION = "Redraw";
+	
+	private static final String COMBOBOX_NORMAL_VALUE = "Normal";
+	private static final String COMBOBOX_END_FORM_VALUE = "End form";
+	
 
 	private final FlowRuleWindow flowRuleWindow;
 	private final SelectFormElementWindow selectFormElementWindow;
@@ -32,57 +36,74 @@ public class FlowManager extends VaadinGuiWebpage {
 		addWindow(flowCleanedWindow);
 	}
 
-	public FlowRuleWindow getFlowRuleWindow() {
-		return flowRuleWindow;
-	}
-
-	public SelectFormElementWindow getSelectFormElementWindow() {
-		return selectFormElementWindow;
-	}
-	
-	public FlowCleanedWindow getFlowCleanedWindow() {
-		return flowCleanedWindow;
-	}
-
-	public void saveFlow() {
-		getButtonElement(SAVE_BUTTON_CAPTION).click();
-	}
-
-	public void clickNewRuleButton() {
-		getButtonElement(NEW_RULE_BUTTON_CAPTION).click();
-	}
-
-	public void clickEditRuleButton() {
-		getButtonElement(EDIT_RULE_BUTTON_CAPTION).click();
+	public void clickCleanFlowButton() {
+		getButtonElement(CLEAN_FLOW_BUTTON_CAPTION).click();
 	}
 
 	public void clickCloneButton() {
 		getButtonElement(CLONE_BUTTON_CAPTION).click();
 	}
 
-	public void clickRemoveButton() {
-		getButtonElement(REMOVE_BUTTON_CAPTION).click();
+	public void clickEditRuleButton() {
+		getButtonElement(EDIT_RULE_BUTTON_CAPTION).click();
 	}
 
-	public void clickCleanFlowButton() {
-		getButtonElement(CLEAN_FLOW_BUTTON_CAPTION).click();
+	public void clickNewRuleButton() {
+		getButtonElement(NEW_RULE_BUTTON_CAPTION).click();
 	}
-	
+
 	public void clickRedrawButton() {
 		getButtonElement(REDRAW_BUTTON_CAPTION).click();
 	}
 
-	@Override
-	public String getWebpageUrl() {
-		return null;
+	public void clickRemoveButton() {
+		getButtonElement(REMOVE_BUTTON_CAPTION).click();
 	}
 
-	public TableElement getFlowRulesTable() {
-		return $(TableElement.class).first();
+	/**
+	 * Creates an 'others' flow from the start to the end element
+	 * 
+	 * @param startNodeName
+	 * @param endNodeName
+	 */
+	public void createEndFlow(String nodeName) {
+		clickNewRuleButton();
+		getFlowRuleWindow().clickFromButton();
+		getSelectFormElementWindow().searchForElement(nodeName);
+		getSelectFormElementWindow().selectElementInTable(nodeName);
+		getSelectFormElementWindow().clickAccceptButton();
+		getFlowRuleWindow().getTypeCombobox().selectByText(COMBOBOX_END_FORM_VALUE);
+		getFlowRuleWindow().clickAcceptButton();
 	}
 
-	public ImageElement getGraph() {
-		return $(ImageElement.class).first();
+	/**
+	 * Creates an 'others' flow from the element to the end of the form
+	 * 
+	 * @param startNodeName
+	 * @param endNodeName
+	 */
+	public void createOthersEndFlow(String nodeName) {
+		clickNewRuleButton();
+		getFlowRuleWindow().clickFromButton();
+		getSelectFormElementWindow().searchForElement(nodeName);
+		getSelectFormElementWindow().selectElementInTable(nodeName);
+		getSelectFormElementWindow().clickAccceptButton();
+		getFlowRuleWindow().getTypeCombobox().selectByText(COMBOBOX_END_FORM_VALUE);
+		getFlowRuleWindow().clickOthersCheckBox();
+		getFlowRuleWindow().clickAcceptButton();
+	}
+
+	/**
+	 * Creates an 'others' flow from the start to the end element
+	 * 
+	 * @param startNodeName
+	 * @param endNodeName
+	 */
+	public void createOthersFlow(String startNodeName, String endNodeName) {
+		clickNewRuleButton();
+		selectFromToElement(startNodeName, endNodeName);
+		getFlowRuleWindow().clickOthersCheckBox();
+		getFlowRuleWindow().clickAcceptButton();
 	}
 
 	/**
@@ -94,6 +115,40 @@ public class FlowManager extends VaadinGuiWebpage {
 	 */
 	public void createSimpleFlowRule(String startNodeName, String endNodeName) {
 		clickNewRuleButton();
+		selectFromToElement(startNodeName, endNodeName);
+		getFlowRuleWindow().clickAcceptButton();
+	}
+
+	public FlowCleanedWindow getFlowCleanedWindow() {
+		return flowCleanedWindow;
+	}
+
+	public TableElement getFlowRulesTable() {
+		return $(TableElement.class).first();
+	}
+
+	public FlowRuleWindow getFlowRuleWindow() {
+		return flowRuleWindow;
+	}
+
+	public ImageElement getGraph() {
+		return $(ImageElement.class).first();
+	}
+	
+	public SelectFormElementWindow getSelectFormElementWindow() {
+		return selectFormElementWindow;
+	}
+
+	@Override
+	public String getWebpageUrl() {
+		return null;
+	}
+	
+	public void saveFlow() {
+		getButtonElement(SAVE_BUTTON_CAPTION).click();
+	}
+	
+	private void selectFromToElement(String startNodeName, String endNodeName){
 		getFlowRuleWindow().clickFromButton();
 		getSelectFormElementWindow().searchForElement(startNodeName);
 		getSelectFormElementWindow().selectElementInTable(startNodeName);
@@ -102,7 +157,5 @@ public class FlowManager extends VaadinGuiWebpage {
 		getSelectFormElementWindow().searchForElement(endNodeName);
 		getSelectFormElementWindow().selectElementInTable(endNodeName);
 		getSelectFormElementWindow().clickAccceptButton();
-		getFlowRuleWindow().clickAcceptButton();
 	}
-
 }
