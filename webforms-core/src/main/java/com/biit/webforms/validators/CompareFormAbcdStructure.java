@@ -90,6 +90,15 @@ public class CompareFormAbcdStructure extends SimpleValidator<com.biit.abcd.pers
 				assertTrue(false, new FormAnswerNotFound(webform, abcdForm, webformsChild));
 				continue;
 			}
+			// Also subanswers
+			for (TreeObject webformsGrandChild : webformsChild.getChildren()) {
+				TreeObject abcdGrandChild = abcdQuestion.getChild(webformsChild.getName()
+						+ TreeObject.DEFAULT_PATH_SEPARATOR + webformsGrandChild.getName());
+				if (abcdGrandChild == null) {
+					assertTrue(false, new FormAnswerNotFound(webform, abcdForm, webformsGrandChild));
+					continue;
+				}
+			}
 		}
 	}
 

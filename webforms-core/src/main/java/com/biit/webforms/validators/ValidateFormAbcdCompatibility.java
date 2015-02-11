@@ -84,6 +84,16 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<com.biit.abcd
 				assertTrue(false, new FormAnswerNotFound(abcdForm, webforms, abcdChild));
 				continue;
 			}
+
+			// Also subanswers
+			for (TreeObject abcdGrandChild : abcdChild.getChildren()) {
+				TreeObject webformsGrandChild = webformsQuestion.getChild(abcdChild.getName()
+						+ TreeObject.DEFAULT_PATH_SEPARATOR + abcdGrandChild.getName());
+				if (webformsGrandChild == null) {
+					assertTrue(false, new FormAnswerNotFound(abcdForm, webforms, abcdGrandChild));
+					continue;
+				}
+			}
 		}
 	}
 
