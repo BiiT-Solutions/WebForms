@@ -9,6 +9,7 @@
 				<include name="formFlow" />
 				<include name="export" />
 				<include name="impactAnalysis" />
+				<include name="xForms" />
 			</run>
 		</groups>
 		<classes>
@@ -18,6 +19,7 @@
 			<class name="com.biit.webforms.gui.test.FormFlowTests" />
 			<class name="com.biit.webforms.gui.test.ExportTests" />
 			<class name="com.biit.webforms.gui.test.ImpactAnalysisTests" />
+			<class name="com.biit.webforms.gui.test.XFormsTests" />
 		</classes>
 	</test>
 </suite>
