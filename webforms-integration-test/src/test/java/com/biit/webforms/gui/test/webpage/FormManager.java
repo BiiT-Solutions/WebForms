@@ -29,8 +29,12 @@ public class FormManager extends VaadinGuiWebpage {
 	private static final String EXPORT_XSD_BUTTON_CAPTION = "XSD";
 	private static final String EXPORT_TEST_XMLS_BUTTON_CAPTION = "Test Xml's";
 	private static final String EXPORT_JSON_BUTTON_CAPTION = "Json";
+	private static final String XFORMS_BUTTON_CAPTION = "XForms";
+	private static final String XFORMS_PREVIEW_BUTTON_CAPTION = "Preview";
+	private static final String XFORMS_PUBLISH_BUTTON_CAPTION = "Publish";
+	private static final String XFORMS_DOWNLOAD_BUTTON_CAPTION = "Download";
 	private static final Integer RIGHT_SCROLL_PIXELS = 500;
-	
+
 
 	private final NewFormWindow newFormWindow;
 	private final DownloadWindow downloadWindow;
@@ -85,9 +89,25 @@ public class FormManager extends VaadinGuiWebpage {
 	public void clickNewFormButton() {
 		getNewButton().click();
 	}
-	
+
 	public void clickNewVersionButton() {
 		getNewVersionButton().click();
+	}
+
+	public void clickXFormsButton() {
+		getXFormsButton().click();
+	}
+
+	public void clickXFormsDownloadButton() {
+		getXFormsDownloadButton().click();
+	}
+
+	public void clickXFormsPreviewButton() {
+		getXFormsPreviewButton().click();
+	}
+
+	public void clickXFormsPublishButton() {
+		getXFormsPublishButton().click();
 	}
 
 	/**
@@ -136,7 +156,7 @@ public class FormManager extends VaadinGuiWebpage {
 	public DownloadWindow getDownloadWindow() {
 		return downloadWindow;
 	}
-	
+
 	public ButtonElement getExportButton() {
 		return getButtonElement(EXPORT_BUTTON_CAPTION);
 	}
@@ -144,7 +164,7 @@ public class FormManager extends VaadinGuiWebpage {
 	public ButtonElement getExportFlowButton() {
 		return $(ButtonElement.class).id(FLOW_BUTTON_ID);
 	}
-	
+
 	public ButtonElement getExportFormButton() {
 		return getButtonElement(EXPORT_FORM_BUTTON_CAPTION);
 	}
@@ -209,6 +229,22 @@ public class FormManager extends VaadinGuiWebpage {
 	@Override
 	public String getWebpageUrl() {
 		return null;
+	}
+
+	public ButtonElement getXFormsButton() {
+		return getButtonElement(XFORMS_BUTTON_CAPTION);
+	}
+
+	private ButtonElement getXFormsDownloadButton() {
+		return getButtonElement(XFORMS_DOWNLOAD_BUTTON_CAPTION);
+	}
+
+	private ButtonElement getXFormsPreviewButton() {
+		return getButtonElement(XFORMS_PREVIEW_BUTTON_CAPTION);
+	}
+
+	private ButtonElement getXFormsPublishButton() {
+		return getButtonElement(XFORMS_PUBLISH_BUTTON_CAPTION);
 	}
 
 	public boolean isFormAlreadyCreated(String formName) {
