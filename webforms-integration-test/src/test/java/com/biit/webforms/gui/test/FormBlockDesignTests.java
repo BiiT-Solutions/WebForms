@@ -28,14 +28,14 @@ public class FormBlockDesignTests extends WebFormsTester {
 	 */
 	private void createNewFormAndCategory() {
 		createNewForm(NEW_FORM_NAME);
-		goToDesigner();
-		getDesigner().addNewCategory();
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
 	}
 
 	private void createNewFormAndCategoryWithAdminRights() {
 		createNewFormWithAdminRights(NEW_FORM_NAME);
-		goToDesigner();
-		getDesigner().addNewCategory();
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
 	}
 
 	/**
@@ -44,8 +44,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	 */
 	private void createNewBlockAndCategory() {
 		createNewBlock(NEW_BLOCK_NAME);
-		goToDesigner();
-		getDesigner().addNewCategory();
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	 * removes it afterwards.<br>
 	 */
 	private void saveDesignAndRemoveForm() {
-		getDesigner().saveDesign();
+		getDesignerPage().saveDesign();
 		logOut();
 		deleteForm();
 	}
@@ -63,7 +63,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	 * removes it afterwards.<br>
 	 */
 	private void saveDesignAndRemoveBlock() {
-		getDesigner().saveDesign();
+		getDesignerPage().saveDesign();
 		logOut();
 		deleteBlock();
 	}
@@ -75,8 +75,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	 * @param tableRow
 	 */
 	private void deselectSelecTableRow(int tableRow) {
-		getDesigner().goToBeginningOfTreeTable();
-		getDesigner().clickInTreeTableRow(tableRow);
+		getDesignerPage().goToBeginningOfTreeTable();
+		getDesignerPage().clickInTreeTableRow(tableRow);
 	}
 
 	@Test(groups = { "formBlockDesign" })
@@ -96,13 +96,13 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void checkGroupQuestionAnswerSubanswerAtFormLevel() {
 		createNewForm(NEW_FORM_NAME);
-		goToDesigner();
-		Assert.assertFalse(getDesigner().getGroupButton().isEnabled());
-		Assert.assertFalse(getDesigner().getQuestionButton().isEnabled());
-		Assert.assertFalse(getDesigner().getAnswerButton().isEnabled());
-		Assert.assertFalse(getDesigner().getSubanswerButton().isEnabled());
-		Assert.assertFalse(getDesigner().getTextButton().isEnabled());
-		Assert.assertFalse(getDesigner().getFieldButton().isEnabled());
+		goToDesignerPage();
+		Assert.assertFalse(getDesignerPage().getGroupButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getQuestionButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getTextButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getFieldButton().isEnabled());
 		logOut();
 		deleteForm();
 	}
@@ -110,13 +110,13 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void checkGroupQuestionAnswerSubanswerAtBlockLevel() {
 		createNewBlock(NEW_BLOCK_NAME);
-		goToDesigner();
-		Assert.assertFalse(getDesigner().getGroupButton().isEnabled());
-		Assert.assertFalse(getDesigner().getQuestionButton().isEnabled());
-		Assert.assertFalse(getDesigner().getAnswerButton().isEnabled());
-		Assert.assertFalse(getDesigner().getSubanswerButton().isEnabled());
-		Assert.assertFalse(getDesigner().getTextButton().isEnabled());
-		Assert.assertFalse(getDesigner().getFieldButton().isEnabled());
+		goToDesignerPage();
+		Assert.assertFalse(getDesignerPage().getGroupButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getQuestionButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getTextButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getFieldButton().isEnabled());
 		logOut();
 		deleteBlock();
 	}
@@ -136,90 +136,90 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtFormCategoryLevel() {
 		createNewFormAndCategory();
-		Assert.assertFalse(getDesigner().getAnswerButton().isEnabled());
-		Assert.assertFalse(getDesigner().getSubanswerButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
 		saveDesignAndRemoveForm();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtBlockCategoryLevel() {
 		createNewBlockAndCategory();
-		Assert.assertFalse(getDesigner().getAnswerButton().isEnabled());
-		Assert.assertFalse(getDesigner().getSubanswerButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
 		saveDesignAndRemoveBlock();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void createTextAtFormCategoryLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewText();
+		getDesignerPage().addNewText();
 		saveDesignAndRemoveForm();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void createTextAtBlockCategoryLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewText();
+		getDesignerPage().addNewText();
 		saveDesignAndRemoveBlock();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void createFieldAtFormCategoryLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewField();
+		getDesignerPage().addNewField();
 		saveDesignAndRemoveForm();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void createFieldAtBlockCategoryLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewField();
+		getDesignerPage().addNewField();
 		saveDesignAndRemoveBlock();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionAtFormCategoryLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewQuestion();
+		getDesignerPage().addNewQuestion();
 		saveDesignAndRemoveForm();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionAtBlockCategoryLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewQuestion();
+		getDesignerPage().addNewQuestion();
 		saveDesignAndRemoveBlock();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void createGroupAtFormCategoryLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		saveDesignAndRemoveForm();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void createGroupAtBlockCategoryLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		saveDesignAndRemoveBlock();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtFormGroupLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
-		Assert.assertFalse(getDesigner().getAnswerButton().isEnabled());
-		Assert.assertFalse(getDesigner().getSubanswerButton().isEnabled());
+		getDesignerPage().addNewGroup();
+		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
 		saveDesignAndRemoveForm();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtBlockGroupLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
-		Assert.assertFalse(getDesigner().getAnswerButton().isEnabled());
-		Assert.assertFalse(getDesigner().getSubanswerButton().isEnabled());
+		getDesignerPage().addNewGroup();
+		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
 		saveDesignAndRemoveBlock();
 	}
 
@@ -227,7 +227,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextTextAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputTextSubformatTextQuestion();
+			getDesignerPage().addNewInputTextSubformatTextQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -238,7 +238,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextTextAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputTextSubformatTextQuestion();
+			getDesignerPage().addNewInputTextSubformatTextQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -249,7 +249,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextEmailAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputTextSubformatEmailQuestion();
+			getDesignerPage().addNewInputTextSubformatEmailQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -260,7 +260,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextEmailAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputTextSubformatEmailQuestion();
+			getDesignerPage().addNewInputTextSubformatEmailQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -271,7 +271,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextPhoneAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputTextSubformatPhoneQuestion();
+			getDesignerPage().addNewInputTextSubformatPhoneQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -282,7 +282,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextPhoneAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputTextSubformatPhoneQuestion();
+			getDesignerPage().addNewInputTextSubformatPhoneQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -293,7 +293,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextIbanAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputTextSubformatIbanQuestion();
+			getDesignerPage().addNewInputTextSubformatIbanQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -304,7 +304,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextIbanAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputTextSubformatIbanQuestion();
+			getDesignerPage().addNewInputTextSubformatIbanQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -315,7 +315,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextBsnAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputTextSubformatBsnQuestion();
+			getDesignerPage().addNewInputTextSubformatBsnQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -326,7 +326,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextBsnAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputTextSubformatBsnQuestion();
+			getDesignerPage().addNewInputTextSubformatBsnQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -337,7 +337,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputNumberFloatAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputNumberSubformatFloatQuestion();
+			getDesignerPage().addNewInputNumberSubformatFloatQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -348,7 +348,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputNumberFloatAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputNumberSubformatFloatQuestion();
+			getDesignerPage().addNewInputNumberSubformatFloatQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -359,7 +359,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputNumberNumberAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputNumberSubformatNumberQuestion();
+			getDesignerPage().addNewInputNumberSubformatNumberQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -370,7 +370,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputNumberNumberAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputNumberSubformatNumberQuestion();
+			getDesignerPage().addNewInputNumberSubformatNumberQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -381,7 +381,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDateDateAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputDateSubformatDateQuestion();
+			getDesignerPage().addNewInputDateSubformatDateQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -392,7 +392,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDateDaterAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputDateSubformatDateQuestion();
+			getDesignerPage().addNewInputDateSubformatDateQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -403,7 +403,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDatePastAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputDateSubformatPastQuestion();
+			getDesignerPage().addNewInputDateSubformatPastQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -414,7 +414,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDatePastAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputDateSubformatPastQuestion();
+			getDesignerPage().addNewInputDateSubformatPastQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -425,7 +425,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDateFutureAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputDateSubformatFutureQuestion();
+			getDesignerPage().addNewInputDateSubformatFutureQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -436,7 +436,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDateFutureAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputDateSubformatFutureQuestion();
+			getDesignerPage().addNewInputDateSubformatFutureQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -447,7 +447,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputPostalCodePostalCodeAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputPostalcodeSubformatPostalcodeQuestion();
+			getDesignerPage().addNewInputPostalcodeSubformatPostalcodeQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -458,7 +458,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputPostalCodePostalCodeAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputPostalcodeSubformatPostalcodeQuestion();
+			getDesignerPage().addNewInputPostalcodeSubformatPostalcodeQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -469,7 +469,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionTextAreaAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewTextAreaQuestion();
+			getDesignerPage().addNewTextAreaQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -480,7 +480,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionTextAreaAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewTextAreaQuestion();
+			getDesignerPage().addNewTextAreaQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -491,7 +491,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionRadioButtonAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewRadioButtonQuestion();
+			getDesignerPage().addNewRadioButtonQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -502,7 +502,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionRadioButtonAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewRadioButtonQuestion();
+			getDesignerPage().addNewRadioButtonQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -513,7 +513,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionMultiCheckBoxAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewMultiCheckboxQuestion();
+			getDesignerPage().addNewMultiCheckboxQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -524,7 +524,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionMultiCheckBoxAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewMultiCheckboxQuestion();
+			getDesignerPage().addNewMultiCheckboxQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -535,7 +535,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionListAtFormCategoryLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewListQuestion();
+			getDesignerPage().addNewListQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -546,7 +546,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionListAtBlockCategoryLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewListQuestion();
+			getDesignerPage().addNewListQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -557,8 +557,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextTextAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputTextSubformatTextQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputTextSubformatTextQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -569,8 +569,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextTextAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputTextSubformatTextQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputTextSubformatTextQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -581,8 +581,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextEmailAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputTextSubformatEmailQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputTextSubformatEmailQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -593,8 +593,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextEmailAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputTextSubformatEmailQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputTextSubformatEmailQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -605,8 +605,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextPhoneAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputTextSubformatPhoneQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputTextSubformatPhoneQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -617,8 +617,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextPhoneAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputTextSubformatPhoneQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputTextSubformatPhoneQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -629,8 +629,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextIbanAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputTextSubformatIbanQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputTextSubformatIbanQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -641,8 +641,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextIbanAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputTextSubformatIbanQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputTextSubformatIbanQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -653,8 +653,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextBsnAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputTextSubformatBsnQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputTextSubformatBsnQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -665,8 +665,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputTextBsnAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputTextSubformatBsnQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputTextSubformatBsnQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -677,8 +677,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputNumberFloatAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputNumberSubformatFloatQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputNumberSubformatFloatQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -689,8 +689,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputNumberFloatAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputNumberSubformatFloatQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputNumberSubformatFloatQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -701,8 +701,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputNumberNumberAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputNumberSubformatNumberQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputNumberSubformatNumberQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -713,8 +713,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputNumberNumberAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputNumberSubformatNumberQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputNumberSubformatNumberQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -725,8 +725,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDateDateAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputDateSubformatDateQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputDateSubformatDateQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -737,8 +737,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDateDaterAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputDateSubformatDateQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputDateSubformatDateQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -749,8 +749,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDatePastAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputDateSubformatPastQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputDateSubformatPastQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -761,8 +761,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDatePastAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputDateSubformatPastQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputDateSubformatPastQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -773,8 +773,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDateFutureAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputDateSubformatFutureQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputDateSubformatFutureQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -785,8 +785,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputDateFutureAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputDateSubformatFutureQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputDateSubformatFutureQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -797,8 +797,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputPostalCodePostalCodeAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputPostalcodeSubformatPostalcodeQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputPostalcodeSubformatPostalcodeQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -809,8 +809,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionInputPostalCodePostalCodeAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputPostalcodeSubformatPostalcodeQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputPostalcodeSubformatPostalcodeQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -821,8 +821,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionTextAreaAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewTextAreaQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewTextAreaQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -833,8 +833,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionTextAreaAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewTextAreaQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewTextAreaQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -845,8 +845,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionRadioButtonAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewRadioButtonQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewRadioButtonQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -857,8 +857,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionRadioButtonAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewRadioButtonQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewRadioButtonQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -869,8 +869,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionMultiCheckBoxAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewMultiCheckboxQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewMultiCheckboxQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -881,8 +881,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionMultiCheckBoxAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewMultiCheckboxQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewMultiCheckboxQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -893,8 +893,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionListAtFormGroupLevel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewListQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewListQuestion();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -905,8 +905,8 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createQuestionListAtBlockGroupLevel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewListQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewListQuestion();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -917,9 +917,9 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void checkAnswerSubanswerAtFormCategoryQuestionInput() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewInputQuestion();
-			Assert.assertFalse(getDesigner().getAnswerButton().isEnabled());
-			Assert.assertFalse(getDesigner().getSubanswerButton().isEnabled());
+			getDesignerPage().addNewInputQuestion();
+			Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
+			Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -930,9 +930,9 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void checkAnswerSubanswerAtBlockCategoryQuestionInput() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewInputQuestion();
-			Assert.assertFalse(getDesigner().getAnswerButton().isEnabled());
-			Assert.assertFalse(getDesigner().getSubanswerButton().isEnabled());
+			getDesignerPage().addNewInputQuestion();
+			Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
+			Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -943,10 +943,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void checkAnswerSubanswerAtFormCategoryGroupQuestionInput() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputQuestion();
-			Assert.assertFalse(getDesigner().getAnswerButton().isEnabled());
-			Assert.assertFalse(getDesigner().getSubanswerButton().isEnabled());
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputQuestion();
+			Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
+			Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -957,10 +957,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void checkAnswerSubanswerAtBlockCategoryGroupQuestionInput() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputQuestion();
-			Assert.assertFalse(getDesigner().getAnswerButton().isEnabled());
-			Assert.assertFalse(getDesigner().getSubanswerButton().isEnabled());
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputQuestion();
+			Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
+			Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -971,13 +971,13 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createAnswerSubanswerAtFormCategoryQuestionRadioButton() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewSubanswer();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewSubanswer();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -988,13 +988,13 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createAnswerSubanswerAtBlockCategoryQuestionRadioButton() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewSubanswer();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewSubanswer();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1005,14 +1005,14 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createAnswerSubanswerAtFormCategoryGroupQuestionRadioButton() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewSubanswer();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewSubanswer();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1023,14 +1023,14 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void createAnswerSubanswerAtBlockCategoryGroupQuestionRadioButton() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().addNewSubanswer();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().addNewSubanswer();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1041,10 +1041,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void deleteSubanswerAtFormCategoryQuestionRadioButton() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().clickDeleteButton();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().clickDeleteButton();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1055,10 +1055,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void deleteSubanswerAtBlockCategoryQuestionRadioButton() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().clickDeleteButton();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().clickDeleteButton();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1069,11 +1069,11 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void deleteSubanswerAtFormCategoryGroupQuestionRadioButton() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().clickDeleteButton();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().clickDeleteButton();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1084,11 +1084,11 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void deleteSubanswerAtBlockCategoryGroupQuestionRadioButton() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().clickDeleteButton();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().clickDeleteButton();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1099,9 +1099,9 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void deleteAnswerAtFormCategoryQuestionRadioButton() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().clickDeleteButton();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().clickDeleteButton();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1112,9 +1112,9 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void deleteAnswerAtBlockCategoryQuestionRadioButton() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().clickDeleteButton();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().clickDeleteButton();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1125,10 +1125,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void deleteAnswerAtFormCategoryGroupQuestionRadioButton() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().clickDeleteButton();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().clickDeleteButton();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1139,10 +1139,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void deleteAnswerAtBlockCategoryGroupQuestionRadioButton() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().clickDeleteButton();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().clickDeleteButton();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1152,64 +1152,64 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void deleteQuestionAtFormCategory() {
 		createNewFormAndCategory();
-		getDesigner().addNewQuestion();
-		getDesigner().clickDeleteButton();
+		getDesignerPage().addNewQuestion();
+		getDesignerPage().clickDeleteButton();
 		saveDesignAndRemoveForm();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteQuestionAtBlockCategory() {
 		createNewBlockAndCategory();
-		getDesigner().addNewQuestion();
-		getDesigner().clickDeleteButton();
+		getDesignerPage().addNewQuestion();
+		getDesignerPage().clickDeleteButton();
 		saveDesignAndRemoveBlock();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteQuestionAtFormCategoryGroup() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
-		getDesigner().addNewQuestion();
-		getDesigner().clickDeleteButton();
+		getDesignerPage().addNewGroup();
+		getDesignerPage().addNewQuestion();
+		getDesignerPage().clickDeleteButton();
 		saveDesignAndRemoveForm();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteQuestionAtBlockCategoryGroup() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
-		getDesigner().addNewQuestion();
-		getDesigner().clickDeleteButton();
+		getDesignerPage().addNewGroup();
+		getDesignerPage().addNewQuestion();
+		getDesignerPage().clickDeleteButton();
 		saveDesignAndRemoveBlock();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteGroupAtFormCategory() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
-		getDesigner().clickDeleteButton();
+		getDesignerPage().addNewGroup();
+		getDesignerPage().clickDeleteButton();
 		saveDesignAndRemoveForm();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteGroupAtBlockCategory() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
-		getDesigner().clickDeleteButton();
+		getDesignerPage().addNewGroup();
+		getDesignerPage().clickDeleteButton();
 		saveDesignAndRemoveBlock();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteFormCategory() {
 		createNewFormAndCategory();
-		getDesigner().clickDeleteButton();
+		getDesignerPage().clickDeleteButton();
 		saveDesignAndRemoveForm();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteBlockCategory() {
 		createNewBlockAndCategory();
-		getDesigner().clickDeleteButton();
+		getDesignerPage().clickDeleteButton();
 		saveDesignAndRemoveBlock();
 	}
 
@@ -1217,10 +1217,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void modifyFormCategoryTechnicalName() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().getCategoryPropertiesView().setTechnicalName(MODIFIED_NAME);
-			getDesigner().saveDesign();
+			getDesignerPage().getCategoryPropertiesView().setTechnicalName(MODIFIED_NAME);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(TREE_TABLE_CATEGORY_ROW_INDEX);
-			Assert.assertEquals(getDesigner().getCategoryPropertiesView().getTechnicalName(), MODIFIED_NAME);
+			Assert.assertEquals(getDesignerPage().getCategoryPropertiesView().getTechnicalName(), MODIFIED_NAME);
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1231,10 +1231,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void modifyBlockCategoryTechnicalName() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().getCategoryPropertiesView().setTechnicalName(MODIFIED_NAME);
-			getDesigner().saveDesign();
+			getDesignerPage().getCategoryPropertiesView().setTechnicalName(MODIFIED_NAME);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(TREE_TABLE_CATEGORY_ROW_INDEX);
-			Assert.assertEquals(getDesigner().getCategoryPropertiesView().getTechnicalName(), MODIFIED_NAME);
+			Assert.assertEquals(getDesignerPage().getCategoryPropertiesView().getTechnicalName(), MODIFIED_NAME);
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1245,11 +1245,11 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void modifyFormGroupTechnicalName() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().getGroupPropertiesView().setTechnicalName(MODIFIED_NAME);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().getGroupPropertiesView().setTechnicalName(MODIFIED_NAME);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(TREE_TABLE_CATEGORY_GROUP_ROW_INDEX);
-			Assert.assertEquals(getDesigner().getGroupPropertiesView().getTechnicalName(), MODIFIED_NAME);
+			Assert.assertEquals(getDesignerPage().getGroupPropertiesView().getTechnicalName(), MODIFIED_NAME);
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1260,11 +1260,11 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void modifyBlockGroupTechnicalName() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().getGroupPropertiesView().setTechnicalName(MODIFIED_NAME);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().getGroupPropertiesView().setTechnicalName(MODIFIED_NAME);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(TREE_TABLE_CATEGORY_GROUP_ROW_INDEX);
-			Assert.assertEquals(getDesigner().getGroupPropertiesView().getTechnicalName(), MODIFIED_NAME);
+			Assert.assertEquals(getDesignerPage().getGroupPropertiesView().getTechnicalName(), MODIFIED_NAME);
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1273,11 +1273,11 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	private void addQuestionModifyAndCheckTechnicalName(String modifiedName, Integer rowToCheck) {
 		try {
-			getDesigner().addNewQuestion();
-			getDesigner().getQuestionPropertiesView().setTechnicalName(modifiedName);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewQuestion();
+			getDesignerPage().getQuestionPropertiesView().setTechnicalName(modifiedName);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(rowToCheck);
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().getTechnicalName(), modifiedName);
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().getTechnicalName(), modifiedName);
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
 		}
@@ -1300,7 +1300,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionTechnicalNameAtFormGroupLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
 	}
@@ -1308,18 +1308,18 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionTechnicalNameAtBlockGroupLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
 	}
 
 	private void addTextModifyAndCheckTechnicalName(String modifiedName, Integer rowToCheck) {
 		try {
-			getDesigner().addNewText();
-			getDesigner().getTextPropertiesView().setTechnicalName(modifiedName);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewText();
+			getDesignerPage().getTextPropertiesView().setTechnicalName(modifiedName);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(rowToCheck);
-			Assert.assertEquals(getDesigner().getTextPropertiesView().getTechnicalName(), modifiedName);
+			Assert.assertEquals(getDesignerPage().getTextPropertiesView().getTechnicalName(), modifiedName);
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
 		}
@@ -1342,7 +1342,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyTextTechnicalNameAtFormGroupLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addTextModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
 	}
@@ -1350,18 +1350,18 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyTextTechnicalNameAtBlockGroupLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addTextModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
 	}
 
 	private void addFieldModifyAndCheckTechnicalName(String modifiedName, Integer rowToCheck) {
 		try {
-			getDesigner().addNewField();
-			getDesigner().getFieldPropertiesView().setTechnicalName(modifiedName);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewField();
+			getDesignerPage().getFieldPropertiesView().setTechnicalName(modifiedName);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(rowToCheck);
-			Assert.assertEquals(getDesigner().getFieldPropertiesView().getTechnicalName(), modifiedName);
+			Assert.assertEquals(getDesignerPage().getFieldPropertiesView().getTechnicalName(), modifiedName);
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
 		}
@@ -1384,7 +1384,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFieldTechnicalNameAtFormGroupLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addFieldModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
 	}
@@ -1392,7 +1392,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFieldTechnicalNameAtBlockGroupLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addFieldModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
 	}
@@ -1401,10 +1401,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void modifyFormCategoryLabel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().getCategoryPropertiesView().setLabel(MODIFIED_LABEL);
-			getDesigner().saveDesign();
+			getDesignerPage().getCategoryPropertiesView().setLabel(MODIFIED_LABEL);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(TREE_TABLE_CATEGORY_ROW_INDEX);
-			Assert.assertEquals(getDesigner().getCategoryPropertiesView().getLabel(), MODIFIED_LABEL);
+			Assert.assertEquals(getDesignerPage().getCategoryPropertiesView().getLabel(), MODIFIED_LABEL);
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1415,10 +1415,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void modifyBlockCategoryLabel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().getCategoryPropertiesView().setLabel(MODIFIED_LABEL);
-			getDesigner().saveDesign();
+			getDesignerPage().getCategoryPropertiesView().setLabel(MODIFIED_LABEL);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(TREE_TABLE_CATEGORY_ROW_INDEX);
-			Assert.assertEquals(getDesigner().getCategoryPropertiesView().getLabel(), MODIFIED_LABEL);
+			Assert.assertEquals(getDesignerPage().getCategoryPropertiesView().getLabel(), MODIFIED_LABEL);
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1429,11 +1429,11 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void modifyFormGroupLabel() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().getGroupPropertiesView().setLabel(MODIFIED_LABEL);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().getGroupPropertiesView().setLabel(MODIFIED_LABEL);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(TREE_TABLE_CATEGORY_GROUP_ROW_INDEX);
-			Assert.assertEquals(getDesigner().getGroupPropertiesView().getLabel(), MODIFIED_LABEL);
+			Assert.assertEquals(getDesignerPage().getGroupPropertiesView().getLabel(), MODIFIED_LABEL);
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1444,11 +1444,11 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void modifyBlockGroupLabel() {
 		try {
 			createNewBlockAndCategory();
-			getDesigner().addNewGroup();
-			getDesigner().getGroupPropertiesView().setLabel(MODIFIED_LABEL);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().getGroupPropertiesView().setLabel(MODIFIED_LABEL);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(TREE_TABLE_CATEGORY_GROUP_ROW_INDEX);
-			Assert.assertEquals(getDesigner().getGroupPropertiesView().getLabel(), MODIFIED_LABEL);
+			Assert.assertEquals(getDesignerPage().getGroupPropertiesView().getLabel(), MODIFIED_LABEL);
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1457,11 +1457,11 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	private void addQuestionModifyAndCheckLabel(String modifiedLabel, Integer rowToCheck) {
 		try {
-			getDesigner().addNewQuestion();
-			getDesigner().getQuestionPropertiesView().setLabel(modifiedLabel);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewQuestion();
+			getDesignerPage().getQuestionPropertiesView().setLabel(modifiedLabel);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(rowToCheck);
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().getLabel(), modifiedLabel);
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().getLabel(), modifiedLabel);
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
 		}
@@ -1484,7 +1484,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionLabelAtFormGroupLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
 	}
@@ -1492,19 +1492,19 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionLabelAtBlockGroupLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
 	}
 
 	private void addQuestionAnswerModifyAndCheckLabel(String modifiedLabel, Integer rowToCheck) {
 		try {
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().getAnswerPropertiesView().setLabel(modifiedLabel);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().getAnswerPropertiesView().setLabel(modifiedLabel);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(rowToCheck);
-			Assert.assertEquals(getDesigner().getAnswerPropertiesView().getLabel(), modifiedLabel);
+			Assert.assertEquals(getDesignerPage().getAnswerPropertiesView().getLabel(), modifiedLabel);
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
 		}
@@ -1527,7 +1527,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerLabelAtFormGroupQuestionLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionAnswerModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_GROUP_QUESTION_ANSWER_ROW_INDEX);
 		saveDesignAndRemoveForm();
 	}
@@ -1535,20 +1535,20 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerLabelAtBlockGroupQuestionLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionAnswerModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_GROUP_QUESTION_ANSWER_ROW_INDEX);
 		saveDesignAndRemoveBlock();
 	}
 
 	private void addQuestionAnswerSubanswerModifyAndCheckLabel(String modifiedLabel, Integer rowToCheck) {
 		try {
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().getSubanswerPropertiesView().setLabel(modifiedLabel);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().getSubanswerPropertiesView().setLabel(modifiedLabel);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(rowToCheck);
-			Assert.assertEquals(getDesigner().getSubanswerPropertiesView().getLabel(), modifiedLabel);
+			Assert.assertEquals(getDesignerPage().getSubanswerPropertiesView().getLabel(), modifiedLabel);
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
 		}
@@ -1573,7 +1573,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerLabelAtFormGroupQuestionAnswerLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionAnswerSubanswerModifyAndCheckLabel(MODIFIED_LABEL,
 				TREE_TABLE_CATEGORY_GROUP_QUESTION_ANSWER_SUBANSWER_ROW_INDEX);
 		saveDesignAndRemoveForm();
@@ -1582,7 +1582,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerLabelAtBlockGroupQuestionAnswerLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionAnswerSubanswerModifyAndCheckLabel(MODIFIED_LABEL,
 				TREE_TABLE_CATEGORY_GROUP_QUESTION_ANSWER_SUBANSWER_ROW_INDEX);
 		saveDesignAndRemoveBlock();
@@ -1592,12 +1592,12 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void modifyFormDescription() {
 		try {
 			createNewForm(NEW_FORM_NAME);
-			goToDesigner();
-			getDesigner().getFormPropertiesView().setDescription(MODIFIED_DESCRIPTION);
-			getDesigner().saveDesign();
-			goToFormManager();
-			goToDesigner();
-			Assert.assertEquals(getDesigner().getFormPropertiesView().getDescription(), MODIFIED_DESCRIPTION);
+			goToDesignerPage();
+			getDesignerPage().getFormPropertiesView().setDescription(MODIFIED_DESCRIPTION);
+			getDesignerPage().saveDesign();
+			goToFormManagerPage();
+			goToDesignerPage();
+			Assert.assertEquals(getDesignerPage().getFormPropertiesView().getDescription(), MODIFIED_DESCRIPTION);
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1606,11 +1606,11 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	private void addQuestionModifyAndCheckDescription(String modifiedDescription, Integer rowToCheck) {
 		try {
-			getDesigner().addNewQuestion();
-			getDesigner().getQuestionPropertiesView().setDescription(modifiedDescription);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewQuestion();
+			getDesignerPage().getQuestionPropertiesView().setDescription(modifiedDescription);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(rowToCheck);
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().getDescription(), modifiedDescription);
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().getDescription(), modifiedDescription);
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
 		}
@@ -1633,7 +1633,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionDescriptionAtFormGroupLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckDescription(MODIFIED_DESCRIPTION, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
 	}
@@ -1641,19 +1641,19 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionDescriptionAtBlockGroupLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckDescription(MODIFIED_DESCRIPTION, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
 	}
 
 	private void addAnswerModifyAndCheckDescription(String modifiedDescription, Integer rowToCheck) {
 		try {
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().getAnswerPropertiesView().setDescription(modifiedDescription);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().getAnswerPropertiesView().setDescription(modifiedDescription);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(rowToCheck);
-			Assert.assertEquals(getDesigner().getAnswerPropertiesView().getDescription(), modifiedDescription);
+			Assert.assertEquals(getDesignerPage().getAnswerPropertiesView().getDescription(), modifiedDescription);
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
 		}
@@ -1676,7 +1676,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerDescriptionAtFormGroupQuestionLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 
 		saveDesignAndRemoveForm();
 	}
@@ -1684,20 +1684,20 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerDescriptionAtBlockGroupQuestionLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addAnswerModifyAndCheckDescription(MODIFIED_DESCRIPTION, TREE_TABLE_CATEGORY_GROUP_QUESTION_ANSWER_ROW_INDEX);
 		saveDesignAndRemoveBlock();
 	}
 
 	private void addSubAnswerModifyAndCheckDescription(String modifiedDescription, Integer rowToCheck) {
 		try {
-			getDesigner().addNewRadioButtonQuestion();
-			getDesigner().addNewAnswer();
-			getDesigner().addNewSubanswer();
-			getDesigner().getSubanswerPropertiesView().setDescription(modifiedDescription);
-			getDesigner().saveDesign();
+			getDesignerPage().addNewRadioButtonQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewSubanswer();
+			getDesignerPage().getSubanswerPropertiesView().setDescription(modifiedDescription);
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(rowToCheck);
-			Assert.assertEquals(getDesigner().getSubanswerPropertiesView().getDescription(), modifiedDescription);
+			Assert.assertEquals(getDesignerPage().getSubanswerPropertiesView().getDescription(), modifiedDescription);
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
 		}
@@ -1722,7 +1722,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerDescriptionAtFormGroupQuestionAnswerLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addSubAnswerModifyAndCheckDescription(MODIFIED_DESCRIPTION,
 				TREE_TABLE_CATEGORY_GROUP_QUESTION_ANSWER_SUBANSWER_ROW_INDEX);
 		saveDesignAndRemoveForm();
@@ -1731,7 +1731,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerDescriptionAtBlockGroupQuestionAnswerLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addSubAnswerModifyAndCheckDescription(MODIFIED_DESCRIPTION,
 				TREE_TABLE_CATEGORY_GROUP_QUESTION_ANSWER_SUBANSWER_ROW_INDEX);
 		saveDesignAndRemoveBlock();
@@ -1739,12 +1739,12 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	private void addQuestionModifyAndCheckMandatory(Integer rowToCheck) {
 		try {
-			getDesigner().addNewQuestion();
-			String mandatoryValue = getDesigner().getQuestionPropertiesView().getMandatoryCheckBoxValue();
-			getDesigner().getQuestionPropertiesView().clickMandatoryCheckBox();
-			getDesigner().saveDesign();
+			getDesignerPage().addNewQuestion();
+			String mandatoryValue = getDesignerPage().getQuestionPropertiesView().getMandatoryCheckBoxValue();
+			getDesignerPage().getQuestionPropertiesView().clickMandatoryCheckBox();
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(rowToCheck);
-			Assert.assertNotEquals(getDesigner().getQuestionPropertiesView().getMandatoryCheckBoxValue(),
+			Assert.assertNotEquals(getDesignerPage().getQuestionPropertiesView().getMandatoryCheckBoxValue(),
 					mandatoryValue);
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1768,7 +1768,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionMandatoryAtFormGroupLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckMandatory(TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
 	}
@@ -1776,19 +1776,19 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionMandatoryAtBlockGroupLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckMandatory(TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
 	}
 
 	private void addQuestionModifyAndCheckHorizontal(Integer rowToCheck) {
 		try {
-			getDesigner().addNewRadioButtonQuestion();
-			String horizontalValue = getDesigner().getQuestionPropertiesView().getHorizontalCheckBoxValue();
-			getDesigner().getQuestionPropertiesView().clickHorizontalCheckBox();
-			getDesigner().saveDesign();
+			getDesignerPage().addNewRadioButtonQuestion();
+			String horizontalValue = getDesignerPage().getQuestionPropertiesView().getHorizontalCheckBoxValue();
+			getDesignerPage().getQuestionPropertiesView().clickHorizontalCheckBox();
+			getDesignerPage().saveDesign();
 			deselectSelecTableRow(rowToCheck);
-			Assert.assertNotEquals(getDesigner().getQuestionPropertiesView().getHorizontalCheckBoxValue(),
+			Assert.assertNotEquals(getDesignerPage().getQuestionPropertiesView().getHorizontalCheckBoxValue(),
 					horizontalValue);
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1812,7 +1812,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionHorizontalAtFormGroupLevel() {
 		createNewFormAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckHorizontal(TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
 	}
@@ -1820,7 +1820,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionHorizontalAtBlockGroupLevel() {
 		createNewBlockAndCategory();
-		getDesigner().addNewGroup();
+		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckHorizontal(TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
 	}
@@ -1829,16 +1829,16 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void checkQuestionHorizontalIsOnlyActivatedForRadioButtonQuestions() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewRadioButtonQuestion();
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().isHorizontalEnabled(), true);
-			getDesigner().addNewListQuestion();
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().isHorizontalEnabled(), false);
-			getDesigner().addNewMultiCheckboxQuestion();
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().isHorizontalEnabled(), false);
-			getDesigner().addNewInputQuestion();
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().isHorizontalEnabled(), false);
-			getDesigner().addNewTextAreaQuestion();
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().isHorizontalEnabled(), false);
+			getDesignerPage().addNewRadioButtonQuestion();
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().isHorizontalEnabled(), true);
+			getDesignerPage().addNewListQuestion();
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().isHorizontalEnabled(), false);
+			getDesignerPage().addNewMultiCheckboxQuestion();
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().isHorizontalEnabled(), false);
+			getDesignerPage().addNewInputQuestion();
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().isHorizontalEnabled(), false);
+			getDesignerPage().addNewTextAreaQuestion();
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().isHorizontalEnabled(), false);
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1849,16 +1849,16 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void checkQuestionMandatoryIsActivatedForAllQuestions() {
 		try {
 			createNewFormAndCategory();
-			getDesigner().addNewRadioButtonQuestion();
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().ismandatoryEnabled(), true);
-			getDesigner().addNewListQuestion();
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().ismandatoryEnabled(), true);
-			getDesigner().addNewMultiCheckboxQuestion();
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().ismandatoryEnabled(), true);
-			getDesigner().addNewInputQuestion();
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().ismandatoryEnabled(), true);
-			getDesigner().addNewTextAreaQuestion();
-			Assert.assertEquals(getDesigner().getQuestionPropertiesView().ismandatoryEnabled(), true);
+			getDesignerPage().addNewRadioButtonQuestion();
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().ismandatoryEnabled(), true);
+			getDesignerPage().addNewListQuestion();
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().ismandatoryEnabled(), true);
+			getDesignerPage().addNewMultiCheckboxQuestion();
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().ismandatoryEnabled(), true);
+			getDesignerPage().addNewInputQuestion();
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().ismandatoryEnabled(), true);
+			getDesignerPage().addNewTextAreaQuestion();
+			Assert.assertEquals(getDesignerPage().getQuestionPropertiesView().ismandatoryEnabled(), true);
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1869,12 +1869,12 @@ public class FormBlockDesignTests extends WebFormsTester {
 	public void modifyFormName() {
 		try {
 			createNewForm(NEW_FORM_NAME);
-			goToDesigner();
-			getDesigner().getFormPropertiesView().setName(MODIFIED_NAME);
-			getDesigner().saveDesign();
-			goToFormManager();
-			goToDesigner();
-			Assert.assertEquals(getDesigner().getFormPropertiesView().getName(), MODIFIED_NAME);
+			goToDesignerPage();
+			getDesignerPage().getFormPropertiesView().setName(MODIFIED_NAME);
+			getDesignerPage().saveDesign();
+			goToFormManagerPage();
+			goToDesignerPage();
+			Assert.assertEquals(getDesignerPage().getFormPropertiesView().getName(), MODIFIED_NAME);
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1884,10 +1884,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void saveQuestionAsBlock() {
 		createNewFormAndCategoryWithAdminRights();
-		getDesigner().addNewQuestion();
-		getDesigner().clickBlocksButton();
-		getDesigner().clickSaveBlockButton();
-		getDesigner().getNewBlockWindow().createNewBlock(NEW_BLOCK_NAME);
+		getDesignerPage().addNewQuestion();
+		getDesignerPage().clickBlocksButton();
+		getDesignerPage().clickSaveBlockButton();
+		getDesignerPage().getNewBlockWindow().createNewBlock(NEW_BLOCK_NAME);
 		checkNotificationIsHumanized(getNotification());
 		saveDesignAndRemoveForm();
 		deleteBlock();
@@ -1896,10 +1896,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void saveGroupAsBlock() {
 		createNewFormAndCategoryWithAdminRights();
-		getDesigner().addNewGroup();
-		getDesigner().clickBlocksButton();
-		getDesigner().clickSaveBlockButton();
-		getDesigner().getNewBlockWindow().createNewBlock(NEW_BLOCK_NAME);
+		getDesignerPage().addNewGroup();
+		getDesignerPage().clickBlocksButton();
+		getDesignerPage().clickSaveBlockButton();
+		getDesignerPage().getNewBlockWindow().createNewBlock(NEW_BLOCK_NAME);
 		checkNotificationIsHumanized(getNotification());
 		saveDesignAndRemoveForm();
 		deleteBlock();
@@ -1908,9 +1908,9 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void saveCategoryAsBlock() {
 		createNewFormAndCategoryWithAdminRights();
-		getDesigner().clickBlocksButton();
-		getDesigner().clickSaveBlockButton();
-		getDesigner().getNewBlockWindow().createNewBlock(NEW_BLOCK_NAME);
+		getDesignerPage().clickBlocksButton();
+		getDesignerPage().clickSaveBlockButton();
+		getDesignerPage().getNewBlockWindow().createNewBlock(NEW_BLOCK_NAME);
 		checkNotificationIsHumanized(getNotification());
 		saveDesignAndRemoveForm();
 		deleteBlock();
@@ -1920,11 +1920,11 @@ public class FormBlockDesignTests extends WebFormsTester {
 		try {
 			// Create empty form
 			createNewFormWithAdminRights(NEW_FORM_NAME);
-			goToBlockManager();
+			goToBlockManagerPage();
 			// Create block with design
-			getBlockManager().createNewBlock(NEW_BLOCK_NAME);
-			goToDesigner();
-			getDesigner().createAndSaveSimpleBlockDesign();
+			getBlockManagerPage().createNewBlock(NEW_BLOCK_NAME);
+			goToDesignerPage();
+			getDesignerPage().createAndSaveSimpleBlockDesign();
 			// Import the block design in the form
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -1934,12 +1934,12 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void importBlock() {
 		createEmptyFormAndSimpleBlockDesign();
-		goToFormManager();
-		goToDesigner();
-		getDesigner().clickBlocksButton();
-		getDesigner().clickInsertBlockButton();
+		goToFormManagerPage();
+		goToDesignerPage();
+		getDesignerPage().clickBlocksButton();
+		getDesignerPage().clickInsertBlockButton();
 		clickAcceptButtonIfExists();
-		getDesigner().saveDesign();
+		getDesignerPage().saveDesign();
 		logOut();
 		deleteForm();
 		deleteBlock();

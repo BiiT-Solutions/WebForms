@@ -24,7 +24,7 @@ public class BasicFuncionalityTests extends WebFormsTester {
 	public void editFormOrganizationWithoutPermissions() {
 		loginFormAdmin1();
 		try {
-			getFormManager().createNewFormWithOrganization(NEW_FORM_NAME, ORGANIZATION_NAME);
+			getFormManagerPage().createNewFormWithOrganization(NEW_FORM_NAME, ORGANIZATION_NAME);
 			// If no exception is launched the test is not valid
 			// The user is not allowed to edit the organization
 			Assert.fail();
@@ -40,9 +40,9 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		createNewFormAndLogout(NEW_FORM_NAME);
 		// Starting the real test
 		loginRead1();
-		goToDesigner();
+		goToDesignerPage();
 		checkNotificationIsWarning(getNotification());
-		Assert.assertFalse(getDesigner().getSaveButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getSaveButton().isEnabled());
 		logOut();
 		deleteForm();
 	}
@@ -53,9 +53,9 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		createNewFormAndLogout(NEW_FORM_NAME);
 		// Starting the real test
 		loginFormEdit1();
-		goToDesigner();
-		getDesigner().addNewCategory();
-		getDesigner().saveDesign();
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
+		getDesignerPage().saveDesign();
 		logOut();
 		deleteForm();
 	}
@@ -66,10 +66,10 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		createNewBlockAndLogout(NEW_BLOCK_NAME);
 		// Starting the real test
 		loginRead1();
-		goToBlockManager();
-		goToDesigner();
+		goToBlockManagerPage();
+		goToDesignerPage();
 		checkNotificationIsWarning(getNotification());
-		Assert.assertFalse(getDesigner().getSaveButton().isEnabled());
+		Assert.assertFalse(getDesignerPage().getSaveButton().isEnabled());
 		logOut();
 		deleteBlock();
 	}
@@ -80,10 +80,10 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		createNewBlockAndLogout(NEW_BLOCK_NAME);
 		// Starting the real test
 		loginBlockEdit1();
-		goToBlockManager();
-		goToDesigner();
-		getDesigner().addNewCategory();
-		getDesigner().saveDesign();
+		goToBlockManagerPage();
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
+		getDesignerPage().saveDesign();
 		logOut();
 		deleteBlock();
 	}
@@ -91,12 +91,12 @@ public class BasicFuncionalityTests extends WebFormsTester {
 	@Test(groups = "basicFunctionality")
 	public void createFormfinishFormCheckStatus() {
 		loginFormEdit1();
-		getFormManager().createNewForm(NEW_FORM_NAME);
-		goToDesigner();
-		getDesigner().finishForm();
+		getFormManagerPage().createNewForm(NEW_FORM_NAME);
+		goToDesignerPage();
+		getDesignerPage().finishForm();
 		clickAcceptButtonIfExists();
 		// goToFormManager();
-		Assert.assertEquals(getFormManager().getFormStatusComboBox().getValue(), STATUS_FINISHED);
+		Assert.assertEquals(getFormManagerPage().getFormStatusComboBox().getValue(), STATUS_FINISHED);
 		logOut();
 		deleteForm();
 	}

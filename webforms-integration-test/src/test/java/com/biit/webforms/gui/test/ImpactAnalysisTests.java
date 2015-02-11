@@ -21,27 +21,27 @@ public class ImpactAnalysisTests extends WebFormsTester {
 	private void createFormElementsFlowAndFinishDesign() {
 		try {
 			loginFormAdmin1();
-			getFormManager().createNewForm(NEW_FORM_NAME);
+			getFormManagerPage().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
-			goToDesigner();
-			getDesigner().createAndSaveSimpleFormDesign();
+			goToDesignerPage();
+			getDesignerPage().createAndSaveSimpleFormDesign();
 			// Create a flow
-			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-			getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-			getFlowManager().clickEditRuleButton();
+			goToFlowManagerPage();
+			getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+			getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+			getFlowManagerPage().clickEditRuleButton();
 			// Add the question IN [answer1 answer2] condition
-			getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
-			getFlowManager().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
-			getFlowManager().getFlowRuleWindow().clickInButton();
-			Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
-			getFlowManager().getFlowRuleWindow().clickAcceptButton();
+			getFlowManagerPage().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
+			getFlowManagerPage().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
+			getFlowManagerPage().getFlowRuleWindow().clickInButton();
+			Assert.assertEquals(getFlowManagerPage().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
+			getFlowManagerPage().getFlowRuleWindow().clickAcceptButton();
 			// Redraw the graph
-			getFlowManager().clickRedrawButton();
-			getFlowManager().saveFlow();
-			goToFormManager();
-			goToDesigner();
-			getDesigner().finishForm();
+			getFlowManagerPage().clickRedrawButton();
+			getFlowManagerPage().saveFlow();
+			goToFormManagerPage();
+			goToDesignerPage();
+			getDesignerPage().finishForm();
 			clickAcceptButtonIfExists();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -52,34 +52,34 @@ public class ImpactAnalysisTests extends WebFormsTester {
 	public void performImpactAnalysis() {
 		try {
 			createFormElementsFlowAndFinishDesign();
-			getFormManager().clickNewButton();
-			getFormManager().clickNewVersionButton();
+			getFormManagerPage().clickNewButton();
+			getFormManagerPage().clickNewVersionButton();
 			// Modify the form
-			goToDesigner();
-			getDesigner().addNewCategory();
-			getDesigner().addNewGroup();
-			getDesigner().addNewInputPostalCodeQuestion();
-			getDesigner().addNewMultiCheckboxQuestion();
-			getDesigner().saveDesign();
+			goToDesignerPage();
+			getDesignerPage().addNewCategory();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewInputPostalCodeQuestion();
+			getDesignerPage().addNewMultiCheckboxQuestion();
+			getDesignerPage().saveDesign();
 			// Clone flow
-			goToFlowManager();
-			getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-			getFlowManager().clickCloneButton();
+			goToFlowManagerPage();
+			getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+			getFlowManagerPage().clickCloneButton();
 			// Modify the original rule flow
-			getFlowManager().clickEditRuleButton();
-			getFlowManager().getFlowRuleWindow().addAndExpression();
-			getFlowManager().getFlowRuleWindow().selectElementInSubTreeTable(0);
-			getFlowManager().getFlowRuleWindow().clickEqualsButton();
-			getFlowManager().getFlowRuleWindow().clickAcceptButton();
-			getFlowManager().saveFlow();
+			getFlowManagerPage().clickEditRuleButton();
+			getFlowManagerPage().getFlowRuleWindow().addAndExpression();
+			getFlowManagerPage().getFlowRuleWindow().selectElementInSubTreeTable(0);
+			getFlowManagerPage().getFlowRuleWindow().clickEqualsButton();
+			getFlowManagerPage().getFlowRuleWindow().clickAcceptButton();
+			getFlowManagerPage().saveFlow();
 			checkNotificationIsHumanized(getNotification());
-			goToFormManager();
+			goToFormManagerPage();
 			// Analyze the impact between versions
-			getFormManager().clickImpactButton();
-			getFormManager().getImpactWindow().clickAcceptButton();
-			getFormManager().getDownloadWindow().checkCorrectFileGeneration();
-			getFormManager().getDownloadWindow().closeWindow();
-			getFormManager().getTestXmlWindow().closeWindow();
+			getFormManagerPage().clickImpactButton();
+			getFormManagerPage().getImpactWindow().clickAcceptButton();
+			getFormManagerPage().getDownloadWindow().checkCorrectFileGeneration();
+			getFormManagerPage().getDownloadWindow().closeWindow();
+			getFormManagerPage().getTestXmlWindow().closeWindow();
 			logOut();
 			deleteForm();
 			deleteForm();

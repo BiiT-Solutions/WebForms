@@ -33,9 +33,9 @@ public class FormFlowTests extends WebFormsTester {
 	public void validFormWithEverything() {
 		try {
 			loginFormAdmin1();
-			getFormManager().createNewForm(NEW_FORM_NAME);
-			goToDesigner();
-			getDesigner().createCompleteFormAndSave();
+			getFormManagerPage().createNewForm(NEW_FORM_NAME);
+			goToDesignerPage();
+			getDesignerPage().createCompleteFormAndSave();
 			logOut();
 			// Test finished
 			// We need to delete the form created for the test, so the database
@@ -50,20 +50,20 @@ public class FormFlowTests extends WebFormsTester {
 
 	private void loginAndInitializeForm() {
 		loginFormAdmin1();
-		getFormManager().createNewForm(NEW_FORM_NAME);
+		getFormManagerPage().createNewForm(NEW_FORM_NAME);
 		// Create a couple of categories and questions
-		goToDesigner();
+		goToDesignerPage();
 		try {
-			getDesigner().createAndSaveSimpleFormDesign();
+			getDesignerPage().createAndSaveSimpleFormDesign();
 		} catch (FieldNotEditableException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void redrawSaveTakeScreenshotAndDeleteForm(String screenshotName) {
-		getFlowManager().clickRedrawButton();
+		getFlowManagerPage().clickRedrawButton();
 		takeScreenshot(screenshotName);
-		getFlowManager().saveFlow();
+		getFlowManagerPage().saveFlow();
 		logOut();
 		// Delete the form created for the test
 		deleteForm();
@@ -73,8 +73,8 @@ public class FormFlowTests extends WebFormsTester {
 	public void validStartEndFlow() {
 		loginAndInitializeForm();
 		// Edit the flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		goToFlowManagerPage();
+		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
 		// Finish the test
 		redrawSaveTakeScreenshotAndDeleteForm(VALID_BASIC_FLOW_TEST_SCREENSHOT);
 	}
@@ -83,13 +83,13 @@ public class FormFlowTests extends WebFormsTester {
 	public void cloneFlow() {
 		loginAndInitializeForm();
 		// Edit the flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-		getFlowManager().saveFlow();
-		getFlowManager().clickRedrawButton();
+		goToFlowManagerPage();
+		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManagerPage().saveFlow();
+		getFlowManagerPage().clickRedrawButton();
 		// Clone rule
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickCloneButton();
+		getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+		getFlowManagerPage().clickCloneButton();
 		// Finish the test
 		redrawSaveTakeScreenshotAndDeleteForm(CLONE_FLOW_TEST_SCREENSHOT);
 
@@ -99,13 +99,13 @@ public class FormFlowTests extends WebFormsTester {
 	public void removeFlow() {
 		loginAndInitializeForm();
 		// Edit the flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-		getFlowManager().saveFlow();
-		getFlowManager().clickRedrawButton();
+		goToFlowManagerPage();
+		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManagerPage().saveFlow();
+		getFlowManagerPage().clickRedrawButton();
 		// Clone rule
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickRemoveButton();
+		getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+		getFlowManagerPage().clickRemoveButton();
 		// Finish the test
 		redrawSaveTakeScreenshotAndDeleteForm(REMOVE_FLOW_TEST_SCREENSHOT);
 	}
@@ -114,18 +114,18 @@ public class FormFlowTests extends WebFormsTester {
 	public void cleanSimpleFlow() {
 		loginAndInitializeForm();
 		// Edit the flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-		getFlowManager().saveFlow();
-		getFlowManager().clickRedrawButton();
+		goToFlowManagerPage();
+		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManagerPage().saveFlow();
+		getFlowManagerPage().clickRedrawButton();
 		// Clean the rule
-		getFlowManager().clickCleanFlowButton();
-		getFlowManager().getFlowCleanedWindow().clickCloseButton();
-		getFlowManager().saveFlow();
+		getFlowManagerPage().clickCleanFlowButton();
+		getFlowManagerPage().getFlowCleanedWindow().clickCloseButton();
+		getFlowManagerPage().saveFlow();
 		// Check that it is not failing if there are no rules defined
-		getFlowManager().clickCleanFlowButton();
-		if (getFlowManager().getFlowCleanedWindow().isWindowVisible()) {
-			getFlowManager().getFlowCleanedWindow().clickCloseButton();
+		getFlowManagerPage().clickCleanFlowButton();
+		if (getFlowManagerPage().getFlowCleanedWindow().isWindowVisible()) {
+			getFlowManagerPage().getFlowCleanedWindow().clickCloseButton();
 		}
 		// Finish the test
 		redrawSaveTakeScreenshotAndDeleteForm(CLEAN_SIMPLE_FLOW_TEST_SCREENSHOT);
@@ -135,17 +135,17 @@ public class FormFlowTests extends WebFormsTester {
 	public void cleanSimpleOthersFlow() {
 		loginAndInitializeForm();
 		// Create a flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		goToFlowManagerPage();
+		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
 		// Edit the flow (Create the others)
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickEditRuleButton();
-		getFlowManager().getFlowRuleWindow().clickOthersCheckBox();
-		getFlowManager().getFlowRuleWindow().clickAcceptButton();
-		getFlowManager().saveFlow();
+		getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+		getFlowManagerPage().clickEditRuleButton();
+		getFlowManagerPage().getFlowRuleWindow().clickOthersCheckBox();
+		getFlowManagerPage().getFlowRuleWindow().clickAcceptButton();
+		getFlowManagerPage().saveFlow();
 		// Clean the rule
-		getFlowManager().clickCleanFlowButton();
-		getFlowManager().getFlowCleanedWindow().clickCloseButton();
+		getFlowManagerPage().clickCleanFlowButton();
+		getFlowManagerPage().getFlowCleanedWindow().clickCloseButton();
 		// Finish the test
 		redrawSaveTakeScreenshotAndDeleteForm(CLEAN_SIMPLE_OTHERS_FLOW_TEST_SCREENSHOT);
 	}
@@ -154,30 +154,17 @@ public class FormFlowTests extends WebFormsTester {
 	public void cleanSimpleOthersFlow2() {
 		loginAndInitializeForm();
 		// Create a flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION3_NAME);
+		goToFlowManagerPage();
+		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION3_NAME);
 		// Edit the flow (Create the others)
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickEditRuleButton();
-		getFlowManager().getFlowRuleWindow().clickOthersCheckBox();
-		getFlowManager().getFlowRuleWindow().clickAcceptButton();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+		getFlowManagerPage().clickEditRuleButton();
+		getFlowManagerPage().getFlowRuleWindow().clickOthersCheckBox();
+		getFlowManagerPage().getFlowRuleWindow().clickAcceptButton();
+		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
 		// Clean the rule
-		getFlowManager().clickCleanFlowButton();
+		getFlowManagerPage().clickCleanFlowButton();
 		checkNotificationIsHumanized(getNotification());
-		// Finish the test
-		redrawSaveTakeScreenshotAndDeleteForm(CLEAN_SIMPLE_OTHERS_FLOW_2_TEST_SCREENSHOT);
-	}
-
-	// TODO FIX bug in webforms
-	public void createQuestionsFlow() {
-		loginAndInitializeForm();
-		// Create a flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-		getFlowManager().createSimpleFlowRule(QUESTION2_NAME, QUESTION3_NAME);
-		// Clean the rule
-
 		// Finish the test
 		redrawSaveTakeScreenshotAndDeleteForm(CLEAN_SIMPLE_OTHERS_FLOW_2_TEST_SCREENSHOT);
 	}
@@ -186,16 +173,16 @@ public class FormFlowTests extends WebFormsTester {
 	public void createQuestionEqualsAnswerFlow() {
 		loginAndInitializeForm();
 		// Create a flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickEditRuleButton();
+		goToFlowManagerPage();
+		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+		getFlowManagerPage().clickEditRuleButton();
 		// Add the question == answer condition
-		getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
-		getFlowManager().getFlowRuleWindow().selectElementInTreeTable(ANSWER1_NAME);
-		getFlowManager().getFlowRuleWindow().clickEqualsButton();
-		Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
-		getFlowManager().getFlowRuleWindow().clickAcceptButton();
+		getFlowManagerPage().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
+		getFlowManagerPage().getFlowRuleWindow().selectElementInTreeTable(ANSWER1_NAME);
+		getFlowManagerPage().getFlowRuleWindow().clickEqualsButton();
+		Assert.assertEquals(getFlowManagerPage().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
+		getFlowManagerPage().getFlowRuleWindow().clickAcceptButton();
 		// Finish the test
 		redrawSaveTakeScreenshotAndDeleteForm(QUESTION_EQUALS_ANSWER_FLOW_TEST_SCREENSHOT);
 	}
@@ -204,16 +191,16 @@ public class FormFlowTests extends WebFormsTester {
 	public void createQuestionNotEqualsAnswerFlow() {
 		loginAndInitializeForm();
 		// Create a flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickEditRuleButton();
+		goToFlowManagerPage();
+		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+		getFlowManagerPage().clickEditRuleButton();
 		// Add the question != answer condition
-		getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
-		getFlowManager().getFlowRuleWindow().selectElementInTreeTable(ANSWER1_NAME);
-		getFlowManager().getFlowRuleWindow().clickNotEqualsButton();
-		Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
-		getFlowManager().getFlowRuleWindow().clickAcceptButton();
+		getFlowManagerPage().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
+		getFlowManagerPage().getFlowRuleWindow().selectElementInTreeTable(ANSWER1_NAME);
+		getFlowManagerPage().getFlowRuleWindow().clickNotEqualsButton();
+		Assert.assertEquals(getFlowManagerPage().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
+		getFlowManagerPage().getFlowRuleWindow().clickAcceptButton();
 		// Finish the test
 		redrawSaveTakeScreenshotAndDeleteForm(QUESTION_NOT_EQUALS_ANSWER_FLOW_TEST_SCREENSHOT);
 	}
@@ -223,16 +210,16 @@ public class FormFlowTests extends WebFormsTester {
 		// Initialize the test
 		loginAndInitializeForm();
 		// Create a flow
-		goToFlowManager();
-		getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-		getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-		getFlowManager().clickEditRuleButton();
+		goToFlowManagerPage();
+		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+		getFlowManagerPage().clickEditRuleButton();
 		// Add the question IN [answer1 answer2] condition
-		getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
-		getFlowManager().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
-		getFlowManager().getFlowRuleWindow().clickInButton();
-		Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
-		getFlowManager().getFlowRuleWindow().clickAcceptButton();
+		getFlowManagerPage().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
+		getFlowManagerPage().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
+		getFlowManagerPage().getFlowRuleWindow().clickInButton();
+		Assert.assertEquals(getFlowManagerPage().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
+		getFlowManagerPage().getFlowRuleWindow().clickAcceptButton();
 		// Finish the test
 		redrawSaveTakeScreenshotAndDeleteForm(ANSWERS_IN_QUESTION_FLOW_TEST_SCREENSHOT);
 	}

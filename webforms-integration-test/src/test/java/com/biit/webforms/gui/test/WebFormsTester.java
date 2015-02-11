@@ -13,6 +13,7 @@ import com.biit.webforms.gui.test.webpage.Designer;
 import com.biit.webforms.gui.test.webpage.FlowManager;
 import com.biit.webforms.gui.test.webpage.FormManager;
 import com.biit.webforms.gui.test.webpage.Login;
+import com.biit.webforms.gui.test.webpage.Validation;
 import com.vaadin.testbench.elements.ButtonElement;
 
 /**
@@ -44,6 +45,7 @@ public class WebFormsTester extends VaadinGuiTester {
 	private final BlockManager blockManager;
 	private final Designer designer;
 	private final FlowManager flowManager;
+	private final Validation validation;
 
 	private static final String FORMS_BUTTON_CAPTION = "Forms";
 	private static final String BLOCKS_BUTTON_CAPTION = "Blocks";
@@ -56,6 +58,7 @@ public class WebFormsTester extends VaadinGuiTester {
 
 	private static final String DESIGN_BUTTON_CAPTION = "Design";
 	private static final String FLOW_BUTTON_CAPTION = "Flow";
+	private static final String VALIDATION_BUTTON_CAPTION = "Validation";
 
 	public WebFormsTester() {
 		super();
@@ -69,69 +72,71 @@ public class WebFormsTester extends VaadinGuiTester {
 		addWebpage(designer);
 		flowManager = new FlowManager();
 		addWebpage(flowManager);
+		validation = new Validation();
+		addWebpage(validation);
 	}
 
-	public Login getLoginPage() {
-		return loginPage;
+	public void clickAcceptButtonIfExists() {
+		if (getAcceptButton() != null) {
+			getAcceptButton().click();
+		}
 	}
 
-	public FormManager getFormManager() {
-		return formManager;
+	public void clickCancelButtonIfExists() {
+		if (getCancelButton() != null) {
+			getCancelButton().click();
+		}
 	}
 
-	public BlockManager getBlockManager() {
-		return blockManager;
+	public void clickCloseButtonIfExists() {
+		if (getCloseButton() != null) {
+			getCloseButton().click();
+		}
 	}
 
-	public Designer getDesigner() {
-		return designer;
+	protected void createNewBlock(String blockName) {
+		loginFormAdmin1();
+		goToBlockManagerPage();
+		getBlockManagerPage().createNewBlock(blockName);
 	}
 
-	public FlowManager getFlowManager() {
-		return flowManager;
+	protected void createNewBlockAndLogout(String blockName) {
+		loginFormAdmin1();
+		goToBlockManagerPage();
+		getBlockManagerPage().createNewBlock(blockName);
+		logOut();
 	}
 
-	public void login(String username, String password) {
-		mainPage();
-		loginPage.login(username, password);
+	protected void createNewForm(String formName) {
+		loginFormAdmin1();
+		getFormManagerPage().createNewForm(formName);
 	}
 
-	public void loginRead1() {
-		login(WEBFORMS_READ_BIIT1, USER_PASSWORD);
+	public void createNewFormAndLogout(String formName) {
+		loginFormAdmin1();
+		getFormManagerPage().createNewForm(formName);
+		logOut();
 	}
 
-	public void loginFormAdmin1() {
-		login(WEBFORMS_FORM_ADMIN_BIIT1, USER_PASSWORD);
+	protected void createNewFormWithAdminRights(String formName) {
+		loginFormAdmin1();
+		getFormManagerPage().createNewForm(formName);
 	}
 
-	public void loginFormEdit1() {
-		login(WEBFORMS_FORM_EDIT_BIIT1, USER_PASSWORD);
+	protected void deleteBlock() {
+		loginFormAdmin1();
+		goToBlockManagerPage();
+		getBlockManagerPage().deleteBlock();
+		logOut();
 	}
 
-	public void loginBlockEdit1() {
-		login(WEBFORMS_BLOCK_EDIT_BIIT1, USER_PASSWORD);
-	}
-
-	public ButtonElement getBlocksButton() {
-		return $(ButtonElement.class).caption(BLOCKS_BUTTON_CAPTION).first();
-	}
-
-	public ButtonElement getFormsButton() {
-		return $(ButtonElement.class).caption(FORMS_BUTTON_CAPTION).first();
-	}
-
-	public ButtonElement getSettingsButton() {
-		return $(ButtonElement.class).caption(SETTINGS_BUTTON_CAPTION).first();
-	}
-
-	public ButtonElement getLogoutButton() {
-		showSettingsMenu();
-		return $(ButtonElement.class).caption(LOGOUT_BUTTON_CAPTION).first();
-	}
-
-	public ButtonElement getInfoButton() {
-		showSettingsMenu();
-		return $(ButtonElement.class).caption(INFO_BUTTON_CAPTION).first();
+	/**
+	 * Logs in as admin and deletes the first form existent
+	 */
+	protected void deleteForm() {
+		loginFormAdmin1();
+		getFormManagerPage().deleteForm(1);
+		logOut();
 	}
 
 	public ButtonElement getAcceptButton() {
@@ -140,6 +145,14 @@ public class WebFormsTester extends VaadinGuiTester {
 		} else {
 			return null;
 		}
+	}
+
+	public BlockManager getBlockManagerPage() {
+		return blockManager;
+	}
+
+	public ButtonElement getBlocksButton() {
+		return $(ButtonElement.class).caption(BLOCKS_BUTTON_CAPTION).first();
 	}
 
 	public ButtonElement getCancelButton() {
@@ -162,12 +175,91 @@ public class WebFormsTester extends VaadinGuiTester {
 		return $(ButtonElement.class).caption(DESIGN_BUTTON_CAPTION).first();
 	}
 
+	public Designer getDesignerPage() {
+		return designer;
+	}
+
 	public ButtonElement getFlowButton() {
 		return $(ButtonElement.class).caption(FLOW_BUTTON_CAPTION).first();
 	}
 
-	public void showSettingsMenu() {
-		getSettingsButton().click();
+	public FlowManager getFlowManagerPage() {
+		return flowManager;
+	}
+
+	public FormManager getFormManagerPage() {
+		return formManager;
+	}
+
+	public ButtonElement getFormsButton() {
+		return $(ButtonElement.class).caption(FORMS_BUTTON_CAPTION).first();
+	}
+
+	public ButtonElement getInfoButton() {
+		showSettingsMenu();
+		return $(ButtonElement.class).caption(INFO_BUTTON_CAPTION).first();
+	}
+
+	public Login getLoginPage() {
+		return loginPage;
+	}
+
+	public ButtonElement getLogoutButton() {
+		showSettingsMenu();
+		return $(ButtonElement.class).caption(LOGOUT_BUTTON_CAPTION).first();
+	}
+
+	public ButtonElement getSettingsButton() {
+		return $(ButtonElement.class).caption(SETTINGS_BUTTON_CAPTION).first();
+	}
+
+	public ButtonElement getValidationButton(){
+		return $(ButtonElement.class).caption(VALIDATION_BUTTON_CAPTION).first();
+	}
+
+	public Validation getValidationPage() {
+		return validation;
+	}
+
+	public void goToBlockManagerPage() {
+		getBlocksButton().click();
+	}
+
+	public void goToDesignerPage() {
+		getDesignButton().click();
+	}
+
+	public void goToFlowManagerPage() {
+		getFlowButton().click();
+	}
+	
+	public void goToFormManagerPage() {
+		getFormsButton().click();
+	}
+	
+	public void goToValidationPage() {
+		getValidationButton().click();
+	}
+
+	public void login(String username, String password) {
+		mainPage();
+		loginPage.login(username, password);
+	}
+
+	public void loginBlockEdit1() {
+		login(WEBFORMS_BLOCK_EDIT_BIIT1, USER_PASSWORD);
+	}
+
+	public void loginFormAdmin1() {
+		login(WEBFORMS_FORM_ADMIN_BIIT1, USER_PASSWORD);
+	}
+
+	public void loginFormEdit1() {
+		login(WEBFORMS_FORM_EDIT_BIIT1, USER_PASSWORD);
+	}
+
+	public void loginRead1() {
+		login(WEBFORMS_READ_BIIT1, USER_PASSWORD);
 	}
 
 	public void logOut() {
@@ -175,83 +267,8 @@ public class WebFormsTester extends VaadinGuiTester {
 		clickAcceptButtonIfExists();
 	}
 
-	public void clickAcceptButtonIfExists() {
-		if (getAcceptButton() != null) {
-			getAcceptButton().click();
-		}
-	}
-
-	public void clickCancelButtonIfExists() {
-		if (getCancelButton() != null) {
-			getCancelButton().click();
-		}
-	}
-
-	public void clickCloseButtonIfExists() {
-		if (getCloseButton() != null) {
-			getCloseButton().click();
-		}
-	}
-
-	public void goToFormManager() {
-		getFormsButton().click();
-	}
-
-	public void goToDesigner() {
-		getDesignButton().click();
-	}
-
-	public void goToFlowManager() {
-		getFlowButton().click();
-	}
-
-	public void goToBlockManager() {
-		getBlocksButton().click();
-	}
-
-	public void createNewFormAndLogout(String formName) {
-		loginFormAdmin1();
-		getFormManager().createNewForm(formName);
-		logOut();
-	}
-
-	protected void createNewForm(String formName) {
-		loginFormAdmin1();
-		getFormManager().createNewForm(formName);
-	}
-
-	protected void createNewFormWithAdminRights(String formName) {
-		loginFormAdmin1();
-		getFormManager().createNewForm(formName);
-	}
-
-	protected void createNewBlock(String blockName) {
-		loginFormAdmin1();
-		goToBlockManager();
-		getBlockManager().createNewBlock(blockName);
-	}
-
-	/**
-	 * Logs in as admin and deletes the first form existent
-	 */
-	protected void deleteForm() {
-		loginFormAdmin1();
-		getFormManager().deleteForm(1);
-		logOut();
-	}
-
-	protected void createNewBlockAndLogout(String blockName) {
-		loginFormAdmin1();
-		goToBlockManager();
-		getBlockManager().createNewBlock(blockName);
-		logOut();
-	}
-
-	protected void deleteBlock() {
-		loginFormAdmin1();
-		goToBlockManager();
-		getBlockManager().deleteBlock();
-		logOut();
+	public void showSettingsMenu() {
+		getSettingsButton().click();
 	}
 
 	/**

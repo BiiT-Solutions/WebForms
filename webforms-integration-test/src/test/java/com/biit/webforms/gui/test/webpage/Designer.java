@@ -420,6 +420,7 @@ public class Designer extends VaadinGuiWebpage {
 		addNewGroup();
 		addNewQuestion();
 		getQuestionPropertiesView().setTechnicalName(QUESTION3_NAME);
+		getQuestionPropertiesView().clickMandatoryCheckBox();
 		// Save
 		saveDesign();
 	}

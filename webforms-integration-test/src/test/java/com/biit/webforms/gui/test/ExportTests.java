@@ -21,25 +21,25 @@ public class ExportTests extends WebFormsTester {
 	private void generateFormAndFlow() {
 		try {
 			loginFormAdmin1();
-			getFormManager().createNewForm(NEW_FORM_NAME);
+			getFormManagerPage().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
-			goToDesigner();
-			getDesigner().createAndSaveSimpleFormDesign();
+			goToDesignerPage();
+			getDesignerPage().createAndSaveSimpleFormDesign();
 			// Create a flow
-			goToFlowManager();
-			getFlowManager().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-			getFlowManager().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-			getFlowManager().clickEditRuleButton();
+			goToFlowManagerPage();
+			getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+			getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+			getFlowManagerPage().clickEditRuleButton();
 			// Add the question IN [answer1 answer2] condition
-			getFlowManager().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
-			getFlowManager().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
-			getFlowManager().getFlowRuleWindow().clickInButton();
-			Assert.assertEquals(getFlowManager().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
-			getFlowManager().getFlowRuleWindow().clickAcceptButton();
+			getFlowManagerPage().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
+			getFlowManagerPage().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
+			getFlowManagerPage().getFlowRuleWindow().clickInButton();
+			Assert.assertEquals(getFlowManagerPage().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
+			getFlowManagerPage().getFlowRuleWindow().clickAcceptButton();
 			// Redraw the graph
-			getFlowManager().clickRedrawButton();
-			getFlowManager().saveFlow();
-			goToFormManager();
+			getFlowManagerPage().clickRedrawButton();
+			getFlowManagerPage().saveFlow();
+			goToFormManagerPage();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
 		}
@@ -47,8 +47,8 @@ public class ExportTests extends WebFormsTester {
 
 	private void checkCorrectFileGenerationAndFinishTest() {
 		try {
-			getFormManager().getDownloadWindow().checkCorrectFileGeneration();
-			getFormManager().getDownloadWindow().closeWindow();
+			getFormManagerPage().getDownloadWindow().checkCorrectFileGeneration();
+			getFormManagerPage().getDownloadWindow().closeWindow();
 			logOut();
 			deleteForm();
 		} catch (IncorrectFileGenerationException e) {
@@ -59,32 +59,32 @@ public class ExportTests extends WebFormsTester {
 	@Test(groups = "export")
 	public void exportToPdf() {
 		generateFormAndFlow();
-		getFormManager().clickExportButton();
-		getFormManager().clickExportFormButton();
+		getFormManagerPage().clickExportButton();
+		getFormManagerPage().clickExportFormButton();
 		checkCorrectFileGenerationAndFinishTest();
 	}
 
 	@Test(groups = "export")
 	public void exportToFlow() {
 		generateFormAndFlow();
-		getFormManager().clickExportButton();
-		getFormManager().clickExportFlowButton();
+		getFormManagerPage().clickExportButton();
+		getFormManagerPage().clickExportFlowButton();
 		checkCorrectFileGenerationAndFinishTest();
 	}
 
 	@Test(groups = "export")
 	public void exportToXsd() {
 		generateFormAndFlow();
-		getFormManager().clickExportButton();
-		getFormManager().clickExportXsdButton();
+		getFormManagerPage().clickExportButton();
+		getFormManagerPage().clickExportXsdButton();
 		checkCorrectFileGenerationAndFinishTest();
 	}
 
 	@Test(groups = "export")
 	public void exportToJson() {
 		generateFormAndFlow();
-		getFormManager().clickExportButton();
-		getFormManager().clickExportJsonButton();
+		getFormManagerPage().clickExportButton();
+		getFormManagerPage().clickExportJsonButton();
 		checkCorrectFileGenerationAndFinishTest();
 	}
 
@@ -92,12 +92,12 @@ public class ExportTests extends WebFormsTester {
 	public void exportTestXmls() {
 		try {
 			generateFormAndFlow();
-			getFormManager().clickExportButton();
-			getFormManager().clickExportTestXmlsButton();
-			getFormManager().getTestXmlWindow().clickAcceptButton();
-			getFormManager().getDownloadWindow().checkCorrectFileGeneration();
-			getFormManager().getDownloadWindow().closeWindow();
-			getFormManager().getTestXmlWindow().closeWindow();
+			getFormManagerPage().clickExportButton();
+			getFormManagerPage().clickExportTestXmlsButton();
+			getFormManagerPage().getTestXmlWindow().clickAcceptButton();
+			getFormManagerPage().getDownloadWindow().checkCorrectFileGeneration();
+			getFormManagerPage().getDownloadWindow().closeWindow();
+			getFormManagerPage().getTestXmlWindow().closeWindow();
 			logOut();
 			deleteForm();
 		} catch (IncorrectFileGenerationException e) {
