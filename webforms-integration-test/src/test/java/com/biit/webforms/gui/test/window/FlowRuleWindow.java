@@ -11,6 +11,7 @@ import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.CustomComponentElement;
 import com.vaadin.testbench.elements.HorizontalLayoutElement;
 import com.vaadin.testbench.elements.LabelElement;
+import com.vaadin.testbench.elements.TabSheetElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 import com.vaadin.testbench.elements.TreeTableElement;
 import com.vaadin.testbench.elements.VerticalLayoutElement;
@@ -33,6 +34,10 @@ public class FlowRuleWindow extends VaadinGuiWindow {
 	private static final String EQUALS_BUTTON_CAPTION = "==";
 	private static final String NOT_EQUALS_BUTTON_CAPTION = "<>";
 	private static final String IN_BUTTON_CAPTION = "IN";
+	
+	private static final Integer TREE_ELEMENT_TAB = 0;
+	private static final Integer LOGIC_EXPRESSIONS_TAB = 1;
+	private static final String AND_BUTTON_CAPTION = "AND";
 
 	public void clickFromButton() {
 		$$(WindowElement.class).caption(FROM_BUTTON_CAPTION).$(ButtonElement.class).first().click();
@@ -143,15 +148,32 @@ public class FlowRuleWindow extends VaadinGuiWindow {
 	public void selectElementAndNextElementInSubTreeTable(String elementName) {
 		getSubTreeElementTable().focus();
 		getSubTreeElementTable().getCell(0, 0).click();
-//		pressKeys(Keys.ARROW_DOWN);
 		sendKeyDown(Keys.SHIFT);
 		pressKeys(Keys.ARROW_DOWN);
-//		pressKeys(Keys.ARROW_UP);
 		sendKeyUp(Keys.SHIFT);
 	}
 
 	public String getValidInvalidTagValue() {
 		return $(VerticalLayoutElement.class).$$(HorizontalLayoutElement.class).$$(LabelElement.class).first()
 				.getText();
+	}
+
+	private TabSheetElement getTabSheet(){
+		return $(TabSheetElement.class).first();
+	}
+	
+	private ButtonElement getAndButton(){
+		return $(ButtonElement.class).caption(AND_BUTTON_CAPTION).first();
+	}
+	
+	public void addAndExpression(){
+		getTabSheet().openTab(LOGIC_EXPRESSIONS_TAB);
+		getAndButton().click();
+		getTabSheet().openTab(TREE_ELEMENT_TAB);
+	}
+	
+	public void selectElementInSubTreeTable(int row){
+//		getSubTreeElementTable().focus();
+		getSubTreeElementTable().getCell(row, 0).click();
 	}
 }

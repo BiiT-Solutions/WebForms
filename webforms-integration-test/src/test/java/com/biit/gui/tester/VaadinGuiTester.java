@@ -27,8 +27,8 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	// This parameter set to 'true' activates phantomJs driver instead of
 	// firefox driver
 	private boolean headlessTesting = true;
-	private static final Integer WIDTH = 1600;
-	private static final Integer HEIGHT = 900;
+	private static final Integer WIDTH = 1920;
+	private static final Integer HEIGHT = 1080;
 
 	private final List<VaadinGuiWebpage> webpages;
 
@@ -72,15 +72,16 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	}
 
 	public static void checkNotificationIsError(NotificationElement notification) {
-		Assert.assertEquals(NOTIFICATION_TYPE_ERROR, notification.getType());
+		Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_ERROR);
 	}
 
 	public static void checkNotificationIsWarning(NotificationElement notification) {
-		Assert.assertEquals(NOTIFICATION_TYPE_WARNING, notification.getType());
+		Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_WARNING);
 	}
 
 	public static void checkNotificationIsHumanized(NotificationElement notification) {
-		Assert.assertEquals(NOTIFICATION_TYPE_HUMANIZED, notification.getType());
+		System.out.println(notification.getText());
+		Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_HUMANIZED);
 	}
 
 	public boolean isHeadlessTesting() {

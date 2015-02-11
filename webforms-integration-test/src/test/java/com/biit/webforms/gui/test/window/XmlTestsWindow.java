@@ -7,7 +7,7 @@ import com.vaadin.testbench.By;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.WindowElement;
 
-public class TestXmlWindow extends VaadinGuiWindow {
+public class XmlTestsWindow extends VaadinGuiWindow {
 
 	public static final String DOWNLOAD_BUTTON_CAPTION = "Download file";
 	public static final String FILE_GENERATION_SUCESSFUL_LABEL = "The file has been generated successfully!";
