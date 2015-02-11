@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Polymorphism;
 import org.hibernate.annotations.PolymorphismType;
@@ -22,7 +21,7 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FormWorkStatus;
 
 @Entity
-@Table(name = "tree_blocks_references", uniqueConstraints = { @UniqueConstraint(columnNames = { "label" }) })
+@Table(name = "tree_blocks_references")
 @Polymorphism(type = PolymorphismType.EXPLICIT)
 public class BlockReference extends TreeObject implements IWebformsBlockView {
 	private static final long serialVersionUID = -4300039254232003868L;
