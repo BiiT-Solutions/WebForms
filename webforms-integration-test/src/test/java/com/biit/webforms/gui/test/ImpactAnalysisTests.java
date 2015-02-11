@@ -67,23 +67,10 @@ public class ImpactAnalysisTests extends WebFormsTester {
 			getFlowManager().clickCloneButton();
 			// Modify the original rule flow
 			getFlowManager().clickEditRuleButton();
-			takeScreenshot("WEBFORMS_ERROR_SCREEN_1");
 			getFlowManager().getFlowRuleWindow().addAndExpression();
-			takeScreenshot("WEBFORMS_ERROR_SCREEN_2");
 			getFlowManager().getFlowRuleWindow().selectElementInSubTreeTable(0);
-			takeScreenshot("WEBFORMS_ERROR_SCREEN_3");
 			getFlowManager().getFlowRuleWindow().clickEqualsButton();
-			takeScreenshot("WEBFORMS_ERROR_SCREEN_4");
-//			getFlowManager().getFlowRuleWindow().addAndExpression();
-//			takeScreenshot("WEBFORMS_ERROR_SCREEN_5");
-//			getFlowManager().getFlowRuleWindow().selectElementInSubTreeTable(1);
-//			takeScreenshot("WEBFORMS_ERROR_SCREEN_6");
-//			getFlowManager().getFlowRuleWindow().clickNotEqualsButton();
-//			takeScreenshot("WEBFORMS_ERROR_SCREEN_7");
-//			getFlowManager().getFlowRuleWindow().getValidInvalidTagValue().equals(VALID_FLOW_TAG);
-//			takeScreenshot("WEBFORMS_ERROR_SCREEN_8");
 			getFlowManager().getFlowRuleWindow().clickAcceptButton();
-			takeScreenshot("WEBFORMS_ERROR_SCREEN_9");
 			getFlowManager().saveFlow();
 			checkNotificationIsHumanized(getNotification());
 			goToFormManager();

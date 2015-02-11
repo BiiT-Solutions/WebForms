@@ -80,7 +80,6 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	}
 
 	public static void checkNotificationIsHumanized(NotificationElement notification) {
-		System.out.println(notification.getText());
 		Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_HUMANIZED);
 	}
 
