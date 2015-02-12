@@ -40,21 +40,26 @@ public class LinkBlockTests extends WebFormsTester {
 		goToDesignerPage();
 		getDesignerPage().clickBlocksButton();
 		getDesignerPage().clickLinkBlockButton();
-		getDesignerPage().getLinkBlockWindow().selectElementInTable(NEW_BLOCK_NAME);
 		getDesignerPage().getLinkBlockWindow().clickAccceptButton();
 		getDesignerPage().saveDesign();
+	}
+
+	private void deleteFormAndBlock() {
+		goToFormManagerPage();
+		getFormManagerPage().deleteForm(TREE_TABLE_ROW);
+		goToBlockManagerPage();
+		getBlockManagerPage().deleteBlock();
+		logOut();
 	}
 
 	@Test(groups = "linkedBlocks")
 	public void addLinkedBlockToFormTest() {
 		createSimpleBlock();
 		addLinkedBlockToForm();
-		logOut();
-		deleteForm();
-		deleteBlock();
+		deleteFormAndBlock();
 	}
 
-	// @Test(groups = "linkedBlocks")
+	@Test(groups = "linkedBlocks")
 	public void moveUpDownLinkedBlock() {
 		createSimpleBlock();
 		addLinkedBlockToForm();
@@ -63,12 +68,10 @@ public class LinkBlockTests extends WebFormsTester {
 		getDesignerPage().clickInTreeTableRow(TREE_TABLE_ROW);
 		getDesignerPage().clickUpButton();
 		getDesignerPage().clickDownButton();
-		logOut();
-		deleteForm();
-		deleteBlock();
+		deleteFormAndBlock();
 	}
 
-	// @Test(groups = "linkedBlocks")
+	@Test(groups = "linkedBlocks")
 	public void removeLinkedBlockFromForm() {
 		createSimpleBlock();
 		addLinkedBlockToForm();
@@ -81,25 +84,23 @@ public class LinkBlockTests extends WebFormsTester {
 		goToDesignerPage();
 		getDesignerPage().clickInTreeTableRow(TREE_TABLE_ROW);
 		getDesignerPage().getCategoryPropertiesView().getTechnicalName().equals(CATEGORY_NAME);
-		logOut();
-		deleteForm();
-		deleteBlock();
+		deleteFormAndBlock();
 	}
 
-	// @Test(groups = "linkedBlocks")
+	@Test(groups = "linkedBlocks")
 	public void removeLinkedBlock() {
 		createSimpleBlock();
 		addLinkedBlockToForm();
 		goToFormManagerPage();
 		goToBlockManagerPage();
+		closeNotificationIfExists();
 		getBlockManagerPage().deleteBlock();
 		checkNotificationIsError(getNotification());
-		logOut();
-		deleteForm();
-		deleteBlock();
+		closeNotificationIfExists();
+		deleteFormAndBlock();
 	}
 
-	// @Test(groups = "linkedBlocks")
+	@Test(groups = "linkedBlocks")
 	public void removeFormWithLinkedBlock() {
 		createSimpleBlock();
 		addLinkedBlockToForm();
@@ -111,8 +112,7 @@ public class LinkBlockTests extends WebFormsTester {
 		} catch (NoSuchElementException e) {
 			Assert.fail();
 		}
+		getBlockManagerPage().deleteBlock();
 		logOut();
-		deleteForm();
-		deleteBlock();
 	}
 }
