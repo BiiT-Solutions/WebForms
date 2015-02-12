@@ -61,6 +61,8 @@
 		<stepper.version>2.2.0</stepper.version>
 		<maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
 		<vaadin-testbench.version>4.0.1</vaadin-testbench.version>
+		<maven-site-plugin.version>3.4</maven-site-plugin.version>
+		<findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -78,14 +80,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.4</version>
+				<version>${maven-site-plugin.version}</version>
 				<configuration>
 					<reportPlugins>
 						<plugin>
 							<plugin>
 								<groupId>org.codehaus.mojo</groupId>
 								<artifactId>findbugs-maven-plugin</artifactId>
-								<version>3.0.0</version>
+								<version>${findbugs-maven-plugin.version}</version>
 								<configuration>
 									<effort>Max</effort>
 									<xmlOutput>true</xmlOutput>
