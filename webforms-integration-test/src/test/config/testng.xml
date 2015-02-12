@@ -11,6 +11,7 @@
 				<include name="impactAnalysis" />
 				<include name="xForms" />
 				<include name="validation" />
+				<exclude name="linkedBlocks" />
 			</run>
 		</groups>
 		<classes>
@@ -22,6 +23,7 @@
 			<class name="com.biit.webforms.gui.test.ImpactAnalysisTests" />
 			<class name="com.biit.webforms.gui.test.XFormsTests" />
 			<class name="com.biit.webforms.gui.test.ValidationTests" />
+			<class name="com.biit.webforms.gui.test.LinkBlockTests" />
 		</classes>
 	</test>
 </suite>

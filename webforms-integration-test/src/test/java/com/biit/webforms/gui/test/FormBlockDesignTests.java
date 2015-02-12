@@ -27,7 +27,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	 * category.<br>
 	 */
 	private void createNewFormAndCategory() {
-		createNewForm(NEW_FORM_NAME);
+		createNewEmptyForm(NEW_FORM_NAME);
 		goToDesignerPage();
 		getDesignerPage().addNewCategory();
 	}
@@ -81,7 +81,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createEmptyForm() {
-		createNewForm(NEW_FORM_NAME);
+		createNewEmptyForm(NEW_FORM_NAME);
 		logOut();
 		deleteForm();
 	}
@@ -95,7 +95,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkGroupQuestionAnswerSubanswerAtFormLevel() {
-		createNewForm(NEW_FORM_NAME);
+		createNewEmptyForm(NEW_FORM_NAME);
 		goToDesignerPage();
 		Assert.assertFalse(getDesignerPage().getGroupButton().isEnabled());
 		Assert.assertFalse(getDesignerPage().getQuestionButton().isEnabled());
@@ -1591,7 +1591,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFormDescription() {
 		try {
-			createNewForm(NEW_FORM_NAME);
+			createNewEmptyForm(NEW_FORM_NAME);
 			goToDesignerPage();
 			getDesignerPage().getFormPropertiesView().setDescription(MODIFIED_DESCRIPTION);
 			getDesignerPage().saveDesign();
@@ -1868,7 +1868,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFormName() {
 		try {
-			createNewForm(NEW_FORM_NAME);
+			createNewEmptyForm(NEW_FORM_NAME);
 			goToDesignerPage();
 			getDesignerPage().getFormPropertiesView().setName(MODIFIED_NAME);
 			getDesignerPage().saveDesign();

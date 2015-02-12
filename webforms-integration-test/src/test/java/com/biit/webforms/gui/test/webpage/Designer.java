@@ -12,6 +12,7 @@ import com.biit.webforms.gui.test.webpage.designer.GroupPropertiesView;
 import com.biit.webforms.gui.test.webpage.designer.QuestionPropertiesView;
 import com.biit.webforms.gui.test.webpage.designer.SubanswerPropertiesView;
 import com.biit.webforms.gui.test.webpage.designer.TextPropertiesView;
+import com.biit.webforms.gui.test.window.LinkBlockWindow;
 import com.biit.webforms.gui.test.window.NewBlockWindow;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.HorizontalLayoutElement;
@@ -23,7 +24,7 @@ public class Designer extends VaadinGuiWebpage {
 	private static final String BLOCKS_BUTTON_CAPTION = "Blocks";
 	private static final String SAVE_BLOCK_BUTTON_CAPTION = "Save Block";
 	private static final String INSERT_BLOCK_BUTTON_CAPTION = "Insert Block";
-	private static final String LINK_BLOCK_BUTTON_CAPTION = "Insert Block";
+	private static final String LINK_BLOCK_BUTTON_CAPTION = "Link Block";
 	private static final String CATEGORY_BUTTON_CAPTION = "Category";
 	private static final String GROUP_BUTTON_CAPTION = "Group";
 	private static final String QUESTION_BUTTON_CAPTION = "Question";
@@ -91,6 +92,7 @@ public class Designer extends VaadinGuiWebpage {
 	private final TextPropertiesView textPropertiesView;
 	private final FieldPropertiesView fieldPropertiesView;
 	private final NewBlockWindow newBlockWindow;
+	private final LinkBlockWindow linkBlockWindow;
 
 	public Designer() {
 		super();
@@ -112,6 +114,8 @@ public class Designer extends VaadinGuiWebpage {
 		addView(fieldPropertiesView);
 		newBlockWindow = new NewBlockWindow();
 		addWindow(newBlockWindow);
+		linkBlockWindow = new LinkBlockWindow();
+		addWindow(linkBlockWindow);
 	}
 
 	public void addAnswers(int numberOfAnswers) {
@@ -288,6 +292,10 @@ public class Designer extends VaadinGuiWebpage {
 		getDeleteButton().click();
 	}
 
+	public void clickDownButton() {
+		getDownButton().click();
+	}
+
 	public void clickInsertBlockButton() {
 		getInsertBlockButton().click();
 	}
@@ -302,6 +310,10 @@ public class Designer extends VaadinGuiWebpage {
 
 	public void clickSaveBlockButton() {
 		getSaveBlockButton().click();
+	}
+
+	public void clickUpButton() {
+		getUpButton().click();
 	}
 
 	private void createAllTypesOfInputQuestions() throws FieldNotEditableException {
@@ -394,6 +406,21 @@ public class Designer extends VaadinGuiWebpage {
 		setQuestionNotMandatory();
 	}
 
+	public void createAndSaveSimpleBlockDesign() throws FieldNotEditableException {
+		// Category 1
+		addNewCategory();
+		addNewGroup();
+		getGroupPropertiesView().clickRepeatableCheckBox();
+		addNewRadioButtonQuestion();
+		getQuestionPropertiesView().setTechnicalName(QUESTION1_NAME);
+		addNewAnswer();
+		getAnswerPropertiesView().setValue(ANSWER1_NAME);
+		addNewAnswer();
+		getAnswerPropertiesView().setValue(ANSWER2_NAME);
+		// Save
+		saveDesign();
+	}
+
 	/**
 	 * Creates a form with three categories and one question per category.<br>
 	 * The question of the first category also has two answers.
@@ -421,21 +448,6 @@ public class Designer extends VaadinGuiWebpage {
 		addNewQuestion();
 		getQuestionPropertiesView().setTechnicalName(QUESTION3_NAME);
 		getQuestionPropertiesView().clickMandatoryCheckBox();
-		// Save
-		saveDesign();
-	}
-	
-	public void createAndSaveSimpleBlockDesign() throws FieldNotEditableException {
-		// Category 1
-		addNewCategory();
-		addNewGroup();
-		getGroupPropertiesView().clickRepeatableCheckBox();
-		addNewRadioButtonQuestion();
-		getQuestionPropertiesView().setTechnicalName(QUESTION1_NAME);
-		addNewAnswer();
-		getAnswerPropertiesView().setValue(ANSWER1_NAME);
-		addNewAnswer();
-		getAnswerPropertiesView().setValue(ANSWER2_NAME);
 		// Save
 		saveDesign();
 	}
@@ -545,6 +557,10 @@ public class Designer extends VaadinGuiWebpage {
 
 	public ButtonElement getLinkBlockButton() {
 		return getButtonElement(LINK_BLOCK_BUTTON_CAPTION);
+	}
+
+	public LinkBlockWindow getLinkBlockWindow() {
+		return linkBlockWindow;
 	}
 
 	public ButtonElement getMoveButton() {

@@ -2,7 +2,6 @@ package com.biit.webforms.gui.test.window;
 
 import java.util.List;
 
-import org.junit.Assert;
 import org.openqa.selenium.StaleElementReferenceException;
 
 import com.biit.gui.tester.VaadinGuiWindow;
@@ -43,7 +42,6 @@ public class SelectFormElementWindow extends VaadinGuiWindow {
 	}
 
 	public void clickAccceptButton() {
-		Assert.assertTrue(getAcceptButton().isEnabled());
 		getAcceptButton().click();
 	}
 
