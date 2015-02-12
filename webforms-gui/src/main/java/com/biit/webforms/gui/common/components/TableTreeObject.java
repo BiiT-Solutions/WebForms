@@ -3,19 +3,17 @@ package com.biit.webforms.gui.common.components;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import com.biit.form.BaseCategory;
 import com.biit.form.BaseForm;
 import com.biit.form.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
-import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.Block;
-import com.biit.webforms.persistence.entity.Form;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Tree.CollapseEvent;
@@ -34,11 +32,15 @@ public class TableTreeObject extends TreeTable {
 	private static final long serialVersionUID = -6949123334668973540L;
 	private IconProvider<TreeObject> iconProvider = new IconProviderTreeObjectDefault();
 
+	// Stores the complete Form view equivalences.
+	private Map<String, TreeObject> rootElements;
+
 	protected enum TreeObjectTableProperties {
 		ELEMENT_NAME
 	};
 
 	public TableTreeObject() {
+		rootElements = new HashMap<>();
 		initContainerProperties();
 		setImmediate(true);
 
@@ -77,6 +79,11 @@ public class TableTreeObject extends TreeTable {
 	 * @param parent
 	 */
 	public void loadTreeObject(TreeObject element, TreeObject parent, Class<?>... filterClases) {
+		if (parent == null) {
+			// Store the root element by comparationId. Specially useful for obtaining the equivalence between Form and
+			// CompleteFormView.
+			rootElements.put(element.getComparationId(), element);
+		}
 		loadTreeObject(element, parent, true, filterClases);
 	}
 
@@ -130,7 +137,7 @@ public class TableTreeObject extends TreeTable {
 			if (parent != null) {
 				// Parent Form must be translated to CompleteFormView.
 				if (parent instanceof BaseForm) {
-					parent = UserSessionHandler.getController().getCompleteFormView();
+					parent = rootElements.get(parent.getComparationId());
 				}
 				// This status must be true before setting the relationship.
 				setChildrenAllowed(parent, true);
@@ -356,14 +363,6 @@ public class TableTreeObject extends TreeTable {
 		if (element == null) {
 			return null;
 		}
-
-		// BlockReferences does not exist in the table, the parent of an element inside it is therefore the
-		// Completeformview.
-		if (UserSessionHandler.getController().getCompleteFormView().getBlockReference(element) != null
-				&& element instanceof BaseCategory) {
-			return UserSessionHandler.getController().getCompleteFormView();
-		}
-
 		return (TreeObject) getParent(element);
 	}
 
@@ -378,8 +377,8 @@ public class TableTreeObject extends TreeTable {
 			return null;
 		}
 		// There is not a Form, only CompleteFormView.
-		if (element instanceof Form && !(element instanceof Block)) {
-			return UserSessionHandler.getController().getCompleteFormView();
+		if (element instanceof BaseForm) {
+			return rootElements.get(element.getComparationId());
 		}
 		return element;
 	}

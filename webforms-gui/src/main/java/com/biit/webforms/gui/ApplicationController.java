@@ -496,7 +496,7 @@ public class ApplicationController {
 	 */
 	public Category addNewCategory() throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
-		return (Category) insertTreeObject(Category.class, getCompleteFormView(), "Category");
+		return (Category) insertTreeObject(Category.class, getFormInUse(), "Category");
 	}
 
 	/**

@@ -68,7 +68,7 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 	public Item addRow(TreeObject element, TreeObject parent, boolean selectRow) {
 		// Add the name of the organization if the row contains an instance of
 		// Form.
-		Item item = super.addRow(element, parent,selectRow);
+		Item item = super.addRow(element, parent, selectRow);
 		if (item != null) {
 			if (element instanceof Form) {
 				Long organizationId = ((Form) element).getOrganizationId();
