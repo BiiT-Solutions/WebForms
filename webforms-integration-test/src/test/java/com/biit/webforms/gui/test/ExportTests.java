@@ -80,7 +80,8 @@ public class ExportTests extends WebFormsTester {
 		checkCorrectFileGenerationAndFinishTest();
 	}
 
-	@Test(groups = "export")
+	// Test not needed yet
+//	@Test(groups = "export")
 	public void exportToJson() {
 		generateFormAndFlow();
 		getFormManagerPage().clickExportButton();

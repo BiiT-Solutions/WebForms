@@ -107,7 +107,7 @@ public class WebFormsTester extends VaadinGuiTester {
 		logOut();
 	}
 
-	protected void createNewForm(String formName) {
+	protected void createNewEmptyForm(String formName) {
 		loginFormAdmin1();
 		getFormManagerPage().createNewForm(formName);
 	}

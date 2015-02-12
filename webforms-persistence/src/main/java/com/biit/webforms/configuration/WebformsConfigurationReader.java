@@ -150,11 +150,9 @@ public class WebformsConfigurationReader {
 	}
 
 	public static WebformsConfigurationReader getInstance() {
-		if (instance == null) {
-			synchronized (WebformsConfigurationReader.class) {
-				if (instance == null) {
-					instance = new WebformsConfigurationReader();
-				}
+		synchronized (WebformsConfigurationReader.class) {
+			if (instance == null) {
+				instance = new WebformsConfigurationReader();
 			}
 		}
 		return instance;
@@ -199,7 +197,7 @@ public class WebformsConfigurationReader {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
-	
+
 	private String getGraphvizBinPathOsBased(Properties prop) {
 		String OS = System.getProperty("os.name").toLowerCase();
 		if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0) {

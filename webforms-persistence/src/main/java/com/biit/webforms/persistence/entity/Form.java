@@ -593,12 +593,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 				if (linkedFormLabel != null && !linkedFormLabel.equals(form.linkedFormLabel)) {
 					return false;
 				}
-
 				if (linkedFormVersions != null && !linkedFormVersions.equals(form.linkedFormVersions)) {
 					return false;
 				}
-
-				if (linkedFormOrganizationId != null && !linkedFormVersions.equals(form.linkedFormOrganizationId)) {
+				if (linkedFormOrganizationId != null && !linkedFormOrganizationId.equals(form.linkedFormOrganizationId)) {
 					return false;
 				}
 

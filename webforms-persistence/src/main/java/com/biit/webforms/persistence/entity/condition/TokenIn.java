@@ -181,11 +181,11 @@ public class TokenIn extends TokenComplex {
 	}
 	
 	/**
-	 * Compares two token ComparationValue. it must be of token between type.
+	 * Compares two token ComparationValue. it must be of token in type.
 	 */
 	@Override
 	public boolean isContentEqual(Token token) {
-		if (token instanceof TokenBetween) {
+		if (token instanceof TokenIn) {
 			TokenIn tokenIn = (TokenIn) token;
 			if (super.isContentEqual(token)) {
 				if (!question.getPathName().equals(tokenIn.question.getPathName())) {

@@ -18,7 +18,6 @@ public class FlowManager extends VaadinGuiWebpage {
 
 	private static final String REDRAW_BUTTON_CAPTION = "Redraw";
 	
-	private static final String COMBOBOX_NORMAL_VALUE = "Normal";
 	private static final String COMBOBOX_END_FORM_VALUE = "End form";
 	
 

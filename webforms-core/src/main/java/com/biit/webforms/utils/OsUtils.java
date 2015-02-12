@@ -89,7 +89,7 @@ public class OsUtils {
 		if (isWindows()) {
 			filePath = basicPath + File.separator + executableName + ".exe";
 		}
-		if (isUnix() | isMac() | isSolaris()) {
+		if (isUnix() || isMac() || isSolaris()) {
 			filePath = basicPath + File.separator + executableName;
 		}
 
