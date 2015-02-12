@@ -327,9 +327,6 @@
         add constraint UK_r7xwfhjrx5jwbwhtd8kyp563s  unique (label, version, organizationId);
 
     alter table tree_blocks_references 
-        add constraint UK_c05p17352l2g9xgohisrxqejo  unique (label);
-
-    alter table tree_blocks_references 
         add constraint UK_c8un1l38a1eplwrsrc1j45i9a  unique (ID);
 
     alter table tree_blocks_references 

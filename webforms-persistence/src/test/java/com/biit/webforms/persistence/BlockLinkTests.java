@@ -239,6 +239,30 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		block.getChildren().get(0).getChildren().get(3).remove();
 		blockDao.makePersistent(block);
 	}
+	
+	@Test
+	public void blockReferenceWithNullValue() throws NotValidChildException, FieldTooLongException,
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
+			ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType,
+			UnexpectedDatabaseException, FlowNotAllowedException, ElementCannotBeRemovedException,
+			ElementCannotBePersistedException {
+		Block block = FormUtils.createBlock();
+		block.setLabel("LinkedBlock5");
+		blockDao.makePersistent(block);
+
+		BlockReference blockReference = new BlockReference(block);
+		Form form = FormUtils.createCompleteForm(null, "form5");
+		form.addChild(blockReference);
+		formDao.makePersistent(form);
+		
+		//Remove block.
+		blockReference.setReference(null);		
+		formDao.makePersistent(form);
+		blockDao.makeTransient(block);
+		formDao.makeTransient(form);
+
+	}
 
 	@Test
 	public void removeFormDoesNotRemoveLinkedBlock() throws NotValidChildException, FieldTooLongException,
@@ -257,9 +281,10 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		BlockReference blockReference = new BlockReference(block);
 		Form form = FormUtils.createCompleteForm(null, "form4");
 		form.addChild(blockReference);
+		
 		formDao.makePersistent(form);
-
-		formDao.makeTransient(form);
+		formDao.makeTransient(form);		
+		blockDao.evictAllCache();
 
 		Assert.assertEquals(blockNumber, (int) blockDao.getRowCount());
 		Assert.assertEquals(elementsInBlock, blockDao.read(block.getId()).getAllInnerStorableObjects().size());
@@ -285,7 +310,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		BlockReference blockReference1 = new BlockReference(block1);
 		BlockReference blockReference2 = new BlockReference(block2);
 
-		Form form = FormUtils.createCompleteForm(null, "form4");
+		Form form = FormUtils.createCompleteForm(null, "form6");
 		form.addChild(blockReference1);
 		form.addChild(blockReference2);
 		formDao.makePersistent(form);
@@ -359,7 +384,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		BlockReference blockReference1 = new BlockReference(block1);
 		BlockReference blockReference2 = new BlockReference(block2);
 
-		Form form = FormUtils.createCompleteForm(null, "form6");
+		Form form = FormUtils.createCompleteForm(null, "form7");
 		form.addChild(blockReference1);
 		form.addChild(blockReference2);
 		formDao.makePersistent(form);
@@ -390,7 +415,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 
 		BlockReference blockReference1 = new BlockReference(block1);
 
-		Form form = FormUtils.createCompleteForm(null, "form6");
+		Form form = FormUtils.createCompleteForm(null, "form8");
 		form.addChild(blockReference1);
 		formDao.makePersistent(form);
 
