@@ -211,7 +211,6 @@ public class Designer extends SecuredWebPage {
 					table.addRow(newCategory, newCategory.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_CATEGORY_NOT_INSERTED_IN_BLOCK);
-					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				} catch (ElementIsReadOnly e) {
 					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}

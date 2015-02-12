@@ -183,7 +183,7 @@
 				<version>${maven-war-plugin.version}</version>
 				<configuration>
 					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-					<warName>${project.parent.artifactId}-${project.parent.version}</warName>
+					<warName>${project.artifactId}-${project.version}-r${buildNumber}</warName>
 					<webResources>
 						<resource>
 							<directory>${project.basedir}/src/main/resources/META-INF</directory>
@@ -192,8 +192,12 @@
 						</resource>
 					</webResources>
 					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
 						<manifestEntries>
 							<Implementation-Version>${project.parent.version}</Implementation-Version>
+							<!-- <Implementation-Build>${buildNumber}</Implementation-Build> -->
 						</manifestEntries>
 					</archive>
 				</configuration>

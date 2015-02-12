@@ -16,12 +16,14 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 
+import com.biit.form.TreeObject;
 import com.biit.form.persistence.dao.hibernate.BaseFormDao;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.liferay.portal.model.Organization;
@@ -54,6 +56,12 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	@Override
 	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.getId()", condition = "#form.getId() != null") })
 	public void makeTransient(Form form) throws UnexpectedDatabaseException, ElementCannotBeRemovedException {
+		// Unlink all building block refereces to avoid to remove its elements.
+		for (TreeObject child : form.getChildren()) {
+			if (child instanceof BlockReference) {
+				((BlockReference) child).setReference(null);
+			}
+		}
 		super.makeTransient(form);
 	}
 
