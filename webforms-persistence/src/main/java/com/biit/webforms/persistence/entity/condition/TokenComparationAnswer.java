@@ -153,11 +153,11 @@ public class TokenComparationAnswer extends Token {
 	}
 	
 	/**
-	 * Compares two token ComparationAnswer. it must be of token between type.
+	 * Compares two token ComparationAnswer. it must be of token comparation type.
 	 */
 	@Override
 	public boolean isContentEqual(Token token) {
-		if (token instanceof TokenBetween) {
+		if (token instanceof TokenComparationAnswer) {
 			TokenComparationAnswer comparationAnswer = (TokenComparationAnswer) token;
 			if (super.isContentEqual(token)) {
 				if (!question.getPathName().equals(comparationAnswer.question.getPathName())) {

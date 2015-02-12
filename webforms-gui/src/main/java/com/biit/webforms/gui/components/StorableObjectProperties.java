@@ -12,7 +12,7 @@ import com.vaadin.ui.TextField;
 
 public abstract class StorableObjectProperties<T extends StorableObject> extends PropertiesForClassComponent<T> {
 	private static final long serialVersionUID = -1986275953105055523L;
-	protected TextField createdBy, creationTime, updatedBy, updateTime;
+	protected TextField createdByField, creationTimeField, updatedByField, updateTimeField;
 
 	private T instance;
 
@@ -27,26 +27,26 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	 * @param element
 	 */
 	protected void initElement() {
-		createdBy = new TextField(
+		createdByField = new TextField(
 				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_CREATED_BY));
-		createdBy.setEnabled(false);
-		creationTime = new TextField(
+		createdByField.setEnabled(false);
+		creationTimeField = new TextField(
 				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_CREATION_TIME));
-		creationTime.setEnabled(false);
-		updatedBy = new TextField(
+		creationTimeField.setEnabled(false);
+		updatedByField = new TextField(
 				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_UPDATED_BY));
-		updatedBy.setEnabled(false);
-		updateTime = new TextField(
+		updatedByField.setEnabled(false);
+		updateTimeField = new TextField(
 				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_UPDATE_TIME));
-		updateTime.setEnabled(false);
+		updateTimeField.setEnabled(false);
 
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
 		commonProperties.setHeight(null);
-		commonProperties.addComponent(createdBy);
-		commonProperties.addComponent(creationTime);
-		commonProperties.addComponent(updatedBy);
-		commonProperties.addComponent(updateTime);
+		commonProperties.addComponent(createdByField);
+		commonProperties.addComponent(creationTimeField);
+		commonProperties.addComponent(updatedByField);
+		commonProperties.addComponent(updateTimeField);
 
 		addTab(commonProperties,
 				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_COMMON_FORM_CAPTION),
@@ -79,10 +79,10 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 				.toString();
 		String valueUpdatedTime = getInstance().getUpdateTime() == null ? "" : getInstance().getUpdateTime().toString();
 
-		createdBy.setValue(valueCreatedBy);
-		creationTime.setValue(valueCreationTime);
-		updatedBy.setValue(valueUpdatedBy);
-		updateTime.setValue(valueUpdatedTime);
+		createdByField.setValue(valueCreatedBy);
+		creationTimeField.setValue(valueCreationTime);
+		updatedByField.setValue(valueUpdatedBy);
+		updateTimeField.setValue(valueUpdatedTime);
 	}
 
 	@Override
