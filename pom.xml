@@ -68,6 +68,7 @@
 		<stepper.version>2.2.0</stepper.version>
 		<maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
 		<vaadin-testbench.version>4.0.1</vaadin-testbench.version>
+		<biit-logger.version>0.1.0</biit-logger.version>
 	</properties>
 
 	<dependencies>
