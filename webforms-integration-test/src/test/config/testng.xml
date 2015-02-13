@@ -6,11 +6,11 @@
 				<include name="login" />
 				<include name="basicFunctionality" />
 				<include name="formBlockDesign" />
-				<include name="formFlow" />
-				<include name="export" />
-				<include name="impactAnalysis" />
-				<include name="xForms" />
-				<include name="validation" />
+				<exclude name="formFlow" />
+				<exclude name="export" />
+				<exclude name="impactAnalysis" />
+				<exclude name="xForms" />
+				<exclude name="validation" />
 				<exclude name="linkedBlocks" />
 			</run>
 		</groups>

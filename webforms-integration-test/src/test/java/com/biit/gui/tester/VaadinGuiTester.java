@@ -71,6 +71,12 @@ public class VaadinGuiTester extends TestBenchTestCase {
 		return $(NotificationElement.class).first();
 	}
 
+	public void closeNotificationIfExists() {
+		if ($(NotificationElement.class).exists()) {
+			$(NotificationElement.class).first().close();
+		}
+	}
+
 	public static void checkNotificationIsError(NotificationElement notification) {
 		Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_ERROR);
 	}
