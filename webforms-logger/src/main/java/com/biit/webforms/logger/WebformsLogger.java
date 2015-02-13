@@ -46,4 +46,17 @@ public class WebformsLogger extends BiitLogger {
 	public static void severe(String className, String message) {
 		severe(className + ": " + message);
 	}
+	
+	
+	/**
+	 * To log java exceptions and log also the stack trace. If enabled, also can send an email to the administrator to
+	 * alert of the error.
+	 * 
+	 * @param className
+	 * @param throwable
+	 */
+	public static void errorMessage(String className, Throwable throwable) {
+		String error = getStackTrace(throwable);
+		errorMessage(className, error);
+	}
 }
