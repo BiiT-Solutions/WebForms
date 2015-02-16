@@ -68,6 +68,7 @@ public class LinkBlockTests extends WebFormsTester {
 		getDesignerPage().clickInTreeTableRow(TREE_TABLE_ROW);
 		getDesignerPage().clickUpButton();
 		getDesignerPage().clickDownButton();
+		getDesignerPage().saveDesign();
 		deleteFormAndBlock();
 	}
 
@@ -84,6 +85,7 @@ public class LinkBlockTests extends WebFormsTester {
 		goToDesignerPage();
 		getDesignerPage().clickInTreeTableRow(TREE_TABLE_ROW);
 		getDesignerPage().getCategoryPropertiesView().getTechnicalName().equals(CATEGORY_NAME);
+		getDesignerPage().saveDesign();
 		deleteFormAndBlock();
 	}
 

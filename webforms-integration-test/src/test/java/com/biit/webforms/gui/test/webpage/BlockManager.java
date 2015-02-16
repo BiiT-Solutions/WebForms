@@ -11,6 +11,7 @@ public class BlockManager extends VaadinGuiWebpage {
 
 	private static final String NEW_BLOCK_BUTTON_CAPTION = "New Block";
 	private static final String REMOVE_BLOCK_BUTTON_CAPTION = "Remove Block";
+	private static final Integer BLOCK_ROW = 0;
 
 	private final NewBlockWindow newBlockWindow;
 
@@ -38,9 +39,7 @@ public class BlockManager extends VaadinGuiWebpage {
 	}
 
 	public void createNewBlock(String blockName) {
-		if(isBlockAlreadyCreated(blockName)){
-			deleteBlock();
-		}
+		deleteAllCreatedBlocks();
 		openNewBlockWindow();
 		getNewBlockWindow().createNewBlock(blockName);
 	}
@@ -62,12 +61,17 @@ public class BlockManager extends VaadinGuiWebpage {
 		getBlockTable().getCell(row, 0).click();
 	}
 
-	public boolean isBlockAlreadyCreated(String blockName) {
+	private void deleteAllCreatedBlocks() {
 		try {
-			getBlockTable().getCell(0, 0).getText().equals(blockName);
+			while (true) {
+				getBlockTable().getCell(BLOCK_ROW, 0);
+				if (!getRemoveBlockButton().isEnabled()) {
+					getBlockTable().getCell(BLOCK_ROW, 0).click();
+				}
+				deleteBlock();
+			}
 		} catch (NoSuchElementException e) {
-			return false;
+			return;
 		}
-		return true;
 	}
 }

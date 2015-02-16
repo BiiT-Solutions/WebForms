@@ -34,7 +34,7 @@ public class FormManager extends VaadinGuiWebpage {
 	private static final String XFORMS_PUBLISH_BUTTON_CAPTION = "Publish";
 	private static final String XFORMS_DOWNLOAD_BUTTON_CAPTION = "Download";
 	private static final Integer RIGHT_SCROLL_PIXELS = 500;
-
+	private static final Integer FORM_ROW = 1;
 
 	private final NewFormWindow newFormWindow;
 	private final DownloadWindow downloadWindow;
@@ -123,9 +123,7 @@ public class FormManager extends VaadinGuiWebpage {
 	}
 
 	public void createNewForm(String formName) {
-		if (isFormAlreadyCreated(formName)) {
-			deleteForm(1);
-		}
+		deleteAllCreatedForms();
 		openNewFormWindow();
 		getNewFormWindow().createNewForm(formName);
 	}
@@ -263,6 +261,18 @@ public class FormManager extends VaadinGuiWebpage {
 
 	private void scrollRightUpperButtonMenu() {
 		$(HorizontalLayoutElement.class).$$(HorizontalLayoutElement.class).first().scrollLeft(RIGHT_SCROLL_PIXELS);
+	}
+
+	private void deleteAllCreatedForms() {
+
+		try {
+			while (true) {
+				getFormTable().getCell(FORM_ROW, 0);
+				deleteForm(FORM_ROW);
+			}
+		} catch (NoSuchElementException e) {
+			return;
+		}
 	}
 
 }
