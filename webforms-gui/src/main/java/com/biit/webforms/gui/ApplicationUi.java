@@ -1,13 +1,24 @@
 package com.biit.webforms.gui;
 
+import java.io.IOException;
+
+import com.biit.liferay.access.exceptions.AuthenticationRequired;
+import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
+import com.biit.liferay.access.exceptions.WebServiceAccessError;
+import com.biit.liferay.security.exceptions.InvalidCredentialsException;
+import com.biit.security.exceptions.PBKDF2EncryptorException;
+import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.logger.WebformsLogger;
+import com.liferay.portal.model.User;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.DefaultErrorHandler;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
@@ -26,8 +37,19 @@ public class ApplicationUi extends UI {
 	private static final long serialVersionUID = -704009283476930001L;
 	private Navigator navigator;
 	private View currentView;
-	private String user;
+	private String userEmail;
 	private String password;
+
+	private class WebformsErrorHandler extends DefaultErrorHandler {
+		private static final long serialVersionUID = -5570064834518413901L;
+
+		@Override
+		public void error(com.vaadin.server.ErrorEvent event) {
+			// Throw the error to the logger.
+			WebformsLogger.errorMessage(ApplicationUi.class.getName(), event.getThrowable());
+			MessageManager.showError(CommonComponentsLanguageCodes.ERROR_UNEXPECTED_ERROR);
+		}
+	};
 
 	@Override
 	protected void init(VaadinRequest request) {
@@ -36,8 +58,40 @@ public class ApplicationUi extends UI {
 		UiAccesser.register(UserSessionHandler.getController());
 
 		// Liferay send this data and automatically are used in the login screen.
-		this.user = request.getParameter(USER_PARAMETER_TAG);
-		this.password = request.getParameter(PASSWORD_PARAMETER_TAG);
+		userEmail = request.getParameter(USER_PARAMETER_TAG);
+		password = request.getParameter(PASSWORD_PARAMETER_TAG);
+
+		setErrorHandler(new WebformsErrorHandler());
+
+		autologin(userEmail, password);
+	}
+
+	private void autologin(String userEmail, String password) {
+		// When accessing from Liferay, user and password are already set.
+		if (userEmail != null && userEmail.length() > 0 && password != null && password.length() > 0) {
+			WebformsLogger.info(this.getClass().getName(), "Autologin with user '" + userEmail
+					+ "' and password with length of " + password.length());
+			try {
+				User user = UserSessionHandler.getUser(userEmail, password);
+				if (user != null) {
+					// Try to go to the last page and last form if user has no logged out.
+					if (UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()) != null) {
+						navigateTo(UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()));
+					} else {
+						navigateTo(WebMap.getMainPage());
+					}
+				}
+			} catch (InvalidCredentialsException | NotConnectedToWebServiceException | PBKDF2EncryptorException
+					| IOException | AuthenticationRequired | WebServiceAccessError e) {
+				WebformsLogger.info(this.getClass().getName(), "Autologin with user '" + userEmail
+						+ "' failed! Wrong user or password.");
+			}
+		} else {
+			if (userEmail != null && userEmail.length() > 0) {
+				WebformsLogger.info(this.getClass().getName(), "Autologin with user '" + userEmail
+						+ "' but no password provided!");
+			}
+		}
 	}
 
 	@Override
@@ -104,8 +158,8 @@ public class ApplicationUi extends UI {
 		this.currentView = currentView;
 	}
 
-	public String getUser() {
-		return user;
+	public String getUserEmail() {
+		return userEmail;
 	}
 
 	public String getPassword() {
