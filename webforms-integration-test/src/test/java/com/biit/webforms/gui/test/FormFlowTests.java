@@ -49,9 +49,10 @@ public class FormFlowTests extends WebFormsTester {
 		deleteForm();
 	}
 
-//	@Test(groups = "formFlow")
+	@Test(groups = "formFlow")
 	public void validFormWithEverything() {
 		try {
+			System.out.println("TEST_NAME: validFormWithEverything");
 			loginFormAdmin1();
 			getFormManagerPage().createNewForm(NEW_FORM_NAME);
 			goToDesignerPage();
@@ -70,7 +71,7 @@ public class FormFlowTests extends WebFormsTester {
 
 	@Test(groups = "formFlow")
 	public void validStartEndFlow() {
-		System.out.println("TEST_NAME: validStartEndFlow"); 
+		System.out.println("TEST_NAME: validStartEndFlow");
 		loginAndInitializeForm();
 		// Edit the flow
 		goToFlowManagerPage();
