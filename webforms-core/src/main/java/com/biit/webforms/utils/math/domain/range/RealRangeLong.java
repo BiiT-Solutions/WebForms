@@ -69,7 +69,7 @@ public class RealRangeLong extends RealRange<Long>{
 		if(range.getLeft().getLimit().equals(range.getRight().getLimit())){
 			return range.getLeft().getLimit();
 		}
-		long randomNum = (Math.abs(random.nextLong()) % (range.getRight().getLimit() - range.getLeft().getLimit())+ range.getLeft().getLimit());
+		long randomNum = (random.nextInt(Integer.MAX_VALUE) % (range.getRight().getLimit() - range.getLeft().getLimit())+ range.getLeft().getLimit());
 		return randomNum;
 	}
 

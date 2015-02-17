@@ -2,8 +2,8 @@ package com.biit.webforms.gui.webpages.floweditor;
 
 import com.biit.form.TreeObject;
 import com.biit.webforms.persistence.entity.Flow;
-import com.vaadin.data.Item;
 import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Item;
 
 /**
  * Table filter of flows by origin.
@@ -31,7 +31,7 @@ public class OriginFilter implements Filter {
 
 	@Override
 	public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-		if (filter == null || (itemId != null && itemId.equals(newFlow))) {
+		if (filter == null || (itemId != null && itemId.equals(newFlow)) || (itemId == null)) {
 			return true;
 		}
 		Flow flow = (Flow) itemId;

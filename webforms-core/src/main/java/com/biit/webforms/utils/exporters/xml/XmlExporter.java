@@ -151,7 +151,7 @@ public class XmlExporter {
 	private void generateRandomInput(StringBuilder sb, Question question) {
 		switch (question.getAnswerSubformat()) {
 		case AMOUNT:
-			sb.append(Math.abs(random.nextInt()));
+			sb.append(random.nextInt(Integer.MAX_VALUE));
 			break;
 		case BSN:
 			sb.append("123456782");
@@ -172,7 +172,7 @@ public class XmlExporter {
 			sb.append("ES7620770024003102575766");
 			break;
 		case NUMBER:
-			sb.append(Math.abs(random.nextInt()));
+			sb.append(random.nextInt(Integer.MAX_VALUE));
 			break;
 		case PHONE:
 			sb.append("999999999");
