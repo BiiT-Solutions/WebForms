@@ -150,7 +150,7 @@ public class FormFlowTests extends WebFormsTester {
 		redrawSaveTakeScreenshotAndDeleteForm(CLEAN_SIMPLE_OTHERS_FLOW_TEST_SCREENSHOT);
 	}
 
-	@Test(groups = "formFlow2")
+	@Test(groups = "formFlow")
 	public void cleanSimpleOthersFlow2() {
 		loginAndInitializeForm();
 		// Create a flow
