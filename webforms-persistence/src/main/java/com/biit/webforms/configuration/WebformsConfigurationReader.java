@@ -166,7 +166,7 @@ public class WebformsConfigurationReader {
 		Properties prop = new Properties();
 		try {
 			prop = PropertiesFile.load(DATABASE_CONFIG_FILE);
-			graphvizBinPath = getGraphvizBinPathOsBased(prop);
+			graphvizBinPath = prop.getProperty(GRAPHVIZ_TAG, DEFAULT_GRAPHVIZ_VALUE);
 			regexText = prop.getProperty(REGEX_TEXT, DEFAULT_REGEX_TEXT);
 			regexPhone = prop.getProperty(REGEX_PHONE, DEFAULT_REGEX_PHONE);
 			regexIban = prop.getProperty(REGEX_IBAN, DEFAULT_REGEX_IBAN);
@@ -195,15 +195,6 @@ public class WebformsConfigurationReader {
 					DEFAULT_BUILDING_BLOCK_LINKS));
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}
-	}
-
-	private String getGraphvizBinPathOsBased(Properties prop) {
-		String OS = System.getProperty("os.name").toLowerCase();
-		if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0) {
-			return DEFAULT_GRAPHVIZ_VALUE;
-		} else {
-			return prop.getProperty(GRAPHVIZ_TAG, DEFAULT_GRAPHVIZ_VALUE);
 		}
 	}
 
