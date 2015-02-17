@@ -102,7 +102,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 				formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
 			}
 
-			formView.setLastVersion((Integer) row[13] == (Integer) row[3]);
+			formView.setLastVersion(((Integer) row[13]).equals((Integer) row[3]));
 
 			formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 
@@ -180,7 +180,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 				formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
 			}
 
-			formView.setLastVersion((Integer) row[13] == (Integer) row[3]);
+			formView.setLastVersion(((Integer) row[13]).equals((Integer) row[3]));
 
 			formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 

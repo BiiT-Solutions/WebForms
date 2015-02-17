@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import net.sf.ehcache.util.FindBugsSuppressWarnings;
+
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
@@ -95,6 +97,7 @@ public class XFormsPersistence {
 		}
 	}
 
+	@FindBugsSuppressWarnings("SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING")
 	public void deleteForm(Form form, Organization organization, boolean preview) {
 		if (form != null && connection != null) {
 			try (PreparedStatement stmt = connection.prepareStatement("DELETE FROM orbeon_form_definition WHERE app='"

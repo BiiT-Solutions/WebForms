@@ -69,7 +69,7 @@ public class RealRangeInteger extends RealRange<Integer> {
 		if(range.getLeft().getLimit().equals(range.getRight().getLimit())){
 			return range.getLeft().getLimit();
 		}
-		int randomNum = (Math.abs(random.nextInt())%(range.getRight().getLimit() - range.getLeft().getLimit())) + range.getLeft().getLimit();
+		int randomNum = (random.nextInt(Integer.MAX_VALUE)%(range.getRight().getLimit() - range.getLeft().getLimit())) + range.getLeft().getLimit();
 		return randomNum;
 	}
 

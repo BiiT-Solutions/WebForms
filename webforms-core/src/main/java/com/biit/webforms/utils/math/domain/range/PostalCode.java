@@ -83,9 +83,10 @@ public class PostalCode implements Comparable<PostalCode> {
 		int secondChar1Int = limit.getSecondChar();
 		int secondChar2Int = limit2.getSecondChar();
 
-		int randomInt = (Math.abs(random.nextInt()) % (limit2Int - limit1Int)) + limit1Int;
-		int randomFirstChar = (Math.abs(random.nextInt()) % (fistChar1Int - fistChar2Int)) + fistChar1Int;
-		int randomSecondChar = (Math.abs(random.nextInt()) % (secondChar1Int - secondChar2Int)) + secondChar1Int;
+		
+		int randomInt = (random.nextInt(Integer.MAX_VALUE) % (limit2Int - limit1Int)) + limit1Int;
+		int randomFirstChar = (random.nextInt(Integer.MAX_VALUE) % (fistChar1Int - fistChar2Int)) + fistChar1Int;
+		int randomSecondChar = (random.nextInt(Integer.MAX_VALUE) % (secondChar1Int - secondChar2Int)) + secondChar1Int;
 
 		return new PostalCode(randomInt, (char) randomFirstChar, (char) randomSecondChar);
 	}

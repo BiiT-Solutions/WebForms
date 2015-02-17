@@ -17,7 +17,7 @@ public class DestinyFilter extends OriginFilter {
 
 	@Override
 	public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-		if (filter == null || (itemId != null && itemId.equals(newFlow))) {
+		if (filter == null || (itemId != null && itemId.equals(newFlow)) || (itemId == null)) {
 			return true;
 		}
 		Flow flow = (Flow) itemId;

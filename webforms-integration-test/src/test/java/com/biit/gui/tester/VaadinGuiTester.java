@@ -76,17 +76,26 @@ public class VaadinGuiTester extends TestBenchTestCase {
 			$(NotificationElement.class).first().close();
 		}
 	}
+	
+	public static void closeNotification(NotificationElement notification) {
+		if (notification.isDisplayed()) {
+			notification.close();
+		}
+	}
 
 	public static void checkNotificationIsError(NotificationElement notification) {
 		Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_ERROR);
+		closeNotification(notification);
 	}
 
 	public static void checkNotificationIsWarning(NotificationElement notification) {
 		Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_WARNING);
+		closeNotification(notification);
 	}
 
 	public static void checkNotificationIsHumanized(NotificationElement notification) {
 		Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_HUMANIZED);
+		closeNotification(notification);
 	}
 
 	public boolean isHeadlessTesting() {

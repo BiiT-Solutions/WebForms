@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.Assert;
+import net.sf.ehcache.util.FindBugsSuppressWarnings;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		formDao.makeTransient(dbForm);
 	}
 
+	@FindBugsSuppressWarnings("DMI_RANDOM_USED_ONLY_ONCE")
 	private Form createForm() throws ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
 			FlowNotAllowedException {

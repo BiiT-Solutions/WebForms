@@ -27,13 +27,13 @@ public class SelectFormElementWindow extends VaadinGuiWindow {
 	}
 
 	private ButtonElement getAcceptButton() {
-		return $$(WindowElement.class).id(WINDOW_ID).$$(VerticalLayoutElement.class).$$(HorizontalLayoutElement.class)
-				.$$(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first();
+		return $(WindowElement.class).id(WINDOW_ID).$(VerticalLayoutElement.class).$(HorizontalLayoutElement.class)
+				.$(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first();
 	}
 
 	private ButtonElement getCancelButton() {
-		return $$(WindowElement.class).id(WINDOW_ID).$$(VerticalLayoutElement.class).$$(HorizontalLayoutElement.class)
-				.$$(ButtonElement.class).caption(CANCEL_BUTTON_CAPTION).first();
+		return $(WindowElement.class).id(WINDOW_ID).$(VerticalLayoutElement.class).$(HorizontalLayoutElement.class)
+				.$(ButtonElement.class).caption(CANCEL_BUTTON_CAPTION).first();
 	}
 
 	public TreeTableElement getTreeTable() {

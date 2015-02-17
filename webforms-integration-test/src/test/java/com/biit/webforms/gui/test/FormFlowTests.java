@@ -162,6 +162,8 @@ public class FormFlowTests extends WebFormsTester {
 		getFlowManagerPage().getFlowRuleWindow().clickOthersCheckBox();
 		getFlowManagerPage().getFlowRuleWindow().clickAcceptButton();
 		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManagerPage().saveFlow();
+		closeNotificationIfExists();
 		// Clean the rule
 		getFlowManagerPage().clickCleanFlowButton();
 		checkNotificationIsHumanized(getNotification());

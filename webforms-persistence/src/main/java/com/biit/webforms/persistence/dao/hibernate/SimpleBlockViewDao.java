@@ -86,7 +86,7 @@ public class SimpleBlockViewDao implements ISimpleBlockViewDao {
 			blockView.setComparationId((String) row[8]);
 			blockView.setOrganizationId(((Double) row[9]).longValue());
 
-			blockView.setLastVersion((Integer) row[10] == (Integer) row[3]);
+			blockView.setLastVersion(((Integer) row[10]).equals((Integer) row[3]));
 
 			blocksViews.add(blockView);
 		}
@@ -129,7 +129,7 @@ public class SimpleBlockViewDao implements ISimpleBlockViewDao {
 			blockView.setComparationId((String) row[8]);
 			blockView.setOrganizationId(((Double) row[9]).longValue());
 
-			blockView.setLastVersion((Integer) row[10] == (Integer) row[3]);
+			blockView.setLastVersion(((Integer) row[10]).equals((Integer) row[3]));
 
 			blocksViews.add(blockView);
 		}
