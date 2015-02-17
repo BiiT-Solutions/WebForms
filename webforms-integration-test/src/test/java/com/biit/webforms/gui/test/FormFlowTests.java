@@ -94,7 +94,6 @@ public class FormFlowTests extends WebFormsTester {
 		getFlowManagerPage().clickCloneButton();
 		// Finish the test
 		redrawSaveTakeScreenshotAndDeleteForm(CLONE_FLOW_TEST_SCREENSHOT);
-
 	}
 
 	@Test(groups = "formFlow")
