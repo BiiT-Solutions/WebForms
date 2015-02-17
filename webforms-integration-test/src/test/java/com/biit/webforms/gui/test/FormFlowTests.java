@@ -150,7 +150,7 @@ public class FormFlowTests extends WebFormsTester {
 		redrawSaveTakeScreenshotAndDeleteForm(CLEAN_SIMPLE_OTHERS_FLOW_TEST_SCREENSHOT);
 	}
 
-	@Test(groups = "formFlow")
+	@Test(groups = "formFlow2")
 	public void cleanSimpleOthersFlow2() {
 		loginAndInitializeForm();
 		// Create a flow
@@ -162,6 +162,8 @@ public class FormFlowTests extends WebFormsTester {
 		getFlowManagerPage().getFlowRuleWindow().clickOthersCheckBox();
 		getFlowManagerPage().getFlowRuleWindow().clickAcceptButton();
 		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManagerPage().saveFlow();
+		closeNotificationIfExists();
 		// Clean the rule
 		getFlowManagerPage().clickCleanFlowButton();
 		checkNotificationIsHumanized(getNotification());
