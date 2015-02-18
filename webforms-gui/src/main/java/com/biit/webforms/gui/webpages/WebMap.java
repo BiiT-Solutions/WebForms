@@ -2,6 +2,9 @@ package com.biit.webforms.gui.webpages;
 
 @SuppressWarnings("rawtypes")
 public enum WebMap {
+	
+	ERROR_PAGE(ErrorPage.class),
+	
 	LOGIN_PAGE(Login.class),
 
 	FORM_MANAGER(FormManager.class),
@@ -23,6 +26,8 @@ public enum WebMap {
 	private static WebMap loginPage = WebMap.LOGIN_PAGE;
 
 	private static WebMap defaultPage = WebMap.FORM_MANAGER;
+	
+	private static WebMap errorPage = WebMap.ERROR_PAGE;
 
 	private Class redirectTo;
 
@@ -40,6 +45,14 @@ public enum WebMap {
 
 	public static WebMap getMainPage() {
 		return defaultPage;
+	}
+
+	public static WebMap getErrorPage() {
+		return errorPage;
+	}
+
+	public static void setErrorPage(WebMap errorPage) {
+		WebMap.errorPage = errorPage;
 	}
 
 }
