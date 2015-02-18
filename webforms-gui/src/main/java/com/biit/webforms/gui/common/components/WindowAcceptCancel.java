@@ -35,6 +35,7 @@ public class WindowAcceptCancel extends Window {
 
 	public WindowAcceptCancel() {
 		super();
+		setId(this.getClass().getName());
 		setModal(true);
 		acceptListeners = new ArrayList<WindowAcceptCancel.AcceptActionListener>();
 		cancelListeners = new ArrayList<WindowAcceptCancel.CancelActionListener>();
