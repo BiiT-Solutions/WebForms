@@ -1,18 +1,28 @@
 package com.biit.webforms.gui.webpages;
 
 import com.biit.webforms.gui.common.components.WebPageComponent;
+import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.theme.ThemeIcons;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 public class ErrorPage extends WebPageComponent {
 	private static final long serialVersionUID = -587681959593342489L;
-	private static final String TEXT_WIDTH = "300px";
-	private static final String DEFAULT_TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sed fermentum odio, a sodales ipsum. Cras ut purus dolor. Aliquam vel risus turpis. Sed eu facilisis magna, et porta magna. Aliquam ut tempus ante. Maecenas ac eros urna. Proin a erat eros. Curabitur tincidunt dictum venenatis. Proin vestibulum ligula a mi congue auctor. Donec et elit facilisis, pellentesque nisi in, tincidunt ipsum. Nullam a lectus convallis, convallis mi non, rhoncus felis. Mauris ut fringilla neque";
+	private static final String TEXT_WIDTH = "600px";
+	private static final String FULL = "100%";
+	private static final String IMAGE_LAYOUT_HEIGHT = "300px";
+	private static final String IMAGE_WIDTH = "80px";
+	private static final String IMAGE_HEIGHT = "80px";
 	private VerticalLayout rootLayout;
 
-	private VerticalLayout textLayout;
+	private VerticalLayout messageLayout;
 	private Label label;
+	private Image image;
 
 	public ErrorPage() {
 		rootLayout = new VerticalLayout();
@@ -20,18 +30,45 @@ public class ErrorPage extends WebPageComponent {
 		setCompositionRoot(rootLayout);
 		setSizeFull();
 
-		textLayout = new VerticalLayout();
-		textLayout.setWidth(TEXT_WIDTH);
-		textLayout.setHeight(null);
+		messageLayout = new VerticalLayout();
+		messageLayout.setWidth(TEXT_WIDTH);
+		messageLayout.setHeight(null);
+		messageLayout.setSpacing(true);
 
-		label = new Label(DEFAULT_TEXT);
+		image = new Image();
+		image.setWidth(IMAGE_WIDTH);
+		image.setHeight(IMAGE_HEIGHT);
 
-		textLayout.addComponent(label);
+		VerticalLayout imageLayout = new VerticalLayout();
+		imageLayout.setWidth(FULL);
+		imageLayout.setHeight(IMAGE_LAYOUT_HEIGHT);
+		imageLayout.addComponent(image);
+		imageLayout.setComponentAlignment(image, Alignment.BOTTOM_LEFT);
+		imageLayout.setMargin(new MarginInfo(false, false, true, false));
+
+		label = new Label();
+
+		messageLayout.addComponent(imageLayout);
+		messageLayout.addComponent(label);
+
+		rootLayout.addComponent(messageLayout);
+		rootLayout.setComponentAlignment(messageLayout, Alignment.TOP_CENTER);
+
+		setLabelContent(LanguageCodes.PAGE_ERROR.translation());
+		setImageSource(ThemeIcons.PAGE_ERROR.getThemeResource());
 	}
 
 	@Override
 	public void enter(ViewChangeEvent event) {
 		// TODO Auto-generated method stub
+	}
+
+	public void setLabelContent(String content) {
+		label.setValue(content);
+	}
+
+	public void setImageSource(ThemeResource resource) {
+		image.setSource(resource);
 	}
 
 }
