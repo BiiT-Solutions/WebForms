@@ -66,16 +66,16 @@ public class AbcdLinkTests extends WebFormsTester {
 		loginFormEdit1();
 		// Import Abcd form
 		getFormManagerPage().clickNewButton();
+		takeScreenshot(LINK_WINDOW_ONE);
 		getFormManagerPage().clickFromAbcdButton();
+		takeScreenshot(LINK_WINDOW_TWO);
 		getFormManagerPage().getImportAbcdFormWindow().waitToShow();
+		takeScreenshot(LINK_WINDOW_THREE);
 		getFormManagerPage().getImportAbcdFormWindow().clickAccept();
 		// Unlink Abcd form
 		getFormManagerPage().clickLinkAbcdRulesButton();
-		takeScreenshot(LINK_WINDOW_ONE);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().waitToShow();
-		takeScreenshot(LINK_WINDOW_TWO);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickTableRow(TABLE_ROW);
-		takeScreenshot(LINK_WINDOW_THREE);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickAccept();
 		// Make form incompatible
 		goToDesignerPage();
