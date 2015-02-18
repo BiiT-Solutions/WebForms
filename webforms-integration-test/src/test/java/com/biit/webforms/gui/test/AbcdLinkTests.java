@@ -33,6 +33,10 @@ public class AbcdLinkTests extends WebFormsTester {
 	private static final String LINK_WINDOW_ONE = "LinkWindowScreenshotOne";
 	private static final String LINK_WINDOW_TWO = "LinkWindowScreenshotTwo";
 	private static final String LINK_WINDOW_THREE = "LinkWindowScreenshotThree";
+	private static final String LINK_WINDOW_FOUR = "LinkWindowScreenshotFour";
+	private static final String LINK_WINDOW_FIVE = "LinkWindowScreenshotFive";
+	private static final String LINK_WINDOW_SIX = "LinkWindowScreenshotSix";
+	private static final String LINK_WINDOW_SEVEN = "LinkWindowScreenshotSeven";
 
 	@AfterClass
 	private void createAbcdForm() throws SQLException, ClassNotFoundException {
@@ -69,13 +73,17 @@ public class AbcdLinkTests extends WebFormsTester {
 		takeScreenshot(LINK_WINDOW_ONE);
 		getFormManagerPage().clickFromAbcdButton();
 		takeScreenshot(LINK_WINDOW_TWO);
-		getFormManagerPage().getImportAbcdFormWindow().waitToShow();
+//		getFormManagerPage().getImportAbcdFormWindow().waitToShow();
 		takeScreenshot(LINK_WINDOW_THREE);
 		getFormManagerPage().getImportAbcdFormWindow().clickAccept();
 		// Unlink Abcd form
+		takeScreenshot(LINK_WINDOW_FOUR);
 		getFormManagerPage().clickLinkAbcdRulesButton();
-		getFormManagerPage().getWindowLinkAbcdFormWindow().waitToShow();
+		takeScreenshot(LINK_WINDOW_FIVE);
+//		getFormManagerPage().getWindowLinkAbcdFormWindow().waitToShow();
+		takeScreenshot(LINK_WINDOW_SIX);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickTableRow(TABLE_ROW);
+		takeScreenshot(LINK_WINDOW_SEVEN);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickAccept();
 		// Make form incompatible
 		goToDesignerPage();
@@ -87,7 +95,7 @@ public class AbcdLinkTests extends WebFormsTester {
 		// Try to link the form again
 		goToFormManagerPage();
 		getFormManagerPage().clickLinkAbcdRulesButton();
-		getFormManagerPage().getWindowLinkAbcdFormWindow().waitToShow();
+//		getFormManagerPage().getWindowLinkAbcdFormWindow().waitToShow();
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickTableRow(TABLE_ROW);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().selectOptionGroupCheckBox();
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickAccept();
