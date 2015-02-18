@@ -26,8 +26,8 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
-import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
 import com.biit.webforms.gui.webpages.validation.ValidationUpperMenu;
+import com.biit.webforms.gui.webpages.validation.WindowCompareAbcdForm;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
@@ -155,7 +155,7 @@ public class Validation extends SecuredWebPage {
 							form.getLinkedFormOrganizationId());
 
 			// Let user choose the version.
-			WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
+			WindowCompareAbcdForm linkAbcdForm = new WindowCompareAbcdForm(form);
 			for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
 				if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 						simpleFormView.getOrganizationId(), AbcdActivity.READ)
@@ -171,7 +171,7 @@ public class Validation extends SecuredWebPage {
 
 				@Override
 				public void acceptAction(WindowAcceptCancel window) {
-					WindowLinkAbcdForm linkWindow = (WindowLinkAbcdForm) window;
+					WindowCompareAbcdForm linkWindow = (WindowCompareAbcdForm) window;
 
 					ValidateReport report = new ValidateReport();
 					for (IBaseFormView abcdForm : linkWindow.getValue()) {

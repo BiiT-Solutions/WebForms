@@ -26,7 +26,6 @@ import com.vaadin.ui.UI;
  * Main Ui class of application. Ui has been configured to preserve the Ui when a Refresh action has occurred. This way,
  * a UI is only discarded when the user is no longer active in a long time, instead of every time there is a refresh
  * event.
- * 
  */
 @Push
 @Theme("webforms")
@@ -92,6 +91,8 @@ public class ApplicationUi extends UI {
 			if (userEmail != null && userEmail.length() > 0) {
 				WebformsLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
 						+ "' but no password provided!");
+			} else {
+				WebformsLogger.debug(this.getClass().getName(), "Autologin failed.");
 			}
 		}
 	}

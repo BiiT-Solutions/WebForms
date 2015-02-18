@@ -30,6 +30,13 @@ public class AbcdLinkTests extends WebFormsTester {
 	private static final String ABCD_DB_URL_PROPERTY = "abcd.hibernate.connection.url";
 	private static final String ABCD_DB_USER_PROPERTY = "abcd.hibernate.connection.username";
 	private static final String ABCD_DB_PASS_PROPERTY = "abcd.hibernate.connection.password";
+	private static final String LINK_WINDOW_ONE = "LinkWindowScreenshotOne";
+	private static final String LINK_WINDOW_TWO = "LinkWindowScreenshotTwo";
+	private static final String LINK_WINDOW_THREE = "LinkWindowScreenshotThree";
+	private static final String LINK_WINDOW_FOUR = "LinkWindowScreenshotFour";
+	private static final String LINK_WINDOW_FIVE = "LinkWindowScreenshotFive";
+	private static final String LINK_WINDOW_SIX = "LinkWindowScreenshotSix";
+	private static final String LINK_WINDOW_SEVEN = "LinkWindowScreenshotSeven";
 
 	@AfterClass
 	private void createAbcdForm() throws SQLException, ClassNotFoundException {
@@ -60,16 +67,23 @@ public class AbcdLinkTests extends WebFormsTester {
 		loginFormAdmin1();
 		getFormManagerPage().deleteAllCreatedForms();
 		logOut();
-
 		loginFormEdit1();
 		// Import Abcd form
 		getFormManagerPage().clickNewButton();
+		takeScreenshot(LINK_WINDOW_ONE);
 		getFormManagerPage().clickFromAbcdButton();
-		getFormManagerPage().getImportAbcdFormWindow().waitToShow();
+		takeScreenshot(LINK_WINDOW_TWO);
+//		getFormManagerPage().getImportAbcdFormWindow().waitToShow();
+		takeScreenshot(LINK_WINDOW_THREE);
 		getFormManagerPage().getImportAbcdFormWindow().clickAccept();
 		// Unlink Abcd form
+		takeScreenshot(LINK_WINDOW_FOUR);
 		getFormManagerPage().clickLinkAbcdRulesButton();
+		takeScreenshot(LINK_WINDOW_FIVE);
+//		getFormManagerPage().getWindowLinkAbcdFormWindow().waitToShow();
+		takeScreenshot(LINK_WINDOW_SIX);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickTableRow(TABLE_ROW);
+		takeScreenshot(LINK_WINDOW_SEVEN);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickAccept();
 		// Make form incompatible
 		goToDesignerPage();
@@ -81,6 +95,7 @@ public class AbcdLinkTests extends WebFormsTester {
 		// Try to link the form again
 		goToFormManagerPage();
 		getFormManagerPage().clickLinkAbcdRulesButton();
+//		getFormManagerPage().getWindowLinkAbcdFormWindow().waitToShow();
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickTableRow(TABLE_ROW);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().selectOptionGroupCheckBox();
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickAccept();
