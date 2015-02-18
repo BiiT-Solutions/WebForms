@@ -6,12 +6,9 @@ import java.util.jar.Manifest;
 
 import javax.servlet.ServletContext;
 
-import org.apache.http.client.ClientProtocolException;
-
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
 import com.biit.liferay.access.exceptions.WebServiceAccessError;
-import com.biit.liferay.security.AuthenticationService;
 import com.biit.liferay.security.exceptions.InvalidCredentialsException;
 import com.biit.security.exceptions.PBKDF2EncryptorException;
 import com.biit.webforms.gui.ApplicationUi;
@@ -22,15 +19,12 @@ import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.liferay.portal.model.User;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.UserError;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -41,7 +35,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 public class Login extends WebPageComponent {
@@ -77,35 +70,7 @@ public class Login extends WebPageComponent {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// When accessing from Liferay, user and password are already set.
-		if (((ApplicationUi) getUI()).getUser() != null && ((ApplicationUi) getUI()).getUser().length() > 0
-				&& ((ApplicationUi) getUI()).getPassword() != null
-				&& ((ApplicationUi) getUI()).getPassword().length() > 0) {
-			WebformsLogger.info(this.getClass().getName(),
-					"Autologin with user '" + ((ApplicationUi) getUI()).getUser() + "' and password with length of "
-							+ ((ApplicationUi) getUI()).getPassword().length());
-			try {
-				User user = checkUserAndPassword(((ApplicationUi) getUI()).getUser(),
-						((ApplicationUi) getUI()).getPassword());
-				if (user != null) {
-					// Try to go to the last page and last form if uses has no logged out.
-					if (UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()) != null) {
-						ApplicationUi.navigateTo(UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()));
-					} else {
-						ApplicationUi.navigateTo(WebMap.getMainPage());
-					}
-				}
-			} catch (InvalidCredentialsException | NotConnectedToWebServiceException | PBKDF2EncryptorException
-					| IOException | AuthenticationRequired | WebServiceAccessError e) {
-				WebformsLogger.info(this.getClass().getName(),
-						"Autologin with user '" + ((ApplicationUi) getUI()).getUser()
-								+ "' failed! Wrong user or password.");
-			}
-		}
-		if (((ApplicationUi) getUI()).getUser() != null && ((ApplicationUi) getUI()).getUser().length() > 0) {
-			WebformsLogger.info(this.getClass().getName(), "Autologin with user '" + ((ApplicationUi) getUI()).getUser()
-					+ "' but no password provided!");
-		}
+		// Nothing to do. Autologin managed by ApplicationUI. 
 	}
 
 	private Panel buildLoginForm() {
@@ -137,7 +102,7 @@ public class Login extends WebPageComponent {
 				// form
 				if (target == passwordField) {
 					try {
-						User user = checkUserAndPassword((String) usernameField.getValue(),
+						User user = UserSessionHandler.getUser((String) usernameField.getValue(),
 								(String) passwordField.getValue());
 						if (user != null) {
 							ApplicationUi.navigateTo(WebMap.getMainPage());
@@ -171,7 +136,7 @@ public class Login extends WebPageComponent {
 					@Override
 					public void buttonClick(ClickEvent event) {
 						try {
-							User user = checkUserAndPassword((String) usernameField.getValue(),
+							User user = UserSessionHandler.getUser((String) usernameField.getValue(),
 									(String) passwordField.getValue());
 							if (user != null) {
 								ApplicationUi.navigateTo(WebMap.getMainPage());
@@ -206,38 +171,6 @@ public class Login extends WebPageComponent {
 		layout.addComponent(loginButton);
 		panel.setContent(layout);
 		return panel;
-	}
-
-	private User checkUserAndPassword(String userMail, String password) throws JsonParseException,
-			JsonMappingException, ClientProtocolException, InvalidCredentialsException,
-			NotConnectedToWebServiceException, PBKDF2EncryptorException, IOException, AuthenticationRequired,
-			WebServiceAccessError {
-		// Try to log in the user when the button is clicked
-		User user = AuthenticationService.getInstance().authenticate(userMail, password);
-
-		if (user != null) {
-			WebBrowser browser = (WebBrowser) UI.getCurrent().getPage().getWebBrowser();
-			try {
-				String message = "User '" + user.getEmailAddress() + "' logged successfully. Using '"
-						+ browser.getBrowserApplication() + "'";
-				if (browser.getAddress() != null) {
-					message += " (IP: " + browser.getAddress() + ").";
-				} else {
-					message += ".";
-				}
-				WebformsLogger.info(this.getClass().getName(), message);
-			} catch (Exception e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			}
-			// Store the password.
-			user.setPassword(password);
-
-			// The user's password was correct, so set the user as the
-			// current user (inlogged)
-			UserSessionHandler.setUser(user);
-			UserSessionHandler.checkOnlyOneSession(user, UI.getCurrent(), browser.getAddress());
-		}
-		return user;
 	}
 
 	private String getVersion() {

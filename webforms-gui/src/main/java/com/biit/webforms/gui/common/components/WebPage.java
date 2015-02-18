@@ -54,7 +54,7 @@ public abstract class WebPage extends WebPageComponent {
 
 		// Hide logout button.
 		if (upperMenu instanceof UpperMenuWebforms) {
-			if (((ApplicationUi) getUI()).getUser() != null && ((ApplicationUi) getUI()).getPassword() != null) {
+			if (((ApplicationUi) getUI()).getUserEmail() != null && ((ApplicationUi) getUI()).getPassword() != null) {
 				((UpperMenuWebforms) upperMenu).hideLogoutButton(true);
 			}
 		}

@@ -6,7 +6,7 @@
 				<include name="login" />
 				<include name="basicFunctionality" />
 				<include name="formBlockDesign" />
-				<include name="formFlow" />
+				<exclude name="formFlow" />
 				<include name="export" />
 				<include name="impactAnalysis" />
 				<include name="xForms" />

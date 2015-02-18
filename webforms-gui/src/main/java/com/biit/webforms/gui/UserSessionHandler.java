@@ -1,13 +1,26 @@
 package com.biit.webforms.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.http.client.ClientProtocolException;
+
+import com.biit.liferay.access.exceptions.AuthenticationRequired;
+import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
+import com.biit.liferay.access.exceptions.WebServiceAccessError;
+import com.biit.liferay.security.AuthenticationService;
+import com.biit.liferay.security.exceptions.InvalidCredentialsException;
+import com.biit.security.exceptions.PBKDF2EncryptorException;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.liferay.portal.model.User;
+import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.UI;
 
 public class UserSessionHandler {
@@ -140,5 +153,36 @@ public class UserSessionHandler {
 				userLastPage.remove(user.getUserId());
 			}
 		}
+	}
+
+	public static User getUser(String userMail, String password) throws JsonParseException, JsonMappingException,
+			ClientProtocolException, InvalidCredentialsException, NotConnectedToWebServiceException,
+			PBKDF2EncryptorException, IOException, AuthenticationRequired, WebServiceAccessError {
+		// Try to log in the user when the button is clicked
+		User user = AuthenticationService.getInstance().authenticate(userMail, password);
+
+		if (user != null) {
+			WebBrowser browser = (WebBrowser) UI.getCurrent().getPage().getWebBrowser();
+			try {
+				String message = "User '" + user.getEmailAddress() + "' logged successfully. Using '"
+						+ browser.getBrowserApplication() + "'";
+				if (browser.getAddress() != null) {
+					message += " (IP: " + browser.getAddress() + ").";
+				} else {
+					message += ".";
+				}
+				WebformsLogger.info(UserSessionHandler.class.getName(), message);
+			} catch (Exception e) {
+				WebformsLogger.errorMessage(UserSessionHandler.class.getName(), e);
+			}
+			// Store the password.
+			user.setPassword(password);
+
+			// The user's password was correct, so set the user as the
+			// current user (inlogged)
+			UserSessionHandler.setUser(user);
+			UserSessionHandler.checkOnlyOneSession(user, UI.getCurrent(), browser.getAddress());
+		}
+		return user;
 	}
 }
