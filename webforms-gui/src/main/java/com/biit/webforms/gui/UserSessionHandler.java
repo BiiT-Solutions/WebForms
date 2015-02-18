@@ -147,7 +147,7 @@ public class UserSessionHandler {
 
 	public static void setUserLastPage(User user, WebMap page) {
 		if (user != null) {
-			if (!WebMap.getMainPage().equals(page)) {
+			if (!WebMap.getMainPage().equals(page) && !WebMap.getLoginPage().equals(page)) {
 				userLastPage.put(user.getUserId(), page);
 			} else {
 				userLastPage.remove(user.getUserId());

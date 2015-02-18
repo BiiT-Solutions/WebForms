@@ -46,16 +46,16 @@ public class WindowLinkAbcdForm extends WindowAcceptCancel {
 		}
 		abcdForms.get(form.getLabel(), form.getOrganizationId()).add(form);
 	}
-	
+
 	public void setValue(List<SimpleFormView> linkedSimpleAbcdForms) {
-		if(linkedSimpleAbcdForms!=null && !linkedSimpleAbcdForms.isEmpty()){
+		if (linkedSimpleAbcdForms != null && !linkedSimpleAbcdForms.isEmpty()) {
 			abcdFormsTable.setValue(getTableValue(linkedSimpleAbcdForms.get(0)));
 			versionList.setValue(new HashSet<SimpleFormView>(linkedSimpleAbcdForms));
 		}
 	}
 
 	private IBaseFormView getTableValue(SimpleFormView simpleFormView) {
-		if(abcdForms.containsKey(simpleFormView.getLabel(), simpleFormView.getOrganizationId())){
+		if (abcdForms.containsKey(simpleFormView.getLabel(), simpleFormView.getOrganizationId())) {
 			return abcdForms.get(simpleFormView.getLabel(), simpleFormView.getOrganizationId()).get(0);
 		}
 		return null;
@@ -87,7 +87,7 @@ public class WindowLinkAbcdForm extends WindowAcceptCancel {
 
 		rootLayout.addComponent(abcdFormsTable);
 		rootLayout.addComponent(versionListLayout);
-		
+
 		rootLayout.setExpandRatio(abcdFormsTable, 1.0f);
 
 		return rootLayout;
@@ -104,7 +104,7 @@ public class WindowLinkAbcdForm extends WindowAcceptCancel {
 		}
 	}
 
-	private void addToVersionList(IBaseFormView form) {
+	protected void addToVersionList(IBaseFormView form) {
 		versionList.addItem(form);
 		String versionCaption = LanguageCodes.CAPTION_VERSION.translation() + ": " + form.getVersion();
 		versionList.setItemCaption(form, versionCaption);
@@ -140,11 +140,23 @@ public class WindowLinkAbcdForm extends WindowAcceptCancel {
 
 	public Set<IBaseFormView> getValue() {
 		Set<IBaseFormView> value = new HashSet<IBaseFormView>();
-		if(versionList.getValue()!=null){
-			for(Object selectedElement: ((Set<?>)versionList.getValue())){
+		if (versionList.getValue() != null) {
+			for (Object selectedElement : ((Set<?>) versionList.getValue())) {
 				value.add((IBaseFormView) selectedElement);
 			}
 		}
 		return value;
+	}
+
+	protected OptionGroup getVersionList() {
+		return versionList;
+	}
+
+	protected TableSimpleFormNameOrganization getAbcdFormsTable() {
+		return abcdFormsTable;
+	}
+
+	protected BidimensionalHashMap<String, Long, ArrayList<IBaseFormView>> getAbcdForms() {
+		return abcdForms;
 	}
 }

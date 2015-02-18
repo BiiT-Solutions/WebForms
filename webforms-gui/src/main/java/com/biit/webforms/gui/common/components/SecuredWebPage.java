@@ -40,6 +40,7 @@ public abstract class SecuredWebPage extends WebPage {
 		try {
 			User user = UserSessionHandler.getUser();
 			if (user == null) {
+				WebformsLogger.debug(this.getClass().getName(), "User is null. Redirecting to login page.");
 				ApplicationUi.navigateTo(WebMap.getLoginPage());
 			} else {
 				try {
