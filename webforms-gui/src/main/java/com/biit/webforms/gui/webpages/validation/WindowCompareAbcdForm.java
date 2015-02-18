@@ -18,8 +18,8 @@ public class WindowCompareAbcdForm extends WindowLinkAbcdForm {
 		getVersionList().removeAllItems();
 		getVersionList().setValue(null);
 		if (getAbcdFormsTable().getValue() != null) {
-			for (SimpleFormView form : UserSessionHandler.getController().getLinkedSimpleAbcdForms(form)) {
-				addToVersionList(form);
+			for (SimpleFormView simpleFormView : UserSessionHandler.getController().getLinkedSimpleAbcdForms(form)) {
+				addToVersionList(simpleFormView);
 			}
 		}
 	}
