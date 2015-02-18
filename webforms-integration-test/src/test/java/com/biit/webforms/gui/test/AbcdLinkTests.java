@@ -13,7 +13,6 @@ import java.util.Properties;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
 import com.biit.utils.file.PropertiesFile;
@@ -26,7 +25,8 @@ public class AbcdLinkTests extends WebFormsTester {
 	private static final int TREE_TABLE_ROW = 2;
 	public static final String ABCD_LINK_MESSAGE = "Form 'FormTest' version '1' has element 'Category2' and it's not found in form 'FormTest' version '1'.";
 	public static final String ABCD_DIFF_MESSAGE = "Form 'FormTest' version '1' has element 'Category1/Group' and it's not found in form 'FormTest' version '1'.";
-	private static final String DATABASE_CONFIG_FILE = "./target/classes/database.properties";
+	
+	private static final String DATABASE_CONFIG_FILE = "./src/test/resources/database.properties";
 	private static final String ABCD_DB_URL_PROPERTY = "abcd.hibernate.connection.url";
 	private static final String ABCD_DB_USER_PROPERTY = "abcd.hibernate.connection.username";
 	private static final String ABCD_DB_PASS_PROPERTY = "abcd.hibernate.connection.password";
@@ -38,13 +38,17 @@ public class AbcdLinkTests extends WebFormsTester {
 	private static final String LINK_WINDOW_SIX = "LinkWindowScreenshotSix";
 	private static final String LINK_WINDOW_SEVEN = "LinkWindowScreenshotSeven";
 
-	@AfterClass
-	private void createAbcdForm() throws SQLException, ClassNotFoundException {
+	private void createAbcdForm() {
 		try {
 			// Read the properties file
 			Properties prop = new Properties();
 			prop = PropertiesFile.load(DATABASE_CONFIG_FILE);
+			
 			// Create MySql Connection
+			System.out.println("URL: " + prop.getProperty(ABCD_DB_URL_PROPERTY));
+			System.out.println("USER: " + prop.getProperty(ABCD_DB_USER_PROPERTY));
+			System.out.println("PASS: " + prop.getProperty(ABCD_DB_PASS_PROPERTY));
+			
 			Connection con = DriverManager.getConnection(prop.getProperty(ABCD_DB_URL_PROPERTY),
 					prop.getProperty(ABCD_DB_USER_PROPERTY), prop.getProperty(ABCD_DB_PASS_PROPERTY));
 			// Initialize object for ScripRunner
@@ -56,7 +60,7 @@ public class AbcdLinkTests extends WebFormsTester {
 			sr.runScript(reader);
 			sr.closeConnection();
 
-		} catch (IOException e) {
+		} catch (IOException | SQLException e) {
 			System.err.println("Failed to Execute" + ABCD_SQL_DUMP_FILE_PATH + " The error is " + e.getMessage());
 			Assert.fail();
 		}
@@ -64,6 +68,7 @@ public class AbcdLinkTests extends WebFormsTester {
 
 	@Test(groups = "abcdLink")
 	public void abcdLinkForm() {
+		createAbcdForm();
 		loginFormAdmin1();
 		getFormManagerPage().deleteAllCreatedForms();
 		logOut();
