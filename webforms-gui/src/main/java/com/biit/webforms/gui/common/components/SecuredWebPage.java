@@ -40,7 +40,7 @@ public abstract class SecuredWebPage extends WebPage {
 		try {
 			User user = UserSessionHandler.getUser();
 			if (user == null) {
-				WebformsLogger.debug(this.getClass().getName(), "User is null. Redirecting to login page.");
+				WebformsLogger.debug(this.getClass().getName(), "Unknown user is trying to access a secure webpage without login. Redirected to Login page.");
 				ApplicationUi.navigateTo(WebMap.getLoginPage());
 			} else {
 				try {
@@ -72,8 +72,8 @@ public abstract class SecuredWebPage extends WebPage {
 			// unrelated and unintelligible, so we catch the exception, log it
 			// and go to the login page.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			MessageManager.showError(CommonComponentsLanguageCodes.ERROR_UNEXPECTED_ERROR);
-			ApplicationUi.navigateTo(WebMap.getLoginPage());
+			//MessageManager.showError(CommonComponentsLanguageCodes.ERROR_UNEXPECTED_ERROR);
+			ApplicationUi.navigateTo(WebMap.getErrorPage());
 		}
 	}
 

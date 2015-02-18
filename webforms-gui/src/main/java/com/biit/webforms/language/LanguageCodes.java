@@ -521,7 +521,11 @@ public enum LanguageCodes implements ILanguageCode {
 	ERROR_FORM_WITH_BLOCK_IS_IN_USE_DESCRIPTION("error.form.with.block.is.in.use.description"),
 	
 	ERROR_ELEMENT_CANNOT_BE_SAVED("error.element.cannot.be.saved"),
-	ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION("error.element.cannot.be.saved.description"),
+	ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION("error.element.cannot.be.saved.description"), 
+	
+	PAGE_NOT_FOUND("page.not.found"),
+	PAGE_ERROR("page.error"),
+	
 	;
 
 	private String value;

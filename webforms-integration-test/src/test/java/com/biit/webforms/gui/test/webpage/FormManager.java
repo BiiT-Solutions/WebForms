@@ -9,7 +9,9 @@ import com.biit.gui.tester.VaadinGuiWebpage;
 import com.biit.webforms.gui.test.exceptions.OrganizationNotEditableException;
 import com.biit.webforms.gui.test.window.DownloadWindow;
 import com.biit.webforms.gui.test.window.ImpactWindow;
+import com.biit.webforms.gui.test.window.ImportAbcdFormWindow;
 import com.biit.webforms.gui.test.window.NewFormWindow;
+import com.biit.webforms.gui.test.window.WindowLinkAbcdFormWindow;
 import com.biit.webforms.gui.test.window.XmlTestsWindow;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
@@ -21,7 +23,9 @@ public class FormManager extends VaadinGuiWebpage {
 	private static final String NEW_BUTTON_CAPTION = "New";
 	private static final String FORM_BUTTON_CAPTION = "Form";
 	private static final String NEW_VERSION_BUTTON_CAPTION = "Version";
+	private static final String FORM_ABCD_BUTTON_CAPTION = "From ABCD";
 	private static final String REMOVE_FORM_BUTTON_CAPTION = "Remove Form";
+	private static final String LINK_ABCD_RULES_BUTTON = "Link ABCD Rules";
 	private static final String EXPORT_BUTTON_CAPTION = "Export";
 	private static final String EXPORT_FORM_BUTTON_CAPTION = "Form";
 	private static final String FLOW_BUTTON_ID = "exportFlowButton";
@@ -40,6 +44,8 @@ public class FormManager extends VaadinGuiWebpage {
 	private final DownloadWindow downloadWindow;
 	private final XmlTestsWindow testXmlWindow;
 	private final ImpactWindow impactWindow;
+	private final ImportAbcdFormWindow importAbcdWindow;
+	private final WindowLinkAbcdFormWindow windowLinkAbcdFormWindow;
 
 	public FormManager() {
 		super();
@@ -51,13 +57,17 @@ public class FormManager extends VaadinGuiWebpage {
 		addWindow(testXmlWindow);
 		impactWindow = new ImpactWindow();
 		addWindow(impactWindow);
+		importAbcdWindow = new ImportAbcdFormWindow();
+		addWindow(importAbcdWindow);
+		windowLinkAbcdFormWindow = new WindowLinkAbcdFormWindow();
+		addWindow(windowLinkAbcdFormWindow);
 	}
 
 	public void clickExportButton() {
 		getExportButton().waitForVaadin();
 		getExportButton().click();
 	}
-
+	
 	public void clickExportFlowButton() {
 		getExportFlowButton().click();
 	}
@@ -78,8 +88,16 @@ public class FormManager extends VaadinGuiWebpage {
 		getExportXsdButton().click();
 	}
 
+	public void clickFromAbcdButton() {
+		getFromAbcdButton().click();
+	}
+
 	public void clickImpactButton() {
 		getImpactButton().click();
+	}
+
+	public void clickLinkAbcdRulesButton() {
+		getLinkAbcdRulesButton().click();
 	}
 
 	public void clickNewButton() {
@@ -89,7 +107,7 @@ public class FormManager extends VaadinGuiWebpage {
 	public void clickNewFormButton() {
 		getNewButton().click();
 	}
-
+	
 	public void clickNewVersionButton() {
 		getNewVersionButton().click();
 	}
@@ -97,7 +115,7 @@ public class FormManager extends VaadinGuiWebpage {
 	public void clickXFormsButton() {
 		getXFormsButton().click();
 	}
-
+	
 	public void clickXFormsDownloadButton() {
 		getXFormsDownloadButton().click();
 	}
@@ -132,6 +150,18 @@ public class FormManager extends VaadinGuiWebpage {
 			throws OrganizationNotEditableException {
 		openNewFormWindow();
 		getNewFormWindow().createNewFormWithOrganization(formName, organizationName);
+	}
+
+	public void deleteAllCreatedForms() {
+
+		try {
+			while (true) {
+				getFormTable().getCell(FORM_ROW, 0);
+				deleteForm(FORM_ROW);
+			}
+		} catch (NoSuchElementException e) {
+			return;
+		}
 	}
 
 	public void deleteForm(int row) {
@@ -187,14 +217,26 @@ public class FormManager extends VaadinGuiWebpage {
 		return $(TreeTableElement.class).first();
 	}
 
+	public ButtonElement getFromAbcdButton() {
+		return getButtonElement(FORM_ABCD_BUTTON_CAPTION);
+	}
+
 	public ButtonElement getImpactButton() {
 		return getButtonElement(IMPACT_BUTTON_CAPTION);
 	}
-
+	
 	public ImpactWindow getImpactWindow() {
 		return impactWindow;
 	}
+	
+	public ImportAbcdFormWindow getImportAbcdFormWindow() {
+		return importAbcdWindow;
+	}
 
+	public ButtonElement getLinkAbcdRulesButton() {
+		return getButtonElement(LINK_ABCD_RULES_BUTTON);
+	}
+	
 	public ButtonElement getNewButton() {
 		return getButtonElement(NEW_BUTTON_CAPTION);
 	}
@@ -229,6 +271,10 @@ public class FormManager extends VaadinGuiWebpage {
 		return null;
 	}
 
+	public WindowLinkAbcdFormWindow getWindowLinkAbcdFormWindow(){
+		return windowLinkAbcdFormWindow;
+	}
+
 	public ButtonElement getXFormsButton() {
 		return getButtonElement(XFORMS_BUTTON_CAPTION);
 	}
@@ -261,18 +307,6 @@ public class FormManager extends VaadinGuiWebpage {
 
 	private void scrollRightUpperButtonMenu() {
 		$(HorizontalLayoutElement.class).$$(HorizontalLayoutElement.class).first().scrollLeft(RIGHT_SCROLL_PIXELS);
-	}
-
-	private void deleteAllCreatedForms() {
-
-		try {
-			while (true) {
-				getFormTable().getCell(FORM_ROW, 0);
-				deleteForm(FORM_ROW);
-			}
-		} catch (NoSuchElementException e) {
-			return;
-		}
 	}
 
 }

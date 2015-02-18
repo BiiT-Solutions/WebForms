@@ -167,6 +167,12 @@
 			<artifactId>vaadin-testbench</artifactId>
 			<version>${vaadin-testbench.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis.version}</version>
+		</dependency>
 	</dependencies>
 
 	<!-- 'mvn install -Prelease' test all application with jenkins -->
@@ -356,13 +362,15 @@
 										</copy>
 										<!-- Modify database connection to use test database -->
 										<replace
-											token="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${original.database}?"
-											value="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${test.database}?"
+											token="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${abcd.original.database}?"
+											value="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${abcd.test.database}?"
 											dir="target/classes">
 											<include name="**/*.properties" />
 										</replace>
-										<replace token="hibernate.connection.username=abcd"
-											value="hibernate.connection.username=testuser" dir="target/classes">
+										<replace
+											token="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${original.database}?"
+											value="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${test.database}?"
+											dir="target/classes">
 											<include name="**/*.properties" />
 										</replace>
 										<replace token="hibernate.hbm2ddl.auto=validate"

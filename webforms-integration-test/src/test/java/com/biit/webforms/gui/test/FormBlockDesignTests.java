@@ -1944,4 +1944,19 @@ public class FormBlockDesignTests extends WebFormsTester {
 		deleteForm();
 		deleteBlock();
 	}
+	
+	@Test(groups = "formFlow")
+	public void validFormWithEverything() {
+		try {
+			loginFormAdmin1();
+			getFormManagerPage().createNewForm(NEW_FORM_NAME);
+			goToDesignerPage();
+			getDesignerPage().createCompleteFormAndSave();
+			goToFormManagerPage();
+			getFormManagerPage().deleteForm(1);
+			logOut();
+		} catch (FieldNotEditableException e) {
+			e.printStackTrace();
+		}
+	}
 }
