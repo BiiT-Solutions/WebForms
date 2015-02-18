@@ -62,14 +62,16 @@ public class ApplicationUi extends UI {
 		password = request.getParameter(PASSWORD_PARAMETER_TAG);
 
 		setErrorHandler(new WebformsErrorHandler());
-
-		autologin(userEmail, password);
+	}
+	
+	public static void autologin(){
+		((ApplicationUi)ApplicationUi.getCurrent()).autologinImplementation();
 	}
 
-	private void autologin(String userEmail, String password) {
+	private void autologinImplementation() {
 		// When accessing from Liferay, user and password are already set.
 		if (userEmail != null && userEmail.length() > 0 && password != null && password.length() > 0) {
-			WebformsLogger.info(this.getClass().getName(), "Autologin with user '" + userEmail
+			WebformsLogger.info(ApplicationUi.class.getName(), "Autologin with user '" + userEmail
 					+ "' and password with length of " + password.length());
 			try {
 				User user = UserSessionHandler.getUser(userEmail, password);
@@ -83,12 +85,12 @@ public class ApplicationUi extends UI {
 				}
 			} catch (InvalidCredentialsException | NotConnectedToWebServiceException | PBKDF2EncryptorException
 					| IOException | AuthenticationRequired | WebServiceAccessError e) {
-				WebformsLogger.info(this.getClass().getName(), "Autologin with user '" + userEmail
+				WebformsLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
 						+ "' failed! Wrong user or password.");
 			}
 		} else {
 			if (userEmail != null && userEmail.length() > 0) {
-				WebformsLogger.info(this.getClass().getName(), "Autologin with user '" + userEmail
+				WebformsLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
 						+ "' but no password provided!");
 			}
 		}
