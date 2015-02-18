@@ -19,7 +19,7 @@ public class AbcdLinkTests extends WebFormsTester {
 
 	public static final String ABCD_SQL_DUMP_FILE_PATH = "./src/test/resources/AbcdFormDB.sql";
 	public static final String ABCD_SCRIPTRUNNER_OUTPUT_FILE_PATH = "./src/test/resources/AbcdFormDB.out";
-	public static final String ABCD_DB_URL = "jdbc:mysql://vagrant-mysql.biit-solutions.com:3306/abcd?useUnicode=true&amp;characterEncoding=UTF-8";
+	public static final String ABCD_DB_URL = "jdbc:mysql://vagrant-mysql.biit-solutions.com:3306/abcdtest?useUnicode=true&amp;characterEncoding=UTF-8";
 	public static final String ABCD_DB_USER = "abcd";
 	public static final String ABCD_DB_PASS = "asd123";
 	private static final int TABLE_ROW = 0;
