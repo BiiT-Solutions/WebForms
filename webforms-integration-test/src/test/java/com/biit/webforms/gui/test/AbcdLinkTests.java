@@ -2,55 +2,34 @@ package com.biit.webforms.gui.test;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.biit.utils.file.PropertiesFile;
-
 public class AbcdLinkTests extends WebFormsTester {
 
 	public static final String ABCD_SQL_DUMP_FILE_PATH = "./src/test/resources/AbcdFormDB.sql";
 	public static final String ABCD_SCRIPTRUNNER_OUTPUT_FILE_PATH = "./src/test/resources/AbcdFormDB.out";
+	public static final String ABCD_DB_URL = "jdbc:mysql://vagrant-mysql.biit-solutions.com:3306/abcdtest?useUnicode=true&amp;characterEncoding=UTF-8";
+	public static final String ABCD_DB_USER = "abcd";
+	public static final String ABCD_DB_PASS = "asd123";
 	private static final int TABLE_ROW = 0;
 	private static final int TREE_TABLE_ROW = 2;
 	public static final String ABCD_LINK_MESSAGE = "Form 'FormTest' version '1' has element 'Category2' and it's not found in form 'FormTest' version '1'.";
 	public static final String ABCD_DIFF_MESSAGE = "Form 'FormTest' version '1' has element 'Category1/Group' and it's not found in form 'FormTest' version '1'.";
-	
-	private static final String DATABASE_CONFIG_FILE = "./src/test/resources/database.properties";
-	private static final String ABCD_DB_URL_PROPERTY = "abcd.hibernate.connection.url";
-	private static final String ABCD_DB_USER_PROPERTY = "abcd.hibernate.connection.username";
-	private static final String ABCD_DB_PASS_PROPERTY = "abcd.hibernate.connection.password";
-	private static final String LINK_WINDOW_ONE = "LinkWindowScreenshotOne";
-	private static final String LINK_WINDOW_TWO = "LinkWindowScreenshotTwo";
-	private static final String LINK_WINDOW_THREE = "LinkWindowScreenshotThree";
-	private static final String LINK_WINDOW_FOUR = "LinkWindowScreenshotFour";
-	private static final String LINK_WINDOW_FIVE = "LinkWindowScreenshotFive";
-	private static final String LINK_WINDOW_SIX = "LinkWindowScreenshotSix";
-	private static final String LINK_WINDOW_SEVEN = "LinkWindowScreenshotSeven";
 
 	private void createAbcdForm() {
 		try {
-			// Read the properties file
-			Properties prop = new Properties();
-			prop = PropertiesFile.load(DATABASE_CONFIG_FILE);
-			
 			// Create MySql Connection
-			System.out.println("URL: " + prop.getProperty(ABCD_DB_URL_PROPERTY));
-			System.out.println("USER: " + prop.getProperty(ABCD_DB_USER_PROPERTY));
-			System.out.println("PASS: " + prop.getProperty(ABCD_DB_PASS_PROPERTY));
-			
-			Connection con = DriverManager.getConnection(prop.getProperty(ABCD_DB_URL_PROPERTY),
-					prop.getProperty(ABCD_DB_USER_PROPERTY), prop.getProperty(ABCD_DB_PASS_PROPERTY));
+			Connection con = DriverManager.getConnection(ABCD_DB_URL, ABCD_DB_USER, ABCD_DB_PASS);
 			// Initialize object for ScripRunner
 			ScriptRunner sr = new ScriptRunner(con);
 			// Give the input file to Reader
@@ -60,7 +39,7 @@ public class AbcdLinkTests extends WebFormsTester {
 			sr.runScript(reader);
 			sr.closeConnection();
 
-		} catch (IOException | SQLException e) {
+		} catch (FileNotFoundException | SQLException e) {
 			System.err.println("Failed to Execute" + ABCD_SQL_DUMP_FILE_PATH + " The error is " + e.getMessage());
 			Assert.fail();
 		}
@@ -75,20 +54,11 @@ public class AbcdLinkTests extends WebFormsTester {
 		loginFormEdit1();
 		// Import Abcd form
 		getFormManagerPage().clickNewButton();
-		takeScreenshot(LINK_WINDOW_ONE);
 		getFormManagerPage().clickFromAbcdButton();
-		takeScreenshot(LINK_WINDOW_TWO);
-//		getFormManagerPage().getImportAbcdFormWindow().waitToShow();
-		takeScreenshot(LINK_WINDOW_THREE);
 		getFormManagerPage().getImportAbcdFormWindow().clickAccept();
 		// Unlink Abcd form
-		takeScreenshot(LINK_WINDOW_FOUR);
 		getFormManagerPage().clickLinkAbcdRulesButton();
-		takeScreenshot(LINK_WINDOW_FIVE);
-//		getFormManagerPage().getWindowLinkAbcdFormWindow().waitToShow();
-		takeScreenshot(LINK_WINDOW_SIX);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickTableRow(TABLE_ROW);
-		takeScreenshot(LINK_WINDOW_SEVEN);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickAccept();
 		// Make form incompatible
 		goToDesignerPage();
@@ -100,7 +70,6 @@ public class AbcdLinkTests extends WebFormsTester {
 		// Try to link the form again
 		goToFormManagerPage();
 		getFormManagerPage().clickLinkAbcdRulesButton();
-//		getFormManagerPage().getWindowLinkAbcdFormWindow().waitToShow();
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickTableRow(TABLE_ROW);
 		getFormManagerPage().getWindowLinkAbcdFormWindow().selectOptionGroupCheckBox();
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickAccept();

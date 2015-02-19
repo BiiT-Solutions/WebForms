@@ -45,7 +45,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	@Cacheable(value = "forms", key = "#id")
+	@Cacheable(value = "webformsforms", key = "#id")
 	public Form read(Long id) throws UnexpectedDatabaseException {
 		// WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
 		Form form = super.read(id);
@@ -54,7 +54,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	@Caching(evict = { @CacheEvict(value = "forms", key = "#form.getId()", condition = "#form.getId() != null") })
+	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
 	public void makeTransient(Form form) throws UnexpectedDatabaseException, ElementCannotBeRemovedException {
 		// Unlink all building block refereces to avoid to remove its elements.
 		for (TreeObject child : form.getChildren()) {
@@ -112,7 +112,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	@CachePut(value = "forms", key = "#form.getId()", condition = "#form.getId() != null")
+	@CachePut(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null")
 	public Form makePersistent(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		// For solving Hibernate bug
 		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
@@ -131,7 +131,7 @@ public class FormDao extends BaseFormDao<Form> implements IFormDao {
 	}
 
 	@Override
-	@CacheEvict(value = "forms", allEntries = true)
+	@CacheEvict(value = "webformsforms", allEntries = true)
 	public void evictAllCache() {
 		super.evictAllCache();
 	}

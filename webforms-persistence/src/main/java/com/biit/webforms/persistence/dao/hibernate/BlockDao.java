@@ -108,7 +108,7 @@ public class BlockDao extends TreeObjectDao<Block> implements IBlockDao {
 	@Override
 	@CachePut(value = "buildingBlocks", key = "#entity.getId()", condition = "#entity.getId() != null")
 	// Clear all forms (maybe some of them have a BlockReference to this block)
-	@CacheEvict(value = "forms", allEntries = true)
+	@CacheEvict(value = "webformsforms", allEntries = true)
 	public Block makePersistent(Block entity) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		// Check if any element to delete is used in a form that links this block. If it is, the element cannot be
 		// removed.

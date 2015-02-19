@@ -5,13 +5,13 @@
 			<run>
 				<include name="login" />
 				<include name="basicFunctionality" />
-				<include name="formBlockDesign" />
+				<exclude name="formBlockDesign" />
 				<exclude name="formFlow" />
-				<include name="export" />
-				<include name="impactAnalysis" />
-				<include name="xForms" />
-				<include name="validation" />
-				<include name="linkedBlocks" />
+				<exclude name="export" />
+				<exclude name="impactAnalysis" />
+				<exclude name="xForms" />
+				<exclude name="validation" />
+				<exclude name="linkedBlocks" />
 				<exclude name="abcdLink" />
 			</run>
 		</groups>
