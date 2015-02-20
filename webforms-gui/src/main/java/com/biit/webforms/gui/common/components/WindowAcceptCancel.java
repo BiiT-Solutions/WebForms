@@ -43,6 +43,7 @@ public class WindowAcceptCancel extends Window {
 
 	public WindowAcceptCancel(Component content) {
 		super("", content);
+		setId(this.getClass().getName());
 		acceptListeners = new ArrayList<WindowAcceptCancel.AcceptActionListener>();
 		cancelListeners = new ArrayList<WindowAcceptCancel.CancelActionListener>();
 	}

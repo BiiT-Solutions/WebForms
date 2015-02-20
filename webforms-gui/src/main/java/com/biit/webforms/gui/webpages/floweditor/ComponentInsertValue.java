@@ -44,6 +44,7 @@ public class ComponentInsertValue extends CustomComponent {
 	private static final String DATE_FORMAT = "dd/MM/yyyy";
 	private static final String FULL = "100%";
 	private static final String EXPAND = null;
+	private static final String COMPONENT_ID = "com.biit.webforms.gui.webpages.floweditor.ComponentInsertValue";
 
 	private static final int VALUE_BUTTON_COLS = 4;
 	private static final int VALUE_BUTTON_ROWS = 2;
@@ -62,6 +63,7 @@ public class ComponentInsertValue extends CustomComponent {
 
 	public ComponentInsertValue() {
 		super();
+		setId(COMPONENT_ID);
 		insertTokenListeners = new ArrayList<InsertTokenListener>();
 		setCompositionRoot(generate());
 	}
