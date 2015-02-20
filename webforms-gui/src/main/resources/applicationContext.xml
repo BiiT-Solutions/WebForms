@@ -26,7 +26,7 @@
 		to set the correct base-package -->
 	<context:component-scan base-package="com.biit.webforms" />
 
-	
+	<!-- Read any *.properties file in project and override some of them with files outside of the project -->
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" id="corePlaceHolder">
 	    <property name="ignoreUnresolvablePlaceholders" value="true"/>
 	    <property name="ignoreResourceNotFound" value="true"/>
