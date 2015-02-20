@@ -3,14 +3,14 @@
 	<test name="WebFormsTest" enabled="true" preserve-order="true">
 		<groups>
 			<run>
-				<exclude name="login" />
-				<exclude name="basicFunctionality" />
+				<include name="login" />
+				<include name="basicFunctionality" />
 				<exclude name="formBlockDesign" />
-				<include name="formFlow" />
+				<exclude name="formFlow" />
 				<exclude name="export" />
 				<include name="impactAnalysis" />
 				<exclude name="xForms" />
-				<include name="validation" />
+				<exclude name="validation" />
 				<exclude name="linkedBlocks" />
 				<exclude name="abcdLink" />
 			</run>
