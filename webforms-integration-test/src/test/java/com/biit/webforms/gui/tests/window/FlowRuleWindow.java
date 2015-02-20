@@ -48,15 +48,15 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 	}
 
 	public void clickToButton() {
-		$(CustomComponentElement.class).caption(TO_BUTTON_CAPTION).$(ButtonElement.class).first().click();
+		getWindow().$(CustomComponentElement.class).caption(TO_BUTTON_CAPTION).$(ButtonElement.class).first().click();
 	}
 
 	public void clickRemoveToButton() {
-		$(CustomComponentElement.class).caption(TO_BUTTON_CAPTION).$(ButtonElement.class).get(1).click();
+		getWindow().$(CustomComponentElement.class).caption(TO_BUTTON_CAPTION).$(ButtonElement.class).get(1).click();
 	}
 
 	public ComboBoxElement getTypeCombobox() {
-		return $(ComboBoxElement.class).caption(TYPE_COMBOBOX_CAPTION).first();
+		return getWindow().$(ComboBoxElement.class).caption(TYPE_COMBOBOX_CAPTION).first();
 	}
 
 	public void setTypeComboboxValue(String value) {
@@ -76,31 +76,31 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 	}
 
 	public String getOthersCheckBoxValue() {
-		return $(CheckBoxElement.class).caption(OTHERS_CHECKBOX_CAPTION).first().getValue();
+		return getWindow().$(CheckBoxElement.class).caption(OTHERS_CHECKBOX_CAPTION).first().getValue();
 	}
 
 	public void clickOthersCheckBox() {
-		$(CheckBoxElement.class).caption(OTHERS_CHECKBOX_CAPTION).first().click();
+		getWindow().$(CheckBoxElement.class).caption(OTHERS_CHECKBOX_CAPTION).first().click();
 	}
 
 	public TreeTableElement getMainTreeElementTable() {
-		return $(TreeTableElement.class).id(MAIN_TREE_TABLE_ID);
+		return getWindow().$(TreeTableElement.class).id(MAIN_TREE_TABLE_ID);
 	}
 
 	public TreeTableElement getSubTreeElementTable() {
-		return $(TreeTableElement.class).id(ANSWER_TREE_TABLE_ID);
+		return getWindow().$(TreeTableElement.class).id(ANSWER_TREE_TABLE_ID);
 	}
 
 	public ButtonElement getEqualsButton() {
-		return $(ButtonElement.class).caption(EQUALS_BUTTON_CAPTION).first();
+		return getWindow().$(ButtonElement.class).caption(EQUALS_BUTTON_CAPTION).first();
 	}
 
 	public ButtonElement getNotEqualsButton() {
-		return $(ButtonElement.class).caption(NOT_EQUALS_BUTTON_CAPTION).first();
+		return getWindow().$(ButtonElement.class).caption(NOT_EQUALS_BUTTON_CAPTION).first();
 	}
 
 	public ButtonElement getInButton() {
-		return $(ButtonElement.class).caption(IN_BUTTON_CAPTION).first();
+		return getWindow().$(ButtonElement.class).caption(IN_BUTTON_CAPTION).first();
 	}
 
 	public void clickEqualsButton() {
@@ -116,7 +116,7 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 	}
 
 	private TextFieldElement getSearchField() {
-		return $(TextFieldElement.class).first();
+		return getWindow().$(TextFieldElement.class).first();
 	}
 
 	public void searchForElement(String elementName) {
@@ -124,7 +124,7 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 	}
 
 	public void selectElementInAnswerTreeTable(String elementName) {
-		List<LabelElement> labels = $(CustomComponentElement.class).id(ANSWER_COMPONENT_ID).$(LabelElement.class).all();
+		List<LabelElement> labels = getWindow().$(CustomComponentElement.class).id(ANSWER_COMPONENT_ID).$(LabelElement.class).all();
 		for (LabelElement label : labels) {
 			if (label.getText().equals(elementName)) {
 				label.click();
@@ -146,16 +146,16 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 	}
 
 	public String getValidInvalidTagValue() {
-		return $(VerticalLayoutElement.class).$$(HorizontalLayoutElement.class).$$(LabelElement.class).first()
+		return getWindow().$(VerticalLayoutElement.class).$$(HorizontalLayoutElement.class).$$(LabelElement.class).first()
 				.getText();
 	}
 
 	private TabSheetElement getTabSheet() {
-		return $(TabSheetElement.class).first();
+		return getWindow().$(TabSheetElement.class).first();
 	}
 
 	private ButtonElement getAndButton() {
-		return $(ButtonElement.class).caption(AND_BUTTON_CAPTION).first();
+		return getWindow().$(ButtonElement.class).caption(AND_BUTTON_CAPTION).first();
 	}
 
 	public void addAndExpression() {

@@ -6,9 +6,9 @@
 				<exclude name="login" />
 				<exclude name="basicFunctionality" />
 				<exclude name="formBlockDesign" />
-				<include name="formFlow" />
+				<exclude name="formFlow" />
 				<exclude name="export" />
-				<include name="impactAnalysis" />
+				<exclude name="impactAnalysis" />
 				<exclude name="xForms" />
 				<include name="validation" />
 				<exclude name="linkedBlocks" />
