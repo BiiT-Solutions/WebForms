@@ -93,7 +93,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(exportToJavaCode);
 		setConfirmationNeeded(true);
 		
-		linkBlockButton.setVisible(WebformsConfigurationReader.getInstance().isBottonLinkBloksEnabled());
+		linkBlockButton.setVisible(WebformsConfigurationReader.getInstance().isLinkBloksEnabled());
 	}
 
 	public void addSaveButtonListener(ClickListener listener) {
