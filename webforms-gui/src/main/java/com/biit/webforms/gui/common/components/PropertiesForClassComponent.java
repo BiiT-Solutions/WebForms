@@ -11,6 +11,7 @@ import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 
 public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 	private static final long serialVersionUID = 4900379725073491238L;
@@ -99,8 +100,11 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 	protected abstract void firePropertyUpdateOnExitListener();
 
 	private void updateAndExit() {
-		updateElement();
-		firePropertyUpdateOnExitListener();
+		// Check UI is different of null due to the detach is also triggered when UI.close() is called.
+		if (UI.getCurrent() != null) {
+			updateElement();
+			firePropertyUpdateOnExitListener();
+		}
 	}
 
 	public void addPropertyUpdateListener(PropertieUpdateListener listener) {
