@@ -11,7 +11,7 @@ import com.biit.webforms.gui.tests.window.DownloadWindow;
 import com.biit.webforms.gui.tests.window.ImpactWindow;
 import com.biit.webforms.gui.tests.window.ImportAbcdFormWindow;
 import com.biit.webforms.gui.tests.window.NewFormWindow;
-import com.biit.webforms.gui.tests.window.WindowLinkAbcdFormWindow;
+import com.biit.webforms.gui.tests.window.LinkAbcdFormWindow;
 import com.biit.webforms.gui.tests.window.XmlTestsWindow;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
@@ -45,7 +45,7 @@ public class FormManager extends VaadinGuiWebpage {
 	private final XmlTestsWindow testXmlWindow;
 	private final ImpactWindow impactWindow;
 	private final ImportAbcdFormWindow importAbcdWindow;
-	private final WindowLinkAbcdFormWindow windowLinkAbcdFormWindow;
+	private final LinkAbcdFormWindow windowLinkAbcdFormWindow;
 
 	public FormManager() {
 		super();
@@ -59,7 +59,7 @@ public class FormManager extends VaadinGuiWebpage {
 		addWindow(impactWindow);
 		importAbcdWindow = new ImportAbcdFormWindow();
 		addWindow(importAbcdWindow);
-		windowLinkAbcdFormWindow = new WindowLinkAbcdFormWindow();
+		windowLinkAbcdFormWindow = new LinkAbcdFormWindow();
 		addWindow(windowLinkAbcdFormWindow);
 	}
 
@@ -271,7 +271,7 @@ public class FormManager extends VaadinGuiWebpage {
 		return null;
 	}
 
-	public WindowLinkAbcdFormWindow getWindowLinkAbcdFormWindow(){
+	public LinkAbcdFormWindow getWindowLinkAbcdFormWindow(){
 		return windowLinkAbcdFormWindow;
 	}
 

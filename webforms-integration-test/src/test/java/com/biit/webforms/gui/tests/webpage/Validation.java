@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.tests.webpage;
 
 import com.biit.gui.tester.VaadinGuiWebpage;
-import com.biit.webforms.gui.tests.window.WindowLinkAbcdFormWindow;
+import com.biit.webforms.gui.tests.window.CompareAbcdFormWindow;
 import com.vaadin.testbench.elements.TextAreaElement;
 
 public class Validation extends VaadinGuiWebpage {
@@ -11,12 +11,12 @@ public class Validation extends VaadinGuiWebpage {
 	private static final String FLOW_BUTTON_CAPTION = "Flow";
 	private static final String ABCD_LINK_BUTTON_CAPTION = "ABCD Link";
 	private static final String ABCD_DIFF_BUTTON_CAPTION = "ABCD Diff";
-	private final WindowLinkAbcdFormWindow windowLinkAbcdFormWindow;
+	private final CompareAbcdFormWindow compareAbcdFormWindow;
 
 	public Validation() {
 		super();
-		windowLinkAbcdFormWindow = new WindowLinkAbcdFormWindow();
-		addWindow(windowLinkAbcdFormWindow);
+		compareAbcdFormWindow = new CompareAbcdFormWindow();
+		addWindow(compareAbcdFormWindow);
 	}
 	
 	public void clickAbcdDiffButton() {
@@ -52,7 +52,7 @@ public class Validation extends VaadinGuiWebpage {
 		return null;
 	}
 
-	public WindowLinkAbcdFormWindow getWindowLinkAbcdFormWindow(){
-		return windowLinkAbcdFormWindow;
+	public CompareAbcdFormWindow getCompareAbcdFormWindow(){
+		return compareAbcdFormWindow;
 	}
 }

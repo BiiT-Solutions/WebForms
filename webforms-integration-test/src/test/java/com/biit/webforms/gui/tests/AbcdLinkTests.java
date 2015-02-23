@@ -79,7 +79,7 @@ public class AbcdLinkTests extends WebFormsTester {
 		getValidationPage().clickAbcdLinkButton();
 		getValidationPage().getTextAreaValue().equals(ABCD_LINK_MESSAGE);
 		getValidationPage().clickAbcdDiffButton();
-		getValidationPage().getWindowLinkAbcdFormWindow().clickAccept();
+		getValidationPage().getCompareAbcdFormWindow().clickAccept();
 		getValidationPage().getTextAreaValue().equals(ABCD_DIFF_MESSAGE);
 		logOut();
 		deleteForm();
