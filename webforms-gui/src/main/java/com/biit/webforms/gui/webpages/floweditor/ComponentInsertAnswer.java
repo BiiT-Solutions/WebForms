@@ -28,6 +28,8 @@ public class ComponentInsertAnswer extends CustomComponent {
 	private static final long serialVersionUID = 8934445212073001188L;
 	private static final String FULL = "100%";
 	private static final String EXPAND = null;
+	private static final String COMPONENT_ID = "com.biit.webforms.gui.webpages.floweditor.ComponentInsertAnswer";
+	private static final String ANSWER_TABLE_ID = "com.biit.webforms.gui.webpages.floweditor.ComponentInsertAnswer.AnswerTable";
 
 	private List<InsertTokenListener> insertTokenListeners;
 
@@ -40,6 +42,7 @@ public class ComponentInsertAnswer extends CustomComponent {
 
 	public ComponentInsertAnswer() {
 		super();
+		setId(COMPONENT_ID);
 		insertTokenListeners = new ArrayList<InsertTokenListener>();
 		setCompositionRoot(generate());
 		setSizeFull();
@@ -51,6 +54,7 @@ public class ComponentInsertAnswer extends CustomComponent {
 		rootLayout.setSizeFull();
 
 		answerTable = new TableTreeObject();
+		answerTable.setId(ANSWER_TABLE_ID);
 		answerTable.setSizeFull();
 		answerTable.setNullSelectionAllowed(false);
 		answerTable.setImmediate(true);

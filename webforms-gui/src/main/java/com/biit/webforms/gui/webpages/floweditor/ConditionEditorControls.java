@@ -43,6 +43,7 @@ public class ConditionEditorControls extends TabSheet {
 	private static final String EXPAND = null;
 	private static final int NUM_BUTTON_COLUMNS = 3;
 	private static final int NUM_BUTTON_ROWS = 2;
+	private static final String MAIN_TREE_TABLE_ID = "com.biit.webforms.gui.webpages.floweditor.ConditionEditorControls.MainTreeTable";
 	protected static final TokenTypes DEFAULT_ANSWER_REFERENCE_TOKEN = TokenTypes.EQ;
 
 	private static final float EXPAND_RATIO_REFERENCE = 60.0f;
@@ -91,6 +92,7 @@ public class ConditionEditorControls extends TabSheet {
 	private Component generateTreeTableSearch() {
 		treeObjectTable = new TableTreeObject();
 		treeObjectTable.setSizeFull();
+		treeObjectTable.setId(MAIN_TREE_TABLE_ID);
 		treeObjectTable.setSelectable(true);
 		// Insert reference button is only enabled if the selection in tree
 		// object table is not null and not a form

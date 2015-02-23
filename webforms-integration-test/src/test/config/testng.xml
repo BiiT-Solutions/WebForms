@@ -4,28 +4,28 @@
 		<groups>
 			<run>
 				<include name="login" />
-				<exclude name="basicFunctionality" />
-				<exclude name="formBlockDesign" />
-				<exclude name="formFlow" />
-				<exclude name="export" />
-				<exclude name="impactAnalysis" />
-				<exclude name="xForms" />
-				<exclude name="validation" />
-				<exclude name="linkedBlocks" />
-				<exclude name="abcdLink" />
+				<include name="basicFunctionality" />
+				<include name="formBlockDesign" />
+				<include name="formFlow" />
+				<include name="export" />
+				<include name="impactAnalysis" />
+				<include name="xForms" />
+				<include name="validation" />
+				<include name="linkedBlocks" />
+				<include name="abcdLink" />
 			</run>
 		</groups>
 		<classes>
-			<class name="com.biit.webforms.gui.test.LoginTests" />
-			<class name="com.biit.webforms.gui.test.BasicFuncionalityTests" />
-			<class name="com.biit.webforms.gui.test.FormBlockDesignTests" />
-			<class name="com.biit.webforms.gui.test.FormFlowTests" />
-			<class name="com.biit.webforms.gui.test.ExportTests" />
-			<class name="com.biit.webforms.gui.test.ImpactAnalysisTests" />
-			<class name="com.biit.webforms.gui.test.XFormsTests" />
-			<class name="com.biit.webforms.gui.test.ValidationTests" />
-			<class name="com.biit.webforms.gui.test.LinkBlockTests" />
-			<class name="com.biit.webforms.gui.test.AbcdLinkTests" />
+			<class name="com.biit.webforms.gui.tests.LoginTests" />
+			<class name="com.biit.webforms.gui.tests.BasicFuncionalityTests" />
+			<class name="com.biit.webforms.gui.tests.FormBlockDesignTests" />
+			<class name="com.biit.webforms.gui.tests.FormFlowTests" />
+			<class name="com.biit.webforms.gui.tests.ExportTests" />
+			<class name="com.biit.webforms.gui.tests.ImpactAnalysisTests" />
+			<class name="com.biit.webforms.gui.tests.XFormsTests" />
+			<class name="com.biit.webforms.gui.tests.ValidationTests" />
+			<class name="com.biit.webforms.gui.tests.LinkBlockTests" />
+			<class name="com.biit.webforms.gui.tests.AbcdLinkTests" />
 		</classes>
 	</test>
 </suite>
