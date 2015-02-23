@@ -1,6 +1,7 @@
 package com.biit.webforms.gui;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -8,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jetty.util.resource.FileResource;
 import org.hibernate.exception.ConstraintViolationException;
 
 import com.biit.abcd.persistence.dao.ISimpleFormViewDao;
@@ -85,6 +87,7 @@ import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.UI;
 
 public class ApplicationController {
 	private User user;
@@ -985,7 +988,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * This function is called when the ui has expired. The implementation needs to free any "locked" resources
+	 * This function is called when the UI has expired. The implementation needs to free any "locked" resources
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
@@ -1158,7 +1161,14 @@ public class ApplicationController {
 		WebformsLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
 				+ "' has logged out.");
 		clearFormInUse();
-		ApplicationUi.navigateTo(WebMap.LOGIN_PAGE);
+		UserSessionHandler.logout();
+		// ApplicationUi.navigateTo(WebMap.LOGIN_PAGE);
+		UI.getCurrent().getPage().setLocation("./VAADIN/logout.html");
+		try {
+			UI.getCurrent().close();
+		} catch (Exception e) {
+			WebformsLogger.errorMessage(UserSessionHandler.class.getName(), e);
+		}
 	}
 
 	public IFormDao getWebformsFormDao() {

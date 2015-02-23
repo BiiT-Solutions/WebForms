@@ -53,6 +53,9 @@ public class ApplicationUi extends UI {
 	@Override
 	protected void init(VaadinRequest request) {
 		getPage().setTitle("");
+
+		WebformsLogger.debug(ApplicationUi.class.getName(), "UI initialized.");
+
 		defineWebPages();
 		UiAccesser.register(UserSessionHandler.getController());
 
@@ -62,9 +65,9 @@ public class ApplicationUi extends UI {
 
 		setErrorHandler(new WebformsErrorHandler());
 	}
-	
-	public static void autologin(){
-		((ApplicationUi)ApplicationUi.getCurrent()).autologinImplementation();
+
+	public static void autologin() {
+		((ApplicationUi) ApplicationUi.getCurrent()).autologinImplementation();
 	}
 
 	private void autologinImplementation() {
@@ -103,6 +106,8 @@ public class ApplicationUi extends UI {
 			// Log user ui expired.
 			WebformsLogger.info(this.getClass().getName(), UserSessionHandler.getUser().getEmailAddress()
 					+ " UI has expired.");
+		} else {
+			WebformsLogger.debug(this.getClass().getName(), " UI closed.");
 		}
 		UiAccesser.unregister(UserSessionHandler.getController());
 		super.detach();
