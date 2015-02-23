@@ -51,6 +51,8 @@ public class UserSessionHandler {
 			if (ip == null || !ip.equals(usersIp.get(user.getUserId()))) {
 				for (UI userUI : usersSession.get(user.getUserId())) {
 					try {
+						WebformsLogger.info(UserSessionHandler.class.getName(),
+								"Closing session for user '" + user.getEmailAddress() + "', IP '" + ip + "'.");
 						userUI.close();
 						userUI.getNavigator().navigateTo(WebMap.getLoginPage().toString());
 					} catch (Exception e) {
