@@ -55,8 +55,7 @@
 										<copy
 											file="${war-file.source}/${project.parent.artifactId}-${project.parent.version}.war"
 											tofile="${temporal-folder}/${project.parent.artifactId}-${project.parent.version}.war"
-											overwrite="true" >
-										</copy>
+											overwrite="true" />
 										<!-- copy database scripts -->
 										<copy todir="${temporal-folder}/database/"overwrite="true">
 											<fileset dir="./database" includes="**/*" />
@@ -67,8 +66,7 @@
 										</copy>
 										<!-- create the final file -->
 										<zip basedir="${temporal-folder}/"
-											destfile="../${destination-file}-${project.version}.zip" />
-											
+											destfile="../${destination-file}-${project.version}.zip" />											
 									</target>
 								</configuration>
 								<goals>
