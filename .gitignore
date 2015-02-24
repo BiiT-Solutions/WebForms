@@ -13,4 +13,6 @@ tmp
 styles.css
 /webforms-gui/*.pdf
 /webforms-integration-test/src/main/webapp
+pom.xml.releaseBackup
+release.properties
 
