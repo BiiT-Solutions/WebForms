@@ -36,6 +36,9 @@ public class WindowAboutUs extends Window {
 	private VerticalLayout navigationView;
 
 	public WindowAboutUs() {
+		super();
+		setId(this.getClass().getName());
+		
 		setModal(true);
 
 		setWidth(width);

@@ -24,7 +24,6 @@ public class WindowTreeObject extends WindowAcceptCancel {
 	private static final long serialVersionUID = -1341380408900400222L;
 	private static final String width = "640px";
 	private static final String height = "480px";
-	private static final String WINDOW_ID = "windowTreeObject";
 	private TableTreeObjectLabel formTable;
 	private TableWithSearch tableWithSearch;
 	private Class<?>[] selectFilters;
@@ -39,7 +38,6 @@ public class WindowTreeObject extends WindowAcceptCancel {
 		setModal(true);
 		setWidth(width);
 		setHeight(height);
-		setId(WINDOW_ID);
 		addFocusListener(new FocusListener() {
 			private static final long serialVersionUID = 8456604937045435061L;
 

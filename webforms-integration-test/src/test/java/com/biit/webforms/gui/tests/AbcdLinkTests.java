@@ -47,6 +47,7 @@ public class AbcdLinkTests extends WebFormsTester {
 
 	@Test(groups = "abcdLink")
 	public void abcdLinkForm() {
+		printTestNameInDebugTrace("abcdLinkForm");
 		createAbcdForm();
 		loginFormAdmin1();
 		getFormManagerPage().deleteAllCreatedForms();

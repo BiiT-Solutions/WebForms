@@ -51,6 +51,7 @@ public class ImpactAnalysisTests extends WebFormsTester {
 	@Test(groups = "impactAnalysis")
 	public void performImpactAnalysis() {
 		try {
+			printTestNameInDebugTrace("performImpactAnalysis");
 			createFormElementsFlowAndFinishDesign();
 			getFormManagerPage().clickNewButton();
 			getFormManagerPage().clickNewVersionButton();
@@ -61,6 +62,7 @@ public class ImpactAnalysisTests extends WebFormsTester {
 			getDesignerPage().addNewInputPostalCodeQuestion();
 			getDesignerPage().addNewMultiCheckboxQuestion();
 			getDesignerPage().saveDesign();
+			closeNotificationIfExists();
 			// Clone flow
 			goToFlowManagerPage();
 			getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
@@ -79,8 +81,9 @@ public class ImpactAnalysisTests extends WebFormsTester {
 			getFormManagerPage().getImpactWindow().clickAcceptButton();
 			getFormManagerPage().getDownloadWindow().checkCorrectFileGeneration();
 			getFormManagerPage().getDownloadWindow().closeWindow();
-			getFormManagerPage().getTestXmlWindow().closeWindow();
+			getFormManagerPage().getImpactWindow().closeWindow();
 			logOut();
+			// Delete the two versions of the form
 			deleteForm();
 			deleteForm();
 		} catch (FieldNotEditableException | IncorrectFileGenerationException e) {

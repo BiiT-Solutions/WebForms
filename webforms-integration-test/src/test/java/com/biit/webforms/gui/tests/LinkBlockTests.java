@@ -40,7 +40,7 @@ public class LinkBlockTests extends WebFormsTester {
 		goToDesignerPage();
 		getDesignerPage().clickBlocksButton();
 		getDesignerPage().clickLinkBlockButton();
-		getDesignerPage().getLinkBlockWindow().clickAccceptButton();
+		getDesignerPage().getLinkBlockWindow().clickAccept();
 		getDesignerPage().saveDesign();
 	}
 
@@ -54,6 +54,7 @@ public class LinkBlockTests extends WebFormsTester {
 
 	@Test(groups = "linkedBlocks")
 	public void addLinkedBlockToFormTest() {
+		printTestNameInDebugTrace("addLinkedBlockToFormTest");
 		createSimpleBlock();
 		addLinkedBlockToForm();
 		deleteFormAndBlock();
@@ -61,6 +62,7 @@ public class LinkBlockTests extends WebFormsTester {
 
 	@Test(groups = "linkedBlocks")
 	public void moveUpDownLinkedBlock() {
+		printTestNameInDebugTrace("moveUpDownLinkedBlock");
 		createSimpleBlock();
 		addLinkedBlockToForm();
 		getDesignerPage().addNewCategory();
@@ -74,6 +76,7 @@ public class LinkBlockTests extends WebFormsTester {
 
 	@Test(groups = "linkedBlocks")
 	public void removeLinkedBlockFromForm() {
+		printTestNameInDebugTrace("removeLinkedBlockFromForm");
 		createSimpleBlock();
 		addLinkedBlockToForm();
 		getDesignerPage().clickInTreeTableRow(TREE_TABLE_ROW);
@@ -91,6 +94,7 @@ public class LinkBlockTests extends WebFormsTester {
 
 	@Test(groups = "linkedBlocks")
 	public void removeLinkedBlock() {
+		printTestNameInDebugTrace("removeLinkedBlock");
 		createSimpleBlock();
 		addLinkedBlockToForm();
 		goToFormManagerPage();
@@ -104,6 +108,7 @@ public class LinkBlockTests extends WebFormsTester {
 
 	@Test(groups = "linkedBlocks")
 	public void removeFormWithLinkedBlock() {
+		printTestNameInDebugTrace("removeFormWithLinkedBlock");
 		createSimpleBlock();
 		addLinkedBlockToForm();
 		goToFormManagerPage();

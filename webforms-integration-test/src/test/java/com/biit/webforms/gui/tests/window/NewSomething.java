@@ -1,38 +1,32 @@
 package com.biit.webforms.gui.tests.window;
 
-import com.biit.gui.tester.VaadinGuiWindow;
 import com.biit.webforms.gui.tests.exceptions.OrganizationNotEditableException;
-import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
-public class NewSomething extends VaadinGuiWindow {
+public class NewSomething extends GenericAcceptCancelWindow {
 
-	public static final String NAME_FIELD_CAPTION = "Name";
-	public static final String ORGANIZATION_COMBOBOX_CAPTION = "Group";
-	public static final String ACCEPT_BUTTON_CAPTION = "Accept";
-
+	private static final String CLASS_NAME = "com.biit.webforms.gui.components.WindowNameGroup";
+	private static final String NAME_FIELD_CAPTION = "Name";
+	private static final String ORGANIZATION_COMBOBOX_CAPTION = "Group";
+	
 	private TextFieldElement getNewFormNameTextField() {
-		return $(TextFieldElement.class).caption(NAME_FIELD_CAPTION).first();
+		return getWindow().$(TextFieldElement.class).caption(NAME_FIELD_CAPTION).first();
 	}
 
 	private ComboBoxElement getOrganizationComboBox() {
-		return $(ComboBoxElement.class).caption(ORGANIZATION_COMBOBOX_CAPTION).first();
-	}
-
-	private ButtonElement getAcceptButton() {
-		return $(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first();
+		return getWindow().$(ComboBoxElement.class).caption(ORGANIZATION_COMBOBOX_CAPTION).first();
 	}
 
 	public void createNewThing(String formName) {
 		getNewFormNameTextField().setValue(formName);
-		getAcceptButton().click();
+		clickAccept();
 	}
 
 	public void createNewThing(String formName, String editOrganization) throws OrganizationNotEditableException {
 		getNewFormNameTextField().setValue(formName);
 		editOrganization(editOrganization);
-		getAcceptButton().click();
+		clickAccept();
 	}
 
 	public void editOrganization(String organizationName) throws OrganizationNotEditableException {
@@ -41,6 +35,11 @@ public class NewSomething extends VaadinGuiWindow {
 		} else {
 			throw new OrganizationNotEditableException();
 		}
+	}
+
+	@Override
+	protected String getWindowId() {
+		return CLASS_NAME;
 	}
 
 }

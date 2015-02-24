@@ -8,10 +8,12 @@ import org.testng.Assert;
 import com.biit.gui.tester.VaadinGuiWebpage;
 import com.biit.webforms.gui.tests.exceptions.OrganizationNotEditableException;
 import com.biit.webforms.gui.tests.window.DownloadWindow;
+import com.biit.webforms.gui.tests.window.DownloadWindowJson;
+import com.biit.webforms.gui.tests.window.DownloadWindowXsd;
 import com.biit.webforms.gui.tests.window.ImpactWindow;
 import com.biit.webforms.gui.tests.window.ImportAbcdFormWindow;
-import com.biit.webforms.gui.tests.window.NewFormWindow;
 import com.biit.webforms.gui.tests.window.LinkAbcdFormWindow;
+import com.biit.webforms.gui.tests.window.NewFormWindow;
 import com.biit.webforms.gui.tests.window.XmlTestsWindow;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
@@ -42,6 +44,8 @@ public class FormManager extends VaadinGuiWebpage {
 
 	private final NewFormWindow newFormWindow;
 	private final DownloadWindow downloadWindow;
+	private final DownloadWindowJson downloadWindowJson;
+	private final DownloadWindowXsd downloadWindowXsd;
 	private final XmlTestsWindow testXmlWindow;
 	private final ImpactWindow impactWindow;
 	private final ImportAbcdFormWindow importAbcdWindow;
@@ -53,6 +57,10 @@ public class FormManager extends VaadinGuiWebpage {
 		addWindow(newFormWindow);
 		downloadWindow = new DownloadWindow();
 		addWindow(downloadWindow);
+		downloadWindowJson = new DownloadWindowJson();
+		addWindow(downloadWindowJson);
+		downloadWindowXsd = new DownloadWindowXsd();
+		addWindow(downloadWindowXsd);
 		testXmlWindow = new XmlTestsWindow();
 		addWindow(testXmlWindow);
 		impactWindow = new ImpactWindow();
@@ -183,6 +191,14 @@ public class FormManager extends VaadinGuiWebpage {
 
 	public DownloadWindow getDownloadWindow() {
 		return downloadWindow;
+	}
+	
+	public DownloadWindowJson getDownloadWindowJson() {
+		return downloadWindowJson;
+	}
+	
+	public DownloadWindowXsd getDownloadWindowXsd() {
+		return downloadWindowXsd;
 	}
 
 	public ButtonElement getExportButton() {

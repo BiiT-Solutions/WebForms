@@ -70,7 +70,7 @@ public class FlowManager extends VaadinGuiWebpage {
 		getFlowRuleWindow().clickFromButton();
 		getSelectFormElementWindow().searchForElement(nodeName);
 		getSelectFormElementWindow().selectElementInTable(nodeName);
-		getSelectFormElementWindow().clickAccceptButton();
+		getSelectFormElementWindow().clickAccept();
 		getFlowRuleWindow().getTypeCombobox().selectByText(COMBOBOX_END_FORM_VALUE);
 		getFlowRuleWindow().clickAccept();
 	}
@@ -86,7 +86,7 @@ public class FlowManager extends VaadinGuiWebpage {
 		getFlowRuleWindow().clickFromButton();
 		getSelectFormElementWindow().searchForElement(nodeName);
 		getSelectFormElementWindow().selectElementInTable(nodeName);
-		getSelectFormElementWindow().clickAccceptButton();
+		getSelectFormElementWindow().clickAccept();
 		getFlowRuleWindow().getTypeCombobox().selectByText(COMBOBOX_END_FORM_VALUE);
 		getFlowRuleWindow().clickOthersCheckBox();
 		getFlowRuleWindow().clickAccept();
@@ -151,10 +151,10 @@ public class FlowManager extends VaadinGuiWebpage {
 		getFlowRuleWindow().clickFromButton();
 		getSelectFormElementWindow().searchForElement(startNodeName);
 		getSelectFormElementWindow().selectElementInTable(startNodeName);
-		getSelectFormElementWindow().clickAccceptButton();
+		getSelectFormElementWindow().clickAccept();
 		getFlowRuleWindow().clickToButton();
 		getSelectFormElementWindow().searchForElement(endNodeName);
 		getSelectFormElementWindow().selectElementInTable(endNodeName);
-		getSelectFormElementWindow().clickAccceptButton();
+		getSelectFormElementWindow().clickAccept();
 	}
 }

@@ -36,10 +36,10 @@ public class FormFlowTests extends WebFormsTester {
 		// Delete the form created for the test
 		deleteForm();
 	}
-	
+
 	@Test(groups = "formFlow")
 	public void cleanSimpleFlow() {
-		System.out.println("TEST_NAME: cleanSimpleFlow");
+		printTestNameInDebugTrace("cleanSimpleFlow");
 		loginAndInitializeForm();
 		// Edit the flow
 		goToFlowManagerPage();
@@ -50,18 +50,17 @@ public class FormFlowTests extends WebFormsTester {
 		getFlowManagerPage().clickCleanFlowButton();
 		getFlowManagerPage().getFlowCleanedWindow().clickCloseButton();
 		getFlowManagerPage().saveFlow();
+		closeNotificationIfExists();
 		// Check that it is not failing if there are no rules defined
 		getFlowManagerPage().clickCleanFlowButton();
-		if (getFlowManagerPage().getFlowCleanedWindow().isWindowVisible()) {
-			getFlowManagerPage().getFlowCleanedWindow().clickCloseButton();
-		}
+		closeNotificationIfExists();
 		// Finish the test
 		redrawSaveTakeScreenshotAndDeleteForm(CLEAN_SIMPLE_FLOW_TEST_SCREENSHOT);
 	}
 
 	@Test(groups = "formFlow")
 	public void cleanSimpleOthersFlow() {
-		System.out.println("TEST_NAME: cleanSimpleOthersFlow");
+		printTestNameInDebugTrace("cleanSimpleOthersFlow");
 		loginAndInitializeForm();
 		// Create a flow
 		goToFlowManagerPage();
@@ -81,7 +80,7 @@ public class FormFlowTests extends WebFormsTester {
 
 	@Test(groups = "formFlow")
 	public void cleanSimpleOthersFlow2() {
-		System.out.println("TEST_NAME: cleanSimpleOthersFlow2");
+		printTestNameInDebugTrace("cleanSimpleOthersFlow2");
 		loginAndInitializeForm();
 		// Create a flow
 		goToFlowManagerPage();
@@ -103,7 +102,7 @@ public class FormFlowTests extends WebFormsTester {
 
 	@Test(groups = "formFlow")
 	public void cloneFlow() {
-		System.out.println("TEST_NAME: cloneFlow");
+		printTestNameInDebugTrace("cloneFlow");
 		loginAndInitializeForm();
 		// Edit the flow
 		goToFlowManagerPage();
@@ -119,7 +118,7 @@ public class FormFlowTests extends WebFormsTester {
 
 	@Test(groups = "formFlow")
 	public void createAnswersInQuestionFlow() {
-		System.out.println("TEST_NAME: createAnswersInQuestionFlow");
+		printTestNameInDebugTrace("createAnswersInQuestionFlow");
 		// Initialize the test
 		loginAndInitializeForm();
 		// Create a flow
@@ -139,7 +138,7 @@ public class FormFlowTests extends WebFormsTester {
 
 	@Test(groups = "formFlow")
 	public void createQuestionEqualsAnswerFlow() {
-		System.out.println("TEST_NAME: createQuestionEqualsAnswerFlow");
+		printTestNameInDebugTrace("createQuestionEqualsAnswerFlow");
 		loginAndInitializeForm();
 		// Create a flow
 		goToFlowManagerPage();
@@ -158,7 +157,7 @@ public class FormFlowTests extends WebFormsTester {
 
 	@Test(groups = "formFlow")
 	public void createQuestionNotEqualsAnswerFlow() {
-		System.out.println("TEST_NAME: createQuestionNotEqualsAnswerFlow");
+		printTestNameInDebugTrace("createQuestionNotEqualsAnswerFlow");
 		loginAndInitializeForm();
 		// Create a flow
 		goToFlowManagerPage();
@@ -189,7 +188,7 @@ public class FormFlowTests extends WebFormsTester {
 
 	@Test(groups = "formFlow")
 	public void removeFlow() {
-		System.out.println("TEST_NAME: removeFlow");
+		printTestNameInDebugTrace("removeFlow");
 		loginAndInitializeForm();
 		// Edit the flow
 		goToFlowManagerPage();
@@ -205,7 +204,7 @@ public class FormFlowTests extends WebFormsTester {
 
 	@Test(groups = "formFlow")
 	public void validStartEndFlow() {
-		System.out.println("TEST_NAME: validStartEndFlow");
+		printTestNameInDebugTrace("validStartEndFlow");
 		loginAndInitializeForm();
 		// Edit the flow
 		goToFlowManagerPage();

@@ -51,6 +51,7 @@ public class XFormsTests extends WebFormsTester {
 	@Test(groups = "xForms")
 	public void performImpactAnalysis() {
 		try {
+			printTestNameInDebugTrace("performImpactAnalysis");
 			createFormElementsFlowAndFinishDesign();
 			getFormManagerPage().clickXFormsButton();
 			getFormManagerPage().clickXFormsDownloadButton();

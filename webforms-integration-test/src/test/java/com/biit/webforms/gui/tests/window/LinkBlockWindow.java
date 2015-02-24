@@ -2,44 +2,21 @@ package com.biit.webforms.gui.tests.window;
 
 import java.util.List;
 
-import org.junit.Assert;
 import org.openqa.selenium.StaleElementReferenceException;
 
-import com.biit.gui.tester.VaadinGuiWindow;
-import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.LabelElement;
 import com.vaadin.testbench.elements.TreeTableElement;
-import com.vaadin.testbench.elements.WindowElement;
 
-public class LinkBlockWindow extends VaadinGuiWindow {
+public class LinkBlockWindow extends GenericAcceptCancelWindow {
 
-	private static final String WINDOW_CAPTION = "Link Block";
-	private static final String ACCEPT_BUTTON_CAPTION = "Accept";
-	private static final String CANCEL_BUTTON_CAPTION = "Cancel";
-
-	private ButtonElement getAcceptButton() {
-		return $(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first();
-	}
-
-	private ButtonElement getCancelButton() {
-		return $(ButtonElement.class).caption(CANCEL_BUTTON_CAPTION).first();
-	}
+	private static final String CLASS_NAME = "com.biit.webforms.gui.webpages.designer.WindowBlocks";
 
 	public TreeTableElement getTreeTable() {
-		return $$(WindowElement.class).caption(WINDOW_CAPTION).$(TreeTableElement.class).first();
-	}
-
-	public void clickAccceptButton() {
-		Assert.assertTrue(getAcceptButton().isEnabled());
-		getAcceptButton().click();
-	}
-
-	public void clickCancelButton() {
-		getCancelButton().click();
+		return getWindow().$(TreeTableElement.class).first();
 	}
 
 	public List<LabelElement> getTreeTableLabels() {
-		return $$(WindowElement.class).caption(WINDOW_CAPTION).$(LabelElement.class).all();
+		return getWindow().$(LabelElement.class).all();
 	}
 
 	public void selectElementInTable(String elementName) {
@@ -56,6 +33,11 @@ public class LinkBlockWindow extends VaadinGuiWindow {
 				index = 0;
 			}
 		}
+	}
+
+	@Override
+	protected String getWindowId() {
+		return CLASS_NAME;
 	}
 }
 

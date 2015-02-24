@@ -15,6 +15,7 @@ public class WindowProgressBar extends Window {
 
 	public WindowProgressBar(String caption) {
 		super();
+		setId(this.getClass().getName());
 		progressBar = new ProgressBar();
 		setCaption(caption);
 		setIndeterminate(true);

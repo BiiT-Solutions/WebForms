@@ -18,6 +18,89 @@ public class ExportTests extends WebFormsTester {
 
 	private static final String VALID_FLOW_TAG = "Valid";
 
+	private void checkCorrectFileGenerationAndFinishTest() {
+		try {
+			getFormManagerPage().getDownloadWindow().checkCorrectFileGeneration();
+			getFormManagerPage().getDownloadWindow().closeWindow();
+			logOut();
+			deleteForm();
+		} catch (IncorrectFileGenerationException e) {
+			Assert.fail();
+		}
+	}
+
+	@Test(groups = "export")
+	public void exportTestXmls() {
+		printTestNameInDebugTrace("exportTestXmls");
+		try {
+			generateFormAndFlow();
+			getFormManagerPage().clickExportButton();
+			getFormManagerPage().clickExportTestXmlsButton();
+			getFormManagerPage().getTestXmlWindow().clickAcceptButton();
+			getFormManagerPage().getDownloadWindow().checkCorrectFileGeneration();
+			getFormManagerPage().getDownloadWindow().closeWindow();
+			getFormManagerPage().getTestXmlWindow().closeWindow();
+			logOut();
+			deleteForm();
+		} catch (IncorrectFileGenerationException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
+	@Test(groups = "export")
+	public void exportToFlow() {
+		printTestNameInDebugTrace("exportToFlow");
+		generateFormAndFlow();
+		getFormManagerPage().clickExportButton();
+		getFormManagerPage().clickExportFlowButton();
+		checkCorrectFileGenerationAndFinishTest();
+	}
+
+	// Test not needed yet
+//	@Test(groups = "export")
+	public void exportToJson() {
+		printTestNameInDebugTrace("exportToJson");
+		try {
+			generateFormAndFlow();
+			getFormManagerPage().clickExportButton();
+			getFormManagerPage().clickExportJsonButton();
+			getFormManagerPage().getDownloadWindowJson().checkCorrectFileGeneration();
+			getFormManagerPage().getDownloadWindowJson().closeWindow();
+			logOut();
+			deleteForm();
+		} catch (IncorrectFileGenerationException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
+	@Test(groups = "export")
+	public void exportToPdf() {
+		printTestNameInDebugTrace("exportToPdf");
+		generateFormAndFlow();
+		getFormManagerPage().clickExportButton();
+		getFormManagerPage().clickExportFormButton();
+		checkCorrectFileGenerationAndFinishTest();
+	}
+
+	@Test(groups = "export")
+	public void exportToXsd() {
+		printTestNameInDebugTrace("exportToXsd");
+		try {
+			generateFormAndFlow();
+			getFormManagerPage().clickExportButton();
+			getFormManagerPage().clickExportXsdButton();
+			getFormManagerPage().getDownloadWindowXsd().checkCorrectFileGeneration();
+			getFormManagerPage().getDownloadWindowXsd().closeWindow();
+			logOut();
+			deleteForm();
+		} catch (IncorrectFileGenerationException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
 	private void generateFormAndFlow() {
 		try {
 			loginFormAdmin1();
@@ -41,68 +124,6 @@ public class ExportTests extends WebFormsTester {
 			getFlowManagerPage().saveFlow();
 			goToFormManagerPage();
 		} catch (FieldNotEditableException e) {
-			Assert.fail();
-		}
-	}
-
-	private void checkCorrectFileGenerationAndFinishTest() {
-		try {
-			getFormManagerPage().getDownloadWindow().checkCorrectFileGeneration();
-			getFormManagerPage().getDownloadWindow().closeWindow();
-			logOut();
-			deleteForm();
-		} catch (IncorrectFileGenerationException e) {
-			Assert.fail();
-		}
-	}
-
-	@Test(groups = "export")
-	public void exportToPdf() {
-		generateFormAndFlow();
-		getFormManagerPage().clickExportButton();
-		getFormManagerPage().clickExportFormButton();
-		checkCorrectFileGenerationAndFinishTest();
-	}
-
-	@Test(groups = "export")
-	public void exportToFlow() {
-		generateFormAndFlow();
-		getFormManagerPage().clickExportButton();
-		getFormManagerPage().clickExportFlowButton();
-		checkCorrectFileGenerationAndFinishTest();
-	}
-
-	@Test(groups = "export")
-	public void exportToXsd() {
-		generateFormAndFlow();
-		getFormManagerPage().clickExportButton();
-		getFormManagerPage().clickExportXsdButton();
-		checkCorrectFileGenerationAndFinishTest();
-	}
-
-	// Test not needed yet
-//	@Test(groups = "export")
-	public void exportToJson() {
-		generateFormAndFlow();
-		getFormManagerPage().clickExportButton();
-		getFormManagerPage().clickExportJsonButton();
-		checkCorrectFileGenerationAndFinishTest();
-	}
-
-	@Test(groups = "export")
-	public void exportTestXmls() {
-		try {
-			generateFormAndFlow();
-			getFormManagerPage().clickExportButton();
-			getFormManagerPage().clickExportTestXmlsButton();
-			getFormManagerPage().getTestXmlWindow().clickAcceptButton();
-			getFormManagerPage().getDownloadWindow().checkCorrectFileGeneration();
-			getFormManagerPage().getDownloadWindow().closeWindow();
-			getFormManagerPage().getTestXmlWindow().closeWindow();
-			logOut();
-			deleteForm();
-		} catch (IncorrectFileGenerationException e) {
-			e.printStackTrace();
 			Assert.fail();
 		}
 	}

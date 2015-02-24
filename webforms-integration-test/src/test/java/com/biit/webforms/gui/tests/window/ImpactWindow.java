@@ -1,29 +1,30 @@
 package com.biit.webforms.gui.tests.window;
 
-import com.biit.gui.tester.VaadinGuiWindow;
 import com.vaadin.testbench.By;
-import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
-import com.vaadin.testbench.elements.WindowElement;
 
-public class ImpactWindow extends VaadinGuiWindow {
+public class ImpactWindow extends GenericAcceptCancelWindow {
 
-	public static final String WINDOW_CAPTION = "";
-	public static final String ACCEPT_BUTTON_CAPTION = "Accept";
-	public static final String COMBOBOX_CAPTION = "Version";
-	public static final String COMBOBOX_VALUE = "1";
+	private static final String CLASS_NAME = "com.biit.webforms.gui.webpages.formmanager.WindowImpactAnalysis";
+	private static final String COMBOBOX_CAPTION = "Version";
+	private static final String COMBOBOX_VALUE = "1";
+	private static final String CLOSE_ELEMENT_NAME = "v-window-closebox";
 
 	private void setComboBoxValue() {
-		$(ComboBoxElement.class).caption(COMBOBOX_CAPTION).first().selectByText(COMBOBOX_VALUE);;
+		getWindow().$(ComboBoxElement.class).caption(COMBOBOX_CAPTION).first().selectByText(COMBOBOX_VALUE);
 	}
 
 	public void clickAcceptButton() {
 		setComboBoxValue();
-		$(ButtonElement.class).caption(ACCEPT_BUTTON_CAPTION).first().click();
+		clickAccept();
 	}
 
 	public void closeWindow() {
-		$$(WindowElement.class).caption(WINDOW_CAPTION).first().findElement(By.className("v-window-closebox")).click();
+		getWindow().findElement(By.className(CLOSE_ELEMENT_NAME)).click();
 	}
 
+	@Override
+	protected String getWindowId() {
+		return CLASS_NAME;
+	}
 }

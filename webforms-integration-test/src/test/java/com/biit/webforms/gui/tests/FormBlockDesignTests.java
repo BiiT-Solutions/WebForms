@@ -166,6 +166,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtBlockCategoryGroupQuestionInput() {
+		printTestNameInDebugTrace("checkAnswerSubanswerAtBlockCategoryGroupQuestionInput");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -180,6 +181,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("checkAnswerSubanswerAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
 		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
@@ -188,6 +190,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtBlockCategoryQuestionInput() {
+		printTestNameInDebugTrace("checkAnswerSubanswerAtBlockCategoryQuestionInput");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputQuestion();
@@ -201,6 +204,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtBlockGroupLevel() {
+		printTestNameInDebugTrace("checkAnswerSubanswerAtBlockGroupLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
@@ -210,6 +214,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtFormCategoryGroupQuestionInput() {
+		printTestNameInDebugTrace("checkAnswerSubanswerAtFormCategoryGroupQuestionInput");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().addNewGroup();
@@ -224,6 +229,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtFormCategoryLevel() {
+		printTestNameInDebugTrace("checkAnswerSubanswerAtFormCategoryLevel");
 		createNewFormAndCategory();
 		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
 		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
@@ -232,6 +238,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtFormCategoryQuestionInput() {
+		printTestNameInDebugTrace("checkAnswerSubanswerAtFormCategoryQuestionInput");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().addNewInputQuestion();
@@ -245,6 +252,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtFormGroupLevel() {
+		printTestNameInDebugTrace("checkAnswerSubanswerAtFormGroupLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
@@ -254,6 +262,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkGroupQuestionAnswerSubanswerAtBlockLevel() {
+		printTestNameInDebugTrace("checkGroupQuestionAnswerSubanswerAtBlockLevel");
 		createNewBlock(NEW_BLOCK_NAME);
 		goToDesignerPage();
 		Assert.assertFalse(getDesignerPage().getGroupButton().isEnabled());
@@ -268,6 +277,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkGroupQuestionAnswerSubanswerAtFormLevel() {
+		printTestNameInDebugTrace("checkGroupQuestionAnswerSubanswerAtFormLevel");
 		createNewEmptyForm(NEW_FORM_NAME);
 		goToDesignerPage();
 		Assert.assertFalse(getDesignerPage().getGroupButton().isEnabled());
@@ -282,6 +292,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkQuestionHorizontalIsOnlyActivatedForRadioButtonQuestions() {
+		printTestNameInDebugTrace("checkQuestionHorizontalIsOnlyActivatedForRadioButtonQuestions");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().addNewRadioButtonQuestion();
@@ -302,6 +313,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkQuestionMandatoryIsActivatedForAllQuestions() {
+		printTestNameInDebugTrace("checkQuestionMandatoryIsActivatedForAllQuestions");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().addNewRadioButtonQuestion();
@@ -322,6 +334,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createAnswerSubanswerAtBlockCategoryGroupQuestionRadioButton() {
+		printTestNameInDebugTrace("createAnswerSubanswerAtBlockCategoryGroupQuestionRadioButton");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -340,6 +353,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createAnswerSubanswerAtBlockCategoryQuestionRadioButton() {
+		printTestNameInDebugTrace("createAnswerSubanswerAtBlockCategoryQuestionRadioButton");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewRadioButtonQuestion();
@@ -372,6 +386,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createFieldAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createFieldAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewField();
 		saveDesignAndRemoveBlock();
@@ -379,6 +394,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createGroupAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createGroupAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		saveDesignAndRemoveBlock();
@@ -386,6 +402,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createGroupAtFormCategoryLevel() {
+		printTestNameInDebugTrace("createGroupAtFormCategoryLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		saveDesignAndRemoveForm();
@@ -419,6 +436,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewQuestion();
 		saveDesignAndRemoveBlock();
@@ -426,6 +444,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputDateDateAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionInputDateDateAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputDateSubformatDateQuestion();
@@ -437,6 +456,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputDateDateAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionInputDateDateAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -449,6 +469,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputDateFutureAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionInputDateFutureAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputDateSubformatFutureQuestion();
@@ -460,6 +481,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputDateFutureAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionInputDateFutureAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -472,6 +494,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputDatePastAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionInputDatePastAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputDateSubformatPastQuestion();
@@ -483,6 +506,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputDatePastAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionInputDatePastAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -495,6 +519,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputNumberFloatAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionInputNumberFloatAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputNumberSubformatFloatQuestion();
@@ -506,6 +531,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputNumberFloatAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionInputNumberFloatAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -518,6 +544,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputNumberNumberAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionInputNumberNumberAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputNumberSubformatNumberQuestion();
@@ -529,6 +556,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputNumberNumberAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionInputNumberNumberAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -541,6 +569,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputPostalCodePostalCodeAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionInputPostalCodePostalCodeAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputPostalcodeSubformatPostalcodeQuestion();
@@ -552,6 +581,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputPostalCodePostalCodeAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionInputPostalCodePostalCodeAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -564,6 +594,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputTextBsnAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionInputTextBsnAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputTextSubformatBsnQuestion();
@@ -575,6 +606,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputTextBsnAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionInputTextBsnAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -587,6 +619,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputTextEmailAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionInputTextEmailAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputTextSubformatEmailQuestion();
@@ -598,6 +631,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputTextEmailAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionInputTextEmailAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -610,6 +644,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputTextIbanAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionInputTextIbanAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputTextSubformatIbanQuestion();
@@ -621,6 +656,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputTextIbanAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionInputTextIbanAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -633,6 +669,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputTextPhoneAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionInputTextPhoneAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputTextSubformatPhoneQuestion();
@@ -644,6 +681,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputTextPhoneAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionInputTextPhoneAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -656,6 +694,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputTextTextAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionInputTextTextAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewInputTextSubformatTextQuestion();
@@ -667,6 +706,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionInputTextTextAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionInputTextTextAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -679,6 +719,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionListAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionListAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewListQuestion();
@@ -690,6 +731,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionListAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionListAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -702,6 +744,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionListAtFormGroupLevel() {
+		printTestNameInDebugTrace("createQuestionListAtFormGroupLevel");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().addNewGroup();
@@ -714,6 +757,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionMultiCheckBoxAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionMultiCheckBoxAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewMultiCheckboxQuestion();
@@ -725,6 +769,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionMultiCheckBoxAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionMultiCheckBoxAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -737,6 +782,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionRadioButtonAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionRadioButtonAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewRadioButtonQuestion();
@@ -748,6 +794,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionRadioButtonAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionRadioButtonAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -760,6 +807,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionTextAreaAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createQuestionTextAreaAtBlockCategoryLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewTextAreaQuestion();
@@ -771,6 +819,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createQuestionTextAreaAtBlockGroupLevel() {
+		printTestNameInDebugTrace("createQuestionTextAreaAtBlockGroupLevel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -783,6 +832,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void createTextAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("createTextAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewText();
 		saveDesignAndRemoveBlock();
@@ -790,6 +840,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteAnswerAtBlockCategoryGroupQuestionRadioButton() {
+		printTestNameInDebugTrace("deleteAnswerAtBlockCategoryGroupQuestionRadioButton");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -804,6 +855,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteAnswerAtBlockCategoryQuestionRadioButton() {
+		printTestNameInDebugTrace("deleteAnswerAtBlockCategoryQuestionRadioButton");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewRadioButtonQuestion();
@@ -817,6 +869,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteAnswerAtFormCategoryGroupQuestionRadioButton() {
+		printTestNameInDebugTrace("deleteAnswerAtFormCategoryGroupQuestionRadioButton");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().addNewGroup();
@@ -831,6 +884,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteAnswerAtFormCategoryQuestionRadioButton() {
+		printTestNameInDebugTrace("deleteAnswerAtFormCategoryQuestionRadioButton");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().addNewRadioButtonQuestion();
@@ -844,6 +898,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteBlockCategory() {
+		printTestNameInDebugTrace("deleteBlockCategory");
 		createNewBlockAndCategory();
 		getDesignerPage().clickDeleteButton();
 		saveDesignAndRemoveBlock();
@@ -851,6 +906,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteFormCategory() {
+		printTestNameInDebugTrace("deleteFormCategory");
 		createNewFormAndCategory();
 		getDesignerPage().clickDeleteButton();
 		saveDesignAndRemoveForm();
@@ -858,6 +914,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteGroupAtBlockCategory() {
+		printTestNameInDebugTrace("deleteGroupAtBlockCategory");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		getDesignerPage().clickDeleteButton();
@@ -866,6 +923,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteGroupAtFormCategory() {
+		printTestNameInDebugTrace("deleteGroupAtFormCategory");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		getDesignerPage().clickDeleteButton();
@@ -874,6 +932,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteQuestionAtBlockCategory() {
+		printTestNameInDebugTrace("deleteQuestionAtBlockCategory");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewQuestion();
 		getDesignerPage().clickDeleteButton();
@@ -882,6 +941,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteQuestionAtBlockCategoryGroup() {
+		printTestNameInDebugTrace("deleteQuestionAtBlockCategoryGroup");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		getDesignerPage().addNewQuestion();
@@ -891,6 +951,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteQuestionAtFormCategory() {
+		printTestNameInDebugTrace("deleteQuestionAtFormCategory");
 		createNewFormAndCategory();
 		getDesignerPage().addNewQuestion();
 		getDesignerPage().clickDeleteButton();
@@ -899,6 +960,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteQuestionAtFormCategoryGroup() {
+		printTestNameInDebugTrace("deleteQuestionAtFormCategoryGroup");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		getDesignerPage().addNewQuestion();
@@ -908,6 +970,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteSubanswerAtBlockCategoryGroupQuestionRadioButton() {
+		printTestNameInDebugTrace("deleteSubanswerAtBlockCategoryGroupQuestionRadioButton");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -923,6 +986,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteSubanswerAtBlockCategoryQuestionRadioButton() {
+		printTestNameInDebugTrace("deleteSubanswerAtBlockCategoryQuestionRadioButton");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewRadioButtonQuestion();
@@ -937,6 +1001,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteSubanswerAtFormCategoryGroupQuestionRadioButton() {
+		printTestNameInDebugTrace("deleteSubanswerAtFormCategoryGroupQuestionRadioButton");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().addNewGroup();
@@ -952,6 +1017,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void deleteSubanswerAtFormCategoryQuestionRadioButton() {
+		printTestNameInDebugTrace("deleteSubanswerAtFormCategoryQuestionRadioButton");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().addNewRadioButtonQuestion();
@@ -977,6 +1043,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void importBlock() {
+		printTestNameInDebugTrace("importBlock");
 		createEmptyFormAndSimpleBlockDesign();
 		goToFormManagerPage();
 		goToDesignerPage();
@@ -991,6 +1058,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerDescriptionAtBlockCategoryQuestionLevel() {
+		printTestNameInDebugTrace("modifyAnswerDescriptionAtBlockCategoryQuestionLevel");
 		createNewBlockAndCategory();
 		addAnswerModifyAndCheckDescription(MODIFIED_DESCRIPTION, TREE_TABLE_CATEGORY_QUESTION_ANSWER_ROW_INDEX);
 		saveDesignAndRemoveBlock();
@@ -998,6 +1066,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerDescriptionAtBlockGroupQuestionLevel() {
+		printTestNameInDebugTrace("modifyAnswerDescriptionAtBlockGroupQuestionLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		addAnswerModifyAndCheckDescription(MODIFIED_DESCRIPTION, TREE_TABLE_CATEGORY_GROUP_QUESTION_ANSWER_ROW_INDEX);
@@ -1006,6 +1075,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerDescriptionAtFormCategoryQuestionLevel() {
+		printTestNameInDebugTrace("modifyAnswerDescriptionAtFormCategoryQuestionLevel");
 		createNewFormAndCategory();
 		addAnswerModifyAndCheckDescription(MODIFIED_DESCRIPTION, TREE_TABLE_CATEGORY_QUESTION_ANSWER_ROW_INDEX);
 		saveDesignAndRemoveForm();
@@ -1013,14 +1083,15 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerDescriptionAtFormGroupQuestionLevel() {
+		printTestNameInDebugTrace("modifyAnswerDescriptionAtFormGroupQuestionLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
-
 		saveDesignAndRemoveForm();
 	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerLabelAtBlockCategoryQuestionLevel() {
+		printTestNameInDebugTrace("modifyAnswerLabelAtBlockCategoryQuestionLevel");
 		createNewBlockAndCategory();
 		addQuestionAnswerModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_QUESTION_ANSWER_ROW_INDEX);
 		saveDesignAndRemoveBlock();
@@ -1028,6 +1099,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerLabelAtBlockGroupQuestionLevel() {
+		printTestNameInDebugTrace("modifyAnswerLabelAtBlockGroupQuestionLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionAnswerModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_GROUP_QUESTION_ANSWER_ROW_INDEX);
@@ -1036,6 +1108,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerLabelAtFormCategoryQuestionLevel() {
+		printTestNameInDebugTrace("modifyAnswerLabelAtFormCategoryQuestionLevel");
 		createNewFormAndCategory();
 		addQuestionAnswerModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_QUESTION_ANSWER_ROW_INDEX);
 		saveDesignAndRemoveForm();
@@ -1043,6 +1116,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyAnswerLabelAtFormGroupQuestionLevel() {
+		printTestNameInDebugTrace("modifyAnswerLabelAtFormGroupQuestionLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionAnswerModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_GROUP_QUESTION_ANSWER_ROW_INDEX);
@@ -1051,6 +1125,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyBlockCategoryLabel() {
+		printTestNameInDebugTrace("modifyBlockCategoryLabel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().getCategoryPropertiesView().setLabel(MODIFIED_LABEL);
@@ -1065,6 +1140,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyBlockCategoryTechnicalName() {
+		printTestNameInDebugTrace("modifyBlockCategoryTechnicalName");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().getCategoryPropertiesView().setTechnicalName(MODIFIED_NAME);
@@ -1079,6 +1155,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyBlockGroupLabel() {
+		printTestNameInDebugTrace("modifyBlockGroupLabel");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -1094,6 +1171,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyBlockGroupTechnicalName() {
+		printTestNameInDebugTrace("modifyBlockGroupTechnicalName");
 		try {
 			createNewBlockAndCategory();
 			getDesignerPage().addNewGroup();
@@ -1109,6 +1187,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFieldTechnicalNameAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("modifyFieldTechnicalNameAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		addFieldModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
@@ -1116,6 +1195,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFieldTechnicalNameAtBlockGroupLevel() {
+		printTestNameInDebugTrace("modifyFieldTechnicalNameAtBlockGroupLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		addFieldModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1124,6 +1204,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFieldTechnicalNameAtFormCategoryLevel() {
+		printTestNameInDebugTrace("modifyFieldTechnicalNameAtFormCategoryLevel");
 		createNewFormAndCategory();
 		addFieldModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
@@ -1131,6 +1212,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFieldTechnicalNameAtFormGroupLevel() {
+		printTestNameInDebugTrace("modifyFieldTechnicalNameAtFormGroupLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		addFieldModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1139,6 +1221,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFormCategoryLabel() {
+		printTestNameInDebugTrace("modifyFormCategoryLabel");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().getCategoryPropertiesView().setLabel(MODIFIED_LABEL);
@@ -1153,6 +1236,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFormCategoryTechnicalName() {
+		printTestNameInDebugTrace("modifyFormCategoryTechnicalName");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().getCategoryPropertiesView().setTechnicalName(MODIFIED_NAME);
@@ -1167,6 +1251,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFormDescription() {
+		printTestNameInDebugTrace("modifyFormDescription");
 		try {
 			createNewEmptyForm(NEW_FORM_NAME);
 			goToDesignerPage();
@@ -1183,6 +1268,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFormGroupLabel() {
+		printTestNameInDebugTrace("modifyFormGroupLabel");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().addNewGroup();
@@ -1198,6 +1284,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFormGroupTechnicalName() {
+		printTestNameInDebugTrace("modifyFormGroupTechnicalName");
 		try {
 			createNewFormAndCategory();
 			getDesignerPage().addNewGroup();
@@ -1213,6 +1300,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyFormName() {
+		printTestNameInDebugTrace("modifyFormName");
 		try {
 			createNewEmptyForm(NEW_FORM_NAME);
 			goToDesignerPage();
@@ -1229,6 +1317,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionDescriptionAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("modifyQuestionDescriptionAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		addQuestionModifyAndCheckDescription(MODIFIED_DESCRIPTION, TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
@@ -1236,6 +1325,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionDescriptionAtBlockGroupLevel() {
+		printTestNameInDebugTrace("modifyQuestionDescriptionAtBlockGroupLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckDescription(MODIFIED_DESCRIPTION, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1244,6 +1334,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionDescriptionAtFormCategoryLevel() {
+		printTestNameInDebugTrace("modifyQuestionDescriptionAtFormCategoryLevel");
 		createNewFormAndCategory();
 		addQuestionModifyAndCheckDescription(MODIFIED_DESCRIPTION, TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
@@ -1251,6 +1342,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionDescriptionAtFormGroupLevel() {
+		printTestNameInDebugTrace("modifyQuestionDescriptionAtFormGroupLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckDescription(MODIFIED_DESCRIPTION, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1259,6 +1351,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionHorizontalAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("modifyQuestionHorizontalAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		addQuestionModifyAndCheckHorizontal(TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
@@ -1266,6 +1359,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionHorizontalAtBlockGroupLevel() {
+		printTestNameInDebugTrace("modifyQuestionHorizontalAtBlockGroupLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckHorizontal(TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1274,6 +1368,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionHorizontalAtFormCategoryLevel() {
+		printTestNameInDebugTrace("modifyQuestionHorizontalAtFormCategoryLevel");
 		createNewFormAndCategory();
 		addQuestionModifyAndCheckHorizontal(TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
@@ -1281,6 +1376,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionHorizontalAtFormGroupLevel() {
+		printTestNameInDebugTrace("modifyQuestionHorizontalAtFormGroupLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckHorizontal(TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1289,6 +1385,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionLabelAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("modifyQuestionLabelAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		addQuestionModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
@@ -1296,6 +1393,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionLabelAtBlockGroupLevel() {
+		printTestNameInDebugTrace("modifyQuestionLabelAtBlockGroupLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1304,6 +1402,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionLabelAtFormCategoryLevel() {
+		printTestNameInDebugTrace("modifyQuestionLabelAtFormCategoryLevel");
 		createNewFormAndCategory();
 		addQuestionModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
@@ -1311,6 +1410,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionLabelAtFormGroupLevel() {
+		printTestNameInDebugTrace("modifyQuestionLabelAtFormGroupLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckLabel(MODIFIED_LABEL, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1319,6 +1419,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionMandatoryAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("modifyQuestionMandatoryAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		addQuestionModifyAndCheckMandatory(TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
@@ -1326,6 +1427,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionMandatoryAtBlockGroupLevel() {
+		printTestNameInDebugTrace("modifyQuestionMandatoryAtBlockGroupLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckMandatory(TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1334,6 +1436,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionMandatoryAtFormCategoryLevel() {
+		printTestNameInDebugTrace("modifyQuestionMandatoryAtFormCategoryLevel");
 		createNewFormAndCategory();
 		addQuestionModifyAndCheckMandatory(TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
@@ -1341,6 +1444,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionMandatoryAtFormGroupLevel() {
+		printTestNameInDebugTrace("modifyQuestionMandatoryAtFormGroupLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckMandatory(TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1349,6 +1453,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionTechnicalNameAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("modifyQuestionTechnicalNameAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		addQuestionModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
@@ -1356,6 +1461,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionTechnicalNameAtBlockGroupLevel() {
+		printTestNameInDebugTrace("modifyQuestionTechnicalNameAtBlockGroupLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1364,6 +1470,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionTechnicalNameAtFormCategoryLevel() {
+		printTestNameInDebugTrace("modifyQuestionTechnicalNameAtFormCategoryLevel");
 		createNewFormAndCategory();
 		addQuestionModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
@@ -1371,6 +1478,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyQuestionTechnicalNameAtFormGroupLevel() {
+		printTestNameInDebugTrace("modifyQuestionTechnicalNameAtFormGroupLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1379,6 +1487,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerDescriptionAtBlockCategoryQuestionAnswerLevel() {
+		printTestNameInDebugTrace("modifySubanswerDescriptionAtBlockCategoryQuestionAnswerLevel");
 		createNewBlockAndCategory();
 		addSubAnswerModifyAndCheckDescription(MODIFIED_DESCRIPTION,
 				TREE_TABLE_CATEGORY_QUESTION_ANSWER_SUBANSWER_ROW_INDEX);
@@ -1387,6 +1496,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerDescriptionAtBlockGroupQuestionAnswerLevel() {
+		printTestNameInDebugTrace("modifySubanswerDescriptionAtBlockGroupQuestionAnswerLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		addSubAnswerModifyAndCheckDescription(MODIFIED_DESCRIPTION,
@@ -1396,6 +1506,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerDescriptionAtFormCategoryQuestionAnswerLevel() {
+		printTestNameInDebugTrace("modifySubanswerDescriptionAtFormCategoryQuestionAnswerLevel");
 		createNewFormAndCategory();
 		addSubAnswerModifyAndCheckDescription(MODIFIED_DESCRIPTION,
 				TREE_TABLE_CATEGORY_QUESTION_ANSWER_SUBANSWER_ROW_INDEX);
@@ -1404,6 +1515,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerDescriptionAtFormGroupQuestionAnswerLevel() {
+		printTestNameInDebugTrace("modifySubanswerDescriptionAtFormGroupQuestionAnswerLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		addSubAnswerModifyAndCheckDescription(MODIFIED_DESCRIPTION,
@@ -1413,6 +1525,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerLabelAtBlockCategoryQuestionAnswerLevel() {
+		printTestNameInDebugTrace("modifySubanswerLabelAtBlockCategoryQuestionAnswerLevel");
 		createNewBlockAndCategory();
 		addQuestionAnswerSubanswerModifyAndCheckLabel(MODIFIED_LABEL,
 				TREE_TABLE_CATEGORY_QUESTION_ANSWER_SUBANSWER_ROW_INDEX);
@@ -1421,6 +1534,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerLabelAtBlockGroupQuestionAnswerLevel() {
+		printTestNameInDebugTrace("modifySubanswerLabelAtBlockGroupQuestionAnswerLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionAnswerSubanswerModifyAndCheckLabel(MODIFIED_LABEL,
@@ -1430,6 +1544,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerLabelAtFormCategoryQuestionAnswerLevel() {
+		printTestNameInDebugTrace("modifySubanswerLabelAtFormCategoryQuestionAnswerLevel");
 		createNewFormAndCategory();
 		addQuestionAnswerSubanswerModifyAndCheckLabel(MODIFIED_LABEL,
 				TREE_TABLE_CATEGORY_QUESTION_ANSWER_SUBANSWER_ROW_INDEX);
@@ -1438,6 +1553,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifySubanswerLabelAtFormGroupQuestionAnswerLevel() {
+		printTestNameInDebugTrace("modifySubanswerLabelAtFormGroupQuestionAnswerLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		addQuestionAnswerSubanswerModifyAndCheckLabel(MODIFIED_LABEL,
@@ -1447,6 +1563,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyTextTechnicalNameAtBlockCategoryLevel() {
+		printTestNameInDebugTrace("modifyTextTechnicalNameAtBlockCategoryLevel");
 		createNewBlockAndCategory();
 		addTextModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveBlock();
@@ -1454,6 +1571,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyTextTechnicalNameAtBlockGroupLevel() {
+		printTestNameInDebugTrace("modifyTextTechnicalNameAtBlockGroupLevel");
 		createNewBlockAndCategory();
 		getDesignerPage().addNewGroup();
 		addTextModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1462,6 +1580,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyTextTechnicalNameAtFormCategoryLevel() {
+		printTestNameInDebugTrace("modifyTextTechnicalNameAtFormCategoryLevel");
 		createNewFormAndCategory();
 		addTextModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
 		saveDesignAndRemoveForm();
@@ -1469,6 +1588,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void modifyTextTechnicalNameAtFormGroupLevel() {
+		printTestNameInDebugTrace("modifyTextTechnicalNameAtFormGroupLevel");
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		addTextModifyAndCheckTechnicalName(MODIFIED_NAME, TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
@@ -1477,6 +1597,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void saveCategoryAsBlock() {
+		printTestNameInDebugTrace("saveCategoryAsBlock");
 		createNewFormAndCategoryWithAdminRights();
 		getDesignerPage().clickBlocksButton();
 		getDesignerPage().clickSaveBlockButton();
@@ -1508,6 +1629,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void saveGroupAsBlock() {
+		printTestNameInDebugTrace("saveGroupAsBlock");
 		createNewFormAndCategoryWithAdminRights();
 		getDesignerPage().addNewGroup();
 		getDesignerPage().clickBlocksButton();
@@ -1520,6 +1642,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 
 	@Test(groups = { "formBlockDesign" })
 	public void saveQuestionAsBlock() {
+		printTestNameInDebugTrace("saveQuestionAsBlock");
 		createNewFormAndCategoryWithAdminRights();
 		getDesignerPage().addNewQuestion();
 		getDesignerPage().clickBlocksButton();
@@ -1530,9 +1653,10 @@ public class FormBlockDesignTests extends WebFormsTester {
 		deleteBlock();
 	}
 	
-	@Test(groups = "formFlow")
+	@Test(groups = "formBlockDesign")
 	public void validFormWithEverything() {
 		try {
+			printTestNameInDebugTrace("validFormWithEverything");
 			loginFormAdmin1();
 			getFormManagerPage().createNewForm(NEW_FORM_NAME);
 			goToDesignerPage();

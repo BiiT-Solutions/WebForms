@@ -64,6 +64,7 @@ public class ValidationTests extends WebFormsTester {
 
 	@Test(groups = "validation")
 	public void validateCorrectForm() {
+		printTestNameInDebugTrace("validateCorrectForm");
 		createSimpleForm();
 		createSimpleFlow();
 		validateForm(VALIDATION_CORRECT_TEXT);
@@ -71,6 +72,7 @@ public class ValidationTests extends WebFormsTester {
 
 	@Test(groups = "validation")
 	public void validateFormWithTwoOthersFromTheSameElement() {
+		printTestNameInDebugTrace("validateFormWithTwoOthersFromTheSameElement");
 		createSimpleForm();
 		createSimpleFlow();
 		goToFlowManagerPage();
@@ -81,6 +83,7 @@ public class ValidationTests extends WebFormsTester {
 
 	@Test(groups = "validation")
 	public void validateFormOthersFlowWithoutNormalFlow() {
+		printTestNameInDebugTrace("validateFormOthersFlowWithoutNormalFlow");
 		createSimpleForm();
 		goToFlowManagerPage();
 		getFlowManagerPage().createOthersFlow(QUESTION1_NAME, QUESTION2_NAME);
@@ -89,6 +92,7 @@ public class ValidationTests extends WebFormsTester {
 
 	@Test(groups = "validation")
 	public void validateFormWithQuestionWithoutFlowIn() {
+		printTestNameInDebugTrace("validateFormWithQuestionWithoutFlowIn");
 		createSimpleForm();
 		goToFlowManagerPage();
 		getFlowManagerPage().createEndFlow(QUESTION1_NAME);
@@ -97,6 +101,7 @@ public class ValidationTests extends WebFormsTester {
 
 	@Test(groups = "validation")
 	public void validateFormWithQuestionNotMandatoryInFlow() {
+		printTestNameInDebugTrace("validateFormWithQuestionNotMandatoryInFlow");
 		createSimpleForm();
 		goToFlowManagerPage();
 		getFlowManagerPage().createEndFlow(QUESTION3_NAME);
