@@ -39,8 +39,21 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 	private static final Integer LOGIC_EXPRESSIONS_TAB = 1;
 	private static final String AND_BUTTON_CAPTION = "AND";
 
+	public ButtonElement getFromButton(){
+		return getWindow().$(ButtonElement.class).first();
+	}
+	
+	public ButtonElement getToButton(){
+		return getWindow().$(CustomComponentElement.class).caption(TO_BUTTON_CAPTION).$(ButtonElement.class).first();
+	}
+	
 	public void clickFromButton() {
-		getWindow().$(ButtonElement.class).first().click();
+		getFromButton().click();
+		getFromButton().waitForVaadin();
+	}
+
+	public void clickFromField() {
+		getWindow().$(HorizontalLayoutElement.class).$(HorizontalLayoutElement.class).first().click();
 	}
 
 	public void clickRemoveFromButton() {
@@ -48,7 +61,12 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 	}
 
 	public void clickToButton() {
-		getWindow().$(CustomComponentElement.class).caption(TO_BUTTON_CAPTION).$(ButtonElement.class).first().click();
+		getToButton().click();
+		getToButton().waitForVaadin();
+	}
+
+	public void clickToField() {
+		getWindow().$(CustomComponentElement.class).caption(TO_BUTTON_CAPTION).$(HorizontalLayoutElement.class).$(HorizontalLayoutElement.class).first().click();
 	}
 
 	public void clickRemoveToButton() {
@@ -124,7 +142,8 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 	}
 
 	public void selectElementInAnswerTreeTable(String elementName) {
-		List<LabelElement> labels = getWindow().$(CustomComponentElement.class).id(ANSWER_COMPONENT_ID).$(LabelElement.class).all();
+		List<LabelElement> labels = getWindow().$(CustomComponentElement.class).id(ANSWER_COMPONENT_ID)
+				.$(LabelElement.class).all();
 		for (LabelElement label : labels) {
 			if (label.getText().equals(elementName)) {
 				label.click();
@@ -146,8 +165,8 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 	}
 
 	public String getValidInvalidTagValue() {
-		return getWindow().$(VerticalLayoutElement.class).$$(HorizontalLayoutElement.class).$$(LabelElement.class).first()
-				.getText();
+		return getWindow().$(VerticalLayoutElement.class).$$(HorizontalLayoutElement.class).$$(LabelElement.class)
+				.first().getText();
 	}
 
 	private TabSheetElement getTabSheet() {

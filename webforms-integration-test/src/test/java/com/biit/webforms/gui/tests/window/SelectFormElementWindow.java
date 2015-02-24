@@ -27,12 +27,13 @@ public class SelectFormElementWindow extends GenericAcceptCancelWindow {
 
 	public void searchForElement(String elementName) {
 		getSearchField().sendKeys(elementName);
+		getSearchField().waitForVaadin();
 	}
 
 	public List<LabelElement> getTreeTableLabels() {
-		return getWindow().$$(VerticalLayoutElement.class).$$(CustomComponentElement.class)
-				.$$(VerticalLayoutElement.class).$$(TreeTableElement.class).$$(CustomComponentElement.class)
-				.$$(CssLayoutElement.class).$$(LabelElement.class).all();
+		return getWindow().$(VerticalLayoutElement.class).$(CustomComponentElement.class)
+				.$(VerticalLayoutElement.class).$(TreeTableElement.class).$(CustomComponentElement.class)
+				.$(CssLayoutElement.class).$(LabelElement.class).all();
 	}
 
 	public void selectElementInTable(String elementName) {

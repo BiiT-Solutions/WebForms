@@ -181,6 +181,7 @@ public class FormFlowTests extends WebFormsTester {
 		goToDesignerPage();
 		try {
 			getDesignerPage().createAndSaveSimpleFormDesign();
+			closeNotificationIfExists();
 		} catch (FieldNotEditableException e) {
 			e.printStackTrace();
 		}
