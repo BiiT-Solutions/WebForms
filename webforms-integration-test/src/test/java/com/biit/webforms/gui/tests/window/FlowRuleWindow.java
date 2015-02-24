@@ -139,6 +139,7 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 
 	public void searchForElement(String elementName) {
 		getSearchField().sendKeys(elementName);
+		getSearchField().waitForVaadin();
 	}
 
 	public void selectElementInAnswerTreeTable(String elementName) {

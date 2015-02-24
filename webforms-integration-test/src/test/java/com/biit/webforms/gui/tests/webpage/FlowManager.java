@@ -147,7 +147,7 @@ public class FlowManager extends VaadinGuiWebpage {
 		getButtonElement(SAVE_BUTTON_CAPTION).click();
 	}
 	
-	private void selectFromToElement(String startNodeName, String endNodeName){
+	public void selectFromToElement(String startNodeName, String endNodeName){
 		getFlowRuleWindow().clickFromButton();
 		getSelectFormElementWindow().searchForElement(startNodeName);
 		getSelectFormElementWindow().selectElementInTable(startNodeName);

@@ -13,9 +13,6 @@ public class ExportTests extends WebFormsTester {
 	private static final String QUESTION2_NAME = "Question2";
 	private static final String ANSWER1_NAME = "Q1Answer1";
 
-	private static final Integer FIRST_ROW = 0;
-	private static final Integer FIRST_COLUMN = 0;
-
 	private static final String VALID_FLOW_TAG = "Valid";
 
 	private void checkCorrectFileGenerationAndFinishTest() {
@@ -58,7 +55,7 @@ public class ExportTests extends WebFormsTester {
 	}
 
 	// Test not needed yet
-//	@Test(groups = "export")
+	// @Test(groups = "export")
 	public void exportToJson() {
 		printTestNameInDebugTrace("exportToJson");
 		try {
@@ -110,14 +107,18 @@ public class ExportTests extends WebFormsTester {
 			getDesignerPage().createAndSaveSimpleFormDesign();
 			// Create a flow
 			goToFlowManagerPage();
-			getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-			getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-			getFlowManagerPage().clickEditRuleButton();
-			// Add the question IN [answer1 answer2] condition
+			getFlowManagerPage().clickNewRuleButton();
+			getFlowManagerPage().selectFromToElement(QUESTION1_NAME, QUESTION2_NAME);
+			// Add the question == answer condition
 			getFlowManagerPage().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
-			getFlowManagerPage().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
-			getFlowManagerPage().getFlowRuleWindow().clickInButton();
+			getFlowManagerPage().getFlowRuleWindow().selectElementInAnswerTreeTable(ANSWER1_NAME);
+			getFlowManagerPage().getFlowRuleWindow().clickEqualsButton();
 			Assert.assertEquals(getFlowManagerPage().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
+			getFlowManagerPage().getFlowRuleWindow().clickAccept();
+			// Add the question OTHERS condition
+			getFlowManagerPage().clickNewRuleButton();
+			getFlowManagerPage().selectFromToElement(QUESTION1_NAME, QUESTION2_NAME);
+			getFlowManagerPage().getFlowRuleWindow().clickOthersCheckBox();
 			getFlowManagerPage().getFlowRuleWindow().clickAccept();
 			// Redraw the graph
 			getFlowManagerPage().clickRedrawButton();
