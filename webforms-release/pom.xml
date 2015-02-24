@@ -55,7 +55,8 @@
 										<copy
 											file="${war-file.source}/${project.parent.artifactId}-${project.parent.version}.war"
 											tofile="${temporal-folder}/${project.parent.artifactId}-${project.parent.version}.war"
-											overwrite="true" />
+											overwrite="true" >
+										</copy>
 										<!-- copy database scripts -->
 										<copy todir="${temporal-folder}/database/"overwrite="true">
 											<fileset dir="./database" includes="**/*" />
