@@ -1,7 +1,6 @@
 package com.biit.webforms.gui;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.jetty.util.resource.FileResource;
 import org.hibernate.exception.ConstraintViolationException;
 
 import com.biit.abcd.persistence.dao.ISimpleFormViewDao;
@@ -54,7 +52,6 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
-import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
