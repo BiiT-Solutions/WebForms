@@ -34,7 +34,7 @@
 
 	<scm>
 		<connection>scm:git:dev.biit-solutions.com:Webforms.git</connection>
-		<developerConnection>scm:git:dev.biit-solutions.com:com:Webforms.git</developerConnection>
+		<developerConnection>scm:git:dev.biit-solutions.com:Webforms.git</developerConnection>
 		<tag>webforms</tag>
 	</scm>
 
@@ -89,13 +89,7 @@
 			<version>${org.testng.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>versions-maven-plugin</artifactId>
-			<version>${versions-maven-plugin.version}</version>
-		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
