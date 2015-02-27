@@ -47,14 +47,14 @@
 				</property>
 			</activation>
 			<build>
-				<finalName>Agile Business sCenario Designer Tool</finalName>
+				<finalName>Webforms</finalName>
 				<plugins>
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<version>${maven-antrun-plugin.version}</version>
 						<executions>
 							<execution>
-								<phase>install</phase>
+								<phase>deploy</phase>
 								<configuration>
 									<target>
 										<!-- delete old tmp folder -->
