@@ -11,6 +11,7 @@ import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.condition.parser.expressions.WebformsExpression;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.flow.FormWalker;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
@@ -39,7 +40,8 @@ public class FlowUnitDomain {
 		Set<Flow> flows = form.getFlowsFrom(from);
 		checkSameDateUnitForQuestion(flows);
 		List<IDomain> domains = getFlowDomains(flows);
-		checkUnicity(domains);
+		
+		checkUnicity(form, from, domains);
 		if (!containFlowOthers(flows)) {
 			checkCompleteness(domains);
 		}
@@ -85,16 +87,47 @@ public class FlowUnitDomain {
 		}
 	}
 
-	private void checkUnicity(List<IDomain> domains) throws RedundantLogic {
+	private void checkUnicity(Form form, BaseQuestion baseQuestion, List<IDomain> domains) throws RedundantLogic {
 		for (int i = 0; i < domains.size(); i++) {
 			for (int j = i + 1; j < domains.size(); j++) {
 				IDomain intersection = domains.get(i).intersect(domains.get(j));
-
 				if (!intersection.isEmpty()) {
+					if(simpleDependencyCheck(form, baseQuestion, intersection)){
+						continue;
+					}
 					throw new RedundantLogic();
 				}
 			}
 		}
+	}
+	
+	private static boolean simpleDependencyCheck(Form form, BaseQuestion baseQuestion, IDomain intersection){
+		if(intersection instanceof DomainSetIntersection){
+			DomainSetIntersection checkedIntersection = (DomainSetIntersection) intersection;
+			if(!checkedIntersection.getDomainQuestions().isEmpty() && checkedIntersection.getDomainsets().isEmpty()){
+				return simpleDependencyCheckSimpleCase(form,baseQuestion, checkedIntersection);
+			}			
+		}
+		return false;
+	}
+
+	private static boolean simpleDependencyCheckSimpleCase(Form form, BaseQuestion baseQuestion, DomainSetIntersection checkedIntersection) {
+		//Get the earliest question of simple domain elements.
+		BaseQuestion earliestQuestion = null;
+		for(IDomainQuestion domainQuestion : checkedIntersection.getDomainQuestions()){
+			if(earliestQuestion ==null || earliestQuestion.compareTo(domainQuestion.getQuestion())==1){
+				earliestQuestion = domainQuestion.getQuestion();
+			}
+		}
+		for(IDomainQuestion domainQuestion : checkedIntersection.getDomainQuestions()){
+			if(domainQuestion.getQuestion().equals(earliestQuestion)){
+				continue;
+			}
+			if(FormWalker.allPathsFromOriginToDestinyPassThrough(form, earliestQuestion, baseQuestion, domainQuestion.getQuestion())){
+				return false;
+			}			
+		}
+		return true;
 	}
 
 	private void checkCompleteness(List<IDomain> flowDomains)
