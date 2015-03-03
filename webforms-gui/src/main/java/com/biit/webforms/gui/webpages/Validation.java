@@ -38,6 +38,7 @@ import com.biit.webforms.validators.ValidateFormFlows;
 import com.biit.webforms.validators.ValidateFormStructure;
 import com.biit.webforms.validators.ValidateLogic;
 import com.biit.webforms.validators.reports.BackwardFlow;
+import com.biit.webforms.validators.reports.ConditionWithNotMandatoryQuestion;
 import com.biit.webforms.validators.reports.DifferentDateUnitForQuestionsReport;
 import com.biit.webforms.validators.reports.FlowOriginIsNotMandatory;
 import com.biit.webforms.validators.reports.FormAnswerNotFound;
@@ -355,6 +356,9 @@ public class Validation extends SecuredWebPage {
 			} else if (report instanceof InvalidFlowCondition) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INVALID_FLOW_CONDITION,
 						new Object[] { ((InvalidFlowCondition) report).getFlow().toString() }));
+			} else if (report instanceof ConditionWithNotMandatoryQuestion) {
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_CONDITION_WITH_NOT_MANDATORY_QUESTION,
+						new Object[] { ((ConditionWithNotMandatoryQuestion) report).getQuestion().getPathName(), ((ConditionWithNotMandatoryQuestion) report).getFlow().toString() }));
 			} else if (report instanceof InvalidFlowSubformat) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INVALID_FLOW_SUBFORMAT,
 						new Object[] { ((InvalidFlowSubformat) report).getInvalidToken().toString(),

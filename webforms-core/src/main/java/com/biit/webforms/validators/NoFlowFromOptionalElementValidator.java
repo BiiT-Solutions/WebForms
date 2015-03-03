@@ -5,6 +5,10 @@ import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.validators.reports.FlowOriginIsNotMandatory;
 
+/**
+ * No flow can start form an optional element. 
+ *
+ */
 public class NoFlowFromOptionalElementValidator extends SimpleValidator<Flow> {
 
 	public NoFlowFromOptionalElementValidator() {
