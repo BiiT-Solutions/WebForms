@@ -13,20 +13,26 @@ public class Login extends VaadinGuiWebpage {
 	private final static String USER_PASS_LOGIN_BUTTON_ID = "loginButton";
 
 	private TextFieldElement getUserNameLoginForm() {
+		$(TextFieldElement.class).id(USER_NAME_LOGIN_FORM).waitForVaadin();
 		return $(TextFieldElement.class).id(USER_NAME_LOGIN_FORM);
 	}
 
 	private PasswordFieldElement getUserPassLoginForm() {
+		$(PasswordFieldElement.class).id(USER_PASS_LOGIN_FORM).waitForVaadin();
 		return $(PasswordFieldElement.class).id(USER_PASS_LOGIN_FORM);
 	}
 
 	private ButtonElement getLoginButton() {
+		$(ButtonElement.class).id(USER_PASS_LOGIN_BUTTON_ID).waitForVaadin();
 		return $(ButtonElement.class).id(USER_PASS_LOGIN_BUTTON_ID);
 	}
 
 	public void login(String userName, String password) {
 		getUserNameLoginForm().setValue(userName);
 		getUserPassLoginForm().setValue(password);
+		getUserPassLoginForm().waitForVaadin();
+		getLoginButton().focus();
+		getLoginButton().waitForVaadin();
 		getLoginButton().click();
 	}
 
