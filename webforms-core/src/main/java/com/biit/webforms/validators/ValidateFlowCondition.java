@@ -12,6 +12,12 @@ import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.validators.reports.InvalidFlowCondition;
 
+/**
+ * Validate flow condition. We skip others flow to avoid marking them as
+ * possible error.
+ * 
+ *
+ */
 public class ValidateFlowCondition extends SimpleValidator<Flow> {
 
 	public ValidateFlowCondition() {
@@ -20,17 +26,22 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 
 	@Override
 	protected void validateImplementation(Flow flow) {
-		assertTrue(isConditionValid(flow), new InvalidFlowCondition(flow));
+		if (!flow.isOthers()) {
+			assertTrue(isConditionValid(flow), new InvalidFlowCondition(flow));
+		}
 	}
 
 	private boolean isConditionValid(Flow flow) {
 		// Translation
 		try {
-			WebformsParser parser = new WebformsParser(flow.getCondition().iterator());
+			WebformsParser parser = new WebformsParser(flow.getCondition()
+					.iterator());
 			parser.parseCompleteExpression();
 			return true;
-		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException | IncompleteBinaryOperatorException
-				| MissingParenthesisException | ExpressionNotWellFormedException | EmptyParenthesisException e) {
+		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException
+				| IncompleteBinaryOperatorException
+				| MissingParenthesisException
+				| ExpressionNotWellFormedException | EmptyParenthesisException e) {
 			return false;
 		}
 	}

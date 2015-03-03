@@ -14,6 +14,7 @@ import com.biit.webforms.validators.reports.FormElementIsBaseGroupNotBaseQuestio
 import com.biit.webforms.validators.reports.FormElementIsBaseQuestionNotBaseGroup;
 import com.biit.webforms.validators.reports.FormElementNotFound;
 import com.biit.webforms.validators.reports.FormGroupRepeatableStatusIsDifferent;
+import com.biit.webforms.validators.reports.QuestionCompatibilityError;
 
 /**
  * Compares the differences between webforms form and abcd. Return a list of elements that exists in webforms and does
