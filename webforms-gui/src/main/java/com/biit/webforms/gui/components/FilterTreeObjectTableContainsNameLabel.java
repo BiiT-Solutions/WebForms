@@ -25,7 +25,12 @@ public class FilterTreeObjectTableContainsNameLabel extends FilterTreeObjectTabl
 		return super.appliesToProperty(propertyId);
 	}
 
+	@Override
 	public boolean checkIfTreeObjectPasses(TreeObject element) {
+		if(getFilterText()==null){
+			return true;
+		}
+		
 		if (checkNameWithFilter(element)) {
 			return true;
 		}

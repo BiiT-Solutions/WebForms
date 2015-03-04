@@ -37,6 +37,10 @@ public class FilterTreeObjectTableContainsName implements IFilterContainsText {
 	}
 
 	public boolean checkIfTreeObjectPasses(TreeObject element) {
+		if(getFilterText()==null){
+			return true;
+		}
+		
 		if (checkNameWithFilter(element)) {
 			return true;
 		}

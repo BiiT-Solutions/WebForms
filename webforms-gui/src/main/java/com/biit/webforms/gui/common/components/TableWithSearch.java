@@ -51,7 +51,7 @@ public class TableWithSearch extends CustomComponent {
 			public void textChange(TextChangeEvent event) {
 				String text = event.getText();
 				Filterable container = (Filterable) table.getContainerDataSource();
-				container.removeAllContainerFilters();
+				container.removeContainerFilter(filterContainText);
 				filterContainText.setFilterText(text);
 				container.addContainerFilter(filterContainText);
 			}

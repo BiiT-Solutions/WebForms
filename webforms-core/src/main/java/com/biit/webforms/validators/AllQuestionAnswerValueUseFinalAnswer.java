@@ -12,6 +12,7 @@ import com.biit.webforms.validators.reports.TokenUsesNonFinalAnswer;
  * This validator checks that all the flows that use Q=A tokens do not use answer that are not final. A final answer is
  * one that doesn't have sub answers or any kind of child.
  * 
+ * We skip other rules to avoid marking them as the cause of error.
  * 
  */
 public class AllQuestionAnswerValueUseFinalAnswer extends SimpleValidator<Flow> {
