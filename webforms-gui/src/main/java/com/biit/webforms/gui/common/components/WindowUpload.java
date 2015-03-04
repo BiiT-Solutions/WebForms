@@ -42,7 +42,7 @@ public class WindowUpload extends WindowAcceptCancel {
 
 	private VerticalLayout dropLayout;
 	private VerticalLayout uploadLayout;
-	
+
 	private Upload uploader;
 
 	public WindowUpload() {
@@ -127,17 +127,21 @@ public class WindowUpload extends WindowAcceptCancel {
 
 		@Override
 		public void uploadStarted(StartedEvent event) {
-			if(event.getContentLength() > FILE_SIZE_LIMIT){
+			if (event.getContentLength() == 0 ) {
 				uploader.interruptUpload();
-				MessageManager
-				.showError(LanguageCodes.ERROR_FILE_TOO_LARGE);
+			}else if (event.getContentLength() > FILE_SIZE_LIMIT) {
+				uploader.interruptUpload();
+				MessageManager.showError(LanguageCodes.ERROR_FILE_TOO_LARGE);
 			}
 		}
 
 		@Override
 		public void updateProgress(long readBytes, long contentLength) {
 			if (upload != null) {
-				upload.setProgress((float) ((double) readBytes / (double) contentLength));
+				if (contentLength != 0 && readBytes >= 0) {
+					//Only set current progress if progress is a positive number
+					upload.setProgress((float) ((double) readBytes / (double) contentLength));
+				}
 			}
 		}
 
@@ -272,7 +276,8 @@ public class WindowUpload extends WindowAcceptCancel {
 	}
 
 	private void setPutFilesLabel() {
-		Label label = new Label(LanguageCodes.CAPTION_DRAG_AND_DROP_FILES.translation());
+		Label label = new Label(
+				LanguageCodes.CAPTION_DRAG_AND_DROP_FILES.translation());
 		label.setSizeUndefined();
 		dropLayout.addComponent(label);
 		dropLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
@@ -296,16 +301,17 @@ public class WindowUpload extends WindowAcceptCancel {
 	}
 
 	protected boolean acceptAction() {
-			Iterator<Component> uploadItr = uploadLayout.iterator();
-			while(uploadItr.hasNext()){
-				Component component = uploadItr.next();
-				if(component instanceof FileUpload){
-					if(!((FileUpload) component).isComplete()){
-						MessageManager.showError(LanguageCodes.ERROR_MESSAGE_FILES_UPLOAD_NOT_COMPLETED);
-						return false;
-					}
-				} 
+		Iterator<Component> uploadItr = uploadLayout.iterator();
+		while (uploadItr.hasNext()) {
+			Component component = uploadItr.next();
+			if (component instanceof FileUpload) {
+				if (!((FileUpload) component).isComplete()) {
+					MessageManager
+							.showError(LanguageCodes.ERROR_MESSAGE_FILES_UPLOAD_NOT_COMPLETED);
+					return false;
+				}
 			}
-			return true;
+		}
+		return true;
 	}
 }
