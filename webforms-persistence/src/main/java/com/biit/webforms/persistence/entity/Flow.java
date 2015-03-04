@@ -20,6 +20,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.biit.form.BaseQuestion;
 import com.biit.form.TreeObject;
@@ -49,15 +51,17 @@ public class Flow extends StorableObject {
 
 	// Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
 	// attached to that column, you have to state the name.
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "origin_id", nullable = false)
+	@Fetch(FetchMode.JOIN)
 	private TreeObject origin;
 
 	@Enumerated(EnumType.STRING)
 	private FlowType flowType;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "destiny_id")
+	@Fetch(FetchMode.JOIN)
 	private TreeObject destiny;
 
 	private boolean others;
@@ -68,6 +72,7 @@ public class Flow extends StorableObject {
 	private List<Token> condition;
 
 	@ManyToOne
+	@Fetch(FetchMode.JOIN)
 	private Form form;
 
 	@Transient

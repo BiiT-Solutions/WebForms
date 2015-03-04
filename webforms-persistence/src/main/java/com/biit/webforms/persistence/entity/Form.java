@@ -96,7 +96,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 	private String description;
 
 	@OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true, mappedBy = "form")
-	@LazyCollection(LazyCollectionOption.FALSE)
+	// If we made the flow lazy and we load all rules using initializeSets in the DAO, we increase performance
+	// (@BatchSize of tokens in flow runs better if we group all flow retrieving operations in the same time and are not
+	// mixed with retrieving operations of TreeObjects of the form).
+	@LazyCollection(LazyCollectionOption.TRUE)
 	private Set<Flow> rules;
 
 	private String linkedFormLabel;
