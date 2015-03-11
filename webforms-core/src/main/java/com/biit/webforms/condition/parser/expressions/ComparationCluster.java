@@ -3,6 +3,11 @@ package com.biit.webforms.condition.parser.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biit.form.BaseQuestion;
+import com.biit.webforms.flow.FormWalker;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.condition.ITokenQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
@@ -70,5 +75,16 @@ public class ComparationCluster extends Expression implements WebformsExpression
 			return QuestionValueDomain.generateQuestionValueDomain((TokenComparationValue) token);
 		}
 		return null;
+	}
+
+	@Override
+	public boolean checkBlockByMinTerms(Form form, BaseQuestion element) {
+		if(token instanceof ITokenQuestion){
+			Question question = ((ITokenQuestion) token).getQuestion();
+			if(FormWalker.anyPathFromOriginDoesntPassThrough(form, null, element, question)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

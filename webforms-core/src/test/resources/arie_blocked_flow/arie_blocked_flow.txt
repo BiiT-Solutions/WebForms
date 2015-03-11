@@ -1,0 +1,8 @@
+Form flow can be blocked by a question that it's not used directly in the transition from Qn to Qn+i
+if the exit conditions only reference elements that can be show in some of the user flows. An OTHERS
+flow doesn't prevent this occurrence as the OTHERS condition is formed by the OR combination of all
+the negated condition flows.
+
+Current solution is to detect this possible occurrence by checking if all the minterms (Qn=A) can be
+accessed from all possible entry paths in Qi and then using the or combination of all the rules to
+check if it is possible to get blocked.

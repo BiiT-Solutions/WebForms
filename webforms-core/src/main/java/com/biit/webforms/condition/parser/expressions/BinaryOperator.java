@@ -3,7 +3,9 @@ package com.biit.webforms.condition.parser.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biit.form.BaseQuestion;
 import com.biit.webforms.enumerations.TokenTypes;
+import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.utils.math.domain.IDomain;
 import com.biit.webforms.utils.parser.Expression;
@@ -84,6 +86,18 @@ public class BinaryOperator extends Expression implements WebformsExpression {
 			return leftDomain.intersect(rightDomain);
 		} else {
 			return leftDomain.union(rightDomain);
+		}
+	}
+
+	@Override
+	public boolean checkBlockByMinTerms(Form form, BaseQuestion element) {
+		boolean leftResult = ((WebformsExpression) left).checkBlockByMinTerms(form, element);
+		boolean rightResult = ((WebformsExpression) right).checkBlockByMinTerms(form, element);
+		
+		if (type == TokenTypes.AND) {
+			return leftResult && rightResult;
+		} else {
+			return leftResult || rightResult;
 		}
 	}
 }

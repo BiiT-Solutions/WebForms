@@ -40,6 +40,7 @@ import com.biit.webforms.validators.ValidateLogic;
 import com.biit.webforms.validators.reports.BackwardFlow;
 import com.biit.webforms.validators.reports.ConditionWithNotMandatoryQuestion;
 import com.biit.webforms.validators.reports.DifferentDateUnitForQuestionsReport;
+import com.biit.webforms.validators.reports.FlowBlockedInQuestion;
 import com.biit.webforms.validators.reports.FlowOriginIsNotMandatory;
 import com.biit.webforms.validators.reports.FormAnswerNotFound;
 import com.biit.webforms.validators.reports.FormElementIsBaseGroupNotBaseQuestion;
@@ -434,6 +435,9 @@ public class Validation extends SecuredWebPage {
 			} else if (report instanceof RedundantLogicReport) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_REDUNDANT_LOGIC,
 						new Object[] { ((RedundantLogicReport) report).getElement().getPathName() }));
+			} else if (report instanceof FlowBlockedInQuestion) {
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_FLOW_BLOCKED_IN_QUESTION,
+						new Object[] { ((FlowBlockedInQuestion) report).getElement().getPathName() }));
 			} else if (report instanceof TokenUsesNonFinalAnswer) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_TOKEN_USES_NON_FINAL_ANSWER,
 						new Object[] { ((TokenUsesNonFinalAnswer) report).getFlow(),

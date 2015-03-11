@@ -61,6 +61,7 @@ public class MessageManager {
 	}
 
 	private static void showMessage(String caption, String description, Notification.Type type, Position position) {
+		System.out.println("Show message?!");
 		// Log it.
 		try {
 			String user;

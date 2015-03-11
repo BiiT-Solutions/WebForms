@@ -489,6 +489,7 @@ public enum LanguageCodes implements ILanguageCode {
 	VALIDATION_TOKEN_USES_NON_FINAL_ANSWER("validation.token.uses.non.final.answer"),
 	VALIDATION_NULL_VALUE("validation.null.value"),
 	VALIDATION_CONDITION_WITH_NOT_MANDATORY_QUESTION("validation.condition.with.not.mandatory.question"),
+	VALIDATION_FLOW_BLOCKED_IN_QUESTION("validation.flow.blocked.in.question"),
 	
 	WARNING_ABCD_FORM_LINKED_NOT_VALID("abcd.form.linked.not.valid"),
 	WARNING_ABCD_FORM_LINKED_NOT_VALID_DESCRIPTION("abcd.form.linked.not.valid.description"),
@@ -525,7 +526,7 @@ public enum LanguageCodes implements ILanguageCode {
 	ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION("error.element.cannot.be.saved.description"), 
 	
 	PAGE_NOT_FOUND("page.not.found"),
-	PAGE_ERROR("page.error"),
+	PAGE_ERROR("page.error"), 
 	
 	;
 

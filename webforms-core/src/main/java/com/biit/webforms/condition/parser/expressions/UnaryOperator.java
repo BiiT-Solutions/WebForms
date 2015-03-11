@@ -3,7 +3,9 @@ package com.biit.webforms.condition.parser.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biit.form.BaseQuestion;
 import com.biit.webforms.enumerations.TokenTypes;
+import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.utils.math.domain.IDomain;
 import com.biit.webforms.utils.parser.Expression;
@@ -89,5 +91,10 @@ public class UnaryOperator extends Expression implements WebformsExpression {
 			domain = domain.inverse();
 		}
 		return domain;
+	}
+
+	@Override
+	public boolean checkBlockByMinTerms(Form form, BaseQuestion element) {
+		return ((WebformsExpression)expression).checkBlockByMinTerms(form, element);
 	}
 }

@@ -6,6 +6,7 @@
 				<include name="testDomain" />
  			 	<include name="testFlowDomain" />
  			 	<include name="testFlowDomainRedundant" />
+ 			 	<include name="testFlowDomainBlockedPreviousQuestion" />
 				<include name="booleanExpressions" />
 				<include name="linkValidation" />
 				<include name="missingFlowIn" />
@@ -19,6 +20,7 @@
 			<class name="com.biit.webforms.utils.math.domain.range.TestDomain" />
 			<class name="com.biit.webforms.utils.math.domain.TestFlowDomain" />
 			<class name="com.biit.webforms.utils.math.domain.TestFlowDomainRedundant" />
+			<class name="com.biit.webforms.utils.math.domain.TestFlowDomainBlockedPreviousQuestion" />
 			<class name="com.biit.webforms.xforms.expressions.BooleanExpressionTest" />
 			<class name="com.biit.webforms.xforms.XFormExporterTests" />
 			<class name="com.biit.webforms.validators.LinkValidationTests" />

@@ -47,8 +47,8 @@ public class FormWalker {
 			exploredQuestions.put(element, new HashSet<List<BaseQuestion>>());
 		}
 
-		for (int i=0;i<selectedElements.size()-1;i++) {
-			
+		for (int i = 0; i < selectedElements.size() - 1; i++) {
+
 			BaseQuestion element = selectedElements.get(i);
 			// Get all flow to current element.
 			Set<Flow> flows = computedFlowView.getFlowsByDestiny(element);
@@ -78,8 +78,7 @@ public class FormWalker {
 			}
 		}
 
-		return exploredQuestions.get(selectedElements.get(selectedElements
-				.size() - 1));
+		return exploredQuestions.get(selectedElements.get(selectedElements.size() - 1));
 	}
 
 	public static boolean allPathsFromOriginToDestinyPassThrough(Form form,
@@ -104,10 +103,13 @@ public class FormWalker {
 		return true;
 	}
 
-	public static boolean findPath(Form form, BaseQuestion origin,
-			BaseQuestion destiny) {
-
+	public static boolean anyPathFromOriginDoesntPassThrough(Form form,
+			BaseQuestion origin, BaseQuestion destiny,
+			BaseQuestion questionToAvoid) {
 		ComputedFlowView computedFlowView = form.getComputedFlowsView();
+		if(origin==null){
+			origin = (BaseQuestion) computedFlowView.getFirstElement();
+		}
 
 		Set<BaseQuestion> exploredQuestions = new HashSet<>();
 		Stack<BaseQuestion> questionsToExplore = new Stack<>();
@@ -118,6 +120,62 @@ public class FormWalker {
 			if (exploredQuestions.contains(questionToExplore)) {
 				// Question already explored.
 				continue;
+			}else{
+				exploredQuestions.add(questionToExplore);
+			}
+
+			if (questionToExplore != null && questionToExplore.equals(destiny)) {
+				// Path found. Return true.
+				return true;
+			}
+			if (questionToExplore != null
+					&& (questionToExplore.compareTo(destiny) > 0 || questionToExplore.equals(questionToAvoid))) {
+				// This question is after destiny question. No Path can exist.
+				// Or
+				// This question is the question to avoid.
+				// Ignore and check other paths.
+				continue;
+			}
+
+			Set<Flow> flows = computedFlowView
+					.getFlowsByOrigin(questionToExplore);
+			for (Flow flow : flows) {
+				if (flow.getFlowType() == FlowType.END_FORM && destiny == null) {
+					return true;
+				}
+				if (flow.getFlowType() == FlowType.END_FORM
+						|| flow.getFlowType() == FlowType.END_LOOP) {
+					continue;
+				} else {
+					if (!exploredQuestions.contains(flow.getDestiny())) {
+						questionsToExplore.push((BaseQuestion) flow
+								.getDestiny());
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean findPath(Form form, BaseQuestion origin,
+			BaseQuestion destiny) {
+
+		ComputedFlowView computedFlowView = form.getComputedFlowsView();
+		if(origin==null){
+			origin = (BaseQuestion) computedFlowView.getFirstElement();
+		}
+
+		Set<BaseQuestion> exploredQuestions = new HashSet<>();
+		Stack<BaseQuestion> questionsToExplore = new Stack<>();
+		questionsToExplore.add(origin);
+
+		while (!questionsToExplore.isEmpty()) {
+			BaseQuestion questionToExplore = questionsToExplore.pop();
+			if (exploredQuestions.contains(questionToExplore)) {
+				// Question already explored.
+				continue;
+			}else{
+				exploredQuestions.add(questionToExplore);
 			}
 
 			if (questionsToExplore != null && questionToExplore.equals(destiny)) {
@@ -126,9 +184,7 @@ public class FormWalker {
 			}
 			if (questionsToExplore != null
 					&& questionToExplore.compareTo(destiny) > 0) {
-				// This question is after destiny question. No Path can exist.
-				// Mark as explored and ignore
-				exploredQuestions.add(questionToExplore);
+				// This question is after destiny question. No Path can exist. Ignore
 				continue;
 			}
 

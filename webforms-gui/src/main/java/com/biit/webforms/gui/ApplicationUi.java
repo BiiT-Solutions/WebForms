@@ -45,8 +45,8 @@ public class ApplicationUi extends UI {
 		@Override
 		public void error(com.vaadin.server.ErrorEvent event) {
 			// Throw the error to the logger.
-			WebformsLogger.errorMessage(ApplicationUi.class.getName(), event.getThrowable());
 			MessageManager.showError(CommonComponentsLanguageCodes.ERROR_UNEXPECTED_ERROR);
+			WebformsLogger.errorMessage(ApplicationUi.class.getName(), event.getThrowable());
 		}
 	};
 
