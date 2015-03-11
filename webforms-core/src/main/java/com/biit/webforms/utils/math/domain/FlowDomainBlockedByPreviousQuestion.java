@@ -33,8 +33,6 @@ import com.biit.webforms.utils.parser.exceptions.ParseException;
 public class FlowDomainBlockedByPreviousQuestion {
 
 	public FlowDomainBlockedByPreviousQuestion(Form form, BaseQuestion element) throws FlowDomainBlocked {
-		System.out.println("FlowDomainBlockedByPreviousQuestion!");
-		
 		Set<Flow> flowsOfElement = form.getFlowsFrom(element);
 		if(flowsOfElement.isEmpty()){
 			//Automatic flow. This can't block the user ever.
@@ -59,7 +57,6 @@ public class FlowDomainBlockedByPreviousQuestion {
 			try {
 				WebformsExpression  expression = (WebformsExpression) new WebformsParser(condition.iterator()).parseCompleteExpression();
 				isBlocked = isBlocked ||expression.checkBlockByMinTerms(form, element);
-				System.out.println(isBlocked);
 			} catch (ParseException | ExpectedTokenNotFound
 					| NoMoreTokensException | IncompleteBinaryOperatorException
 					| MissingParenthesisException
