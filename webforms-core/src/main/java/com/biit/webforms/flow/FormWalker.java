@@ -24,8 +24,7 @@ public class FormWalker {
 	 * @param destiny
 	 * @return
 	 */
-	public static Set<List<BaseQuestion>> getAllPathsFromOriginToDestiny(
-			Form form, BaseQuestion origin, BaseQuestion destiny) {
+	public static Set<List<BaseQuestion>> getAllPathsFromOriginToDestiny(Form form, BaseQuestion origin, BaseQuestion destiny) {
 		if (origin == null || destiny == null) {
 			return new HashSet<List<BaseQuestion>>();
 		}
@@ -48,7 +47,6 @@ public class FormWalker {
 		}
 
 		for (int i = 0; i < selectedElements.size() - 1; i++) {
-
 			BaseQuestion element = selectedElements.get(i);
 			// Get all flow to current element.
 			Set<Flow> flows = computedFlowView.getFlowsByDestiny(element);
@@ -65,13 +63,10 @@ public class FormWalker {
 					} else {
 						// Insert the multiple paths in the origin of flow with
 						// current element added.
-						for (List<BaseQuestion> path : exploredQuestions
-								.get(element)) {
-							List<BaseQuestion> newPath = new ArrayList<BaseQuestion>(
-									path);
+						for (List<BaseQuestion> path : exploredQuestions.get(element)) {
+							List<BaseQuestion> newPath = new ArrayList<BaseQuestion>(path);
 							newPath.add(element);
-							exploredQuestions.get(flow.getOrigin())
-									.add(newPath);
+							exploredQuestions.get(flow.getOrigin()).add(newPath);
 						}
 					}
 				}
@@ -90,14 +85,9 @@ public class FormWalker {
 				|| !findPath(form, requiredQuestion, destiny)) {
 			return false;
 		}
-
-		Set<List<BaseQuestion>> paths = getAllPathsFromOriginToDestiny(form,
-				origin, destiny);
-
-		for (List<BaseQuestion> path : paths) {
-			if (!path.contains(requiredQuestion)) {
-				return false;
-			}
+				
+		if(anyPathFromOriginDoesntPassThrough(form, origin, destiny, requiredQuestion)){
+			return false;
 		}
 
 		return true;
@@ -109,6 +99,9 @@ public class FormWalker {
 		ComputedFlowView computedFlowView = form.getComputedFlowsView();
 		if(origin==null){
 			origin = (BaseQuestion) computedFlowView.getFirstElement();
+		}
+		if(questionToAvoid.equals(destiny)){
+			return false;
 		}
 
 		Set<BaseQuestion> exploredQuestions = new HashSet<>();
