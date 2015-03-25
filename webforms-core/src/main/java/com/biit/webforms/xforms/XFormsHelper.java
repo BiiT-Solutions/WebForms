@@ -129,7 +129,7 @@ class XFormsHelper {
 			Set<Flow> flowsFromOrigin = flowsByOrigin.get(flow.getOrigin());
 			// This element is a fork, has more than one flow.
 			if (flowsFromOrigin != null && flowsFromOrigin.size() > 1) {
-				tokens.addAll(flow.getCondition());
+				tokens.addAll(flow.getConditionSimpleTokens());
 				if (flow.getOrigin() instanceof Question) {
 					if (!tokens.isEmpty()) {
 						tokens.add(Token.and());
