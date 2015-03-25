@@ -27,7 +27,9 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<com.biit.abcd
 
 	@Override
 	protected void validateImplementation(com.biit.abcd.persistence.entity.Form abcdForm) {
-		validateStructure(webforms, abcdForm);
+		if (webforms != null) {
+			validateStructure(webforms, abcdForm);
+		}
 	}
 
 	private void validateStructure(BaseForm webformsForm, BaseForm abcdForm) {

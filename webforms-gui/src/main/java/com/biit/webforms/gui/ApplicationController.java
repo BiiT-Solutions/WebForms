@@ -328,7 +328,7 @@ public class ApplicationController {
 	public List<com.biit.abcd.persistence.entity.Form> getLinkedAbcdForm(Form form) throws UnexpectedDatabaseException,
 			BadAbcdLink {
 		List<com.biit.abcd.persistence.entity.Form> linkedForms = new ArrayList<>();
-		if (form.getLinkedFormLabel() != null && form.getLinkedFormOrganizationId() != null) {
+		if (form != null && form.getLinkedFormLabel() != null && form.getLinkedFormOrganizationId() != null) {
 			try {
 				for (Integer version : form.getLinkedFormVersions()) {
 					com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.getForm(form.getLinkedFormLabel(),
