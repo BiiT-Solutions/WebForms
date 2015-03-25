@@ -49,7 +49,8 @@ public class FlowDomainBlockedByPreviousQuestion {
 				}
 				continue;
 			}
-			List<Token> condition = flow.getCondition();
+			//Get only the condition simple tokens.
+			List<Token> condition = flow.getConditionSimpleTokens();
 			if(checkAllMinTermsAreFromOriginQuestion(element, condition)){
 				continue;
 			}
