@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.entity.condition;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -37,7 +38,7 @@ public class TokenInValue extends StorableObject {
 
 	@Override
 	public Set<StorableObject> getAllInnerStorableObjects() {
-		return null;
+		return new HashSet<>();
 	}
 
 	@Override

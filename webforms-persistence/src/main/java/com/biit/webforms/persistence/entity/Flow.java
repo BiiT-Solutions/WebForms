@@ -231,6 +231,7 @@ public class Flow extends StorableObject {
 		if (!isOthers()) {
 			for (Token token : getCondition()) {
 				innerStorableObjects.add(token);
+				innerStorableObjects.addAll(token.getAllInnerStorableObjects());
 			}
 		}
 
