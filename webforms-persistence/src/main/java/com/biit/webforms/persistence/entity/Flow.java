@@ -231,6 +231,7 @@ public class Flow extends StorableObject {
 		if (!isOthers()) {
 			for (Token token : getCondition()) {
 				innerStorableObjects.add(token);
+				innerStorableObjects.addAll(token.getAllInnerStorableObjects());
 			}
 		}
 
@@ -268,7 +269,7 @@ public class Flow extends StorableObject {
 				}
 				otherCondition.add(Token.not());
 				otherCondition.add(Token.leftPar());
-				otherCondition.addAll(flow.getCondition());
+				otherCondition.addAll(flow.getConditionSimpleTokens());
 				otherCondition.add(Token.rigthPar());
 				if (itr.hasNext()) {
 					otherCondition.add(Token.and());

@@ -1,9 +1,9 @@
 package com.biit.webforms.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
 
@@ -28,7 +28,7 @@ public class UserSessionHandler {
 	private User user = null;
 	private ApplicationController controller = null;
 	// User Id --> List<UI> (A user can have different browsers opened in the same machine)
-	private static HashMap<Long, List<UI>> usersSession = new HashMap<>();
+	private static HashMap<Long, Set<UI>> usersSession = new HashMap<>();
 	// User Id --> IP (current UI ip connected)
 	private static HashMap<Long, String> usersIp = new HashMap<>();
 	// User Id --> Last Page visited
@@ -52,9 +52,9 @@ public class UserSessionHandler {
 				for (UI userUI : usersSession.get(user.getUserId())) {
 					try {
 						WebformsLogger.info(UserSessionHandler.class.getName(),
-								"Closing session for user '" + user.getEmailAddress() + "', IP '" + ip + "'.");
+								"Closing session for user '" + user.getEmailAddress() + "', IP '" + usersIp.get(user.getUserId()) + "'.");
+						userUI.getPage().setLocation("./VAADIN/logout.html");
 						userUI.close();
-						userUI.getNavigator().navigateTo(WebMap.getLoginPage().toString());
 					} catch (Exception e) {
 						// maybe the session has expired in Vaadin and cannot be closed.
 					}
@@ -63,7 +63,7 @@ public class UserSessionHandler {
 			}
 		}
 		if (usersSession.get(user.getUserId()) == null) {
-			usersSession.put(user.getUserId(), new ArrayList<UI>());
+			usersSession.put(user.getUserId(), new HashSet<UI>());
 		}
 		usersSession.get(user.getUserId()).add(ui);
 		usersIp.put(user.getUserId(), ip);

@@ -57,6 +57,6 @@ public class WebformsLogger extends BiitLogger {
 	 */
 	public static void errorMessage(String className, Throwable throwable) {
 		String error = getStackTrace(throwable);
-		errorMessage(className, error);
+		errorMessageNotification(className, error);
 	}
 }

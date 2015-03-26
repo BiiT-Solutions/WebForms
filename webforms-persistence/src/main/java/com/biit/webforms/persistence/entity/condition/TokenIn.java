@@ -70,7 +70,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 			for (TokenInValue value : token.values) {
 				TokenInValue valueCopy = value.generateCopy();
 				valueCopy.setTokenIn(this);
-				this.values.add(valueCopy);				
+				this.values.add(valueCopy);
 			}
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
@@ -96,6 +96,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 			for (Answer answer : answers) {
 				TokenInValue value = new TokenInValue();
 				value.setAnswerValue(answer);
+				value.setTokenIn(token);
 				token.values.add(value);
 			}
 			return token;
@@ -139,18 +140,19 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 			value.setTokenIn(this);
 		}
 	}
-	
+
 	@Override
 	public Set<StorableObject> getAllInnerStorableObjects() {
 		HashSet<StorableObject> innerStorableObjects = new HashSet<StorableObject>();
-		
-		for(TokenInValue value: values){
+
+		for (TokenInValue value : values) {
 			innerStorableObjects.add(value);
+			innerStorableObjects.addAll(value.getAllInnerStorableObjects());
 		}
-		
+
 		return innerStorableObjects;
 	}
-	
+
 	@Override
 	public void resetIds() {
 		super.resetIds();
@@ -169,17 +171,17 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 
 	public void setValues(List<TokenInValue> values) {
 		this.values.clear();
-		for(TokenInValue value: values){
+		for (TokenInValue value : values) {
 			this.values.add(value);
 			value.setTokenIn(this);
 		}
 	}
-	
+
 	@Override
 	public String getExpressionEditorRepresentation() {
 		return toString();
 	}
-	
+
 	/**
 	 * Compares two token ComparationValue. it must be of token in type.
 	 */
@@ -191,13 +193,13 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 				if (!question.getPathName().equals(tokenIn.question.getPathName())) {
 					return false;
 				}
-				
+
 				if (values.size() != tokenIn.values.size()) {
 					return false;
 				}
 
-				for(int i=0;i<values.size();i++){
-					if(!values.get(i).isContentEqual(tokenIn.values.get(i))){
+				for (int i = 0; i < values.size(); i++) {
+					if (!values.get(i).isContentEqual(tokenIn.values.get(i))) {
 						return false;
 					}
 				}

@@ -69,8 +69,9 @@ public class MessageManager {
 			} else {
 				user = "none";
 			}
-			WebformsLogger.info(MessageManager.class.getName(), "Message '" + caption + " " + description + "' ("
-					+ type + ") displayed to user '" + user + "'.");
+			WebformsLogger.info(MessageManager.class.getName(), "Message '" + caption
+					+ (description != null ? " | " : "") + description + "' (" + type + ") displayed to user '" + user
+					+ "'.");
 		} catch (Exception e) {
 			WebformsLogger.errorMessage(MessageManager.class.getName(), e);
 		}

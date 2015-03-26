@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.biit</groupId>
 		<artifactId>webforms</artifactId>
-		<version>2.5.17-SNAPSHOT</version>
+		<version>2.5.27-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -22,8 +22,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.biit</groupId>
-			<artifactId>biit-logger</artifactId>
-			<version>${biit-logger.version}</version>
+			<artifactId>common-utils</artifactId>
+			<version>${biit-common-utils.version}</version>
 		</dependency>
 		<!-- Spring framework -->
 		<!-- Various Application Context utilities, including EhCache, JavaMail, 
