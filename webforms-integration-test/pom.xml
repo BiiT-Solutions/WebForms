@@ -185,12 +185,12 @@
 			</plugin>
 			<!-- Do not deploy this module in artifact -->
 			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-deploy-plugin</artifactId>
-			    <version>${maven-deploy-plugin.version}</version>
-			    <configuration>
-				<skip>true</skip>
-			    </configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven-deploy-plugin.version}</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -275,6 +275,8 @@
 								<id>start-jetty</id>
 								<phase>pre-integration-test</phase>
 								<goals>
+									<!-- stop any previous instance to free up the port -->
+									<goal>stop</goal>
 									<goal>start</goal>
 								</goals>
 								<configuration>
