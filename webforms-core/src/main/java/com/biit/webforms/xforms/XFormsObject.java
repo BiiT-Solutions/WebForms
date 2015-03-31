@@ -25,6 +25,7 @@ import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
@@ -364,11 +365,16 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// $control-name=1
 			getInputFieldVisibility(visibility, (TokenComparationValue) token);
 		} else if (token instanceof TokenAnswerNeeded) {
-			if (((TokenAnswerNeeded) token).isDateField()) {
+			// Infotext has no input. We must copy relevant rule from this element.
+			if (((TokenAnswerNeeded) token).getQuestion() instanceof Text) {
+				visibility.append(getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()));
+				// Date is a specific case. Already has some data.
+			} else if (((TokenAnswerNeeded) token).isDateField()) {
 				visibility
 						.append("string-length(format-date($")
 						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
 								.getBindingName()).append(", '[MNn,*-3]/[D01]/[Y]')) &gt; 0");
+				// Any input field must have an answer.
 			} else {
 				visibility
 						.append("string-length($")
@@ -573,9 +579,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 				if (existPreviousCondition(flowvisibility)) {
 					flowvisibility.add(Token.and());
 				}
-				flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin(), ((Question) flow.getOrigin())
-						.getAnswerFormat() != null
-						&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+				flowvisibility.add(new TokenAnswerNeeded((WebformsBaseQuestion) flow.getOrigin(),
+						(flow.getOrigin() instanceof Question)
+								&& ((Question) flow.getOrigin()).getAnswerFormat() != null
+								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 				// If condition is empty, inherit the relevance of the previous element. Others also has empty
 				// condition.
 			} else if (flow.getCondition().isEmpty()) {
@@ -604,13 +611,14 @@ public abstract class XFormsObject<T extends TreeObject> {
 					}
 				}
 				// If is not used in condition, add as needed.
-				if (flow.getOrigin() instanceof Question) {
+				if (flow.getOrigin() instanceof WebformsBaseQuestion) {
 					if (!originUsedInCondition) {
 						if (existPreviousCondition(flowvisibility)) {
 							flowvisibility.add(Token.and());
 						}
-						flowvisibility.add(new TokenAnswerNeeded((Question) flow.getOrigin(), ((Question) flow
-								.getOrigin()).getAnswerFormat() != null
+						flowvisibility.add(new TokenAnswerNeeded((WebformsBaseQuestion) flow.getOrigin(), (flow
+								.getOrigin() instanceof Question)
+								&& ((Question) flow.getOrigin()).getAnswerFormat() != null
 								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 					}
 				}
