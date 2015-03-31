@@ -59,6 +59,10 @@ public class WebformsAuthorizationService extends AuthorizationService {
 	};
 
 	private static final WebformsActivity[] FORMS_ADMINISTRATOR_EXTRA_PERMISSIONS = {
+	
+	WebformsActivity.IMPORT_JSON,
+	
+	WebformsActivity.EXPORT_JSON,
 
 	WebformsActivity.FORM_STATUS_DOWNGRADE,
 

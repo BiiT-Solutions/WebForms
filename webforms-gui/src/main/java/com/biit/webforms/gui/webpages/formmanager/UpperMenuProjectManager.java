@@ -1,11 +1,17 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import com.biit.webforms.configuration.WebformsConfigurationReader;
+import java.io.IOException;
+
+import com.biit.liferay.access.exceptions.AuthenticationRequired;
+import com.biit.webforms.authentication.WebformsActivity;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.xforms.XFormsExporter;
 import com.vaadin.server.BrowserWindowOpener;
@@ -19,10 +25,13 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private final IconButton submenuNew, newForm, newFormVersion, removeForm, importAbcdForm, importJsonForm;
+	private final IconButton submenuNew, newForm, newFormVersion, removeForm,
+			importAbcdForm, importJsonForm;
 	private final IconButton linkAbcdForm;
-	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms;
-	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson, exportXml;
+	private final IconButton exportXForms, previewXForms, publishXForms,
+			downloadXForms;
+	private final IconButton export, exportPdf, exportFlowPdf, exportXsd,
+			exportJson, exportXml;
 	private final IconButton impactAnalysis, compareContent;
 	private BrowserWindowOpener opener;
 	// Neede due to the existence of a second 'Flow' button at the same time in
@@ -31,6 +40,15 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public UpperMenuProjectManager() {
 		super();
+		
+		boolean enableExportJson=false;
+		boolean enableImportJson=false;		
+		try {
+			enableExportJson = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(), WebformsActivity.EXPORT_JSON);
+			enableImportJson = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(), WebformsActivity.IMPORT_JSON);
+		} catch (IOException | AuthenticationRequired e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
 
 		newForm = new IconButton(LanguageCodes.CAPTION_NEW_FORM, ThemeIcons.FORM_MANAGER_ADD_FORM,
 				LanguageCodes.TOOLTIP_NEW_FORM, IconSize.BIG);
@@ -41,7 +59,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				ThemeIcons.FORM_MANAGER_IMPORT_ABCD_FORM, LanguageCodes.TOOLTIP_IMPORT_ABCD_FORM, IconSize.BIG);
 		importJsonForm = new IconButton(LanguageCodes.CAPTION_IMPORT_JSON_FORM,
 				ThemeIcons.FORM_MANAGER_IMPORT_JSON_FORM, LanguageCodes.TOOLTIP_IMPORT_JSON_FORM, IconSize.BIG);
-		importJsonForm.setVisible(WebformsConfigurationReader.getInstance().isJsonExportEnabled());
+		importJsonForm.setVisible(enableImportJson);
+		
 		linkAbcdForm = new IconButton(LanguageCodes.CAPTION_LINK_ABCD_FORM, ThemeIcons.FORM_MANAGER_LINK_ABCD_FORM,
 				LanguageCodes.TOOLTIP_LINK_ABCD_FORM, IconSize.BIG);
 
@@ -54,7 +73,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
 		exportJson = new IconButton(LanguageCodes.CAPTION_EXPORT_JSON, ThemeIcons.EXPORT_JSON,
 				LanguageCodes.TOOLTIP_EXPORT_JSON, IconSize.BIG);
-		exportJson.setVisible(WebformsConfigurationReader.getInstance().isJsonExportEnabled());
+		exportJson.setVisible(enableExportJson);
+		
 		exportXml = new IconButton(LanguageCodes.CAPTION_EXPORT_XML, ThemeIcons.EXPORT_XML,
 				LanguageCodes.TOOLTIP_EXPORT_XML, IconSize.BIG);
 

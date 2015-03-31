@@ -41,7 +41,12 @@ public enum WebformsActivity implements IActivity {
 	
 	FORM_REMOVE("FormRemove"),
 	
-	BLOCK_REMOVE("BlockRemove");
+	BLOCK_REMOVE("BlockRemove"),
+	
+	IMPORT_JSON("ImportJson"),
+	
+	EXPORT_JSON("ExportJson"),
+	;
 
 	private String tag;
 

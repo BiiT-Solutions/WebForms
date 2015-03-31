@@ -138,6 +138,7 @@ public class WindowImportJson extends WindowAcceptCancel {
 							textField.getValue(),
 							((Organization) organizationField.getValue())
 									.getOrganizationId());
+					window.close();
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager
 							.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);

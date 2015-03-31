@@ -30,7 +30,6 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String ID_DATE_PATTERN = "dd/MM/yyyy";
 	private static final String ID_BOOLEAN_SIMPLIFICATION_ENABLED = "booleanSimplificationEnabled";
 	private static final String ID_XML_BASE_ADDRESS = "xmlBaseAddress";
-	private static final String ID_JSON_EXPORT_ENABLED = "button.json.visible";
 	private static final String ID_BUILDING_BLOCK_LINKS = "button.link.block.visible";
 	
 	private static final String DEFAULT_REGEX_EMAIL = "[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]+(\\.[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]|[a-zA-Z!#$%&'*+\\-/=?^_`{|}~])*@[a-zA-Z0-9](\\.[a-zA-Z0-9-]|[a-zA-Z0-9-])*[a-zA-Z0-9]";
@@ -50,7 +49,6 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_DATE_PATTERN = "dd/MM/yyyy";
 	private static final String DEFAULT_BOOLEAN_SIMPLIFICATION_ENABLED = "false";
 	private static final String DEFAULT_XML_BASE_ADDRESS = "http://dev.biit-solutions.com/";
-	private static final String DEFAULT_JSON_EXPORT_ENABLED = "false";
 	private static final String DEFAULT_BUILDING_BLOCK_LINKS = "true";
 
 	// XForms
@@ -88,7 +86,6 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		addProperty(ID_DATE_PATTERN, DEFAULT_DATE_PATTERN);
 		addProperty(ID_BOOLEAN_SIMPLIFICATION_ENABLED, DEFAULT_BOOLEAN_SIMPLIFICATION_ENABLED);
 		addProperty(ID_XML_BASE_ADDRESS, DEFAULT_XML_BASE_ADDRESS);
-		addProperty(ID_JSON_EXPORT_ENABLED, DEFAULT_JSON_EXPORT_ENABLED);
 		addProperty(ID_BUILDING_BLOCK_LINKS, DEFAULT_BUILDING_BLOCK_LINKS);
 		
 		addProperty(ID_XFORMS_USER, DEFAULT_XFORMS_USER);
@@ -216,10 +213,6 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 
 	public String getXmlBaseAddress() {
 		return getPropertyLogException(ID_XML_BASE_ADDRESS);
-	}
-
-	public boolean isJsonExportEnabled() {
-		return Boolean.parseBoolean(getPropertyLogException(ID_JSON_EXPORT_ENABLED));
 	}
 
 	public boolean isLinkBloksEnabled() {

@@ -167,8 +167,11 @@ public class ApplicationController {
 			}
 
 			Form newForm = Form.fromJson(json);
+			newForm.resetIds();
 			newForm.setOrganizationId(organizationId);
 			newForm.setLabel(formLabel);
+			newForm.setCreatedBy(UserSessionHandler.getUser());
+			newForm.setUpdatedBy(UserSessionHandler.getUser());
 
 			formDao.makePersistent(newForm);
 		} catch (UnexpectedDatabaseException e) {
