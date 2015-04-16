@@ -56,8 +56,8 @@
 		<slf4j-api.version>1.7.7</slf4j-api.version>
 		<slf4j-log4j12.version>1.7.7</slf4j-log4j12.version>
 		<hibernate.version>4.3.6.Final</hibernate.version>
-		<liferay-service-common.version>0.4.6</liferay-service-common.version>
-		<liferay-authentication-client.version>0.5.8</liferay-authentication-client.version>
+		<liferay-service-common.version>[0.6,0.7)</liferay-service-common.version>
+		<liferay-authentication-client.version>[0.7,0.8)</liferay-authentication-client.version>
 		<form-structure.version>[0.2,0.3)</form-structure.version>
 		<root.directory>${project.basedir}</root.directory>
 		<itext.version>2.1.7</itext.version>
@@ -79,7 +79,7 @@
 		<maven-scm-provider-gitexe.version>1.9.2</maven-scm-provider-gitexe.version>
 		<project.scm.id>git</project.scm.id>
 		<versions-maven-plugin.version>2.1</versions-maven-plugin.version>
-		<biit-common-utils.version>[0.2,0.3)</biit-common-utils.version>
+		<biit-common-utils.version>[0.4,0.5)</biit-common-utils.version>
 	</properties>
 
 	<dependencies>
