@@ -5,6 +5,7 @@ import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 public abstract class WebPage extends WebPageComponent {
@@ -54,7 +55,7 @@ public abstract class WebPage extends WebPageComponent {
 
 		// Hide logout button.
 		if (upperMenu instanceof UpperMenuWebforms) {
-			if (((ApplicationUi) getUI()).getUserEmail() != null && ((ApplicationUi) getUI()).getPassword() != null) {
+			if (((ApplicationUi) UI.getCurrent()).getUserEmail() != null && ((ApplicationUi) UI.getCurrent()).getPassword() != null) {
 				((UpperMenuWebforms) upperMenu).hideLogoutButton(true);
 			}
 		}
