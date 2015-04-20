@@ -18,8 +18,8 @@ import com.biit.utils.file.FileReader;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.utils.exporters.json.BaseFormMetadataExporter;
 import com.biit.webforms.utils.exporters.json.BaseFormToJsonExporter;
-import com.biit.webforms.utils.exporters.json.MetadataExporter;
 
 @Test(groups = { "jsonForms" })
 public class JsonExporterTests {
@@ -35,7 +35,6 @@ public class JsonExporterTests {
 	@Test
 	public void exportToBaseForm() throws NotValidStorableObjectException, NotValidChildException, ElementIsReadOnly,
 			FieldTooLongException, CharacterNotAllowedException {
-
 		Assert.assertNotNull(BaseFormToJsonExporter.toJson(createSimpleStaticForm()));
 	}
 
@@ -50,7 +49,7 @@ public class JsonExporterTests {
 		form.setLinkedForms(formSet);
 		form.addLinkedFormVersion(5);
 		form.addLinkedFormVersion(6);
-		String actual = MetadataExporter.exportFormMetadata(form);
+		String actual = BaseFormMetadataExporter.exportFormMetadata(form);
 		String expected = FileReader.getResource(METADATA_FILE_PATH, StandardCharsets.UTF_8);
 		Assert.assertEquals(actual.trim(), expected.trim());
 	}

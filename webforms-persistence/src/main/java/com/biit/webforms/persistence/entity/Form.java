@@ -421,6 +421,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public BaseFormMetadata getFormMetadata() {
 		BaseFormMetadata metadata = new BaseFormMetadata();
+		metadata.setFormLabel(getLabel());
+		metadata.setFormOrganizationId(getOrganizationId());
+		metadata.setFormVersion(getVersion());
 		metadata.setLinkedLabel(getLinkedFormLabel());
 		metadata.setLinkedOrganizationId(getLinkedFormOrganizationId());
 		metadata.setLinkedVersions(getLinkedFormVersions());

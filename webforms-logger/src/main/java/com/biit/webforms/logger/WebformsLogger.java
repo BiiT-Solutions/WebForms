@@ -9,16 +9,14 @@ import com.biit.logger.BiitLogger;
  * ensure the JVM to load this class and not optimize with BiitLogger directly.
  */
 public class WebformsLogger extends BiitLogger {
-	static {
-		setLogger(Logger.getLogger(new Object() {
-		}.getClass().getEnclosingClass()));
-	}
 
+	private static Logger logger = Logger.getLogger(WebformsLogger.class);
+	
 	/**
 	 * Events that have business meaning (i.e. creating category, deleting form, ...). To follow user actions.
 	 */
 	public static void info(String className, String message) {
-		info(className + ": " + message);
+		info(logger,className,message);
 	}
 
 	/**
@@ -27,7 +25,7 @@ public class WebformsLogger extends BiitLogger {
 	 * @param message
 	 */
 	public static void warning(String className, String message) {
-		warning(className + ": " + message);
+		warning(logger,className,message);
 	}
 
 	/**
@@ -35,7 +33,7 @@ public class WebformsLogger extends BiitLogger {
 	 * connection, etc.
 	 */
 	public static void debug(String className, String message) {
-		debug(className + ": " + message);
+		debug(logger,className,message);
 	}
 
 	/**
@@ -44,7 +42,7 @@ public class WebformsLogger extends BiitLogger {
 	 * @param message
 	 */
 	public static void severe(String className, String message) {
-		severe(className + ": " + message);
+		severe(logger,className,message);
 	}
 	
 	
@@ -57,6 +55,6 @@ public class WebformsLogger extends BiitLogger {
 	 */
 	public static void errorMessage(String className, Throwable throwable) {
 		String error = getStackTrace(throwable);
-		errorMessageNotification(className, error);
+		errorMessageNotification(logger,className, error);
 	}
 }
