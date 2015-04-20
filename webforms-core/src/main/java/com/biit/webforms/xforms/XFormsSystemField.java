@@ -12,6 +12,8 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
  * 
  */
 public class XFormsSystemField extends XFormsQuestion {
+	
+	private static final String CSS_CLASS_SYSTEMFIELD = "webforms-systemfield";
 
 	public XFormsSystemField(XFormsHelper xFormsHelper, SystemField systemField) throws NotValidTreeObjectException,
 			NotValidChildException {
@@ -87,7 +89,7 @@ public class XFormsSystemField extends XFormsQuestion {
 	
 	@Override
 	protected String getCssClass() {
-		return "";
+		return super.getCssClass() + " " + CSS_CLASS_SYSTEMFIELD;
 	}
 
 }

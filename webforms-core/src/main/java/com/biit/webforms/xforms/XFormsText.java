@@ -10,6 +10,8 @@ import com.biit.webforms.persistence.entity.Text;
  */
 public class XFormsText extends XFormsQuestion {
 
+	private static final String CSS_CLASS_INFOTEXT = "webforms-infotext";
+
 	public XFormsText(XFormsHelper xFormsHelper, Text text) throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, text);
 	}
@@ -69,7 +71,7 @@ public class XFormsText extends XFormsQuestion {
 
 	@Override
 	protected String getCssClass() {
-		return "";
+		return super.getCssClass() + " " + CSS_CLASS_INFOTEXT;
 	}
 
 }
