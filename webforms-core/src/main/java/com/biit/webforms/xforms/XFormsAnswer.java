@@ -16,8 +16,9 @@ import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
 public class XFormsAnswer extends XFormsObject<Answer> {
-	private final static String ANSWER_CSS_CLASS = "subanswer-parent";
+	private final static String PARENT_ANSWER_CSS_CLASS = "subanswer-parent";
 	private final static String SUBANSWER_CSS_CLASS = "subanswer-child";
+	private static final String CSS_CLASS_ANSWER = "webforms-answer";
 
 	public XFormsAnswer(XFormsHelper xFormsHelper, Answer answer) throws NotValidTreeObjectException,
 			NotValidChildException {
@@ -38,7 +39,7 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 		// An itemset for standard answers.
 		if (getSource().getChildren().isEmpty()) {
 			stringBuilder.append("<xf:itemset ref=\"$form-resources/");
-			stringBuilder.append(getParent().getPath() + "/item\" >");
+			stringBuilder.append(getParent().getPath() + "/item\" class=\"" + getCssClass() + "\" >");
 			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
 			stringBuilder.append("<xf:value ref=\"value\" />");
 			stringBuilder.append("<xf:hint ref=\"hint\" />");
@@ -48,8 +49,8 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 					.getAnswerWithSubanswersIndex((BaseAnswer) getSource());
 			// Parent answer.
 			stringBuilder.append("<xf:itemset ref=\"$form-resources/");
-			stringBuilder.append(getParent().getPath() + "/item" + subanswerParentsCounter + "\" class=\"" + ANSWER_CSS_CLASS
-					+ "\" >");
+			stringBuilder.append(getParent().getPath() + "/item" + subanswerParentsCounter + "\" class=\""
+					+ getCssClass() + " " + PARENT_ANSWER_CSS_CLASS + "\" >");
 			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
 			stringBuilder.append("<xf:value ref=\"value\" />");
 			stringBuilder.append("<xf:hint ref=\"hint\" />");
@@ -57,8 +58,8 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 
 			// Subanswer
 			stringBuilder.append("<xf:itemset ref=\"$form-resources/");
-			stringBuilder.append(getParent().getPath() + "/item" + subanswerParentsCounter + "/subitem" + subanswerParentsCounter
-					+ "\" class=\"" + SUBANSWER_CSS_CLASS + "\" >");
+			stringBuilder.append(getParent().getPath() + "/item" + subanswerParentsCounter + "/subitem"
+					+ subanswerParentsCounter + "\" class=\"" + getCssClass() + " " + SUBANSWER_CSS_CLASS + "\" >");
 			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
 			stringBuilder.append("<xf:value ref=\"value\" />");
 			stringBuilder.append("<xf:hint ref=\"hint\" />");
@@ -173,6 +174,11 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 		default:
 			return "";
 		}
+	}
+
+	@Override
+	protected String getCssClass() {
+		return super.getCssClass() + " " + CSS_CLASS_ANSWER;
 	}
 
 }

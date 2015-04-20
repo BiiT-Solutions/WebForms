@@ -37,6 +37,7 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 public abstract class XFormsObject<T extends TreeObject> {
 	protected static final String RANGE_TOKEN = "between";
 	protected static final String XPATH_DATE_FORMAT = "yyyy-MM-dd";
+	private static final String CSS_CLASS = "webforms-element";
 
 	private T source;
 	private XFormsHelper xFormsHelper;
@@ -682,5 +683,9 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	public abstract Set<Flow> getFlowsTo();
+
+	protected String getCssClass() {
+		return CSS_CLASS;
+	}
 
 }

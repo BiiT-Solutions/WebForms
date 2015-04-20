@@ -11,6 +11,8 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
  */
 public class XFormsCategory extends XFormsGroup {
 
+	private static final String CSS_CLASS_CATEGORY = "webforms-category";
+
 	public XFormsCategory(XFormsHelper xFormsHelper, BaseCategory category) throws NotValidTreeObjectException,
 			NotValidChildException {
 		super(xFormsHelper, category);
@@ -23,6 +25,11 @@ public class XFormsCategory extends XFormsGroup {
 		} else {
 			throw new NotValidTreeObjectException("Invalid source!");
 		}
+	}
+
+	@Override
+	protected String getCassGroupClass() {
+		return CSS_CLASS_CATEGORY;
 	}
 
 }

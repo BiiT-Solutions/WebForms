@@ -28,6 +28,8 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	private final static int MAX_YEARS_BIRTHDAY = 120;
 	private final static String CLASS_RADIO_BUTTON_HORIZONTAL = "fr-radio-horizontal";
+	private static final String CSS_CLASS_QUESTION = "webforms-question";
+
 
 	public XFormsQuestion(XFormsHelper xFormsHelper, BaseQuestion question) throws NotValidTreeObjectException,
 			NotValidChildException {
@@ -204,7 +206,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	private String createElementBody() {
 		StringBuilder section = new StringBuilder();
 		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName()
-				+ "\" " + getElementAddedClasses() + " bind=\"" + getBindingId() + "\">");
+				+ "\" class=\"" + getCssClass() + "\" bind=\"" + getBindingId() + "\">");
 		section.append(getBodyLabel());
 		section.append(getBodyHint());
 		section.append(getBodyAlert());
@@ -353,11 +355,13 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * @param element
 	 * @return
 	 */
-	protected String getElementAddedClasses() {
-			if (((Question) getSource()).isHorizontal()) {
-				return " class=\"" + CLASS_RADIO_BUTTON_HORIZONTAL + "\" ";
-			}
-		return "";
+	@Override
+	protected String getCssClass() {
+		String classList = super.getCssClass() + " " + CSS_CLASS_QUESTION;
+		if (((Question) getSource()).isHorizontal()) {
+			classList += " " + CLASS_RADIO_BUTTON_HORIZONTAL;
+		}
+		return classList;
 	}
 
 }

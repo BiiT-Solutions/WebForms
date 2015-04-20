@@ -20,6 +20,7 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
  * 
  */
 public class XFormsGroup extends XFormsObject<BaseGroup> {
+	private static final String CSS_CLASS_GROUP = "webforms-group";
 
 	public XFormsGroup(XFormsHelper xFormsHelper, BaseGroup group) throws NotValidTreeObjectException,
 			NotValidChildException {
@@ -45,8 +46,8 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 	 */
 	@Override
 	protected void getSectionBody(StringBuilder body) {
-		body.append("<fr:section id=\"").append(getSectionControlName()).append("\" bind=\"").append(getBindingId())
-				.append("\">");
+		body.append("<fr:section id=\"").append(getSectionControlName()).append("\" class=\"").append(getCssClass())
+				.append("\" bind=\"").append(getBindingId()).append("\">");
 		body.append(getBodyLabel());
 		body.append(getBodyHint());
 		body.append(getBodyAlert());
@@ -102,5 +103,14 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 	@Override
 	protected String getCalculateStructure(String flow) {
 		return "";
+	}
+
+	@Override
+	protected String getCssClass() {
+		return super.getCssClass() + " " + getCassGroupClass();
+	}
+
+	protected String getCassGroupClass() {
+		return CSS_CLASS_GROUP;
 	}
 }

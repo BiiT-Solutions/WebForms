@@ -86,7 +86,7 @@ public class XFormsSystemField extends XFormsQuestion {
 	}
 	
 	@Override
-	protected String getElementAddedClasses() {
+	protected String getCssClass() {
 		return "";
 	}
 

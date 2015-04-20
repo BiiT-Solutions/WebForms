@@ -17,6 +17,8 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 	protected final static int MIN_REPEATS = 1;
 	protected final static int MAX_REPEATS = 100;
 
+	private static final String CSS_CLASS_REPEATABLE_GROUP = "webforms-repeatablegroup";
+
 	public XFormsRepeatableGroup(XFormsHelper xFormsHelper, BaseRepeatableGroup group)
 			throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, group);
@@ -80,6 +82,7 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 	protected void getSectionBody(StringBuilder body) {
 		// Dummy section
 		body.append("<fr:section id=\"").append(getSectionControlName()).append("\" ");
+		body.append("class=\"").append(getCssClass()).append("\" ");
 		body.append("bind=\"").append(getBindingId()).append("\" ");
 		body.append("repeat=\"true\" min=\"").append(MIN_REPEATS).append("\" max=\"").append(MAX_REPEATS).append("\" ");
 		body.append("template=\"instance('").append(getTemplateName()).append("')\" >");
@@ -136,6 +139,11 @@ public class XFormsRepeatableGroup extends XFormsGroup {
 			template += child.getTemplates();
 		}
 		return template;
+	}
+
+	@Override
+	protected String getCassGroupClass() {
+		return CSS_CLASS_REPEATABLE_GROUP;
 	}
 
 }
