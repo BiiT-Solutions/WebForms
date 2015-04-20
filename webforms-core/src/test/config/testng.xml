@@ -14,6 +14,7 @@
 				<include name="xforms" />
 				<include name="xmlGeneration" />
 				<include name="flowCleaner" />
+				<include name="jsonForms" />
 			</run>
 		</groups>
 		<classes>
@@ -28,6 +29,7 @@
 			<class name="com.biit.webforms.validators.OrphanToken" />
 			<class name="com.biit.webforms.utils.exporters.xml.XmlGenerationTest" />
 			<class name="com.biit.webforms.flow.FlowCleanerTest" />
+			<class name="com.biit.webforms.json.JsonExporterTests" />
 		</classes>
 	</test>
 </suite>

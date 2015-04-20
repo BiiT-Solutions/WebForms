@@ -31,6 +31,7 @@ import org.hibernate.annotations.PolymorphismType;
 
 import com.biit.form.BaseCategory;
 import com.biit.form.BaseForm;
+import com.biit.form.BaseFormMetadata;
 import com.biit.form.BaseGroup;
 import com.biit.form.BaseQuestion;
 import com.biit.form.IBaseFormView;
@@ -89,6 +90,21 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
+	public static Form fromJson(String jsonString) {
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
+		gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
+		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectDeserializer<Category>(Category.class));
+		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupDeserializer<Group>(Group.class));
+		gsonBuilder.registerTypeAdapter(Question.class, new QuestionDeserializer());
+		gsonBuilder.registerTypeAdapter(Text.class, new TextDeserializer());
+		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldDeserializer());
+		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerDeserializer());
+		Gson gson = gsonBuilder.create();
+
+		return (Form) gson.fromJson(jsonString, Form.class);
+	}
+
 	@Enumerated(EnumType.STRING)
 	private FormWorkStatus status;
 
@@ -96,8 +112,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 	private String description;
 
 	@OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true, mappedBy = "form")
-	// If we made the flow lazy and we load all rules using initializeSets in the DAO, we increase performance
-	// (@BatchSize of tokens in flow runs better if we group all flow retrieving operations in the same time and are not
+	// If we made the flow lazy and we load all rules using initializeSets in
+	// the DAO, we increase performance
+	// (@BatchSize of tokens in flow runs better if we group all flow retrieving
+	// operations in the same time and are not
 	// mixed with retrieving operations of TreeObjects of the form).
 	@LazyCollection(LazyCollectionOption.TRUE)
 	private Set<Flow> rules;
@@ -134,18 +152,24 @@ public class Form extends BaseForm implements IWebformsFormView {
 		setOrganizationId(organizationId);
 	}
 
-	@Override
-	protected List<Class<? extends TreeObject>> getAllowedChildren() {
-		return ALLOWED_CHILDS;
+	public void addFlow(Flow rule) throws FlowNotAllowedException {
+		rules.add(rule);
+		rule.setForm(this);
 	}
 
-	@Override
-	public void resetIds() {
-		// Overridden version to also reset ids of rules.
-		super.resetIds();
-		for (Flow rule : getFlows()) {
-			rule.resetIds();
+	public void addFlows(Set<Flow> rules) {
+		this.rules.addAll(rules);
+		for (Flow rule : rules) {
+			rule.setForm(this);
 		}
+	}
+
+	public void addLinkedFormVersion(Integer versionNumber) {
+		getLinkedFormVersions().add(versionNumber);
+	}
+
+	public boolean containsFlow(Flow rule) {
+		return getFlows().contains(rule);
 	}
 
 	@Override
@@ -164,8 +188,36 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 	}
 
-	public Form createNewVersion(User user) throws NotValidStorableObjectException, CharacterNotAllowedException {
-		return createNewVersion(user.getUserId());
+	/**
+	 * Copy to this element the rules in form
+	 * 
+	 * @param form
+	 */
+	private void copyRules(Form form, boolean discard) {
+		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
+		HashMap<String, TreeObject> mappedElements = new HashMap<>();
+		for (TreeObject currentElement : currentElements) {
+			mappedElements.put(currentElement.getComparationId(), currentElement);
+		}
+
+		for (Flow rule : form.getFlows()) {
+			Flow copiedRule = rule.generateCopy();
+			// If rule origin is not in the list of current elements or it has
+			// destiny and is not in the list.
+			if (discard) {
+				if (!mappedElements.containsKey(copiedRule.getOrigin().getComparationId())
+						|| (copiedRule.getDestiny() != null && !mappedElements.containsKey(copiedRule.getDestiny()
+								.getComparationId()))) {
+					continue;
+				}
+			}
+			try {
+				addFlow(copiedRule);
+			} catch (FlowNotAllowedException e) {
+				// Impossible
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+		}
 	}
 
 	public Form createNewVersion(Long userId) throws NotValidStorableObjectException, CharacterNotAllowedException {
@@ -180,144 +232,53 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return newVersion;
 	}
 
-	public void setDescription(String description) throws FieldTooLongException {
-		if (description == null) {
-			description = "";
-		}
-		if (description.length() > MAX_DESCRIPTION_LENGTH) {
-			throw new FieldTooLongException("Description is longer than maximum: " + MAX_DESCRIPTION_LENGTH);
-		}
-		this.description = new String(description);
-	}
-
-	public String getDescription() {
-		if (description == null) {
-			return new String();
-		} else {
-			return description;
-		}
-	}
-
-	public FormWorkStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(FormWorkStatus status) {
-		this.status = status;
-	}
-
-	public void addFlow(Flow rule) throws FlowNotAllowedException {
-		rules.add(rule);
-		rule.setForm(this);
-	}
-
-	public boolean containsFlow(Flow rule) {
-		return getFlows().contains(rule);
-	}
-
-	public Set<Flow> getFlows() {
-		return rules;
-	}
-
-	public Set<Flow> getFlowsFrom(BaseQuestion from) {
-		Set<Flow> flows = new HashSet<Flow>();
-		for (Flow flow : getFlows()) {
-			if (from != null && from.equals(flow.getOrigin())) {
-				flows.add(flow);
-			}
-		}
-		return flows;
-	}
-
-	public Set<Flow> getFlowsTo(BaseGroup to) {
-		Set<Flow> flows = new HashSet<Flow>();
-		if (to != null) {
-			for (TreeObject children : to.getAllChildrenInHierarchy(BaseQuestion.class)) {
-				flows.addAll(getFlowsTo((BaseQuestion) children));
-			}
-		}
-		return flows;
-	}
-
-	public Set<Flow> getFlowsTo(BaseQuestion to) {
-		Set<Flow> flows = new HashSet<Flow>();
-		for (Flow flow : getFlows()) {
-			if (to != null && flow.getDestiny() != null && to.equals(flow.getDestiny())) {
-				flows.add(flow);
-			}
-		}
-		return flows;
-	}
-
-	public void setRules(Set<Flow> rules) {
-		this.rules.clear();
-		addFlows(rules);
-	}
-
-	public void addFlows(Set<Flow> rules) {
-		this.rules.addAll(rules);
-		for (Flow rule : rules) {
-			rule.setForm(this);
-		}
+	public Form createNewVersion(User user) throws NotValidStorableObjectException, CharacterNotAllowedException {
+		return createNewVersion(user.getUserId());
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
-	 * goes to the next element)
-	 * 
-	 * @return
+	 * Equals by comparationId and class. Comparation by class has been removed
+	 * to allow the comparation with CompleteFormView.
 	 */
-	public ComputedFlowView getComputedFlowsView() {
-		LinkedHashSet<TreeObject> allBaseQuestions = getAllChildrenInHierarchy(BaseQuestion.class);
-		ComputedFlowView computedView = new ComputedFlowView();
-
-		if (!allBaseQuestions.isEmpty()) {
-			Object[] baseQuestions = allBaseQuestions.toArray();
-			computedView.setFirstElement((TreeObject) baseQuestions[0]);
-			computedView.addFlows(getFlows());
-
-			int numQuestions = baseQuestions.length - 1;
-
-			for (int i = 0; i < numQuestions; i++) {
-				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
-					computedView
-							.addNewNextElementFlow((TreeObject) baseQuestions[i], (TreeObject) baseQuestions[i + 1]);
-				}
-			}
-			if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[numQuestions]) == null) {
-				computedView.addNewEndFormFlow((TreeObject) baseQuestions[numQuestions]);
-			}
-		}
-		return computedView;
-	}
-
-	public String getReference(TreeObject element) throws ReferenceNotPertainsToFormException {
-		List<TreeObject> parentList = new ArrayList<>();
-		TreeObject parent;
-		while ((parent = element.getParent()) != null) {
-			parentList.add(parent);
-		}
-		if (!parentList.get(parentList.size() - 1).equals(this)) {
-			throw new ReferenceNotPertainsToFormException("TreeObject: '" + element + "' doesn't belong to '" + this
-					+ "'");
-		}
-
-		String reference = "<" + element.getName() + ">";
-		for (TreeObject listedParent : parentList) {
-			reference = "<" + listedParent.getName() + ">" + reference;
-		}
-		return "${" + reference + "}";
-	}
-
 	@Override
-	public Set<StorableObject> getAllInnerStorableObjects() {
-		Set<StorableObject> innerStorableObjects = new HashSet<>();
-		innerStorableObjects.addAll(super.getAllInnerStorableObjects());
-		for (Flow rule : getFlows()) {
-			innerStorableObjects.add(rule);
-			innerStorableObjects.addAll(rule.getAllInnerStorableObjects());
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
 		}
-		return innerStorableObjects;
+		if (obj == null) {
+			return false;
+		}
+
+		if (!(obj instanceof StorableObject)) {
+			return false;
+		}
+
+		StorableObject other = (StorableObject) obj;
+		if (getComparationId() == null) {
+			if (other.getComparationId() != null) {
+				return false;
+			}
+		} else if (!getComparationId().equals(other.getComparationId())) {
+			return false;
+		}
+		return true;
+	}
+
+	public String exportToJavaCode(StringBuilder sb) {
+		Integer counter = 0;
+
+		sb.append("Form form = new Form();").append(System.lineSeparator());
+		sb.append("form.setLabel(\"").append(getLabel()).append("\");").append(System.lineSeparator());
+		sb.append("form.setDescription(\"").append(getDescription()).append("\");").append(System.lineSeparator());
+
+		for (TreeObject child : getChildren()) {
+			int tempCounter = counter + 1;
+			counter = ((Category) child).exportToJavaCode(sb, counter + 1);
+			sb.append("//form").append(System.lineSeparator());
+			sb.append("form.addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
+		}
+
+		return sb.toString();
 	}
 
 	/**
@@ -355,136 +316,62 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return formSeed;
 	}
 
-	/**
-	 * Copy to this element the rules in form
-	 * 
-	 * @param form
-	 */
-	private void copyRules(Form form, boolean discard) {
-		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
-		HashMap<String, TreeObject> mappedElements = new HashMap<>();
-		for (TreeObject currentElement : currentElements) {
-			mappedElements.put(currentElement.getComparationId(), currentElement);
+	@Override
+	public Set<StorableObject> getAllInnerStorableObjects() {
+		Set<StorableObject> innerStorableObjects = new HashSet<>();
+		innerStorableObjects.addAll(super.getAllInnerStorableObjects());
+		for (Flow rule : getFlows()) {
+			innerStorableObjects.add(rule);
+			innerStorableObjects.addAll(rule.getAllInnerStorableObjects());
 		}
+		return innerStorableObjects;
+	}
 
-		for (Flow rule : form.getFlows()) {
-			Flow copiedRule = rule.generateCopy();
-			// If rule origin is not in the list of current elements or it has
-			// destiny and is not in the list.
-			if (discard) {
-				if (!mappedElements.containsKey(copiedRule.getOrigin().getComparationId())
-						|| (copiedRule.getDestiny() != null && !mappedElements.containsKey(copiedRule.getDestiny()
-								.getComparationId()))) {
-					continue;
+	@Override
+	protected List<Class<? extends TreeObject>> getAllowedChildren() {
+		return ALLOWED_CHILDS;
+	}
+
+	/**
+	 * This method creates a ComputeRuleView with all the current rules and the
+	 * implicit rules (question without rule goes to the next element)
+	 * 
+	 * @return
+	 */
+	public ComputedFlowView getComputedFlowsView() {
+		LinkedHashSet<TreeObject> allBaseQuestions = getAllChildrenInHierarchy(BaseQuestion.class);
+		ComputedFlowView computedView = new ComputedFlowView();
+
+		if (!allBaseQuestions.isEmpty()) {
+			Object[] baseQuestions = allBaseQuestions.toArray();
+			computedView.setFirstElement((TreeObject) baseQuestions[0]);
+			computedView.addFlows(getFlows());
+
+			int numQuestions = baseQuestions.length - 1;
+
+			for (int i = 0; i < numQuestions; i++) {
+				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
+					computedView
+							.addNewNextElementFlow((TreeObject) baseQuestions[i], (TreeObject) baseQuestions[i + 1]);
 				}
 			}
-			try {
-				addFlow(copiedRule);
-			} catch (FlowNotAllowedException e) {
-				// Impossible
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[numQuestions]) == null) {
+				computedView.addNewEndFormFlow((TreeObject) baseQuestions[numQuestions]);
 			}
 		}
+		return computedView;
 	}
 
-	private void updateRuleReferences() {
-		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
-		HashMap<String, TreeObject> mappedElements = new HashMap<>();
-		for (TreeObject currentElement : currentElements) {
-			mappedElements.put(currentElement.getComparationId(), currentElement);
-		}
-		for (Flow rule : getFlows()) {
-			rule.updateReferences(mappedElements);
-		}
-	}
-
-	public boolean removeRule(Flow flow) {
-		int currentRules = rules.size();
-		rules.remove(flow);
-		return currentRules == rules.size();
-	}
-
-	/**
-	 * This is the only function that has to be used to link forms. This controls that the linked element and versions
-	 * are present at the same time or not when modifying data. It is assumed that all linked forms have the same name
-	 * and organization.
-	 * 
-	 * @param linkedForms
-	 */
-	public void setLinkedForms(Set<IBaseFormView> linkedForms) {
-		if (linkedForms == null || linkedForms.isEmpty()) {
-			setLinkedFormLabel(null);
-			setLinkedFormVersions(null);
-			setLinkedFormOrganizationId(null);
+	public String getDescription() {
+		if (description == null) {
+			return new String();
 		} else {
-			Set<Integer> versionNumbers = new HashSet<Integer>();
-			for (IBaseFormView linkedForm : linkedForms) {
-				setLinkedFormLabel(linkedForm.getLabel());
-				versionNumbers.add(linkedForm.getVersion());
-				setLinkedFormOrganizationId(linkedForm.getOrganizationId());
-			}
-			setLinkedFormVersions(versionNumbers);
+			return description;
 		}
 	}
 
-	@Override
-	public String getLinkedFormLabel() {
-		return linkedFormLabel;
-	}
-
-	@Override
-	public Set<Integer> getLinkedFormVersions() {
-		return linkedFormVersions;
-	}
-
-	public void addLinkedFormVersion(Integer versionNumber) {
-		getLinkedFormVersions().add(versionNumber);
-	}
-
-	@Override
-	public Long getLinkedFormOrganizationId() {
-		return linkedFormOrganizationId;
-	}
-
-	protected void setLinkedFormLabel(String linkedFormLabel) {
-		this.linkedFormLabel = linkedFormLabel;
-	}
-
-	protected void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
-		this.linkedFormVersions.clear();
-		if (linkedFormVersions != null) {
-			this.linkedFormVersions.addAll(linkedFormVersions);
-		}
-	}
-
-	protected void setLinkedFormOrganizationId(Long linkedFormOrganizationId) {
-		this.linkedFormOrganizationId = linkedFormOrganizationId;
-	}
-
-	@Override
-	public boolean isLastVersion() {
-		return isLastVersion;
-	}
-
-	public void setLastVersion(boolean isLastVersion) {
-		this.isLastVersion = isLastVersion;
-	}
-
-	public String exportToJavaCode(StringBuilder sb) {
-		Integer counter = 0;
-
-		sb.append("Form form = new Form();").append(System.lineSeparator());
-		sb.append("form.setLabel(\"").append(getLabel()).append("\");").append(System.lineSeparator());
-		sb.append("form.setDescription(\"").append(getDescription()).append("\");").append(System.lineSeparator());
-
-		for (TreeObject child : getChildren()) {
-			int tempCounter = counter + 1;
-			counter = ((Category) child).exportToJavaCode(sb, counter + 1);
-			sb.append("//form").append(System.lineSeparator());
-			sb.append("form.addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
-		}
-
-		return sb.toString();
+	public Set<Flow> getFlows() {
+		return rules;
 	}
 
 	public Set<Flow> getFlows(String originPath, String destinyPath) {
@@ -502,46 +389,86 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return selectedFlows;
 	}
 
-	public static Form fromJson(String jsonString) {
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
-		gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
-		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectDeserializer<Category>(Category.class));
-		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupDeserializer<Group>(Group.class));
-		gsonBuilder.registerTypeAdapter(Question.class, new QuestionDeserializer());
-		gsonBuilder.registerTypeAdapter(Text.class, new TextDeserializer());
-		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldDeserializer());
-		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerDeserializer());
-		Gson gson = gsonBuilder.create();
-
-		return (Form) gson.fromJson(jsonString, Form.class);
+	public Set<Flow> getFlowsFrom(BaseQuestion from) {
+		Set<Flow> flows = new HashSet<Flow>();
+		for (Flow flow : getFlows()) {
+			if (from != null && from.equals(flow.getOrigin())) {
+				flows.add(flow);
+			}
+		}
+		return flows;
 	}
 
-	public String toJson() {
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.setPrettyPrinting();
-		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
-		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
-		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectSerializer<Category>());
-		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
-		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
-		gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
-		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldSerializer());
-		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerSerializer());
-		gsonBuilder.registerTypeAdapter(Flow.class, new FlowSerializer());
-		gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<Token>());
-		gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenSerializer());
-		gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerSerializer());
-		gsonBuilder.registerTypeAdapter(TokenComparationValue.class, new TokenComparationValueSerializer());
-		gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInSerializer());
-		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
-		Gson gson = gsonBuilder.create();
+	public Set<Flow> getFlowsTo(BaseGroup to) {
+		Set<Flow> flows = new HashSet<Flow>();
+		if (to != null) {
+			for (TreeObject children : to.getAllChildrenInHierarchy(BaseQuestion.class)) {
+				flows.addAll(getFlowsTo((BaseQuestion) children));
+			}
+		}
+		return flows;
+	}
 
-		return gson.toJson(this);
+	public Set<Flow> getFlowsTo(BaseQuestion to) {
+		Set<Flow> flows = new HashSet<Flow>();
+		for (Flow flow : getFlows()) {
+			if (to != null && flow.getDestiny() != null && to.equals(flow.getDestiny())) {
+				flows.add(flow);
+			}
+		}
+		return flows;
+	}
+
+	public BaseFormMetadata getFormMetadata() {
+		BaseFormMetadata metadata = new BaseFormMetadata();
+		metadata.setFormLabel(getLabel());
+		metadata.setFormOrganizationId(getOrganizationId());
+		metadata.setFormVersion(getVersion());
+		metadata.setLinkedLabel(getLinkedFormLabel());
+		metadata.setLinkedOrganizationId(getLinkedFormOrganizationId());
+		metadata.setLinkedVersions(getLinkedFormVersions());
+		return metadata;
 	}
 
 	public String getLabelWithouthSpaces() {
 		return getLabel().replace(" ", "_");
+	}
+
+	@Override
+	public String getLinkedFormLabel() {
+		return linkedFormLabel;
+	}
+
+	@Override
+	public Long getLinkedFormOrganizationId() {
+		return linkedFormOrganizationId;
+	}
+
+	@Override
+	public Set<Integer> getLinkedFormVersions() {
+		return linkedFormVersions;
+	}
+
+	public String getReference(TreeObject element) throws ReferenceNotPertainsToFormException {
+		List<TreeObject> parentList = new ArrayList<>();
+		TreeObject parent;
+		while ((parent = element.getParent()) != null) {
+			parentList.add(parent);
+		}
+		if (!parentList.get(parentList.size() - 1).equals(this)) {
+			throw new ReferenceNotPertainsToFormException("TreeObject: '" + element + "' doesn't belong to '" + this
+					+ "'");
+		}
+
+		String reference = "<" + element.getName() + ">";
+		for (TreeObject listedParent : parentList) {
+			reference = "<" + listedParent.getName() + ">" + reference;
+		}
+		return "${" + reference + "}";
+	}
+
+	public FormWorkStatus getStatus() {
+		return status;
 	}
 
 	/**
@@ -609,31 +536,119 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return false;
 	}
 
-	/**
-	 * Equals by comparationId and class. Comparation by class has been removed to allow the comparation with
-	 * CompleteFormView.
-	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
+	public boolean isLastVersion() {
+		return isLastVersion;
+	}
 
-		if (!(obj instanceof StorableObject)) {
-			return false;
-		}
+	public boolean removeRule(Flow flow) {
+		int currentRules = rules.size();
+		rules.remove(flow);
+		return currentRules == rules.size();
+	}
 
-		StorableObject other = (StorableObject) obj;
-		if (getComparationId() == null) {
-			if (other.getComparationId() != null) {
-				return false;
+	@Override
+	public void resetIds() {
+		// Overridden version to also reset ids of rules.
+		super.resetIds();
+		for (Flow rule : getFlows()) {
+			rule.resetIds();
+		}
+	}
+
+	public void setDescription(String description) throws FieldTooLongException {
+		if (description == null) {
+			description = "";
+		}
+		if (description.length() > MAX_DESCRIPTION_LENGTH) {
+			throw new FieldTooLongException("Description is longer than maximum: " + MAX_DESCRIPTION_LENGTH);
+		}
+		this.description = new String(description);
+	}
+
+	public void setLastVersion(boolean isLastVersion) {
+		this.isLastVersion = isLastVersion;
+	}
+
+	protected void setLinkedFormLabel(String linkedFormLabel) {
+		this.linkedFormLabel = linkedFormLabel;
+	}
+
+	protected void setLinkedFormOrganizationId(Long linkedFormOrganizationId) {
+		this.linkedFormOrganizationId = linkedFormOrganizationId;
+	}
+
+	/**
+	 * This is the only function that has to be used to link forms. This
+	 * controls that the linked element and versions are present at the same
+	 * time or not when modifying data. It is assumed that all linked forms have
+	 * the same name and organization.
+	 * 
+	 * @param linkedForms
+	 */
+	public void setLinkedForms(Set<IBaseFormView> linkedForms) {
+		if (linkedForms == null || linkedForms.isEmpty()) {
+			setLinkedFormLabel(null);
+			setLinkedFormVersions(null);
+			setLinkedFormOrganizationId(null);
+		} else {
+			Set<Integer> versionNumbers = new HashSet<Integer>();
+			for (IBaseFormView linkedForm : linkedForms) {
+				setLinkedFormLabel(linkedForm.getLabel());
+				versionNumbers.add(linkedForm.getVersion());
+				setLinkedFormOrganizationId(linkedForm.getOrganizationId());
 			}
-		} else if (!getComparationId().equals(other.getComparationId())) {
-			return false;
+			setLinkedFormVersions(versionNumbers);
 		}
-		return true;
+	}
+
+	protected void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
+		this.linkedFormVersions.clear();
+		if (linkedFormVersions != null) {
+			this.linkedFormVersions.addAll(linkedFormVersions);
+		}
+	}
+
+	public void setRules(Set<Flow> rules) {
+		this.rules.clear();
+		addFlows(rules);
+	}
+
+	public void setStatus(FormWorkStatus status) {
+		this.status = status;
+	}
+
+	public String toJson() {
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.setPrettyPrinting();
+		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
+		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
+		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectSerializer<Category>());
+		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
+		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
+		gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
+		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldSerializer());
+		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerSerializer());
+		gsonBuilder.registerTypeAdapter(Flow.class, new FlowSerializer());
+		gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<Token>());
+		gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenSerializer());
+		gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerSerializer());
+		gsonBuilder.registerTypeAdapter(TokenComparationValue.class, new TokenComparationValueSerializer());
+		gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInSerializer());
+		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
+		Gson gson = gsonBuilder.create();
+
+		return gson.toJson(this);
+	}
+
+	private void updateRuleReferences() {
+		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
+		HashMap<String, TreeObject> mappedElements = new HashMap<>();
+		for (TreeObject currentElement : currentElements) {
+			mappedElements.put(currentElement.getComparationId(), currentElement);
+		}
+		for (Flow rule : getFlows()) {
+			rule.updateReferences(mappedElements);
+		}
 	}
 }
