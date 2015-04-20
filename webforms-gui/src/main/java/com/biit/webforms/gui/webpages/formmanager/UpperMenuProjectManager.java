@@ -79,7 +79,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 		exportBaseFormMetadataJson = new IconButton(LanguageCodes.CAPTION_EXPORT_FORM_METADATA, ThemeIcons.EXPORT_JSON,
 				LanguageCodes.TOOLTIP_EXPORT_FORM_METADATA, IconSize.BIG);
-		exportBaseFormMetadataJson.setVisible(WebformsConfigurationReader.getInstance().isJsonExportEnabled());
+		exportBaseFormMetadataJson.setVisible(enableExportJson);
 
 		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
 		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsExporter.APP_NAME);
