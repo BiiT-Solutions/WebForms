@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.vaadin.data.Validator;

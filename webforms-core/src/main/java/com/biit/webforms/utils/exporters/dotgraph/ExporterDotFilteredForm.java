@@ -1,6 +1,6 @@
 package com.biit.webforms.utils.exporters.dotgraph;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.computed.FilteredForm;
 import com.biit.webforms.persistence.entity.Category;

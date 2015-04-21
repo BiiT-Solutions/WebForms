@@ -7,7 +7,7 @@ import junit.framework.Assert;
 import org.apache.commons.io.IOUtils;
 import org.testng.annotations.Test;
 
-import com.biit.form.BaseQuestion;
+import com.biit.form.entity.BaseQuestion;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;

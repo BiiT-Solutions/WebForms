@@ -3,7 +3,7 @@ package com.biit.webforms.pdfgenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.biit.webforms.persistence.entity.Answer;

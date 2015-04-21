@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.BaseForm;
+import com.biit.form.entity.BaseForm;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.utils.MessageManager;

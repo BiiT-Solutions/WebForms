@@ -6,9 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.biit.abcd.core.SpringContextHelper;
-import com.biit.form.BaseAnswer;
-import com.biit.form.BaseCategory;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseAnswer;
+import com.biit.form.entity.BaseCategory;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.ElementIsReadOnly;

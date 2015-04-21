@@ -2,8 +2,8 @@ package com.biit.webforms.validators;
 
 import java.util.LinkedHashSet;
 
-import com.biit.form.BaseQuestion;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
 import com.biit.utils.validation.SimpleValidator;

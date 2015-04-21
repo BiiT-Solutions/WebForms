@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.persistence.entity.Flow;

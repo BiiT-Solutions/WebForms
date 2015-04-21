@@ -3,7 +3,7 @@ package com.biit.webforms.gui.components.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.form.IBaseFormView;
+import com.biit.form.entity.IBaseFormView;
 import com.biit.webforms.persistence.entity.Form;
 
 public class RootForm extends Form {

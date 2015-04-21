@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.BaseForm;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseForm;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.vaadin.ui.Component;

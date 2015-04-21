@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.testng.annotations.Test;
 
-import com.biit.form.BaseQuestion;
+import com.biit.form.entity.BaseQuestion;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.math.domain.exceptions.BadFormedExpressions;
 import com.biit.webforms.utils.math.domain.exceptions.DifferentDateUnitForQuestions;

@@ -3,7 +3,7 @@ package com.biit.webforms.condition.parser.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.form.BaseQuestion;
+import com.biit.form.entity.BaseQuestion;
 import com.biit.webforms.flow.FormWalker;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;

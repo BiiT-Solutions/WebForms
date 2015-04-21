@@ -2,7 +2,7 @@ package com.biit.webforms.utils.exporters.dotgraph.impact;
 
 import java.util.Set;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;

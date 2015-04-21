@@ -1,7 +1,7 @@
 package com.biit.webforms.validators.reports;
 
 import com.biit.abcd.persistence.entity.Question;
-import com.biit.form.BaseForm;
+import com.biit.form.entity.BaseForm;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
 

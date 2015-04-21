@@ -1,6 +1,6 @@
 package com.biit.webforms.validators;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.validators.reports.BackwardFlow;

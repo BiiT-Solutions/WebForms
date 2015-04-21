@@ -3,8 +3,8 @@ package com.biit.webforms.xforms;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.biit.form.BaseAnswer;
-import com.biit.form.BaseQuestion;
+import com.biit.form.entity.BaseAnswer;
+import com.biit.form.entity.BaseQuestion;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.persistence.entity.Answer;

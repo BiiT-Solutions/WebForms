@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;

@@ -3,8 +3,8 @@ package com.biit.webforms.gui.webpages.floweditor;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.form.BaseQuestion;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.gui.common.components.FilterByTreeObjectOrderGreater;
 import com.biit.webforms.gui.common.components.FilterByTreeObjectOrderLessEqual;

@@ -3,7 +3,7 @@ package com.biit.webforms.pdfgenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.Question;
 import com.lowagie.text.Document;

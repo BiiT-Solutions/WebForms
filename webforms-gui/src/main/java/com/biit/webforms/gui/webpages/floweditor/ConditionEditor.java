@@ -2,7 +2,7 @@ package com.biit.webforms.gui.webpages.floweditor;
 
 import java.util.List;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.gui.common.components.StatusLabel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;

@@ -1,6 +1,6 @@
 package com.biit.webforms.serialization;
 
-import com.biit.form.BaseRepeatableGroup;
+import com.biit.form.entity.BaseRepeatableGroup;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

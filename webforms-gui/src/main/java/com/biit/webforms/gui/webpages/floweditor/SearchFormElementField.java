@@ -3,7 +3,7 @@ package com.biit.webforms.gui.webpages.floweditor;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.OpenSearchComponentListener;
 import com.biit.webforms.gui.common.components.SearchButtonField;

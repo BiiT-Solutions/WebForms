@@ -1,8 +1,8 @@
 package com.biit.webforms.utils.conversor;
 
 import com.biit.abcd.persistence.entity.Question;
-import com.biit.form.BaseAnswer;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseAnswer;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
