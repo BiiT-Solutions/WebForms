@@ -28,10 +28,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private final IconButton submenuNew, newForm, newFormVersion, removeForm,
 			importAbcdForm, importJsonForm;
 	private final IconButton linkAbcdForm;
-	private final IconButton exportXForms, previewXForms, publishXForms,
-			downloadXForms;
-	private final IconButton export, exportPdf, exportFlowPdf, exportXsd,
-			exportJson, exportXml;
+	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms;
+	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson, exportXml,
+			exportBaseFormMetadataJson;
 	private final IconButton impactAnalysis, compareContent;
 	private BrowserWindowOpener opener;
 	// Neede due to the existence of a second 'Flow' button at the same time in
@@ -78,6 +77,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		exportXml = new IconButton(LanguageCodes.CAPTION_EXPORT_XML, ThemeIcons.EXPORT_XML,
 				LanguageCodes.TOOLTIP_EXPORT_XML, IconSize.BIG);
 
+		exportBaseFormMetadataJson = new IconButton(LanguageCodes.CAPTION_EXPORT_FORM_METADATA, ThemeIcons.EXPORT_JSON,
+				LanguageCodes.TOOLTIP_EXPORT_FORM_METADATA, IconSize.BIG);
+		exportBaseFormMetadataJson.setVisible(enableExportJson);
+
 		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
 		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsExporter.APP_NAME);
 		opener.setFeatures("target=_new");
@@ -105,7 +108,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		addIconButton(linkAbcdForm);
 
 		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
-				exportFlowPdf, exportXsd, exportXml, exportJson);
+				exportFlowPdf, exportXsd, exportXml, exportJson, exportBaseFormMetadataJson);
 		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
 				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
 		opener.extend(previewXForms);
@@ -144,6 +147,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public void addExportXsdListener(ClickListener listener) {
 		exportXsd.addClickListener(listener);
+	}
+
+	public void addExportBaseFormMetadataJsonListener(ClickListener listener) {
+		exportBaseFormMetadataJson.addClickListener(listener);
 	}
 
 	public void addExportJsonListener(ClickListener listener) {

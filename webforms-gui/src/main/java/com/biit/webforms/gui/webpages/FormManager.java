@@ -45,6 +45,7 @@ import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
+import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderBaseFormMetadataJson;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderJson;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderXsd;
 import com.biit.webforms.gui.webpages.formmanager.WindowImpactAnalysis;
@@ -262,6 +263,14 @@ public class FormManager extends SecuredWebPage {
 				exportJson();
 			}
 		});
+		upperMenu.addExportBaseFormMetadataJsonListener(new ClickListener() {
+			private static final long serialVersionUID = -2359606371849802798L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				exportBaseFormMetadataJson();
+			}
+		});
 		upperMenu.addRemoveForm(new ClickListener() {
 			private static final long serialVersionUID = -3264661636078442579L;
 
@@ -324,7 +333,8 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	/**
-	 * Loads a forms and tries to validate. If the form is not validated returns null
+	 * Loads a forms and tries to validate. If the form is not validated returns
+	 * null
 	 * 
 	 * @return
 	 */
@@ -387,7 +397,8 @@ public class FormManager extends SecuredWebPage {
 					UserSessionHandler.getUser(), form.getOrganizationId());
 			if (!OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization, true)) {
 				// If xforms is not generated, close the popup.
-				// ((OrbeonPreviewFrame) upperMenu.getOpener().getUI()).closePopUp();
+				// ((OrbeonPreviewFrame)
+				// upperMenu.getOpener().getUI()).closePopUp();
 			}
 		}
 	}
@@ -410,6 +421,12 @@ public class FormManager extends SecuredWebPage {
 	private void exportJson() {
 		Form form = loadForm(getSelectedForm());
 		new WindowDownloaderJson(new CompleteFormView(form), getSelectedForm().getLabel() + ".json");
+	}
+
+	private void exportBaseFormMetadataJson() {
+		Form form = loadForm(getSelectedForm());
+		new WindowDownloaderBaseFormMetadataJson(new CompleteFormView(form), getSelectedForm().getLabel() + "_metadata_v"
+				+ getSelectedForm().getVersion() + ".json");
 	}
 
 	private void exportFlowPdf() {

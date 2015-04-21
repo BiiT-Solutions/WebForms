@@ -27,7 +27,7 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
 public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	private final static int MAX_YEARS_BIRTHDAY = 120;
-	private final static String CLASS_RADIO_BUTTON_HORIZONTAL = "fr-radio-horizontal";
+	private final static String CSS_CLASS_RADIO_BUTTON_HORIZONTAL = "fr-radio-horizontal";
 	private static final String CSS_CLASS_QUESTION = "webforms-question";
 	private static final String CSS_CLASS_QUESTION_HELP = "webforms-help";
 
@@ -58,7 +58,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"").append(getBindingName())
 				.append("\" ");
-		// Reference must be always to a name and not to a complete xpath, if the xpath is used, in a loop all repeated
+		// Reference must be always to a name and not to a complete xpath, if
+		// the xpath is used, in a loop all repeated
 		// questions would always have the same answers selected.
 		binding.append("ref=\"").append(getName()).append("\" ");
 		getXFormsType(binding);
@@ -82,7 +83,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	protected void getConstraints(StringBuilder contraints) {
 		if (((Question) getSource()).getAnswerFormat() != null) {
 			// adjust-date-to-timezone is used to remove timestamp
-			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
+			// "If $timezone is the empty sequence, returns an xs:date without a timezone."
+			// So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
 			if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_PAST)) {
 				contraints.append(" constraint=\". &lt;= adjust-date-to-timezone(current-date(), ())\" ");
@@ -198,7 +200,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * Creates a static element that does not depends on the value of other element.
+	 * Creates a static element that does not depends on the value of other
+	 * element.
 	 * 
 	 * @return
 	 * @throws InvalidFlowInForm
@@ -217,7 +220,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * XForms has input, output and selectable elements. This method translates an element to the correct one.
+	 * XForms has input, output and selectable elements. This method translates
+	 * an element to the correct one.
 	 * 
 	 * @param element
 	 * @return
@@ -239,7 +243,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * XForms has input, output and selectable elements. This method translates an element to the correct one.
+	 * XForms has input, output and selectable elements. This method translates
+	 * an element to the correct one.
 	 * 
 	 * @param element
 	 * @return
@@ -291,7 +296,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * Some elements needs to insert HTML text. Adds the tags to allow html code in the element.
+	 * Some elements needs to insert HTML text. Adds the tags to allow html code
+	 * in the element.
 	 * 
 	 * @param element
 	 * @return
@@ -321,7 +327,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * Creates a new computed go to next element Flow. Type normal, condition = '' -> true
+	 * Creates a new computed go to next element Flow. Type normal, condition =
+	 * '' -> true
 	 * 
 	 * @param origin
 	 * @param destiny
@@ -359,7 +366,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	protected String getCssClass() {
 		String classList = super.getCssClass() + " " + CSS_CLASS_QUESTION;
 		if (getSource() instanceof Question && ((Question) getSource()).isHorizontal()) {
-			classList += " " + CLASS_RADIO_BUTTON_HORIZONTAL;
+			classList += " " + CSS_CLASS_RADIO_BUTTON_HORIZONTAL;
 		}
 		if (getSource() instanceof Question && ((Question) getSource()).getDescription() != null 
 				&& ((Question) getSource()).getDescription().length() > 0) {
