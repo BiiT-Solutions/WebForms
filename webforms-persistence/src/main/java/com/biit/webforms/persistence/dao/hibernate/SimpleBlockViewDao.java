@@ -5,18 +5,24 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
 
 import com.biit.webforms.persistence.dao.ISimpleBlockViewDao;
 import com.biit.webforms.persistence.entity.SimpleBlockView;
 
+@Repository
 public class SimpleBlockViewDao implements ISimpleBlockViewDao {
 
+	@PersistenceContext(unitName = "defaultPersistenceUnit")
+	@Qualifier(value = "webformsManagerFactory")
+	private EntityManager entityManager;
+	
 	private Class<SimpleBlockView> type;
-
-	private SessionFactory sessionFactory = null;
 
 	public SimpleBlockViewDao() {
 		this.type = SimpleBlockView.class;
@@ -26,26 +32,12 @@ public class SimpleBlockViewDao implements ISimpleBlockViewDao {
 		return type;
 	}
 
-	@Override
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	@Override
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public int getRowCount() {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		SQLQuery query = session.createSQLQuery("SELECT COUNT(*) FROM tree_blocks");
+		Query query = entityManager.createNativeQuery("SELECT COUNT(*) FROM tree_blocks");
 
-		List<Object[]> rows = query.list();
-		session.getTransaction().commit();
-
+		List<Object[]> rows = query.getResultList();
 		for (Object[] row : rows) {
 			return (int) row[0];
 		}
@@ -55,18 +47,13 @@ public class SimpleBlockViewDao implements ISimpleBlockViewDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleBlockView> getAll() {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		SQLQuery query = session
-				.createSQLQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, max.maxversion "
+		Query query = entityManager.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, max.maxversion "
 						+ "FROM tree_blocks tf INNER JOIN "
 						+ "(SELECT MAX(version) AS maxversion, label, organizationId FROM tree_blocks "
 						+ "GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
 						+ "ORDER BY label, tf.version DESC;");
 
-		List<Object[]> rows = query.list();
-
-		session.getTransaction().commit();
+		List<Object[]> rows = query.getResultList();
 
 		List<SimpleBlockView> blocksViews = new ArrayList<>();
 		for (Object[] row : rows) {
@@ -97,20 +84,15 @@ public class SimpleBlockViewDao implements ISimpleBlockViewDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleBlockView> getAll(Long organizationId) {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		SQLQuery query = session
-				.createSQLQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, max.maxversion "
+		Query query = entityManager.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, max.maxversion "
 						+ "FROM tree_blocks tf INNER JOIN "
 						+ "(SELECT MAX(version) AS maxversion, label, organizationId FROM tree_blocks WHERE organizationId="
 						+ organizationId
 						+ " GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
 						+ "ORDER BY label, tf.version DESC;");
 
-		List<Object[]> rows = query.list();
-
-		session.getTransaction().commit();
-
+		List<Object[]> rows = query.getResultList();
+		
 		List<SimpleBlockView> blocksViews = new ArrayList<>();
 		for (Object[] row : rows) {
 			SimpleBlockView blockView = new SimpleBlockView();

@@ -20,10 +20,10 @@
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
-		<!-- ABCD persistency -->
+		<!-- ABCD persistence -->
 		<dependency>
 			<groupId>com.biit</groupId>
-			<artifactId>abcd-core</artifactId>
+			<artifactId>abcd-persistence</artifactId>
 			<version>${abcd.version}</version>
 			<type>jar</type>
 		</dependency>

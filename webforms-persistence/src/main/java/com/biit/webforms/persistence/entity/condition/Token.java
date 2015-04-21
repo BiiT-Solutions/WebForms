@@ -27,7 +27,6 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
  */
 @Entity
 @Table(name = "token")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Token extends StorableObject {
 	private static final long serialVersionUID = 113069074950725476L;
 
@@ -38,7 +37,7 @@ public class Token extends StorableObject {
 	@Column(nullable = false)
 	private long sortSeq = 0;
 
-	@ManyToOne
+	@ManyToOne(optional=false)
 	private Flow flow;
 
 	public Token() {

@@ -19,7 +19,7 @@ import com.biit.webforms.persistence.entity.Answer;
 public class TokenInValue extends StorableObject {
 	private static final long serialVersionUID = 4271257510746487089L;
 
-	@ManyToOne
+	@ManyToOne(optional=false)
 	private TokenIn tokenIn;
 
 	@Column(nullable = false)

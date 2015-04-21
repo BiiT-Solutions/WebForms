@@ -287,7 +287,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		blockDao.evictAllCache();
 
 		Assert.assertEquals(blockNumber, (int) blockDao.getRowCount());
-		Assert.assertEquals(elementsInBlock, blockDao.read(block.getId()).getAllInnerStorableObjects().size());
+		Assert.assertEquals(elementsInBlock, blockDao.get(block.getId()).getAllInnerStorableObjects().size());
 		blockDao.makeTransient(block);
 
 	}

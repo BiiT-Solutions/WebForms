@@ -63,7 +63,7 @@ public class BlockTests extends AbstractTransactionalTestNGSpringContextTests {
 
 		blockDao.makePersistent(block);
 
-		Block cachedBlock = blockDao.read(block.getId());
+		Block cachedBlock = blockDao.get(block.getId());
 		Assert.assertEquals(elements + 1, cachedBlock.getAllInnerStorableObjects().size());
 	}
 

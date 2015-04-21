@@ -9,7 +9,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -31,8 +30,7 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 public class TokenIn extends TokenComplex implements ITokenQuestion {
 	private static final long serialVersionUID = -1264101992865476909L;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional=false)
 	private Question question;
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "tokenIn")

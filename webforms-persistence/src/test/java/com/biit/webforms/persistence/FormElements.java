@@ -1,5 +1,8 @@
 package com.biit.webforms.persistence;
 
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
+
 import junit.framework.Assert;
 
 import org.junit.runner.RunWith;
@@ -76,12 +79,13 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
 			ElementCannotBeRemovedException, ElementCannotBePersistedException {
 		int prevForms = formDao.getRowCount();
+		System.out.println("-------->"+block.getId()+" "+block.getComparationId());
 		Form form = FormUtils.createCompleteForm(block);
 		formDao.makePersistent(form);
 		Assert.assertEquals(formDao.getRowCount(), prevForms + 1);
 		Assert.assertNotNull(form.getId());
 
-		Form dbForm = formDao.read(form.getId());
+		Form dbForm = formDao.get(form.getId());
 
 		checkFormStructure(dbForm);
 		checkEquals(form, dbForm);

@@ -29,7 +29,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	public static final String DEFAULT_TECHNICAL_NAME = "block_reference";
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>();
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, optional= false)
 	private Block reference;
 
 	public BlockReference() {

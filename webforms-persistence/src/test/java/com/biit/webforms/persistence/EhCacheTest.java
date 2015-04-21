@@ -27,41 +27,41 @@ public class EhCacheTest extends AbstractTransactionalTestNGSpringContextTests {
 	@Autowired
 	private IFormDao formDao;
 
-	@Test
-	public void testSecondLevelCache() throws FieldTooLongException, UnexpectedDatabaseException,
-			ElementCannotBeRemovedException, ElementCannotBePersistedException {
-		Form form = new Form();
-		form.setLabel(DUMMY_FORM);
-		form.setOrganizationId(ORGANIZATION_ID);
-		formDao.makePersistent(form);
-
-		// fetch the form entity from database first time
-		form = formDao.getForm(DUMMY_FORM, ORGANIZATION_ID);
-		Assert.assertNotNull(form);
-
-		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getEntityFetchCount(), 0);
-		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getSecondLevelCacheMissCount(), 1);
-		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getSecondLevelCacheHitCount(), 0);
-
-		// Here entity is already in second level cache (session has been closed) so no database query will be hit
-		form = formDao.getForm(DUMMY_FORM, ORGANIZATION_ID);
-		Assert.assertNotNull(form);
-
-		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getEntityFetchCount(), 0);
-		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getSecondLevelCacheHitCount(), 1);
-
-		// Read by id, not by label. Still cached.
-		form = formDao.read(form.getId());
-		Assert.assertNotNull(form);
-
-		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getEntityFetchCount(), 0);
-		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getSecondLevelCacheHitCount(), 2);
-
-		// Removed forms also are removed from cache.
-		long id = form.getId();
-		formDao.makeTransient(form);
-		form = formDao.read(id);
-		Assert.assertNull(form);
-
-	}
+//	@Test
+//	public void testSecondLevelCache() throws FieldTooLongException, UnexpectedDatabaseException,
+//			ElementCannotBeRemovedException, ElementCannotBePersistedException {
+//		Form form = new Form();
+//		form.setLabel(DUMMY_FORM);
+//		form.setOrganizationId(ORGANIZATION_ID);
+//		formDao.makePersistent(form);
+//
+//		// fetch the form entity from database first time
+//		form = formDao.getForm(DUMMY_FORM, ORGANIZATION_ID);
+//		Assert.assertNotNull(form);
+//
+//		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getEntityFetchCount(), 0);
+//		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getSecondLevelCacheMissCount(), 1);
+//		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getSecondLevelCacheHitCount(), 0);
+//
+//		// Here entity is already in second level cache (session has been closed) so no database query will be hit
+//		form = formDao.getForm(DUMMY_FORM, ORGANIZATION_ID);
+//		Assert.assertNotNull(form);
+//
+//		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getEntityFetchCount(), 0);
+//		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getSecondLevelCacheHitCount(), 1);
+//
+//		// Read by id, not by label. Still cached.
+//		form = formDao.read(form.getId());
+//		Assert.assertNotNull(form);
+//
+//		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getEntityFetchCount(), 0);
+//		Assert.assertEquals(formDao.getSessionFactory().getStatistics().getSecondLevelCacheHitCount(), 2);
+//
+//		// Removed forms also are removed from cache.
+//		long id = form.getId();
+//		formDao.makeTransient(form);
+//		form = formDao.read(id);
+//		Assert.assertNull(form);
+//
+//	}
 }

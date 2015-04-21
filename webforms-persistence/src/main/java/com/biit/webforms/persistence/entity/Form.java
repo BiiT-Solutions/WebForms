@@ -29,13 +29,13 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Polymorphism;
 import org.hibernate.annotations.PolymorphismType;
 
-import com.biit.form.BaseCategory;
-import com.biit.form.BaseForm;
-import com.biit.form.BaseFormMetadata;
-import com.biit.form.BaseGroup;
-import com.biit.form.BaseQuestion;
-import com.biit.form.IBaseFormView;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseCategory;
+import com.biit.form.entity.BaseForm;
+import com.biit.form.entity.BaseFormMetadata;
+import com.biit.form.entity.BaseGroup;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.IBaseFormView;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
@@ -85,8 +85,8 @@ import com.liferay.portal.model.User;
 @Polymorphism(type = PolymorphismType.EXPLICIT)
 public class Form extends BaseForm implements IWebformsFormView {
 	private static final long serialVersionUID = 5220239269341014315L;
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
-			Arrays.asList(BaseCategory.class, BlockReference.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(BaseCategory.class,
+			BlockReference.class));
 
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
@@ -112,12 +112,6 @@ public class Form extends BaseForm implements IWebformsFormView {
 	private String description;
 
 	@OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true, mappedBy = "form")
-	// If we made the flow lazy and we load all rules using initializeSets in
-	// the DAO, we increase performance
-	// (@BatchSize of tokens in flow runs better if we group all flow retrieving
-	// operations in the same time and are not
-	// mixed with retrieving operations of TreeObjects of the form).
-	@LazyCollection(LazyCollectionOption.TRUE)
 	private Set<Flow> rules;
 
 	private String linkedFormLabel;
