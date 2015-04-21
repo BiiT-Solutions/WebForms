@@ -29,7 +29,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	private final static int MAX_YEARS_BIRTHDAY = 120;
 	private final static String CLASS_RADIO_BUTTON_HORIZONTAL = "fr-radio-horizontal";
 	private static final String CSS_CLASS_QUESTION = "webforms-question";
-
+	private static final String CSS_CLASS_QUESTION_HELP = "webforms-help";
 
 	public XFormsQuestion(XFormsHelper xFormsHelper, BaseQuestion question) throws NotValidTreeObjectException,
 			NotValidChildException {
@@ -358,8 +358,12 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	@Override
 	protected String getCssClass() {
 		String classList = super.getCssClass() + " " + CSS_CLASS_QUESTION;
-		if (((Question) getSource()).isHorizontal()) {
+		if (getSource() instanceof Question && ((Question) getSource()).isHorizontal()) {
 			classList += " " + CLASS_RADIO_BUTTON_HORIZONTAL;
+		}
+		if (getSource() instanceof Question && ((Question) getSource()).getDescription() != null 
+				&& ((Question) getSource()).getDescription().length() > 0) {
+			classList += " " + CSS_CLASS_QUESTION_HELP;
 		}
 		return classList;
 	}
