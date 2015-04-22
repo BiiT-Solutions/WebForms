@@ -51,14 +51,14 @@ public class Flow extends StorableObject {
 	// attached to that column, you have to state the name.
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "origin_id")
-	private TreeObject origin;
+	private BaseQuestion origin;
 
 	@Enumerated(EnumType.STRING)
 	private FlowType flowType;
 
 	@ManyToOne
 	@JoinColumn(name = "destiny_id")
-	private TreeObject destiny;
+	private BaseQuestion destiny;
 
 	private boolean others;
 
@@ -83,11 +83,11 @@ public class Flow extends StorableObject {
 		readOnly = false;
 	}
 
-	public TreeObject getOrigin() {
+	public BaseQuestion getOrigin() {
 		return origin;
 	}
 
-	public void setOrigin(TreeObject origin) {
+	public void setOrigin(BaseQuestion origin) {
 		this.origin = origin;
 	}
 
@@ -99,11 +99,11 @@ public class Flow extends StorableObject {
 		this.flowType = flowType;
 	}
 
-	public TreeObject getDestiny() {
+	public BaseQuestion getDestiny() {
 		return destiny;
 	}
 
-	public void setDestiny(TreeObject destiny) {
+	public void setDestiny(BaseQuestion destiny) {
 		this.destiny = destiny;
 	}
 
@@ -115,7 +115,7 @@ public class Flow extends StorableObject {
 		this.others = others;
 	}
 
-	public void setContent(TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
+	public void setContent(BaseQuestion origin, FlowType flowType, BaseQuestion destiny, boolean others,
 			List<Token> condition) throws BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		checkFlowRestrictions(origin, flowType, destiny, others, condition);
@@ -320,10 +320,10 @@ public class Flow extends StorableObject {
 	 */
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		if (getOrigin() != null) {
-			setOrigin(mappedElements.get(getOrigin().getComparationId()));
+			setOrigin((BaseQuestion) mappedElements.get(getOrigin().getComparationId()));
 		}
 		if (getDestiny() != null) {
-			setDestiny(mappedElements.get(getDestiny().getComparationId()));
+			setDestiny((BaseQuestion) mappedElements.get(getDestiny().getComparationId()));
 		}
 		for (Token token : getCondition()) {
 			token.updateReferences(mappedElements);

@@ -200,8 +200,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * Creates a static element that does not depends on the value of other
-	 * element.
+	 * Creates a static element that does not depends on the value of other element.
 	 * 
 	 * @return
 	 * @throws InvalidFlowInForm
@@ -220,8 +219,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * XForms has input, output and selectable elements. This method translates
-	 * an element to the correct one.
+	 * XForms has input, output and selectable elements. This method translates an element to the correct one.
 	 * 
 	 * @param element
 	 * @return
@@ -243,8 +241,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * XForms has input, output and selectable elements. This method translates
-	 * an element to the correct one.
+	 * XForms has input, output and selectable elements. This method translates an element to the correct one.
 	 * 
 	 * @param element
 	 * @return
@@ -296,8 +293,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * Some elements needs to insert HTML text. Adds the tags to allow html code
-	 * in the element.
+	 * Some elements needs to insert HTML text. Adds the tags to allow html code in the element.
 	 * 
 	 * @param element
 	 * @return
@@ -327,13 +323,12 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * Creates a new computed go to next element Flow. Type normal, condition =
-	 * '' -> true
+	 * Creates a new computed go to next element Flow. Type normal, condition = '' -> true
 	 * 
 	 * @param origin
 	 * @param destiny
 	 */
-	public static void addNewNextElementFlow(TreeObject origin, TreeObject destiny) {
+	public static void addNewNextElementFlow(BaseQuestion origin, BaseQuestion destiny) {
 		Flow flow = new Flow();
 		try {
 			flow.setContent(origin, FlowType.NORMAL, destiny, false, new ArrayList<Token>());
@@ -368,7 +363,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		if (getSource() instanceof Question && ((Question) getSource()).isHorizontal()) {
 			classList += " " + CSS_CLASS_RADIO_BUTTON_HORIZONTAL;
 		}
-		if (getSource() instanceof Question && ((Question) getSource()).getDescription() != null 
+		if (getSource() instanceof Question && ((Question) getSource()).getDescription() != null
 				&& ((Question) getSource()).getDescription().length() > 0) {
 			classList += " " + CSS_CLASS_QUESTION_HELP;
 		}

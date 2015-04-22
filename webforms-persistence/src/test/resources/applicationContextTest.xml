@@ -5,8 +5,7 @@
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:util="http://www.springframework.org/schema/util" xmlns:sws="http://www.springframework.org/schema/web-services"
-	xmlns:task="http://www.springframework.org/schema/task"
-	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:cache="http://www.springframework.org/schema/cache"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd      
                         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
                         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd 
@@ -16,23 +15,23 @@
                         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.1.xsd
 			http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd"
 	default-autowire="byName">
-	
+
 	<!-- Scans the classpath for annotated components that will be auto-registered 
 		as Spring beans. For example @Component, @Controller and @Service. Make sure 
 		to set the correct base-package -->
-	<context:component-scan	base-package="com.biit.webforms.persistence" />
-	
+	<context:component-scan base-package="com.biit.webforms.persistence" />
+
 	<!-- Read any *.properties file -->
 	<context:property-placeholder location="classpath*:*.properties" />
-	
+
 	<!-- Transaction Manager -->
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="webformsManagerFactory" />
 		<property name="jpaDialect" ref="jpaDialect" />
 	</bean>
-	
+
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
-	
+
 	<!-- Default Entity Manager defined in @Qualifier(value = "abcdManagerFactory") 
 		of GenericDao -->
 	<bean id="webformsManagerFactory"
@@ -47,7 +46,7 @@
 		<property name="jpaVendorAdapter" ref="hibernateVendor" />
 		<property name="jpaProperties" ref="webformsJpaProperties" />
 	</bean>
-	
+
 	<!-- Data Source -->
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">
@@ -63,14 +62,14 @@
 		<property name="loginTimeout" value="${c3p0.timeout}" />
 		<property name="acquireIncrement" value="${c3p0.acquire_increment}" />
 	</bean>
-	
-	<!-- Common JPA properties  -->
+
+	<!-- Common JPA properties -->
 	<bean id="commonJpaProperties" parent="hibernateJpaProperties">
 		<property name="sourceMap">
 			<map merge="true" />
 		</property>
 	</bean>
-	
+
 	<!-- Specific properties for Webforms -->
 	<bean id="webformsJpaProperties" parent="commonJpaProperties">
 		<property name="sourceMap">
@@ -111,19 +110,19 @@
 		<entry key="hibernate.cache.provider_configuration_file_resource_path"
 			value="${hibernate.cache.provider_configuration_file_resource_path}" />
 		<entry key="hibernate.cache.provider_class" value="${hibernate.cache.provider_class}" />
-		<entry key="hibernate.cache.use_query_cache" value="${hibernate.cache.use_query_cache}" />		
+		<entry key="hibernate.cache.use_query_cache" value="${hibernate.cache.use_query_cache}" />
 	</util:map>
-	
+
 	<bean id="hibernateVendor"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 	</bean>
-	
+
 	<tx:annotation-driven />
 
 	<!-- Enables Interceptors -->
 	<aop:aspectj-autoproxy />
-	
+
 	<!-- Aspect -->
 	<bean id="basicLogging" class="com.biit.webforms.logger.BasicLogging" />
-	
+
 </beans>

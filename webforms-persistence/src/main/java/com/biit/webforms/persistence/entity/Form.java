@@ -329,11 +329,11 @@ public class Form extends BaseForm implements IWebformsFormView {
 			for (int i = 0; i < numQuestions; i++) {
 				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
 					computedView
-							.addNewNextElementFlow((TreeObject) baseQuestions[i], (TreeObject) baseQuestions[i + 1]);
+							.addNewNextElementFlow((BaseQuestion) baseQuestions[i], (BaseQuestion) baseQuestions[i + 1]);
 				}
 			}
-			if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[numQuestions]) == null) {
-				computedView.addNewEndFormFlow((TreeObject) baseQuestions[numQuestions]);
+			if (computedView.getFlowsByOrigin((BaseQuestion) baseQuestions[numQuestions]) == null) {
+				computedView.addNewEndFormFlow((BaseQuestion) baseQuestions[numQuestions]);
 			}
 		}
 		return computedView;

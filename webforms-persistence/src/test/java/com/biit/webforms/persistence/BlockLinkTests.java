@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
+import com.biit.form.entity.BaseQuestion;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
@@ -229,8 +230,9 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 			FlowWithoutDestinyException, FlowNotAllowedException, UnexpectedDatabaseException,
 			ElementCannotBePersistedException, DependencyExistException, ElementIsReadOnly {
 		// Add a flow that uses one element of the block.
-		Flow ruleToBlock = FormUtils.createFlow((Question) completeFormView.getChildren().get(0).getChildren().get(2)
-				.getChildren().get(0), completeFormView.getChildren().get(2).getChildren().get(3), false,
+		Flow ruleToBlock = FormUtils.createFlow(
+				(BaseQuestion) completeFormView.getChildren().get(0).getChildren().get(2).getChildren().get(0),
+				(BaseQuestion) completeFormView.getChildren().get(2).getChildren().get(3), false,
 				new ArrayList<Token>());
 		form.addFlow(ruleToBlock);
 		// Save the form.
@@ -239,7 +241,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		block.getChildren().get(0).getChildren().get(3).remove();
 		blockDao.makePersistent(block);
 	}
-	
+
 	@Test
 	public void blockReferenceWithNullValue() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
@@ -255,9 +257,9 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		Form form = FormUtils.createCompleteForm(null, "form5");
 		form.addChild(blockReference);
 		formDao.makePersistent(form);
-		
-		//Remove block.
-		blockReference.setReference(null);		
+
+		// Remove block.
+		blockReference.setReference(null);
 		formDao.makePersistent(form);
 		blockDao.makeTransient(block);
 		formDao.makeTransient(form);
@@ -281,9 +283,9 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		BlockReference blockReference = new BlockReference(block);
 		Form form = FormUtils.createCompleteForm(null, "form4");
 		form.addChild(blockReference);
-		
+
 		formDao.makePersistent(form);
-		formDao.makeTransient(form);		
+		formDao.makeTransient(form);
 		blockDao.evictAllCache();
 
 		Assert.assertEquals(blockNumber, (int) blockDao.getRowCount());

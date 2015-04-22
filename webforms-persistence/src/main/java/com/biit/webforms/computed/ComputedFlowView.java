@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.logger.WebformsLogger;
@@ -80,7 +81,7 @@ public class ComputedFlowView {
 	 * @param origin
 	 * @param destiny
 	 */
-	public void addNewNextElementFlow(TreeObject origin, TreeObject destiny) {
+	public void addNewNextElementFlow(BaseQuestion origin, BaseQuestion destiny) {
 		Flow flow = new Flow();
 		try {
 			flow.setContent(origin, FlowType.NORMAL, destiny, false, new ArrayList<Token>());
@@ -94,7 +95,7 @@ public class ComputedFlowView {
 		}
 	}
 
-	public void addNewEndFormFlow(TreeObject origin) {
+	public void addNewEndFormFlow(BaseQuestion origin) {
 		Flow flow = new Flow();
 		try {
 			flow.setContent(origin, FlowType.END_FORM, null, false, new ArrayList<Token>());

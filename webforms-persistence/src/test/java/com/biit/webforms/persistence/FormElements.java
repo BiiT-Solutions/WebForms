@@ -1,12 +1,10 @@
 package com.biit.webforms.persistence;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
-
 import junit.framework.Assert;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -50,6 +48,8 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 
 	private Block block;
 
+	@Test
+	@Rollback(value = false)
 	public void createBuildingBlock() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException {
@@ -61,17 +61,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 		}
 	}
 
-	@Test
-	public void testGenerateCompleteForm() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType,
-			UnexpectedDatabaseException, ElementIsReadOnly, FlowNotAllowedException, ElementCannotBePersistedException {
-		createBuildingBlock();
-		FormUtils.createCompleteForm(block);
-	}
-
-	@Test(dependsOnMethods = { "testGenerateCompleteForm" })
+	@Test(dependsOnMethods = { "createBuildingBlock" })
 	public void testPersistCompleteForm() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			UnexpectedDatabaseException, ChildrenNotFoundException, BadFlowContentException,
@@ -79,7 +69,6 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
 			ElementCannotBeRemovedException, ElementCannotBePersistedException {
 		int prevForms = formDao.getRowCount();
-		System.out.println("-------->"+block.getId()+" "+block.getComparationId());
 		Form form = FormUtils.createCompleteForm(block);
 		formDao.makePersistent(form);
 		Assert.assertEquals(formDao.getRowCount(), prevForms + 1);
@@ -95,7 +84,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 		Assert.assertEquals(formDao.getRowCount(), prevForms);
 	}
 
-	@Test(dependsOnMethods = { "testPersistCompleteForm" })
+	@Test(dependsOnMethods = { "createBuildingBlock" })
 	public void testNewVersion() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
 			InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException,
 			ChildrenNotFoundException, BadFlowContentException, FlowWithoutSourceException,

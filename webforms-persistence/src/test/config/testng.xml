@@ -1,33 +1,24 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite thread-count="1" verbose="1" name="WebFormsCore">
-	<test name="WebformsPersistanceTest" enabled="true" preserve-order="true">
+	<test name="WebformsPersistanceTest" enabled="true"
+		preserve-order="true">
 		<groups>
 			<run>
-			
-				<!-- <exclude name="ehCache" /> -->
-				
-				<!-- Lot of trouble -->
-				<!-- <include name="formElements" /> -->
-				
+				<exclude name="ehCache" />
+				<include name="formElements" />
 				<include name="blockTest" />
 				<include name="ruleTest" />
-				
-				<!--				
-				<include name="removeElement" />
-				<include name="blockLink" /> -->
+				<exclude name="removeElement" />
+				<exclude name="blockLink" />
 			</run>
 		</groups>
 		<classes>
-		<!-- <class name="com.biit.webforms.persistence.EhCacheTest" /> -->
-		
+			<class name="com.biit.webforms.persistence.EhCacheTest" />
 			<class name="com.biit.webforms.persistence.FormElements" />
 			<class name="com.biit.webforms.persistence.BlockTests" />
 			<class name="com.biit.webforms.persistence.RuleTest" />
-			
-			
-			<!-- <class name="com.biit.webforms.persistence.RemoveTest" />
-			
-			<class name="com.biit.webforms.persistence.BlockLinkTests" /> -->
+			<class name="com.biit.webforms.persistence.RemoveTest" />
+			<class name="com.biit.webforms.persistence.BlockLinkTests" />
 		</classes>
 	</test>
 </suite>
