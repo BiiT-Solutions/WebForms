@@ -67,7 +67,7 @@ public class Flow extends StorableObject {
 	@OrderBy(value = "sortSeq ASC")
 	private List<Token> condition;
 
-	@ManyToOne(optional=false)
+	@ManyToOne(optional = false)
 	private Form form;
 
 	@Transient
@@ -152,7 +152,7 @@ public class Flow extends StorableObject {
 		}
 		// Flow destiny cannot be prior to origin.
 		if (!flowType.isDestinyNull()) {
-			if (!(origin.compareTo(destiny) == -1)) {			
+			if (!(origin.compareTo(destiny) == -1)) {
 				throw new FlowDestinyIsBeforeOriginException();
 			}
 		}

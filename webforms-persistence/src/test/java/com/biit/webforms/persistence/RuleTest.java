@@ -162,17 +162,21 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		Question question2 = (Question) form.getChild(CATEGORY_ONE_NAME + "/" + GROUP_ONE_NAME + "/"
 				+ QUESTION_WITH_ANSWERS);
 		Assert.assertNotNull(question2);
-		
+
+		try {
+			question2.remove();
+		} finally {
+			formDao.makeTransient(form);
+		}
+	}
+
+	@Test
+	public void dummyTest() throws ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
+			FlowNotAllowedException {
+		Form form = createForm();
+		formDao.makePersistent(form);
 		formDao.makeTransient(form);
-		formDao.getEntityManager().flush();
-		
-//		question2.remove();
-		
-//		try {
-//			question2.remove();
-//		} finally {
-//			formDao.makeTransient(form);
-//		}
 	}
 
 	@Test

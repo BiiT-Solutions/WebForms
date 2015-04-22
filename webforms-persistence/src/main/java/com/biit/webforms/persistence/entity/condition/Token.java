@@ -8,8 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -37,7 +35,7 @@ public class Token extends StorableObject {
 	@Column(nullable = false)
 	private long sortSeq = 0;
 
-	@ManyToOne(optional=false)
+	@ManyToOne(optional = false)
 	private Flow flow;
 
 	public Token() {
@@ -218,7 +216,7 @@ public class Token extends StorableObject {
 	}
 
 	public boolean isContentEqual(Token token) {
-		if(type!=token.type){
+		if (type != token.type) {
 			return false;
 		}
 		return true;

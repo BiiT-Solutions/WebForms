@@ -100,6 +100,7 @@
 		<entry key="hibernate.jdbc.batch_versioned_data" value="${hibernate.jdbc.batch_versioned_data}" />
 		<entry key="hibernate.jdbc.use_streams_for_binary" value="${hibernate.jdbc.use_streams_for_binary}" />
 		<entry key="hibernate.max_fetch_depth" value="${hibernate.max_fetch_depth}" />
+		<entry key="hibernate.check_nullability" value="${hibernate.check_nullability}" />
 		<!-- Second Level Cache -->
 		<entry key="hibernate.cache.use_second_level_cache" value="${hibernate.cache.use_second_level_cache}" />
 		<entry key="hibernate.cache.region.factory_class" value="${hibernate.cache.region.factory_class}" />
@@ -110,7 +111,7 @@
 		<entry key="hibernate.cache.provider_configuration_file_resource_path"
 			value="${hibernate.cache.provider_configuration_file_resource_path}" />
 		<entry key="hibernate.cache.provider_class" value="${hibernate.cache.provider_class}" />
-		<entry key="hibernate.cache.use_query_cache" value="${hibernate.cache.use_query_cache}" />
+		<entry key="hibernate.cache.use_query_cache" value="${hibernate.cache.use_query_cache}" />		
 	</util:map>
 	
 	<bean id="hibernateVendor"

@@ -24,8 +24,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Polymorphism;
 import org.hibernate.annotations.PolymorphismType;
 
@@ -85,25 +83,10 @@ import com.liferay.portal.model.User;
 @Polymorphism(type = PolymorphismType.EXPLICIT)
 public class Form extends BaseForm implements IWebformsFormView {
 	private static final long serialVersionUID = 5220239269341014315L;
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(BaseCategory.class,
-			BlockReference.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
+			Arrays.asList(BaseCategory.class, BlockReference.class));
 
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
-
-	public static Form fromJson(String jsonString) {
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
-		gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
-		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectDeserializer<Category>(Category.class));
-		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupDeserializer<Group>(Group.class));
-		gsonBuilder.registerTypeAdapter(Question.class, new QuestionDeserializer());
-		gsonBuilder.registerTypeAdapter(Text.class, new TextDeserializer());
-		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldDeserializer());
-		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerDeserializer());
-		Gson gson = gsonBuilder.create();
-
-		return (Form) gson.fromJson(jsonString, Form.class);
-	}
 
 	@Enumerated(EnumType.STRING)
 	private FormWorkStatus status;
@@ -231,8 +214,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * Equals by comparationId and class. Comparation by class has been removed
-	 * to allow the comparation with CompleteFormView.
+	 * Equals by comparationId and class. Comparation by class has been removed to allow the comparation with
+	 * CompleteFormView.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -327,8 +310,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the
-	 * implicit rules (question without rule goes to the next element)
+	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
+	 * goes to the next element)
 	 * 
 	 * @return
 	 */
@@ -573,10 +556,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * This is the only function that has to be used to link forms. This
-	 * controls that the linked element and versions are present at the same
-	 * time or not when modifying data. It is assumed that all linked forms have
-	 * the same name and organization.
+	 * This is the only function that has to be used to link forms. This controls that the linked element and versions
+	 * are present at the same time or not when modifying data. It is assumed that all linked forms have the same name
+	 * and organization.
 	 * 
 	 * @param linkedForms
 	 */
@@ -644,5 +626,20 @@ public class Form extends BaseForm implements IWebformsFormView {
 		for (Flow rule : getFlows()) {
 			rule.updateReferences(mappedElements);
 		}
+	}
+
+	public static Form fromJson(String jsonString) {
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
+		gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
+		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectDeserializer<Category>(Category.class));
+		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupDeserializer<Group>(Group.class));
+		gsonBuilder.registerTypeAdapter(Question.class, new QuestionDeserializer());
+		gsonBuilder.registerTypeAdapter(Text.class, new TextDeserializer());
+		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldDeserializer());
+		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerDeserializer());
+		Gson gson = gsonBuilder.create();
+
+		return (Form) gson.fromJson(jsonString, Form.class);
 	}
 }
