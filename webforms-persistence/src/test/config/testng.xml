@@ -11,10 +11,8 @@
 				
 				<include name="blockTest" />
 				<include name="ruleTest" />
-				
-				<!--				
 				<include name="removeElement" />
-				<include name="blockLink" /> -->
+				<!-- <include name="blockLink" /> -->
 			</run>
 		</groups>
 		<classes>
@@ -23,11 +21,8 @@
 			<class name="com.biit.webforms.persistence.FormElements" />
 			<class name="com.biit.webforms.persistence.BlockTests" />
 			<class name="com.biit.webforms.persistence.RuleTest" />
-			
-			
-			<!-- <class name="com.biit.webforms.persistence.RemoveTest" />
-			
-			<class name="com.biit.webforms.persistence.BlockLinkTests" /> -->
+			<class name="com.biit.webforms.persistence.RemoveTest" />
+			<class name="com.biit.webforms.persistence.BlockLinkTests" />
 		</classes>
 	</test>
 </suite>
