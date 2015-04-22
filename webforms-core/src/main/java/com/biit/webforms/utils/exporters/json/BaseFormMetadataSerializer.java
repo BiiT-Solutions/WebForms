@@ -2,7 +2,7 @@ package com.biit.webforms.utils.exporters.json;
 
 import java.lang.reflect.Type;
 
-import com.biit.form.BaseFormMetadata;
+import com.biit.form.entity.BaseFormMetadata;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;

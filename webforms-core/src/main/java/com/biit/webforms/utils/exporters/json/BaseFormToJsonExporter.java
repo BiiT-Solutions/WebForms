@@ -1,11 +1,11 @@
 package com.biit.webforms.utils.exporters.json;
 
-import com.biit.form.BaseAnswer;
-import com.biit.form.BaseCategory;
-import com.biit.form.BaseForm;
-import com.biit.form.BaseQuestion;
-import com.biit.form.BaseRepeatableGroup;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseAnswer;
+import com.biit.form.entity.BaseCategory;
+import com.biit.form.entity.BaseForm;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.BaseRepeatableGroup;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
