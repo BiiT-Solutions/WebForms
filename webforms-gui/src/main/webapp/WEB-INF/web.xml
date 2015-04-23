@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app id="WebApp_ID" version="3.0"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 	<display-name>WebForms Designer</display-name>
 
@@ -16,7 +16,7 @@
 		<param-name>productionMode</param-name>
 		<param-value>false</param-value>
 	</context-param>
-	
+
 	<!-- Using Vaadin GUI -->
 	<servlet>
 		<servlet-name>Vaadin Application Servlet</servlet-name>
@@ -35,13 +35,13 @@
 			<param-name>closeIdleSessions</param-name>
 			<param-value>true</param-value>
 		</init-param>
-		
+
 		<!-- Enable server push -->
 		<init-param>
-	      <param-name>pushmode</param-name>
-	      <param-value>automatic</param-value>
-	    </init-param>
-	    <async-supported>true</async-supported>
+			<param-name>pushmode</param-name>
+			<param-value>automatic</param-value>
+		</init-param>
+		<async-supported>true</async-supported>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Vaadin Application Servlet</servlet-name>
@@ -65,22 +65,9 @@
 	<listener>
 		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
 	</listener>
-	
-	<!-- binds a JPA EntityManager to the thread for the entire processing of the request -->
-	<filter>
-		<filter-name>OpenEntityManagerInViewFilterAbcd</filter-name>
-		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
-		<init-param>
-			<param-name>entityManagerFactoryBeanName</param-name>
-			<param-value>abcdManagerFactory</param-value>
-		</init-param>
-	</filter>
-	<!-- Map the EntityManager Filter to all Request -->
-	<filter-mapping>
-		<filter-name>OpenEntityManagerInViewFilterAbcd</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<!-- binds a JPA EntityManager to the thread for the entire processing of the request -->
+
+	<!-- binds a JPA EntityManager to the thread for the entire processing of 
+		the request -->
 	<filter>
 		<filter-name>OpenEntityManagerInViewFilterWebforms</filter-name>
 		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
@@ -94,12 +81,29 @@
 		<filter-name>OpenEntityManagerInViewFilterWebforms</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+
+	<!-- binds a JPA EntityManager to the thread for the entire processing of 
+		the request -->
+	<filter>
+		<filter-name>OpenEntityManagerInViewFilterAbcd</filter-name>
+		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+		<init-param>
+			<param-name>entityManagerFactoryBeanName</param-name>
+			<param-value>abcdManagerFactory</param-value>
+		</init-param>
+	</filter>
+	<!-- Map the EntityManager Filter to all Request -->
+	<filter-mapping>
+		<filter-name>OpenEntityManagerInViewFilterAbcd</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
 	<!-- Apache Tomcat session expire -->
 	<session-config>
 		<session-timeout>31</session-timeout>
 	</session-config>
-	
+
 	<!-- Uncomment following filter if you want fast deployment in jetty -->
 	<!-- <filter> <filter-name>GzipFilter</filter-name> <filter-class>org.eclipse.jetty.servlets.GzipFilter</filter-class> 
 		<init-param> <param-name>mimeTypes</param-name> <param-value>text/html,text/plain,text/xml,application/xhtml+xml,text/css,application/javascript,image/svg+xml</param-value> 

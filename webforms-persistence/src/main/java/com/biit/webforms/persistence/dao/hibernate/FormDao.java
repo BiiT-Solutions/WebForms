@@ -28,18 +28,21 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 
 	@Override
 	@Cacheable(value = "webformsforms", key = "#id")
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public Form get(Long id) {
 		return super.get(id);
 	}
 
 	@Override
 	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public void makeTransient(Form form) throws ElementCannotBeRemovedException {
 		super.makeTransient(form);
 	}
 
 	@Override
 	@CachePut(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null")
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public void makePersistent(Form form) {
 		super.makePersistent(form);
 	}
