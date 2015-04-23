@@ -175,9 +175,9 @@
 
 	<tx:annotation-driven transaction-manager="webformsTransactionManager" />
 
-
 	<!-- Enables Interceptors -->
 	<aop:aspectj-autoproxy />
+	
 	<!-- Aspect -->
 	<bean id="basicLogging" class="com.biit.webforms.logger.BasicLogging" />
 
@@ -205,13 +205,4 @@
 	<bean name="customVariableDao"
 		class="com.biit.abcd.persistence.dao.hibernate.CustomVariableDao" />
 
-	<!-- EhCache -->
-	<cache:annotation-driven />
-	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-		<property name="cacheManager" ref="ehcache" />
-	</bean>
-	<bean id="ehcache"
-		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-		<property name="configLocation" value="classpath:ehcache.xml" />
-	</bean>
 </beans>
