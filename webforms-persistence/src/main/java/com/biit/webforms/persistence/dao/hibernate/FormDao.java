@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
 
@@ -30,7 +31,7 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 
 	@Override
 	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
-	public void makeTransient(Form form) {
+	public void makeTransient(Form form) throws ElementCannotBeRemovedException {
 		super.makeTransient(form);
 	}
 

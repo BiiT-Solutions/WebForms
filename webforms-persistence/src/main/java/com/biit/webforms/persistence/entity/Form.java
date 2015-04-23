@@ -328,8 +328,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 			for (int i = 0; i < numQuestions; i++) {
 				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
-					computedView
-							.addNewNextElementFlow((BaseQuestion) baseQuestions[i], (BaseQuestion) baseQuestions[i + 1]);
+					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i],
+							(BaseQuestion) baseQuestions[i + 1]);
 				}
 			}
 			if (computedView.getFlowsByOrigin((BaseQuestion) baseQuestions[numQuestions]) == null) {

@@ -8,8 +8,9 @@
 				<include name="formElements" />
 				<include name="blockTest" />
 				<include name="ruleTest" />
-				<exclude name="removeElement" />
-				<exclude name="blockLink" />
+				<include name="removeElement" />
+				<include name="blockLink" />
+				<exclude name="persistForm" />
 			</run>
 		</groups>
 		<classes>
@@ -19,6 +20,7 @@
 			<class name="com.biit.webforms.persistence.RuleTest" />
 			<class name="com.biit.webforms.persistence.RemoveTest" />
 			<class name="com.biit.webforms.persistence.BlockLinkTests" />
+			<class name="com.biit.webforms.persistence.PersistForm" />
 		</classes>
 	</test>
 </suite>

@@ -13,18 +13,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.biit.persistence.dao.IJpaGenericDao;
 import com.biit.persistence.dao.jpa.GenericDao;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 
-public abstract class AnnotatedGenericDao<EntityClass, PrimaryKeyClass extends Serializable> extends GenericDao<EntityClass, PrimaryKeyClass> implements IJpaGenericDao<EntityClass, PrimaryKeyClass>{
-	
+public abstract class AnnotatedGenericDao<EntityClass, PrimaryKeyClass extends Serializable> extends
+		GenericDao<EntityClass, PrimaryKeyClass> implements IJpaGenericDao<EntityClass, PrimaryKeyClass> {
+
 	@PersistenceContext(unitName = "defaultPersistenceUnit")
 	@Qualifier(value = "webformsManagerFactory")
 	private EntityManager entityManager;
-	
+
 	@Override
 	public EntityManager getEntityManager() {
 		return entityManager;
 	}
-	
+
 	public AnnotatedGenericDao(Class<EntityClass> entityClass) {
 		super(entityClass);
 	}
@@ -37,7 +39,7 @@ public abstract class AnnotatedGenericDao<EntityClass, PrimaryKeyClass extends S
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-	public void makeTransient(EntityClass entity) {
+	public void makeTransient(EntityClass entity) throws ElementCannotBeRemovedException {
 		super.makeTransient(entity);
 	}
 
@@ -47,6 +49,11 @@ public abstract class AnnotatedGenericDao<EntityClass, PrimaryKeyClass extends S
 		return super.get(id);
 	}
 
+	/**
+	 * Propagation Propagation.REQUIRES_NEW skip some errors when making a getRowCount after a makeTransient action.
+	 * 
+	 * @return
+	 */
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public int getRowCount() {
@@ -58,5 +65,5 @@ public abstract class AnnotatedGenericDao<EntityClass, PrimaryKeyClass extends S
 	public List<EntityClass> getAll() {
 		return super.getAll();
 	}
-	
+
 }

@@ -173,7 +173,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 	@Test
 	public void dummyTest() throws ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
-			FlowNotAllowedException {
+			FlowNotAllowedException, ElementCannotBeRemovedException {
 		Form form = createForm();
 		formDao.makePersistent(form);
 		formDao.makeTransient(form);

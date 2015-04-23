@@ -48,7 +48,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatExc
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContextTest.xml" })
 @Test(groups = { "blockLink" })
-@TransactionConfiguration(defaultRollback=false)
+@TransactionConfiguration(defaultRollback = false)
 public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTests {
 
 	@Autowired
@@ -423,12 +423,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		form.addChild(blockReference1);
 		formDao.makePersistent(form);
 
-		try {
-			blockDao.makeTransient(block1);
-		} finally {
-			formDao.makeTransient(form);
-			blockDao.makeTransient(block1);
-		}
+		blockDao.makeTransient(block1);
 	}
 
 }
