@@ -258,7 +258,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		Root<BlockReference> root = query.from(BlockReference.class);
 
 		query.select(cb.count(root));
-		query.where(cb.equal(root.get(blockType.getSingularAttribute("reference_ID", Long.class)), block.getId()));
+		query.where(cb.equal(root.get(blockType.getSingularAttribute("reference", Block.class)), block.getId()));
 
 		return getEntityManager().createQuery(query).getSingleResult().intValue();
 	}

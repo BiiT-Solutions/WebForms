@@ -8,6 +8,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.testng.annotations.Test;
 
 import com.biit.form.entity.TreeObject;
@@ -71,7 +72,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 		int prevForms = formDao.getRowCount();
 		Form form = FormUtils.createCompleteForm(block);
 		formDao.makePersistent(form);
-		Assert.assertEquals(formDao.getRowCount(), prevForms + 1);
+		Assert.assertEquals(prevForms + 1, formDao.getRowCount());
 		Assert.assertNotNull(form.getId());
 
 		Form dbForm = formDao.get(form.getId());
@@ -81,7 +82,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 		Assert.assertTrue(form.isContentEqual(dbForm));
 
 		formDao.makeTransient(dbForm);
-		//Assert.assertEquals(formDao.getRowCount(), prevForms);
+		//Assert.assertEquals(prevForms, formDao.getRowCount());
 	}
 
 	@Test(dependsOnMethods = { "createBuildingBlock" })
@@ -113,7 +114,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 		}
 	}
 
-	public void checkFormStructure(Form form) {
+	private void checkFormStructure(Form form) {
 		// Check the structure is present
 		Assert.assertNotNull(form.getChild(FormUtils.CATEGORY_1));
 		Assert.assertNotNull(form.getChild(FormUtils.CATEGORY_1, FormUtils.SYSTEM_FIELD_1));

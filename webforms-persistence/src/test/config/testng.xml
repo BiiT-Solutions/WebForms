@@ -9,7 +9,7 @@
 				<include name="blockTest" />
 				<include name="ruleTest" />
 				<include name="removeElement" />
-				<include name="blockLink" />
+				<exclude name="blockLink" />
 				<exclude name="persistForm" />
 			</run>
 		</groups>
