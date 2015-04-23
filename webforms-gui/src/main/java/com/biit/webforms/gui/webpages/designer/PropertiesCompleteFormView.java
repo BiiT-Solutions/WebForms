@@ -1,7 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.BaseForm;
-import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
@@ -15,14 +14,13 @@ import com.vaadin.server.VaadinServlet;
 
 public class PropertiesCompleteFormView extends PropertiesBaseForm<CompleteFormView> {
 	private static final long serialVersionUID = -478559896636685508L;
-	
 
 	private IFormDao formDao;
 
 	public PropertiesCompleteFormView() {
 		super(CompleteFormView.class);
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-		formDao = (IFormDao) helper.getBean("formDao");
+		formDao = (IFormDao) helper.getBean("webformsFormDao");
 	}
 
 	@Override
@@ -32,8 +30,8 @@ public class PropertiesCompleteFormView extends PropertiesBaseForm<CompleteFormV
 				// Checks if already exists a form with this label and its version.
 				if (!formDao.exists(getLabelTextField().getValue(), ((BaseForm) getInstance()).getVersion(),
 						((BaseForm) getInstance()).getOrganizationId(), getInstance().getId())) {
-					UserSessionHandler.getController().updateForm((Form) getInstance().getForm(), getLabelTextField().getValue(),
-							getDescriptionTextArea().getValue());
+					UserSessionHandler.getController().updateForm((Form) getInstance().getForm(),
+							getLabelTextField().getValue(), getDescriptionTextArea().getValue());
 				} else {
 					getLabelTextField().setValue(((BaseForm) getInstance()).getLabel());
 					MessageManager.showWarning(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE,
@@ -41,7 +39,7 @@ public class PropertiesCompleteFormView extends PropertiesBaseForm<CompleteFormV
 					UserSessionHandler.getController().updateForm((Form) getInstance().getForm(),
 							((BaseForm) getInstance()).getLabel(), getDescriptionTextArea().getValue());
 				}
-			} catch (ReadOnlyException | UnexpectedDatabaseException e) {
+			} catch (ReadOnlyException e) {
 				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE);
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}

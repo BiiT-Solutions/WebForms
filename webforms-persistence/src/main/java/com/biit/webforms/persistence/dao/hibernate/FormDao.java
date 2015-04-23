@@ -11,6 +11,9 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.webforms.persistence.dao.IFormDao;
@@ -39,6 +42,41 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 	@CachePut(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null")
 	public void makePersistent(Form form) {
 		super.makePersistent(form);
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+	public boolean exists(String label, int version, long organizationId, long id) {
+		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		// Metamodel of the entity table
+		Metamodel m = getEntityManager().getMetamodel();
+		EntityType<Form> formMetamodel = m.entity(Form.class);
+		Root<Form> form = cq.from(Form.class);
+
+		cq.select(cb.count(form));
+		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), label),
+				cb.equal(form.get(formMetamodel.getSingularAttribute("version", Integer.class)), version),
+				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId),
+				cb.notEqual(form.get(formMetamodel.getSingularAttribute("id", Long.class)), id)));
+
+		return getEntityManager().createQuery(cq).getSingleResult() > 0;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+	public boolean exists(String label, long organizationId) {
+		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		// Metamodel of the entity table
+		Metamodel m = getEntityManager().getMetamodel();
+		EntityType<Form> formMetamodel = m.entity(Form.class);
+		Root<Form> form = cq.from(Form.class);
+
+		cq.select(cb.count(form));
+		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), label),
+				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
+		return getEntityManager().createQuery(cq).getSingleResult() > 0;
 	}
 
 	// /**

@@ -32,7 +32,7 @@
 
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
 
-	<!-- Default Entity Manager defined in @Qualifier(value = "abcdManagerFactory") 
+	<!-- Default Entity Manager defined in @Qualifier(value = "webformsManagerFactory") 
 		of GenericDao -->
 	<bean id="webformsManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">

@@ -523,8 +523,9 @@ public class FlowEditor extends SecuredWebPage {
 						MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
 								LanguageCodes.ERROR_DESCRIPTION_CONDITION_BAD_FORMED);
 					} else {
-						UserSessionHandler.getController().updateFlowContent(flow, windowFlow.getOrigin(),
-								windowFlow.getFlowType(), windowFlow.getDestiny(), windowFlow.isOthers(),
+						UserSessionHandler.getController().updateFlowContent(flow,
+								(BaseQuestion) windowFlow.getOrigin(), windowFlow.getFlowType(),
+								(BaseQuestion) windowFlow.getDestiny(), windowFlow.isOthers(),
 								windowFlow.getCondition());
 						addOrUpdateFlowInTableAction(flow);
 						window.close();
