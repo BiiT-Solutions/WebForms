@@ -37,7 +37,11 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
 	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public void makeTransient(Form form) throws ElementCannotBeRemovedException {
-		super.makeTransient(form);
+		form.getFlows().clear();
+		Form mergedForm = getEntityManager().contains(form) ? form : getEntityManager().merge(form);
+		makePersistent(mergedForm);
+		
+		super.makeTransient(mergedForm);
 	}
 
 	@Override

@@ -7,10 +7,10 @@
 				<exclude name="ehCache" />
 				<include name="formElements" />
 				<include name="blockTest" />
-				<include name="ruleTest" />
+				<include name="ruleTest" /> 
 				<include name="removeElement" />
-				<exclude name="blockLink" />
-				<exclude name="persistForm" />
+				<include name="blockLink" />
+				<include name="persistForm" />
 			</run>
 		</groups>
 		<classes>

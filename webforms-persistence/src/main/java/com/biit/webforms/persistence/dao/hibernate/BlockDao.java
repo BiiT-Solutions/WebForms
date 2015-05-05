@@ -12,11 +12,18 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.TreeObject;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
+import com.biit.webforms.persistence.entity.Flow;
+import com.biit.webforms.persistence.entity.condition.TokenBetween;
+import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenIn;
 
 @Repository
 public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlockDao {
@@ -262,6 +269,55 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 
 		return getEntityManager().createQuery(query).getSingleResult().intValue();
 	}
+
+	@Override
+	public boolean checkIfBlockElementCanBeRemoved(TreeObject treeObject) {
+		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Long> query = cb.createQuery(Long.class);
+		Metamodel m = getEntityManager().getMetamodel();
+		EntityType<Flow> flowType = m.entity(Flow.class);
+		Root<Flow> root = query.from(Flow.class);
+
+		query.select(cb.count(root));
+		query.where(
+				cb.or(
+						cb.equal(root.get(flowType.getSingularAttribute("origin", BaseQuestion.class)), treeObject.getId()),
+						cb.equal(root.get(flowType.getSingularAttribute("destiny",BaseQuestion.class)), treeObject.getId())
+					)
+				);
+		if (getEntityManager().createQuery(query).getSingleResult().intValue() > 0) {
+			return false;
+		}
+
+		// Query for relationships with token types
+		if(countReferencesInTokenClass(TokenBetween.class, treeObject.getId())>0){
+			return false;
+		}
+		if(countReferencesInTokenClass(TokenIn.class, treeObject.getId())>0){
+			return false;
+		}
+		if(countReferencesInTokenClass(TokenComparationAnswer.class, treeObject.getId())>0){
+			return false;
+		}
+		if(countReferencesInTokenClass(TokenComparationValue.class, treeObject.getId())>0){
+			return false;
+		}
+
+		return true;
+	}
+	
+	private <T> int countReferencesInTokenClass(Class<T> clazz, Long id){
+		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Long> query = cb.createQuery(Long.class);
+		Metamodel m = getEntityManager().getMetamodel();
+		EntityType<T> type = m.entity(clazz);
+		Root<T> root = query.from(clazz);
+		
+		query.select(cb.count(root));
+		query.where(cb.equal(root.get(type.getSingularAttribute("question", clazz)), id));
+		return getEntityManager().createQuery(query).getSingleResult().intValue();
+	}
+	
 
 	//
 	// /**
