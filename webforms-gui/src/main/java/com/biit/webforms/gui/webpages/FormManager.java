@@ -10,7 +10,7 @@ import java.util.List;
 import com.biit.abcd.core.SpringContextHelper;
 import com.biit.abcd.security.AbcdActivity;
 import com.biit.abcd.security.AbcdAuthorizationService;
-import com.biit.form.IBaseFormView;
+import com.biit.form.entity.IBaseFormView;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
@@ -94,7 +94,7 @@ public class FormManager extends SecuredWebPage {
 	public FormManager() {
 		super();
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-		formDao = (IFormDao) helper.getBean("formDao");
+		formDao = (IFormDao) helper.getBean("webformsFormDao");
 	}
 
 	@Override
@@ -293,7 +293,7 @@ public class FormManager extends SecuredWebPage {
 	private void removeSelectedForm() {
 		Form selectedForm;
 		try {
-			selectedForm = formDao.read(((IWebformsFormView) formTable.getValue()).getId());
+			selectedForm = formDao.get(((IWebformsFormView) formTable.getValue()).getId());
 			if (selectedForm != null) {
 				// Remove the form.
 				formDao.makeTransient(selectedForm);
@@ -302,9 +302,6 @@ public class FormManager extends SecuredWebPage {
 								+ selectedForm.getLabel() + "' (version " + selectedForm.getVersion() + ").");
 				formTable.refreshTableData();
 			}
-		} catch (UnexpectedDatabaseException e) {
-			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		} catch (ElementCannotBeRemovedException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE);
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -315,7 +312,7 @@ public class FormManager extends SecuredWebPage {
 		WindowImportJson window = new WindowImportJson();
 		window.showCentered();
 		window.addAcceptActionListener(new AcceptActionListener() {
-			
+
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				formTable.refreshTableData();
@@ -333,8 +330,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	/**
-	 * Loads a forms and tries to validate. If the form is not validated returns
-	 * null
+	 * Loads a forms and tries to validate. If the form is not validated returns null
 	 * 
 	 * @return
 	 */
@@ -425,8 +421,8 @@ public class FormManager extends SecuredWebPage {
 
 	private void exportBaseFormMetadataJson() {
 		Form form = loadForm(getSelectedForm());
-		new WindowDownloaderBaseFormMetadataJson(new CompleteFormView(form), getSelectedForm().getLabel() + "_metadata_v"
-				+ getSelectedForm().getVersion() + ".json");
+		new WindowDownloaderBaseFormMetadataJson(new CompleteFormView(form), getSelectedForm().getLabel()
+				+ "_metadata_v" + getSelectedForm().getVersion() + ".json");
 	}
 
 	private void exportFlowPdf() {

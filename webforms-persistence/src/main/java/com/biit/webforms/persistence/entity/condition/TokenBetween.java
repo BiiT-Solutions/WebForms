@@ -13,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -28,8 +28,7 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 public class TokenBetween extends TokenComplex implements ITokenQuestion {
 	private static final long serialVersionUID = -8760649306071342145L;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional=false)
 	private Question question;
 
 	@Column(nullable = false)

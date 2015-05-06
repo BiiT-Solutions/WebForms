@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.IconProvider;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.common.theme.IThemeIcon;

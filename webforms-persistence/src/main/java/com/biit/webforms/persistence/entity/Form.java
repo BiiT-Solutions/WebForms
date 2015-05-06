@@ -24,18 +24,16 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Polymorphism;
 import org.hibernate.annotations.PolymorphismType;
 
-import com.biit.form.BaseCategory;
-import com.biit.form.BaseForm;
-import com.biit.form.BaseFormMetadata;
-import com.biit.form.BaseGroup;
-import com.biit.form.BaseQuestion;
-import com.biit.form.IBaseFormView;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseCategory;
+import com.biit.form.entity.BaseForm;
+import com.biit.form.entity.BaseFormMetadata;
+import com.biit.form.entity.BaseGroup;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.IBaseFormView;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
@@ -90,34 +88,13 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
-	public static Form fromJson(String jsonString) {
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
-		gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
-		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectDeserializer<Category>(Category.class));
-		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupDeserializer<Group>(Group.class));
-		gsonBuilder.registerTypeAdapter(Question.class, new QuestionDeserializer());
-		gsonBuilder.registerTypeAdapter(Text.class, new TextDeserializer());
-		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldDeserializer());
-		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerDeserializer());
-		Gson gson = gsonBuilder.create();
-
-		return (Form) gson.fromJson(jsonString, Form.class);
-	}
-
 	@Enumerated(EnumType.STRING)
 	private FormWorkStatus status;
 
 	@Lob
 	private String description;
 
-	@OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true, mappedBy = "form")
-	// If we made the flow lazy and we load all rules using initializeSets in
-	// the DAO, we increase performance
-	// (@BatchSize of tokens in flow runs better if we group all flow retrieving
-	// operations in the same time and are not
-	// mixed with retrieving operations of TreeObjects of the form).
-	@LazyCollection(LazyCollectionOption.TRUE)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
 	private Set<Flow> rules;
 
 	private String linkedFormLabel;
@@ -237,8 +214,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * Equals by comparationId and class. Comparation by class has been removed
-	 * to allow the comparation with CompleteFormView.
+	 * Equals by comparationId and class. Comparation by class has been removed to allow the comparation with
+	 * CompleteFormView.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -333,8 +310,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the
-	 * implicit rules (question without rule goes to the next element)
+	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
+	 * goes to the next element)
 	 * 
 	 * @return
 	 */
@@ -351,12 +328,12 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 			for (int i = 0; i < numQuestions; i++) {
 				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
-					computedView
-							.addNewNextElementFlow((TreeObject) baseQuestions[i], (TreeObject) baseQuestions[i + 1]);
+					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i],
+							(BaseQuestion) baseQuestions[i + 1]);
 				}
 			}
-			if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[numQuestions]) == null) {
-				computedView.addNewEndFormFlow((TreeObject) baseQuestions[numQuestions]);
+			if (computedView.getFlowsByOrigin((BaseQuestion) baseQuestions[numQuestions]) == null) {
+				computedView.addNewEndFormFlow((BaseQuestion) baseQuestions[numQuestions]);
 			}
 		}
 		return computedView;
@@ -579,10 +556,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * This is the only function that has to be used to link forms. This
-	 * controls that the linked element and versions are present at the same
-	 * time or not when modifying data. It is assumed that all linked forms have
-	 * the same name and organization.
+	 * This is the only function that has to be used to link forms. This controls that the linked element and versions
+	 * are present at the same time or not when modifying data. It is assumed that all linked forms have the same name
+	 * and organization.
 	 * 
 	 * @param linkedForms
 	 */
@@ -650,5 +626,20 @@ public class Form extends BaseForm implements IWebformsFormView {
 		for (Flow rule : getFlows()) {
 			rule.updateReferences(mappedElements);
 		}
+	}
+
+	public static Form fromJson(String jsonString) {
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
+		gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
+		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectDeserializer<Category>(Category.class));
+		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupDeserializer<Group>(Group.class));
+		gsonBuilder.registerTypeAdapter(Question.class, new QuestionDeserializer());
+		gsonBuilder.registerTypeAdapter(Text.class, new TextDeserializer());
+		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldDeserializer());
+		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerDeserializer());
+		Gson gson = gsonBuilder.create();
+
+		return (Form) gson.fromJson(jsonString, Form.class);
 	}
 }

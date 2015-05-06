@@ -10,7 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -28,7 +28,7 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.LT,
 			TokenTypes.GT, TokenTypes.LE, TokenTypes.GE };
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	private Question question;
 
 	@Column(nullable = false)
@@ -206,7 +206,7 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
+
 	/**
 	 * Compares two token ComparationValue. it must be of token between type.
 	 */
@@ -218,7 +218,7 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 				if (!question.getPathName().equals(comparationValue.question.getPathName())) {
 					return false;
 				}
-				
+
 				if (subformat != comparationValue.subformat) {
 					return false;
 				}

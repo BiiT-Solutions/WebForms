@@ -7,10 +7,10 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.biit.form.BaseCategory;
-import com.biit.form.BaseQuestion;
-import com.biit.form.BaseRepeatableGroup;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseCategory;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.BaseRepeatableGroup;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;

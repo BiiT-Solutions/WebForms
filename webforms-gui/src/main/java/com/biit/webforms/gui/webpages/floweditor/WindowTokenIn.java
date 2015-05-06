@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.persistence.entity.Answer;

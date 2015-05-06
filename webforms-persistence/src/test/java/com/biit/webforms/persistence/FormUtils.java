@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
@@ -128,17 +129,18 @@ public class FormUtils {
 		((Group) form.getChild(CATEGORY_2, GROUP_1)).setRepeatable(true);
 
 		// Create empty go to end form
-		form.addFlow(createEndFormflow(form.getChild(CATEGORY_1, SYSTEM_FIELD_1), false, emptyCondition()));
+		form.addFlow(createEndFormflow((BaseQuestion) form.getChild(CATEGORY_1, SYSTEM_FIELD_1), false,
+				emptyCondition()));
 		// Create others flow
-		form.addFlow(createEndFormflow(form.getChild(CATEGORY_1, SYSTEM_FIELD_1), true, emptyCondition()));
+		form.addFlow(createEndFormflow((BaseQuestion) form.getChild(CATEGORY_1, SYSTEM_FIELD_1), true, emptyCondition()));
 		// Create flow from A to B empty condition.
-		form.addFlow(createFlow(form.getChild(CATEGORY_1, SYSTEM_FIELD_1), form.getChild(CATEGORY_1, INFO_TEXT_1),
-				false, emptyCondition()));
+		form.addFlow(createFlow((BaseQuestion) form.getChild(CATEGORY_1, SYSTEM_FIELD_1),
+				(BaseQuestion) form.getChild(CATEGORY_1, INFO_TEXT_1), false, emptyCondition()));
 		// Create flow from A to B empty condition.
 		Token token1 = token(form.getChild(CATEGORY_1, GROUP_1, INPUT_TEXT_NUMBER_FLOAT), TokenTypes.LT, "3.0",
 				AnswerSubformat.FLOAT);
-		form.addFlow(createFlow(form.getChild(CATEGORY_2, SYSTEM_FIELD_1), form.getChild(CATEGORY_2, INFO_TEXT_1),
-				false, condition(token1)));
+		form.addFlow(createFlow((BaseQuestion) form.getChild(CATEGORY_2, SYSTEM_FIELD_1),
+				(BaseQuestion) form.getChild(CATEGORY_2, INFO_TEXT_1), false, condition(token1)));
 
 		return form;
 	}
@@ -160,7 +162,7 @@ public class FormUtils {
 		return Arrays.asList(tokens);
 	}
 
-	public static Flow createFlow(TreeObject origin, TreeObject destiny, boolean others, List<Token> conditions)
+	public static Flow createFlow(BaseQuestion origin, BaseQuestion destiny, boolean others, List<Token> conditions)
 			throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
 			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		Flow flow = new Flow();
@@ -168,7 +170,7 @@ public class FormUtils {
 		return flow;
 	}
 
-	public static Flow createEndFormflow(TreeObject origin, boolean others, List<Token> condition)
+	public static Flow createEndFormflow(BaseQuestion origin, boolean others, List<Token> condition)
 			throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
 			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		Flow flow = new Flow();

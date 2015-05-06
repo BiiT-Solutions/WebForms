@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.common.components;
 
-import com.biit.form.BaseForm;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseForm;
+import com.biit.form.entity.TreeObject;
 
 public class ComponentCellTreeObject extends ComponentCell {
 	private static final long serialVersionUID = 76595396879136434L;

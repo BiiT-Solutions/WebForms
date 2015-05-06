@@ -2,7 +2,7 @@ package com.biit.webforms.validators.reports;
 
 import java.util.Set;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
 import com.biit.webforms.persistence.entity.Question;

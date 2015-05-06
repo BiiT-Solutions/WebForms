@@ -14,8 +14,9 @@ import com.biit.abcd.persistence.dao.ISimpleFormViewDao;
 import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.abcd.security.AbcdActivity;
 import com.biit.abcd.security.AbcdAuthorizationService;
-import com.biit.form.IBaseFormView;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.IBaseFormView;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
@@ -104,7 +105,7 @@ public class ApplicationController {
 	public ApplicationController() {
 		super();
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-		formDao = (IFormDao) helper.getBean("formDao");
+		formDao = (IFormDao) helper.getBean("webformsFormDao");
 		blockDao = (IBlockDao) helper.getBean("blockDao");
 		formDaoAbcd = (com.biit.abcd.persistence.dao.IFormDao) helper.getBean("formDaoAbcd");
 		simpleFormDaoAbcd = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoAbcd"));
@@ -113,7 +114,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form on memory no persistance is done. Needs a unique name where name.length() < 190
+	 * User action to create a form on memory no persistence is done. Needs a unique name where name.length() < 190
 	 * characters.
 	 * 
 	 * @param formLabel
@@ -137,17 +138,12 @@ public class ApplicationController {
 		}
 
 		// Check if database contains a form with the same name.
-		try {
-			if (formDao.getForm(formLabel, organizationId) != null) {
-				FormWithSameNameException ex = new FormWithSameNameException("Form with name '" + formLabel
-						+ "' already exists.");
-				WebformsLogger.severe(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
-						+ "' createForm " + ex.getMessage());
-				throw ex;
-			}
-		} catch (UnexpectedDatabaseException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			throw e;
+		if (formDao.exists(formLabel, organizationId)) {
+			FormWithSameNameException ex = new FormWithSameNameException("Form with name '" + formLabel
+					+ "' already exists.");
+			WebformsLogger.severe(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+					+ "' createForm " + ex.getMessage());
+			throw ex;
 		}
 
 		return newform;
@@ -157,27 +153,22 @@ public class ApplicationController {
 			throws FormWithSameNameException, UnexpectedDatabaseException, FieldTooLongException,
 			ElementCannotBePersistedException {
 		// Check if database contains a form with the same name.
-		try {
-			if (formDao.getForm(formLabel, organizationId) != null) {
-				FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel
-						+ " already exists");
-				WebformsLogger.severe(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
-						+ "' createForm " + ex.getMessage());
-				throw ex;
-			}
-
-			Form newForm = Form.fromJson(json);
-			newForm.resetIds();
-			newForm.setOrganizationId(organizationId);
-			newForm.setLabel(formLabel);
-			newForm.setCreatedBy(UserSessionHandler.getUser());
-			newForm.setUpdatedBy(UserSessionHandler.getUser());
-
-			formDao.makePersistent(newForm);
-		} catch (UnexpectedDatabaseException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			throw e;
+		if (formDao.exists(formLabel, organizationId)) {
+			FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel
+					+ " already exists");
+			WebformsLogger.severe(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+					+ "' createForm " + ex.getMessage());
+			throw ex;
 		}
+
+		Form newForm = Form.fromJson(json);
+		newForm.resetIds();
+		newForm.setOrganizationId(organizationId);
+		newForm.setLabel(formLabel);
+		newForm.setCreatedBy(UserSessionHandler.getUser());
+		newForm.setUpdatedBy(UserSessionHandler.getUser());
+
+		formDao.makePersistent(newForm);
 		return formInUse;
 	}
 
@@ -205,9 +196,6 @@ public class ApplicationController {
 		} catch (ConstraintViolationException cve) {
 			WebformsLogger.errorMessage(ApplicationController.class.getName(), cve);
 			throw cve;
-		} catch (UnexpectedDatabaseException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			throw e;
 		}
 
 		return newform;
@@ -245,15 +233,12 @@ public class ApplicationController {
 		} catch (ConstraintViolationException cve) {
 			WebformsLogger.errorMessage(ApplicationController.class.getName(), cve);
 			throw cve;
-		} catch (UnexpectedDatabaseException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			throw e;
 		}
 		return newBlock;
 	}
 
 	public com.biit.abcd.persistence.entity.Form getAbcdForm(Long id) throws UnexpectedDatabaseException {
-		return formDaoAbcd.read(id);
+		return formDaoAbcd.get(id);
 	}
 
 	/**
@@ -281,43 +266,33 @@ public class ApplicationController {
 
 		// Read the original form and validate.
 		com.biit.abcd.persistence.entity.Form abcdForm;
-		try {
-			abcdForm = formDaoAbcd.read(simpleFormView.getId());
+		abcdForm = formDaoAbcd.get(simpleFormView.getId());
 
-			ValidateBaseForm validator = new ValidateBaseForm();
-			ValidateReport report = new ValidateReport();
-			if (!validator.validate(abcdForm, report)) {
-				WebformsLogger.warning(this.getClass().getName(), "Import from Abcd failed. - Form not validated");
-				WebformsLogger.warning(this.getClass().getName(), report.getReport());
-				throw new NotValidAbcdForm();
-			}
-
-			ConversorAbcdFormToForm conversor = new ConversorAbcdFormToForm();
-			Form webformsConvertedForm = conversor.convert(abcdForm);
-			try {
-				webformsForm.addChildren(webformsConvertedForm.getChildren());
-			} catch (NotValidChildException e) {
-				// Should not happen.
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			}
-
-			Set<IBaseFormView> linkedForms = new HashSet<IBaseFormView>();
-			linkedForms.add(simpleFormView);
-			webformsForm.setLinkedForms(linkedForms);
-
-			// Store on the database
-			try {
-				formDao.makePersistent(webformsForm);
-			} catch (UnexpectedDatabaseException e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
-				throw e;
-			}
-
-			return webformsForm;
-		} catch (UnexpectedDatabaseException e1) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e1);
-			throw e1;
+		ValidateBaseForm validator = new ValidateBaseForm();
+		ValidateReport report = new ValidateReport();
+		if (!validator.validate(abcdForm, report)) {
+			WebformsLogger.warning(this.getClass().getName(), "Import from Abcd failed. - Form not validated");
+			WebformsLogger.warning(this.getClass().getName(), report.getReport());
+			throw new NotValidAbcdForm();
 		}
+
+		ConversorAbcdFormToForm conversor = new ConversorAbcdFormToForm();
+		Form webformsConvertedForm = conversor.convert(abcdForm);
+		try {
+			webformsForm.addChildren(webformsConvertedForm.getChildren());
+		} catch (NotValidChildException e) {
+			// Should not happen.
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+
+		Set<IBaseFormView> linkedForms = new HashSet<IBaseFormView>();
+		linkedForms.add(simpleFormView);
+		webformsForm.setLinkedForms(linkedForms);
+
+		// Store on the database
+		formDao.makePersistent(webformsForm);
+
+		return webformsForm;
 	}
 
 	/**
@@ -332,18 +307,13 @@ public class ApplicationController {
 			BadAbcdLink {
 		List<com.biit.abcd.persistence.entity.Form> linkedForms = new ArrayList<>();
 		if (form != null && form.getLinkedFormLabel() != null && form.getLinkedFormOrganizationId() != null) {
-			try {
-				for (Integer version : form.getLinkedFormVersions()) {
-					com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.getForm(form.getLinkedFormLabel(),
-							version, form.getLinkedFormOrganizationId());
-					if (abcdForm == null) {
-						throw new BadAbcdLink();
-					}
-					linkedForms.add(abcdForm);
+			for (Integer version : form.getLinkedFormVersions()) {
+				com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.getForm(form.getLinkedFormLabel(),
+						version, form.getLinkedFormOrganizationId());
+				if (abcdForm == null) {
+					throw new BadAbcdLink();
 				}
-			} catch (UnexpectedDatabaseException e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
-				throw e;
+				linkedForms.add(abcdForm);
 			}
 		}
 		return linkedForms;
@@ -396,9 +366,6 @@ public class ApplicationController {
 		} catch (ConstraintViolationException cve) {
 			WebformsLogger.errorMessage(ApplicationController.class.getName(), cve);
 			throw cve;
-		} catch (UnexpectedDatabaseException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			throw e;
 		}
 		return newFormVersion;
 	}
@@ -413,9 +380,6 @@ public class ApplicationController {
 		} catch (FieldTooLongException e) {
 			WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
 					+ "' changeFormDescription " + e.getMessage());
-			throw e;
-		} catch (UnexpectedDatabaseException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			throw e;
 		}
 	}
@@ -711,17 +675,12 @@ public class ApplicationController {
 	public void saveForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		form.setUpdatedBy(getUser());
 		form.setUpdateTime();
-		try {
-			if (form instanceof Block) {
-				blockDao.makePersistent((Block) form);
-			} else {
-				formDao.makePersistent(form);
-			}
-			setUnsavedFormChanges(false);
-		} catch (UnexpectedDatabaseException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			throw e;
+		if (form instanceof Block) {
+			blockDao.makePersistent((Block) form);
+		} else {
+			formDao.makePersistent(form);
 		}
+		setUnsavedFormChanges(false);
 	}
 
 	public void finishForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
@@ -1023,8 +982,8 @@ public class ApplicationController {
 	 * @throws FlowWithoutDestinyException
 	 * @throws FlowNotAllowedException
 	 */
-	public void updateFlowContent(Flow flow, TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
-			List<Token> condition) throws BadFlowContentException, FlowWithoutSourceException,
+	public void updateFlowContent(Flow flow, BaseQuestion origin, FlowType flowType, BaseQuestion destiny,
+			boolean others, List<Token> condition) throws BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
 			FlowNotAllowedException {
 		logInfoStart("updateFlowContent", flow, origin, flowType, destiny, others, condition);
@@ -1281,18 +1240,13 @@ public class ApplicationController {
 	}
 
 	public void validateCompatibility(Form currentForm, IBaseFormView abcdSimpleForm) throws BadAbcdLink {
-		try {
-			com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.read(abcdSimpleForm.getId());
-			ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(currentForm);
-			ValidateReport report = new ValidateReport();
-			validator.validate(abcdForm, report);
-			if (!report.isValid()) {
-				throw new BadAbcdLink("Abcd form '" + abcdSimpleForm.getLabel() + "' is not a valid link for form '"
-						+ currentForm.getLabel() + "'.");
-			}
-		} catch (UnexpectedDatabaseException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+		com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.get(abcdSimpleForm.getId());
+		ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(currentForm);
+		ValidateReport report = new ValidateReport();
+		validator.validate(abcdForm, report);
+		if (!report.isValid()) {
+			throw new BadAbcdLink("Abcd form '" + abcdSimpleForm.getLabel() + "' is not a valid link for form '"
+					+ currentForm.getLabel() + "'.");
 		}
 	}
 
@@ -1339,21 +1293,11 @@ public class ApplicationController {
 	}
 
 	public Form loadForm(IWebformsFormView formView) {
-		try {
-			return formDao.read(formView.getId());
-		} catch (UnexpectedDatabaseException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}
-		return null;
+		return formDao.get(formView.getId());
 	}
 
 	public Block loadBlock(IWebformsBlockView blockView) {
-		try {
-			return blockDao.read(blockView.getId());
-		} catch (UnexpectedDatabaseException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}
-		return null;
+		return blockDao.get(blockView.getId());
 	}
 
 	public List<com.biit.webforms.persistence.entity.SimpleFormView> getSimpleFormVersionsWebforms(String label,

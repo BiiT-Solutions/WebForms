@@ -165,7 +165,7 @@ public class BlockManager extends SecuredWebPage {
 	public void removeSelectedBlock() {
 		Block selectedBlock;
 		try {
-			selectedBlock = blockDao.read(((IWebformsBlockView) blockTable.getValue()).getId());
+			selectedBlock = blockDao.get(((IWebformsBlockView) blockTable.getValue()).getId());
 			if (selectedBlock != null) {
 				// Remove the form.
 				blockDao.makeTransient(selectedBlock);
@@ -174,9 +174,6 @@ public class BlockManager extends SecuredWebPage {
 								+ selectedBlock.getLabel() + "' (version " + selectedBlock.getVersion() + ").");
 				blockTable.refreshTableData();
 			}
-		} catch (UnexpectedDatabaseException e) {
-			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		} catch (ElementCannotBeRemovedException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE,
 					LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_BLOCK_DESCRIPTION);

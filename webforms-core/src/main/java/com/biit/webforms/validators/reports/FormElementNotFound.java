@@ -1,10 +1,10 @@
 package com.biit.webforms.validators.reports;
 
-import com.biit.form.BaseCategory;
-import com.biit.form.BaseForm;
-import com.biit.form.BaseGroup;
-import com.biit.form.BaseQuestion;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseCategory;
+import com.biit.form.entity.BaseForm;
+import com.biit.form.entity.BaseGroup;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
 

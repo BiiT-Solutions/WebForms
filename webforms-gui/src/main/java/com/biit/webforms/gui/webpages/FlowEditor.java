@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.biit.form.BaseQuestion;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.TreeObject;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
@@ -523,8 +523,9 @@ public class FlowEditor extends SecuredWebPage {
 						MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
 								LanguageCodes.ERROR_DESCRIPTION_CONDITION_BAD_FORMED);
 					} else {
-						UserSessionHandler.getController().updateFlowContent(flow, windowFlow.getOrigin(),
-								windowFlow.getFlowType(), windowFlow.getDestiny(), windowFlow.isOthers(),
+						UserSessionHandler.getController().updateFlowContent(flow,
+								(BaseQuestion) windowFlow.getOrigin(), windowFlow.getFlowType(),
+								(BaseQuestion) windowFlow.getDestiny(), windowFlow.isOthers(),
 								windowFlow.getCondition());
 						addOrUpdateFlowInTableAction(flow);
 						window.close();

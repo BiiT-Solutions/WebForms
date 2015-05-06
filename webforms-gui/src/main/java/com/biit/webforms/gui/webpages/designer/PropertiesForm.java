@@ -1,7 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.BaseForm;
-import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.form.entity.BaseForm;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
@@ -20,7 +19,7 @@ public class PropertiesForm extends PropertiesBaseForm<Form> {
 	public PropertiesForm() {
 		super(Form.class);
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-		formDao = (IFormDao) helper.getBean("formDao");
+		formDao = (IFormDao) helper.getBean("webformsFormDao");
 	}
 
 	@Override
@@ -39,7 +38,7 @@ public class PropertiesForm extends PropertiesBaseForm<Form> {
 					UserSessionHandler.getController().updateForm((Form) getInstance(),
 							((BaseForm) getInstance()).getLabel(), getDescriptionTextArea().getValue());
 				}
-			} catch (ReadOnlyException | UnexpectedDatabaseException e) {
+			} catch (ReadOnlyException e) {
 				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE);
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}

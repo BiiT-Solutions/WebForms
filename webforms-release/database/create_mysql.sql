@@ -9,7 +9,7 @@
         flowType varchar(255),
         others bit not null,
         destiny_id bigint,
-        form_ID bigint,
+        form_ID bigint not null,
         origin_id bigint not null,
         primary key (ID)
     );
@@ -28,7 +28,7 @@
         updatedBy DOUBLE,
         sortSeq bigint not null,
         type varchar(255) not null,
-        flow_ID bigint,
+        flow_ID bigint not null,
         primary key (ID)
     );
 
@@ -41,7 +41,7 @@
         updatedBy DOUBLE,
         sortSeq bigint not null,
         type varchar(255) not null,
-        flow_ID bigint,
+        flow_ID bigint not null,
         datePeriodUnit varchar(255),
         subformat varchar(255) not null,
         valueEnd varchar(255),
@@ -59,7 +59,7 @@
         updatedBy DOUBLE,
         sortSeq bigint not null,
         type varchar(255) not null,
-        flow_ID bigint,
+        flow_ID bigint not null,
         answer_ID bigint not null,
         question_ID bigint not null,
         primary key (ID)
@@ -74,11 +74,11 @@
         updatedBy DOUBLE,
         sortSeq bigint not null,
         type varchar(255) not null,
-        flow_ID bigint,
+        flow_ID bigint not null,
         datePeriodUnit varchar(255),
         subformat varchar(255) not null,
         value varchar(255),
-        question_ID bigint,
+        question_ID bigint not null,
         primary key (ID)
     );
 
@@ -91,7 +91,7 @@
         updatedBy DOUBLE,
         sortSeq bigint not null,
         type varchar(255) not null,
-        flow_ID bigint,
+        flow_ID bigint not null,
         question_ID bigint not null,
         primary key (ID)
     );
@@ -105,7 +105,7 @@
         updatedBy DOUBLE,
         sortSeq bigint not null,
         answerValue_ID bigint,
-        tokenIn_ID bigint,
+        tokenIn_ID bigint not null,
         primary key (ID)
     );
 
@@ -158,7 +158,7 @@
         originalReference varchar(190) not null,
         sortSeq bigint not null,
         parent_ID bigint,
-        reference_ID bigint,
+        reference_ID bigint not null,
         primary key (ID)
     );
 

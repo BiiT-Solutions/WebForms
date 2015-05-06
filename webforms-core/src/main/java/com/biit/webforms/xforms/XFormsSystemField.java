@@ -4,6 +4,7 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
+import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
@@ -12,12 +13,34 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
  * 
  */
 public class XFormsSystemField extends XFormsQuestion {
-	
+
 	private static final String CSS_CLASS_SYSTEMFIELD = "webforms-systemfield";
 
 	public XFormsSystemField(XFormsHelper xFormsHelper, SystemField systemField) throws NotValidTreeObjectException,
 			NotValidChildException {
 		super(xFormsHelper, systemField);
+	}
+
+	/**
+	 * System fields can be prefilles using parameters.
+	 */
+	@Override
+	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"").append(getBindingName())
+				.append("\" ");
+		// Reference must be always to a name and not to a complete xpath, if
+		// the xpath is used, in a loop all repeated
+		// questions would always have the same answers selected.
+		binding.append("ref=\"").append(getName()).append("\" ");
+		binding.append(getPrefill());
+		getRelevantStructure(binding);
+
+		binding.append(" />");
+	}
+
+	private String getPrefill() {
+		return " xxf:default=\"xxf:get-request-parameter('" + getSource().getName() + "')\" ";
 	}
 
 	@Override
@@ -86,7 +109,7 @@ public class XFormsSystemField extends XFormsQuestion {
 		getXFormsHelper().addVisibilityOfElement(getSource(), super.getAllFlowsVisibility());
 		return "false";
 	}
-	
+
 	@Override
 	protected String getCssClass() {
 		return super.getCssClass() + " " + CSS_CLASS_SYSTEMFIELD;

@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.biit.form.BaseForm;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseForm;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;

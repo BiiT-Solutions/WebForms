@@ -7,9 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import com.biit.webforms.enumerations.FormWorkStatus;
@@ -21,8 +23,10 @@ import com.biit.webforms.persistence.entity.SimpleFormView;
 public class SimpleFormViewDao implements ISimpleFormViewDao {
 
 	private Class<SimpleFormView> type;
-
-	private SessionFactory sessionFactory = null;
+	
+	@PersistenceContext(unitName = "defaultPersistenceUnit")
+	@Qualifier(value = "webformsManagerFactory")
+	private EntityManager entityManager;
 
 	public SimpleFormViewDao() {
 		this.type = SimpleFormView.class;
@@ -32,25 +36,12 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 		return type;
 	}
 
-	@Override
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	@Override
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public int getRowCount() {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		SQLQuery query = session.createSQLQuery("SELECT COUNT(*) FROM tree_forms");
+		Query query = entityManager.createNativeQuery("SELECT COUNT(*) FROM tree_forms");
 
-		List<Object[]> rows = query.list();
-		session.getTransaction().commit();
+		List<Object[]> rows = query.getResultList();
 
 		for (Object[] row : rows) {
 			return (int) row[0];
@@ -61,18 +52,13 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleFormView> getAll() {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		SQLQuery query = session
-				.createSQLQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, max.maxversion "
+		Query query = entityManager.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, max.maxversion "
 						+ "FROM tree_forms tf INNER JOIN "
 						+ "(SELECT MAX(version) AS maxversion, label, organizationId FROM tree_forms "
 						+ "GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
 						+ "ORDER BY label, tf.version DESC;");
 
-		List<Object[]> rows = query.list();
-
-		session.getTransaction().commit();
+		List<Object[]> rows = query.getResultList();
 
 		List<SimpleFormView> formViews = new ArrayList<>();
 		for (Object[] row : rows) {
@@ -116,28 +102,20 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 	private Set<Integer> getLinkedFormVersions(long formId) {
 		Set<Integer> linkedVersions = new HashSet<>();
 
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		SQLQuery query = session.createSQLQuery("SELECT linkedFormVersions FROM linked_form_versions WHERE formId="
+		Query query = entityManager.createNativeQuery("SELECT linkedFormVersions FROM linked_form_versions WHERE formId="
 				+ formId);
-		List<Integer> rows = query.list();
-
-		session.getTransaction().commit();
-
-		for (Integer row : rows) {
-			linkedVersions.add(row);
+		List<Object[]> rows = query.getResultList();
+		
+		for (Object row : rows) {
+			linkedVersions.add((Integer) row);
 		}
-
 		return linkedVersions;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleFormView> getFormsThatUse(Block block) {
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		SQLQuery query = session
-				.createSQLQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, max.maxversion "
+		Query query = entityManager.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, max.maxversion "
 						+ " FROM tree_forms tf "
 						+ " INNER JOIN (SELECT MAX(version) AS maxversion, label, organizationId FROM tree_forms "
 						+ " GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
@@ -148,9 +126,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 						+ ")) "
 						+ " ORDER BY label, tf.version DESC;");
 
-		List<Object[]> rows = query.list();
-
-		session.getTransaction().commit();
+		List<Object[]> rows = query.getResultList();
 
 		List<SimpleFormView> formViews = new ArrayList<>();
 		for (Object[] row : rows) {

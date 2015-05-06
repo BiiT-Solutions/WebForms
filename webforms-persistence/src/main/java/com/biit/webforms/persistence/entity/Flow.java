@@ -20,11 +20,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
-import com.biit.form.BaseQuestion;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FlowType;
@@ -51,18 +49,16 @@ public class Flow extends StorableObject {
 
 	// Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
 	// attached to that column, you have to state the name.
-	@ManyToOne
-	@JoinColumn(name = "origin_id", nullable = false)
-	@Fetch(FetchMode.JOIN)
-	private TreeObject origin;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "origin_id")
+	private BaseQuestion origin;
 
 	@Enumerated(EnumType.STRING)
 	private FlowType flowType;
 
 	@ManyToOne
 	@JoinColumn(name = "destiny_id")
-	@Fetch(FetchMode.JOIN)
-	private TreeObject destiny;
+	private BaseQuestion destiny;
 
 	private boolean others;
 
@@ -71,8 +67,7 @@ public class Flow extends StorableObject {
 	@OrderBy(value = "sortSeq ASC")
 	private List<Token> condition;
 
-	@ManyToOne
-	@Fetch(FetchMode.JOIN)
+	@ManyToOne(optional = false)
 	private Form form;
 
 	@Transient
@@ -88,11 +83,11 @@ public class Flow extends StorableObject {
 		readOnly = false;
 	}
 
-	public TreeObject getOrigin() {
+	public BaseQuestion getOrigin() {
 		return origin;
 	}
 
-	public void setOrigin(TreeObject origin) {
+	public void setOrigin(BaseQuestion origin) {
 		this.origin = origin;
 	}
 
@@ -104,11 +99,11 @@ public class Flow extends StorableObject {
 		this.flowType = flowType;
 	}
 
-	public TreeObject getDestiny() {
+	public BaseQuestion getDestiny() {
 		return destiny;
 	}
 
-	public void setDestiny(TreeObject destiny) {
+	public void setDestiny(BaseQuestion destiny) {
 		this.destiny = destiny;
 	}
 
@@ -120,7 +115,7 @@ public class Flow extends StorableObject {
 		this.others = others;
 	}
 
-	public void setContent(TreeObject origin, FlowType flowType, TreeObject destiny, boolean others,
+	public void setContent(BaseQuestion origin, FlowType flowType, BaseQuestion destiny, boolean others,
 			List<Token> condition) throws BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		checkFlowRestrictions(origin, flowType, destiny, others, condition);
@@ -157,7 +152,7 @@ public class Flow extends StorableObject {
 		}
 		// Flow destiny cannot be prior to origin.
 		if (!flowType.isDestinyNull()) {
-			if (!(origin.compareTo(destiny) == -1)) {			
+			if (!(origin.compareTo(destiny) == -1)) {
 				throw new FlowDestinyIsBeforeOriginException();
 			}
 		}
@@ -325,10 +320,10 @@ public class Flow extends StorableObject {
 	 */
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		if (getOrigin() != null) {
-			setOrigin(mappedElements.get(getOrigin().getComparationId()));
+			setOrigin((BaseQuestion) mappedElements.get(getOrigin().getComparationId()));
 		}
 		if (getDestiny() != null) {
-			setDestiny(mappedElements.get(getDestiny().getComparationId()));
+			setDestiny((BaseQuestion) mappedElements.get(getDestiny().getComparationId()));
 		}
 		for (Token token : getCondition()) {
 			token.updateReferences(mappedElements);

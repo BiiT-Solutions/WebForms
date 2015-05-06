@@ -1,6 +1,6 @@
 package com.biit.webforms.utils.exporters.json;
 
-import com.biit.form.BaseFormMetadata;
+import com.biit.form.entity.BaseFormMetadata;
 import com.biit.webforms.persistence.entity.Form;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

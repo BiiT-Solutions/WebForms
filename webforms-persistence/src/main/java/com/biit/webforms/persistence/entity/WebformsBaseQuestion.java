@@ -1,6 +1,6 @@
 package com.biit.webforms.persistence.entity;
 
-import com.biit.form.BaseQuestion;
+import com.biit.form.entity.BaseQuestion;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;

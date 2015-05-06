@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.components;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.FilterTreeObjectTableContainsName;
 import com.vaadin.data.Item;
 

@@ -1,139 +1,156 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 
-import javax.xml.bind.TypeConstraintException;
-
-import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.biit.form.TreeObject;
-import com.biit.form.persistence.dao.hibernate.BaseFormDao;
-import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
-import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
-import com.biit.webforms.persistence.entity.BlockReference;
-import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
-import com.liferay.portal.model.Organization;
 
 @Repository
-public class FormDao extends BaseFormDao<Form> implements IFormDao {
+public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao {
 
 	public FormDao() {
 		super(Form.class);
 	}
 
 	@Override
-	protected void initializeSets(List<Form> forms) {
-		super.initializeSets(forms);
-		for (Form form : forms) {
-			// Initializes the sets for lazy-loading (within the same session)
-			Hibernate.initialize(form.getFlows());
-		}
-	}
-
-	@Override
 	@Cacheable(value = "webformsforms", key = "#id")
-	public Form read(Long id) throws UnexpectedDatabaseException {
-		// WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
-		Form form = super.read(id);
-		// WebformsLogger.info(FormDao.class.getName(), getSessionFactory().getStatistics().toString());
-		return form;
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	public Form get(Long id) {
+		return super.get(id);
 	}
 
 	@Override
 	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
-	public void makeTransient(Form form) throws UnexpectedDatabaseException, ElementCannotBeRemovedException {
-		// Unlink all building block refereces to avoid to remove its elements.
-		for (TreeObject child : form.getChildren()) {
-			if (child instanceof BlockReference) {
-				((BlockReference) child).setReference(null);
-			}
-		}
-		super.makeTransient(form);
-	}
-
-	/**
-	 * Filtered version of get All. Takes a Class argument and returns a list with all the elements that match the class
-	 * argument.
-	 * 
-	 * @param cls
-	 * @return
-	 * @throws UnexpectedDatabaseException
-	 */
-	@Override
-	public List<Form> getAll(Class<?> cls, Organization organization) throws UnexpectedDatabaseException {
-		if (!Form.class.isAssignableFrom(cls)) {
-			throw new TypeConstraintException("FormDao can only filter subclasses of " + Form.class.getName());
-		}
-
-		Session session = getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		try {
-			// session.createCriteria(getType()).list() is not working returns
-			// repeated elements due to
-			// http://stackoverflow.com/questions/8758363/why-session-createcriteriaclasstype-list-return-more-object-than-in-list
-			// if we have a list with eager fetch.
-			Criteria criteria = session.createCriteria(cls);
-			// This is executed in java side.
-			criteria.setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE);
-			criteria.add(Restrictions.eq("organizationId", organization.getOrganizationId()));
-			@SuppressWarnings("unchecked")
-			List<Form> result = criteria.list();
-
-			// Filter by class
-			Iterator<Form> itr = result.iterator();
-			while (itr.hasNext()) {
-				Form form = itr.next();
-				if (!form.getClass().isAssignableFrom(cls)) {
-					itr.remove();
-				}
-			}
-			initializeSets(result);
-			session.getTransaction().commit();
-			return result;
-		} catch (RuntimeException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			session.getTransaction().rollback();
-			throw new UnexpectedDatabaseException(e.getMessage(), e);
-		}
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	public void makeTransient(Form form) throws ElementCannotBeRemovedException {
+		form.getFlows().clear();
+		Form mergedForm = getEntityManager().contains(form) ? form : getEntityManager().merge(form);
+		makePersistent(mergedForm);
+		
+		super.makeTransient(mergedForm);
 	}
 
 	@Override
 	@CachePut(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null")
-	public Form makePersistent(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
-		// For solving Hibernate bug
-		// https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
-		// list of children
-		// with @Orderby or @OrderColumn we use our own order manager.
-
-		// Sort the rules
-		Set<Flow> rules = form.getFlows();
-		Iterator<Flow> ruleItr = rules.iterator();
-		while (ruleItr.hasNext()) {
-			Flow rule = ruleItr.next();
-			rule.updateConditionSortSeq();
-		}
-
-		return super.makePersistent(form);
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	public void makePersistent(Form form) {
+		super.makePersistent(form);
 	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+	public boolean exists(String label, int version, long organizationId, long id) {
+		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		// Metamodel of the entity table
+		Metamodel m = getEntityManager().getMetamodel();
+		EntityType<Form> formMetamodel = m.entity(Form.class);
+		Root<Form> form = cq.from(Form.class);
+
+		cq.select(cb.count(form));
+		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), label),
+				cb.equal(form.get(formMetamodel.getSingularAttribute("version", Integer.class)), version),
+				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId),
+				cb.notEqual(form.get(formMetamodel.getSingularAttribute("id", Long.class)), id)));
+
+		return getEntityManager().createQuery(cq).getSingleResult() > 0;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+	public boolean exists(String label, long organizationId) {
+		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		// Metamodel of the entity table
+		Metamodel m = getEntityManager().getMetamodel();
+		EntityType<Form> formMetamodel = m.entity(Form.class);
+		Root<Form> form = cq.from(Form.class);
+
+		cq.select(cb.count(form));
+		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), label),
+				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
+		return getEntityManager().createQuery(cq).getSingleResult() > 0;
+	}
+
+	// /**
+	// * Filtered version of get All. Takes a Class argument and returns a list with all the elements that match the
+	// class
+	// * argument.
+	// *
+	// * @param cls
+	// * @return
+	// * @throws UnexpectedDatabaseException
+	// */
+	// @Override
+	// public List<Form> getAll(Class<?> cls, Organization organization) throws UnexpectedDatabaseException {
+	// if (!Form.class.isAssignableFrom(cls)) {
+	// throw new TypeConstraintException("FormDao can only filter subclasses of " + Form.class.getName());
+	// }
+	//
+	// Session session = getSessionFactory().getCurrentSession();
+	// session.beginTransaction();
+	// try {
+	// // session.createCriteria(getType()).list() is not working returns
+	// // repeated elements due to
+	// //
+	// http://stackoverflow.com/questions/8758363/why-session-createcriteriaclasstype-list-return-more-object-than-in-list
+	// // if we have a list with eager fetch.
+	// Criteria criteria = session.createCriteria(cls);
+	// // This is executed in java side.
+	// criteria.setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE);
+	// criteria.add(Restrictions.eq("organizationId", organization.getOrganizationId()));
+	// @SuppressWarnings("unchecked")
+	// List<Form> result = criteria.list();
+	//
+	// // Filter by class
+	// Iterator<Form> itr = result.iterator();
+	// while (itr.hasNext()) {
+	// Form form = itr.next();
+	// if (!form.getClass().isAssignableFrom(cls)) {
+	// itr.remove();
+	// }
+	// }
+	// initializeSets(result);
+	// session.getTransaction().commit();
+	// return result;
+	// } catch (RuntimeException e) {
+	// WebformsLogger.errorMessage(this.getClass().getName(), e);
+	// session.getTransaction().rollback();
+	// throw new UnexpectedDatabaseException(e.getMessage(), e);
+	// }
+	// }
 
 	@Override
 	@CacheEvict(value = "webformsforms", allEntries = true)
 	public void evictAllCache() {
 		super.evictAllCache();
+	}
+
+	@Override
+	public Form getForm(String label, Integer version, Long organizationId) {
+		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Form> cq = cb.createQuery(Form.class);
+		Metamodel m = getEntityManager().getMetamodel();
+		EntityType<Form> formType = m.entity(Form.class);
+		Root<Form> formRoot = cq.from(Form.class);
+		cq.where(cb.and(cb.equal(formRoot.get(formType.getSingularAttribute("label", String.class)), label),
+				cb.equal(formRoot.get(formType.getSingularAttribute("version", Integer.class)), version),
+				cb.equal(formRoot.get(formType.getSingularAttribute("organizationId", Long.class)), organizationId)));
+
+		return getEntityManager().createQuery(cq).getSingleResult();
 	}
 }

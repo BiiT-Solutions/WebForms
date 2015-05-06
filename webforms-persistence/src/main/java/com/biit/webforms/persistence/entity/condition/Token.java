@@ -8,12 +8,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.TokenTypes;
@@ -27,7 +25,6 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
  */
 @Entity
 @Table(name = "token")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Token extends StorableObject {
 	private static final long serialVersionUID = 113069074950725476L;
 
@@ -38,7 +35,7 @@ public class Token extends StorableObject {
 	@Column(nullable = false)
 	private long sortSeq = 0;
 
-	@ManyToOne
+	@ManyToOne(optional = false)
 	private Flow flow;
 
 	public Token() {
@@ -219,7 +216,7 @@ public class Token extends StorableObject {
 	}
 
 	public boolean isContentEqual(Token token) {
-		if(type!=token.type){
+		if (type != token.type) {
 			return false;
 		}
 		return true;

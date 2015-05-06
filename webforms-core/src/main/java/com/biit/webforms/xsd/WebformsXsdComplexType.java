@@ -3,8 +3,8 @@ package com.biit.webforms.xsd;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.form.BaseGroup;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseGroup;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;

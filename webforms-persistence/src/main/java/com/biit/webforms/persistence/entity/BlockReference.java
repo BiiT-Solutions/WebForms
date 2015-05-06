@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Polymorphism;
 import org.hibernate.annotations.PolymorphismType;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
@@ -29,7 +29,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	public static final String DEFAULT_TECHNICAL_NAME = "block_reference";
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>();
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	private Block reference;
 
 	public BlockReference() {
@@ -62,12 +62,6 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 			return reference.getStatus();
 		}
 		return null;
-	}
-
-	@Override
-	public void resetIds() {
-		// Overridden version to also reset ids of rules.
-		super.resetIds();
 	}
 
 	@Override

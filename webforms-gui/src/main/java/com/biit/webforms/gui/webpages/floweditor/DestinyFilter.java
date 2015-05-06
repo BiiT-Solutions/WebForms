@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.persistence.entity.Flow;
 import com.vaadin.data.Item;
 

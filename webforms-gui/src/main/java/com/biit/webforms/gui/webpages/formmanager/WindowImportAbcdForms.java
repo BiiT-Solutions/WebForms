@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
 import com.biit.abcd.persistence.entity.SimpleFormView;
-import com.biit.form.IBaseFormView;
+import com.biit.form.entity.IBaseFormView;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Form;

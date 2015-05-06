@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import com.biit.form.BaseQuestion;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.condition.parser.expressions.WebformsExpression;

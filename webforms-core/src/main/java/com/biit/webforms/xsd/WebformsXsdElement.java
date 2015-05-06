@@ -1,8 +1,8 @@
 package com.biit.webforms.xsd;
 
-import com.biit.form.BaseGroup;
-import com.biit.form.BaseRepeatableGroup;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseGroup;
+import com.biit.form.entity.BaseRepeatableGroup;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;

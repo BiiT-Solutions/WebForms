@@ -1,6 +1,6 @@
 package com.biit.webforms.pdfgenerator;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.persistence.entity.Form;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;

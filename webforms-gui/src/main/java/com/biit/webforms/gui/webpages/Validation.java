@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.biit.abcd.security.AbcdActivity;
 import com.biit.abcd.security.AbcdAuthorizationService;
-import com.biit.form.IBaseFormView;
+import com.biit.form.entity.IBaseFormView;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.form.validators.reports.DuplicatedNestedName;
 import com.biit.form.validators.reports.DuplicatedNestedNameWithChild;

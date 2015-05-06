@@ -47,7 +47,7 @@ public class WindowSettings extends Window {
 		setCaption(LanguageCodes.CAPTION_SETTINGS_TITLE.translation());
 
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-		formDao = (IFormDao) helper.getBean("formDao");
+		formDao = (IFormDao) helper.getBean("webformsFormDao");
 	}
 
 	private Component generateContent() {

@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import com.biit.form.IBaseFormView;
+import com.biit.form.entity.IBaseFormView;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;

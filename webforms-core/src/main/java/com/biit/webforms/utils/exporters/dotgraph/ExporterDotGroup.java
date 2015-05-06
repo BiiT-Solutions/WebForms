@@ -1,7 +1,7 @@
 package com.biit.webforms.utils.exporters.dotgraph;
 
-import com.biit.form.BaseQuestion;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Group;
 

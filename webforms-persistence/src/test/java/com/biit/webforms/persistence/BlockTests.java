@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
@@ -63,7 +63,7 @@ public class BlockTests extends AbstractTransactionalTestNGSpringContextTests {
 
 		blockDao.makePersistent(block);
 
-		Block cachedBlock = blockDao.read(block.getId());
+		Block cachedBlock = blockDao.get(block.getId());
 		Assert.assertEquals(elements + 1, cachedBlock.getAllInnerStorableObjects().size());
 	}
 

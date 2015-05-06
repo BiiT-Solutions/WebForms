@@ -1,6 +1,6 @@
 package com.biit.webforms.validators.reports;
 
-import com.biit.form.BaseQuestion;
+import com.biit.form.entity.BaseQuestion;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
 

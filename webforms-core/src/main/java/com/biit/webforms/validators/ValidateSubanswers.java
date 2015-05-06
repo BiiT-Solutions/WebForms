@@ -1,7 +1,7 @@
 package com.biit.webforms.validators;
 
-import com.biit.form.BaseAnswer;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseAnswer;
+import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.Question;

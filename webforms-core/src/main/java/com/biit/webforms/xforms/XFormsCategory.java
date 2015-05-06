@@ -1,7 +1,7 @@
 package com.biit.webforms.xforms;
 
-import com.biit.form.BaseCategory;
-import com.biit.form.BaseGroup;
+import com.biit.form.entity.BaseCategory;
+import com.biit.form.entity.BaseGroup;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 

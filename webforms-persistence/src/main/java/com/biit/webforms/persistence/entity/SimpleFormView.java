@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.biit.form.IBaseFormView;
+import com.biit.form.entity.IBaseFormView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 
 public class SimpleFormView implements IWebformsFormView {

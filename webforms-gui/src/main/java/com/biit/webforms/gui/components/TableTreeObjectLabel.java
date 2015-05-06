@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.components;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.data.Item;

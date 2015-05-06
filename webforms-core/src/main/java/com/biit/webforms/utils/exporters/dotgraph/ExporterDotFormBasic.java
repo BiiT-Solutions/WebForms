@@ -3,8 +3,8 @@ package com.biit.webforms.utils.exporters.dotgraph;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
-import com.biit.form.BaseRepeatableGroup;
-import com.biit.form.TreeObject;
+import com.biit.form.entity.BaseRepeatableGroup;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Flow;

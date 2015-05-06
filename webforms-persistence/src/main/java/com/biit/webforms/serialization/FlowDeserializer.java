@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biit.form.entity.BaseQuestion;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.persistence.entity.Flow;
@@ -20,19 +21,18 @@ public class FlowDeserializer extends StorableObjectDeserializer<Flow> {
 	private final Form form;
 
 	@Override
-	public void deserialize(JsonElement json,
-			JsonDeserializationContext context, Flow element) {
+	public void deserialize(JsonElement json, JsonDeserializationContext context, Flow element) {
 		JsonObject jobject = (JsonObject) json;
 
-		element.setOrigin(FormDeserializer.parseTreeObjectPath("origin_id", form, jobject, context));
+		element.setOrigin((BaseQuestion) FormDeserializer.parseTreeObjectPath("origin_id", form, jobject, context));
 		element.setFlowType(parseFlowType("flowType", jobject, context));
-		element.setDestiny(FormDeserializer.parseTreeObjectPath("destiny_id", form, jobject, context));
+		element.setDestiny((BaseQuestion) FormDeserializer.parseTreeObjectPath("destiny_id", form, jobject, context));
 		element.setOthers(parseBoolean("others", jobject, context));
 
 		if (!element.isOthers()) {
 			element.setCondition(parseCondition("condition", jobject, context));
 		}
-		
+
 		super.deserialize(json, context, element);
 	}
 
@@ -40,26 +40,24 @@ public class FlowDeserializer extends StorableObjectDeserializer<Flow> {
 		List<Token> condition = new ArrayList<Token>();
 
 		JsonElement valuesJson = jobject.get(name);
-		if(valuesJson!=null){
-			Type listType = new TypeToken<List<StorableObject>>() {}.getType();
+		if (valuesJson != null) {
+			Type listType = new TypeToken<List<StorableObject>>() {
+			}.getType();
 			@SuppressWarnings("unchecked")
-			List<StorableObject> tokens =  (List<StorableObject>)context.deserialize(valuesJson, listType);
-			if(tokens!=null){
-				for(StorableObject token: tokens){
-					condition.add((Token)token);
+			List<StorableObject> tokens = (List<StorableObject>) context.deserialize(valuesJson, listType);
+			if (tokens != null) {
+				for (StorableObject token : tokens) {
+					condition.add((Token) token);
 				}
 			}
 		}
-		
 
 		return condition;
 	}
 
-	public static FlowType parseFlowType(String name, JsonObject jobject,
-			JsonDeserializationContext context) {
+	public static FlowType parseFlowType(String name, JsonObject jobject, JsonDeserializationContext context) {
 		if (jobject.get(name) != null) {
-			return (FlowType) context.deserialize(jobject.get(name),
-					FlowType.class);
+			return (FlowType) context.deserialize(jobject.get(name), FlowType.class);
 		}
 		return null;
 	}
@@ -69,8 +67,8 @@ public class FlowDeserializer extends StorableObjectDeserializer<Flow> {
 	}
 
 	@Override
-	public Flow deserialize(JsonElement json, Type typeOfT,
-			JsonDeserializationContext context) throws JsonParseException {
+	public Flow deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+			throws JsonParseException {
 		Flow instance = new Flow();
 		deserialize(json, context, instance);
 		return instance;

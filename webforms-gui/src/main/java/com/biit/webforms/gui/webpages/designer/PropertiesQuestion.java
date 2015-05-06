@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.TreeObject;
+import com.biit.form.entity.TreeObject;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
