@@ -18,7 +18,7 @@ import com.biit.webforms.persistence.entity.SimpleBlockView;
 @Repository
 public class SimpleBlockViewDao implements ISimpleBlockViewDao {
 
-	@PersistenceContext(unitName = "defaultPersistenceUnit")
+	@PersistenceContext(unitName = "webformsPersistenceUnit")
 	@Qualifier(value = "webformsManagerFactory")
 	private EntityManager entityManager;
 	

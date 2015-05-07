@@ -22,9 +22,7 @@
 
 	<!-- Read any *.properties file in project and override some of them with 
 		files outside of the project -->
-	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-		id="corePlaceHolder">
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" id="corePlaceHolder">
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="ignoreResourceNotFound" value="true" />
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
@@ -37,18 +35,20 @@
 			</list>
 		</property>
 	</bean>
-
-	<bean
-		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+	
+	<!-- <tx:annotation-driven transaction-manager="webformsTransactionManager" /> -->
+	<tx:annotation-driven />
 
 	<!-- Transaction Manager -->
-	<bean id="webformsTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+	<bean id="transactionManagerWebforms" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="webformsManagerFactory" />
 		<property name="jpaDialect" ref="jpaDialect" />
+		<qualifier value="webformsTransactionManager"/>
 	</bean>
-	<bean id="abcdTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="webformsManagerFactory" />
+	<bean id="transactionManagerAbcd" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="abcdManagerFactory" />
 		<property name="jpaDialect" ref="jpaDialect" />
+		<qualifier value="abcdTransactionManager"/>
 	</bean>
 
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
@@ -58,7 +58,7 @@
 	<bean id="webformsManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="webformsDataSource" />
-		<property name="persistenceUnitName" value="defaultPersistenceUnit" />
+		<property name="persistenceUnitName" value="webformsPersistenceUnit" />
 		<property name="packagesToScan">
 			<list>
 				<value>com.biit.webforms.persistence.**.*</value>
@@ -70,7 +70,7 @@
 	<bean id="abcdManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="abcdDataSource" />
-		<property name="persistenceUnitName" value="defaultPersistenceUnit" />
+		<property name="persistenceUnitName" value="abcdPersistenceUnit" />
 		<property name="packagesToScan">
 			<list>
 				<value>com.biit.abcd.persistence.**.*</value>
@@ -173,8 +173,6 @@
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 	</bean>
 
-	<tx:annotation-driven transaction-manager="webformsTransactionManager" />
-
 	<!-- Enables Interceptors -->
 	<aop:aspectj-autoproxy />
 	
@@ -202,7 +200,7 @@
 	<bean name="formDaoAbcd" class="com.biit.abcd.persistence.dao.hibernate.FormDao" />
 	<bean name="simpleFormDaoAbcd"
 		class="com.biit.abcd.persistence.dao.hibernate.SimpleFormViewDao" />
-	<bean name="customVariableDao"
-		class="com.biit.abcd.persistence.dao.hibernate.CustomVariableDao" />
+<!-- 	<bean name="customVariableDao"
+		class="com.biit.abcd.persistence.dao.hibernate.CustomVariableDao" /> -->
 
 </beans>

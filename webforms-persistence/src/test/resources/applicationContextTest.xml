@@ -24,10 +24,14 @@
 	<!-- Read any *.properties file -->
 	<context:property-placeholder location="classpath*:*.properties" />
 
+
+	<tx:annotation-driven />
+
 	<!-- Transaction Manager -->
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+	<bean id="transactionManagerWebforms" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="webformsManagerFactory" />
 		<property name="jpaDialect" ref="jpaDialect" />
+		<qualifier value="webformsTransactionManager"/>
 	</bean>
 
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
@@ -37,7 +41,7 @@
 	<bean id="webformsManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="persistenceUnitName" value="defaultPersistenceUnit" />
+		<property name="persistenceUnitName" value="webformsPersistenceUnit" />
 		<property name="packagesToScan">
 			<list>
 				<value>com.biit.webforms.persistence.**.*</value>
@@ -117,8 +121,6 @@
 	<bean id="hibernateVendor"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 	</bean>
-
-	<tx:annotation-driven />
 
 	<!-- Enables Interceptors -->
 	<aop:aspectj-autoproxy />
