@@ -130,7 +130,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		try {
 			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue(
 					LiferayServiceAccess.getInstance().getUserById(form.getCreatedBy()).getEmailAddress());
-		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException e) {
+		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException | NullPointerException e) {
 			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue("");
 		}
 		item.getItemProperty(TreeTableBaseFormProperties.CREATION_DATE).setValue(
@@ -138,7 +138,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		try {
 			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue(
 					LiferayServiceAccess.getInstance().getUserById(form.getUpdatedBy()).getEmailAddress());
-		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException e) {
+		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException | NullPointerException e) {
 			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue("");
 		}
 		item.getItemProperty(TreeTableBaseFormProperties.MODIFICATION_DATE).setValue(

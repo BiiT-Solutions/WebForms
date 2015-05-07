@@ -15,10 +15,11 @@ import com.biit.persistence.dao.IJpaGenericDao;
 import com.biit.persistence.dao.jpa.GenericDao;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 
-public abstract class AnnotatedGenericDao<EntityClass, PrimaryKeyClass extends Serializable> extends
-		GenericDao<EntityClass, PrimaryKeyClass> implements IJpaGenericDao<EntityClass, PrimaryKeyClass> {
+public abstract class AnnotatedGenericDao<EntityClass, PrimaryKeyClass extends Serializable>
+		extends GenericDao<EntityClass, PrimaryKeyClass> implements
+		IJpaGenericDao<EntityClass, PrimaryKeyClass> {
 
-	@PersistenceContext(unitName = "defaultPersistenceUnit")
+	@PersistenceContext(unitName = "webformsPersistenceUnit")
 	@Qualifier(value = "webformsManagerFactory")
 	private EntityManager entityManager;
 
@@ -32,36 +33,38 @@ public abstract class AnnotatedGenericDao<EntityClass, PrimaryKeyClass extends S
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public void makePersistent(EntityClass entity) {
 		super.makePersistent(entity);
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-	public void makeTransient(EntityClass entity) throws ElementCannotBeRemovedException {
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	public void makeTransient(EntityClass entity)
+			throws ElementCannotBeRemovedException {
 		super.makeTransient(entity);
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public EntityClass get(PrimaryKeyClass id) {
 		return super.get(id);
 	}
 
 	/**
-	 * Propagation Propagation.REQUIRES_NEW skip some errors when making a getRowCount after a makeTransient action.
+	 * Propagation Propagation.REQUIRES_NEW skip some errors when making a
+	 * getRowCount after a makeTransient action.
 	 * 
 	 * @return
 	 */
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public int getRowCount() {
 		return super.getRowCount();
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public List<EntityClass> getAll() {
 		return super.getAll();
 	}

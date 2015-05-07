@@ -14,6 +14,9 @@ public class LiferayServiceAccess {
 	private static LiferayServiceAccess instance = new LiferayServiceAccess();
 
 	private UserService userService;
+	
+	private LiferayServiceAccess(){
+	}
 
 	public static LiferayServiceAccess getInstance() {
 		return instance;
@@ -27,7 +30,7 @@ public class LiferayServiceAccess {
 		return userService;
 	}
 
-	public User getUserById(Long userId) throws UserDoesNotExistException {
+	public User getUserById(long userId) throws UserDoesNotExistException {
 		try {
 			return getUserService().getUserById(userId);
 		} catch (NotConnectedToWebServiceException | IOException | AuthenticationRequired | WebServiceAccessError e) {
