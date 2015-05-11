@@ -49,14 +49,11 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		EntityType<Block> formMetamodel = m.entity(Block.class);
 		Root<Block> form = cq.from(Block.class);
 
-		cq.where(cb.and(
-					cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), blockLabel),
-					cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)
-					)
-				);
-		try{
+		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), blockLabel),
+				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
+		try {
 			return getEntityManager().createQuery(cq).getSingleResult();
-		}catch(NoResultException e){
+		} catch (NoResultException e) {
 			return null;
 		}
 	}
@@ -71,9 +68,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		EntityType<Block> formMetamodel = m.entity(Block.class);
 		Root<Block> form = cq.from(Block.class);
 
-		cq.where(
-				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)
-				);
+		cq.where(cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId));
 		return getEntityManager().createQuery(cq).getResultList();
 	}
 
@@ -81,9 +76,9 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public int getFormFlowsCountUsingElement(List<Long> ids) throws UnexpectedDatabaseException {
 		if (ids == null || ids.isEmpty()) {
-			 return 0;
-		 }
-		
+			return 0;
+		}
+
 		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		// Metamodel of the entity table
@@ -92,14 +87,11 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		Root<Flow> flow = cq.from(Flow.class);
 
 		cq.select(cb.count(flow));
-		cq.where(cb.or(
-					flow.get(flowType.getSingularAttribute("originId", Long.class)).in(ids),
-					flow.get(flowType.getSingularAttribute("destinyId", Long.class)).in(ids)
-					)
-				);
+		cq.where(cb.or(flow.get(flowType.getSingularAttribute("originId", Long.class)).in(ids),
+				flow.get(flowType.getSingularAttribute("destinyId", Long.class)).in(ids)));
 		return getEntityManager().createQuery(cq).getSingleResult().intValue();
 	}
-	
+
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public Block merge(Block block) {
@@ -111,17 +103,17 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 
 		return super.merge(block);
 	}
-	
+
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-	public void makePersistent(Block block) {
+	public Block makePersistent(Block block) {
 		block.updateChildrenSortSeqs();
 		if (block.getCreationTime() == null) {
 			block.setCreationTime();
 		}
 		block.setUpdateTime();
 
-		super.makePersistent(block);
+		return super.makePersistent(block);
 	}
 
 	// @Override
@@ -186,7 +178,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 	// throw new UnexpectedDatabaseException(e.getMessage(), e);
 	// }
 	// }
-	
+
 	// // For solving Hibernate bug
 	// // https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
 	// // list of children
@@ -339,45 +331,41 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		Root<Flow> root = query.from(Flow.class);
 
 		query.select(cb.count(root));
-		query.where(
-				cb.or(
-						cb.equal(root.get(flowType.getSingularAttribute("origin", BaseQuestion.class)), treeObject.getId()),
-						cb.equal(root.get(flowType.getSingularAttribute("destiny",BaseQuestion.class)), treeObject.getId())
-					)
-				);
+		query.where(cb.or(
+				cb.equal(root.get(flowType.getSingularAttribute("origin", BaseQuestion.class)), treeObject.getId()),
+				cb.equal(root.get(flowType.getSingularAttribute("destiny", BaseQuestion.class)), treeObject.getId())));
 		if (getEntityManager().createQuery(query).getSingleResult().intValue() > 0) {
 			return false;
 		}
 
 		// Query for relationships with token types
-		if(countReferencesInTokenClass(TokenBetween.class, treeObject.getId())>0){
+		if (countReferencesInTokenClass(TokenBetween.class, treeObject.getId()) > 0) {
 			return false;
 		}
-		if(countReferencesInTokenClass(TokenIn.class, treeObject.getId())>0){
+		if (countReferencesInTokenClass(TokenIn.class, treeObject.getId()) > 0) {
 			return false;
 		}
-		if(countReferencesInTokenClass(TokenComparationAnswer.class, treeObject.getId())>0){
+		if (countReferencesInTokenClass(TokenComparationAnswer.class, treeObject.getId()) > 0) {
 			return false;
 		}
-		if(countReferencesInTokenClass(TokenComparationValue.class, treeObject.getId())>0){
+		if (countReferencesInTokenClass(TokenComparationValue.class, treeObject.getId()) > 0) {
 			return false;
 		}
 
 		return true;
 	}
-	
-	private <T> int countReferencesInTokenClass(Class<T> clazz, Long id){
+
+	private <T> int countReferencesInTokenClass(Class<T> clazz, Long id) {
 		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<Long> query = cb.createQuery(Long.class);
 		Metamodel m = getEntityManager().getMetamodel();
 		EntityType<T> type = m.entity(clazz);
 		Root<T> root = query.from(clazz);
-		
+
 		query.select(cb.count(root));
 		query.where(cb.equal(root.get(type.getSingularAttribute("question", clazz)), id));
 		return getEntityManager().createQuery(query).getSingleResult().intValue();
 	}
-	
 
 	//
 	// /**

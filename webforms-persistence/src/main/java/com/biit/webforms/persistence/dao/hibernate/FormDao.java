@@ -58,14 +58,14 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 	@Override
 	@CachePut(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null")
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-	public void makePersistent(Form form) {
+	public Form makePersistent(Form form) {
 		form.updateChildrenSortSeqs();
 		if (form.getCreationTime() == null) {
 			form.setCreationTime();
 		}
 		form.setUpdateTime();
 
-		super.makePersistent(form);
+		return super.makePersistent(form);
 	}
 
 	@Override
