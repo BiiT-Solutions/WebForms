@@ -279,6 +279,7 @@ public class FormFlowViewer extends Panel {
 			} catch (IOException ioe) {
 				MessageManager.showError(LanguageCodes.GRAPHVIZ_EXEC_NOT_FOUND,
 						LanguageCodes.GRAPHVIZ_EXEC_NOT_FOUND_DESCRIPTION);
+				WebformsLogger.errorMessage(this.getClass().getName(), ioe);
 			} catch (Exception e) {
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}

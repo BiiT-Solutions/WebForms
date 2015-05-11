@@ -19,13 +19,14 @@
 	<!-- Scans the classpath for annotated components that will be auto-registered 
 		as Spring beans. For example @Component, @Controller and @Service. Make sure 
 		to set the correct base-package -->
+	<context:annotation-config />
 	<context:component-scan base-package="com.biit.webforms.persistence" />
 
 	<!-- Read any *.properties file -->
 	<context:property-placeholder location="classpath*:*.properties" />
 
 
-	<tx:annotation-driven />
+	<tx:annotation-driven transaction-manager="webformsTransactionManager"/>
 
 	<!-- Transaction Manager -->
 	<bean id="transactionManagerWebforms" class="org.springframework.orm.jpa.JpaTransactionManager">
@@ -49,6 +50,12 @@
 		</property>
 		<property name="jpaVendorAdapter" ref="hibernateVendor" />
 		<property name="jpaProperties" ref="webformsJpaProperties" />
+		<qualifier value="webformsManagerFactory"/>
+	</bean>
+	
+	<!-- Entity managers -->
+	<bean id="webformsEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" >            
+        <property name="entityManagerFactory" ref="webformsManagerFactory" />
 	</bean>
 
 	<!-- Data Source -->

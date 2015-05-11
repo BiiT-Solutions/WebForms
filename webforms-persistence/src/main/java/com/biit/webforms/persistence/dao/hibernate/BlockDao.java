@@ -2,6 +2,7 @@ package com.biit.webforms.persistence.dao.hibernate;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -11,6 +12,9 @@ import javax.persistence.metamodel.Metamodel;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
@@ -32,22 +36,92 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		super(Block.class);
 	}
 
+	/**
+	 * Application expects null block if no block was found.
+	 */
 	@Override
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public Block getBlock(String blockLabel, Long organizationId) throws UnexpectedDatabaseException {
-		// TODO Auto-generated method stub
-		return null;
+		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Block> cq = cb.createQuery(Block.class);
+		// Metamodel of the entity table
+		Metamodel m = getEntityManager().getMetamodel();
+		EntityType<Block> formMetamodel = m.entity(Block.class);
+		Root<Block> form = cq.from(Block.class);
+
+		cq.where(cb.and(
+					cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), blockLabel),
+					cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)
+					)
+				);
+		try{
+			return getEntityManager().createQuery(cq).getSingleResult();
+		}catch(NoResultException e){
+			return null;
+		}
 	}
 
 	@Override
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public List<Block> getAll(Long organizationId) throws UnexpectedDatabaseException {
-		// TODO Auto-generated method stub
-		return null;
+		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Block> cq = cb.createQuery(Block.class);
+		// Metamodel of the entity table
+		Metamodel m = getEntityManager().getMetamodel();
+		EntityType<Block> formMetamodel = m.entity(Block.class);
+		Root<Block> form = cq.from(Block.class);
+
+		cq.where(
+				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)
+				);
+		return getEntityManager().createQuery(cq).getResultList();
 	}
 
 	@Override
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public int getFormFlowsCountUsingElement(List<Long> ids) throws UnexpectedDatabaseException {
-		// TODO Auto-generated method stub
-		return 0;
+		if (ids == null || ids.isEmpty()) {
+			 return 0;
+		 }
+		
+		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		// Metamodel of the entity table
+		Metamodel m = getEntityManager().getMetamodel();
+		EntityType<Flow> flowType = m.entity(Flow.class);
+		Root<Flow> flow = cq.from(Flow.class);
+
+		cq.select(cb.count(flow));
+		cq.where(cb.or(
+					flow.get(flowType.getSingularAttribute("originId", Long.class)).in(ids),
+					flow.get(flowType.getSingularAttribute("destinyId", Long.class)).in(ids)
+					)
+				);
+		return getEntityManager().createQuery(cq).getSingleResult().intValue();
+	}
+	
+	@Override
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	public Block merge(Block block) {
+		block.updateChildrenSortSeqs();
+		if (block.getCreationTime() == null) {
+			block.setCreationTime();
+		}
+		block.setUpdateTime();
+
+		return super.merge(block);
+	}
+	
+	@Override
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	public void makePersistent(Block block) {
+		block.updateChildrenSortSeqs();
+		if (block.getCreationTime() == null) {
+			block.setCreationTime();
+		}
+		block.setUpdateTime();
+
+		super.makePersistent(block);
 	}
 
 	// @Override
@@ -112,21 +186,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 	// throw new UnexpectedDatabaseException(e.getMessage(), e);
 	// }
 	// }
-	//
-	// @Override
-	// @CachePut(value = "buildingBlocks", key = "#entity.getId()", condition = "#entity.getId() != null")
-	// // Clear all forms (maybe some of them have a BlockReference to this block)
-	// @CacheEvict(value = "webformsforms", allEntries = true)
-	// public Block makePersistent(Block entity) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
-	// // Check if any element to delete is used in a form that links this block. If it is, the element cannot be
-	// // removed.
-	// int flowsUsingQuestionOfBlock = getFormFlowsCountUsingElement(entity.getElementToDeleteIds(Question.class));
-	// if (flowsUsingQuestionOfBlock > 0) {
-	// // Block cannot be modified.
-	// throw new ElementIsUsedInFlowException(
-	// "A form is still using an element of this block that is going to be removed.");
-	// }
-	//
+	
 	// // For solving Hibernate bug
 	// // https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
 	// // list of children

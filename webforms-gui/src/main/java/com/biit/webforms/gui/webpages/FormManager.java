@@ -335,7 +335,7 @@ public class FormManager extends SecuredWebPage {
 	 * @return
 	 */
 	private CompleteFormView loadAndValidateForm() {
-		CompleteFormView form = new CompleteFormView(loadForm(getSelectedForm()));
+		CompleteFormView form = new CompleteFormView(loadCompleteForm(getSelectedForm()));
 
 		// Xforms only can use with valid forms.
 		ValidateFormComplete validator = new ValidateFormComplete();
@@ -400,7 +400,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void exportXsd() {
-		Form form = loadForm(getSelectedForm());
+		Form form = loadCompleteForm(getSelectedForm());
 
 		ValidateFormComplete validator = new ValidateFormComplete();
 		validator.setStopOnFail(true);
@@ -415,7 +415,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void exportJson() {
-		Form form = loadForm(getSelectedForm());
+		Form form = loadCompleteForm(getSelectedForm());
 		new WindowDownloaderJson(new CompleteFormView(form), getSelectedForm().getLabel() + ".json");
 	}
 
@@ -431,8 +431,8 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					return new ByteArrayInputStream(GraphvizApp.generateImage(new CompleteFormView(
-							loadForm(getSelectedForm())), null, ImgType.PDF));
+					return new ByteArrayInputStream(GraphvizApp.generateImage(
+							loadCompleteForm(getSelectedForm()), null, ImgType.PDF));
 				} catch (IOException | InterruptedException e) {
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 					return null;
@@ -450,8 +450,7 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					return FormGeneratorPdf.generatePdf(new FormPdfGenerator(new CompleteFormView(
-							loadForm(getSelectedForm()))));
+					return FormGeneratorPdf.generatePdf(new FormPdfGenerator(loadCompleteForm(getSelectedForm())));
 				} catch (IOException | DocumentException e) {
 					WebformsLogger.errorMessage(FormManager.class.getName(), e);
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
@@ -626,6 +625,10 @@ public class FormManager extends SecuredWebPage {
 		Form form = UserSessionHandler.getController().loadForm(formView);
 		form.setLastVersion(formView.isLastVersion());
 		return form;
+	}
+	
+	private Form loadCompleteForm(IWebformsFormView formView){
+		return new CompleteFormView(loadForm(formView));
 	}
 
 	private void openNewFormWindow() {

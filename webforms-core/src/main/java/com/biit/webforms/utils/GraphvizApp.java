@@ -47,6 +47,7 @@ public class GraphvizApp {
 		if (applicationPath == null) {
 
 			applicationPath = WebformsConfigurationReader.getInstance().getGraphvizBinPath();
+			
 			if (applicationPath != null) {
 				return;
 			}

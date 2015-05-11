@@ -62,11 +62,6 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 
 	@Autowired
 	private ISimpleFormViewDao simpleFormViewDao;
-
-//	private Block block;
-//	private BlockReference blockReference;
-//	private Form form;
-//	private CompleteFormView completeFormView;
 	
 	@Test
 	@Rollback(value=false)
@@ -75,7 +70,6 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 			InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException,
 			ElementIsReadOnly, ElementCannotBePersistedException {
 		int previousBlocks = blockDao.getRowCount();
-
 		Block block = getNewBlock();
 		Assert.assertNotNull(block);
 		blockDao.makePersistent(block);
@@ -478,7 +472,7 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 
 	@Test(expectedExceptions = ElementCannotBeRemovedException.class)
 	@Rollback(value=false)
-	@Transactional
+	@Transactional()
 	public void blockCannotBeRemovedIfFormIsLinkingIt() throws BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
 			UnexpectedDatabaseException, NotValidChildException, ElementIsReadOnly, FieldTooLongException,
@@ -488,12 +482,14 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		Block block1 = FormUtils.createBlock();
 		block1.setLabel("LinkedBlock61");
 		blockDao.makePersistent(block1);
+		blockDao.getEntityManager().flush();
 
 		BlockReference blockReference1 = new BlockReference(block1);
 
 		Form form = FormUtils.createCompleteForm(null, "form8");
 		form.addChild(blockReference1);
 		formDao.makePersistent(form);
+		formDao.getEntityManager().flush();
 
 		blockDao.makeTransient(block1);
 	}

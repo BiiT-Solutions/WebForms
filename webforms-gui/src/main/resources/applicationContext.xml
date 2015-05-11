@@ -18,6 +18,7 @@
 	<!-- Scans the classpath for annotated components that will be auto-registered 
 		as Spring beans. For example @Component, @Controller and @Service. Make sure 
 		to set the correct base-package -->
+	<context:annotation-config />
 	<context:component-scan base-package="com.biit.webforms.persistence" />
 
 	<!-- Read any *.properties file in project and override some of them with 
@@ -37,6 +38,7 @@
 	</bean>
 	
 	<!-- <tx:annotation-driven transaction-manager="webformsTransactionManager" /> -->
+	<context:annotation-config />
 	<tx:annotation-driven />
 
 	<!-- Transaction Manager -->
@@ -66,6 +68,7 @@
 		</property>
 		<property name="jpaVendorAdapter" ref="hibernateVendor" />
 		<property name="jpaProperties" ref="webformsJpaProperties" />
+		<qualifier value="webformsManagerFactory"/>
 	</bean>
 	<bean id="abcdManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -78,6 +81,15 @@
 		</property>
 		<property name="jpaVendorAdapter" ref="hibernateVendor" />
 		<property name="jpaProperties" ref="abcdJpaProperties" />
+		<qualifier value="abcdManagerFactory"/>
+	</bean>
+	
+	<!-- Entity managers -->
+	<bean id="webformsEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" >            
+        <property name="entityManagerFactory" ref="webformsManagerFactory" />
+	</bean>
+	<bean id="abcdEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" >            
+        <property name="entityManagerFactory" ref="abcdManagerFactory" />
 	</bean>
 
 	<!-- Data Source -->
@@ -200,7 +212,7 @@
 	<bean name="formDaoAbcd" class="com.biit.abcd.persistence.dao.hibernate.FormDao" />
 	<bean name="simpleFormDaoAbcd"
 		class="com.biit.abcd.persistence.dao.hibernate.SimpleFormViewDao" />
-<!-- 	<bean name="customVariableDao"
-		class="com.biit.abcd.persistence.dao.hibernate.CustomVariableDao" /> -->
+	<bean name="customVariableDao"
+		class="com.biit.abcd.persistence.dao.hibernate.CustomVariableDao" />
 
 </beans>
