@@ -305,6 +305,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 
 	@Override
 	@Caching(evict = { @CacheEvict(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null") })
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public void makeTransient(Block block) throws ElementCannotBeRemovedException {
 		// Check the block is not linked.
 		if (countLinkedBlocksTo(block) > 0) {

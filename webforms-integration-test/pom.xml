@@ -368,16 +368,6 @@
 										<copy todir="target/classes">
 											<fileset dir="../${source.gui.project}/target/classes" />
 										</copy>
-										<!-- Modify database connection to use test database -->
-										<replace token="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${abcd.original.database}?" value="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${abcd.test.database}?" dir="target/classes">
-											<include name="**/*.properties" />
-										</replace>
-										<replace token="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${original.database}?" value="hibernate.connection.url=jdbc:mysql://${database.server}:3306/${test.database}?" dir="target/classes">
-											<include name="**/*.properties" />
-										</replace>
-										<replace token="hibernate.hbm2ddl.auto=validate" value="hibernate.hbm2ddl.auto=create-drop" dir="target/classes">
-											<include name="**/*.properties" />
-										</replace>
 									</target>
 								</configuration>
 								<goals>
