@@ -33,8 +33,8 @@ public abstract class AnnotatedGenericDao<EntityClass, PrimaryKeyClass extends S
 
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-	public void makePersistent(EntityClass entity) {
-		super.makePersistent(entity);
+	public EntityClass makePersistent(EntityClass entity) {
+		return super.makePersistent(entity);
 	}
 	
 	@Override
