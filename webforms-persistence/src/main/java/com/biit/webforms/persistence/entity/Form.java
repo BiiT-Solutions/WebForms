@@ -24,9 +24,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Polymorphism;
-import org.hibernate.annotations.PolymorphismType;
-
 import com.biit.form.entity.BaseCategory;
 import com.biit.form.entity.BaseForm;
 import com.biit.form.entity.BaseFormMetadata;
@@ -80,7 +77,6 @@ import com.liferay.portal.model.User;
 		"organizationId" }) })
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
 		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
-@Polymorphism(type = PolymorphismType.EXPLICIT)
 public class Form extends BaseForm implements IWebformsFormView {
 	private static final long serialVersionUID = 5220239269341014315L;
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
@@ -94,7 +90,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	@Lob
 	private String description;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form", fetch = FetchType.EAGER)
 	private Set<Flow> rules;
 
 	private String linkedFormLabel;

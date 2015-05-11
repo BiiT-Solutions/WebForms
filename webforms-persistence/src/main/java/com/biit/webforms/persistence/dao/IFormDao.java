@@ -5,7 +5,7 @@ import com.biit.webforms.persistence.entity.Form;
 
 public interface IFormDao extends IJpaGenericDao<Form, Long> {
 
-	Form getForm(String label, Integer version, Long organizationId);
+//	Form getForm(String label, Integer version, Long organizationId);
 
 	boolean exists(String label, long organizationId);
 

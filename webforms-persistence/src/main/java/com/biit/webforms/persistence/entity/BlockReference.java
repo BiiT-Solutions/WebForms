@@ -10,9 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Polymorphism;
-import org.hibernate.annotations.PolymorphismType;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -22,7 +19,6 @@ import com.biit.webforms.enumerations.FormWorkStatus;
 
 @Entity
 @Table(name = "tree_blocks_references")
-@Polymorphism(type = PolymorphismType.EXPLICIT)
 public class BlockReference extends TreeObject implements IWebformsBlockView {
 	private static final long serialVersionUID = -4300039254232003868L;
 

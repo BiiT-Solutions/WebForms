@@ -73,7 +73,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		formDao.makePersistent(form);
 		Assert.assertEquals(formDao.getRowCount(), prevForm + 1);
 
-		Form dbForm = formDao.getForm(form.getLabel(), form.getVersion(), form.getOrganizationId());
+		Form dbForm = formDao.get(form.getId());
 
 		Assert.assertTrue(!dbForm.getFlows().isEmpty());
 
@@ -84,7 +84,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
 		dbForm.removeRule(dbRule);
 		formDao.makePersistent(dbForm);
-		dbForm = formDao.getForm(form.getLabel(), form.getVersion(), form.getOrganizationId());
+		dbForm = formDao.get(form.getId());
 		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
 		Assert.assertTrue(dbForm.getFlows().isEmpty());
 

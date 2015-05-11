@@ -8,7 +8,6 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
@@ -20,30 +19,40 @@ import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
 
 @Repository
-public class FormDao extends AnnotatedGenericDao<Form, Long> implements
-		IFormDao {
+public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao {
 
 	public FormDao() {
 		super(Form.class);
 	}
 
 	@Override
-	@Cacheable(value = "webformsforms", key = "#id")
-	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	@CachePut(value = "webformsforms", key = "#id")
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public Form get(Long id) {
 		return super.get(id);
 	}
 
 	@Override
 	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
-	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public void makeTransient(Form form) throws ElementCannotBeRemovedException {
 		form.getFlows().clear();
-		Form mergedForm = getEntityManager().contains(form) ? form
-				: getEntityManager().merge(form);
+		Form mergedForm = getEntityManager().contains(form) ? form : getEntityManager().merge(form);
 		makePersistent(mergedForm);
 
 		super.makeTransient(mergedForm);
+	}
+	
+	@Override
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	public Form merge(Form form) {
+		form.updateChildrenSortSeqs();
+		if (form.getCreationTime() == null) {
+			form.setCreationTime();
+		}
+		form.setUpdateTime();
+
+		return super.merge(form);
 	}
 
 	@Override
@@ -61,8 +70,7 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements
 
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
-	public boolean exists(String label, int version, long organizationId,
-			long id) {
+	public boolean exists(String label, int version, long organizationId, long id) {
 		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		// Metamodel of the entity table
@@ -71,14 +79,10 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements
 		Root<Form> form = cq.from(Form.class);
 
 		cq.select(cb.count(form));
-		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute(
-				"label", String.class)), label), cb.equal(form
-				.get(formMetamodel.getSingularAttribute("version",
-						Integer.class)), version), cb.equal(form
-				.get(formMetamodel.getSingularAttribute("organizationId",
-						Long.class)), organizationId), cb.notEqual(
-				form.get(formMetamodel.getSingularAttribute("id", Long.class)),
-				id)));
+		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), label),
+				cb.equal(form.get(formMetamodel.getSingularAttribute("version", Integer.class)), version),
+				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId),
+				cb.notEqual(form.get(formMetamodel.getSingularAttribute("id", Long.class)), id)));
 
 		return getEntityManager().createQuery(cq).getSingleResult() > 0;
 	}
@@ -94,10 +98,8 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements
 		Root<Form> form = cq.from(Form.class);
 
 		cq.select(cb.count(form));
-		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute(
-				"label", String.class)), label), cb.equal(form
-				.get(formMetamodel.getSingularAttribute("organizationId",
-						Long.class)), organizationId)));
+		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), label),
+				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
 		return getEntityManager().createQuery(cq).getSingleResult() > 0;
 	}
 
@@ -156,23 +158,23 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements
 
 	@Override
 	@CacheEvict(value = "webformsforms", allEntries = true)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public void evictAllCache() {
 		super.evictAllCache();
 	}
 
-	@Override
-	public Form getForm(String label, Integer version, Long organizationId) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-		CriteriaQuery<Form> cq = cb.createQuery(Form.class);
-		Metamodel m = getEntityManager().getMetamodel();
-		EntityType<Form> formType = m.entity(Form.class);
-		Root<Form> formRoot = cq.from(Form.class);
-		cq.where(cb.and(cb.equal(formRoot.get(formType.getSingularAttribute(
-				"label", String.class)), label), cb.equal(formRoot.get(formType
-				.getSingularAttribute("version", Integer.class)), version), cb
-				.equal(formRoot.get(formType.getSingularAttribute(
-						"organizationId", Long.class)), organizationId)));
-
-		return getEntityManager().createQuery(cq).getSingleResult();
-	}
+//	@Override
+//	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+//	public Form getForm(String label, Integer version, Long organizationId) {
+//		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+//		CriteriaQuery<Form> cq = cb.createQuery(Form.class);
+//		Metamodel m = getEntityManager().getMetamodel();
+//		EntityType<Form> formType = m.entity(Form.class);
+//		Root<Form> formRoot = cq.from(Form.class);
+//		cq.where(cb.and(cb.equal(formRoot.get(formType.getSingularAttribute("label", String.class)), label),
+//				cb.equal(formRoot.get(formType.getSingularAttribute("version", Integer.class)), version),
+//				cb.equal(formRoot.get(formType.getSingularAttribute("organizationId", Long.class)), organizationId)));
+//
+//		return getEntityManager().createQuery(cq).getSingleResult();
+//	}
 }

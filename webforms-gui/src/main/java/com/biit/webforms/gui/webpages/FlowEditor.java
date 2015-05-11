@@ -352,6 +352,27 @@ public class FlowEditor extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				try {
 					UserSessionHandler.getController().saveForm();
+					//Refresh the table.
+					//Now the form has changes so current selected elements are not exactly the same as the ones 
+					//in the form, so we search for the new instances and replace the selection.
+					//Also we redraw the current form.
+					@SuppressWarnings("unchecked")
+					Set<Object> selectedObjects = new HashSet<Object>((Set<Object>) tableFlows.getValue());
+					Set<Object> newSelectedObjects = new HashSet<Object>();
+					tableFlows.setRows(UserSessionHandler.getController().getCompleteFormView().getFlows());
+					for(Flow newFlow: UserSessionHandler.getController().getCompleteFormView().getFlows()){
+						if(selectedObjects.contains(newFlow)){
+							newSelectedObjects.add(newFlow);
+							selectedObjects.remove(newFlow);
+							if(selectedObjects.isEmpty()){
+								break;
+							}
+						}
+					}
+					tableFlows.setValue(null);
+					tableFlows.setValue(newSelectedObjects);
+					formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getCompleteFormView(), null);
+					
 					if (UserSessionHandler.getController().getFormInUse() instanceof Block) {
 						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
 								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);

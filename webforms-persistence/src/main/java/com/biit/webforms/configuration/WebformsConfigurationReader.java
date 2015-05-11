@@ -52,17 +52,17 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_BUILDING_BLOCK_LINKS = "true";
 
 	// XForms
-	private final String ID_XFORMS_USER = "orbeonUser";
-	private final String ID_XFORMS_PASSWORD = "orbeonPassword";
-	private final String ID_XFORMS_DATABASE = "orbeonDatabase";
-	private final String ID_XFORMS_DATABASE_HOST = "orbeonDatabaseHost";
-	private final String ID_XFORMS_FORM_RUNNER = "orbeonFormRunnerUrl";
+	private static final String ID_XFORMS_USER = "orbeonUser";
+	private static final String ID_XFORMS_PASSWORD = "orbeonPassword";
+	private static final String ID_XFORMS_DATABASE = "orbeonDatabase";
+	private static final String ID_XFORMS_DATABASE_HOST = "orbeonDatabaseHost";
+	private static final String ID_XFORMS_FORM_RUNNER = "orbeonFormRunnerUrl";
 
-	private final String DEFAULT_XFORMS_USER = "user";
-	private final String DEFAULT_XFORMS_PASSWORD = "pass";
-	private final String DEFAULT_XFORMS_DATABASE = "orbeon";	
-	private final String DEFAULT_XFORMS_DATABASE_HOST = "localhost";
-	private final String DEFAULT_XFORMS_FORM_RUNNER = "http://127.0.0.1:8080/orbeon/fr";
+	private static final String DEFAULT_XFORMS_USER = "user";
+	private static final String DEFAULT_XFORMS_PASSWORD = "pass";
+	private static final String DEFAULT_XFORMS_DATABASE = "orbeon";	
+	private static final String DEFAULT_XFORMS_DATABASE_HOST = "localhost";
+	private static final String DEFAULT_XFORMS_FORM_RUNNER = "http://127.0.0.1:8080/orbeon/fr";
 
 	private static WebformsConfigurationReader instance;
 

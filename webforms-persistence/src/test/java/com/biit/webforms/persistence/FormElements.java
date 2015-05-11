@@ -1,5 +1,7 @@
 package com.biit.webforms.persistence;
 
+import javax.transaction.Transactional;
+
 import junit.framework.Assert;
 
 import org.junit.runner.RunWith;
@@ -45,23 +47,24 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 
 	@Autowired
 	private IBlockDao blockDao;
-
+	
 	private Block block;
 
 	@Test
 	@Rollback(value = false)
+	@Transactional
 	public void createBuildingBlock() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException {
-		if (block == null) {
+			UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException, ChildrenNotFoundException {
 			block = FormUtils.createBlock();
 			Assert.assertNotNull(block);
 			blockDao.makePersistent(block);
 			Assert.assertEquals(1, blockDao.getRowCount());
-		}
 	}
 
 	@Test(dependsOnMethods = { "createBuildingBlock" })
+	@Rollback(value=false)
+	@Transactional
 	public void testPersistCompleteForm() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			UnexpectedDatabaseException, ChildrenNotFoundException, BadFlowContentException,
@@ -71,6 +74,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 		int prevForms = formDao.getRowCount();
 		Form form = FormUtils.createCompleteForm(block);
 		formDao.makePersistent(form);
+		
 		Assert.assertEquals(prevForms + 1, formDao.getRowCount());
 		Assert.assertNotNull(form.getId());
 
@@ -81,10 +85,12 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 		Assert.assertTrue(form.isContentEqual(dbForm));
 
 		formDao.makeTransient(dbForm);
-		//Assert.assertEquals(prevForms, formDao.getRowCount());
+		Assert.assertEquals(prevForms, formDao.getRowCount());
 	}
 
 	@Test(dependsOnMethods = { "createBuildingBlock" })
+	@Rollback(value=false)
+	@Transactional
 	public void testNewVersion() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
 			InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException,
 			ChildrenNotFoundException, BadFlowContentException, FlowWithoutSourceException,

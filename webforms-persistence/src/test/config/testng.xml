@@ -4,11 +4,11 @@
 		preserve-order="true">
 		<groups>
 			<run>
-				<exclude name="ehCache" />
+<!-- 				<exclude name="ehCache" /> -->
 				<include name="formElements" />
-				<include name="blockTest" />
-				<include name="ruleTest" /> 
-				<include name="removeElement" />
+ 				<include name="blockTest" />
+ 				<include name="ruleTest" />
+ 				<include name="removeElement" />
 				<include name="blockLink" />
 				<include name="persistForm" />
 			</run>
