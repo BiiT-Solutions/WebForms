@@ -3,16 +3,16 @@
 	<test name="WebFormsTest" enabled="true" preserve-order="true">
 		<groups>
 			<run>
-				<exclude name="login" />
-				<exclude name="basicFunctionality" />
-				<exclude name="formBlockDesign" />
-				<exclude name="formFlow" />
-				<exclude name="export" />
-				<exclude name="impactAnalysis" />
-				<exclude name="xForms" />
-				<include name="validation" /> <!-- failed -->
-				<exclude name="linkedBlocks" />
-				<exclude name="abcdLink" /> <!-- Lazy exception -->
+				<include name="login" />
+				<include name="basicFunctionality" />
+				<include name="formBlockDesign" />
+				<include name="formFlow" />
+				<include name="export" />
+				<include name="impactAnalysis" />
+				<include name="xForms" />
+				<include name="validation" />
+				<include name="linkedBlocks" />
+				<include name="abcdLink" />
 			</run>
 		</groups>
 		<classes>

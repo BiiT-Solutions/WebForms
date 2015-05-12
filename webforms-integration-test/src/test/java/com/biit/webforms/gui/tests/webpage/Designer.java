@@ -651,4 +651,9 @@ public class Designer extends VaadinGuiWebpage {
 			getQuestionPropertiesView().clickMandatoryCheckBox();
 		}
 	}
+
+	public void toggleExpandedTableRow(int treeTableRow) {
+		getTreeTable().getRow(treeTableRow).toggleExpanded();
+		getTreeTable().getRow(treeTableRow).waitForVaadin();
+	}
 }

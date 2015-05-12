@@ -16,7 +16,7 @@ public class SelectFormElementWindow extends GenericAcceptCancelWindow {
 	private static final String CLASS_NAME = "com.biit.webforms.gui.components.WindowTreeObject";
 	private static final String SEARCH_FIELD_CAPTION = "Search";
 
-	private TextFieldElement getSearchField() {
+	public TextFieldElement getSearchField() {
 		return getWindow().$(TextFieldElement.class).caption(SEARCH_FIELD_CAPTION).first();
 	}
 
@@ -37,6 +37,7 @@ public class SelectFormElementWindow extends GenericAcceptCancelWindow {
 	}
 
 	public void selectElementInTable(String elementName) {
+		getTreeTable().waitForVaadin();
 		List<LabelElement> labels = getTreeTableLabels();
 		for (int index = 0; index < labels.size(); index++) {
 			try {

@@ -63,6 +63,7 @@ public class AbcdLinkTests extends WebFormsTester {
 		getFormManagerPage().getWindowLinkAbcdFormWindow().clickAccept();
 		// Make form incompatible
 		goToDesignerPage();
+		getDesignerPage().toggleExpandedTableRow(TREE_TABLE_ROW-1);
 		getDesignerPage().clickInTreeTableRow(TREE_TABLE_ROW);
 		getDesignerPage().clickDeleteButton();
 		getDesignerPage().addNewGroup();
