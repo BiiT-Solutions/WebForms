@@ -11,11 +11,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.biit.form.entity.TreeObject;
+import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.logger.WebformsLogger;
 
 @Entity
 @Table(name = "tree_blocks_references")
@@ -145,7 +147,13 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 
 	@Override
 	public String getName() {
-		return getDefaultTechnicalName();
+		//Returns the name of the first category of the block
+		try {
+			return reference.getChild(0).getName();
+		} catch (ChildrenNotFoundException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			return null;
+		}
 	}
 
 	@Override
@@ -161,4 +169,14 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 		return new HashSet<>();
 	}
 
+	/**
+	 * For some cases, i.e. using Springcache we need to initialize all sets (disabling the Lazy loading).
+	 * 
+	 * @param elements
+	 */
+	@Override
+	public void initializeSets() {
+		super.initializeSets();
+		reference.initializeSets();
+	}
 }

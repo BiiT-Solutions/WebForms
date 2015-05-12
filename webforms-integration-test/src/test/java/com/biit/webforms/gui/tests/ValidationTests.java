@@ -62,42 +62,42 @@ public class ValidationTests extends WebFormsTester {
 		deleteForm();
 	}
 
-	@Test(groups = "validation")
-	public void validateCorrectForm() {
-		printTestNameInDebugTrace("validateCorrectForm");
-		createSimpleForm();
-		createSimpleFlow();
-		validateForm(VALIDATION_CORRECT_TEXT);
-	}
-
-	@Test(groups = "validation")
-	public void validateFormWithTwoOthersFromTheSameElement() {
-		printTestNameInDebugTrace("validateFormWithTwoOthersFromTheSameElement");
-		createSimpleForm();
-		createSimpleFlow();
-		goToFlowManagerPage();
-		getFlowManagerPage().createOthersFlow(QUESTION1_NAME, QUESTION2_NAME);
-		getFlowManagerPage().createOthersFlow(QUESTION1_NAME, QUESTION2_NAME);
-		validateForm(VALIDATION_TWO_OTHERS_SAME_ELEMENT_TEXT);
-	}
-
-	@Test(groups = "validation")
-	public void validateFormOthersFlowWithoutNormalFlow() {
-		printTestNameInDebugTrace("validateFormOthersFlowWithoutNormalFlow");
-		createSimpleForm();
-		goToFlowManagerPage();
-		getFlowManagerPage().createOthersFlow(QUESTION1_NAME, QUESTION2_NAME);
-		validateForm(VALIDATION_OTHERS_FLOW_WITHOUT_NORMAL_FLOW);
-	}
-
-	@Test(groups = "validation")
-	public void validateFormWithQuestionWithoutFlowIn() {
-		printTestNameInDebugTrace("validateFormWithQuestionWithoutFlowIn");
-		createSimpleForm();
-		goToFlowManagerPage();
-		getFlowManagerPage().createEndFlow(QUESTION1_NAME);
-		validateForm(VALIDATION_QUESTION_WITHOUT_FLOW_IN);
-	}
+//	@Test(groups = "validation")
+//	public void validateCorrectForm() {
+//		printTestNameInDebugTrace("validateCorrectForm");
+//		createSimpleForm();
+//		createSimpleFlow();
+//		validateForm(VALIDATION_CORRECT_TEXT);
+//	}
+//
+//	@Test(groups = "validation")
+//	public void validateFormWithTwoOthersFromTheSameElement() {
+//		printTestNameInDebugTrace("validateFormWithTwoOthersFromTheSameElement");
+//		createSimpleForm();
+//		createSimpleFlow();
+//		goToFlowManagerPage();
+//		getFlowManagerPage().createOthersFlow(QUESTION1_NAME, QUESTION2_NAME);
+//		getFlowManagerPage().createOthersFlow(QUESTION1_NAME, QUESTION2_NAME);
+//		validateForm(VALIDATION_TWO_OTHERS_SAME_ELEMENT_TEXT);
+//	}
+//
+//	@Test(groups = "validation")
+//	public void validateFormOthersFlowWithoutNormalFlow() {
+//		printTestNameInDebugTrace("validateFormOthersFlowWithoutNormalFlow");
+//		createSimpleForm();
+//		goToFlowManagerPage();
+//		getFlowManagerPage().createOthersFlow(QUESTION1_NAME, QUESTION2_NAME);
+//		validateForm(VALIDATION_OTHERS_FLOW_WITHOUT_NORMAL_FLOW);
+//	}
+//
+//	@Test(groups = "validation")
+//	public void validateFormWithQuestionWithoutFlowIn() {
+//		printTestNameInDebugTrace("validateFormWithQuestionWithoutFlowIn");
+//		createSimpleForm();
+//		goToFlowManagerPage();
+//		getFlowManagerPage().createEndFlow(QUESTION1_NAME);
+//		validateForm(VALIDATION_QUESTION_WITHOUT_FLOW_IN);
+//	}
 
 	@Test(groups = "validation")
 	public void validateFormWithQuestionNotMandatoryInFlow() {
