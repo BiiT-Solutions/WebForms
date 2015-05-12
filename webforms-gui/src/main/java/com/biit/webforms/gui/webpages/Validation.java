@@ -228,7 +228,6 @@ public class Validation extends SecuredWebPage {
 				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 						LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 			} catch (BadAbcdLink e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
 				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 						LanguageCodes.ERROR_ABCD_FORM_LINKED_NOT_FOUND);
 			}
@@ -295,7 +294,6 @@ public class Validation extends SecuredWebPage {
 		} catch (BadAbcdLink e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ABCD_FORM_LINKED_NOT_FOUND);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 
