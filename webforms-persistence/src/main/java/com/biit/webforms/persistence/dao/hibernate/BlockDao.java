@@ -11,6 +11,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
@@ -39,6 +40,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	@Cacheable(value = "buildingBlocks", key = "#id")
 	public Block get(Long id) {
 		Block block = super.get(id);
 		if (block != null) {
