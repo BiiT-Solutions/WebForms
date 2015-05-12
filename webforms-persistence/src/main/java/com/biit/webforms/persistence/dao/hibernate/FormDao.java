@@ -10,6 +10,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
@@ -28,11 +29,13 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 	}
 
 	@Override
-	@CachePut(value = "webformsforms", key = "#id")
+	@Cacheable(value = "webformsforms", key = "#id")
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public Form get(Long id) {
 		Form form = super.get(id);
-		form.initializeSets();
+		if (form != null) {
+			form.initializeSets();
+		}
 		return form;
 	}
 
@@ -46,10 +49,10 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 
 		super.makeTransient(mergedForm);
 	}
-	
+
 	@Override
-	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public Form merge(Form form) {
 		form.updateChildrenSortSeqs();
 		if (form.getCreationTime() == null) {
@@ -58,7 +61,9 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 		form.setUpdateTime();
 
 		Form mergedForm = super.merge(form);
-		mergedForm.initializeSets();
+		if (mergedForm != null) {
+			mergedForm.initializeSets();
+		}
 		return mergedForm;
 	}
 
@@ -109,12 +114,12 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
 		return getEntityManager().createQuery(cq).getSingleResult() > 0;
 	}
-	
+
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public List<Form> getAll() {
 		List<Form> forms = super.getAll();
-		for(Form form: forms){
+		for (Form form : forms) {
 			form.initializeSets();
 		}
 		return forms;

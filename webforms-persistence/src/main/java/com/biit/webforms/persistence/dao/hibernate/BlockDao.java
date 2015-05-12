@@ -36,12 +36,14 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 	public BlockDao() {
 		super(Block.class);
 	}
-	
+
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public Block get(Long id) {
 		Block block = super.get(id);
-		block.initializeSets();
+		if (block != null) {
+			block.initializeSets();
+		}
 		return block;
 	}
 
@@ -61,8 +63,10 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), blockLabel),
 				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
 		try {
-			Block returnBlock = getEntityManager().createQuery(cq).getSingleResult(); 
-			returnBlock.initializeSets();
+			Block returnBlock = getEntityManager().createQuery(cq).getSingleResult();
+			if (returnBlock != null) {
+				returnBlock.initializeSets();
+			}
 			return returnBlock;
 		} catch (NoResultException e) {
 			return null;
@@ -81,7 +85,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 
 		cq.where(cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId));
 		List<Block> blocks = getEntityManager().createQuery(cq).getResultList();
-		for(Block block:blocks){
+		for (Block block : blocks) {
 			block.initializeSets();
 		}
 		return blocks;
@@ -118,7 +122,9 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		block.setUpdateTime();
 
 		Block mergedBlock = super.merge(block);
-		mergedBlock.initializeSets();
+		if (mergedBlock != null) {
+			mergedBlock.initializeSets();
+		}
 		return mergedBlock;
 	}
 

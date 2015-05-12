@@ -21,8 +21,7 @@ public abstract class AbstractLogging {
 	protected final Log logger = LogFactory.getLog(AbstractLogging.class);
 
 	/**
-	 * Method used for logging the name of the target class, parameters and the
-	 * starting time.
+	 * Method used for logging the name of the target class, parameters and the starting time.
 	 * 
 	 * @param millis
 	 *            execution time.
@@ -56,8 +55,7 @@ public abstract class AbstractLogging {
 	}
 
 	/**
-	 * Method used for logging the name of the target class, parameters and the
-	 * execution time.
+	 * Method used for logging the name of the target class, parameters and the execution time.
 	 * 
 	 * @param millis
 	 *            execution time.
@@ -70,16 +68,32 @@ public abstract class AbstractLogging {
 		if (logger.isDebugEnabled()) {
 			StringBuilder logMessage = new StringBuilder();
 			logMessage.append("Executed ");
+
+			// Method name.
 			logMessage.append(getTargetClassName(joinPoint));
 			logMessage.append(".");
 			logMessage.append(joinPoint.getSignature().getName());
 			logMessage.append("(");
-			if (args.length > 0) {
-				String str = Arrays.toString(args);
-				// removing initial and ending chars ([, ])
-				str = str.substring(1, str.length() - 1);
-				logMessage.append(str);
+
+			// Add params
+			Object[] paramValues = joinPoint.getArgs();
+			if (paramValues != null) {
+				for (int i = 0; i < paramValues.length; i++) {
+					if (paramValues[i] != null) {
+						if (paramValues[i] instanceof String) {
+							logMessage.append("'").append(paramValues[i].toString()).append("'");
+						} else {
+							logMessage.append(paramValues[i].toString());
+						}
+					} else {
+						logMessage.append(paramValues[i]);
+					}
+					if (i < paramValues.length - 1) {
+						logMessage.append(", ");
+					}
+				}
 			}
+
 			logMessage.append(") in ");
 			logMessage.append(millis);
 			logMessage.append(" ms");
@@ -88,7 +102,7 @@ public abstract class AbstractLogging {
 		}
 	}
 
-	private String getTargetClassName(JoinPoint joinPoint) {
+	protected String getTargetClassName(JoinPoint joinPoint) {
 		// Get the fully-qualified name of the class
 		String clsName = joinPoint.getTarget().getClass().getName();
 
@@ -101,5 +115,9 @@ public abstract class AbstractLogging {
 		clsName = clsName.replace('$', '.');
 
 		return clsName;
+	}
+
+	protected void log(String message) {
+		logger.debug(message);
 	}
 }
