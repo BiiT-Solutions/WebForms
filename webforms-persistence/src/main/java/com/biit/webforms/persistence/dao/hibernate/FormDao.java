@@ -10,6 +10,7 @@ import javax.persistence.metamodel.Metamodel;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
@@ -28,11 +29,13 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 	}
 
 	@Override
-	@CachePut(value = "webformsforms", key = "#id")
+	@Cacheable(value = "webformsforms", key = "#id")
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public Form get(Long id) {
 		Form form = super.get(id);
-		form.initializeSets();
+		if (form != null) {
+			form.initializeSets();
+		}
 		return form;
 	}
 
@@ -46,8 +49,9 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 
 		super.makeTransient(mergedForm);
 	}
-	
+
 	@Override
+	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public Form merge(Form form) {
 		form.updateChildrenSortSeqs();
@@ -57,7 +61,9 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 		form.setUpdateTime();
 
 		Form mergedForm = super.merge(form);
-		mergedForm.initializeSets();
+		if (mergedForm != null) {
+			mergedForm.initializeSets();
+		}
 		return mergedForm;
 	}
 
@@ -108,69 +114,16 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
 		return getEntityManager().createQuery(cq).getSingleResult() > 0;
 	}
-	
+
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public List<Form> getAll() {
 		List<Form> forms = super.getAll();
-		for(Form form: forms){
+		for (Form form : forms) {
 			form.initializeSets();
 		}
 		return forms;
 	}
-
-	// /**
-	// * Filtered version of get All. Takes a Class argument and returns a list
-	// with all the elements that match the
-	// class
-	// * argument.
-	// *
-	// * @param cls
-	// * @return
-	// * @throws UnexpectedDatabaseException
-	// */
-	// @Override
-	// public List<Form> getAll(Class<?> cls, Organization organization) throws
-	// UnexpectedDatabaseException {
-	// if (!Form.class.isAssignableFrom(cls)) {
-	// throw new
-	// TypeConstraintException("FormDao can only filter subclasses of " +
-	// Form.class.getName());
-	// }
-	//
-	// Session session = getSessionFactory().getCurrentSession();
-	// session.beginTransaction();
-	// try {
-	// // session.createCriteria(getType()).list() is not working returns
-	// // repeated elements due to
-	// //
-	// http://stackoverflow.com/questions/8758363/why-session-createcriteriaclasstype-list-return-more-object-than-in-list
-	// // if we have a list with eager fetch.
-	// Criteria criteria = session.createCriteria(cls);
-	// // This is executed in java side.
-	// criteria.setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE);
-	// criteria.add(Restrictions.eq("organizationId",
-	// organization.getOrganizationId()));
-	// @SuppressWarnings("unchecked")
-	// List<Form> result = criteria.list();
-	//
-	// // Filter by class
-	// Iterator<Form> itr = result.iterator();
-	// while (itr.hasNext()) {
-	// Form form = itr.next();
-	// if (!form.getClass().isAssignableFrom(cls)) {
-	// itr.remove();
-	// }
-	// }
-	// initializeSets(result);
-	// session.getTransaction().commit();
-	// return result;
-	// } catch (RuntimeException e) {
-	// WebformsLogger.errorMessage(this.getClass().getName(), e);
-	// session.getTransaction().rollback();
-	// throw new UnexpectedDatabaseException(e.getMessage(), e);
-	// }
-	// }
 
 	@Override
 	@CacheEvict(value = "webformsforms", allEntries = true)
@@ -179,18 +132,4 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 		super.evictAllCache();
 	}
 
-//	@Override
-//	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
-//	public Form getForm(String label, Integer version, Long organizationId) {
-//		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-//		CriteriaQuery<Form> cq = cb.createQuery(Form.class);
-//		Metamodel m = getEntityManager().getMetamodel();
-//		EntityType<Form> formType = m.entity(Form.class);
-//		Root<Form> formRoot = cq.from(Form.class);
-//		cq.where(cb.and(cb.equal(formRoot.get(formType.getSingularAttribute("label", String.class)), label),
-//				cb.equal(formRoot.get(formType.getSingularAttribute("version", Integer.class)), version),
-//				cb.equal(formRoot.get(formType.getSingularAttribute("organizationId", Long.class)), organizationId)));
-//
-//		return getEntityManager().createQuery(cq).getSingleResult();
-//	}
 }

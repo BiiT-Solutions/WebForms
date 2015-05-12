@@ -10,6 +10,8 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
@@ -35,12 +37,15 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 	public BlockDao() {
 		super(Block.class);
 	}
-	
+
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	@Cacheable(value = "buildingBlocks", key = "#id")
 	public Block get(Long id) {
 		Block block = super.get(id);
-		block.initializeSets();
+		if (block != null) {
+			block.initializeSets();
+		}
 		return block;
 	}
 
@@ -60,8 +65,10 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), blockLabel),
 				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
 		try {
-			Block returnBlock = getEntityManager().createQuery(cq).getSingleResult(); 
-			returnBlock.initializeSets();
+			Block returnBlock = getEntityManager().createQuery(cq).getSingleResult();
+			if (returnBlock != null) {
+				returnBlock.initializeSets();
+			}
 			return returnBlock;
 		} catch (NoResultException e) {
 			return null;
@@ -80,7 +87,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 
 		cq.where(cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId));
 		List<Block> blocks = getEntityManager().createQuery(cq).getResultList();
-		for(Block block:blocks){
+		for (Block block : blocks) {
 			block.initializeSets();
 		}
 		return blocks;
@@ -108,6 +115,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	@Caching(evict = { @CacheEvict(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null") })
 	public Block merge(Block block) {
 		block.updateChildrenSortSeqs();
 		if (block.getCreationTime() == null) {
@@ -116,11 +124,14 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		block.setUpdateTime();
 
 		Block mergedBlock = super.merge(block);
-		mergedBlock.initializeSets();
+		if (mergedBlock != null) {
+			mergedBlock.initializeSets();
+		}
 		return mergedBlock;
 	}
 
 	@Override
+	@CachePut(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null")
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public Block makePersistent(Block block) {
 		block.updateChildrenSortSeqs();
@@ -131,185 +142,6 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 
 		return super.makePersistent(block);
 	}
-
-	// @Override
-	// public int getLastVersion(String label, Long organizationId) {
-	// throw new UnsupportedOperationException("Block dao doesn't allow a get last version");
-	// }
-	//
-	// @Override
-	// public int getLastVersion(Block form) {
-	// throw new UnsupportedOperationException("Block dao doesn't allow a get last version");
-	// }
-	//
-	// @Override
-	// public Block getBlock(String blockLabel, Long organizationId) throws UnexpectedDatabaseException {
-	// return getForm(blockLabel, organizationId);
-	// }
-	//
-	// @Override
-	// public Block getForm(String label, Long organizationId) throws UnexpectedDatabaseException {
-	// Session session = getSessionFactory().getCurrentSession();
-	// session.beginTransaction();
-	// try {
-	// Criteria criteria = session.createCriteria(Block.class);
-	// criteria.add(Restrictions.eq("label", label));
-	// criteria.add(Restrictions.eq("organizationId", organizationId));
-	// @SuppressWarnings("unchecked")
-	// List<Block> results = criteria.list();
-	// initializeSets(results);
-	// session.getTransaction().commit();
-	// if (!results.isEmpty()) {
-	// return (Block) results.get(0);
-	// }
-	// } catch (RuntimeException e) {
-	// session.getTransaction().rollback();
-	// throw new UnexpectedDatabaseException(e.getMessage(), e);
-	// }
-	// return null;
-	// }
-	//
-	// @Override
-	// // @Cacheable(value = "buildingBlocks")
-	// public List<Block> getAll(Long organizationId) throws UnexpectedDatabaseException {
-	// Session session = getSessionFactory().getCurrentSession();
-	// session.beginTransaction();
-	// try {
-	// // session.createCriteria(getType()).list() is not working returns
-	// // repeated elements due to
-	// //
-	// http://stackoverflow.com/questions/8758363/why-session-createcriteriaclasstype-list-return-more-object-than-in-list
-	// // if we have a list with eager fetch.
-	// Criteria criteria = session.createCriteria(getType());
-	// // This is executed in java side.
-	// criteria.setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE);
-	// criteria.add(Restrictions.eq("organizationId", organizationId));
-	// @SuppressWarnings("unchecked")
-	// List<Block> result = criteria.list();
-	// initializeSets(result);
-	// session.getTransaction().commit();
-	// return result;
-	// } catch (RuntimeException e) {
-	// session.getTransaction().rollback();
-	// throw new UnexpectedDatabaseException(e.getMessage(), e);
-	// }
-	// }
-
-	// // For solving Hibernate bug
-	// // https://hibernate.atlassian.net/browse/HHH-1268 we cannot use the
-	// // list of children
-	// // with @Orderby or @OrderColumn we use our own order manager.
-	//
-	// // Sort the rules
-	// Set<Flow> rules = entity.getFlows();
-	// Iterator<Flow> ruleItr = rules.iterator();
-	// while (ruleItr.hasNext()) {
-	// Flow rule = ruleItr.next();
-	// rule.updateConditionSortSeq();
-	// }
-	//
-	// return super.makePersistent(entity);
-	// }
-	//
-	// @Override
-	// public boolean exists(String label, Long organizationId) throws UnexpectedDatabaseException {
-	// Session session = getSessionFactory().getCurrentSession();
-	// session.beginTransaction();
-	// try {
-	// Criteria criteria = session.createCriteria(getType());
-	// criteria.setProjection(Projections.rowCount());
-	// criteria.add(Restrictions.eq("label", label));
-	// criteria.add(Restrictions.eq("organizationId", organizationId));
-	// int rows = ((Long) criteria.uniqueResult()).intValue();
-	// session.getTransaction().commit();
-	// return rows > 0;
-	// } catch (RuntimeException e) {
-	// session.getTransaction().rollback();
-	// throw new UnexpectedDatabaseException(e.getMessage(), e);
-	// }
-	// }
-	//
-	// @Override
-	// public boolean exists(String label, Integer version, Long organizationId) throws UnexpectedDatabaseException {
-	// Session session = getSessionFactory().getCurrentSession();
-	// session.beginTransaction();
-	// try {
-	// Criteria criteria = session.createCriteria(getType());
-	// criteria.setProjection(Projections.rowCount());
-	// criteria.add(Restrictions.eq("label", label));
-	// criteria.add(Restrictions.eq("organizationId", organizationId));
-	// criteria.add(Restrictions.eq("version", version));
-	// int rows = ((Long) criteria.uniqueResult()).intValue();
-	// session.getTransaction().commit();
-	// return rows > 0;
-	// } catch (RuntimeException e) {
-	// session.getTransaction().rollback();
-	// throw new UnexpectedDatabaseException(e.getMessage(), e);
-	// }
-	// }
-	//
-	// @Override
-	// public boolean exists(String label, Integer version, Long organizationId, Long differentFormId)
-	// throws UnexpectedDatabaseException {
-	// Session session = getSessionFactory().getCurrentSession();
-	// session.beginTransaction();
-	// try {
-	// Criteria criteria = session.createCriteria(getType());
-	// criteria.setProjection(Projections.rowCount());
-	// criteria.add(Restrictions.eq("label", label));
-	// criteria.add(Restrictions.eq("organizationId", organizationId));
-	// criteria.add(Restrictions.eq("version", version));
-	// criteria.add(Restrictions.ne("id", differentFormId));
-	// int rows = ((Long) criteria.uniqueResult()).intValue();
-	// session.getTransaction().commit();
-	// return rows > 0;
-	// } catch (RuntimeException e) {
-	// session.getTransaction().rollback();
-	// throw new UnexpectedDatabaseException(e.getMessage(), e);
-	// }
-	// }
-	//
-	// @Override
-	// public Block getForm(String label, Integer version, Long organizationId) {
-	// throw new UnsupportedOperationException("Block dao doesn't allow a get by name, version and organization");
-	// }
-	//
-	// @Override
-	// public Long getId(String blockLabel, Long organizationId, int version) throws UnexpectedDatabaseException {
-	// Session session = getSessionFactory().getCurrentSession();
-	// session.beginTransaction();
-	// try {
-	// Criteria criteria = session.createCriteria(getType());
-	// criteria.setProjection(Projections.property("id"));
-	// criteria.add(Restrictions.eq("label", blockLabel));
-	// criteria.add(Restrictions.eq("organizationId", organizationId));
-	// criteria.add(Restrictions.eq("version", version));
-	// List<?> result = criteria.list();
-	// Long formId = null;
-	// for (Iterator<?> it = result.iterator(); it.hasNext();) {
-	// formId = (Long) it.next();
-	// break;
-	// }
-	// session.getTransaction().commit();
-	// return formId;
-	// } catch (RuntimeException e) {
-	// session.getTransaction().rollback();
-	// throw new UnexpectedDatabaseException(e.getMessage(), e);
-	// }
-	// }
-	//
-	// @Override
-	// @CacheEvict(value = "buildingBlocks", allEntries = true)
-	// public void evictAllCache() {
-	// super.evictAllCache();
-	// }
-	//
-	// @Override
-	// @Cacheable(value = "buildingBlocks", key = "#id")
-	// public Block read(Long id) throws UnexpectedDatabaseException {
-	// return super.read(id);
-	// }
-	//
 
 	@Override
 	@Caching(evict = { @CacheEvict(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null") })
@@ -383,33 +215,4 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		query.where(cb.equal(root.get(type.getSingularAttribute("question", clazz)), id));
 		return getEntityManager().createQuery(query).getSingleResult().intValue();
 	}
-
-	//
-	// /**
-	// * Return the number of flows that have as origin or destination using any element defined by a list of ids.
-	// *
-	// * @param ids
-	// * @return
-	// * @throws UnexpectedDatabaseException
-	// */
-	// @Override
-	// public int getFormFlowsCountUsingElement(List<Long> ids) throws UnexpectedDatabaseException {
-	// if (ids == null || ids.isEmpty()) {
-	// return 0;
-	// }
-	// Session session = getSessionFactory().getCurrentSession();
-	// session.beginTransaction();
-	// try {
-	// Query query = session
-	// .createQuery("SELECT count(*) FROM Flow fl INNER JOIN fl.form fr WHERE origin_id IN (:originId) OR destiny_id IN (:destinyId)");
-	// query.setParameterList("destinyId", ids);
-	// query.setParameterList("originId", ids);
-	// Long count = (Long) query.uniqueResult();
-	// session.getTransaction().commit();
-	// return count.intValue();
-	// } catch (RuntimeException e) {
-	// session.getTransaction().rollback();
-	// throw new UnexpectedDatabaseException(e.getMessage(), e);
-	// }
-	// }
 }

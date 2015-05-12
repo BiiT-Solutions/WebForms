@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.entity;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -13,6 +14,7 @@ import com.liferay.portal.model.User;
 
 @Entity
 @Table(name = "tree_blocks")
+@Cacheable(true)
 public class Block extends Form implements IWebformsBlockView {
 	private static final long serialVersionUID = -5029214862461479704L;
 	private static final String DEFAULT_LABEL = "Block";
