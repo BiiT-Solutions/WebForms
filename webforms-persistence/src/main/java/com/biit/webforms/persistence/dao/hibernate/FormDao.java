@@ -1,5 +1,7 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
+import java.util.List;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -29,7 +31,9 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 	@CachePut(value = "webformsforms", key = "#id")
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public Form get(Long id) {
-		return super.get(id);
+		Form form = super.get(id);
+		form.initializeSets();
+		return form;
 	}
 
 	@Override
@@ -53,7 +57,9 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 		}
 		form.setUpdateTime();
 
-		return super.merge(form);
+		Form mergedForm = super.merge(form);
+		mergedForm.initializeSets();
+		return mergedForm;
 	}
 
 	@Override
@@ -102,6 +108,16 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), label),
 				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
 		return getEntityManager().createQuery(cq).getSingleResult() > 0;
+	}
+	
+	@Override
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+	public List<Form> getAll() {
+		List<Form> forms = super.getAll();
+		for(Form form: forms){
+			form.initializeSets();
+		}
+		return forms;
 	}
 
 	@Override

@@ -92,12 +92,12 @@ public class Form extends BaseForm implements IWebformsFormView {
 	@Lob
 	private String description;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
 	private Set<Flow> rules;
 
 	private String linkedFormLabel;
 
-	@ElementCollection(fetch = FetchType.EAGER)
+	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(name = "linked_form_versions", joinColumns = @JoinColumn(name = "formId"), uniqueConstraints = @UniqueConstraint(columnNames = {
 			"formId", "linkedFormVersions" }))
 	private Set<Integer> linkedFormVersions;
@@ -639,5 +639,16 @@ public class Form extends BaseForm implements IWebformsFormView {
 		Gson gson = gsonBuilder.create();
 
 		return (Form) gson.fromJson(jsonString, Form.class);
+	}
+	
+	/**
+	 * For some cases, i.e. using Springcache we need to initialize all sets (disabling the Lazy loading).
+	 * 
+	 * @param elements
+	 */
+	@Override
+	public void initializeSets() {
+		super.initializeSets();
+		getFlows().size();
 	}
 }

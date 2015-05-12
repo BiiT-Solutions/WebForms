@@ -692,8 +692,14 @@ public class Designer extends SecuredWebPage {
 		table.setValue(null);
 		table.removeAllItems();
 		table.loadTreeObject(getCurrentForm(), null);
-		currentSelection = getCurrentForm().getChild(currentSelection.getPathName());
-		table.select(currentSelection);
+		
+		if(currentSelection!=null){
+			if(currentSelection instanceof Form || currentSelection instanceof Block){
+				table.select(getCurrentForm());
+			}else{
+				table.select(getCurrentForm().getChild(currentSelection.getPathName()));
+			}
+		}
 	}
 
 	private Form getCurrentForm() {
