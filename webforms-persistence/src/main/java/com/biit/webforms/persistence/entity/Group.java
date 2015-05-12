@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.entity;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -10,6 +11,7 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 
 @Entity
 @Table(name = "tree_groups")
+@Cacheable(true)
 public class Group extends BaseRepeatableGroup {
 	private static final long serialVersionUID = 5363295280240190378L;
 	private static final boolean DEFAULT_REPEATABLE = false;

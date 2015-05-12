@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -19,6 +20,7 @@ import com.biit.webforms.enumerations.FormWorkStatus;
 
 @Entity
 @Table(name = "tree_blocks_references")
+@Cacheable(true)
 public class BlockReference extends TreeObject implements IWebformsBlockView {
 	private static final long serialVersionUID = -4300039254232003868L;
 
