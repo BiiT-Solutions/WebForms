@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -17,6 +18,7 @@ import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FormWorkStatus;
 
@@ -31,6 +33,9 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	private Block reference;
+
+	@ManyToMany
+	private List<TreeObject> elementsToHide;
 
 	public BlockReference() {
 		super();
@@ -111,13 +116,15 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	}
 
 	@Override
-	public void copyData(StorableObject object) throws NotValidStorableObjectException {
+	public void copyData(StorableObject object)
+			throws NotValidStorableObjectException {
 		if (object instanceof BlockReference) {
 			// Nothing to copy except basic information data.
 			copyBasicInfo(object);
 			setReference(((BlockReference) object).getReference());
 		} else {
-			throw new NotValidTreeObjectException("Copy data for a Block Reference only supports the same type copy");
+			throw new NotValidTreeObjectException(
+					"Copy data for a Block Reference only supports the same type copy");
 		}
 	}
 
@@ -163,6 +170,19 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	@Override
 	public Set<StorableObject> getAllInnerStorableObjects() {
 		return new HashSet<>();
+	}
+
+	public List<TreeObject> getElementsToHide() {
+		return elementsToHide;
+	}
+
+	public void hideElement(TreeObject element)
+			throws ElementCannotBeRemovedException {
+		if (!reference.getAllInnerStorableObjects().contains(element)) {
+			throw new ElementCannotBeRemovedException("Element '" + element
+					+ "' does not exists in the Building block.");
+		}
+		elementsToHide.add(element);
 	}
 
 }
