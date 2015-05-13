@@ -83,7 +83,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		// Check that removing rule doesn't make disappear anything else.
 		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
 		dbForm.removeRule(dbRule);
-		formDao.makePersistent(dbForm);
+		formDao.makePersistent(formDao.merge(dbForm));
 		dbForm = formDao.get(form.getId());
 		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);
 		Assert.assertTrue(dbForm.getFlows().isEmpty());

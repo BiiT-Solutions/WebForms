@@ -59,7 +59,13 @@ public abstract class VaadinGuiWebpage extends TestBenchTestCase {
 	}
 
 	public ButtonElement getButtonElement(String buttonCaption) {
-		return $(ButtonElement.class).caption(buttonCaption).first();
+		
+		List<ButtonElement> buttons = $(ButtonElement.class).caption(buttonCaption).all();
+		if(buttons.isEmpty()){
+			return null;
+		}else{
+			return buttons.get(0);
+		}
 	}
 
 	/**

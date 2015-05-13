@@ -123,6 +123,7 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 
 	public void clickEqualsButton() {
 		getEqualsButton().click();
+		getEqualsButton().waitForVaadin();
 	}
 
 	public void clickNotEqualsButton() {
@@ -143,11 +144,31 @@ public class FlowRuleWindow extends GenericAcceptCancelWindow {
 	}
 
 	public void selectElementInAnswerTreeTable(String elementName) {
+		getWindow().waitForVaadin();
+		
+		while(!getWindow().isDisplayed() || !getWindow().isEnabled()){
+			getWindow().waitForVaadin();
+		}
+		while(true){
+			try{
+				if(getWindow().$(CustomComponentElement.class).id(ANSWER_COMPONENT_ID)!=null){
+					break;
+				}
+			}
+			catch(Exception e){
+				getWindow().waitForVaadin();
+			}
+		}
+		
+		getWindow().$(CustomComponentElement.class).id(ANSWER_COMPONENT_ID).waitForVaadin();
+		getMainTreeElementTable().waitForVaadin();
+		
 		List<LabelElement> labels = getWindow().$(CustomComponentElement.class).id(ANSWER_COMPONENT_ID)
 				.$(LabelElement.class).all();
 		for (LabelElement label : labels) {
 			if (label.getText().equals(elementName)) {
 				label.click();
+				label.waitForVaadin();
 				break;
 			}
 		}

@@ -49,6 +49,7 @@ public class FlowManager extends VaadinGuiWebpage {
 
 	public void clickNewRuleButton() {
 		getButtonElement(NEW_RULE_BUTTON_CAPTION).click();
+		getButtonElement(NEW_RULE_BUTTON_CAPTION).waitForVaadin();
 	}
 
 	public void clickRedrawButton() {
@@ -166,6 +167,8 @@ public class FlowManager extends VaadinGuiWebpage {
 		getSelectFormElementWindow().searchForElement(startNodeName);
 		getSelectFormElementWindow().selectElementInTable(startNodeName);
 		getSelectFormElementWindow().clickAccept();
+		
+		getFlowRuleWindow().getWindow().waitForVaadin();
 		getFlowRuleWindow().clickToButton();
 		getSelectFormElementWindow().searchForElement(endNodeName);
 		getSelectFormElementWindow().selectElementInTable(endNodeName);
