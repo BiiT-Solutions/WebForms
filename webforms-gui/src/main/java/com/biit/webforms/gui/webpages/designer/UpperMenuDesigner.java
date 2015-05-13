@@ -20,7 +20,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	private final IconButton blockMenu, saveAsBlockButton, insertBlockButton, linkBlockButton;
 	private final IconButton newCategoryButton, newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton,
 			newAnswerButton, newSubanswerButton, moveButton, deleteButton, upButton, downButton, finish,
-			exportToJavaCode;
+			exportToJavaCode, hideButton;
 
 	public UpperMenuDesigner() {
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
@@ -56,6 +56,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				LanguageCodes.COMMON_TOOLTIP_DOWN);
 		deleteButton = new IconButton(LanguageCodes.COMMON_CAPTION_DELETE, ThemeIcons.ELEMENT_DELETE,
 				LanguageCodes.COMMON_TOOLTIP_DELETE);
+		hideButton = new IconButton(LanguageCodes.COMMON_CAPTION_HIDE, ThemeIcons.ELEMENT_HIDE,
+				LanguageCodes.COMMON_TOOLTIP_HIDE);
 		finish = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
 				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
 
@@ -67,7 +69,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				WindowTextArea window = new WindowTextArea("Java code");
-				window.setValue(UserSessionHandler.getController().getCompleteFormView().exportToJavaCode(new StringBuilder()));
+				window.setValue(UserSessionHandler.getController().getCompleteFormView()
+						.exportToJavaCode(new StringBuilder()));
 				window.setResizable(true);
 				window.showCentered();
 			}
@@ -77,7 +80,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(saveButton);
 		blockMenu = addSubMenu(ThemeIcons.BUILDING_BLOCK_MENU, LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER,
 				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, saveAsBlockButton, insertBlockButton,
-				linkBlockButton);		
+				linkBlockButton);
 		addIconButton(newCategoryButton);
 		addIconButton(newGroupButton);
 		addIconButton(newQuestionButton);
@@ -89,10 +92,11 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(upButton);
 		addIconButton(downButton);
 		addIconButton(deleteButton);
+		addIconButton(hideButton);
 		addIconButton(finish);
 		addIconButton(exportToJavaCode);
 		setConfirmationNeeded(true);
-		
+
 		linkBlockButton.setVisible(WebformsConfigurationReader.getInstance().isLinkBloksEnabled());
 	}
 
@@ -154,6 +158,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public void addDownButtonListener(ClickListener listener) {
 		downButton.addClickListener(listener);
+	}
+
+	public void addHideButtonListener(ClickListener listener) {
+		hideButton.addClickListener(listener);
 	}
 
 	public IconButton getSaveButton() {
@@ -226,5 +234,21 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public AbstractComponent getBlockMenu() {
 		return blockMenu;
+	}
+
+	public void updateHideButton(boolean elementIsHidden) {
+		if (elementIsHidden) {
+			hideButton.setCaption(LanguageCodes.COMMON_CAPTION_SHOW.translation());
+			hideButton.setIcon(ThemeIcons.ELEMENT_SHOW);
+			hideButton.setDescription(LanguageCodes.COMMON_CAPTION_SHOW);
+		} else {
+			hideButton.setCaption(LanguageCodes.COMMON_CAPTION_HIDE.translation());
+			hideButton.setIcon(ThemeIcons.ELEMENT_HIDE);
+			hideButton.setDescription(LanguageCodes.COMMON_CAPTION_HIDE);
+		}
+	}
+
+	public IconButton getHideButton() {
+		return hideButton;
 	}
 }

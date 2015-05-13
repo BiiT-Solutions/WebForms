@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -35,15 +36,18 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	private Block reference;
 
 	@ManyToMany
-	private List<TreeObject> elementsToHide;
+	@JoinTable(name = "tree_blocks_references_hidden_elements")
+	private Set<TreeObject> elementsToHide;
 
 	public BlockReference() {
 		super();
+		elementsToHide = new HashSet<>();
 	}
 
 	public BlockReference(Block reference) {
 		super();
 		this.reference = reference;
+		elementsToHide = new HashSet<>();
 	}
 
 	public Block getReference() {
@@ -116,15 +120,13 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	}
 
 	@Override
-	public void copyData(StorableObject object)
-			throws NotValidStorableObjectException {
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof BlockReference) {
 			// Nothing to copy except basic information data.
 			copyBasicInfo(object);
 			setReference(((BlockReference) object).getReference());
 		} else {
-			throw new NotValidTreeObjectException(
-					"Copy data for a Block Reference only supports the same type copy");
+			throw new NotValidTreeObjectException("Copy data for a Block Reference only supports the same type copy");
 		}
 	}
 
@@ -156,7 +158,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 
 	@Override
 	public String getName() {
-		//Returns the name of the first category of the block
+		// Returns the name of the first category of the block
 		try {
 			return reference.getChild(0).getName();
 		} catch (ChildrenNotFoundException e) {
@@ -178,17 +180,20 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 		return new HashSet<>();
 	}
 
-	public List<TreeObject> getElementsToHide() {
+	public Set<TreeObject> getElementsToHide() {
 		return elementsToHide;
 	}
 
-	public void hideElement(TreeObject element)
-			throws ElementCannotBeRemovedException {
+	public void hideElement(TreeObject element) throws ElementCannotBeRemovedException {
 		if (!reference.getAllInnerStorableObjects().contains(element)) {
 			throw new ElementCannotBeRemovedException("Element '" + element
 					+ "' does not exists in the Building block.");
 		}
 		elementsToHide.add(element);
+	}
+
+	public void showElement(TreeObject element) {
+		elementsToHide.remove(element);
 	}
 
 	/**

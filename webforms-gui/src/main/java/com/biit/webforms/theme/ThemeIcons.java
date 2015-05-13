@@ -86,7 +86,7 @@ public enum ThemeIcons implements IThemeIcon {
 	UPLOAD_XML_ORIGINAL("document.upload.svg"),
 	REMOVE_XML("appbar.table.delete.row.svg"),
 	CLEAN_XML("appbar.table.clean.svg"),
-	UPLOAD_XML_PROCESSED("document.upload.svg"), //TODO 
+	UPLOAD_XML_PROCESSED("document.upload.svg"), 
 	
 	EXPORT_XML("form.xml.svg"), 
 	
@@ -123,6 +123,9 @@ public enum ThemeIcons implements IThemeIcon {
 	
 	PAGE_ERROR("page.error.svg"),
 	PAGE_NOT_FOUND("page.not.found.svg"),
+	
+	ELEMENT_SHOW("element.show.svg"),
+	ELEMENT_HIDE("element.hide.svg"),
 	;
 
 	private String value;

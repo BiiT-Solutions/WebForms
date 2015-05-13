@@ -49,6 +49,10 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				Block copiedBlock = getCopyOfBlock(((BlockReference) child).getReference());
 				for (TreeObject linkedChild : copiedBlock.getChildren()) {
 					children.add(linkedChild);
+					//Mark element as hidden. 
+					if (((BlockReference) child).getElementsToHide().contains(linkedChild)) {
+						linkedChild.setHiddenElement(true);
+					}
 				}
 			} else {
 				children.add(child);
@@ -190,7 +194,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	 * Not allowed rules are the rules that comes from linked block and end in another linked block.
 	 * 
 	 * @param rule
-	 * @throws FlowNotAllowedException 
+	 * @throws FlowNotAllowedException
 	 */
 	@Override
 	public void addFlow(Flow rule) throws FlowNotAllowedException {
@@ -198,7 +202,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			BlockReference blockReferenceOfSource = getBlockReference(rule.getOrigin());
 			BlockReference blockReferenceOfDestination = getBlockReference(rule.getDestiny());
 
-			// Flows in the same linked block are not allowed. 
+			// Flows in the same linked block are not allowed.
 			if (blockReferenceOfSource != null && blockReferenceOfDestination != null
 					&& blockReferenceOfSource.equals(blockReferenceOfDestination)) {
 				throw new FlowNotAllowedException("");

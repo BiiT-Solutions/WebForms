@@ -60,4 +60,8 @@ public class TableTreeObjectLabel extends TableTreeObject {
 		}
 		setCollapsed(treeObject, false);
 	}
+
+	public void updateVisibilityIcon(TreeObject treeObject) {
+		this.refreshRowCache();
+	}
 }

@@ -14,6 +14,9 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject> {
 
 	@Override
 	public IThemeIcon getIcon(TreeObject object) {
+		if (object.isHiddenElement()) {
+			return ThemeIcons.ELEMENT_HIDE;
+		}
 		if (object instanceof Question) {
 			Question question = (Question) object;
 			switch (question.getAnswerType()) {
