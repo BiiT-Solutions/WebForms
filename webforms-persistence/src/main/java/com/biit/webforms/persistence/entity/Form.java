@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -23,9 +24,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.Polymorphism;
-import org.hibernate.annotations.PolymorphismType;
 
 import com.biit.form.entity.BaseCategory;
 import com.biit.form.entity.BaseForm;
@@ -80,7 +78,7 @@ import com.liferay.portal.model.User;
 		"organizationId" }) })
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
 		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
-@Polymorphism(type = PolymorphismType.EXPLICIT)
+@Cacheable(true)
 public class Form extends BaseForm implements IWebformsFormView {
 	private static final long serialVersionUID = 5220239269341014315L;
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
@@ -94,12 +92,12 @@ public class Form extends BaseForm implements IWebformsFormView {
 	@Lob
 	private String description;
 
-	@OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true, mappedBy = "form")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
 	private Set<Flow> rules;
 
 	private String linkedFormLabel;
 
-	@ElementCollection(fetch = FetchType.EAGER)
+	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(name = "linked_form_versions", joinColumns = @JoinColumn(name = "formId"), uniqueConstraints = @UniqueConstraint(columnNames = {
 			"formId", "linkedFormVersions" }))
 	private Set<Integer> linkedFormVersions;
@@ -641,5 +639,16 @@ public class Form extends BaseForm implements IWebformsFormView {
 		Gson gson = gsonBuilder.create();
 
 		return (Form) gson.fromJson(jsonString, Form.class);
+	}
+	
+	/**
+	 * For some cases, i.e. using Springcache we need to initialize all sets (disabling the Lazy loading).
+	 * 
+	 * @param elements
+	 */
+	@Override
+	public void initializeSets() {
+		super.initializeSets();
+		getFlows().size();
 	}
 }

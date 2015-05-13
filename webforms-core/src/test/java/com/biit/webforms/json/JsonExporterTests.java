@@ -13,13 +13,11 @@ import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.file.FileReader;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.utils.exporters.json.BaseFormMetadataExporter;
-import com.biit.webforms.utils.exporters.json.BaseFormToJsonExporter;
 
 @Test(groups = { "jsonForms" })
 public class JsonExporterTests {
@@ -31,12 +29,6 @@ public class JsonExporterTests {
 	private final static String DUMMY_QUESTION_LABEL = "Dummy_Question Label";
 
 	private final static String METADATA_FILE_PATH = "jsonExporters/metadata.json";
-
-	@Test
-	public void exportToBaseForm() throws NotValidStorableObjectException, NotValidChildException, ElementIsReadOnly,
-			FieldTooLongException, CharacterNotAllowedException {
-		Assert.assertNotNull(BaseFormToJsonExporter.toJson(createSimpleStaticForm()));
-	}
 
 	@Test
 	public void exportFormMetadata() throws FieldTooLongException, CharacterNotAllowedException,

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -26,6 +27,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatExc
 
 @Entity
 @Table(name = "tree_questions")
+@Cacheable(true)
 public class Question extends WebformsBaseQuestion implements FlowConditionScript {
 	private static final long serialVersionUID = -7243001035969348318L;
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;

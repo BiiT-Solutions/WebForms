@@ -669,18 +669,33 @@ public class ApplicationController {
 	}
 
 	public void saveForm() throws UnexpectedDatabaseException, ElementCannotBePersistedException {
-		saveForm(formInUse);
+		Form savedForm = saveForm(formInUse);
+		formInUse = savedForm;
+		setLastEditedForm(formInUse);
+		completeFormView = new CompleteFormView(getFormInUse());
 	}
 
-	public void saveForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
+	public Form saveForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		form.setUpdatedBy(getUser());
 		form.setUpdateTime();
+		
+		Form mergedForm = form;
+		
 		if (form instanceof Block) {
-			blockDao.makePersistent((Block) form);
+			if(!blockDao.getEntityManager().contains(form)){
+				mergedForm = blockDao.merge((Block) form);
+			}else{
+				blockDao.makePersistent((Block) mergedForm);
+			}
 		} else {
-			formDao.makePersistent(form);
+			if(!formDao.getEntityManager().contains(form)){
+				mergedForm = formDao.merge(form);
+			}else{
+				formDao.makePersistent(mergedForm);
+			}
 		}
 		setUnsavedFormChanges(false);
+		return mergedForm;
 	}
 
 	public void finishForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
@@ -710,7 +725,7 @@ public class ApplicationController {
 
 			block.setUpdatedBy(getUser());
 			block.setUpdateTime();
-			blockDao.makePersistent(block);
+			blockDao.merge(block);
 		} catch (NotValidChildException | CharacterNotAllowedException | NotValidStorableObjectException e) {
 			// Impossible, still, if fails remove block.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

@@ -1,7 +1,10 @@
 package com.biit.webforms.persistence;
 
+import javax.transaction.Transactional;
+
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -84,6 +87,8 @@ public class RemoveTest extends AbstractTransactionalTestNGSpringContextTests {
 	 * @throws ElementCannotBePersistedException
 	 */
 	@Test
+	@Rollback(false)
+	@Transactional
 	public void removeElements() throws DependencyExistException, UnexpectedDatabaseException, FieldTooLongException,
 			NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException,
 			InvalidAnswerSubformatException, ElementIsReadOnly, ElementCannotBePersistedException {
@@ -93,6 +98,7 @@ public class RemoveTest extends AbstractTransactionalTestNGSpringContextTests {
 		Assert.assertNotNull(form.getId());
 
 		form.getChild(CATEGORY_2, GROUP_2).remove();
+		formDao.makePersistent(form);
 		form.getChild(CATEGORY_2).remove();
 		form.getChild(CATEGORY_1).remove();
 

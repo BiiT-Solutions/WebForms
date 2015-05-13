@@ -1,5 +1,7 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
+import java.util.List;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -28,27 +30,58 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 
 	@Override
 	@Cacheable(value = "webformsforms", key = "#id")
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public Form get(Long id) {
-		return super.get(id);
+		Form form = super.get(id);
+		if (form != null) {
+			form.initializeSets();
+		}
+		return form;
 	}
 
 	@Override
 	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public void makeTransient(Form form) throws ElementCannotBeRemovedException {
-		super.makeTransient(form);
+		form.getFlows().clear();
+		Form mergedForm = getEntityManager().contains(form) ? form : getEntityManager().merge(form);
+		makePersistent(mergedForm);
+
+		super.makeTransient(mergedForm);
+	}
+
+	@Override
+	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	public Form merge(Form form) {
+		form.updateChildrenSortSeqs();
+		if (form.getCreationTime() == null) {
+			form.setCreationTime();
+		}
+		form.setUpdateTime();
+
+		Form mergedForm = super.merge(form);
+		if (mergedForm != null) {
+			mergedForm.initializeSets();
+		}
+		return mergedForm;
 	}
 
 	@Override
 	@CachePut(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null")
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-	public void makePersistent(Form form) {
-		super.makePersistent(form);
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+	public Form makePersistent(Form form) {
+		form.updateChildrenSortSeqs();
+		if (form.getCreationTime() == null) {
+			form.setCreationTime();
+		}
+		form.setUpdateTime();
+
+		return super.makePersistent(form);
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public boolean exists(String label, int version, long organizationId, long id) {
 		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
@@ -67,7 +100,7 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public boolean exists(String label, long organizationId) {
 		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
@@ -82,71 +115,21 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 		return getEntityManager().createQuery(cq).getSingleResult() > 0;
 	}
 
-	// /**
-	// * Filtered version of get All. Takes a Class argument and returns a list with all the elements that match the
-	// class
-	// * argument.
-	// *
-	// * @param cls
-	// * @return
-	// * @throws UnexpectedDatabaseException
-	// */
-	// @Override
-	// public List<Form> getAll(Class<?> cls, Organization organization) throws UnexpectedDatabaseException {
-	// if (!Form.class.isAssignableFrom(cls)) {
-	// throw new TypeConstraintException("FormDao can only filter subclasses of " + Form.class.getName());
-	// }
-	//
-	// Session session = getSessionFactory().getCurrentSession();
-	// session.beginTransaction();
-	// try {
-	// // session.createCriteria(getType()).list() is not working returns
-	// // repeated elements due to
-	// //
-	// http://stackoverflow.com/questions/8758363/why-session-createcriteriaclasstype-list-return-more-object-than-in-list
-	// // if we have a list with eager fetch.
-	// Criteria criteria = session.createCriteria(cls);
-	// // This is executed in java side.
-	// criteria.setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE);
-	// criteria.add(Restrictions.eq("organizationId", organization.getOrganizationId()));
-	// @SuppressWarnings("unchecked")
-	// List<Form> result = criteria.list();
-	//
-	// // Filter by class
-	// Iterator<Form> itr = result.iterator();
-	// while (itr.hasNext()) {
-	// Form form = itr.next();
-	// if (!form.getClass().isAssignableFrom(cls)) {
-	// itr.remove();
-	// }
-	// }
-	// initializeSets(result);
-	// session.getTransaction().commit();
-	// return result;
-	// } catch (RuntimeException e) {
-	// WebformsLogger.errorMessage(this.getClass().getName(), e);
-	// session.getTransaction().rollback();
-	// throw new UnexpectedDatabaseException(e.getMessage(), e);
-	// }
-	// }
+	@Override
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+	public List<Form> getAll() {
+		List<Form> forms = super.getAll();
+		for (Form form : forms) {
+			form.initializeSets();
+		}
+		return forms;
+	}
 
 	@Override
 	@CacheEvict(value = "webformsforms", allEntries = true)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
 	public void evictAllCache() {
 		super.evictAllCache();
 	}
 
-	@Override
-	public Form getForm(String label, Integer version, Long organizationId) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-		CriteriaQuery<Form> cq = cb.createQuery(Form.class);
-		Metamodel m = getEntityManager().getMetamodel();
-		EntityType<Form> formType = m.entity(Form.class);
-		Root<Form> formRoot = cq.from(Form.class);
-		cq.where(cb.and(cb.equal(formRoot.get(formType.getSingularAttribute("label", String.class)), label),
-				cb.equal(formRoot.get(formType.getSingularAttribute("version", Integer.class)), version),
-				cb.equal(formRoot.get(formType.getSingularAttribute("organizationId", Long.class)), organizationId)));
-
-		return getEntityManager().createQuery(cq).getSingleResult();
-	}
 }

@@ -27,9 +27,8 @@ public class ExportTests extends WebFormsTester {
 	}
 
 	@Test(groups = "export")
-	public void exportTestXmls() {
+	public void exportTestXmls() throws IncorrectFileGenerationException, FieldNotEditableException {
 		printTestNameInDebugTrace("exportTestXmls");
-		try {
 			generateFormAndFlow();
 			getFormManagerPage().clickExportButton();
 			getFormManagerPage().clickExportTestXmlsButton();
@@ -39,14 +38,10 @@ public class ExportTests extends WebFormsTester {
 			getFormManagerPage().getTestXmlWindow().closeWindow();
 			logOut();
 			deleteForm();
-		} catch (IncorrectFileGenerationException e) {
-			e.printStackTrace();
-			Assert.fail();
-		}
 	}
 
 	@Test(groups = "export")
-	public void exportToFlow() {
+	public void exportToFlow() throws FieldNotEditableException {
 		printTestNameInDebugTrace("exportToFlow");
 		generateFormAndFlow();
 		getFormManagerPage().clickExportButton();
@@ -54,11 +49,9 @@ public class ExportTests extends WebFormsTester {
 		checkCorrectFileGenerationAndFinishTest();
 	}
 
-	// Test not needed yet
-	// @Test(groups = "export")
-	public void exportToJson() {
+	 @Test(groups = "export")
+	public void exportToJson() throws IncorrectFileGenerationException, FieldNotEditableException {
 		printTestNameInDebugTrace("exportToJson");
-		try {
 			generateFormAndFlow();
 			getFormManagerPage().clickExportButton();
 			getFormManagerPage().clickExportJsonButton();
@@ -66,14 +59,10 @@ public class ExportTests extends WebFormsTester {
 			getFormManagerPage().getDownloadWindowJson().closeWindow();
 			logOut();
 			deleteForm();
-		} catch (IncorrectFileGenerationException e) {
-			e.printStackTrace();
-			Assert.fail();
-		}
 	}
 
 	@Test(groups = "export")
-	public void exportToPdf() {
+	public void exportToPdf() throws FieldNotEditableException {
 		printTestNameInDebugTrace("exportToPdf");
 		generateFormAndFlow();
 		getFormManagerPage().clickExportButton();
@@ -82,9 +71,8 @@ public class ExportTests extends WebFormsTester {
 	}
 
 	@Test(groups = "export")
-	public void exportToXsd() {
+	public void exportToXsd() throws IncorrectFileGenerationException, FieldNotEditableException {
 		printTestNameInDebugTrace("exportToXsd");
-		try {
 			generateFormAndFlow();
 			getFormManagerPage().clickExportButton();
 			getFormManagerPage().clickExportXsdButton();
@@ -92,14 +80,9 @@ public class ExportTests extends WebFormsTester {
 			getFormManagerPage().getDownloadWindowXsd().closeWindow();
 			logOut();
 			deleteForm();
-		} catch (IncorrectFileGenerationException e) {
-			e.printStackTrace();
-			Assert.fail();
-		}
 	}
 
-	private void generateFormAndFlow() {
-		try {
+	private void generateFormAndFlow() throws FieldNotEditableException {
 			loginFormAdmin1();
 			getFormManagerPage().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
@@ -124,8 +107,5 @@ public class ExportTests extends WebFormsTester {
 			getFlowManagerPage().clickRedrawButton();
 			getFlowManagerPage().saveFlow();
 			goToFormManagerPage();
-		} catch (FieldNotEditableException e) {
-			Assert.fail();
-		}
 	}
 }

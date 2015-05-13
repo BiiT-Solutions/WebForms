@@ -158,6 +158,8 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				try {
 					UserSessionHandler.getController().saveForm();
+					clearAndUpdateFormTable();				
+					
 					if (UserSessionHandler.getController().getFormInUse() instanceof Block) {
 						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
 								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
@@ -690,7 +692,14 @@ public class Designer extends SecuredWebPage {
 		table.setValue(null);
 		table.removeAllItems();
 		table.loadTreeObject(getCurrentForm(), null);
-		table.select(currentSelection);
+		
+		if(currentSelection!=null){
+			if(currentSelection instanceof Form || currentSelection instanceof Block){
+				table.select(getCurrentForm());
+			}else{
+				table.select(getCurrentForm().getChild(currentSelection.getPathName()));
+			}
+		}
 	}
 
 	private Form getCurrentForm() {

@@ -8,6 +8,7 @@ import java.util.List;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.utils.date.DateManager;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.ServerTranslate;
@@ -15,7 +16,6 @@ import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.utils.DateManager;
 import com.liferay.portal.model.Organization;
 import com.vaadin.data.Item;
 import com.vaadin.ui.TreeTable;
@@ -130,7 +130,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		try {
 			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue(
 					LiferayServiceAccess.getInstance().getUserById(form.getCreatedBy()).getEmailAddress());
-		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException e) {
+		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException | NullPointerException e) {
 			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue("");
 		}
 		item.getItemProperty(TreeTableBaseFormProperties.CREATION_DATE).setValue(
@@ -138,7 +138,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		try {
 			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue(
 					LiferayServiceAccess.getInstance().getUserById(form.getUpdatedBy()).getEmailAddress());
-		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException e) {
+		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException | NullPointerException e) {
 			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue("");
 		}
 		item.getItemProperty(TreeTableBaseFormProperties.MODIFICATION_DATE).setValue(

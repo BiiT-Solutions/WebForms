@@ -1,9 +1,12 @@
 package com.biit.webforms.persistence;
 
+import javax.transaction.Transactional;
+
 import junit.framework.Assert;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -38,6 +41,8 @@ public class PersistForm extends AbstractTransactionalTestNGSpringContextTests {
 	private IFormDao formDao;
 
 	@Test
+	@Rollback(false)
+	@Transactional
 	public void testPersistCompleteForm() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			UnexpectedDatabaseException, ChildrenNotFoundException, BadFlowContentException,

@@ -18,13 +18,12 @@
 	<!-- Scans the classpath for annotated components that will be auto-registered 
 		as Spring beans. For example @Component, @Controller and @Service. Make sure 
 		to set the correct base-package -->
+	<context:annotation-config />
 	<context:component-scan base-package="com.biit.webforms.persistence" />
 
 	<!-- Read any *.properties file in project and override some of them with 
 		files outside of the project -->
-	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-		id="corePlaceHolder">
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" id="corePlaceHolder">
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="ignoreResourceNotFound" value="true" />
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
@@ -37,18 +36,21 @@
 			</list>
 		</property>
 	</bean>
-
-	<bean
-		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+	
+	<!-- <tx:annotation-driven transaction-manager="webformsTransactionManager" /> -->
+	<context:annotation-config />
+	<tx:annotation-driven />
 
 	<!-- Transaction Manager -->
-	<bean id="webformsTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+	<bean id="transactionManagerWebforms" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="webformsManagerFactory" />
 		<property name="jpaDialect" ref="jpaDialect" />
+		<qualifier value="webformsTransactionManager"/>
 	</bean>
-	<bean id="abcdTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="webformsManagerFactory" />
+	<bean id="transactionManagerAbcd" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="abcdManagerFactory" />
 		<property name="jpaDialect" ref="jpaDialect" />
+		<qualifier value="abcdTransactionManager"/>
 	</bean>
 
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
@@ -58,7 +60,7 @@
 	<bean id="webformsManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="webformsDataSource" />
-		<property name="persistenceUnitName" value="defaultPersistenceUnit" />
+		<property name="persistenceUnitName" value="webformsPersistenceUnit" />
 		<property name="packagesToScan">
 			<list>
 				<value>com.biit.webforms.persistence.**.*</value>
@@ -66,11 +68,12 @@
 		</property>
 		<property name="jpaVendorAdapter" ref="hibernateVendor" />
 		<property name="jpaProperties" ref="webformsJpaProperties" />
+		<qualifier value="webformsManagerFactory"/>
 	</bean>
 	<bean id="abcdManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="abcdDataSource" />
-		<property name="persistenceUnitName" value="defaultPersistenceUnit" />
+		<property name="persistenceUnitName" value="abcdPersistenceUnit" />
 		<property name="packagesToScan">
 			<list>
 				<value>com.biit.abcd.persistence.**.*</value>
@@ -78,6 +81,15 @@
 		</property>
 		<property name="jpaVendorAdapter" ref="hibernateVendor" />
 		<property name="jpaProperties" ref="abcdJpaProperties" />
+		<qualifier value="abcdManagerFactory"/>
+	</bean>
+	
+	<!-- Entity managers -->
+	<bean id="webformsEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" >            
+        <property name="entityManagerFactory" ref="webformsManagerFactory" />
+	</bean>
+	<bean id="abcdEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" >            
+        <property name="entityManagerFactory" ref="abcdManagerFactory" />
 	</bean>
 
 	<!-- Data Source -->
@@ -167,13 +179,12 @@
 		<entry key="hibernate.cache.provider_class" value="${hibernate.cache.provider_class}" />
 		<entry key="hibernate.cache.use_query_cache" value="${hibernate.cache.use_query_cache}" />
 		<entry key="hibernate.check_nullability" value="${hibernate.check_nullability}" />
+		<entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE" />
 	</util:map>
 
 	<bean id="hibernateVendor"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 	</bean>
-
-	<tx:annotation-driven transaction-manager="webformsTransactionManager" />
 
 	<!-- Enables Interceptors -->
 	<aop:aspectj-autoproxy />
@@ -204,5 +215,10 @@
 		class="com.biit.abcd.persistence.dao.hibernate.SimpleFormViewDao" />
 	<bean name="customVariableDao"
 		class="com.biit.abcd.persistence.dao.hibernate.CustomVariableDao" />
+		
+	<!--  Cache Configuration  -->
+	<cache:annotation-driven />
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cache-manager-ref="ehcache" />
+	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:configLocation="classpath:ehcache.xml" p:shared="true" />
 
 </beans>

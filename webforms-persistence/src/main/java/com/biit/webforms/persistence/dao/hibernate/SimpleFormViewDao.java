@@ -24,7 +24,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 
 	private Class<SimpleFormView> type;
 	
-	@PersistenceContext(unitName = "defaultPersistenceUnit")
+	@PersistenceContext(unitName = "webformsPersistenceUnit")
 	@Qualifier(value = "webformsManagerFactory")
 	private EntityManager entityManager;
 
@@ -105,11 +105,10 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 		Query query = entityManager.createNativeQuery("SELECT linkedFormVersions FROM linked_form_versions WHERE formId="
 				+ formId);
 		List<Object[]> rows = query.getResultList();
-
-		for (Object[] row : rows) {
-			linkedVersions.add((Integer) row[0]);
+		
+		for (Object row : rows) {
+			linkedVersions.add((Integer) row);
 		}
-
 		return linkedVersions;
 	}
 

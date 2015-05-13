@@ -49,6 +49,7 @@ public class FlowManager extends VaadinGuiWebpage {
 
 	public void clickNewRuleButton() {
 		getButtonElement(NEW_RULE_BUTTON_CAPTION).click();
+		getButtonElement(NEW_RULE_BUTTON_CAPTION).waitForVaadin();
 	}
 
 	public void clickRedrawButton() {
@@ -71,6 +72,13 @@ public class FlowManager extends VaadinGuiWebpage {
 		getSelectFormElementWindow().searchForElement(nodeName);
 		getSelectFormElementWindow().selectElementInTable(nodeName);
 		getSelectFormElementWindow().clickAccept();
+		if(getSelectFormElementWindow().getWindow()!=null){
+			try{
+				getSelectFormElementWindow().getWindow().waitForVaadin();
+			}catch(NullPointerException e){
+				//Do nothing
+			}
+		}
 		getFlowRuleWindow().getTypeCombobox().selectByText(COMBOBOX_END_FORM_VALUE);
 		getFlowRuleWindow().clickAccept();
 	}
@@ -87,6 +95,13 @@ public class FlowManager extends VaadinGuiWebpage {
 		getSelectFormElementWindow().searchForElement(nodeName);
 		getSelectFormElementWindow().selectElementInTable(nodeName);
 		getSelectFormElementWindow().clickAccept();
+		if(getSelectFormElementWindow().getWindow()!=null){
+			try{
+				getSelectFormElementWindow().getWindow().waitForVaadin();
+			}catch(NullPointerException e){
+				//Do nothing
+			}
+		}
 		getFlowRuleWindow().getTypeCombobox().selectByText(COMBOBOX_END_FORM_VALUE);
 		getFlowRuleWindow().clickOthersCheckBox();
 		getFlowRuleWindow().clickAccept();
@@ -152,6 +167,8 @@ public class FlowManager extends VaadinGuiWebpage {
 		getSelectFormElementWindow().searchForElement(startNodeName);
 		getSelectFormElementWindow().selectElementInTable(startNodeName);
 		getSelectFormElementWindow().clickAccept();
+		
+		getFlowRuleWindow().getWindow().waitForVaadin();
 		getFlowRuleWindow().clickToButton();
 		getSelectFormElementWindow().searchForElement(endNodeName);
 		getSelectFormElementWindow().selectElementInTable(endNodeName);

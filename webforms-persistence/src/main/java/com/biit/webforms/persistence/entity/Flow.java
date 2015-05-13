@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -42,6 +43,7 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceExceptio
 
 @Entity
 @Table(name = "flow")
+@Cacheable(true)
 public class Flow extends StorableObject {
 	private static final long serialVersionUID = 2814442921737652036L;
 

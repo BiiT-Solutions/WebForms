@@ -3,10 +3,13 @@ package com.biit.webforms.persistence;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import junit.framework.Assert;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -48,7 +51,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatExc
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContextTest.xml" })
 @Test(groups = { "blockLink" })
-@TransactionConfiguration(defaultRollback = false)
+@TransactionConfiguration()
 public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTests {
 
 	@Autowired
@@ -59,26 +62,25 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 
 	@Autowired
 	private ISimpleFormViewDao simpleFormViewDao;
-
-	private Block block;
-	private BlockReference blockReference;
-	private Form form;
-	private CompleteFormView completeFormView;
-
+	
 	@Test
+	@Rollback(value=false)
+	@Transactional
 	public void createLinkedBlock() throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException,
 			InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException,
 			ElementIsReadOnly, ElementCannotBePersistedException {
 		int previousBlocks = blockDao.getRowCount();
-
-		block = FormUtils.createBlock();
-		block.setLabel("LinkedBlock");
+		Block block = getNewBlock();
 		Assert.assertNotNull(block);
 		blockDao.makePersistent(block);
 
 		Assert.assertEquals(previousBlocks + 1, blockDao.getRowCount());
-
-		blockReference = new BlockReference(block);
+	}
+	
+	public static Block getNewBlock() throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly{
+		Block block = FormUtils.createBlock();
+		block.setLabel("LinkedBlock");
+		return block;
 	}
 
 	// Form:
@@ -108,16 +110,25 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 	// --- Question8
 	//
 	@Test(dependsOnMethods = { "createLinkedBlock" })
+	@Rollback(value=false)
+	@Transactional
 	public void createForm() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
 			InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException,
 			FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
 			FlowWithoutDestinyException, NotValidTokenType, UnexpectedDatabaseException, ElementIsReadOnly,
 			FlowNotAllowedException, ElementCannotBePersistedException {
 		int previousForms = formDao.getRowCount();
-		form = FormUtils.createCompleteForm();
+		Form form = getNewForm();
 		formDao.makePersistent(form);
 		Assert.assertEquals(previousForms + 1, formDao.getRowCount());
-		completeFormView = new CompleteFormView(form);
+	}
+	
+	public Form getNewForm() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
+		InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException,
+		FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
+		FlowWithoutDestinyException, NotValidTokenType, UnexpectedDatabaseException, ElementIsReadOnly,
+		FlowNotAllowedException, ElementCannotBePersistedException {
+		return FormUtils.createCompleteForm();
 	}
 
 	// Form:
@@ -161,15 +172,24 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 	// -- Question2
 	//
 	@Test(dependsOnMethods = { "createLinkedBlock", "createForm" })
+	@Rollback(value=false)
+	@Transactional
 	public void addLinkedBlockToForm() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
 			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType,
-			UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException {
+			UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException, FlowNotAllowedException {
+		Form form = getNewForm();
+		Block block = getNewBlock();
+		BlockReference blockReference = new BlockReference(block);
+		formDao.makePersistent(form);
+		blockDao.makePersistent(block);
+		CompleteFormView completeFormView = new CompleteFormView(form);
+		
 		int previousChildren = form.getChildren().size();
 		int previousStorableObjects = form.getAllInnerStorableObjects().size();
 		int previousStorableObjectsCompleteView = completeFormView.getAllInnerStorableObjects().size();
-
+		
 		form.addChild(blockReference);
 		formDao.makePersistent(form);
 
@@ -178,11 +198,21 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		Assert.assertEquals(previousStorableObjectsCompleteView
 				+ blockReference.getReference().getAllInnerStorableObjects().size(), completeFormView
 				.getAllInnerStorableObjects().size());
-
 	}
 
 	@Test(dependsOnMethods = { "addLinkedBlockToForm" })
-	public void moveUpLinkedBlockInForm() throws ElementIsReadOnly {
+	@Rollback(value=false)
+	@Transactional
+	public void moveUpLinkedBlockInForm() throws ElementIsReadOnly, FieldTooLongException, NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, UnexpectedDatabaseException, FlowNotAllowedException, ElementCannotBePersistedException {
+		Form form = getNewForm();
+		Block block = getNewBlock();
+		BlockReference blockReference = new BlockReference(block);
+		formDao.makePersistent(form);
+		blockDao.makePersistent(block);
+		CompleteFormView completeFormView = new CompleteFormView(form);
+		form.addChild(blockReference);
+		formDao.makePersistent(form);
+		
 		int indexOfBlock = form.getIndex(blockReference);
 		form.moveChildUp(blockReference);
 		Assert.assertEquals(indexOfBlock - 1, (int) form.getIndex(blockReference));
@@ -194,7 +224,19 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 	}
 
 	@Test(dependsOnMethods = { "moveUpLinkedBlockInForm" })
-	public void moveDownLinkedBlockInForm() throws ElementIsReadOnly {
+	@Rollback(value=false)
+	@Transactional
+	public void moveDownLinkedBlockInForm() throws ElementIsReadOnly, FieldTooLongException, NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, UnexpectedDatabaseException, FlowNotAllowedException, ElementCannotBePersistedException {
+		Form form = getNewForm();
+		Block block = getNewBlock();
+		BlockReference blockReference = new BlockReference(block);
+		formDao.makePersistent(form);
+		blockDao.makePersistent(block);
+		CompleteFormView completeFormView = new CompleteFormView(form);
+		form.addChild(blockReference);
+		formDao.makePersistent(form);
+		form.moveChildUp(blockReference);
+		
 		int indexOfBlock = form.getIndex(blockReference);
 		form.moveChildDown(blockReference);
 		Assert.assertEquals(indexOfBlock + 1, (int) form.getIndex(blockReference));
@@ -206,7 +248,18 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 	}
 
 	@Test(dependsOnMethods = { "addLinkedBlockToForm" }, expectedExceptions = { ElementIsReadOnly.class })
-	public void moveElementBlockInCompleteFormViewNotAllowed() throws ChildrenNotFoundException, ElementIsReadOnly {
+	@Rollback(value=false)
+	@Transactional
+	public void moveElementBlockInCompleteFormViewNotAllowed() throws ChildrenNotFoundException, ElementIsReadOnly, FieldTooLongException, NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, UnexpectedDatabaseException, FlowNotAllowedException, ElementCannotBePersistedException {
+		Form form = getNewForm();
+		Block block = getNewBlock();
+		BlockReference blockReference = new BlockReference(block);
+		formDao.makePersistent(form);
+		blockDao.makePersistent(block);
+		CompleteFormView completeFormView = new CompleteFormView(form);
+		form.addChild(blockReference);
+		formDao.makePersistent(form);
+		
 		int indexOfBlock = form.getIndex(blockReference);
 		// Get category in position of the block and move first child down.
 		completeFormView.getChild(indexOfBlock).moveChildDown(
@@ -214,23 +267,53 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 	}
 
 	@Test(dependsOnMethods = { "addLinkedBlockToForm" }, expectedExceptions = { ElementIsReadOnly.class })
+	@Rollback(value=false)
+	@Transactional
 	public void removeElementInLinkedBlockNotAllowed() throws DependencyExistException, ChildrenNotFoundException,
-			ElementIsReadOnly {
+			ElementIsReadOnly, FieldTooLongException, NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, UnexpectedDatabaseException, FlowNotAllowedException, ElementCannotBePersistedException {
+		Form form = getNewForm();
+		Block block = getNewBlock();
+		BlockReference blockReference = new BlockReference(block);
+		formDao.makePersistent(form);
+		blockDao.makePersistent(block);
+		CompleteFormView completeFormView = new CompleteFormView(form);
+		form.addChild(blockReference);
+		formDao.makePersistent(form);
+		
 		int indexOfBlock = form.getIndex(blockReference);
 		completeFormView.getChild(indexOfBlock).getChildren().get(0).remove();
 	}
 
 	@Test(dependsOnMethods = { "addLinkedBlockToForm" })
-	public void getViewOfFormsThatUseaBlock() {
+	@Rollback(value=false)
+	@Transactional
+	public void getViewOfFormsThatUseaBlock() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, UnexpectedDatabaseException, ElementIsReadOnly, FlowNotAllowedException, ElementCannotBePersistedException {
+		Form form = getNewForm();
+		Block block = getNewBlock();
+		BlockReference blockReference = new BlockReference(block);
+		formDao.makePersistent(form);
+		blockDao.makePersistent(block);
+		form.addChild(blockReference);
+		formDao.makePersistent(form);
+		
 		List<SimpleFormView> forms = simpleFormViewDao.getFormsThatUse(blockReference.getReference());
 		Assert.assertTrue(!forms.isEmpty());
 	}
 
-	@Test(dependsOnMethods = { "addLinkedBlockToForm" }, expectedExceptions = ElementCannotBePersistedException.class)
+	@Test(dependsOnMethods = { "addLinkedBlockToForm" })
 	public void blockElementCannotBeRemoveDueToUsedInFormFlow() throws BadFlowContentException,
 			FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
 			FlowWithoutDestinyException, FlowNotAllowedException, UnexpectedDatabaseException,
-			ElementCannotBePersistedException, DependencyExistException, ElementIsReadOnly {
+			ElementCannotBePersistedException, DependencyExistException, ElementIsReadOnly, FieldTooLongException, NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException, NotValidTokenType {
+		Form form = getNewForm();
+		Block block = getNewBlock();
+		BlockReference blockReference = new BlockReference(block);
+		formDao.makePersistent(form);
+		blockDao.makePersistent(block);
+		CompleteFormView completeFormView = new CompleteFormView(form);
+		form.addChild(blockReference);
+		formDao.makePersistent(form);
+		
 		// Add a flow that uses one element of the block.
 		Flow ruleToBlock = FormUtils.createFlow(
 				(BaseQuestion) completeFormView.getChildren().get(0).getChildren().get(2).getChildren().get(0),
@@ -239,42 +322,20 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		form.addFlow(ruleToBlock);
 		// Save the form.
 		formDao.makePersistent(form);
-		// Try to remove the element of the block, not the form.
-		block.getChildren().get(0).getChildren().get(3).remove();
-		blockDao.makePersistent(block);
+		
+		Assert.assertFalse(blockDao.checkIfBlockElementCanBeRemoved(block.getChildren().get(0).getChildren().get(3)));
 	}
-
+	
 	@Test
-	public void blockReferenceWithNullValue() throws NotValidChildException, FieldTooLongException,
-			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType,
-			UnexpectedDatabaseException, FlowNotAllowedException, ElementCannotBeRemovedException,
-			ElementCannotBePersistedException {
-		Block block = FormUtils.createBlock();
-		block.setLabel("LinkedBlock5");
-		blockDao.makePersistent(block);
-
-		BlockReference blockReference = new BlockReference(block);
-		Form form = FormUtils.createCompleteForm(null, "form5");
-		form.addChild(blockReference);
-		formDao.makePersistent(form);
-
-		// Remove block.
-		blockReference.setReference(null);
-		formDao.makePersistent(form);
-		blockDao.makeTransient(block);
-		formDao.makeTransient(form);
-
-	}
-
-	@Test
+	@Rollback(value=false)
+	@Transactional
 	public void removeFormDoesNotRemoveLinkedBlock() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			ElementIsReadOnly, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
 			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType,
 			UnexpectedDatabaseException, FlowNotAllowedException, ElementCannotBeRemovedException,
 			ElementCannotBePersistedException {
+		
 		Block block = FormUtils.createBlock();
 		block.setLabel("LinkedBlock4");
 		blockDao.makePersistent(block);
@@ -288,15 +349,14 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 
 		formDao.makePersistent(form);
 		formDao.makeTransient(form);
-		blockDao.evictAllCache();
-
+		
 		Assert.assertEquals(blockNumber, (int) blockDao.getRowCount());
 		Assert.assertEquals(elementsInBlock, blockDao.get(block.getId()).getAllInnerStorableObjects().size());
-		blockDao.makeTransient(block);
-
 	}
 
 	@Test(expectedExceptions = FlowNotAllowedException.class)
+	@Rollback(value=false)
+	@Transactional
 	public void flowInLinkedBlockIsNotAllowed() throws NotValidChildException, FieldTooLongException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
 			ElementIsReadOnly, UnexpectedDatabaseException, BadFlowContentException, FlowWithoutSourceException,
@@ -335,6 +395,8 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 	}
 
 	@Test
+	@Rollback(value=false)
+	@Transactional
 	public void flowFromElementToLinkedBlockIsAllowed() throws BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
 			UnexpectedDatabaseException, NotValidChildException, ElementIsReadOnly, FieldTooLongException,
@@ -371,6 +433,8 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 	}
 
 	@Test
+	@Rollback(value=false)
+	@Transactional
 	public void flowBetweenLinkedBlocksIsAllowed() throws BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
 			UnexpectedDatabaseException, NotValidChildException, ElementIsReadOnly, FieldTooLongException,
@@ -407,6 +471,8 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 	}
 
 	@Test(expectedExceptions = ElementCannotBeRemovedException.class)
+	@Rollback(value=false)
+	@Transactional()
 	public void blockCannotBeRemovedIfFormIsLinkingIt() throws BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
 			UnexpectedDatabaseException, NotValidChildException, ElementIsReadOnly, FieldTooLongException,
@@ -416,12 +482,14 @@ public class BlockLinkTests extends AbstractTransactionalTestNGSpringContextTest
 		Block block1 = FormUtils.createBlock();
 		block1.setLabel("LinkedBlock61");
 		blockDao.makePersistent(block1);
+		blockDao.getEntityManager().flush();
 
 		BlockReference blockReference1 = new BlockReference(block1);
 
 		Form form = FormUtils.createCompleteForm(null, "form8");
 		form.addChild(blockReference1);
 		formDao.makePersistent(form);
+		formDao.getEntityManager().flush();
 
 		blockDao.makeTransient(block1);
 	}

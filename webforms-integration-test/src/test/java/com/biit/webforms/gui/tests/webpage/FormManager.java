@@ -72,6 +72,9 @@ public class FormManager extends VaadinGuiWebpage {
 	}
 
 	public void clickExportButton() {
+		while(getExportButton()==null){
+			getFormTable().waitForVaadin();
+		}
 		getExportButton().waitForVaadin();
 		getExportButton().click();
 	}

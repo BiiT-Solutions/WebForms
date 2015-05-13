@@ -19,15 +19,20 @@
 	<!-- Scans the classpath for annotated components that will be auto-registered 
 		as Spring beans. For example @Component, @Controller and @Service. Make sure 
 		to set the correct base-package -->
+	<context:annotation-config />
 	<context:component-scan base-package="com.biit.webforms.persistence" />
 
 	<!-- Read any *.properties file -->
 	<context:property-placeholder location="classpath*:*.properties" />
 
+
+	<tx:annotation-driven transaction-manager="webformsTransactionManager"/>
+
 	<!-- Transaction Manager -->
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+	<bean id="transactionManagerWebforms" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="webformsManagerFactory" />
 		<property name="jpaDialect" ref="jpaDialect" />
+		<qualifier value="webformsTransactionManager"/>
 	</bean>
 
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
@@ -37,7 +42,7 @@
 	<bean id="webformsManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="persistenceUnitName" value="defaultPersistenceUnit" />
+		<property name="persistenceUnitName" value="webformsPersistenceUnit" />
 		<property name="packagesToScan">
 			<list>
 				<value>com.biit.webforms.persistence.**.*</value>
@@ -45,6 +50,12 @@
 		</property>
 		<property name="jpaVendorAdapter" ref="hibernateVendor" />
 		<property name="jpaProperties" ref="webformsJpaProperties" />
+		<qualifier value="webformsManagerFactory"/>
+	</bean>
+	
+	<!-- Entity managers -->
+	<bean id="webformsEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" >            
+        <property name="entityManagerFactory" ref="webformsManagerFactory" />
 	</bean>
 
 	<!-- Data Source -->
@@ -118,12 +129,15 @@
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 	</bean>
 
-	<tx:annotation-driven />
-
 	<!-- Enables Interceptors -->
 	<aop:aspectj-autoproxy />
 
 	<!-- Aspect -->
 	<bean id="basicLogging" class="com.biit.webforms.logger.BasicLogging" />
+	
+	<!--  Cache Configuration  -->
+	<cache:annotation-driven />
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cache-manager-ref="ehcache" />
+	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:configLocation="classpath:ehcache.xml" p:shared="true" />
 
 </beans>
