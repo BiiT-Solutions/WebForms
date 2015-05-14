@@ -180,7 +180,26 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 		return new HashSet<>();
 	}
 
+	/**
+	 * Returns all elements that the user has selected to hide.
+	 * 
+	 * @return
+	 */
 	public Set<TreeObject> getElementsToHide() {
+		return elementsToHide;
+	}
+
+	/**
+	 * Returns all elements that the user has selected to hide and the elements that are children of this elements.
+	 * 
+	 * @return
+	 */
+	public Set<TreeObject> getAllElementsToHide() {
+		Set<TreeObject> elementsToHide = new HashSet<>();
+		for (TreeObject elementToHide : getElementsToHide()) {
+			elementsToHide.add(elementToHide);
+			elementsToHide.addAll(elementToHide.getAll(TreeObject.class));
+		}
 		return elementsToHide;
 	}
 

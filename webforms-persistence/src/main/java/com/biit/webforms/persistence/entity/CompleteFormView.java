@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
@@ -18,8 +19,12 @@ import com.biit.form.exceptions.NotValidParentException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 
 /**
@@ -59,7 +64,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	/**
-	 * Set the elements selected by the user in a Block Reference and its children as hidden. 
+	 * Set the elements selected by the user in a Block Reference and its children as hidden.
+	 * 
 	 * @param block
 	 * @param linkedChild
 	 */
@@ -195,13 +201,45 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			if (child instanceof BlockReference) {
 				Block block = getCopyOfBlock(((BlockReference) child).getReference());
 				for (Flow flow : block.getFlows()) {
-					flows.add(flow);
+					if (!hideFlow((BlockReference) child, flow)) {
+						flows.add(flow);
+					}
 				}
 			}
 		}
 
 		flows.addAll(form.getFlows());
 		return flows;
+	}
+
+	/**
+	 * Hide all flows that are using any hidden element as source, destiny or condition.
+	 * 
+	 * @param block
+	 * @param flow
+	 * @return
+	 */
+	private boolean hideFlow(BlockReference block, Flow flow) {
+		// Check source and destiny.
+		if (flow.getOrigin().isHiddenElement() || flow.getDestiny().isHiddenElement()) {
+			return true;
+		}
+		// Check condition.
+		List<Token> tokens = flow.getConditionSimpleTokens();
+		for (Token token : tokens) {
+			if (token instanceof TokenComparationAnswer) {
+				if (((TokenComparationAnswer) token).getQuestion().isHiddenElement()
+						|| ((TokenComparationAnswer) token).getAnswer().isHiddenElement()) {
+					return true;
+				}
+			} else if (token instanceof TokenComparationValue) {
+				if (((TokenComparationValue) token).getQuestion().isHiddenElement()) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -219,11 +257,47 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			// Flows in the same linked block are not allowed.
 			if (blockReferenceOfSource != null && blockReferenceOfDestination != null
 					&& blockReferenceOfSource.equals(blockReferenceOfDestination)) {
-				throw new FlowNotAllowedException("");
+				throw new FlowNotAllowedException("Flows in the same linked block are not allowed.");
 			}
 
 			form.addFlow(rule);
 		}
+	}
+
+	/**
+	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
+	 * goes to the next element). Skip the hidden elements.
+	 * 
+	 * @return
+	 */
+	@Override
+	public ComputedFlowView getComputedFlowsView() {
+		LinkedHashSet<TreeObject> allBaseQuestions = getAllChildrenInHierarchy(BaseQuestion.class);
+		// Remove all hidden elements.
+		Set<BlockReference> blockReferences = getAllBlockReferences();
+		for (BlockReference blockReference : blockReferences) {
+			allBaseQuestions.removeAll(blockReference.getAllElementsToHide());
+		}
+		ComputedFlowView computedView = new ComputedFlowView();
+
+		if (!allBaseQuestions.isEmpty()) {
+			Object[] baseQuestions = allBaseQuestions.toArray();
+			computedView.setFirstElement((TreeObject) baseQuestions[0]);
+			computedView.addFlows(getFlows());
+
+			int numQuestions = baseQuestions.length - 1;
+
+			for (int i = 0; i < numQuestions; i++) {
+				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
+					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i],
+							(BaseQuestion) baseQuestions[i + 1]);
+				}
+			}
+			if (computedView.getFlowsByOrigin((BaseQuestion) baseQuestions[numQuestions]) == null) {
+				computedView.addNewEndFormFlow((BaseQuestion) baseQuestions[numQuestions]);
+			}
+		}
+		return computedView;
 	}
 
 	@Override
@@ -267,6 +341,17 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			}
 		}
 		return null;
+	}
+
+	public Set<BlockReference> getAllBlockReferences() {
+		Set<BlockReference> blockReferences = new HashSet<>();
+
+		for (TreeObject child : form.getChildren()) {
+			if (child instanceof BlockReference) {
+				blockReferences.add((BlockReference) child);
+			}
+		}
+		return blockReferences;
 	}
 
 	public Form getForm() {

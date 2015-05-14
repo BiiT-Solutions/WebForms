@@ -19,7 +19,9 @@ public class ExporterDotBaseQuestion extends ExporterDot<BaseQuestion> {
 	@Override
 	public String generateDotNodeList(BaseQuestion baseQuestion) {
 		String dotElement = new String();
-		dotElement = "\t\t" + getDotName(baseQuestion) + ";\n";
+		if (!baseQuestion.isHiddenElement()) {
+			dotElement = "\t\t" + getDotName(baseQuestion) + ";\n";
+		}
 		return dotElement;
 	}
 
