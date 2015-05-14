@@ -20,6 +20,7 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.persistence.utils.IdGenerator;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
 
@@ -105,6 +106,12 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	}
 
 	@Override
+	public void resetIds() {
+		setId(null);
+		setComparationId(IdGenerator.createId());
+	}
+
+	@Override
 	public boolean isLastVersion() {
 		if (reference != null) {
 			return reference.isLastVersion();
@@ -125,6 +132,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 			// Nothing to copy except basic information data.
 			copyBasicInfo(object);
 			setReference(((BlockReference) object).getReference());
+			elementsToHide.addAll(((BlockReference) object).getElementsToHide());
 		} else {
 			throw new NotValidTreeObjectException("Copy data for a Block Reference only supports the same type copy");
 		}
