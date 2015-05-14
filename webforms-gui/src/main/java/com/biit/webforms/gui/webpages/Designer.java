@@ -40,6 +40,7 @@ import com.biit.webforms.gui.components.TableTreeObjectLabel;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.WindowTreeObject;
 import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
+import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectHidden;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
 import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.designer.WindowBlocks;
@@ -99,6 +100,7 @@ public class Designer extends SecuredWebPage {
 		table = new TableTreeObjectLabel();
 		table.setPageLength(0);
 		table.setIconProvider(new IconProviderTreeObjectWebforms());
+		table.setStatusIconProvider(new IconProviderTreeObjectHidden());
 		table.setSizeFull();
 		table.setSelectable(true);
 		table.loadTreeObject(getCurrentForm(), null);
