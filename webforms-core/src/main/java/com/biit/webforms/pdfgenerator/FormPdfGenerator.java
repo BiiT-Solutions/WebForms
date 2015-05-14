@@ -48,18 +48,20 @@ public class FormPdfGenerator extends DocumentGenerator {
 	}
 
 	private void generateAndAddTreeObject(Document document, TreeObject object) throws DocumentException {
-		if (object instanceof Category) {
-			generateAndAddCategory(document, (Category) object);
-		} else if (object instanceof Group) {
-			generateAndAddGroup(document, (Group) object);
-		} else if (object instanceof Question) {
-			generateAndAddQuestion(document, (Question) object);
-		} else if (object instanceof Text) {
-			generateAndAddText(document, (Text) object);
-		} else if (object instanceof SystemField) {
-			// TODO add system fields
-		} else {
-			throw new DocumentException("Structure not recognized");
+		if (!object.isHiddenElement()) {
+			if (object instanceof Category) {
+				generateAndAddCategory(document, (Category) object);
+			} else if (object instanceof Group) {
+				generateAndAddGroup(document, (Group) object);
+			} else if (object instanceof Question) {
+				generateAndAddQuestion(document, (Question) object);
+			} else if (object instanceof Text) {
+				generateAndAddText(document, (Text) object);
+			} else if (object instanceof SystemField) {
+				// Not added to PDF.
+			} else {
+				throw new DocumentException("Structure not recognized");
+			}
 		}
 	}
 

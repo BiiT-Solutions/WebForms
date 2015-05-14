@@ -544,7 +544,7 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getFinish().setVisible(!formIsBlock);
 			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 			upperMenu.updateHideButton(isHidden);
-			upperMenu.getHideButton().setEnabled(rowIsBlockReference);
+			upperMenu.getHideButton().setEnabled(rowIsBlockReference && canEdit);
 			upperMenu.getDeleteButton().setVisible(!rowIsBlockReference);
 			upperMenu.getHideButton().setVisible(rowIsBlockReference);
 		} catch (IOException | AuthenticationRequired e) {
