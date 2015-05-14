@@ -62,6 +62,9 @@ public class TableTreeObjectLabel extends TableTreeObject {
 	}
 
 	public void updateVisibilityIcon(TreeObject treeObject) {
-		this.refreshRowCache();
+		updateRow(treeObject);
+		for (TreeObject child : treeObject.getChildren()) {
+			updateVisibilityIcon(child);
+		}
 	}
 }

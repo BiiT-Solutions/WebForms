@@ -534,6 +534,8 @@ public enum LanguageCodes implements ILanguageCode {
 	PAGE_NOT_FOUND("page.not.found"),
 	PAGE_ERROR("page.error"), 
 	
+	WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT("warning.cannot.show.element"),
+	
 	;
 
 	private String value;

@@ -49,16 +49,30 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				Block copiedBlock = getCopyOfBlock(((BlockReference) child).getReference());
 				for (TreeObject linkedChild : copiedBlock.getChildren()) {
 					children.add(linkedChild);
-					//Mark element as hidden. 
-					if (((BlockReference) child).getElementsToHide().contains(linkedChild)) {
-						linkedChild.setHiddenElement(true);
-					}
+					updateHiddenElements((BlockReference) child, linkedChild);
 				}
 			} else {
 				children.add(child);
 			}
 		}
 		return children;
+	}
+
+	/**
+	 * Set the elements selected by the user in a Block Reference and its children as hidden. 
+	 * @param block
+	 * @param linkedChild
+	 */
+	private void updateHiddenElements(BlockReference block, TreeObject linkedChild) {
+		// Mark element as hidden.
+		if (((BlockReference) block).getElementsToHide().contains(linkedChild)) {
+			linkedChild.setHiddenElement(true);
+			// All children are also hidden. Not needed to check.
+		} else {
+			for (TreeObject child : linkedChild.getChildren()) {
+				updateHiddenElements(block, child);
+			}
+		}
 	}
 
 	private void createCopyOfBlocks() {

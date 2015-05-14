@@ -35,7 +35,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	private Block reference;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "tree_blocks_references_hidden_elements")
 	private Set<TreeObject> elementsToHide;
 
@@ -184,16 +184,44 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 		return elementsToHide;
 	}
 
-	public void hideElement(TreeObject element) throws ElementCannotBeRemovedException {
+	/**
+	 * Mark an element as hidden.
+	 * 
+	 * @param element
+	 * @return true if the element has change its state to hidden.
+	 * @throws ElementCannotBeRemovedException
+	 */
+	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
 		if (!reference.getAllInnerStorableObjects().contains(element)) {
 			throw new ElementCannotBeRemovedException("Element '" + element
 					+ "' does not exists in the Building block.");
 		}
-		elementsToHide.add(element);
+		// If parent is hidden, do not hide this element.
+		boolean toHide = true;
+		for (TreeObject ancestor : element.getAncestors()) {
+			if (elementsToHide.contains(ancestor)) {
+				toHide = false;
+				break;
+			}
+		}
+		if (toHide) {
+			elementsToHide.add(element);
+		}
+		return toHide;
 	}
 
-	public void showElement(TreeObject element) {
-		elementsToHide.remove(element);
+	/**
+	 * Shows a hidden element.
+	 * 
+	 * @param element
+	 * @return true if the element has change its state to not hidden.
+	 */
+	public boolean showElement(TreeObject element) {
+		if (elementsToHide.contains(element)) {
+			elementsToHide.remove(element);
+			return true;
+		}
+		return false;
 	}
 
 	/**

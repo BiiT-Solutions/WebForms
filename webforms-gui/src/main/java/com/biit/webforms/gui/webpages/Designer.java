@@ -151,7 +151,7 @@ public class Designer extends SecuredWebPage {
 	}
 
 	private UpperMenuDesigner createUpperMenu() {
-		UpperMenuDesigner upperMenu = new UpperMenuDesigner();
+		final UpperMenuDesigner upperMenu = new UpperMenuDesigner();
 		upperMenu.addSaveButtonListener(new ClickListener() {
 			private static final long serialVersionUID = 1679355377155929573L;
 
@@ -387,16 +387,27 @@ public class Designer extends SecuredWebPage {
 						.getBlockReference(row);
 				if (blockReference != null) {
 					if (row.isHiddenElement()) {
-						row.setHiddenElement(false);
-						blockReference.showElement(row);
+						if (blockReference.showElement(row)) {
+							row.setHiddenElement(false);
+							WebformsLogger.info(this.getClass().getName(), "User '"
+									+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '" + row
+									+ "' of block '" + blockReference + "'.");
+						} else {
+							MessageManager.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
+						}
 					} else {
-						row.setHiddenElement(true);
 						try {
-							blockReference.hideElement(row);
+							if (blockReference.hideElement(row)) {
+								row.setHiddenElement(true);
+								WebformsLogger.info(this.getClass().getName(), "User '"
+										+ UserSessionHandler.getUser().getEmailAddress() + "' has hide element '" + row
+										+ "' of block '" + blockReference + "'.");
+							}
 						} catch (ElementCannotBeRemovedException e) {
 							WebformsLogger.errorMessage(this.getClass().getName(), e);
 						}
 					}
+					upperMenu.updateHideButton(row.isHiddenElement());
 					table.updateVisibilityIcon(row);
 				}
 			}
@@ -532,6 +543,8 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 			upperMenu.updateHideButton(isHidden);
 			upperMenu.getHideButton().setEnabled(rowIsBlockReference);
+			upperMenu.getDeleteButton().setVisible(!rowIsBlockReference);
+			upperMenu.getHideButton().setVisible(rowIsBlockReference);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			// Disable everything as a security measure.
