@@ -474,4 +474,12 @@ public class Flow extends StorableObject {
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
+
+	@Override
+	public void resetUserTimestampInfo(Long userId) {
+		super.resetUserTimestampInfo(userId);
+		for(Token token: getCondition()){
+			token.resetUserTimestampInfo(userId);
+		}
+	}
 }
