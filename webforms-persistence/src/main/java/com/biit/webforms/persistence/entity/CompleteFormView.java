@@ -23,9 +23,27 @@ import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenIn;
+import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
+import com.biit.webforms.serialization.AnswerSerializer;
+import com.biit.webforms.serialization.BaseRepeatableGroupSerializer;
+import com.biit.webforms.serialization.FormSerializer;
+import com.biit.webforms.serialization.QuestionSerializer;
+import com.biit.webforms.serialization.SystemFieldSerializer;
+import com.biit.webforms.serialization.TextSerializer;
+import com.biit.webforms.serialization.TokenBetweenSerializer;
+import com.biit.webforms.serialization.TokenComparationAnswerSerializer;
+import com.biit.webforms.serialization.TokenComparationValueSerializer;
+import com.biit.webforms.serialization.TokenInSerializer;
+import com.biit.webforms.serialization.TokenInValueSerializer;
+import com.biit.webforms.serialization.TokenSerializer;
+import com.biit.webforms.serialization.TreeObjectSerializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * This class is a wrapper of a Form class that translates any block reference to a list of its elements.
@@ -58,6 +76,25 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				}
 			} else {
 				children.add(child);
+			}
+		}
+		return children;
+	}
+
+	@Override
+	public List<TreeObject> getAllNotHiddenChildren() {
+		List<TreeObject> children = new ArrayList<>();
+
+		for (TreeObject child : form.getChildren()) {
+			if (!child.isHiddenElement()) {
+				if (child instanceof BlockReference) {
+					Block copiedBlock = getCopyOfBlock(((BlockReference) child).getReference());
+					for (TreeObject linkedChild : copiedBlock.getAllNotHiddenChildren()) {
+						children.add(linkedChild);
+					}
+				} else {
+					children.add(child);
+				}
 			}
 		}
 		return children;
@@ -434,6 +471,37 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			form.getChildren().remove(blockReference);
 			form.getElementsToDelete().add(blockReference);
 		}
+	}
+
+	@Override
+	public String toJson() {
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.setPrettyPrinting();
+		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
+		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
+		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectSerializer<Category>());
+		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
+		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
+		gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
+		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldSerializer());
+		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerSerializer());
+		gsonBuilder.registerTypeAdapter(Flow.class, new FlowSerializer());
+		gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<Token>());
+		gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenSerializer());
+		gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerSerializer());
+		gsonBuilder.registerTypeAdapter(TokenComparationValue.class, new TokenComparationValueSerializer());
+		gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInSerializer());
+		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
+		Gson gson = gsonBuilder.create();
+
+		CompleteFormView form = new CompleteFormView();
+		try {
+			form.copyData(this);
+		} catch (NotValidStorableObjectException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+
+		return gson.toJson(form);
 	}
 
 }

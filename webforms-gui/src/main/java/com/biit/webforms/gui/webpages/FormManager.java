@@ -399,7 +399,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void exportXsd() {
-		Form form = loadCompleteForm(getSelectedForm());
+		CompleteFormView form = loadCompleteForm(getSelectedForm());
 
 		ValidateFormComplete validator = new ValidateFormComplete();
 		validator.setStopOnFail(true);
@@ -414,8 +414,8 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void exportJson() {
-		Form form = loadCompleteForm(getSelectedForm());
-		new WindowDownloaderJson(new CompleteFormView(form), getSelectedForm().getLabel() + ".json");
+		CompleteFormView form = loadCompleteForm(getSelectedForm());
+		new WindowDownloaderJson(form, form.getLabel() + ".json");
 	}
 
 	private void exportBaseFormMetadataJson() {
@@ -626,7 +626,7 @@ public class FormManager extends SecuredWebPage {
 		return form;
 	}
 
-	private Form loadCompleteForm(IWebformsFormView formView) {
+	private CompleteFormView loadCompleteForm(IWebformsFormView formView) {
 		return new CompleteFormView(loadForm(formView));
 	}
 
