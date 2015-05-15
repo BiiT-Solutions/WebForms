@@ -18,7 +18,7 @@ public class ExporterDotGroupRemovedElements extends ExporterDotGroup {
 
 	@Override
 	public String generateDotNodeList(Group group) {
-		if (newVersion != null) {
+		if (newVersion != null && !newVersion.isHiddenElement()) {
 			setFillColor(DEFAULT_FILL_COLOR);
 			setShapeColor(DEFAULT_SHAPE_COLOR);
 			setFontColor(DEFAULT_FONT_COLOR);

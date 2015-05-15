@@ -17,8 +17,9 @@ public class ExporterDotBaseQuestionRemovedElements extends ExporterDotBaseQuest
 		}
 	}
 
+	@Override
 	public String generateDotNodeList(BaseQuestion baseQuestion) {
-		if (newVersion != null
+		if (newVersion != null && !newVersion.isHiddenElement()
 				&& ((newVersion instanceof Question && baseQuestion instanceof Question)
 						|| (newVersion instanceof Text && baseQuestion instanceof Text)
 						|| (newVersion instanceof SystemField && baseQuestion instanceof SystemField))) {

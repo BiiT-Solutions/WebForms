@@ -19,7 +19,7 @@ public class ExporterDotCategoryRemovedElements extends ExporterDotCategory {
 
 	@Override
 	public String generateDotNodeList(Category category) {
-		if (newVersionCategory != null) {
+		if (newVersionCategory != null && !newVersionCategory.isHiddenElement()) {
 			setFillColor(DEFAULT_FILL_COLOR);
 			setShapeColor(DEFAULT_SHAPE_COLOR);
 			setFontColor(DEFAULT_FONT_COLOR);
