@@ -206,4 +206,12 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 		}
 		return false;
 	}
+	
+	@Override
+	public void resetUserTimestampInfo(Long userId) {
+		super.resetUserTimestampInfo(userId);
+		for(TokenInValue value: getValues()){
+			value.resetUserTimestampInfo(userId);
+		}
+	}
 }

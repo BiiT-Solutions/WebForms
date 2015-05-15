@@ -650,4 +650,12 @@ public class Form extends BaseForm implements IWebformsFormView {
 		super.initializeSets();
 		getFlows().size();
 	}
+
+	@Override
+	public void resetUserTimestampInfo(Long userId){
+		super.resetUserTimestampInfo(userId);
+		for(Flow flow: getFlows()){
+			flow.resetUserTimestampInfo(userId);
+		}
+	}
 }

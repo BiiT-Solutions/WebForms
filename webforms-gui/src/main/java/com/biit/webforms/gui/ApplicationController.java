@@ -165,8 +165,7 @@ public class ApplicationController {
 		newForm.resetIds();
 		newForm.setOrganizationId(organizationId);
 		newForm.setLabel(formLabel);
-		newForm.setCreatedBy(UserSessionHandler.getUser());
-		newForm.setUpdatedBy(UserSessionHandler.getUser());
+		newForm.resetUserTimestampInfo(UserSessionHandler.getUser().getUserId());
 
 		formDao.makePersistent(newForm);
 		return formInUse;
