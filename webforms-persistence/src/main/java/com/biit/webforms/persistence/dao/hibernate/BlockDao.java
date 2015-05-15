@@ -151,7 +151,12 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		if (countLinkedBlocksTo(block) > 0) {
 			throw new ElementCannotBeRemovedException("Building block is linked in one or more form.");
 		}
-		super.makeTransient(block);
+		
+		block.getFlows().clear();
+		Block mergedBlock = getEntityManager().contains(block) ? block : getEntityManager().merge(block);
+		makePersistent(mergedBlock);
+
+		super.makeTransient(mergedBlock);
 	}
 
 	private int countLinkedBlocksTo(Block block) {
