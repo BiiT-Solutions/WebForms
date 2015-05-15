@@ -173,6 +173,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 			getDesignerPage().addNewInputQuestion();
 			Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
 			Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
+			getDesignerPage().getOthersButton().click();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -185,6 +186,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 		createNewBlockAndCategory();
 		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
 		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
+		getDesignerPage().getOthersButton().click();
 		saveDesignAndRemoveBlock();
 	}
 
@@ -196,6 +198,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 			getDesignerPage().addNewInputQuestion();
 			Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
 			Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
+			getDesignerPage().getOthersButton().click();
 			saveDesignAndRemoveBlock();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -209,6 +212,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 		getDesignerPage().addNewGroup();
 		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
 		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
+		getDesignerPage().getOthersButton().click();
 		saveDesignAndRemoveBlock();
 	}
 
@@ -221,6 +225,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 			getDesignerPage().addNewInputQuestion();
 			Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
 			Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
+			getDesignerPage().getOthersButton().click();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -233,6 +238,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 		createNewFormAndCategory();
 		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
 		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
+		getDesignerPage().getOthersButton().click();
 		saveDesignAndRemoveForm();
 	}
 
@@ -244,6 +250,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 			getDesignerPage().addNewInputQuestion();
 			Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
 			Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
+			getDesignerPage().getOthersButton().click();
 			saveDesignAndRemoveForm();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -257,6 +264,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 		getDesignerPage().addNewGroup();
 		Assert.assertFalse(getDesignerPage().getAnswerButton().isEnabled());
 		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
+		getDesignerPage().getOthersButton().click();
 		saveDesignAndRemoveForm();
 	}
 
@@ -271,6 +279,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
 		Assert.assertFalse(getDesignerPage().getTextButton().isEnabled());
 		Assert.assertFalse(getDesignerPage().getFieldButton().isEnabled());
+		getDesignerPage().getOthersButton().click();
 		logOut();
 		deleteBlock();
 	}
@@ -286,6 +295,7 @@ public class FormBlockDesignTests extends WebFormsTester {
 		Assert.assertFalse(getDesignerPage().getSubanswerButton().isEnabled());
 		Assert.assertFalse(getDesignerPage().getTextButton().isEnabled());
 		Assert.assertFalse(getDesignerPage().getFieldButton().isEnabled());
+		getDesignerPage().getOthersButton().click();
 		logOut();
 		deleteForm();
 	}

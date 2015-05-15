@@ -29,6 +29,7 @@ public class Designer extends VaadinGuiWebpage {
 	private static final String GROUP_BUTTON_CAPTION = "Group";
 	private static final String QUESTION_BUTTON_CAPTION = "Question";
 	private static final String ANSWER_BUTTON_CAPTION = "Answer";
+	private static final String OTHER_ELEMENTS_BUTTON_CAPTION = "Others";
 	private static final String SUBANSWER_BUTTON_CAPTION = "Subanswer";
 	private static final String TEXT_BUTTON_CAPTION = "Text";
 	private static final String FIELD_BUTTON_CAPTION = "Field";
@@ -539,10 +540,6 @@ public class Designer extends VaadinGuiWebpage {
 		return getButtonElement(DOWN_BUTTON_CAPTION);
 	}
 
-	public ButtonElement getFieldButton() {
-		return getButtonElement(FIELD_BUTTON_CAPTION);
-	}
-
 	public FieldPropertiesView getFieldPropertiesView() {
 		return fieldPropertiesView;
 	}
@@ -601,16 +598,39 @@ public class Designer extends VaadinGuiWebpage {
 		return getButtonElement(SAVE_BUTTON_CAPTION);
 	}
 
+	public ButtonElement getOthersButton() {
+		return getButtonElement(OTHER_ELEMENTS_BUTTON_CAPTION);
+	}
+
+	public ButtonElement getFieldButton() {
+		if (getButtonElement(FIELD_BUTTON_CAPTION) != null) {
+			return getButtonElement(FIELD_BUTTON_CAPTION);
+		} else {
+			getOthersButton().click();
+			return getButtonElement(FIELD_BUTTON_CAPTION);
+		}
+	}
+
 	public ButtonElement getSubanswerButton() {
-		return getButtonElement(SUBANSWER_BUTTON_CAPTION);
+		if (getButtonElement(SUBANSWER_BUTTON_CAPTION) != null) {
+			return getButtonElement(SUBANSWER_BUTTON_CAPTION);
+		} else {
+			getOthersButton().click();
+			return getButtonElement(SUBANSWER_BUTTON_CAPTION);
+		}
+	}
+
+	public ButtonElement getTextButton() {
+		if (getButtonElement(TEXT_BUTTON_CAPTION) != null) {
+			return getButtonElement(TEXT_BUTTON_CAPTION);
+		} else {
+			getOthersButton().click();
+			return getButtonElement(TEXT_BUTTON_CAPTION);
+		}
 	}
 
 	public SubanswerPropertiesView getSubanswerPropertiesView() {
 		return subanswerPropertiesView;
-	}
-
-	public ButtonElement getTextButton() {
-		return getButtonElement(TEXT_BUTTON_CAPTION);
 	}
 
 	public TextPropertiesView getTextPropertiesView() {
