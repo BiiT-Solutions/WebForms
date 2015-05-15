@@ -45,43 +45,6 @@ public class PdfBlockGenerator {
 			WebformsLogger.errorMessage(PdfRowGenerator.class.getName(), e);
 		}
 		return block;
-		// TODO clean when finished.
-		// if (!element.getChildren().isEmpty()) {
-		// PdfPCell cellWhite = new PdfPCell();
-		// cellWhite.setRowspan(element.getChildren().size());
-		// elementTable.addCell(cellWhite);
-		// }
-		// String prevChildNameCat = null;
-		// for (TreeObject child : element.getChildren()) {
-		// List<String> childName = Arrays.asList(((ElementAnswer)
-		// child).getLabel().split("->"));
-		// if (childName.size() == 1 || element.getAnswerType() ==
-		// AnswerType.SELECT) {
-		// // If its a selection IT SHOULD NOT HAVE sub elements.
-		// PdfPCell childLabel = new PdfPCell(new
-		// Paragraph(childName.get(0), NORMAL_FONT));
-		// childLabel.setColspan(2);
-		// elementTable.addCell(childLabel);
-		// elementTable.addCell(new Paragraph(((ElementAnswer)
-		// child).getName(), SMALL_FONT));
-		// } else {
-		// if (prevChildNameCat == null ||
-		// !prevChildNameCat.equals(childName.get(0))) {
-		// PdfPCell childLabel1 = new PdfPCell(new
-		// Paragraph(childName.get(0), NORMAL_FONT));
-		// elementTable.addCell(childLabel1);
-		// } else {
-		// PdfPCell childLabel1 = new PdfPCell();
-		// elementTable.addCell(childLabel1);
-		// }
-		// PdfPCell childLabel2 = new PdfPCell(new
-		// Paragraph(childName.get(1), NORMAL_FONT));
-		// elementTable.addCell(childLabel2);
-		// elementTable.addCell(new Paragraph(((ElementAnswer)
-		// child).getName(), SMALL_FONT));
-		// prevChildNameCat = childName.get(0);
-		// }
-		// }
 	}
 
 	public static List<PdfTableBlock> generateAnnexFormTableBlocks(Form form) {
@@ -90,13 +53,13 @@ public class PdfBlockGenerator {
 		List<TreeObject> treeObjects = new ArrayList<>(form.getAll(Question.class));
 
 		for (TreeObject object : treeObjects) {
-			blocks.add(generateAnnexQuestionTableBlock((Question) object));
+			if (!object.isHiddenElement()) {
+				blocks.add(generateAnnexQuestionTableBlock((Question) object));
+			}
 		}
 
 		return blocks;
 	}
-
-
 
 	public static PdfTableBlock generateFormQuestionElement(PdfWriter writer, Question question)
 			throws BadBlockException {
@@ -132,17 +95,18 @@ public class PdfBlockGenerator {
 		// --
 		// |r
 		// Insert name column
-		block.insertCol(PdfColGenerator.generateMultiFieldNameCol(question,numberRows));
+		block.insertCol(PdfColGenerator.generateMultiFieldNameCol(question, numberRows));
 		// Insert option rows
 		for (PdfRow row : rows) {
 			block.insertRow(row);
 		}
 		return block;
 	}
-	
-	private static PdfTableBlock generateSingleSelectionListBlock(PdfWriter writer, Question question) throws BadBlockException {
-		PdfRow row = PdfRowGenerator.generateSelectionListRow(writer, question, FORM_LIST_ROW,FORM_LIST_COL);
-		
+
+	private static PdfTableBlock generateSingleSelectionListBlock(PdfWriter writer, Question question)
+			throws BadBlockException {
+		PdfRow row = PdfRowGenerator.generateSelectionListRow(writer, question, FORM_LIST_ROW, FORM_LIST_COL);
+
 		int numberRows = row.getNumberRows();
 		PdfTableBlock block = new PdfTableBlock(numberRows, FORM_LIST_COL);
 		block.insertRow(row);
@@ -161,7 +125,7 @@ public class PdfBlockGenerator {
 		// --
 		// |r
 		// Insert name column
-		block.insertCol(PdfColGenerator.generateMultiFieldNameCol(question,numberRows));
+		block.insertCol(PdfColGenerator.generateMultiFieldNameCol(question, numberRows));
 		// Insert option rows
 		for (PdfRow row : rows) {
 			block.insertRow(row);
@@ -181,7 +145,7 @@ public class PdfBlockGenerator {
 		}
 
 		// Add visibility cell.
-		if (question.isHorizontal()){
+		if (question.isHorizontal()) {
 			tableBlocks.add(generateIsHorizontalBlock());
 		}
 
@@ -192,8 +156,7 @@ public class PdfBlockGenerator {
 		PdfTableBlock block = new PdfTableBlock(IS_HORIZONTAL_BLOC_ROW, IS_HORIZONTAL_BLOC_COL);
 		block.insertRow(PdfRowGenerator.generateIsHorizontalBlock(IS_HORIZONTAL_BLOC_ROW, IS_HORIZONTAL_BLOC_COL));
 		return block;
-		
-		
+
 	}
 
 	private static PdfTableBlock generateQuestionDescriptionBlock(Question question) throws BadBlockException {
@@ -212,7 +175,7 @@ public class PdfBlockGenerator {
 
 	public static PdfTableBlock generateTextBlocks(Text text) throws BadBlockException {
 		PdfTableBlock block = new PdfTableBlock(TEXT_BLOCK_ROW, TEXT_BLOCK_COL);
-		block.insertRow(PdfRowGenerator.createTextRow(text.getDescription(),TEXT_BLOCK_ROW,TEXT_BLOCK_COL));
+		block.insertRow(PdfRowGenerator.createTextRow(text.getDescription(), TEXT_BLOCK_ROW, TEXT_BLOCK_COL));
 		return block;
 	}
 }

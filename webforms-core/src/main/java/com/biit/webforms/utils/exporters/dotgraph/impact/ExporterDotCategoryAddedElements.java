@@ -19,7 +19,7 @@ public class ExporterDotCategoryAddedElements extends ExporterDotCategory {
 
 	@Override
 	public String generateDotNodeList(Category category) {
-		if (oldVersion == null) {
+		if (oldVersion == null || (oldVersion.isHiddenElement() && !category.isHiddenElement())) {
 			setFillColor(NEW_FILL_COLOR);
 			setShapeColor(NEW_SHAPE_COLOR);
 			setFontColor(NEW_FONT_COLOR);

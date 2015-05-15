@@ -25,6 +25,8 @@ public enum LanguageCodes implements ILanguageCode {
 	COMMON_CAPTION_INSERT_BLOCK("caption.insert.block"),
 	COMMON_CAPTION_LINK_BLOCK("caption.link.block"),
 	COMMON_CAPTION_GROUP("common.caption.group"),
+	COMMON_CAPTION_SHOW("caption.show"),
+	COMMON_CAPTION_HIDE("caption.hide"),
 	CAPTION_EDIT_FORM_DESIGN("caption.edit.form.design"),
 	CAPTION_EDIT_FORM_FLOW("caption.edit.form.flow"),
 	CAPTION_VALIDATE_CONDITIONS("caption.validate.conditions"),
@@ -106,6 +108,8 @@ public enum LanguageCodes implements ILanguageCode {
 	COMMON_TOOLTIP_DELETE("tooltip.delete"),
 	COMMON_TOOLTIP_UP("tooltip.up"),
 	COMMON_TOOLTIP_DOWN("tooltip.down"),
+	COMMON_TOOLTIP_SHOW("tooltip.show"),
+	COMMON_TOOLTIP_HIDE("tooltip.hide"),
 	COMMON_TOOLTIP_EXPORT_TO_PDF("tooltip.exportToPdf"),
 	COMMON_TOOLTIP_INSERT_BLOCK("tooltip.insert.block"),
 	COMMON_TOOLTIP_LINK_BLOCK("tooltip.link.block"),
@@ -529,6 +533,8 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	PAGE_NOT_FOUND("page.not.found"),
 	PAGE_ERROR("page.error"), 
+	
+	WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT("warning.cannot.show.element"),
 	
 	;
 

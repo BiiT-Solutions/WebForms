@@ -157,7 +157,6 @@ public class Form extends BaseForm implements IWebformsFormView {
 			linkedFormLabel = ((Form) object).getLinkedFormLabel();
 			setLinkedFormVersions(((Form) object).getLinkedFormVersions());
 			linkedFormOrganizationId = ((Form) object).getLinkedFormOrganizationId();
-
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Form only supports the same type copy");
 		}
@@ -650,5 +649,13 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public void initializeSets() {
 		super.initializeSets();
 		getFlows().size();
+	}
+
+	@Override
+	public void resetUserTimestampInfo(Long userId){
+		super.resetUserTimestampInfo(userId);
+		for(Flow flow: getFlows()){
+			flow.resetUserTimestampInfo(userId);
+		}
 	}
 }

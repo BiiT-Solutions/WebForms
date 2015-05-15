@@ -19,7 +19,7 @@ public class ExporterDotBaseQuestionAddedElements extends ExporterDotBaseQuestio
 
 	@Override
 	public String generateDotNodeList(BaseQuestion baseQuestion) {
-		if (oldVersion == null) {
+		if (oldVersion == null || (oldVersion.isHiddenElement() && !baseQuestion.isHiddenElement())) {
 			setFillColor(NEW_FILL_COLOR);
 			setShapeColor(NEW_SHAPE_COLOR);
 			setFontColor(NEW_FONT_COLOR);

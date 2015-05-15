@@ -26,10 +26,12 @@ public class WebformsXsdComplexType extends XsdComplexType {
 	private XmlNodeProducer[] generateXsdElements(List<TreeObject> children) {
 		List<XmlNodeProducer> childNodes = new ArrayList<XmlNodeProducer>();
 		for (TreeObject child : children) {
-			if (child instanceof Text || child instanceof SystemField) {
-				continue;
+			if (!child.isHiddenElement()) {
+				if (child instanceof Text || child instanceof SystemField) {
+					continue;
+				}
+				childNodes.add(new WebformsXsdElement(child));
 			}
-			childNodes.add(new WebformsXsdElement(child));
 		}
 		return childNodes.toArray(new XmlNodeProducer[] {});
 	}

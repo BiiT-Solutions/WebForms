@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.testng.annotations.Test;
 
+import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.exporters.xml.exceptions.ElementWithoutNextElement;
 import com.biit.webforms.utils.exporters.xml.exceptions.TooMuchIterationsWhileGeneratingPath;
@@ -17,7 +18,7 @@ public class XmlGenerationTest {
 	public void testXmlGeneration() throws IOException, ElementWithoutNextElement, TooMuchIterationsWhileGeneratingPath, BadFormedExpressions {
 		//Form form = loadForm("De Haagse Passage.json");
 		Form form = loadForm("test_xml.json");
-		XmlExporter exporter = new XmlExporter(form);
+		XmlExporter exporter = new XmlExporter(new CompleteFormView(form));
 		exporter.generate(10);
 	}
 

@@ -18,19 +18,20 @@ public class ExporterDotCategory extends ExporterDot<Category> {
 	@Override
 	public String generateDotNodeList(Category category) {
 		String cluster = new String();
-		// Cluster tag it's what makes it a separate group
-		cluster += "\tsubgraph cluster_" + filterDotLanguageId(category.getComparationId()) + " {\n";
-		cluster += "\t\tnode [style=filled, fillcolor=" + getFillColor(category.isReadOnly()) + "];\n";
-		cluster += "\t\tlabel = \"" + filterDotLanguage(category.getName()) + "\";\n";
+		if (!category.isHiddenElement()) {
+			// Cluster tag it's what makes it a separate group
+			cluster += "\tsubgraph cluster_" + filterDotLanguageId(category.getComparationId()) + " {\n";
+			cluster += "\t\tnode [style=filled, fillcolor=" + getFillColor(category.isReadOnly()) + "];\n";
+			cluster += "\t\tlabel = \"" + filterDotLanguage(category.getName()) + "\";\n";
 
-		cluster += generateDotNodeChilds(category);
+			cluster += generateDotNodeChilds(category);
 
-		cluster += "\t\tcolor=" + getShapeColor(category.isReadOnly()) + ";\n";
-		cluster += "\t\tfontcolor=" + getFontColor(category.isReadOnly()) + ";\n";
-		cluster += "\t\tpenwidth=" + getPenWidth() + ";\n";
-		cluster += "\t\tstyle=" + BOX_STYLE + ";\n";
-		cluster += "\t\t}\n";
-
+			cluster += "\t\tcolor=" + getShapeColor(category.isReadOnly()) + ";\n";
+			cluster += "\t\tfontcolor=" + getFontColor(category.isReadOnly()) + ";\n";
+			cluster += "\t\tpenwidth=" + getPenWidth() + ";\n";
+			cluster += "\t\tstyle=" + BOX_STYLE + ";\n";
+			cluster += "\t\t}\n";
+		}
 		return cluster;
 	}
 

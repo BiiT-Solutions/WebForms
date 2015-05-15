@@ -17,9 +17,8 @@ public class FlowManager extends VaadinGuiWebpage {
 	private static final String CLEAN_FLOW_BUTTON_CAPTION = "Clean Flow";
 
 	private static final String REDRAW_BUTTON_CAPTION = "Redraw";
-	
+
 	private static final String COMBOBOX_END_FORM_VALUE = "End form";
-	
 
 	private final FlowRuleWindow flowRuleWindow;
 	private final SelectFormElementWindow selectFormElementWindow;
@@ -72,11 +71,11 @@ public class FlowManager extends VaadinGuiWebpage {
 		getSelectFormElementWindow().searchForElement(nodeName);
 		getSelectFormElementWindow().selectElementInTable(nodeName);
 		getSelectFormElementWindow().clickAccept();
-		if(getSelectFormElementWindow().getWindow()!=null){
-			try{
+		if (getSelectFormElementWindow().getWindow() != null) {
+			try {
 				getSelectFormElementWindow().getWindow().waitForVaadin();
-			}catch(NullPointerException e){
-				//Do nothing
+			} catch (NullPointerException e) {
+				// Do nothing
 			}
 		}
 		getFlowRuleWindow().getTypeCombobox().selectByText(COMBOBOX_END_FORM_VALUE);
@@ -95,11 +94,11 @@ public class FlowManager extends VaadinGuiWebpage {
 		getSelectFormElementWindow().searchForElement(nodeName);
 		getSelectFormElementWindow().selectElementInTable(nodeName);
 		getSelectFormElementWindow().clickAccept();
-		if(getSelectFormElementWindow().getWindow()!=null){
-			try{
+		if (getSelectFormElementWindow().getWindow() != null) {
+			try {
 				getSelectFormElementWindow().getWindow().waitForVaadin();
-			}catch(NullPointerException e){
-				//Do nothing
+			} catch (NullPointerException e) {
+				// Do nothing
 			}
 		}
 		getFlowRuleWindow().getTypeCombobox().selectByText(COMBOBOX_END_FORM_VALUE);
@@ -148,7 +147,7 @@ public class FlowManager extends VaadinGuiWebpage {
 	public ImageElement getGraph() {
 		return $(ImageElement.class).first();
 	}
-	
+
 	public SelectFormElementWindow getSelectFormElementWindow() {
 		return selectFormElementWindow;
 	}
@@ -157,17 +156,17 @@ public class FlowManager extends VaadinGuiWebpage {
 	public String getWebpageUrl() {
 		return null;
 	}
-	
+
 	public void saveFlow() {
 		getButtonElement(SAVE_BUTTON_CAPTION).click();
 	}
-	
-	public void selectFromToElement(String startNodeName, String endNodeName){
+
+	public void selectFromToElement(String startNodeName, String endNodeName) {
 		getFlowRuleWindow().clickFromButton();
 		getSelectFormElementWindow().searchForElement(startNodeName);
 		getSelectFormElementWindow().selectElementInTable(startNodeName);
 		getSelectFormElementWindow().clickAccept();
-		
+
 		getFlowRuleWindow().getWindow().waitForVaadin();
 		getFlowRuleWindow().clickToButton();
 		getSelectFormElementWindow().searchForElement(endNodeName);

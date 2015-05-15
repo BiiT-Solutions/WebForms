@@ -16,6 +16,8 @@ import com.biit.webforms.condition.parser.expressions.WebformsExpression;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.BlockReference;
+import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
@@ -71,12 +73,17 @@ public class XmlExporter {
 		// prioritizes the appearance of each question.
 
 		LinkedHashSet<TreeObject> questions = form.getAllChildrenInHierarchy(BaseQuestion.class);
+		// Remove all hidden elements.
+		Set<BlockReference> blockReferences = ((CompleteFormView) form).getAllBlockReferences();
+		for (BlockReference blockReference : blockReferences) {
+			questions.removeAll(blockReference.getAllElementsToHide());
+		}
 		if (questions.isEmpty()) {
 			return null;
 		}
 
 		List<String> xmlFiles = new ArrayList<String>();
-		
+
 		BaseQuestion startNode = (BaseQuestion) questions.iterator().next();
 
 		for (int i = 0; i < number; i++) {
@@ -94,16 +101,14 @@ public class XmlExporter {
 		TreeObject currentElement = null;
 
 		StringBuilder sb = new StringBuilder();
-		
+
 		String xmlBaseAddress = WebformsConfigurationReader.getInstance().getXmlBaseAddress();
 
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		sb.append("<"
+		sb.append("<" + form.getLabelWithouthSpaces() + " xmlns=\"" + xmlBaseAddress + ""
 				+ form.getLabelWithouthSpaces()
-				+ " xmlns=\""+xmlBaseAddress+""
-				+ form.getLabelWithouthSpaces()
-				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\""+xmlBaseAddress+ " schema.xsd"
-				+ form.getLabelWithouthSpaces() + "\">");
+				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"" + xmlBaseAddress
+				+ " schema.xsd" + form.getLabelWithouthSpaces() + "\">");
 		for (Flow flow : path) {
 			if (flow.getOrigin() instanceof Text || flow.getOrigin() instanceof SystemField) {
 				continue;
@@ -232,8 +237,8 @@ public class XmlExporter {
 				// Skip empty domains
 				continue;
 			}
-			if(compiledDomains.get(flow).isEmpty()){
-				//Skip
+			if (compiledDomains.get(flow).isEmpty()) {
+				// Skip
 				continue;
 			}
 			randomValues.putAll(compiledDomains.get(flow).generateRandomValue());

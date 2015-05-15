@@ -18,7 +18,7 @@ public class ExporterDotGroupAddedElements extends ExporterDotGroup {
 
 	@Override
 	public String generateDotNodeList(Group group) {
-		if (oldVersion == null) {
+		if (oldVersion == null || (oldVersion.isHiddenElement() && !group.isHiddenElement())) {
 			setFillColor(NEW_FILL_COLOR);
 			setShapeColor(NEW_SHAPE_COLOR);
 			setFontColor(NEW_FONT_COLOR);
@@ -35,7 +35,7 @@ public class ExporterDotGroupAddedElements extends ExporterDotGroup {
 		}
 		return super.generateDotNodeList(group);
 	}
-	
+
 	@Override
 	public String generateDotNodeChilds(Group group) {
 		String clusterChilds = new String();
