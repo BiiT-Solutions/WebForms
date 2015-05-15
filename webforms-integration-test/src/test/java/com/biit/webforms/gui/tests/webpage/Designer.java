@@ -36,6 +36,8 @@ public class Designer extends VaadinGuiWebpage {
 	private static final String UP_BUTTON_CAPTION = "Up";
 	private static final String DOWN_BUTTON_CAPTION = "Down";
 	private static final String DELETE_BUTTON_CAPTION = "Delete";
+	private static final String HIDE_BUTTON_CAPTION = "Hide";
+	private static final String SHOW_BUTTON_CAPTION = "Show";
 	private static final String FINISH_BUTTON_CAPTION = "Finish";
 	private static final Integer RIGHT_SCROLL_PIXELS = 500;
 
@@ -147,6 +149,10 @@ public class Designer extends VaadinGuiWebpage {
 
 	public void addNewGroup() {
 		getGroupButton().click();
+	}
+
+	public void hideElement() {
+		getCategoryButton().click();
 	}
 
 	public void addNewInputDateQuestion() throws FieldNotEditableException {
@@ -519,6 +525,14 @@ public class Designer extends VaadinGuiWebpage {
 
 	public ButtonElement getDeleteButton() {
 		return getButtonElement(DELETE_BUTTON_CAPTION);
+	}
+
+	public ButtonElement getHideButton() {
+		return getButtonElement(HIDE_BUTTON_CAPTION);
+	}
+
+	public ButtonElement getShowButton() {
+		return getButtonElement(SHOW_BUTTON_CAPTION);
 	}
 
 	public ButtonElement getDownButton() {

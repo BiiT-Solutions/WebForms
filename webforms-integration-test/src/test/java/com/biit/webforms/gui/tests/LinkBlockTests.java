@@ -15,11 +15,17 @@ public class LinkBlockTests extends WebFormsTester {
 	private static final Integer BLOCK_TABLE_ROW = 0;
 	private static final Integer BLOCK_TABLE_COLUMN = 0;
 
+	private static final String QUESTION1_NAME = "Question";
+	private static final String QUESTION2_NAME = "Question2";
+
+	private static final Integer FORM_ROW = 0;
+
 	private void createSimpleBlock() {
 		try {
 			loginFormAdmin1();
 			goToBlockManagerPage();
 			getBlockManagerPage().createNewBlock(NEW_BLOCK_NAME);
+			// Design building block.
 			goToDesignerPage();
 			getDesignerPage().addNewCategory();
 			getDesignerPage().addNewInputDateQuestion();
@@ -28,7 +34,34 @@ public class LinkBlockTests extends WebFormsTester {
 			getDesignerPage().addNewAnswer();
 			getDesignerPage().addNewAnswer();
 			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewQuestion();
 			getDesignerPage().saveDesign();
+			goToFormManagerPage();
+		} catch (FieldNotEditableException e) {
+			Assert.fail();
+		}
+	}
+
+	private void createSimpleBlockWithFlow() {
+		try {
+			loginFormAdmin1();
+			goToBlockManagerPage();
+			getBlockManagerPage().createNewBlock(NEW_BLOCK_NAME);
+			// Design building block.
+			goToDesignerPage();
+			getDesignerPage().addNewCategory();
+			getDesignerPage().addNewInputDateQuestion();
+			getDesignerPage().addNewGroup();
+			getDesignerPage().addNewMultiCheckboxQuestion();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewAnswer();
+			getDesignerPage().addNewQuestion();
+			getDesignerPage().saveDesign();
+			// Add some flow.
+			goToFlowManagerPage();
+			getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+			getFlowManagerPage().saveFlow();
 			goToFormManagerPage();
 		} catch (FieldNotEditableException e) {
 			Assert.fail();
@@ -121,5 +154,63 @@ public class LinkBlockTests extends WebFormsTester {
 		}
 		getBlockManagerPage().deleteBlock();
 		logOut();
+	}
+
+	@Test(groups = "linkedBlocks", expectedExceptions = { NoSuchElementException.class })
+	public void hideElement1() {
+		printTestNameInDebugTrace("hideElementInLinkedBlockOriginFlow");
+		createSimpleBlockWithFlow();
+		addLinkedBlockToForm();
+		goToFlowManagerPage();
+		Assert.assertNotNull(getFlowManagerPage().getFlowRulesTable().getRow(FORM_ROW));
+		goToDesignerPage();
+		// uncollapse category
+		getDesignerPage().getTreeTable().getRow(1).toggleExpanded();
+		getDesignerPage().getTreeTable().waitForVaadin();
+		// uncollapse group
+		getDesignerPage().getTreeTable().getRow(3).toggleExpanded();
+		getDesignerPage().getTreeTable().waitForVaadin();
+		// Hide question2
+		// Click on a row sometimes fails. Use cell better.
+		getDesignerPage().getTreeTable().getCell(4, 0).click();
+		getDesignerPage().getTreeTable().waitForVaadin();
+		// hide element.
+		getDesignerPage().getHideButton().click();
+		goToFlowManagerPage();
+		// Flow table has a dummy list. Then always exists one row.
+		try {
+			Assert.assertNull(getFlowManagerPage().getFlowRulesTable().getRow(FORM_ROW + 1));
+		} finally {
+			deleteFormAndBlock();
+		}
+	}
+	
+	@Test(groups = "linkedBlocks", expectedExceptions = { NoSuchElementException.class })
+	public void hideElement2() {
+		printTestNameInDebugTrace("hideElementInLinkedBlockDestinyFlow");
+		createSimpleBlockWithFlow();
+		addLinkedBlockToForm();
+		goToFlowManagerPage();
+		Assert.assertNotNull(getFlowManagerPage().getFlowRulesTable().getRow(FORM_ROW));
+		goToDesignerPage();
+		// uncollapse category
+		getDesignerPage().getTreeTable().getRow(1).toggleExpanded();
+		getDesignerPage().getTreeTable().waitForVaadin();
+		// uncollapse group
+		getDesignerPage().getTreeTable().getRow(3).toggleExpanded();
+		getDesignerPage().getTreeTable().waitForVaadin();
+		// Hide question2
+		// Click on a row sometimes fails. Use cell better.
+		getDesignerPage().getTreeTable().getCell(5, 0).click();
+		getDesignerPage().getTreeTable().waitForVaadin();
+		// hide element.
+		getDesignerPage().getHideButton().click();
+		goToFlowManagerPage();
+		// Flow table has a dummy list. Then always exists one row.
+		try {
+			Assert.assertNull(getFlowManagerPage().getFlowRulesTable().getRow(FORM_ROW + 1));
+		} finally {
+			deleteFormAndBlock();
+		}
 	}
 }
