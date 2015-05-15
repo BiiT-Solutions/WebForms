@@ -7,9 +7,11 @@ public class ComponentCellTreeObject extends ComponentCell {
 	private static final long serialVersionUID = 76595396879136434L;
 
 	private IconProvider<TreeObject> iconProvider;
+	private IconProvider<TreeObject> statusIconProvider;
 
-	public ComponentCellTreeObject(IconProvider<TreeObject> iconProvider) {
+	public ComponentCellTreeObject(IconProvider<TreeObject> iconProvider, IconProvider<TreeObject> statusIconProvider) {
 		this.iconProvider = iconProvider;
+		this.statusIconProvider = statusIconProvider;
 	}
 
 	public void update(TreeObject treeObject) {
@@ -19,8 +21,11 @@ public class ComponentCellTreeObject extends ComponentCell {
 		} else {
 			addLabel(treeObject.getName());
 		}
-		if(iconProvider.getIcon(treeObject)!=null){
+		if (iconProvider.getIcon(treeObject) != null) {
 			addIcon(iconProvider.getIcon(treeObject));
+		}
+		if (statusIconProvider.getIcon(treeObject) != null) {
+			addIcon(statusIconProvider.getIcon(treeObject));
 		}
 	}
 

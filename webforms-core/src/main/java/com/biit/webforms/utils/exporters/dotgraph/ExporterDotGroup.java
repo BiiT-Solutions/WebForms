@@ -18,23 +18,25 @@ public class ExporterDotGroup extends ExporterDot<Group> {
 	@Override
 	public String generateDotNodeList(Group group) {
 		String cluster = new String();
-		// Cluster tag it's what makes it a separate group
-		cluster += "\tsubgraph cluster_" + filterDotLanguageId(group.getComparationId()) + " {\n";
-		cluster += "\t\tnode [style=filled, fillcolor=" + getFillColor(group.isReadOnly()) + "];\n";
-		if (group.isRepeatable()) {
-			cluster += "\t\tlabel = \"" + filterDotLanguage(group.getName() + " (Loop)") + "\";\n";
-		} else {
-			cluster += "\t\tlabel = \"" + filterDotLanguage(group.getName()) + "\";\n";
+		if (!group.isHiddenElement()) {
+			// Cluster tag it's what makes it a separate group
+			cluster += "\tsubgraph cluster_" + filterDotLanguageId(group.getComparationId()) + " {\n";
+			cluster += "\t\tnode [style=filled, fillcolor=" + getFillColor(group.isReadOnly()) + "];\n";
+			if (group.isRepeatable()) {
+				cluster += "\t\tlabel = \"" + filterDotLanguage(group.getName() + " (Loop)") + "\";\n";
+			} else {
+				cluster += "\t\tlabel = \"" + filterDotLanguage(group.getName()) + "\";\n";
+			}
+
+			cluster += generateDotNodeChilds(group);
+
+			cluster += "\t\tcolor=" + getShapeColor(group.isReadOnly()) + ";\n";
+			cluster += "\t\tfontcolor=" + getFontColor(group.isReadOnly()) + ";\n";
+			cluster += "\t\tpenwidth=" + getPenWidth() + ";\n";
+			cluster += "\t\tstyle=" + getGroupStyle(group) + ";\n";
+
+			cluster += "\t\t}\n";
 		}
-
-		cluster += generateDotNodeChilds(group);
-
-		cluster += "\t\tcolor=" + getShapeColor(group.isReadOnly()) + ";\n";
-		cluster += "\t\tfontcolor=" + getFontColor(group.isReadOnly()) + ";\n";
-		cluster += "\t\tpenwidth=" + getPenWidth() + ";\n";
-		cluster += "\t\tstyle=" + getGroupStyle(group) + ";\n";
-
-		cluster += "\t\t}\n";
 
 		return cluster;
 	}

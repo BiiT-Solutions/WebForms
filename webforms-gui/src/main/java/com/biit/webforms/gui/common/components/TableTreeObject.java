@@ -31,6 +31,7 @@ import com.vaadin.ui.TreeTable;
 public class TableTreeObject extends TreeTable {
 	private static final long serialVersionUID = -6949123334668973540L;
 	private IconProvider<TreeObject> iconProvider = new IconProviderTreeObjectDefault();
+	private IconProvider<TreeObject> statusIconProvider = new IconProviderTreeObjectDefault();
 
 	// Stores the complete Form view equivalences.
 	private Map<String, TreeObject> rootElements;
@@ -287,7 +288,7 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	protected Object createElementWithIcon(final TreeObject element) {
-		ComponentCellTreeObject cell = new ComponentCellTreeObject(getIconProvider());
+		ComponentCellTreeObject cell = new ComponentCellTreeObject(getIconProvider(), getStatusIconProvider());
 		cell.update(element);
 		cell.registerTouchCallBack(this, element);
 
@@ -349,8 +350,16 @@ public class TableTreeObject extends TreeTable {
 		return iconProvider;
 	}
 
+	public IconProvider<TreeObject> getStatusIconProvider() {
+		return statusIconProvider;
+	}
+
 	public void setIconProvider(IconProvider<TreeObject> iconProvider) {
 		this.iconProvider = iconProvider;
+	}
+
+	public void setStatusIconProvider(IconProvider<TreeObject> iconProvider) {
+		this.statusIconProvider = iconProvider;
 	}
 
 	/**

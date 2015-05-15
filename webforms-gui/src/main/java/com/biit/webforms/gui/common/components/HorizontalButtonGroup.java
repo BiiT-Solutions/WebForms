@@ -2,6 +2,7 @@ package com.biit.webforms.gui.common.components;
 
 import java.util.Iterator;
 
+import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
@@ -46,6 +47,17 @@ public class HorizontalButtonGroup extends CustomComponent {
 	public void addIconButton(IconButton button) {
 		rootLayout.addComponent(button);
 		button.setSizeFull();
+	}
+
+	public void replaceIconButton(IconButton newButton, IconButton buttonToBeReplaced) {
+		int index = rootLayout.getComponentIndex(buttonToBeReplaced);
+		if (index >= 0) {
+			rootLayout.removeComponent(buttonToBeReplaced);
+			rootLayout.addComponent(newButton, index);
+			newButton.setSizeFull();
+		} else {
+			WebformsLogger.warning(this.getClass().getName(), "Trying to replace a non existing element.");
+		}
 	}
 
 	public void setContractIcons(boolean contractIcons) {

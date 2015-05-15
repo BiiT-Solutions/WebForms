@@ -12,27 +12,30 @@ public class WebformsXsdElement extends XsdElement {
 
 	public WebformsXsdElement(TreeObject element) {
 		super(element.getName());
-		if (element instanceof Form) {
-			putName(XmlUtils.normalizeNodeName(element.getLabel()));
-			putType(XmlUtils.normalizeNodeName(element.getLabel()));
-		} else {
-			if (element instanceof BaseGroup) {
-				putType(element.getPathName().replace('/', '.'));
-				if (!(element instanceof BaseRepeatableGroup && (((BaseRepeatableGroup) element).isRepeatable()))) {
-					putMaxOccurs(1);
-				}
+		if (!element.isHiddenElement()) {
+			if (element instanceof Form) {
+				putName(XmlUtils.normalizeNodeName(element.getLabel()));
+				putType(XmlUtils.normalizeNodeName(element.getLabel()));
 			} else {
-				putMaxOccurs(1);
-				if(element instanceof Question){
-					Question question = (Question) element;
-					if(question.getAnswerType() == AnswerType.SINGLE_SELECTION_LIST || question.getAnswerType() == AnswerType.SINGLE_SELECTION_RADIO){
-						addChild(new XsdSimpleType(new WebformsXsdQuestionAnswerRestriction(question)));
+				if (element instanceof BaseGroup) {
+					putType(element.getPathName().replace('/', '.'));
+					if (!(element instanceof BaseRepeatableGroup && (((BaseRepeatableGroup) element).isRepeatable()))) {
+						putMaxOccurs(1);
 					}
-				}else{
-					putType(XsdElementType.STRING);
+				} else {
+					putMaxOccurs(1);
+					if (element instanceof Question) {
+						Question question = (Question) element;
+						if (question.getAnswerType() == AnswerType.SINGLE_SELECTION_LIST
+								|| question.getAnswerType() == AnswerType.SINGLE_SELECTION_RADIO) {
+							addChild(new XsdSimpleType(new WebformsXsdQuestionAnswerRestriction(question)));
+						}
+					} else {
+						putType(XsdElementType.STRING);
+					}
 				}
+				putMinOccurs(0);
 			}
-			putMinOccurs(0);
 		}
 	}
 

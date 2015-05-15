@@ -335,7 +335,7 @@ public class FormManager extends SecuredWebPage {
 	 * @return
 	 */
 	private CompleteFormView loadAndValidateForm() {
-		CompleteFormView form = new CompleteFormView(loadCompleteForm(getSelectedForm()));
+		CompleteFormView form = (CompleteFormView) loadCompleteForm(getSelectedForm());
 
 		// Xforms only can use with valid forms.
 		ValidateFormComplete validator = new ValidateFormComplete();
@@ -353,15 +353,14 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void downloadXForms() {
-		Form form = loadAndValidateForm();
+		final Form form = loadAndValidateForm();
 		if (form != null) {
-			final Form previewForm = form;
 			WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
 
 				@Override
 				public InputStream getInputStream() {
 					try {
-						return new XFormsExporter(previewForm).generateXFormsLanguage();
+						return new XFormsExporter(form).generateXFormsLanguage();
 					} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
 							| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException e) {
 						WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -370,7 +369,7 @@ public class FormManager extends SecuredWebPage {
 				}
 			});
 			window.setIndeterminate(true);
-			window.setFilename(previewForm.getLabel() + ".txt");
+			window.setFilename(form.getLabel() + ".txt");
 			window.showCentered();
 		}
 	}
@@ -400,7 +399,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void exportXsd() {
-		Form form = loadCompleteForm(getSelectedForm());
+		CompleteFormView form = loadCompleteForm(getSelectedForm());
 
 		ValidateFormComplete validator = new ValidateFormComplete();
 		validator.setStopOnFail(true);
@@ -415,8 +414,8 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void exportJson() {
-		Form form = loadCompleteForm(getSelectedForm());
-		new WindowDownloaderJson(new CompleteFormView(form), getSelectedForm().getLabel() + ".json");
+		CompleteFormView form = loadCompleteForm(getSelectedForm());
+		new WindowDownloaderJson(form, form.getLabel() + ".json");
 	}
 
 	private void exportBaseFormMetadataJson() {
@@ -431,8 +430,8 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					return new ByteArrayInputStream(GraphvizApp.generateImage(
-							loadCompleteForm(getSelectedForm()), null, ImgType.PDF));
+					return new ByteArrayInputStream(GraphvizApp.generateImage(loadCompleteForm(getSelectedForm()),
+							null, ImgType.PDF));
 				} catch (IOException | InterruptedException e) {
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 					return null;
@@ -626,8 +625,8 @@ public class FormManager extends SecuredWebPage {
 		form.setLastVersion(formView.isLastVersion());
 		return form;
 	}
-	
-	private Form loadCompleteForm(IWebformsFormView formView){
+
+	private CompleteFormView loadCompleteForm(IWebformsFormView formView) {
 		return new CompleteFormView(loadForm(formView));
 	}
 

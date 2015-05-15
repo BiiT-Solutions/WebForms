@@ -65,7 +65,7 @@ public abstract class ExporterDot<T> {
 	}
 
 	public String getFillColor(boolean readOnly) {
-		if (readOnly) {
+		if (readOnly && fillColor.equals(DEFAULT_FILL_COLOR)) {
 			return "\"" + fillColor + READ_ONLY_ALPHA + "\"";
 		}
 		return "\"" + fillColor + "\"";
@@ -84,7 +84,7 @@ public abstract class ExporterDot<T> {
 	}
 
 	public String getShapeColor(boolean readOnly) {
-		if (readOnly) {
+		if (readOnly && shapeColor.equals(DEFAULT_SHAPE_COLOR)) {
 			return "\"" + shapeColor + READ_ONLY_ALPHA + "\"";
 		}
 		return "\"" + shapeColor + "\"";
@@ -95,7 +95,7 @@ public abstract class ExporterDot<T> {
 	}
 
 	public String getFontColor(boolean readOnly) {
-		if (readOnly) {
+		if (readOnly && fontColor.equals(DEFAULT_FONT_COLOR)) {
 			return "\"" + fontColor + READ_ONLY_ALPHA + "\"";
 		}
 		return "\"" + fontColor + "\"";
@@ -106,7 +106,7 @@ public abstract class ExporterDot<T> {
 	}
 
 	public String getLinkColor(boolean readOnly) {
-		if (readOnly) {
+		if (readOnly && linkColor.equals(DEFAULT_LINK_COLOR)) {
 			return "\"" + linkColor + READ_ONLY_ALPHA + "\"";
 		}
 		return "\"" + linkColor + "\"";

@@ -16,18 +16,22 @@ public class WebformsXsdForm extends XsdSchema {
 		// Get all base groups and generate the complex types xsd.
 		List<TreeObject> groups = form.getAll(BaseGroup.class);
 		for (TreeObject group : groups) {
-			addChild(new WebformsXsdComplexType((BaseGroup)group));
+			if (!group.isHiddenElement()) {
+				addChild(new WebformsXsdComplexType((BaseGroup) group));
+			}
 		}
-		
+
 		addChild(new WebformsXsdComplexType(form));
 		addChild(new WebformsXsdElement(form));
 	}
 
 	private static String getNamespace(Form form) {
-		return WebformsConfigurationReader.getInstance().getXmlBaseAddress()+XmlUtils.normalizeNodeName(form.getLabel());
+		return WebformsConfigurationReader.getInstance().getXmlBaseAddress()
+				+ XmlUtils.normalizeNodeName(form.getLabel());
 	}
 
 	private static String getXMLNS(Form form) {
-		return WebformsConfigurationReader.getInstance().getXmlBaseAddress()+XmlUtils.normalizeNodeName(form.getLabel());
+		return WebformsConfigurationReader.getInstance().getXmlBaseAddress()
+				+ XmlUtils.normalizeNodeName(form.getLabel());
 	}
 }
