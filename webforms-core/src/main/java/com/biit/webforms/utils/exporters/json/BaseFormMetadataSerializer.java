@@ -30,7 +30,7 @@ public class BaseFormMetadataSerializer implements JsonSerializer<BaseFormMetada
 		if (src.getLinkedOrganizationId() != null) {
 			jsonObject.add("linkedOrganizationId", context.serialize(src.getLinkedOrganizationId()));
 		}
-		if (src.getLinkedVersions() != null) {
+		if ((src.getLinkedVersions() != null) || !(src.getLinkedVersions().isEmpty())) {
 			jsonObject.add("linkedVersions", context.serialize(src.getLinkedVersions()));
 		}
 		

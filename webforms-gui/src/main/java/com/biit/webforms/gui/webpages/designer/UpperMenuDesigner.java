@@ -18,9 +18,9 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	private final IconButton saveButton;
 	private final IconButton blockMenu, saveAsBlockButton, insertBlockButton, linkBlockButton;
-	private final IconButton newCategoryButton, newGroupButton, newQuestionButton, newTextButton, newSystemFieldButton,
-			newAnswerButton, newSubanswerButton, moveButton, deleteButton, upButton, downButton, finish,
-			exportToJavaCode, hideButton;
+	private final IconButton otherElementsMenu, newSubanswerButton, newTextButton, newSystemFieldButton;
+	private final IconButton newCategoryButton, newGroupButton, newQuestionButton, newAnswerButton, moveButton,
+			deleteButton, upButton, downButton, finish, exportToJavaCode, hideButton;
 
 	public UpperMenuDesigner() {
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
@@ -76,18 +76,22 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 			}
 		});
 		exportToJavaCode.setVisible(false);
-
+		
 		addIconButton(saveButton);
-		blockMenu = addSubMenu(ThemeIcons.BUILDING_BLOCK_MENU, LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER,
+		
+		blockMenu = addSubMenu(ThemeIcons.OTHER_ELEMENTS_MENU, LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER,
 				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, saveAsBlockButton, insertBlockButton,
 				linkBlockButton);
+		
 		addIconButton(newCategoryButton);
 		addIconButton(newGroupButton);
 		addIconButton(newQuestionButton);
 		addIconButton(newAnswerButton);
-		addIconButton(newSubanswerButton);
-		addIconButton(newTextButton);
-		addIconButton(newSystemFieldButton);
+		
+		otherElementsMenu = addSubMenu(ThemeIcons.BUILDING_BLOCK_MENU, LanguageCodes.COMMON_CAPTION_OTHER_ELEMENTS_SUBMENU,
+				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, newSubanswerButton, newTextButton,
+				newSystemFieldButton); 
+		
 		addIconButton(moveButton);
 		addIconButton(upButton);
 		addIconButton(downButton);
@@ -234,6 +238,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public AbstractComponent getBlockMenu() {
 		return blockMenu;
+	}
+	
+	public AbstractComponent getOtherElementsMenu() {
+		return otherElementsMenu;
 	}
 
 	public void updateHideButton(boolean elementIsHidden) {

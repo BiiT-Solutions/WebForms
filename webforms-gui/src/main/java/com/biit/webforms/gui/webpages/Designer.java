@@ -509,6 +509,7 @@ public class Designer extends SecuredWebPage {
 
 			upperMenu.getSaveButton().setEnabled(canEdit);
 			upperMenu.getBlockMenu().setEnabled(canEdit);
+			upperMenu.getOtherElementsMenu().setEnabled(canEdit);
 			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock && !rowIsForm);
 			upperMenu.getInsertBlockButton().setEnabled(canEdit);
 			upperMenu.getInsertBlockButton().setVisible(!formIsBlock);
