@@ -81,6 +81,7 @@
 		<liferay-authentication-client.version>[0.7,0.8)</liferay-authentication-client.version>
 		<biit-common-utils.version>[0.4,0.5)</biit-common-utils.version>
 		<form-structure.version>[0.3,0.4)</form-structure.version>
+		<jpa-schema-exporter.version>[0.3,0.4)</jpa-schema-exporter.version>
 	</properties>
 
 	<dependencies>
