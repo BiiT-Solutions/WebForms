@@ -69,8 +69,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 
 		for (TreeObject child : form.getChildren()) {
 			if (child instanceof BlockReference) {
-				Block copiedBlock = getCopyOfReferencedBlock(((BlockReference) child));
-				for (TreeObject linkedChild : copiedBlock.getChildren()) {
+				Block block = ((BlockReference) child).getReference();
+				for (TreeObject linkedChild : block.getChildren()) {
+					linkedChild.setReadOnly(true);
 					children.add(linkedChild);
 					updateHiddenElements((BlockReference) child, linkedChild);
 				}
@@ -91,7 +92,6 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				if (child instanceof BlockReference) {
 					Block copiedBlock = getCopyOfReferencedBlock(((BlockReference) child));
 					for (TreeObject linkedChild : copiedBlock.getAllNotHiddenChildren()) {
-						removeAllNotHiddenChildren(linkedChild);
 						children.add(linkedChild);
 					}
 				} else {
@@ -102,28 +102,6 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		return children;
 	}
 
-	private void removeAllNotHiddenChildren(TreeObject element) {
-		for (TreeObject child : new ArrayList<>(element.getChildren())) {
-			System.out.println("----->" + child + ": " + child.isHiddenElement());
-			if (child.isHiddenElement()) {
-				for (TreeObject elementChild : new ArrayList<>(element.getChildren())) {
-					if (elementChild.getOriginalReference().equals(child.getOriginalReference())) {
-						System.out.println("----->" + elementChild);
-						element.getChildren().remove(elementChild);
-					}
-				}
-			} else {
-				removeAllNotHiddenChildren(child);
-			}
-		}
-	}
-
-	private void updateHiddenElements(BlockReference block) {
-		for (TreeObject child : block.getChildren()) {
-			updateHiddenElements(block, child);
-		}
-	}
-
 	/**
 	 * Set the elements selected by the user in a Block Reference and its children as hidden.
 	 * 
@@ -132,13 +110,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	 */
 	private void updateHiddenElements(BlockReference block, TreeObject linkedChild) {
 		// Mark element as hidden.
-		boolean isHidden = false;
-		for (TreeObject elementHidden : ((BlockReference) block).getElementsToHide()) {
-			if (elementHidden.getOriginalReference().equals(linkedChild.getOriginalReference())) {
-				isHidden = true;
-			}
-		}
-		if (isHidden) {
+		if (((BlockReference) block).getElementsToHide().contains(linkedChild)) {
 			linkedChild.setHiddenElement(true);
 			// All children are also hidden. Not needed to check.
 		} else {
@@ -166,7 +138,6 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	 * @throws CharacterNotAllowedException
 	 */
 	public Block getCopyOfReferencedBlock(BlockReference block) {
-		updateHiddenElements((BlockReference) block);
 		if (copiedBlocks.get(block.getReference()) == null) {
 			Block copiedBlock = createCopyOfBlock(block.getReference());
 			copiedBlocks.put(block.getReference(), copiedBlock);
@@ -392,11 +363,11 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		if (element == null) {
 			return null;
 		}
-
-		Set<BlockReference> blocks = getAllBlockReferences();
-		for (BlockReference block : blocks) {
-			if (block.getReference().isDescendantByOriginalId(element)) {
-				return block;
+		for (TreeObject child : form.getChildren()) {
+			if (child instanceof BlockReference) {
+				if (child.isDescendant(element)) {
+					return (BlockReference) child;
+				}
 			}
 		}
 		return null;

@@ -420,30 +420,28 @@ public class Designer extends SecuredWebPage {
 				BlockReference blockReference = UserSessionHandler.getController().getCompleteFormView()
 						.getBlockReference(row);
 				if (blockReference != null) {
-					TreeObject originalObject = blockReference.getOriginalElement(row);
-					if (originalObject.isHiddenElement()) {
-						if (blockReference.showElement(originalObject)) {
-							originalObject.setHiddenElement(false);
+					if (row.isHiddenElement()) {
+						if (blockReference.showElement(row)) {
+							row.setHiddenElement(false);
 							WebformsLogger.info(this.getClass().getName(), "User '"
-									+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '"
-									+ originalObject + "' of block '" + blockReference + "'.");
+									+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '" + row
+									+ "' of block '" + blockReference + "'.");
 						} else {
 							MessageManager.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
 						}
 					} else {
 						try {
-							if (blockReference.hideElement(originalObject)) {
-								originalObject.setHiddenElement(true);
+							if (blockReference.hideElement(row)) {
+								row.setHiddenElement(true);
 								WebformsLogger.info(this.getClass().getName(), "User '"
-										+ UserSessionHandler.getUser().getEmailAddress() + "' has hide element '"
-										+ originalObject + "' of block '" + blockReference + "'.");
+										+ UserSessionHandler.getUser().getEmailAddress() + "' has hide element '" + row
+										+ "' of block '" + blockReference + "'.");
 							}
 						} catch (ElementCannotBeRemovedException e) {
 							WebformsLogger.errorMessage(this.getClass().getName(), e);
 						}
 					}
-					row.setHiddenElement(originalObject.isHiddenElement());
-					upperMenu.updateHideButton(originalObject.isHiddenElement());
+					upperMenu.updateHideButton(row.isHiddenElement());
 					table.updateVisibilityIcon(row);
 				}
 			}

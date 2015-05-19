@@ -24,7 +24,6 @@ import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
-import com.biit.form.exceptions.NotValidParentException;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
@@ -897,30 +896,30 @@ public class ApplicationController {
 	private void lockLinkedBlocks(Form form) {
 		Form completeForm = form;
 
-		// Convert to CompleteForm to use all methods of filtering hide elements.
-		if (!(completeForm instanceof CompleteFormView)) {
-			completeForm = new CompleteFormView(form);
-		}
-
-		// Change linked blocks by categories.
-		List<TreeObject> children = ((CompleteFormView) completeForm).getAllNotHiddenChildren();
-		// Reset the parent to the form. Force updating database to correct elements.
-		for (TreeObject child : children) {
-			try {
-				child.setParent(((CompleteFormView) completeForm).getForm());
-			} catch (NotValidParentException e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			}
-		}
-		((CompleteFormView) completeForm).getForm().getChildren().clear();
-		((CompleteFormView) completeForm).getForm().getChildren().addAll(children);
-		
-		
-
-		// Update flow with the flow of the linked block.
-		Set<Flow> flows = ((CompleteFormView) completeForm).getFlows();
-		((CompleteFormView) completeForm).getForm().getFlows().clear();
-		((CompleteFormView) completeForm).getForm().getFlows().addAll(flows);
+//		// Convert to CompleteForm to use all methods of filtering hide elements.
+//		if (!(completeForm instanceof CompleteFormView)) {
+//			completeForm = new CompleteFormView(form);
+//		}
+//
+//		// Change linked blocks by categories.
+//		List<TreeObject> children = ((CompleteFormView) completeForm).getAllNotHiddenChildren();
+//		// Reset the parent to the form. Force updating database to correct elements.
+//		for (TreeObject child : children) {
+//			try {
+//				child.setParent(((CompleteFormView) completeForm).getForm());
+//			} catch (NotValidParentException e) {
+//				WebformsLogger.errorMessage(this.getClass().getName(), e);
+//			}
+//		}
+//		((CompleteFormView) completeForm).getForm().getChildren().clear();
+//		((CompleteFormView) completeForm).getForm().getChildren().addAll(children);
+//		
+//		
+//
+//		// Update flow with the flow of the linked block.
+//		Set<Flow> flows = ((CompleteFormView) completeForm).getFlows();
+//		((CompleteFormView) completeForm).getForm().getFlows().clear();
+//		((CompleteFormView) completeForm).getForm().getFlows().addAll(flows);
 	}
 
 	/**
