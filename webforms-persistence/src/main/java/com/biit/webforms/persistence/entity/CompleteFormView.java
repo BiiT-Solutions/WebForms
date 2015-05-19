@@ -85,10 +85,11 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	public List<TreeObject> getAllNotHiddenChildren() {
 		List<TreeObject> children = new ArrayList<>();
 
+		//Must use the real childrens of the form.
 		for (TreeObject child : form.getChildren()) {
 			if (!child.isHiddenElement()) {
 				if (child instanceof BlockReference) {
-					Block copiedBlock = createCopyOfBlock(((BlockReference) child).getReference());
+					Block copiedBlock = getCopyOfBlock(((BlockReference) child).getReference());
 					for (TreeObject linkedChild : copiedBlock.getAllNotHiddenChildren()) {
 						removeAllNotHiddenChildren(linkedChild);
 						children.add(linkedChild);
@@ -119,7 +120,13 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	 */
 	private void updateHiddenElements(BlockReference block, TreeObject linkedChild) {
 		// Mark element as hidden.
-		if (((BlockReference) block).getElementsToHide().contains(linkedChild)) {
+		boolean isHidden = false;
+		for (TreeObject elementHidden : ((BlockReference) block).getElementsToHide()) {
+			if (elementHidden.getOriginalReference().equals(linkedChild.getOriginalReference())) {
+				isHidden = true;
+			}
+		}
+		if (isHidden) {
 			linkedChild.setHiddenElement(true);
 			// All children are also hidden. Not needed to check.
 		} else {
@@ -375,7 +382,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 
 		Set<BlockReference> blocks = getAllBlockReferences();
 		for (BlockReference block : blocks) {
-			if (block.getReference().isDescendant(element)) {
+			if (block.getReference().isDescendantByOriginalId(element)) {
 				return block;
 			}
 		}

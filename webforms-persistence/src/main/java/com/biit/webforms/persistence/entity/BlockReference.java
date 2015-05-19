@@ -297,4 +297,14 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 		}
 		return copied;
 	}
+
+	public TreeObject getOriginalElement(TreeObject element) {
+		for (StorableObject blockElement : getReference().getAllInnerStorableObjects()) {
+			if (blockElement instanceof TreeObject
+					&& ((TreeObject) blockElement).getOriginalReference().equals(element.getOriginalReference())) {
+				return (TreeObject) blockElement;
+			}
+		}
+		return null;
+	}
 }
