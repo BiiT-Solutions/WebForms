@@ -3,6 +3,7 @@ package com.biit.webforms.gui.webpages;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import com.biit.abcd.core.SpringContextHelper;
@@ -64,6 +65,10 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Tree.CollapseEvent;
+import com.vaadin.ui.Tree.CollapseListener;
+import com.vaadin.ui.Tree.ExpandEvent;
+import com.vaadin.ui.Tree.ExpandListener;
 
 public class Designer extends SecuredWebPage {
 	private static final long serialVersionUID = 9161313025929535348L;
@@ -75,6 +80,8 @@ public class Designer extends SecuredWebPage {
 	private UpperMenuDesigner upperMenu;
 	private TableTreeObjectLabel table;
 	private DesignerPropertiesComponent properties;
+	private CollapseListener collapseListener;
+	private ExpandListener expandListener;
 
 	private ISimpleFormViewDao simpleFormViewDao;
 
@@ -82,6 +89,29 @@ public class Designer extends SecuredWebPage {
 		super();
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		simpleFormViewDao = (ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms");
+		
+		collapseListener = new CollapseListener() {
+			private static final long serialVersionUID = -4969316575917593209L;
+
+			@Override
+			public void nodeCollapse(CollapseEvent event) {
+				if(UserSessionHandler.getController().getCollapsedStatus()==null){
+					UserSessionHandler.getController().setCollapsedStatus(new HashSet<>());
+				}
+				UserSessionHandler.getController().getCollapsedStatus().add(event.getItemId());
+			}
+		};
+		expandListener = new ExpandListener() {
+			private static final long serialVersionUID = -7235454850117978231L;
+
+			@Override
+			public void nodeExpand(ExpandEvent event) {
+				if(UserSessionHandler.getController().getCollapsedStatus()==null){
+					UserSessionHandler.getController().setCollapsedStatus(new HashSet<>());
+				}
+				UserSessionHandler.getController().getCollapsedStatus().remove(event.getItemId());
+			}
+		};	
 	}
 
 	@Override
@@ -105,6 +135,8 @@ public class Designer extends SecuredWebPage {
 		table.setSelectable(true);
 		table.loadTreeObject(getCurrentForm(), null);
 		table.collapseFrom(Category.class);
+		retrieveCollapsedTableState();
+		saveCollapsedTableState();
 		table.setValue(null);
 		table.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -1169897738297107301L;
@@ -425,7 +457,10 @@ public class Designer extends SecuredWebPage {
 				TreeObject row = table.getSelectedRow();
 				try {
 					UserSessionHandler.getController().moveUp(row);
+					//Remove collapse state listeners, redraw row and recover the original collapse state and listeners.
+					removeCollapseStateListeners();
 					table.redrawRow(table.getParentRowItem(row));
+					retrieveCollapsedTableState();
 					table.setValue(row);
 				} catch (ElementIsReadOnly e) {
 					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
@@ -441,7 +476,10 @@ public class Designer extends SecuredWebPage {
 				TreeObject row = table.getSelectedRow();
 				try {
 					UserSessionHandler.getController().moveDown(row);
+					//Remove collapse state listeners, redraw row and recover the original collapse state and listeners.
+					removeCollapseStateListeners();
 					table.redrawRow(table.getParentRowItem(row));
+					retrieveCollapsedTableState();
 					table.setValue(row);
 				} catch (ElementIsReadOnly e) {
 					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
@@ -712,11 +750,18 @@ public class Designer extends SecuredWebPage {
 						window.close();
 						table.setValue(null);
 						table.removeRow(whatToMove);
+						
+						//Remove collapse state update listeners
+						removeCollapseStateListeners();
 						table.loadTreeObject(whatToMove, whereToMove, false);
+						//Retrieve old collapse state (also listeners)
+						retrieveCollapsedTableState();
 						table.expand(whereToMove);
+						
 						// FIX to force a jump to this point in table.
 						table.setValue(null);
 						table.setValue(whatToMove);
+						
 					} else {
 						MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 					}
@@ -736,17 +781,47 @@ public class Designer extends SecuredWebPage {
 		});
 	}
 
+	protected void saveCollapsedTableState() {
+		UserSessionHandler.getController().setCollapsedStatus(table.getCollapsedStatus(UserSessionHandler.getController().getFormInUse()));
+	}
+	
+	private void removeCollapseStateListeners(){
+		table.removeCollapseListener(collapseListener);
+		table.removeExpandListener(expandListener);
+	}
+	
+	private void addCollapseStateListeners(){
+		table.addCollapseListener(collapseListener);
+		table.addExpandListener(expandListener);
+	}
+	
+	private void retrieveCollapsedTableState() {
+		removeCollapseStateListeners();
+		if(UserSessionHandler.getController().getCollapsedStatus()!=null){
+			table.setCollapsedStatus(UserSessionHandler.getController().getFormInUse(),UserSessionHandler.getController().getCollapsedStatus());
+		}
+		addCollapseStateListeners();
+		
+	}
+
 	private void clearAndUpdateFormTable() {
 		// Clear and update form
 		TreeObject currentSelection = table.getSelectedRow();
 		table.setValue(null);
 		table.removeAllItems();
+		
+		//Remove collapsed state listeners, load the new tree and recover the old state and the update state listeners.
+		removeCollapseStateListeners();
 		table.loadTreeObject(getCurrentForm(), null);
-
+		retrieveCollapsedTableState();
+		
 		if (currentSelection != null) {
 			if (currentSelection instanceof Form || currentSelection instanceof Block) {
 				table.select(getCurrentForm());
 			} else {
+				System.out.println(currentSelection.getPathName());
+				System.out.println(getCurrentForm().getChild(currentSelection.getPathName()));
+				System.out.println(getCurrentForm().getChild(currentSelection.getPathName()).getPathName());
 				table.select(getCurrentForm().getChild(currentSelection.getPathName()));
 			}
 		}
