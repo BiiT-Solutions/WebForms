@@ -1,5 +1,8 @@
 package com.biit.webforms.gui.components;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.language.LanguageCodes;
@@ -66,5 +69,28 @@ public class TableTreeObjectLabel extends TableTreeObject {
 		for (TreeObject child : treeObject.getChildren()) {
 			updateVisibilityIcon(child);
 		}
+	}
+	
+	public Set<Object> getCollapsedStatus(TreeObject treeObject){
+		Set<Object> collapsedItems = new HashSet<>();
+		getCollapsedStatus(treeObject,collapsedItems);
+		return collapsedItems;
+	}
+	
+	private void getCollapsedStatus(TreeObject treeObject, Set<Object> collapsedItems){
+		if(isCollapsed(treeObject)){
+			collapsedItems.add(treeObject);
+		}
+		for(TreeObject child: treeObject.getChildren()){
+			getCollapsedStatus(child, collapsedItems);
+		}
+	}
+
+	public void setCollapsedStatus(TreeObject treeObject, Set<Object> collapsedStatus) {
+		setCollapsed(treeObject, false);
+		for(TreeObject child: treeObject.getChildren()){
+			setCollapsedStatus(child, collapsedStatus);
+		}
+		setCollapsed(treeObject, collapsedStatus.contains(treeObject));
 	}
 }

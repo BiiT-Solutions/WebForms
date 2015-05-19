@@ -101,6 +101,7 @@ public class ApplicationController {
 	private CompleteFormView completeFormView;
 
 	private boolean unsavedFormChanges = false;
+	private Set<Object> collapsedStatus;
 
 	public ApplicationController() {
 		super();
@@ -400,12 +401,15 @@ public class ApplicationController {
 	public void setFormInUse(Form form) {
 		if (formInUse != null) {
 			// Release current form if any.
+			collapsedStatus = null;
 			UiAccesser.releaseForm(formInUse, user);
 		}
 		if (form == null) {
 			formInUse = null;
+			collapsedStatus = null;
 		} else {
 			formInUse = form;
+			collapsedStatus = null;
 			// Lock new form
 			UiAccesser.lockForm(formInUse, user);
 			WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
@@ -1377,5 +1381,13 @@ public class ApplicationController {
 		List<Long> ids = new ArrayList<>();
 		ids.add(element.getId());
 		return blockDao.getFormFlowsCountUsingElement(ids) > 0;
+	}
+
+	public void setCollapsedStatus(Set<Object> collapsedStatus) {
+		this.collapsedStatus = collapsedStatus;
+	}
+	
+	public Set<Object> getCollapsedStatus(){
+		return collapsedStatus;
 	}
 }
