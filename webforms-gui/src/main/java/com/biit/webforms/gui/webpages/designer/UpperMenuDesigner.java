@@ -79,7 +79,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		
 		addIconButton(saveButton);
 		
-		blockMenu = addSubMenu(ThemeIcons.OTHER_ELEMENTS_MENU, LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER,
+		blockMenu = addSubMenu(ThemeIcons.BUILDING_BLOCK_MENU, LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER,
 				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, saveAsBlockButton, insertBlockButton,
 				linkBlockButton);
 		
@@ -88,7 +88,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(newQuestionButton);
 		addIconButton(newAnswerButton);
 		
-		otherElementsMenu = addSubMenu(ThemeIcons.BUILDING_BLOCK_MENU, LanguageCodes.COMMON_CAPTION_OTHER_ELEMENTS_SUBMENU,
+		otherElementsMenu = addSubMenu(ThemeIcons.OTHER_ELEMENTS_MENU, LanguageCodes.COMMON_CAPTION_OTHER_ELEMENTS_SUBMENU,
 				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, newSubanswerButton, newTextButton,
 				newSystemFieldButton); 
 		
