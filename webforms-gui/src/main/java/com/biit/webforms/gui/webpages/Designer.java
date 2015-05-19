@@ -590,7 +590,7 @@ public class Designer extends SecuredWebPage {
 				LanguageCodes.COMMON_CAPTION_GROUP.translation(),
 				new IActivity[] { WebformsActivity.BUILDING_BLOCK_EDITING });
 		newBlockWindow.setCaption(LanguageCodes.CAPTION_NEW_BLOCK.translation());
-		newBlockWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_BLOCK.translation());
+		newBlockWindow.setDefaultValue(table.getSelectedRow().getName());
 		newBlockWindow.showCentered();
 		newBlockWindow.addAcceptActionListener(new AcceptActionListener() {
 
