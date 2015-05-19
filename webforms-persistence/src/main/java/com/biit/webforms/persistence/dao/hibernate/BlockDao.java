@@ -115,7 +115,8 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-	@Caching(evict = { @CacheEvict(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null") })
+	//@Caching(evict = { @CacheEvict(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null") })
+	@CachePut(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null")
 	public Block merge(Block block) {
 		block.updateChildrenSortSeqs();
 		if (block.getCreationTime() == null) {

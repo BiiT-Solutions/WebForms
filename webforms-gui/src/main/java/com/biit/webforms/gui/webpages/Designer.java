@@ -545,9 +545,9 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getFinish().setVisible(!formIsBlock);
 			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 			upperMenu.updateHideButton(isHidden);
-			upperMenu.getHideButton().setEnabled(rowIsBlockReference && canEdit);
-			upperMenu.getDeleteButton().setVisible(!rowIsBlockReference);
-			upperMenu.getHideButton().setVisible(rowIsBlockReference);
+			upperMenu.getHideButton().setEnabled(rowIsBlockReference && !rowIsBlockReferenceCategory && canEdit);
+			upperMenu.getDeleteButton().setVisible(!rowIsBlockReference || rowIsBlockReferenceCategory);
+			upperMenu.getHideButton().setVisible(rowIsBlockReference && !rowIsBlockReferenceCategory);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			// Disable everything as a security measure.
@@ -590,7 +590,12 @@ public class Designer extends SecuredWebPage {
 				LanguageCodes.COMMON_CAPTION_GROUP.translation(),
 				new IActivity[] { WebformsActivity.BUILDING_BLOCK_EDITING });
 		newBlockWindow.setCaption(LanguageCodes.CAPTION_NEW_BLOCK.translation());
-		newBlockWindow.setDefaultValue(table.getSelectedRow().getName());
+		String name = table.getSelectedRow().getName();
+		if (name != null && name.length() > 0) {
+			newBlockWindow.setDefaultValue(name);
+		} else {
+			newBlockWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_BLOCK.translation());
+		}
 		newBlockWindow.showCentered();
 		newBlockWindow.addAcceptActionListener(new AcceptActionListener() {
 

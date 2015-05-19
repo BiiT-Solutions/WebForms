@@ -14,8 +14,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.biit.form.entity.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.ElementIsReadOnly;
+import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
@@ -169,9 +172,8 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 		// Returns the name of the first category of the block
 		try {
 			return reference.getChild(0).getName();
-		} catch (ChildrenNotFoundException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			return null;
+		} catch (IndexOutOfBoundsException | ChildrenNotFoundException e) {
+			return "";
 		}
 	}
 
@@ -260,5 +262,39 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	public void initializeSets() {
 		super.initializeSets();
 		reference.initializeSets();
+	}
+
+	/**
+	 * Returns a Category that is a copy of the linked building block without hidden elements.
+	 * 
+	 * @return
+	 */
+	public Category getCategoryView() {
+		if (getReference() == null || getReference().getChildren().isEmpty()) {
+			return null;
+		}
+		// Remove hidden elements.
+		return (Category) createCopy(getReference().getChildren().get(0));
+	}
+
+	private TreeObject createCopy(TreeObject elementToCopy) {
+		TreeObject copied = null;
+		if (elementToCopy.isHiddenElement()) {
+			return null;
+		}
+		try {
+			copied = elementToCopy.generateCopy(false, false);
+			copied.setReadOnly(false);
+			for (TreeObject child : elementToCopy.getChildren()) {
+				TreeObject copiedChild = createCopy(child);
+				if (copiedChild != null) {
+					copied.addChild(copiedChild);
+				}
+			}
+		} catch (CharacterNotAllowedException | NotValidStorableObjectException | NotValidChildException
+				| ElementIsReadOnly e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		return copied;
 	}
 }

@@ -614,7 +614,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return gson.toJson(this);
 	}
 
-	private void updateRuleReferences() {
+	protected void updateRuleReferences() {
 		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
 		HashMap<String, TreeObject> mappedElements = new HashMap<>();
 		for (TreeObject currentElement : currentElements) {

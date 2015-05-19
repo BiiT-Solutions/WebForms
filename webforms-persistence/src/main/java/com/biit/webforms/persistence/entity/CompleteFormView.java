@@ -88,8 +88,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		for (TreeObject child : form.getChildren()) {
 			if (!child.isHiddenElement()) {
 				if (child instanceof BlockReference) {
-					Block copiedBlock = getCopyOfBlock(((BlockReference) child).getReference());
+					Block copiedBlock = createCopyOfBlock(((BlockReference) child).getReference());
 					for (TreeObject linkedChild : copiedBlock.getAllNotHiddenChildren()) {
+						removeAllNotHiddenChildren(linkedChild);
 						children.add(linkedChild);
 					}
 				} else {
@@ -98,6 +99,16 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			}
 		}
 		return children;
+	}
+
+	private void removeAllNotHiddenChildren(TreeObject element) {
+		for (TreeObject child : new ArrayList<>(element.getChildren())) {
+			if (child.isHiddenElement()) {
+				element.getChildren().remove(child);
+			} else {
+				removeAllNotHiddenChildren(child);
+			}
+		}
 	}
 
 	/**
@@ -137,46 +148,37 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	 */
 	public Block getCopyOfBlock(Block block) {
 		if (copiedBlocks.get(block) == null) {
-			try {
-				Block copiedBlock = (Block) block.generateCopy(true, true);
-				// Linked Building block is not editable by the user directly.
-				copiedBlock.setReadOnly(true);
-				copiedBlocks.put(block, copiedBlock);
-
-				for (TreeObject linkedChild : copiedBlock.getChildren()) {
-					try {
-						// To the categories set as parent the form.
-						linkedChild.setParent(this);
-					} catch (NotValidParentException e) {
-						WebformsLogger.errorMessage(this.getClass().getName(), e);
-					}
-				}
-
-				// Flows are not editable.
-				for (Flow flow : copiedBlock.getFlows()) {
-					flow.setReadOnly(true);
-				}
-				updateRuleReferences();
-
-			} catch (NotValidStorableObjectException | CharacterNotAllowedException e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			}
+			Block copiedBlock = createCopyOfBlock(block);
+			copiedBlocks.put(block, copiedBlock);
 		}
 		return copiedBlocks.get(block);
 	}
 
-	/**
-	 * Change rule elements for current form view elements.
-	 */
-	private void updateRuleReferences() {
-		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
-		HashMap<String, TreeObject> mappedElements = new HashMap<>();
-		for (TreeObject currentElement : currentElements) {
-			mappedElements.put(currentElement.getComparationId(), currentElement);
+	private Block createCopyOfBlock(Block block) {
+		try {
+			Block copiedBlock = (Block) block.generateCopy(false, true);
+			// Linked Building block is not editable by the user directly.
+			copiedBlock.setReadOnly(true);
+
+			for (TreeObject linkedChild : copiedBlock.getChildren()) {
+				try {
+					// To the categories set as parent the form.
+					linkedChild.setParent(getForm());
+				} catch (NotValidParentException e) {
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				}
+			}
+
+			// Flows are now editable.
+			for (Flow flow : copiedBlock.getFlows()) {
+				flow.setReadOnly(true);
+			}
+			copiedBlock.resetIds();
+			return copiedBlock;
+		} catch (NotValidStorableObjectException | CharacterNotAllowedException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
-		for (Flow rule : getFlows()) {
-			rule.updateReferences(mappedElements);
-		}
+		return null;
 	}
 
 	@Override
@@ -370,11 +372,11 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		if (element == null) {
 			return null;
 		}
-		for (TreeObject child : form.getChildren()) {
-			if (child instanceof BlockReference) {
-				if (child.isDescendant(element)) {
-					return (BlockReference) child;
-				}
+
+		Set<BlockReference> blocks = getAllBlockReferences();
+		for (BlockReference block : blocks) {
+			if (block.getReference().isDescendant(element)) {
+				return block;
 			}
 		}
 		return null;

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biit.abcd.persistence.dao.ISimpleFormViewDao;
 import com.biit.abcd.persistence.entity.SimpleFormView;
@@ -23,6 +24,7 @@ import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
+import com.biit.form.exceptions.NotValidParentException;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
@@ -674,22 +676,23 @@ public class ApplicationController {
 		completeFormView = new CompleteFormView(getFormInUse());
 	}
 
+	@Transactional
 	public Form saveForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		form.setUpdatedBy(getUser());
 		form.setUpdateTime();
-		
+
 		Form mergedForm = form;
-		
+
 		if (form instanceof Block) {
-			if(!blockDao.getEntityManager().contains(form)){
+			if (!blockDao.getEntityManager().contains(form)) {
 				mergedForm = blockDao.merge((Block) form);
-			}else{
+			} else {
 				blockDao.makePersistent((Block) mergedForm);
 			}
 		} else {
-			if(!formDao.getEntityManager().contains(form)){
+			if (!formDao.getEntityManager().contains(form)) {
 				mergedForm = formDao.merge(form);
-			}else{
+			} else {
 				formDao.makePersistent(mergedForm);
 			}
 		}
@@ -700,6 +703,7 @@ public class ApplicationController {
 	public void finishForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		logInfoStart("finishForm", form);
 		form.setStatus(FormWorkStatus.FINAL_DESIGN);
+		lockLinkedBlocks(form);
 		setUnsavedFormChanges(false);
 		saveForm(form);
 	}
@@ -881,6 +885,38 @@ public class ApplicationController {
 			// Impossible.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
+	}
+
+	/**
+	 * Linked building blocks are translated to standard blocks to avoid changes after the form is finished.
+	 */
+	private void lockLinkedBlocks(Form form) {
+		Form completeForm = form;
+
+		// Convert to CompleteForm to use all methods of filtering hide elements.
+		if (!(completeForm instanceof CompleteFormView)) {
+			completeForm = new CompleteFormView(form);
+		}
+
+		// Change linked blocks by categories.
+		List<TreeObject> children = ((CompleteFormView) completeForm).getAllNotHiddenChildren();
+		// Reset the parent to the form. Force updating database to correct elements.
+		for (TreeObject child : children) {
+			try {
+				child.setParent(((CompleteFormView) completeForm).getForm());
+			} catch (NotValidParentException e) {
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+		}
+		((CompleteFormView) completeForm).getForm().getChildren().clear();
+		((CompleteFormView) completeForm).getForm().getChildren().addAll(children);
+		
+		
+
+		// Update flow with the flow of the linked block.
+		Set<Flow> flows = ((CompleteFormView) completeForm).getFlows();
+		((CompleteFormView) completeForm).getForm().getFlows().clear();
+		((CompleteFormView) completeForm).getForm().getFlows().addAll(flows);
 	}
 
 	/**
@@ -1342,7 +1378,7 @@ public class ApplicationController {
 		Form form = loadForm(formView);
 		form.setStatus(value);
 		try {
-			UserSessionHandler.getController().saveForm(form);
+			saveForm(form);
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);

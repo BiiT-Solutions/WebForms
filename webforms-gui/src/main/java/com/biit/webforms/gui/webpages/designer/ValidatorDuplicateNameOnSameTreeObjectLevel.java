@@ -2,6 +2,7 @@ package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.persistence.entity.BlockReference;
 import com.vaadin.data.Validator;
 
 public class ValidatorDuplicateNameOnSameTreeObjectLevel implements Validator {
@@ -20,7 +21,7 @@ public class ValidatorDuplicateNameOnSameTreeObjectLevel implements Validator {
 
 		if (parent != null) {
 			for (TreeObject child : parent.getChildren()) {
-				if (child.equals(treeObject)) {
+				if (child.equals(treeObject) || child instanceof BlockReference) {
 					// If this child is treeObject, ignore.
 					continue;
 				}

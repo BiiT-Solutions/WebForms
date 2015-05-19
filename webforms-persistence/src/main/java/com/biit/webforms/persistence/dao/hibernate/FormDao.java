@@ -51,8 +51,8 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 	}
 
 	@Override
-	//@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
-	@CachePut(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null")
+	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null") })
+	//@CachePut(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null")
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public Form merge(Form form) {
 		form.updateChildrenSortSeqs();
