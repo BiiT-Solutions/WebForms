@@ -95,8 +95,8 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-	public int getFormFlowsCountUsingElement(List<Long> ids) throws UnexpectedDatabaseException {
-		if (ids == null || ids.isEmpty()) {
+	public int getFormFlowsCountUsingElement(List<TreeObject> elements) throws UnexpectedDatabaseException {
+		if (elements == null || elements.isEmpty()) {
 			return 0;
 		}
 
@@ -108,14 +108,15 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		Root<Flow> flow = cq.from(Flow.class);
 
 		cq.select(cb.count(flow));
-		cq.where(cb.or(flow.get(flowType.getSingularAttribute("originId", Long.class)).in(ids),
-				flow.get(flowType.getSingularAttribute("destinyId", Long.class)).in(ids)));
+		cq.where(cb.or(flow.get(flowType.getSingularAttribute("origin", BaseQuestion.class)).in(elements),
+				flow.get(flowType.getSingularAttribute("destiny", BaseQuestion.class)).in(elements)));
 		return getEntityManager().createQuery(cq).getSingleResult().intValue();
 	}
 
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-	//@Caching(evict = { @CacheEvict(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null") })
+	// @Caching(evict = { @CacheEvict(value = "buildingBlocks", key = "#block.getId()", condition =
+	// "#block.getId() != null") })
 	@CachePut(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null")
 	public Block merge(Block block) {
 		block.updateChildrenSortSeqs();
@@ -132,7 +133,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 	}
 
 	@Override
-	@CachePut(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null")
+	@Caching(put = { @CachePut(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null") }, evict = { @CacheEvict(value = "webformsforms", allEntries = true) })
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public Block makePersistent(Block block) {
 		block.updateChildrenSortSeqs();
@@ -152,7 +153,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		if (countLinkedBlocksTo(block) > 0) {
 			throw new ElementCannotBeRemovedException("Building block is linked in one or more form.");
 		}
-		
+
 		block.getFlows().clear();
 		Block mergedBlock = getEntityManager().contains(block) ? block : getEntityManager().merge(block);
 		makePersistent(mergedBlock);

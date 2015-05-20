@@ -13,7 +13,7 @@ public interface IBlockDao extends IJpaGenericDao<Block,Long> {
 
 	List<Block> getAll(Long organizationId) throws UnexpectedDatabaseException;
 
-	int getFormFlowsCountUsingElement(List<Long> ids) throws UnexpectedDatabaseException;
+	int getFormFlowsCountUsingElement(List<TreeObject> ids) throws UnexpectedDatabaseException;
 
 	boolean checkIfBlockElementCanBeRemoved(TreeObject treeObject);
 }
