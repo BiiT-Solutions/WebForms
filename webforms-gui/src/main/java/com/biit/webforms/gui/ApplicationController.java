@@ -29,6 +29,7 @@ import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
@@ -904,10 +905,10 @@ public class ApplicationController {
 		// Get needed elements.
 		List<TreeObject> children = ((CompleteFormView) completeForm).getAllNotHiddenChildren();
 		Set<Flow> flows = ((CompleteFormView) completeForm).getFlows();
-		
+
 		// Reset the parent to the form. Force updating database to correct elements.
 		((CompleteFormView) completeForm).getForm().getChildren().clear();
-		((CompleteFormView) completeForm).getForm().getChildren().addAll(children);		
+		((CompleteFormView) completeForm).getForm().getChildren().addAll(children);
 
 		// Update flow with the flow of the linked block.
 		((CompleteFormView) completeForm).getForm().getFlows().clear();
@@ -1414,8 +1415,62 @@ public class ApplicationController {
 	public void setCollapsedStatus(Set<Object> collapsedStatus) {
 		this.collapsedStatus = collapsedStatus;
 	}
-	
-	public Set<Object> getCollapsedStatus(){
+
+	public Set<Object> getCollapsedStatus() {
 		return collapsedStatus;
+	}
+
+	/**
+	 * True if exist a flow that it does not pertain to the referenced block but points from/to an element of the
+	 * referenced block.
+	 * 
+	 * @param elementOfReferencedBlock
+	 * @return
+	 */
+	public boolean existExternalFlowToReferencedElementOrItsChildren(TreeObject elementOfReferencedBlock,
+			BlockReference blockReference) {
+		Set<Flow> flows = getCompleteFormView().getFlows();
+		for (Flow flow : flows) {
+			// Flow uses the element.
+			if (flow.getOrigin().equals(elementOfReferencedBlock)) {
+				// Flow cames from the element and goes outside of the block.
+				if (flow.getDestiny() != null && blockReference.getReference() != null) {
+					boolean outsideOfBlock = true;
+					for (StorableObject object : blockReference.getReference().getAllInnerStorableObjects()) {
+						if (object instanceof TreeObject
+								&& ((TreeObject) object).getOriginalReference().equals(
+										flow.getDestiny().getOriginalReference())) {
+							outsideOfBlock = false;
+						}
+					}
+					if (outsideOfBlock) {
+						System.out.println(elementOfReferencedBlock + " -> " + flow);
+						return true;
+					}
+				}
+			} else if (flow.getDestiny().equals(elementOfReferencedBlock)) {
+				// Flow cames from the element and comes from outside of the block.
+				if (flow.getOrigin() != null && blockReference.getReference() != null) {
+					boolean outsideOfBlock = true;
+					for (StorableObject object : blockReference.getReference().getAllInnerStorableObjects()) {
+						if (object instanceof TreeObject
+								&& ((TreeObject) object).getOriginalReference().equals(
+										flow.getOrigin().getOriginalReference())) {
+							outsideOfBlock = false;
+						}
+					}
+					if (outsideOfBlock) {
+						System.out.println(elementOfReferencedBlock + " -> " + flow);
+						return true;
+					}
+				}
+			}
+		}
+		for (TreeObject child : elementOfReferencedBlock.getChildren()) {
+			if (existExternalFlowToReferencedElementOrItsChildren(child, blockReference)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

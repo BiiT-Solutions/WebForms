@@ -526,6 +526,8 @@ public enum LanguageCodes implements ILanguageCode {
 	ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE("error.element.cannot.be.removed.title"),
 	ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_BLOCK_DESCRIPTION("error.element.cannot.be.removed.linked.block.description"),
 	ERROR_ELEMENT_CANNOT_BE_REMOVED_BLOCK_ELEMENT_DESCRIPTION("error.element.cannot.be.removed.linked.block.element.description"),
+	ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE("error.element.cannot.be.hidden.title"),
+	ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION("error.element.cannot.be.removed.hidden.description"),
 	
 	ERROR_FORM_WITH_BLOCK_IS_IN_USE("error.form.with.block.is.in.use"),
 	ERROR_FORM_WITH_BLOCK_IS_IN_USE_DESCRIPTION("error.form.with.block.is.in.use.description"),

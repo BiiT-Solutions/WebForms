@@ -417,32 +417,47 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
-				BlockReference blockReference = UserSessionHandler.getController().getCompleteFormView()
-						.getBlockReference(row);
-				if (blockReference != null) {
-					if (row.isHiddenElement()) {
-						if (blockReference.showElement(row)) {
-							row.setHiddenElement(false);
-							WebformsLogger.info(this.getClass().getName(), "User '"
-									+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '" + row
-									+ "' of block '" + blockReference + "'.");
-						} else {
-							MessageManager.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
+				// Do not remove an element of a block if is in use in any external flow of the block.
+				try {
+					BlockReference blockReference = UserSessionHandler.getController().getCompleteFormView()
+							.getBlockReference(row);
+					if (!UserSessionHandler.getController().existExternalFlowToReferencedElementOrItsChildren(row,
+							blockReference)) {
+						if (blockReference != null) {
+							if (row.isHiddenElement()) {
+								if (blockReference.showElement(row)) {
+									row.setHiddenElement(false);
+									WebformsLogger.info(this.getClass().getName(), "User '"
+											+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '"
+											+ row + "' of block '" + blockReference + "'.");
+								} else {
+									MessageManager
+											.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
+								}
+							} else {
+								try {
+									if (blockReference.hideElement(row)) {
+										row.setHiddenElement(true);
+										WebformsLogger
+												.info(this.getClass().getName(), "User '"
+														+ UserSessionHandler.getUser().getEmailAddress()
+														+ "' has hide element '" + row + "' of block '"
+														+ blockReference + "'.");
+									}
+								} catch (ElementCannotBeRemovedException e) {
+									WebformsLogger.errorMessage(this.getClass().getName(), e);
+								}
+							}
+							upperMenu.updateHideButton(row.isHiddenElement());
+							table.updateVisibilityIcon(row);
 						}
 					} else {
-						try {
-							if (blockReference.hideElement(row)) {
-								row.setHiddenElement(true);
-								WebformsLogger.info(this.getClass().getName(), "User '"
-										+ UserSessionHandler.getUser().getEmailAddress() + "' has hide element '" + row
-										+ "' of block '" + blockReference + "'.");
-							}
-						} catch (ElementCannotBeRemovedException e) {
-							WebformsLogger.errorMessage(this.getClass().getName(), e);
-						}
+						MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
+								LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
 					}
-					upperMenu.updateHideButton(row.isHiddenElement());
-					table.updateVisibilityIcon(row);
+				} catch (ReadOnlyException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				}
 			}
 		});
