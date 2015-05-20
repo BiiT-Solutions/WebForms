@@ -270,6 +270,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				for (Flow flow : ((BlockReference) child).getReference().getFlows()) {
 					if (!flow.isHidden()) {
 						Flow copiedFlow = flow.generateCopy();
+						copiedFlow.resetIds();
 						copiedFlow.setReadOnly(true);
 						copiedFlow.setForm(getForm());
 						flows.add(copiedFlow);
