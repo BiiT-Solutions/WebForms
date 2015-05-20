@@ -113,7 +113,10 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 								WebformsLogger.errorMessage(this.getClass().getName(), e);
 							}
 							children.add(linkedChild);
+							//Update hidden flag of new copied elements.
 							updateHiddenElements((BlockReference) child, linkedChild);
+							//Use hidden flag to discard the hidden elements. 
+							removeAllHiddenElements(linkedChild);
 						}
 					} else {
 						children.add(child);
@@ -122,6 +125,16 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			}
 		}
 		return children;
+	}
+
+	private void removeAllHiddenElements(TreeObject treeObject) {
+		for (TreeObject child : new ArrayList<>(treeObject.getChildren())) {
+			if (child.isHiddenElement()) {
+				treeObject.getChildren().remove(child);
+			} else {
+				removeAllHiddenElements(child);
+			}
+		}
 	}
 
 	/**
@@ -255,45 +268,18 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			// Add linked block children
 			if (child instanceof BlockReference) {
 				for (Flow flow : ((BlockReference) child).getReference().getFlows()) {
-					if (!hideFlow((BlockReference) child, flow)) {
-						flows.add(flow);
+					if (!flow.isHidden()) {
+						Flow copiedFlow = flow.generateCopy();
+						copiedFlow.setReadOnly(true);
+						copiedFlow.setForm(getForm());
+						flows.add(copiedFlow);
 					}
 				}
 			}
 		}
-
-		flows.addAll(form.getFlows());
+		flows.addAll(form.getFlows());		
+		form.updateRuleReferences(flows);
 		return flows;
-	}
-
-	/**
-	 * Hide all flows that are using any hidden element as source, destiny or condition.
-	 * 
-	 * @param block
-	 * @param flow
-	 * @return
-	 */
-	private boolean hideFlow(BlockReference block, Flow flow) {
-		// Check source and destiny.
-		if (flow.getOrigin().isHiddenElement() || flow.getDestiny().isHiddenElement()) {
-			return true;
-		}
-		// Check condition.
-		List<Token> tokens = flow.getConditionSimpleTokens();
-		for (Token token : tokens) {
-			if (token instanceof TokenComparationAnswer) {
-				if (((TokenComparationAnswer) token).getQuestion().isHiddenElement()
-						|| ((TokenComparationAnswer) token).getAnswer().isHiddenElement()) {
-					return true;
-				}
-			} else if (token instanceof TokenComparationValue) {
-				if (((TokenComparationValue) token).getQuestion().isHiddenElement()) {
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	/**
@@ -338,10 +324,6 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			Object[] baseQuestions = allBaseQuestions.toArray();
 			computedView.setFirstElement((TreeObject) baseQuestions[0]);
 			computedView.addFlows(getFlows());
-
-			for (Object questionB : baseQuestions) {
-				System.out.println(questionB.toString());
-			}
 
 			int numQuestions = baseQuestions.length - 1;
 

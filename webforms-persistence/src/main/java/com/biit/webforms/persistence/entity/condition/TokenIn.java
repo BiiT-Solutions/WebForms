@@ -78,10 +78,10 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
-		question = (Question) mappedElements.get(question.getComparationId());
+		question = (Question) mappedElements.get(question.getOriginalReference());
 		for (TokenInValue value : values) {
 			if (value.getAnswerValue() != null) {
-				value.setAnswerValue((Answer) mappedElements.get(value.getAnswerValue().getComparationId()));
+				value.setAnswerValue((Answer) mappedElements.get(value.getAnswerValue().getOriginalReference()));
 			}
 		}
 	}

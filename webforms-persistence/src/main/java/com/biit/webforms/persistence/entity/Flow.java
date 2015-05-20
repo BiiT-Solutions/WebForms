@@ -322,10 +322,10 @@ public class Flow extends StorableObject {
 	 */
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		if (getOrigin() != null) {
-			setOrigin((BaseQuestion) mappedElements.get(getOrigin().getComparationId()));
+			setOrigin((BaseQuestion) mappedElements.get(getOrigin().getOriginalReference()));
 		}
 		if (getDestiny() != null) {
-			setDestiny((BaseQuestion) mappedElements.get(getDestiny().getComparationId()));
+			setDestiny((BaseQuestion) mappedElements.get(getDestiny().getOriginalReference()));
 		}
 		for (Token token : getCondition()) {
 			token.updateReferences(mappedElements);
@@ -478,8 +478,38 @@ public class Flow extends StorableObject {
 	@Override
 	public void resetUserTimestampInfo(Long userId) {
 		super.resetUserTimestampInfo(userId);
-		for(Token token: getCondition()){
+		for (Token token : getCondition()) {
 			token.resetUserTimestampInfo(userId);
 		}
+	}
+
+	/**
+	 * A flow is hidden if any of its element (origin, destination, condition) is hidden.
+	 * 
+	 * @param block
+	 * @param flow
+	 * @return
+	 */
+	public boolean isHidden() {
+		// Check source and destiny.
+		if (getOrigin().isHiddenElement() || getDestiny().isHiddenElement()) {
+			return true;
+		}
+		// Check condition.
+		List<Token> tokens = getConditionSimpleTokens();
+		for (Token token : tokens) {
+			if (token instanceof TokenComparationAnswer) {
+				if (((TokenComparationAnswer) token).getQuestion().isHiddenElement()
+						|| ((TokenComparationAnswer) token).getAnswer().isHiddenElement()) {
+					return true;
+				}
+			} else if (token instanceof TokenComparationValue) {
+				if (((TokenComparationValue) token).getQuestion().isHiddenElement()) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

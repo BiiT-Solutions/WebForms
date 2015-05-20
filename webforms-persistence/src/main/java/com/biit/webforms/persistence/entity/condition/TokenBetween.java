@@ -110,7 +110,7 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
-		question = (Question) mappedElements.get(question.getComparationId());
+		question = (Question) mappedElements.get(question.getOriginalReference());
 	}
 
 	@Override

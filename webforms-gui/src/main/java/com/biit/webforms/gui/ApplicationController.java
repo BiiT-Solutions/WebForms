@@ -896,30 +896,23 @@ public class ApplicationController {
 	private void lockLinkedBlocks(Form form) {
 		Form completeForm = form;
 
-//		// Convert to CompleteForm to use all methods of filtering hide elements.
-//		if (!(completeForm instanceof CompleteFormView)) {
-//			completeForm = new CompleteFormView(form);
-//		}
-//
-//		// Change linked blocks by categories.
-//		List<TreeObject> children = ((CompleteFormView) completeForm).getAllNotHiddenChildren();
-//		// Reset the parent to the form. Force updating database to correct elements.
-//		for (TreeObject child : children) {
-//			try {
-//				child.setParent(((CompleteFormView) completeForm).getForm());
-//			} catch (NotValidParentException e) {
-//				WebformsLogger.errorMessage(this.getClass().getName(), e);
-//			}
-//		}
-//		((CompleteFormView) completeForm).getForm().getChildren().clear();
-//		((CompleteFormView) completeForm).getForm().getChildren().addAll(children);
-//		
-//		
-//
-//		// Update flow with the flow of the linked block.
-//		Set<Flow> flows = ((CompleteFormView) completeForm).getFlows();
-//		((CompleteFormView) completeForm).getForm().getFlows().clear();
-//		((CompleteFormView) completeForm).getForm().getFlows().addAll(flows);
+		// Convert to CompleteForm to use all methods of filtering hide elements.
+		if (!(completeForm instanceof CompleteFormView)) {
+			completeForm = new CompleteFormView(form);
+		}
+
+		// Get needed elements.
+		List<TreeObject> children = ((CompleteFormView) completeForm).getAllNotHiddenChildren();
+		Set<Flow> flows = ((CompleteFormView) completeForm).getFlows();
+		
+		// Reset the parent to the form. Force updating database to correct elements.
+		((CompleteFormView) completeForm).getForm().getChildren().clear();
+		((CompleteFormView) completeForm).getForm().getChildren().addAll(children);		
+
+		// Update flow with the flow of the linked block.
+		((CompleteFormView) completeForm).getForm().getFlows().clear();
+		((CompleteFormView) completeForm).getForm().getFlows().addAll(flows);
+		((CompleteFormView) completeForm).getForm().updateRuleReferences();
 	}
 
 	/**
@@ -1413,9 +1406,9 @@ public class ApplicationController {
 		if (element.getId() == null) {
 			return false;
 		}
-		List<Long> ids = new ArrayList<>();
-		ids.add(element.getId());
-		return blockDao.getFormFlowsCountUsingElement(ids) > 0;
+		List<TreeObject> elements = new ArrayList<>();
+		elements.add(element);
+		return blockDao.getFormFlowsCountUsingElement(elements) > 0;
 	}
 
 	public void setCollapsedStatus(Set<Object> collapsedStatus) {

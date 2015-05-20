@@ -614,13 +614,17 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return gson.toJson(this);
 	}
 
-	protected void updateRuleReferences() {
+	public void updateRuleReferences() {
+		updateRuleReferences(getFlows());
+	}
+
+	public void updateRuleReferences(Set<Flow> flows) {
 		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
 		HashMap<String, TreeObject> mappedElements = new HashMap<>();
 		for (TreeObject currentElement : currentElements) {
-			mappedElements.put(currentElement.getComparationId(), currentElement);
+			mappedElements.put(currentElement.getOriginalReference(), currentElement);
 		}
-		for (Flow rule : getFlows()) {
+		for (Flow rule : flows) {
 			rule.updateReferences(mappedElements);
 		}
 	}
