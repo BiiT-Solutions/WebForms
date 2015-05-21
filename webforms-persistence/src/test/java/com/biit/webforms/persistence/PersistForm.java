@@ -17,6 +17,7 @@ import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.ElementIsReadOnly;
+import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidParentException;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
@@ -29,6 +30,14 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
+import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
+import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContextTest.xml" })
@@ -37,25 +46,25 @@ public class PersistForm extends AbstractTransactionalTestNGSpringContextTests {
 
 	@Autowired
 	private IFormDao formDao;
-//
-//	@Test
-//	@Rollback(false)
-//	@Transactional
-//	public void testPersistCompleteForm() throws FieldTooLongException, NotValidChildException,
-//			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-//			UnexpectedDatabaseException, ChildrenNotFoundException, BadFlowContentException,
-//			FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
-//			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
-//			ElementCannotBeRemovedException, ElementCannotBePersistedException {
-//		int prevForms = formDao.getRowCount();
-//		Form form = FormUtils.createCompleteForm();
-//		formDao.makePersistent(form);
-//		Assert.assertEquals(prevForms + 1, formDao.getRowCount());
-//		Assert.assertNotNull(form.getId());
-//
-//		formDao.makeTransient(form);
-//		Assert.assertEquals(prevForms, formDao.getRowCount());
-//	}
+
+	@Test
+	@Rollback(false)
+	@Transactional
+	public void testPersistCompleteForm() throws FieldTooLongException, NotValidChildException,
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
+			UnexpectedDatabaseException, ChildrenNotFoundException, BadFlowContentException,
+			FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
+			FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
+			ElementCannotBeRemovedException, ElementCannotBePersistedException {
+		int prevForms = formDao.getRowCount();
+		Form form = FormUtils.createCompleteForm();
+		formDao.makePersistent(form);
+		Assert.assertEquals(prevForms + 1, formDao.getRowCount());
+		Assert.assertNotNull(form.getId());
+
+		formDao.makeTransient(form);
+		Assert.assertEquals(prevForms, formDao.getRowCount());
+	}
 
 	@Test
 	public void moveElementsInHierarchyDown() throws NotValidChildException, ChildrenNotFoundException, FieldTooLongException,
@@ -120,13 +129,14 @@ public class PersistForm extends AbstractTransactionalTestNGSpringContextTests {
 		Form.move(group1, category3);
 
 		// Update form with this changes
-		formDao.makePersistent(form);
+		formDao.merge(form);
+				
 		Form storedForm = formDao.get(form.getId());
 		Assert.assertNotNull(storedForm);
 
 		// Compare order is the same.
 		Assert.assertTrue(compare(form, storedForm));
-		formDao.makeTransient(form);
+		formDao.makeTransient(storedForm);
 	}
 	
 	@Test
@@ -189,23 +199,19 @@ public class PersistForm extends AbstractTransactionalTestNGSpringContextTests {
 
 		// Update form with new elements
 		formDao.makePersistent(form);
+		System.out.println(question3.getId());
 		
 		Form.move(question3, category);	
-
+		
 		// Update form with this changes
 		formDao.merge(form);
-		
+				
 		Form storedForm = formDao.get(form.getId());
 		Assert.assertNotNull(storedForm);
-		
-		System.out.println("-------------------------------------------------------");
-		
-		System.out.println(storedForm.getChild("Category1").getChildren());
-		System.out.println(storedForm.getChild("Category2","Group2").getChildren());
 
 		// Compare order is the same.
 		Assert.assertTrue(compare(form, storedForm));
-		formDao.makeTransient(form);
+		formDao.makeTransient(storedForm);
 	}
 		
 	private boolean compare(TreeObject object1, TreeObject object2) {

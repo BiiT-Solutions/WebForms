@@ -58,8 +58,20 @@ public class TableTreeObjectLabel extends TableTreeObject {
 	 * @param whereToMove
 	 */
 	public void expand(TreeObject treeObject) {
+		if(treeObject==null){
+			throw new NullPointerException();
+		}
+		// Disable fix to avoid select wrong element caused by triggers of
+		// expand/contract listeners.
+		disableFixForJumpingTableWhenExpandOrCollapse();
+		expandImplementation(treeObject);
+		enableFixForJumpingTableWhenExpandOrCollapse();
+	}
+
+	private void expandImplementation(TreeObject treeObject) {
 		if (treeObject.getParent() != null) {
-			expand(treeObject.getParent());
+			expandImplementation(treeObject.getParent());
+			setCollapsed(treeObject.getParent(), false);
 		}
 	}
 
@@ -69,26 +81,32 @@ public class TableTreeObjectLabel extends TableTreeObject {
 			updateVisibilityIcon(child);
 		}
 	}
-	
-	public Set<Object> getCollapsedStatus(TreeObject treeObject){
+
+	public Set<Object> getCollapsedStatus(TreeObject treeObject) {
 		Set<Object> collapsedItems = new HashSet<>();
-		getCollapsedStatus(treeObject,collapsedItems);
+		getCollapsedStatus(treeObject, collapsedItems);
 		return collapsedItems;
 	}
-	
-	private void getCollapsedStatus(TreeObject treeObject, Set<Object> collapsedItems){
-		if(isCollapsed(treeObject)){
+
+	private void getCollapsedStatus(TreeObject treeObject, Set<Object> collapsedItems) {
+		if (isCollapsed(treeObject)) {
 			collapsedItems.add(treeObject);
 		}
-		for(TreeObject child: treeObject.getChildren()){
+		for (TreeObject child : treeObject.getChildren()) {
 			getCollapsedStatus(child, collapsedItems);
 		}
 	}
 
 	public void setCollapsedStatus(TreeObject treeObject, Set<Object> collapsedStatus) {
+		disableFixForJumpingTableWhenExpandOrCollapse();
+		setCollapsedStatusImplementation(treeObject, collapsedStatus);
+		enableFixForJumpingTableWhenExpandOrCollapse();
+	}
+	
+	public void setCollapsedStatusImplementation(TreeObject treeObject, Set<Object> collapsedStatus) {
 		setCollapsed(treeObject, false);
-		for(TreeObject child: treeObject.getChildren()){
-			setCollapsedStatus(child, collapsedStatus);
+		for (TreeObject child : treeObject.getChildren()) {
+			setCollapsedStatusImplementation(child, collapsedStatus);
 		}
 		setCollapsed(treeObject, collapsedStatus.contains(treeObject));
 	}

@@ -35,6 +35,9 @@ public class TableTreeObject extends TreeTable {
 
 	// Stores the complete Form view equivalences.
 	private Map<String, TreeObject> rootElements;
+	
+	private ExpandListener expandListener;
+	private CollapseListener collapseListener;
 
 	protected enum TreeObjectTableProperties {
 		ELEMENT_NAME
@@ -45,24 +48,33 @@ public class TableTreeObject extends TreeTable {
 		initContainerProperties();
 		setImmediate(true);
 
-		// Quick and dirty fix to jumping around table bug
-		addExpandListener(new ExpandListener() {
+		expandListener = new ExpandListener() {
 			private static final long serialVersionUID = -6212747624453604935L;
 
 			@Override
 			public void nodeExpand(ExpandEvent event) {
 				setValue(event.getItemId());
 			}
-		});
-		addCollapseListener(new CollapseListener() {
+		};
+		collapseListener = new CollapseListener() {
 			private static final long serialVersionUID = 8688330729095127848L;
 
 			@Override
 			public void nodeCollapse(CollapseEvent event) {
 				setValue(event.getItemId());
 			}
-		});
-		// End of dirty little nasty fix.
+		};
+		enableFixForJumpingTableWhenExpandOrCollapse();
+	}
+
+	public void enableFixForJumpingTableWhenExpandOrCollapse() {
+		addExpandListener(expandListener);
+		addCollapseListener(collapseListener);
+	}
+	
+	public void disableFixForJumpingTableWhenExpandOrCollapse() {
+		removeExpandListener(expandListener);
+		removeCollapseListener(collapseListener);
 	}
 
 	protected void initContainerProperties() {
@@ -72,16 +84,19 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Loads a tree object structure recursively. At the end of the process selects the root element inserted. element.
-	 * It can also be specified an array of filterClasses. If this is not specified, then every kind of element is
-	 * allowed. Else only the elements in the hierarchy whose path is made of valid elements.
+	 * Loads a tree object structure recursively. At the end of the process
+	 * selects the root element inserted. element. It can also be specified an
+	 * array of filterClasses. If this is not specified, then every kind of
+	 * element is allowed. Else only the elements in the hierarchy whose path is
+	 * made of valid elements.
 	 * 
 	 * @param element
 	 * @param parent
 	 */
 	public void loadTreeObject(TreeObject element, TreeObject parent, Class<?>... filterClases) {
 		if (parent == null) {
-			// Store the root element by comparationId. Specially useful for obtaining the equivalence between Form and
+			// Store the root element by comparationId. Specially useful for
+			// obtaining the equivalence between Form and
 			// CompleteFormView.
 			rootElements.put(element.getComparationId(), element);
 		}
@@ -121,7 +136,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Adds a new row to the table. Default configuration makes that adding a new row also selects.
+	 * Adds a new row to the table. Default configuration makes that adding a
+	 * new row also selects.
 	 * 
 	 * @param element
 	 * @param parent
@@ -171,7 +187,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Removes any row of the table of a child of element that does not exists any more.
+	 * Removes any row of the table of a child of element that does not exists
+	 * any more.
 	 * 
 	 * @param element
 	 */
@@ -201,8 +218,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Adds item to table. This function is a specialization of {@link TreeTable#addItemAfter(Object, Object)} for form
-	 * members.
+	 * Adds item to table. This function is a specialization of
+	 * {@link TreeTable#addItemAfter(Object, Object)} for form members.
 	 * 
 	 * @param element
 	 */
@@ -221,8 +238,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Gets Name property to show form a TreeObject element. If the name can't be defined, then raises a
-	 * {@link UnsupportedOperationException}
+	 * Gets Name property to show form a TreeObject element. If the name can't
+	 * be defined, then raises a {@link UnsupportedOperationException}
 	 * 
 	 * @param element
 	 * @return
@@ -296,7 +313,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Collapse the tree in a specific hierarchy level to inner levels. The level is specified by a class.
+	 * Collapse the tree in a specific hierarchy level to inner levels. The
+	 * level is specified by a class.
 	 * 
 	 * @param collapseFrom
 	 */
@@ -363,7 +381,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Return the parent row of the row of the element. Form is translated to CompleteFormView.
+	 * Return the parent row of the row of the element. Form is translated to
+	 * CompleteFormView.
 	 * 
 	 * @param element
 	 * @return

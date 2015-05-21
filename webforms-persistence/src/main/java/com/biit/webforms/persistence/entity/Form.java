@@ -694,14 +694,24 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	}
 	
-	public synchronized static void move(TreeObject objectToMove, TreeObject toParent)
+	/**
+	 * Moves an object of the tree to last position in @toParent returns @objectToMove
+	 * @param objectToMove
+	 * @param toParent
+	 * @throws ChildrenNotFoundException
+	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
+	 */
+	public static synchronized TreeObject move(TreeObject objectToMove, TreeObject toParent)
 			throws ChildrenNotFoundException, NotValidChildException, ElementIsReadOnly {
 		if(!Objects.equals(objectToMove.getAncestor(Form.class), toParent.getAncestor(Form.class))){
 			throw new NotValidChildException("Root form for each element is different");
 		}
-		
-		TreeObject.move(objectToMove, toParent);
+		TreeObject newInstanceOfObjectToMove = TreeObject.move(objectToMove, toParent);
+				
 		Form form = (Form) objectToMove.getAncestor(Form.class);
 		form.updateRuleReferences();
+		
+		return newInstanceOfObjectToMove;
 	}
 }
