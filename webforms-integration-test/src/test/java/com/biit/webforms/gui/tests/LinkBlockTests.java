@@ -68,6 +68,20 @@ public class LinkBlockTests extends WebFormsTester {
 		}
 	}
 
+	private void addElementToBlock() {
+		goToBlockManagerPage();
+		try {
+			getBlockManagerPage().getBlockTable().getCell(BLOCK_TABLE_ROW, BLOCK_TABLE_COLUMN);
+		} catch (NoSuchElementException e) {
+			Assert.fail();
+		}
+		goToDesignerPage();
+		// Uncollapse category.
+		getDesignerPage().getTreeTable().getCell(1, 0).click();
+		getDesignerPage().addNewQuestion();
+		getDesignerPage().saveDesign();
+	}
+
 	private void addLinkedBlockToForm() {
 		getFormManagerPage().createNewForm(NEW_FORM_NAME);
 		goToDesignerPage();
@@ -184,7 +198,7 @@ public class LinkBlockTests extends WebFormsTester {
 			deleteFormAndBlock();
 		}
 	}
-	
+
 	@Test(groups = "linkedBlocks", expectedExceptions = { NoSuchElementException.class })
 	public void hideElement2() {
 		printTestNameInDebugTrace("hideElementInLinkedBlockDestinyFlow");
@@ -212,5 +226,29 @@ public class LinkBlockTests extends WebFormsTester {
 		} finally {
 			deleteFormAndBlock();
 		}
+	}
+
+	@Test(groups = "linkedBlocks")
+	public void modifyBlockAlsoModifyForm() {
+		printTestNameInDebugTrace("modifyBlockAlsoModifyForm");
+		createSimpleBlock();
+		addLinkedBlockToForm();
+
+		// Go to form manager due to designer has a button called blocks also!
+		goToFormManagerPage();
+		// Add a new element to the building block.
+		addElementToBlock();
+
+		// Check that the element is visible in the form designer.
+		goToFormManagerPage(); // Form already selected.
+		goToDesignerPage();
+		// Select category and uncollapse it.
+		getDesignerPage().getTreeTable().getRow(1).toggleExpanded();
+		getDesignerPage().getTreeTable().waitForVaadin();
+
+		// Select the new element. If no error, it exists.
+		getDesignerPage().getTreeTable().getCell(4, 0);
+
+		deleteFormAndBlock();
 	}
 }
