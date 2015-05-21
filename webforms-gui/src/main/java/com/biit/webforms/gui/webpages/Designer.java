@@ -430,6 +430,7 @@ public class Designer extends SecuredWebPage {
 									WebformsLogger.info(this.getClass().getName(), "User '"
 											+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '"
 											+ row + "' of block '" + blockReference + "'.");
+									UserSessionHandler.getController().setUnsavedFormChanges(true);
 								} else {
 									MessageManager
 											.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
@@ -443,6 +444,7 @@ public class Designer extends SecuredWebPage {
 														+ UserSessionHandler.getUser().getEmailAddress()
 														+ "' has hide element '" + row + "' of block '"
 														+ blockReference + "'.");
+										UserSessionHandler.getController().setUnsavedFormChanges(true);
 									}
 								} catch (ElementCannotBeRemovedException e) {
 									WebformsLogger.errorMessage(this.getClass().getName(), e);
