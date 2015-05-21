@@ -40,11 +40,7 @@ public abstract class AnnotatedGenericDao<EntityClass, PrimaryKeyClass extends S
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 	public EntityClass merge(EntityClass entity) {
-		if (entity == null) {
-			throw new NullPointerException();
-		}
-		EntityClass managedEntity = getEntityManager().merge(entity);
-		return managedEntity;
+		return super.merge(entity);
 	}
 
 	@Override

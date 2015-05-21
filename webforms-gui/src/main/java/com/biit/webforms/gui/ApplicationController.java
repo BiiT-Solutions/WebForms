@@ -954,8 +954,7 @@ public class ApplicationController {
 			MessageManager.showWarning(LanguageCodes.WARNING_ELEMENT_WTIH_SAME_NAME_EXIST);
 		}
 		try {
-			destiny.addChild(origin);
-			TreeObject.move(origin, destiny);
+			Form.move(origin, destiny);
 			setUnsavedFormChanges(true);
 		} catch (NotValidChildException | ChildrenNotFoundException e) {
 			WebformsLogger.warning(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move '"

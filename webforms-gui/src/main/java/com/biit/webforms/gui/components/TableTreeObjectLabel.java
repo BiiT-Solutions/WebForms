@@ -61,7 +61,6 @@ public class TableTreeObjectLabel extends TableTreeObject {
 		if (treeObject.getParent() != null) {
 			expand(treeObject.getParent());
 		}
-		setCollapsed(treeObject, false);
 	}
 
 	public void updateVisibilityIcon(TreeObject treeObject) {

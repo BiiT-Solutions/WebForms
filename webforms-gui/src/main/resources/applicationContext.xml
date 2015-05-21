@@ -95,8 +95,7 @@
 	<!-- Data Source -->
 	<bean id="webformsDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">
-		<property name="driverClass"
-			value="${webforms.hibernate.connection.driver_class}" />
+		<property name="driverClass" value="${webforms.hibernate.connection.driver_class}" />
 		<property name="jdbcUrl" value="${webforms.hibernate.connection.url}" />
 		<property name="user" value="${webforms.hibernate.connection.username}" />
 		<property name="password" value="${webforms.hibernate.connection.password}" />

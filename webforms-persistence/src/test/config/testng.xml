@@ -5,11 +5,11 @@
 		<groups>
 			<run>
 <!-- 				<exclude name="ehCache" /> -->
-				<include name="formElements" />
- 				<include name="blockTest" />
- 				<include name="ruleTest" />
- 				<include name="removeElement" />
-				<include name="blockLink" />
+				<exclude name="formElements" />
+ 				<exclude name="blockTest" />
+ 				<exclude name="ruleTest" />
+ 				<exclude name="removeElement" />
+				<exclude name="blockLink" />
 				<include name="persistForm" />
 			</run>
 		</groups>
