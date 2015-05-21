@@ -61,6 +61,7 @@ public class WindowTreeObject extends WindowAcceptCancel {
 				updateAcceptButtonState();
 			}
 		});
+		formTable.setValue(form);
 
 		tableWithSearch = new TableWithSearch(formTable, new FilterTreeObjectTableContainsNameLabel());
 		tableWithSearch.setSizeFull();

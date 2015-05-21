@@ -766,22 +766,21 @@ public class Designer extends SecuredWebPage {
 					TreeObject whatToMove = table.getSelectedRow();
 					TreeObject whereToMove = moveWindow.getSelectedTreeObject();
 					if (!whereToMove.isReadOnly()) {
-						UserSessionHandler.getController().moveTo(whatToMove, whereToMove);
+						TreeObject movedObjectNewInstance = UserSessionHandler.getController().moveTo(whatToMove, whereToMove);
 						window.close();
 						table.setValue(null);
 						table.removeRow(whatToMove);
 
 						// Remove collapse state update listeners
 						removeCollapseStateListeners();
-						table.loadTreeObject(whatToMove, whereToMove, false);
+						table.loadTreeObject(movedObjectNewInstance, whereToMove, false);
 						// Retrieve old collapse state (also listeners)
 						retrieveCollapsedTableState();
-						table.expand(whereToMove);
+						table.expand(movedObjectNewInstance);
 
 						// FIX to force a jump to this point in table.
 						table.setValue(null);
-						table.setValue(whatToMove);
-
+						table.setValue(movedObjectNewInstance);
 					} else {
 						MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 					}
@@ -837,11 +836,13 @@ public class Designer extends SecuredWebPage {
 		table.loadTreeObject(getCurrentForm(), null);
 		retrieveCollapsedTableState();
 
+		System.out.println(currentSelection);
 		if (currentSelection != null) {
 			if (currentSelection instanceof Form || currentSelection instanceof Block) {
-				table.select(getCurrentForm());
+				table.setValue(getCurrentForm());
 			} else {
-				table.select(getCurrentForm().getChild(currentSelection.getPathName()));
+				System.out.println(getCurrentForm().findByComparationId(currentSelection.getComparationId()));
+				table.setValue(getCurrentForm().findByComparationId(currentSelection.getComparationId()));
 			}
 		}
 	}

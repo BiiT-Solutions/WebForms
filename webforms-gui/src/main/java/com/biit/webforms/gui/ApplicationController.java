@@ -966,12 +966,13 @@ public class ApplicationController {
 	 * 
 	 * @param origin
 	 * @param destiny
+	 * @return 
 	 * @throws NotValidChildException
 	 * @throws SameOriginAndDestinationException
 	 * @throws DestinyIsContainedAtOrigin
 	 * @throws ElementIsReadOnly
 	 */
-	public void moveTo(TreeObject origin, TreeObject destiny) throws NotValidChildException,
+	public TreeObject moveTo(TreeObject origin, TreeObject destiny) throws NotValidChildException,
 			SameOriginAndDestinationException, DestinyIsContainedAtOrigin, ChildrenNotFoundException, ElementIsReadOnly {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move '"
 				+ origin + "' to '" + destiny + "'.");
@@ -985,9 +986,9 @@ public class ApplicationController {
 			MessageManager.showWarning(LanguageCodes.WARNING_ELEMENT_WTIH_SAME_NAME_EXIST);
 		}
 		try {
-			destiny.addChild(origin);
-			TreeObject.move(origin, destiny);
+			TreeObject newInstanceOfOrigin = Form.move(origin, destiny);
 			setUnsavedFormChanges(true);
+			return newInstanceOfOrigin;
 		} catch (NotValidChildException | ChildrenNotFoundException e) {
 			WebformsLogger.warning(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move '"
 					+ origin + "' to '" + destiny + "' could not be done.");

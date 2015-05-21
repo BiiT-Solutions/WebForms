@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -33,6 +34,9 @@ import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ChildrenNotFoundException;
+import com.biit.form.exceptions.ElementIsReadOnly;
+import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -688,5 +692,26 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 		return -1;
 
+	}
+	
+	/**
+	 * Moves an object of the tree to last position in @toParent returns @objectToMove
+	 * @param objectToMove
+	 * @param toParent
+	 * @throws ChildrenNotFoundException
+	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
+	 */
+	public static synchronized TreeObject move(TreeObject objectToMove, TreeObject toParent)
+			throws ChildrenNotFoundException, NotValidChildException, ElementIsReadOnly {
+		if(!Objects.equals(objectToMove.getAncestor(Form.class), toParent.getAncestor(Form.class))){
+			throw new NotValidChildException("Root form for each element is different");
+		}
+		TreeObject newInstanceOfObjectToMove = TreeObject.move(objectToMove, toParent);
+				
+		Form form = (Form) objectToMove.getAncestor(Form.class);
+		form.updateRuleReferences();
+		
+		return newInstanceOfObjectToMove;
 	}
 }
