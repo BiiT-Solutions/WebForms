@@ -693,6 +693,8 @@ public class ApplicationController {
 			} else {
 				blockDao.makePersistent((Block) mergedForm);
 			}
+			// Empty form cache to update changes in linked building blocks.
+			formDao.evictAllCache();
 		} else {
 			if (!formDao.getEntityManager().contains(form)) {
 				mergedForm = formDao.merge(form);
