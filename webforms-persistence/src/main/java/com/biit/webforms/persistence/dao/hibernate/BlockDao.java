@@ -115,8 +115,6 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 
 	@Override
 	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-	// @Caching(evict = { @CacheEvict(value = "buildingBlocks", key = "#block.getId()", condition =
-	// "#block.getId() != null") })
 	@CachePut(value = "buildingBlocks", key = "#block.getId()", condition = "#block.getId() != null")
 	public Block merge(Block block) {
 		block.updateChildrenSortSeqs();
@@ -159,6 +157,13 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		makePersistent(mergedBlock);
 
 		super.makeTransient(mergedBlock);
+	}
+
+	@Override
+	@CacheEvict(value = "buildingBlocks", allEntries = true)
+	@Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+	public void evictAllCache() {
+		super.evictAllCache();
 	}
 
 	private int countLinkedBlocksTo(Block block) {
