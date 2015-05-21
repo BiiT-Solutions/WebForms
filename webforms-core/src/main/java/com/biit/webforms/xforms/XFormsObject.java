@@ -383,7 +383,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 				visibility
 						.append("string-length($")
 						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getBindingName()).append(") &gt; 0");
+								.getBindingName()).append("/text()) &gt; 0");
 			}
 		} else {
 			// An operator 'and', 'or', ...
