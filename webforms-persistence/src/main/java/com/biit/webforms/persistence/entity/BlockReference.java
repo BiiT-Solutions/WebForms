@@ -22,7 +22,6 @@ import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.persistence.utils.IdGenerator;
 import com.biit.webforms.enumerations.FormWorkStatus;
-import com.biit.webforms.logger.WebformsLogger;
 
 @Entity
 @Table(name = "tree_blocks_references")
@@ -169,9 +168,8 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 		// Returns the name of the first category of the block
 		try {
 			return reference.getChild(0).getName();
-		} catch (ChildrenNotFoundException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			return null;
+		} catch (IndexOutOfBoundsException | ChildrenNotFoundException e) {
+			return "";
 		}
 	}
 

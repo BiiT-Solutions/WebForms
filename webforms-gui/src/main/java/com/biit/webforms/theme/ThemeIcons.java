@@ -105,7 +105,7 @@ public enum ThemeIcons implements IThemeIcon {
 	PUBLISH_XFORMS("form.xforms.svg"),
 	DOWNLOAD_XFORMS("form.download.svg"), 
 	BUILDING_BLOCK_MENU("page.building.block.manager.svg"), 
-	OTHER_ELEMENTS_MENU("alert.svg"), 
+	OTHER_ELEMENTS_MENU("form.design.others.svg"), 
 	
 	ABOUT_US("about.window.svg"), 
 	CLEAR_CACHE("cache.clear.svg"), 

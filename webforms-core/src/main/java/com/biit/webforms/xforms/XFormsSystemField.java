@@ -33,14 +33,23 @@ public class XFormsSystemField extends XFormsQuestion {
 		// the xpath is used, in a loop all repeated
 		// questions would always have the same answers selected.
 		binding.append("ref=\"").append(getName()).append("\" ");
-		binding.append(getPrefill());
+		binding.append(getDefaultValue());
 		getRelevantStructure(binding);
 
 		binding.append(" />");
 	}
 
-	private String getPrefill() {
-		return " xxf:default=\"xxf:get-request-parameter('" + getSource().getName() + "')\" ";
+	/**
+	 * System Fields has not any calculated value or flowRule field. And are always hidden.
+	 */
+	@Override
+	protected void getRelevantStructure(StringBuilder relevant) throws InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
+		relevant.append(" relevant=\"false\"");
+	}
+
+	private String getDefaultValue() {
+		return " xxf:default=\"xxf:get-request-parameter('" + ((SystemField) getSource()).getFieldName() + "')\" ";
 	}
 
 	@Override

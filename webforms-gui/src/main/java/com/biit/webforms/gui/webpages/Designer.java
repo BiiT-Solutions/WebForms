@@ -89,13 +89,13 @@ public class Designer extends SecuredWebPage {
 		super();
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		simpleFormViewDao = (ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms");
-		
+
 		collapseListener = new CollapseListener() {
 			private static final long serialVersionUID = -4969316575917593209L;
 
 			@Override
 			public void nodeCollapse(CollapseEvent event) {
-				if(UserSessionHandler.getController().getCollapsedStatus()==null){
+				if (UserSessionHandler.getController().getCollapsedStatus() == null) {
 					UserSessionHandler.getController().setCollapsedStatus(new HashSet<>());
 				}
 				UserSessionHandler.getController().getCollapsedStatus().add(event.getItemId());
@@ -106,12 +106,12 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void nodeExpand(ExpandEvent event) {
-				if(UserSessionHandler.getController().getCollapsedStatus()==null){
+				if (UserSessionHandler.getController().getCollapsedStatus() == null) {
 					UserSessionHandler.getController().setCollapsedStatus(new HashSet<>());
 				}
 				UserSessionHandler.getController().getCollapsedStatus().remove(event.getItemId());
 			}
-		};	
+		};
 	}
 
 	@Override
@@ -417,32 +417,49 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
-				BlockReference blockReference = UserSessionHandler.getController().getCompleteFormView()
-						.getBlockReference(row);
-				if (blockReference != null) {
-					if (row.isHiddenElement()) {
-						if (blockReference.showElement(row)) {
-							row.setHiddenElement(false);
-							WebformsLogger.info(this.getClass().getName(), "User '"
-									+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '" + row
-									+ "' of block '" + blockReference + "'.");
-						} else {
-							MessageManager.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
+				// Do not remove an element of a block if is in use in any external flow of the block.
+				try {
+					BlockReference blockReference = UserSessionHandler.getController().getCompleteFormView()
+							.getBlockReference(row);
+					if (!UserSessionHandler.getController().existExternalFlowToReferencedElementOrItsChildren(row,
+							blockReference)) {
+						if (blockReference != null) {
+							if (row.isHiddenElement()) {
+								if (blockReference.showElement(row)) {
+									row.setHiddenElement(false);
+									WebformsLogger.info(this.getClass().getName(), "User '"
+											+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '"
+											+ row + "' of block '" + blockReference + "'.");
+									UserSessionHandler.getController().setUnsavedFormChanges(true);
+								} else {
+									MessageManager
+											.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
+								}
+							} else {
+								try {
+									if (blockReference.hideElement(row)) {
+										row.setHiddenElement(true);
+										WebformsLogger
+												.info(this.getClass().getName(), "User '"
+														+ UserSessionHandler.getUser().getEmailAddress()
+														+ "' has hide element '" + row + "' of block '"
+														+ blockReference + "'.");
+										UserSessionHandler.getController().setUnsavedFormChanges(true);
+									}
+								} catch (ElementCannotBeRemovedException e) {
+									WebformsLogger.errorMessage(this.getClass().getName(), e);
+								}
+							}
+							upperMenu.updateHideButton(row.isHiddenElement());
+							table.updateVisibilityIcon(row);
 						}
 					} else {
-						try {
-							if (blockReference.hideElement(row)) {
-								row.setHiddenElement(true);
-								WebformsLogger.info(this.getClass().getName(), "User '"
-										+ UserSessionHandler.getUser().getEmailAddress() + "' has hide element '" + row
-										+ "' of block '" + blockReference + "'.");
-							}
-						} catch (ElementCannotBeRemovedException e) {
-							WebformsLogger.errorMessage(this.getClass().getName(), e);
-						}
+						MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
+								LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
 					}
-					upperMenu.updateHideButton(row.isHiddenElement());
-					table.updateVisibilityIcon(row);
+				} catch (ReadOnlyException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				}
 			}
 		});
@@ -455,7 +472,8 @@ public class Designer extends SecuredWebPage {
 				TreeObject row = table.getSelectedRow();
 				try {
 					UserSessionHandler.getController().moveUp(row);
-					//Remove collapse state listeners, redraw row and recover the original collapse state and listeners.
+					// Remove collapse state listeners, redraw row and recover the original collapse state and
+					// listeners.
 					removeCollapseStateListeners();
 					table.redrawRow(table.getParentRowItem(row));
 					retrieveCollapsedTableState();
@@ -474,7 +492,8 @@ public class Designer extends SecuredWebPage {
 				TreeObject row = table.getSelectedRow();
 				try {
 					UserSessionHandler.getController().moveDown(row);
-					//Remove collapse state listeners, redraw row and recover the original collapse state and listeners.
+					// Remove collapse state listeners, redraw row and recover the original collapse state and
+					// listeners.
 					removeCollapseStateListeners();
 					table.redrawRow(table.getParentRowItem(row));
 					retrieveCollapsedTableState();
@@ -583,9 +602,12 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getFinish().setVisible(!formIsBlock);
 			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 			upperMenu.updateHideButton(isHidden);
-			upperMenu.getHideButton().setEnabled(rowIsBlockReference && canEdit);
-			upperMenu.getDeleteButton().setVisible(!rowIsBlockReference);
-			upperMenu.getHideButton().setVisible(rowIsBlockReference);
+			upperMenu.getHideButton().setEnabled(rowIsBlockReference && !rowIsBlockReferenceCategory && canEdit);
+			upperMenu.getDeleteButton().setVisible(!rowIsBlockReference || rowIsBlockReferenceCategory);
+			upperMenu.getHideButton().setVisible(rowIsBlockReference && !rowIsBlockReferenceCategory);
+			upperMenu.getOtherElementsMenu().setEnabled(
+					upperMenu.getNewSubanswerButton().isEnabled() || upperMenu.getNewTextButton().isEnabled()
+							|| upperMenu.getNewSystemFieldButton().isEnabled());
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			// Disable everything as a security measure.
@@ -628,7 +650,12 @@ public class Designer extends SecuredWebPage {
 				LanguageCodes.COMMON_CAPTION_GROUP.translation(),
 				new IActivity[] { WebformsActivity.BUILDING_BLOCK_EDITING });
 		newBlockWindow.setCaption(LanguageCodes.CAPTION_NEW_BLOCK.translation());
-		newBlockWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_BLOCK.translation());
+		String name = table.getSelectedRow().getName();
+		if (name != null && name.length() > 0) {
+			newBlockWindow.setDefaultValue(name);
+		} else {
+			newBlockWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_BLOCK.translation());
+		}
 		newBlockWindow.showCentered();
 		newBlockWindow.addAcceptActionListener(new AcceptActionListener() {
 
@@ -743,18 +770,18 @@ public class Designer extends SecuredWebPage {
 						window.close();
 						table.setValue(null);
 						table.removeRow(whatToMove);
-						
-						//Remove collapse state update listeners
+
+						// Remove collapse state update listeners
 						removeCollapseStateListeners();
 						table.loadTreeObject(whatToMove, whereToMove, false);
-						//Retrieve old collapse state (also listeners)
+						// Retrieve old collapse state (also listeners)
 						retrieveCollapsedTableState();
 						table.expand(whereToMove);
-						
+
 						// FIX to force a jump to this point in table.
 						table.setValue(null);
 						table.setValue(whatToMove);
-						
+
 					} else {
 						MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 					}
@@ -775,26 +802,28 @@ public class Designer extends SecuredWebPage {
 	}
 
 	protected void saveCollapsedTableState() {
-		UserSessionHandler.getController().setCollapsedStatus(table.getCollapsedStatus(UserSessionHandler.getController().getFormInUse()));
+		UserSessionHandler.getController().setCollapsedStatus(
+				table.getCollapsedStatus(UserSessionHandler.getController().getFormInUse()));
 	}
-	
-	private void removeCollapseStateListeners(){
+
+	private void removeCollapseStateListeners() {
 		table.removeCollapseListener(collapseListener);
 		table.removeExpandListener(expandListener);
 	}
-	
-	private void addCollapseStateListeners(){
+
+	private void addCollapseStateListeners() {
 		table.addCollapseListener(collapseListener);
 		table.addExpandListener(expandListener);
 	}
-	
+
 	private void retrieveCollapsedTableState() {
 		removeCollapseStateListeners();
-		if(UserSessionHandler.getController().getCollapsedStatus()!=null){
-			table.setCollapsedStatus(UserSessionHandler.getController().getFormInUse(),UserSessionHandler.getController().getCollapsedStatus());
+		if (UserSessionHandler.getController().getCollapsedStatus() != null) {
+			table.setCollapsedStatus(UserSessionHandler.getController().getFormInUse(), UserSessionHandler
+					.getController().getCollapsedStatus());
 		}
 		addCollapseStateListeners();
-		
+
 	}
 
 	private void clearAndUpdateFormTable() {
@@ -802,19 +831,16 @@ public class Designer extends SecuredWebPage {
 		TreeObject currentSelection = table.getSelectedRow();
 		table.setValue(null);
 		table.removeAllItems();
-		
-		//Remove collapsed state listeners, load the new tree and recover the old state and the update state listeners.
+
+		// Remove collapsed state listeners, load the new tree and recover the old state and the update state listeners.
 		removeCollapseStateListeners();
 		table.loadTreeObject(getCurrentForm(), null);
 		retrieveCollapsedTableState();
-		
+
 		if (currentSelection != null) {
 			if (currentSelection instanceof Form || currentSelection instanceof Block) {
 				table.select(getCurrentForm());
 			} else {
-				System.out.println(currentSelection.getPathName());
-				System.out.println(getCurrentForm().getChild(currentSelection.getPathName()));
-				System.out.println(getCurrentForm().getChild(currentSelection.getPathName()).getPathName());
 				table.select(getCurrentForm().getChild(currentSelection.getPathName()));
 			}
 		}

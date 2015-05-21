@@ -101,7 +101,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	private String linkedFormLabel;
 
-	@ElementCollection(fetch=FetchType.EAGER)
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "linked_form_versions", joinColumns = @JoinColumn(name = "formId"), uniqueConstraints = @UniqueConstraint(columnNames = {
 			"formId", "linkedFormVersions" }))
 	private Set<Integer> linkedFormVersions;
@@ -618,13 +618,17 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return gson.toJson(this);
 	}
 
-	private void updateRuleReferences() {
+	public void updateRuleReferences() {
+		updateRuleReferences(getFlows());
+	}
+
+	public void updateRuleReferences(Set<Flow> flows) {
 		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
 		HashMap<String, TreeObject> mappedElements = new HashMap<>();
 		for (TreeObject currentElement : currentElements) {
-			mappedElements.put(currentElement.getComparationId(), currentElement);
+			mappedElements.put(currentElement.getOriginalReference(), currentElement);
 		}
-		for (Flow rule : getFlows()) {
+		for (Flow rule : flows) {
 			rule.updateReferences(mappedElements);
 		}
 	}
@@ -643,7 +647,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 		return (Form) gson.fromJson(jsonString, Form.class);
 	}
-	
+
 	/**
 	 * For some cases, i.e. using Springcache we need to initialize all sets (disabling the Lazy loading).
 	 * 
@@ -656,11 +660,38 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	@Override
-	public void resetUserTimestampInfo(Long userId){
+	public void resetUserTimestampInfo(Long userId) {
 		super.resetUserTimestampInfo(userId);
-		for(Flow flow: getFlows()){
+		for (Flow flow : getFlows()) {
 			flow.resetUserTimestampInfo(userId);
 		}
+	}
+
+	/**
+	 * Get index of child. If the element is a category of a LinkedBuildingBlock try to find it in the Block References.
+	 * 
+	 * @param child
+	 * @return
+	 */
+	@Override
+	public Integer getIndex(TreeObject child) {
+		// Standard form element.
+		int index = getChildren().indexOf(child);
+		if (index >= 0) {
+			return index;
+		}
+		// Child not found. Maybe is a category of a block reference.
+		for (TreeObject blockReference : getChildren()) {
+			if (blockReference instanceof BlockReference) {
+				index = blockReference.getIndex(child);
+				if (index >= 0) {
+					// Return the index of the block reference.
+					return getIndex(blockReference);
+				}
+			}
+		}
+		return -1;
+
 	}
 	
 	public synchronized static void move(TreeObject objectToMove, TreeObject toParent)

@@ -120,9 +120,9 @@ public class TokenComparationAnswer extends Token implements ITokenQuestion {
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		if (question != null) {
 			question = (Question) mappedElements.get(question
-					.getComparationId());
+					.getOriginalReference());
 			if (answer != null) {
-				answer = (Answer) mappedElements.get(answer.getComparationId());
+				answer = (Answer) mappedElements.get(answer.getOriginalReference());
 			}
 		}
 	}
