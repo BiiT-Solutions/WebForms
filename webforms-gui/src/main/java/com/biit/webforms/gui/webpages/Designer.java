@@ -836,12 +836,10 @@ public class Designer extends SecuredWebPage {
 		table.loadTreeObject(getCurrentForm(), null);
 		retrieveCollapsedTableState();
 
-		System.out.println(currentSelection);
 		if (currentSelection != null) {
 			if (currentSelection instanceof Form || currentSelection instanceof Block) {
 				table.setValue(getCurrentForm());
 			} else {
-				System.out.println(getCurrentForm().findByComparationId(currentSelection.getComparationId()));
 				table.setValue(getCurrentForm().findByComparationId(currentSelection.getComparationId()));
 			}
 		}

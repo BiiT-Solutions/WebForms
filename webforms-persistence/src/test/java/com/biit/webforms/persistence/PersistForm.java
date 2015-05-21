@@ -199,7 +199,6 @@ public class PersistForm extends AbstractTransactionalTestNGSpringContextTests {
 
 		// Update form with new elements
 		formDao.makePersistent(form);
-		System.out.println(question3.getId());
 		
 		Form.move(question3, category);	
 		

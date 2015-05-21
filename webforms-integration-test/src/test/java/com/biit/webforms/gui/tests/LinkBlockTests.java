@@ -93,10 +93,9 @@ public class LinkBlockTests extends WebFormsTester {
 
 	private void deleteFormAndBlock() {
 		goToFormManagerPage();
-		getFormManagerPage().deleteForm(TREE_TABLE_ROW);
+		getFormManagerPage().deleteAllCreatedForms();
 		goToBlockManagerPage();
-		getBlockManagerPage().deleteBlock();
-		logOut();
+		getBlockManagerPage().deleteAllCreatedBlocks();
 	}
 
 	@Test(groups = "linkedBlocks")
@@ -105,6 +104,7 @@ public class LinkBlockTests extends WebFormsTester {
 		createSimpleBlock();
 		addLinkedBlockToForm();
 		deleteFormAndBlock();
+		logOut();
 	}
 
 	@Test(groups = "linkedBlocks")
@@ -119,6 +119,7 @@ public class LinkBlockTests extends WebFormsTester {
 		getDesignerPage().clickDownButton();
 		getDesignerPage().saveDesign();
 		deleteFormAndBlock();
+		logOut();
 	}
 
 	@Test(groups = "linkedBlocks")
@@ -137,6 +138,7 @@ public class LinkBlockTests extends WebFormsTester {
 		getDesignerPage().getCategoryPropertiesView().getTechnicalName().equals(CATEGORY_NAME);
 		getDesignerPage().saveDesign();
 		deleteFormAndBlock();
+		logOut();
 	}
 
 	@Test(groups = "linkedBlocks")
@@ -151,6 +153,7 @@ public class LinkBlockTests extends WebFormsTester {
 		checkNotificationIsError(getNotification());
 		closeNotificationIfExists();
 		deleteFormAndBlock();
+		logOut();
 	}
 
 	@Test(groups = "linkedBlocks")
@@ -196,6 +199,7 @@ public class LinkBlockTests extends WebFormsTester {
 			Assert.assertNull(getFlowManagerPage().getFlowRulesTable().getRow(FORM_ROW + 1));
 		} finally {
 			deleteFormAndBlock();
+			logOut();
 		}
 	}
 
@@ -225,6 +229,7 @@ public class LinkBlockTests extends WebFormsTester {
 			Assert.assertNull(getFlowManagerPage().getFlowRulesTable().getRow(FORM_ROW + 1));
 		} finally {
 			deleteFormAndBlock();
+			logOut();
 		}
 	}
 
@@ -250,5 +255,6 @@ public class LinkBlockTests extends WebFormsTester {
 		getDesignerPage().getTreeTable().getCell(4, 0);
 
 		deleteFormAndBlock();
+		logOut();
 	}
 }

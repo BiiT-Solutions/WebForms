@@ -1447,7 +1447,6 @@ public class ApplicationController {
 						}
 					}
 					if (outsideOfBlock) {
-						System.out.println(elementOfReferencedBlock + " -> " + flow);
 						return true;
 					}
 				}
@@ -1463,7 +1462,6 @@ public class ApplicationController {
 						}
 					}
 					if (outsideOfBlock) {
-						System.out.println(elementOfReferencedBlock + " -> " + flow);
 						return true;
 					}
 				}
