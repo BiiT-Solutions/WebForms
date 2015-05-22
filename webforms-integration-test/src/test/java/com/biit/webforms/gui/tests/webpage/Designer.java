@@ -1,7 +1,9 @@
 package com.biit.webforms.gui.tests.webpage;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.testng.Assert;
 
+import com.biit.gui.tester.VaadinGuiTester;
 import com.biit.gui.tester.VaadinGuiWebpage;
 import com.biit.webforms.gui.tests.exceptions.FieldNotEditableException;
 import com.biit.webforms.gui.tests.webpage.designer.AnswerPropertiesView;
@@ -16,6 +18,7 @@ import com.biit.webforms.gui.tests.window.LinkBlockWindow;
 import com.biit.webforms.gui.tests.window.NewBlockWindow;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.HorizontalLayoutElement;
+import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.testbench.elements.TreeTableElement;
 
 public class Designer extends VaadinGuiWebpage {
@@ -656,6 +659,15 @@ public class Designer extends VaadinGuiWebpage {
 
 	public void saveDesign() {
 		getSaveButton().click();
+		getSaveButton().waitForVaadin();
+		
+		try{
+			NotificationElement notification = $(NotificationElement.class).first();
+			VaadinGuiTester.checkNotificationIsHumanized(notification);
+			VaadinGuiTester.closeNotification(notification);
+		}catch(NoSuchElementException e){
+			//Notification closed			
+		}
 	}
 
 	private void scrollRightUpperButtonMenu() {

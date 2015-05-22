@@ -847,11 +847,12 @@ public class ApplicationController {
 	 * hierarchy seed and introduces to current form as a new category.
 	 * 
 	 * @param selectedRow
+	 * @return Inserted category
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
 	 * @throws EmptyBlockCannotBeInserted
 	 * @throws ElementIsReadOnly
 	 */
-	public void insertBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm,
+	public TreeObject insertBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm,
 			EmptyBlockCannotBeInserted, ElementIsReadOnly {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' insert Block "
 				+ formInUse + " " + block);
@@ -887,9 +888,12 @@ public class ApplicationController {
 			formInUse.addFlows(copiedBlock.getFlows());
 
 			setUnsavedFormChanges(true);
+			
+			return copiedBlock.getChildren().get(0);
 		} catch (NotValidStorableObjectException | NotValidChildException | CharacterNotAllowedException e) {
 			// Impossible.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			return null;
 		}
 	}
 
@@ -927,7 +931,7 @@ public class ApplicationController {
 	 * @throws EmptyBlockCannotBeInserted
 	 * @throws ElementIsReadOnly
 	 */
-	public void linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm, EmptyBlockCannotBeInserted,
+	public TreeObject linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm, EmptyBlockCannotBeInserted,
 			ElementIsReadOnly {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' link Block '"
 				+ block + "' in '" + formInUse + "' ");
@@ -952,12 +956,15 @@ public class ApplicationController {
 				BlockReference blockReference = new BlockReference((Block) block);
 				formInUse.addChild(blockReference);
 				setUnsavedFormChanges(true);
-			} catch (NotValidChildException e) {
+				return block.getChild(0);
+			} catch (NotValidChildException | ChildrenNotFoundException e) {
 				// Impossible.
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
+				return null;
 			}
 		} else {
 			MessageManager.showError(LanguageCodes.ERROR_LINK_BLOCK_NOT_COMPLETE);
+			return null;
 		}
 	}
 

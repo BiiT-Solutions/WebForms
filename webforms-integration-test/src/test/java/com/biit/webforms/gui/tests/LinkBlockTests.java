@@ -5,6 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.biit.webforms.gui.tests.exceptions.FieldNotEditableException;
+import com.vaadin.testbench.By;
 
 public class LinkBlockTests extends WebFormsTester {
 
@@ -15,7 +16,7 @@ public class LinkBlockTests extends WebFormsTester {
 	private static final Integer BLOCK_TABLE_ROW = 0;
 	private static final Integer BLOCK_TABLE_COLUMN = 0;
 
-	private static final String QUESTION1_NAME = "Question";
+	private static final String QUESTION1_NAME = "Question1";
 	private static final String QUESTION2_NAME = "Question2";
 
 	private static final Integer FORM_ROW = 0;
@@ -23,6 +24,7 @@ public class LinkBlockTests extends WebFormsTester {
 	private void createSimpleBlock() {
 		try {
 			loginFormAdmin1();
+			deleteFormAndBlock();
 			goToBlockManagerPage();
 			getBlockManagerPage().createNewBlock(NEW_BLOCK_NAME);
 			// Design building block.
@@ -45,6 +47,7 @@ public class LinkBlockTests extends WebFormsTester {
 	private void createSimpleBlockWithFlow() {
 		try {
 			loginFormAdmin1();
+			deleteFormAndBlock();
 			goToBlockManagerPage();
 			getBlockManagerPage().createNewBlock(NEW_BLOCK_NAME);
 			// Design building block.
@@ -53,6 +56,7 @@ public class LinkBlockTests extends WebFormsTester {
 			getDesignerPage().addNewInputDateQuestion();
 			getDesignerPage().addNewGroup();
 			getDesignerPage().addNewMultiCheckboxQuestion();
+			getDesignerPage().getQuestionPropertiesView().setTechnicalName(QUESTION1_NAME);
 			getDesignerPage().addNewAnswer();
 			getDesignerPage().addNewAnswer();
 			getDesignerPage().addNewAnswer();
@@ -112,6 +116,7 @@ public class LinkBlockTests extends WebFormsTester {
 		printTestNameInDebugTrace("moveUpDownLinkedBlock");
 		createSimpleBlock();
 		addLinkedBlockToForm();
+		getDesignerPage().clickInTreeTableRow(0);
 		getDesignerPage().addNewCategory();
 		getDesignerPage().addNewQuestion();
 		getDesignerPage().clickInTreeTableRow(TREE_TABLE_ROW);
@@ -173,7 +178,7 @@ public class LinkBlockTests extends WebFormsTester {
 		logOut();
 	}
 
-	@Test(groups = "linkedBlocks", expectedExceptions = { NoSuchElementException.class })
+	@Test(groups = "linkedBlocks")
 	public void hideElement1() {
 		printTestNameInDebugTrace("hideElementInLinkedBlockOriginFlow");
 		createSimpleBlockWithFlow();
@@ -181,29 +186,28 @@ public class LinkBlockTests extends WebFormsTester {
 		goToFlowManagerPage();
 		Assert.assertNotNull(getFlowManagerPage().getFlowRulesTable().getRow(FORM_ROW));
 		goToDesignerPage();
-		// uncollapse category
-		getDesignerPage().getTreeTable().getRow(1).toggleExpanded();
-		getDesignerPage().getTreeTable().waitForVaadin();
-		// uncollapse group
-		getDesignerPage().getTreeTable().getRow(3).toggleExpanded();
-		getDesignerPage().getTreeTable().waitForVaadin();
-		// Hide question2
+		
+		// Hide question1
 		// Click on a row sometimes fails. Use cell better.
 		getDesignerPage().getTreeTable().getCell(4, 0).click();
 		getDesignerPage().getTreeTable().waitForVaadin();
+		
 		// hide element.
+		sleep();
+		Assert.assertTrue(getDesignerPage().getHideButton().isEnabled());
 		getDesignerPage().getHideButton().click();
+		getDesignerPage().saveDesign();
+
 		goToFlowManagerPage();
 		// Flow table has a dummy list. Then always exists one row.
-		try {
-			Assert.assertNull(getFlowManagerPage().getFlowRulesTable().getRow(FORM_ROW + 1));
-		} finally {
-			deleteFormAndBlock();
-			logOut();
-		}
+		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[0]")).size(),1);
+		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[1]")).size(),0);
+		
+		deleteFormAndBlock();
+		logOut();
 	}
 
-	@Test(groups = "linkedBlocks", expectedExceptions = { NoSuchElementException.class })
+	@Test(groups = "linkedBlocks")
 	public void hideElement2() {
 		printTestNameInDebugTrace("hideElementInLinkedBlockDestinyFlow");
 		createSimpleBlockWithFlow();
@@ -211,26 +215,24 @@ public class LinkBlockTests extends WebFormsTester {
 		goToFlowManagerPage();
 		Assert.assertNotNull(getFlowManagerPage().getFlowRulesTable().getRow(FORM_ROW));
 		goToDesignerPage();
-		// uncollapse category
-		getDesignerPage().getTreeTable().getRow(1).toggleExpanded();
-		getDesignerPage().getTreeTable().waitForVaadin();
-		// uncollapse group
-		getDesignerPage().getTreeTable().getRow(3).toggleExpanded();
-		getDesignerPage().getTreeTable().waitForVaadin();
+
 		// Hide question2
 		// Click on a row sometimes fails. Use cell better.
-		getDesignerPage().getTreeTable().getCell(5, 0).click();
+		getDesignerPage().getTreeTable().getCell(8, 0).click();
 		getDesignerPage().getTreeTable().waitForVaadin();
 		// hide element.
+		sleep();
+		Assert.assertTrue(getDesignerPage().getHideButton().isEnabled());
 		getDesignerPage().getHideButton().click();
+		getDesignerPage().saveDesign();
+		
 		goToFlowManagerPage();
 		// Flow table has a dummy list. Then always exists one row.
-		try {
-			Assert.assertNull(getFlowManagerPage().getFlowRulesTable().getRow(FORM_ROW + 1));
-		} finally {
-			deleteFormAndBlock();
-			logOut();
-		}
+		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[0]")).size(),1);
+		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[1]")).size(),0);
+		
+		deleteFormAndBlock();
+		logOut();
 	}
 
 	@Test(groups = "linkedBlocks")
@@ -257,4 +259,12 @@ public class LinkBlockTests extends WebFormsTester {
 		deleteFormAndBlock();
 		logOut();
 	}
+	
+	private void sleep() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}	
+	}	
 }

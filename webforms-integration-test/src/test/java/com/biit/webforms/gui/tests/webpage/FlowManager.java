@@ -1,10 +1,14 @@
 package com.biit.webforms.gui.tests.webpage;
 
+import org.openqa.selenium.NoSuchElementException;
+
+import com.biit.gui.tester.VaadinGuiTester;
 import com.biit.gui.tester.VaadinGuiWebpage;
 import com.biit.webforms.gui.tests.window.FlowCleanedWindow;
 import com.biit.webforms.gui.tests.window.FlowRuleWindow;
 import com.biit.webforms.gui.tests.window.SelectFormElementWindow;
 import com.vaadin.testbench.elements.ImageElement;
+import com.vaadin.testbench.elements.NotificationElement;
 import com.vaadin.testbench.elements.TableElement;
 
 public class FlowManager extends VaadinGuiWebpage {
@@ -159,18 +163,37 @@ public class FlowManager extends VaadinGuiWebpage {
 
 	public void saveFlow() {
 		getButtonElement(SAVE_BUTTON_CAPTION).click();
+		getButtonElement(SAVE_BUTTON_CAPTION).waitForVaadin();
+		
+		try{
+			NotificationElement notification = $(NotificationElement.class).first();
+			VaadinGuiTester.checkNotificationIsHumanized(notification);
+			VaadinGuiTester.closeNotification(notification);
+		}catch(NoSuchElementException e){
+			//Notification closed			
+		}
 	}
 
 	public void selectFromToElement(String startNodeName, String endNodeName) {
 		getFlowRuleWindow().clickFromButton();
 		getSelectFormElementWindow().searchForElement(startNodeName);
+		sleep(500);
 		getSelectFormElementWindow().selectElementInTable(startNodeName);
 		getSelectFormElementWindow().clickAccept();
 
 		getFlowRuleWindow().getWindow().waitForVaadin();
 		getFlowRuleWindow().clickToButton();
 		getSelectFormElementWindow().searchForElement(endNodeName);
+		sleep(500);
 		getSelectFormElementWindow().selectElementInTable(endNodeName);
 		getSelectFormElementWindow().clickAccept();
+	}
+	
+	private void sleep(long milis) {
+		try {
+			Thread.sleep(milis);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}	
 	}
 }

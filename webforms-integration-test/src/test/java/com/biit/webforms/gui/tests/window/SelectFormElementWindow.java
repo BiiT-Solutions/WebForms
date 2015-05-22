@@ -17,13 +17,13 @@ public class SelectFormElementWindow extends GenericAcceptCancelWindow {
 	private static final String SEARCH_FIELD_CAPTION = "Search";
 
 	public TextFieldElement getSearchField() {
-		return getWindow().$$(VerticalLayoutElement.class).$$(CustomComponentElement.class)
-				.$$(VerticalLayoutElement.class).$$(TextFieldElement.class).caption(SEARCH_FIELD_CAPTION).first();
+		return getWindow().$$(VerticalLayoutElement.class).$$(CustomComponentElement.class).$$(VerticalLayoutElement.class)
+				.$$(TextFieldElement.class).caption(SEARCH_FIELD_CAPTION).first();
 	}
 
 	public TreeTableElement getTreeTable() {
-		return getWindow().$$(VerticalLayoutElement.class).$$(CustomComponentElement.class)
-				.$$(VerticalLayoutElement.class).$$(TreeTableElement.class).first();
+		return getWindow().$$(VerticalLayoutElement.class).$$(CustomComponentElement.class).$$(VerticalLayoutElement.class)
+				.$$(TreeTableElement.class).first();
 	}
 
 	public void searchForElement(String elementName) {
@@ -33,11 +33,16 @@ public class SelectFormElementWindow extends GenericAcceptCancelWindow {
 	}
 
 	public List<LabelElement> getTreeTableLabels() {
-		return getWindow().$(VerticalLayoutElement.class).$(CustomComponentElement.class)
-				.$(VerticalLayoutElement.class).$(TreeTableElement.class).$(CustomComponentElement.class)
-				.$(CssLayoutElement.class).$(LabelElement.class).all();
+		return getWindow().$$(VerticalLayoutElement.class).$$(CustomComponentElement.class).$$(VerticalLayoutElement.class)
+				.$$(TreeTableElement.class).$$(CustomComponentElement.class).$$(CssLayoutElement.class).$$(LabelElement.class).all();
 	}
 
+	/**
+	 * Caution, this function will fail randomly if there are elements with the
+	 * same name. The order is not always repeatable.
+	 * 
+	 * @param elementName
+	 */
 	public void selectElementInTable(String elementName) {
 		getTreeTable().waitForVaadin();
 		List<LabelElement> labels = getTreeTableLabels();

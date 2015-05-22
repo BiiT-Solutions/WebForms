@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -78,8 +80,14 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	}
 	
 	public static void closeNotification(NotificationElement notification) {
-		if (notification.isDisplayed()) {
-			notification.close();
+		try{
+			try{
+				notification.close();
+			}catch(TimeoutException e){
+				//Do nothing.
+			}
+		}catch(StaleElementReferenceException e){
+			//Do nothing
 		}
 	}
 
