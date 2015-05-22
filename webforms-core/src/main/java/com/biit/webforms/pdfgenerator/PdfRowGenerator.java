@@ -108,7 +108,7 @@ public class PdfRowGenerator {
 	public static List<PdfRow> generateRadioFieldRows(PdfWriter writer, Question question) throws BadBlockException {
 		List<PdfRow> rows = new ArrayList<PdfRow>();
 
-		RadioCheckField bt = new RadioCheckField(writer, null, question.getPathName(), "");
+		RadioCheckField bt = new RadioCheckField(writer, null, question.getScapedPathName(), "");
 		bt.setCheckType(RadioCheckField.TYPE_CIRCLE);
 		bt.setBorderStyle(PdfBorderDictionary.STYLE_SOLID);
 		bt.setBorderColor(Color.black);
@@ -137,11 +137,11 @@ public class PdfRowGenerator {
 			PdfPCell field = PdfPCellGenerator.generateText(answer.getLabel(), RADIO_FIELD_COL);
 			if (answer.getChildren().isEmpty()) {
 				field.setPaddingLeft(PADDING);
-				field.setCellEvent(new FormRadioField(writer, question.getPathName(), answer.getPathName(), radioGroup, 0));
+				field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), answer.getScapedPathName(), radioGroup, 0));
 			} else {
 				field.setPaddingLeft(PADDING * 2);
 				// TODO possible fix?
-				field.setCellEvent(new FormRadioField(writer, question.getPathName(), answer.getPathName(), radioGroup, PADDING));
+				field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), answer.getScapedPathName(), radioGroup, PADDING));
 			}
 			field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
 			row.addCell(field);
@@ -187,10 +187,10 @@ public class PdfRowGenerator {
 			PdfPCell field = PdfPCellGenerator.generateText(answer.getLabel(), CHECK_FIELD_COL);
 			if (answer.getChildren().isEmpty()) {
 				field.setPaddingLeft(PADDING);
-				field.setCellEvent(new FormCheckField(writer, answer.getPathName(), 0));
+				field.setCellEvent(new FormCheckField(writer, answer.getScapedPathName(), 0));
 			} else {
 				field.setPaddingLeft(PADDING * 2);
-				field.setCellEvent(new FormCheckField(writer, answer.getPathName(), PADDING));
+				field.setCellEvent(new FormCheckField(writer, answer.getScapedPathName(), PADDING));
 			}
 			field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
 			row.addCell(field);

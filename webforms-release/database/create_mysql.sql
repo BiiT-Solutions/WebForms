@@ -10,7 +10,7 @@
         others bit not null,
         destiny_id bigint,
         form_ID bigint not null,
-        origin_id bigint not null,
+        origin_id bigint,
         primary key (ID)
     );
 
@@ -46,7 +46,7 @@
         subformat varchar(255) not null,
         valueEnd varchar(255),
         valueStart varchar(255),
-        question_ID bigint not null,
+        question_ID bigint,
         primary key (ID)
     );
 
@@ -60,8 +60,8 @@
         sortSeq bigint not null,
         type varchar(255) not null,
         flow_ID bigint not null,
-        answer_ID bigint not null,
-        question_ID bigint not null,
+        answer_ID bigint,
+        question_ID bigint,
         primary key (ID)
     );
 
@@ -78,7 +78,7 @@
         datePeriodUnit varchar(255),
         subformat varchar(255) not null,
         value varchar(255),
-        question_ID bigint not null,
+        question_ID bigint,
         primary key (ID)
     );
 
@@ -92,7 +92,7 @@
         sortSeq bigint not null,
         type varchar(255) not null,
         flow_ID bigint not null,
-        question_ID bigint not null,
+        question_ID bigint,
         primary key (ID)
     );
 

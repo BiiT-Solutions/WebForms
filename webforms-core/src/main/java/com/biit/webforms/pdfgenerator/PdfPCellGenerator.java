@@ -28,9 +28,9 @@ public class PdfPCellGenerator {
 		PdfPCell cell = new PdfPCell();
 		cell.setBorder(BORDER);
 		if(question.getAnswerType() == AnswerType.INPUT){
-			cell.setCellEvent(new FormTextField(writer, question.getPathName()));
+			cell.setCellEvent(new FormTextField(writer, question.getScapedPathName()));
 		}else{
-			FormTextArea textArea = new FormTextArea(writer, question.getPathName());
+			FormTextArea textArea = new FormTextArea(writer, question.getScapedPathName());
 			cell.setCellEvent(textArea);
 			cell.setFixedHeight(textArea.getHeight());
 		}
@@ -60,7 +60,7 @@ public class PdfPCellGenerator {
 	public static PdfPCell generateComboBoxQuestion(PdfWriter writer, Question question) {
 		PdfPCell cell = new PdfPCell();
 		cell.setBorder(BORDER);
-		cell.setCellEvent(new FormComboBox(writer, question.getPathName(), question.getChildren()));
+		cell.setCellEvent(new FormComboBox(writer, question.getScapedPathName(), question.getChildren()));
 		return cell;
 	}
 
