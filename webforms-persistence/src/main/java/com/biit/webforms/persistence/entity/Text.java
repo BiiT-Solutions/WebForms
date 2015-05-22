@@ -50,8 +50,12 @@ public class Text extends WebformsBaseQuestion {
 
 	@Override
 	public String getLabel() {
-		if (description.length() > MAX_DESCRIPTION_LABEL) {
-			return description.substring(0, MAX_DESCRIPTION_LABEL) + "...";
+		return descriptionShorted(MAX_DESCRIPTION_LABEL);
+	}
+
+	public String descriptionShorted(int maxLength) {
+		if (description.length() > maxLength) {
+			return description.substring(0, maxLength) + "...";
 		}
 		return description;
 	}
@@ -71,14 +75,15 @@ public class Text extends WebformsBaseQuestion {
 
 	public int exportToJavaCode(StringBuilder sb, int counter) {
 		String idName = "el_" + counter;
-		
+
 		sb.append("Text ").append(idName).append("  = new Text();").append(System.lineSeparator());
 		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
-		sb.append(idName).append(".setDescription(\"").append(this.getDescription()).append("\");").append(System.lineSeparator());
+		sb.append(idName).append(".setDescription(\"").append(this.getDescription()).append("\");")
+				.append(System.lineSeparator());
 
 		return counter;
 	}
-	
+
 	/**
 	 * Compares the content of treeObject - Needs to be an instance of Text
 	 * 
@@ -87,9 +92,9 @@ public class Text extends WebformsBaseQuestion {
 	 */
 	public boolean isContentEqual(TreeObject treeObject) {
 		if (treeObject instanceof Text) {
-			if(super.isContentEqual(treeObject)){
+			if (super.isContentEqual(treeObject)) {
 				Text text = (Text) treeObject;
-				if(this.getDescription()!=null && !this.getDescription().equals(text.getDescription())){
+				if (this.getDescription() != null && !this.getDescription().equals(text.getDescription())) {
 					return false;
 				}
 				return true;

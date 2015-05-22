@@ -402,7 +402,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	private void getMultiCheckBoxVisibility(StringBuilder visibility, TokenComparationAnswer token) {
 		visibility.append("contains(concat($")
 				.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
-				.append(", ' '), concat('").append(token.getAnswer().getLabel()).append("', ' '))");
+				.append(", ' '), concat('").append(token.getAnswer().getName()).append("', ' '))");
 	}
 
 	/**

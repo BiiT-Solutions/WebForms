@@ -6,6 +6,7 @@ import java.util.List;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.Text;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
@@ -14,6 +15,7 @@ import com.lowagie.text.Phrase;
 public class ParagraphGenerator {
 
 	private final static float PADDING = 20;
+	private final static int MAX_INFO_TEXT_DESCRIPTION = 100;
 
 	public static Paragraph generate(String content, PdfFont font, PdfAlign align, float spacing)
 			throws DocumentException {
@@ -46,6 +48,10 @@ public class ParagraphGenerator {
 	}
 
 	public static Paragraph generateLabelParagraph(TreeObject object) {
+		if (object instanceof Text) {
+			return new Paragraph(((Text) object).descriptionShorted(MAX_INFO_TEXT_DESCRIPTION),
+					PdfFont.NORMAL_FONT.getFont());
+		}
 		return new Paragraph(object.getLabel(), PdfFont.NORMAL_FONT.getFont());
 	}
 
