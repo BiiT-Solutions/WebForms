@@ -3,12 +3,14 @@ package com.biit.webforms.pdfgenerator;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.lowagie.text.pdf.PdfWriter;
 
@@ -47,14 +49,29 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
+	public static PdfTableBlock generateAnnexQuestionTableBlock(Text infoText) {
+		PdfTableBlock block = null;
+		try {
+			block = new PdfTableBlock(1, 4);
+			block.insertRow(PdfRowGenerator.generateAnnexQuestion(infoText));
+		} catch (BadBlockException e) {
+			WebformsLogger.errorMessage(PdfRowGenerator.class.getName(), e);
+		}
+		return block;
+	}
+
 	public static List<PdfTableBlock> generateAnnexFormTableBlocks(Form form) {
 		List<PdfTableBlock> blocks = new ArrayList<PdfTableBlock>();
 
-		List<TreeObject> treeObjects = new ArrayList<>(form.getAll(Question.class));
+		List<TreeObject> treeObjects = new ArrayList<>(form.getAll(BaseQuestion.class));
 
 		for (TreeObject object : treeObjects) {
-			if (!object.isHiddenElement()) {
-				blocks.add(generateAnnexQuestionTableBlock((Question) object));
+			if (!object.isHiddenElement() && !(object instanceof SystemField)) {
+				if (object instanceof Text) {
+					blocks.add(generateAnnexQuestionTableBlock((Text) object));
+				} else {
+					blocks.add(generateAnnexQuestionTableBlock((Question) object));
+				}
 			}
 		}
 
