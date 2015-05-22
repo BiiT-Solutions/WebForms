@@ -74,7 +74,6 @@ public class ImpactAnalysisTests extends WebFormsTester {
 			getFlowManagerPage().getFlowRuleWindow().clickEqualsButton();
 			getFlowManagerPage().getFlowRuleWindow().clickAccept();
 			getFlowManagerPage().saveFlow();
-			checkNotificationIsHumanized(getNotification());
 			goToFormManagerPage();
 			// Analyze the impact between versions
 			getFormManagerPage().clickImpactButton();

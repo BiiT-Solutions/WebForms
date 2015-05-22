@@ -883,13 +883,15 @@ public class ApplicationController {
 			Block blockToInsert = (Block) block.getAncestor(Block.class);
 			Block copiedBlock = (Block) blockToInsert.generateFormCopiedSimplification(block);
 			copiedBlock.resetIds();
+			
+			TreeObject insertedCategory = copiedBlock.getChildren().get(0);
 
 			formInUse.addChildren(copiedBlock.getChildren());
 			formInUse.addFlows(copiedBlock.getFlows());
 
 			setUnsavedFormChanges(true);
 			
-			return copiedBlock.getChildren().get(0);
+			return insertedCategory;
 		} catch (NotValidStorableObjectException | NotValidChildException | CharacterNotAllowedException e) {
 			// Impossible.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
