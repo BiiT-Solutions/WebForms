@@ -79,7 +79,8 @@ public class ApplicationUi extends UI {
 				User user = UserSessionHandler.getUser(userEmail, password);
 				if (user != null) {
 					// Try to go to the last page and last form if user has no logged out.
-					if (UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()) != null) {
+					if (UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()) != null
+							&& UserSessionHandler.getController().getFormInUse() != null) {
 						navigateTo(UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()));
 					} else {
 						navigateTo(WebMap.getMainPage());
