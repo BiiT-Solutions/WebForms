@@ -51,7 +51,7 @@ public class Flow extends StorableObject {
 
 	// Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
 	// attached to that column, you have to state the name.
-	@ManyToOne(optional = false)
+	@ManyToOne
 	@JoinColumn(name = "origin_id")
 	private BaseQuestion origin;
 

@@ -27,7 +27,7 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 public class TokenBetween extends TokenComplex implements ITokenQuestion {
 	private static final long serialVersionUID = -8760649306071342145L;
 
-	@ManyToOne(fetch = FetchType.EAGER, optional=false)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Question question;
 
 	@Column(nullable = false)

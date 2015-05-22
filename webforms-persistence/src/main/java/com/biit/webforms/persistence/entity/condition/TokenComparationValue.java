@@ -28,7 +28,7 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.LT,
 			TokenTypes.GT, TokenTypes.LE, TokenTypes.GE };
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Question question;
 
 	@Column(nullable = false)

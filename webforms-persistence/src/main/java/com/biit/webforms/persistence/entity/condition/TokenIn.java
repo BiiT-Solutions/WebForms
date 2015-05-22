@@ -30,7 +30,7 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 public class TokenIn extends TokenComplex implements ITokenQuestion {
 	private static final long serialVersionUID = -1264101992865476909L;
 
-	@ManyToOne(fetch = FetchType.EAGER, optional=false)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Question question;
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "tokenIn")
