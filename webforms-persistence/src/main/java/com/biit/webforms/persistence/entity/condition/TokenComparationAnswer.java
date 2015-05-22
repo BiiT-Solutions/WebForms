@@ -24,10 +24,10 @@ public class TokenComparationAnswer extends Token implements ITokenQuestion {
 	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ,
 			TokenTypes.NE };
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Question question;
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Answer answer;
 
 	public TokenComparationAnswer() {

@@ -49,7 +49,7 @@ public class XFormsSystemField extends XFormsQuestion {
 	}
 
 	private String getDefaultValue() {
-		return " xxf:default=\"xxf:get-request-parameter('" + ((SystemField) getSource()).getFieldName() + "')\" ";
+		return " xxf:default=\"xxf:get-request-parameter('" + ((SystemField) getSource()).getName() + "')\" ";
 	}
 
 	@Override
