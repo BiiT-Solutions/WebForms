@@ -596,9 +596,9 @@ public class Designer extends SecuredWebPage {
 					canEdit && !rowIsNull && !rowIsForm
 							&& (!rowIsBlockReference || selectedElement instanceof Category));
 			upperMenu.getUpButton().setEnabled(
-					canEdit && !rowIsForm && !rowIsForm && (!rowIsBlockReference || rowIsBlockReferenceCategory));
+					canEdit && !rowIsNull && !rowIsForm && (!rowIsBlockReference || rowIsBlockReferenceCategory));
 			upperMenu.getDownButton().setEnabled(
-					canEdit && !rowIsForm && (!rowIsBlockReference || rowIsBlockReferenceCategory));
+					canEdit && !rowIsNull && !rowIsForm && (!rowIsBlockReference || rowIsBlockReferenceCategory));
 			upperMenu.getFinish().setVisible(!formIsBlock);
 			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 			upperMenu.updateHideButton(isHidden);
@@ -710,8 +710,10 @@ public class Designer extends SecuredWebPage {
 			public void acceptAction(WindowAcceptCancel window) {
 				// Insert block in form
 				try {
-					UserSessionHandler.getController().insertBlock(windowBlocks.getSelectedBlock());
+					TreeObject insertedElement = UserSessionHandler.getController().insertBlock(windowBlocks.getSelectedBlock());
 					clearAndUpdateFormTable();
+					table.expand(insertedElement);
+					table.setValue(insertedElement);
 					window.close();
 				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
@@ -735,8 +737,10 @@ public class Designer extends SecuredWebPage {
 			public void acceptAction(WindowAcceptCancel window) {
 				// Insert block in form
 				try {
-					UserSessionHandler.getController().linkBlock(windowBlocks.getSelectedBlock());
+					TreeObject linkedElement = UserSessionHandler.getController().linkBlock(windowBlocks.getSelectedBlock());
 					clearAndUpdateFormTable();
+					table.expand(linkedElement);
+					table.setValue(linkedElement);
 					window.close();
 				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,

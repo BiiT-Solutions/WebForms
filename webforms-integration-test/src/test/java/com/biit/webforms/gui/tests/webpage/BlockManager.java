@@ -61,7 +61,7 @@ public class BlockManager extends VaadinGuiWebpage {
 		getBlockTable().getCell(row, 0).click();
 	}
 
-	private void deleteAllCreatedBlocks() {
+	public void deleteAllCreatedBlocks() {
 		try {
 			while (true) {
 				getBlockTable().getCell(BLOCK_ROW, 0);

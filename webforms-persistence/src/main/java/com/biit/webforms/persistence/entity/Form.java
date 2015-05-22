@@ -691,7 +691,6 @@ public class Form extends BaseForm implements IWebformsFormView {
 			}
 		}
 		return -1;
-
 	}
 	
 	/**
