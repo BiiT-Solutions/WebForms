@@ -1,6 +1,8 @@
 package com.biit.webforms.gui.tests.webpage;
 
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 import com.biit.gui.tester.VaadinGuiTester;
@@ -610,6 +612,7 @@ public class Designer extends VaadinGuiWebpage {
 			return getButtonElement(FIELD_BUTTON_CAPTION);
 		} else {
 			getOthersButton().click();
+			getOthersButton().waitForVaadin();
 			return getButtonElement(FIELD_BUTTON_CAPTION);
 		}
 	}
@@ -619,6 +622,7 @@ public class Designer extends VaadinGuiWebpage {
 			return getButtonElement(SUBANSWER_BUTTON_CAPTION);
 		} else {
 			getOthersButton().click();
+			getOthersButton().waitForVaadin();
 			return getButtonElement(SUBANSWER_BUTTON_CAPTION);
 		}
 	}
@@ -628,6 +632,7 @@ public class Designer extends VaadinGuiWebpage {
 			return getButtonElement(TEXT_BUTTON_CAPTION);
 		} else {
 			getOthersButton().click();
+			getOthersButton().waitForVaadin();
 			return getButtonElement(TEXT_BUTTON_CAPTION);
 		}
 	}
@@ -701,5 +706,11 @@ public class Designer extends VaadinGuiWebpage {
 	public void toggleExpandedTableRow(int treeTableRow) {
 		getTreeTable().getRow(treeTableRow).toggleExpanded();
 		getTreeTable().getRow(treeTableRow).waitForVaadin();
+	}
+
+	public void closeOthersButton() {
+		getTextButton().focus();
+		Actions builder = new Actions(getDriver());
+		builder.sendKeys(Keys.ESCAPE).perform();
 	}
 }
