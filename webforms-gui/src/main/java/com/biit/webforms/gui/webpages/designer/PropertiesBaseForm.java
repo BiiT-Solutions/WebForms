@@ -24,7 +24,7 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 
 	@Override
 	protected void firePropertyUpdateOnExitListener() {
-		// TODO Auto-generated method stub
+		//Form updateTime is not updated when detached. 
 	}
 
 	@Override

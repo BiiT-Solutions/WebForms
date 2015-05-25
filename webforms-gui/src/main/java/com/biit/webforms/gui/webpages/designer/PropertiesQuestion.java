@@ -191,8 +191,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 	@Override
 	protected void firePropertyUpdateOnExitListener() {
-		// TODO Auto-generated method stub
-
+		updateElement();
 	}
 
 	@Override

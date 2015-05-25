@@ -102,7 +102,6 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 	private void updateAndExit() {
 		// Check UI is different of null due to the detach is also triggered when UI.close() is called.
 		if (UI.getCurrent() != null) {
-			updateElement();
 			firePropertyUpdateOnExitListener();
 		}
 	}
@@ -142,7 +141,10 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 	private class FieldValueChangeListener implements ValueChangeListener {
 		private static final long serialVersionUID = -5503553212373718399L;
 
-		AbstractField<?> field;
+		private AbstractField<?> field;
+		private Object value = null;
+		//First time, when initializing component changed value from empty to element label.
+		private boolean initializing = true;
 
 		public FieldValueChangeListener(AbstractField<?> field) {
 			this.field = field;
@@ -150,9 +152,11 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 
 		@Override
 		public void valueChange(ValueChangeEvent event) {
-			if (field.isAttached() && field.isEnabled()) {
+			if (field.isAttached() && field.isEnabled() && !initializing && !field.getValue().equals(value)) {
 				updateElement();
 			}
+			initializing = false;
+			value = field.getValue();
 		}
 	};
 }

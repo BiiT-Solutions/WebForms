@@ -26,8 +26,7 @@ public class PropertiesText extends StorableObjectProperties<Text> {
 
 	@Override
 	protected void firePropertyUpdateOnExitListener() {
-		// TODO Auto-generated method stub
-
+		updateElement();
 	}
 
 	@Override

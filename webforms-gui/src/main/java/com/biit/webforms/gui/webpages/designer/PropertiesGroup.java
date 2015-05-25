@@ -89,8 +89,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 
 	@Override
 	protected void firePropertyUpdateOnExitListener() {
-		// TODO Auto-generated method stub
-
+		updateElement();
 	}
 
 }

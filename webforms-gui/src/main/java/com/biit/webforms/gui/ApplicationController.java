@@ -674,6 +674,8 @@ public class ApplicationController {
 	}
 
 	public void saveForm() throws UnexpectedDatabaseException, ElementCannotBePersistedException {
+		formInUse.setUpdatedBy(getUser());
+		formInUse.setUpdateTime();
 		Form savedForm = saveForm(formInUse);
 		formInUse = savedForm;
 		setLastEditedForm(formInUse);
@@ -682,9 +684,6 @@ public class ApplicationController {
 
 	@Transactional
 	public Form saveForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
-		form.setUpdatedBy(getUser());
-		form.setUpdateTime();
-
 		Form mergedForm = form;
 
 		if (form instanceof Block) {
