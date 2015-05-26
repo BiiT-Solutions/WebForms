@@ -143,7 +143,7 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 
 		private AbstractField<?> field;
 		private Object value = null;
-		//First time, when initializing component changed value from empty to element label.
+		// First time, when initializing component changed value from empty to element label.
 		private boolean initializing = true;
 
 		public FieldValueChangeListener(AbstractField<?> field) {
@@ -152,7 +152,8 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 
 		@Override
 		public void valueChange(ValueChangeEvent event) {
-			if (field.isAttached() && field.isEnabled() && !initializing && !field.getValue().equals(value)) {
+			if (field.isAttached() && field.isEnabled() && !initializing && field.getValue() != null
+					&& !field.getValue().equals(value)) {
 				updateElement();
 			}
 			initializing = false;
