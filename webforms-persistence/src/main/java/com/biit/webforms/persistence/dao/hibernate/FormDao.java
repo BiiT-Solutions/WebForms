@@ -58,7 +58,6 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 		if (form.getCreationTime() == null) {
 			form.setCreationTime();
 		}
-		form.setUpdateTime();
 
 		Form mergedForm = super.merge(form);
 		if (mergedForm != null) {
@@ -75,8 +74,6 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 		if (form.getCreationTime() == null) {
 			form.setCreationTime();
 		}
-		form.setUpdateTime();
-
 		return super.makePersistent(form);
 	}
 

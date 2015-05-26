@@ -207,6 +207,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 		newVersion.setCreatedBy(userId);
 		newVersion.setUpdatedBy(userId);
 		newVersion.setStatus(FormWorkStatus.DESIGN);
+		newVersion.setCreationTime();
+		newVersion.setUpdateTime();
 		return newVersion;
 	}
 

@@ -516,6 +516,8 @@ public class FormManager extends SecuredWebPage {
 				}
 				form.setLinkedForms(linkWindow.getValue());
 				try {
+					form.setUpdatedBy(UserSessionHandler.getUser());
+					form.setUpdateTime();
 					UserSessionHandler.getController().saveForm(form);
 					formTable.refreshTableData();
 					formTable.selectForm(form);

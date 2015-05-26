@@ -89,8 +89,7 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 
 	@Override
 	protected void firePropertyUpdateOnExitListener() {
-		// TODO Auto-generated method stub
-
+		updateElement();
 	}
 
 }

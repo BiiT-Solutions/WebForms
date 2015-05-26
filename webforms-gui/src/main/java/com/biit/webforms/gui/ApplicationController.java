@@ -674,6 +674,8 @@ public class ApplicationController {
 	}
 
 	public void saveForm() throws UnexpectedDatabaseException, ElementCannotBePersistedException {
+		formInUse.setUpdatedBy(getUser());
+		formInUse.setUpdateTime();
 		Form savedForm = saveForm(formInUse);
 		formInUse = savedForm;
 		setLastEditedForm(formInUse);
@@ -682,9 +684,6 @@ public class ApplicationController {
 
 	@Transactional
 	public Form saveForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
-		form.setUpdatedBy(getUser());
-		form.setUpdateTime();
-
 		Form mergedForm = form;
 
 		if (form instanceof Block) {
@@ -748,12 +747,12 @@ public class ApplicationController {
 		try {
 			if (!form.getLabel().equals(label) || !form.getDescription().equals(description)) {
 				setUnsavedFormChanges(true);
+				form.setDescription(description);
+				form.setLabel(label);
+				form.setUpdatedBy(UserSessionHandler.getUser());
+				form.setUpdateTime();
 				logInfoStart("updateForm", form, label, description);
 			}
-			form.setDescription(description);
-			form.setLabel(label);
-			form.setUpdatedBy(UserSessionHandler.getUser());
-			form.setUpdateTime();
 		} catch (FieldTooLongException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -764,14 +763,13 @@ public class ApplicationController {
 			if (!answer.getLabel().equals(label) || !answer.getDescription().equals(description)
 					|| !answer.getValue().equals(value)) {
 				setUnsavedFormChanges(true);
+				answer.setValue(value);
+				answer.setLabel(label);
+				answer.setDescription(description);
+				answer.setUpdatedBy(UserSessionHandler.getUser());
+				answer.setUpdateTime();
 				logInfoStart("updateAnswer", answer, value, label, description);
 			}
-
-			answer.setValue(value);
-			answer.setLabel(label);
-			answer.setDescription(description);
-			answer.setUpdatedBy(UserSessionHandler.getUser());
-			answer.setUpdateTime();
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -781,13 +779,12 @@ public class ApplicationController {
 		try {
 			if (!category.getName().equals(label) || !category.getLabel().equals(label)) {
 				setUnsavedFormChanges(true);
+				category.setName(name);
+				category.setLabel(label);
+				category.setUpdatedBy(UserSessionHandler.getUser());
+				category.setUpdateTime();
 				logInfoStart("updateCategory", category, name, label);
 			}
-
-			category.setName(name);
-			category.setLabel(label);
-			category.setUpdatedBy(UserSessionHandler.getUser());
-			category.setUpdateTime();
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -797,14 +794,13 @@ public class ApplicationController {
 		try {
 			if (!group.getName().equals(name) || !group.getLabel().equals(label) || group.isRepeatable() != repeatable) {
 				setUnsavedFormChanges(true);
+				group.setName(name);
+				group.setLabel(label);
+				group.setRepeatable(repeatable);
+				group.setUpdatedBy(UserSessionHandler.getUser());
+				group.setUpdateTime();
 				logInfoStart("updateGroup", group, name, label, repeatable);
 			}
-
-			group.setName(name);
-			group.setLabel(label);
-			group.setRepeatable(repeatable);
-			group.setUpdatedBy(UserSessionHandler.getUser());
-			group.setUpdateTime();
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -822,20 +818,19 @@ public class ApplicationController {
 					|| (question.getAnswerSubformat() != null && !question.getAnswerSubformat().equals(answerSubformat))
 					|| question.isHorizontal() != horizontal) {
 				setUnsavedFormChanges(true);
+				question.setName(name);
+				question.setLabel(label);
+				question.setDescription(description);
+				question.setAnswerType(answerType);
+				question.setAnswerFormat(answerFormat);
+				question.setAnswerSubformat(answerSubformat);
+				question.setMandatory(mandatory);
+				question.setHorizontal(horizontal);
+				question.setUpdatedBy(UserSessionHandler.getUser());
+				question.setUpdateTime();
 				logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat,
 						answerSubformat, horizontal);
 			}
-
-			question.setName(name);
-			question.setLabel(label);
-			question.setDescription(description);
-			question.setAnswerType(answerType);
-			question.setAnswerFormat(answerFormat);
-			question.setAnswerSubformat(answerSubformat);
-			question.setMandatory(mandatory);
-			question.setHorizontal(horizontal);
-			question.setUpdatedBy(UserSessionHandler.getUser());
-			question.setUpdateTime();
 		} catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException
 				| InvalidAnswerSubformatException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

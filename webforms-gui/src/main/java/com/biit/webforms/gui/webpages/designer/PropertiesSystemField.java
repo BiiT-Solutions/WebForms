@@ -64,8 +64,7 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 
 	@Override
 	protected void firePropertyUpdateOnExitListener() {
-		// TODO Auto-generated method stub
-
+		updateElement();
 	}
 
 	@Override
