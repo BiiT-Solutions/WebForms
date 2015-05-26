@@ -710,7 +710,14 @@ public class Form extends BaseForm implements IWebformsFormView {
 				
 		Form form = (Form) objectToMove.getAncestor(Form.class);
 		form.updateRuleReferences();
-		
 		return newInstanceOfObjectToMove;
+	}
+	
+	@Override
+	public void updateChildrenSortSeqs() {
+		super.updateChildrenSortSeqs();
+		for(Flow flow: getFlows()){
+			flow.updateConditionSortSeq();
+		}
 	}
 }
