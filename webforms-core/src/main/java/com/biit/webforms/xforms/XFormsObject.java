@@ -37,6 +37,7 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 public abstract class XFormsObject<T extends TreeObject> {
 	protected static final String RANGE_TOKEN = "between";
 	protected static final String XPATH_DATE_FORMAT = "yyyy-MM-dd";
+	private static final String DATE_FORMAT = "[Y]/[M01]/[D01]";
 	private static final String CSS_CLASS = "webforms-element";
 
 	private T source;
@@ -377,7 +378,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 				visibility
 						.append("string-length(format-date($")
 						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getBindingName()).append(", '[MNn,*-3]/[D01]/[Y]')) &gt; 0");
+								.getBindingName()).append(", '"+DATE_FORMAT+"')) &gt; 0");
 				// Any input field must have an answer.
 			} else {
 				visibility
@@ -500,14 +501,14 @@ public abstract class XFormsObject<T extends TreeObject> {
 			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
 			visibility.append(" format-date(adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
 					.append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
-					.append("'), '[MNn,*-3]/[D01]/[Y]')");
+					.append("'), '"+DATE_FORMAT+"')");
 		} else {
 			visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
 					.append("/text() ");
 			visibility.append(token.getType().getOrbeonRepresentation()).append(
 					" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
 			visibility.append(xPathOperation).append("('P").append(token.getValue())
-					.append(token.getDatePeriodUnit().getAbbreviature()).append("'), '[MNn,*-3]/[D01]/[Y]')");
+					.append(token.getDatePeriodUnit().getAbbreviature()).append("'), '"+DATE_FORMAT+"')");
 		}
 	}
 
