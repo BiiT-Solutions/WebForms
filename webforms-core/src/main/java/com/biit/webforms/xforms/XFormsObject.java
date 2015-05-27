@@ -455,13 +455,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 					Date date;
 					try {
 						date = formatter.parse(token.getValue());
-						// Convert date to Orbeon string format.
+						// Compare it as string. Less problems with null dates. $dateField/text() ge '2015-05-27'
 						formatter.applyPattern(XPATH_DATE_FORMAT);
-						visibility.append("xs:date($")
+						visibility.append("$")
 								.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
-								.append(") ");
+								.append("/text() ");
 						visibility.append(token.getType().getOrbeonRepresentation());
-						visibility.append(" xs:date('").append(formatter.format(date)).append("')");
+						visibility.append(" '").append(formatter.format(date)).append("'");
 					} catch (ParseException e) {
 						throw new InvalidDateException(e.getMessage());
 					}
@@ -495,19 +495,19 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// adjust-date-to-timezone is used to remove timestamp
 			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
-			visibility.append("xs:date($")
-					.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName()).append(") ");
+			visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+					.append("/text() ");
 			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
-			visibility.append(" adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
+			visibility.append(" format-date(adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
 					.append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
-					.append("')");
+					.append("'), '[MNn,*-3]/[D01]/[Y]')");
 		} else {
-			visibility.append("xs:date($")
-					.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName()).append(") ");
+			visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+					.append("/text() ");
 			visibility.append(token.getType().getOrbeonRepresentation()).append(
-					" adjust-date-to-timezone(current-date(), ()) + xs:");
+					" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
 			visibility.append(xPathOperation).append("('P").append(token.getValue())
-					.append(token.getDatePeriodUnit().getAbbreviature()).append("')");
+					.append(token.getDatePeriodUnit().getAbbreviature()).append("'), '[MNn,*-3]/[D01]/[Y]')");
 		}
 	}
 

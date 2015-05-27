@@ -115,7 +115,7 @@ class XFormsHelper {
 	}
 
 	/**
-	 * Return the toknes needed to represent the previous visibility of a node. The previous visibility is the answers
+	 * Return the tokens needed to represent the previous visibility of a node. The previous visibility is the answers
 	 * of a questions needed to make this element visible. It is analyzed by flow and not by question to allow
 	 * recursivity.
 	 * 
@@ -131,12 +131,15 @@ class XFormsHelper {
 			if (flowsFromOrigin != null && flowsFromOrigin.size() > 1) {
 				tokens.addAll(flow.getConditionSimpleTokens());
 				if (flow.getOrigin() instanceof Question) {
-					if (!tokens.isEmpty()) {
-						tokens.add(Token.and());
-					}
-					tokens.add(new TokenAnswerNeeded((BaseQuestion) flow.getOrigin(), ((Question) flow.getOrigin())
-							.getAnswerFormat() != null
-							&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+					// Input field must filled up!
+					//if (((Question) flow.getOrigin()).getAnswerType().equals(AnswerType.INPUT)) {
+						if (!tokens.isEmpty()) {
+							tokens.add(Token.and());
+						}
+						tokens.add(new TokenAnswerNeeded((BaseQuestion) flow.getOrigin(), ((Question) flow.getOrigin())
+								.getAnswerFormat() != null
+								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+					//}
 				}
 				return tokens;
 			}
