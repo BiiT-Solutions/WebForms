@@ -23,7 +23,7 @@ import com.biit.webforms.persistence.entity.SimpleFormView;
 public class SimpleFormViewDao implements ISimpleFormViewDao {
 
 	private Class<SimpleFormView> type;
-	
+
 	@PersistenceContext(unitName = "webformsPersistenceUnit")
 	@Qualifier(value = "webformsManagerFactory")
 	private EntityManager entityManager;
@@ -52,7 +52,8 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleFormView> getAll() {
-		Query query = entityManager.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, max.maxversion "
+		Query query = entityManager
+				.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, max.maxversion "
 						+ "FROM tree_forms tf INNER JOIN "
 						+ "(SELECT MAX(version) AS maxversion, label, organizationId FROM tree_forms "
 						+ "GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
@@ -102,10 +103,10 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 	private Set<Integer> getLinkedFormVersions(long formId) {
 		Set<Integer> linkedVersions = new HashSet<>();
 
-		Query query = entityManager.createNativeQuery("SELECT linkedFormVersions FROM linked_form_versions WHERE formId="
-				+ formId);
-		List<Object[]> rows = query.getResultList();
-		
+		Query query = entityManager
+				.createNativeQuery("SELECT linkedFormVersions FROM linked_form_versions WHERE formId=" + formId);
+		List<Object> rows = query.getResultList();
+
 		for (Object row : rows) {
 			linkedVersions.add((Integer) row);
 		}
@@ -115,7 +116,8 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleFormView> getFormsThatUse(Block block) {
-		Query query = entityManager.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, max.maxversion "
+		Query query = entityManager
+				.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, max.maxversion "
 						+ " FROM tree_forms tf "
 						+ " INNER JOIN (SELECT MAX(version) AS maxversion, label, organizationId FROM tree_forms "
 						+ " GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
