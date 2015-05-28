@@ -375,10 +375,11 @@ public abstract class XFormsObject<T extends TreeObject> {
 				visibility.append(getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()));
 				// Date is a specific case. Already has some data.
 			} else if (((TokenAnswerNeeded) token).isDateField()) {
+				//Dates are uses as string due to avoid error when fields are hidden and have an empty value. 
 				visibility
-						.append("string-length(format-date($")
+						.append("string-length($")
 						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getBindingName()).append(", '"+DATE_FORMAT+"')) &gt; 0");
+								.getBindingName()).append("/text()) &gt; 0");
 				// Any input field must have an answer.
 			} else {
 				visibility
