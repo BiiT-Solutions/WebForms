@@ -37,7 +37,7 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 public abstract class XFormsObject<T extends TreeObject> {
 	protected static final String RANGE_TOKEN = "between";
 	protected static final String XPATH_DATE_FORMAT = "yyyy-MM-dd";
-	private static final String DATE_FORMAT = "[Y]/[M01]/[D01]";
+	private static final String DATE_FORMAT = "[Y]-[M01]-[D01]";
 	private static final String CSS_CLASS = "webforms-element";
 
 	private T source;
