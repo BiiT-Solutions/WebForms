@@ -42,6 +42,7 @@ public class CommonTreeElementProperties extends VaadinGuiView {
 	public void setTextFieldValue(String textFieldCaption, String value) throws FieldNotEditableException {
 		checkEditable(getTextField(textFieldCaption));
 		getTextField(textFieldCaption).setValue(value);
+		getTextField(textFieldCaption).click();
 	}
 
 	public String getTextAreaValue(String textAreaCaption) {

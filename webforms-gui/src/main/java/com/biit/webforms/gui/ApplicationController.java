@@ -777,7 +777,7 @@ public class ApplicationController {
 
 	public void updateCategory(Category category, String name, String label) {
 		try {
-			if (!category.getName().equals(label) || !category.getLabel().equals(label)) {
+			if (!category.getName().equals(name) || !category.getLabel().equals(label)) {
 				setUnsavedFormChanges(true);
 				category.setName(name);
 				category.setLabel(label);
