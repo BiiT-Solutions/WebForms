@@ -1,5 +1,7 @@
 package com.biit.webforms.xforms;
 
+import java.io.UnsupportedEncodingException;
+
 import org.testng.annotations.Test;
 
 import com.biit.form.exceptions.CharacterNotAllowedException;
@@ -32,7 +34,7 @@ public class XFormExporterTests {
 			InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType,
 			NotValidTreeObjectException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError, ElementIsReadOnly, FlowNotAllowedException {
+			PostCodeRuleSyntaxError, ElementIsReadOnly, FlowNotAllowedException, UnsupportedEncodingException {
 		Form form = FormUtils.createCompleteForm();
 		new XFormsExporter(form).generateXFormsLanguage();
 	}

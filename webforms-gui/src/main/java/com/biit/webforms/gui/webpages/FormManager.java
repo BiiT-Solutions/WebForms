@@ -3,6 +3,7 @@ package com.biit.webforms.gui.webpages;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -207,7 +208,7 @@ public class FormManager extends SecuredWebPage {
 			}
 		});
 		// Add browser window opener to the button.
-		upperMenu.addPreviewXForms(new ClickListener() {
+		upperMenu.addPreviewXFormsListener(new ClickListener() {
 			private static final long serialVersionUID = -8790434440652432643L;
 
 			@Override
@@ -215,7 +216,7 @@ public class FormManager extends SecuredWebPage {
 				previewXForms();
 			}
 		});
-		upperMenu.addPublishXForms(new ClickListener() {
+		upperMenu.addPublishXFormsListener(new ClickListener() {
 			private static final long serialVersionUID = -4167515599696676260L;
 
 			@Override
@@ -223,7 +224,7 @@ public class FormManager extends SecuredWebPage {
 				publishXForms();
 			}
 		});
-		upperMenu.addDownloadXForms(new ClickListener() {
+		upperMenu.addDownloadXFormsListener(new ClickListener() {
 			private static final long serialVersionUID = -2359606371849802798L;
 
 			@Override
@@ -271,7 +272,7 @@ public class FormManager extends SecuredWebPage {
 				exportBaseFormMetadataJson();
 			}
 		});
-		upperMenu.addRemoveForm(new ClickListener() {
+		upperMenu.addRemoveFormListener(new ClickListener() {
 			private static final long serialVersionUID = -3264661636078442579L;
 
 			@Override
@@ -362,7 +363,8 @@ public class FormManager extends SecuredWebPage {
 					try {
 						return new XFormsExporter(form).generateXFormsLanguage();
 					} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
-							| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException e) {
+							| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException
+							| UnsupportedEncodingException e) {
 						WebformsLogger.errorMessage(this.getClass().getName(), e);
 						return null;
 					}

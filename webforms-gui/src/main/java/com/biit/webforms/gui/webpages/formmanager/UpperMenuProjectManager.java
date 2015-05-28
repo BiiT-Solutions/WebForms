@@ -165,19 +165,19 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		impactAnalysis.addClickListener(listener);
 	}
 
-	public void addPreviewXForms(ClickListener listener) {
+	public void addPreviewXFormsListener(ClickListener listener) {
 		previewXForms.addClickListener(listener);
 	}
 
-	public void addPublishXForms(ClickListener listener) {
+	public void addPublishXFormsListener(ClickListener listener) {
 		publishXForms.addClickListener(listener);
 	}
 
-	public void addDownloadXForms(ClickListener listener) {
+	public void addDownloadXFormsListener(ClickListener listener) {
 		downloadXForms.addClickListener(listener);
 	}
 
-	public void addRemoveForm(ClickListener listener) {
+	public void addRemoveFormListener(ClickListener listener) {
 		removeForm.addClickListener(listener);
 	}
 

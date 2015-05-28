@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ public class XFormsExporter {
 	private Form form;
 	private XFormsHelper xFormsHelper;
 	private List<XFormsCategory> xFormsCategories;
+	private final static String charset = "UTF-8";
 
 	public XFormsExporter(Form form) throws NotValidTreeObjectException, NotValidChildException {
 		this.form = form;
@@ -65,15 +67,15 @@ public class XFormsExporter {
 	 * @throws DateRuleSyntaxError
 	 */
 	public InputStream generateXFormsLanguage() throws NotExistingDynamicFieldException, InvalidDateException,
-			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+			StringRuleSyntaxError, PostCodeRuleSyntaxError, UnsupportedEncodingException {
 		String xforms = generateXFormsForm();
 		try {
 			xforms = XmlUtils.format(xforms);
-			byte[] data = xforms.getBytes();
+			byte[] data = xforms.getBytes(charset);
 			// convert array of bytes into file
 			InputStream inputStream = new ByteArrayInputStream(data);
 			return inputStream;
-		} catch (Exception e) {
+		} catch (UnsupportedEncodingException e) {
 			WebformsLogger.errorMessage(XFormsExporter.class.getName(), e);
 			saveToFile(xforms);
 			throw e;
