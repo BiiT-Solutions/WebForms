@@ -114,44 +114,44 @@ public class PdfRowGenerator {
 		bt.setBorderColor(Color.black);
 		bt.setBorderWidth(BaseField.BORDER_WIDTH_THIN);
 		PdfFormField radioGroup = bt.getRadioGroup(false, true);
-
-		// TODO limited to only one level answer
-		for (TreeObject object : question.getChildren()) {
-			Answer answer = (Answer) object;
-			PdfRow row = new PdfRow(RADIO_FIELD_ROW, RADIO_FIELD_COL);
-
-			// if (!prefix.equals(answer.getPrefix())) {
-			// if (!answer.getPrefix().isEmpty()) {
-			// Paragraph elementPrefix = new
-			// Paragraph(answer.getPrefix().get(0), NORMAL_FONT);
-			// PdfPCell field = new PdfPCell(elementPrefix);
-			// field.setBorder(BORDER);
-			// field.setPaddingLeft(PADDING);
-			// field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
-			// field.setCellEvent(new FormRadioField(writer, fieldName,
-			// answer.getName() + "-cat", radioGroup, 0));
-			// table.addCell(field);
-			// }
-			// }
-
-			PdfPCell field = PdfPCellGenerator.generateText(answer.getLabel(), RADIO_FIELD_COL);
-			if (answer.getChildren().isEmpty()) {
-				field.setPaddingLeft(PADDING);
-				field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), answer.getScapedPathName(), radioGroup, 0));
-			} else {
-				field.setPaddingLeft(PADDING * 2);
-				// TODO possible fix?
-				field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), answer.getScapedPathName(), radioGroup, PADDING));
-			}
-			field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
-			row.addCell(field);
-			rows.add(row);
-
-			// Add answer description if it has
-			if (answer.getDescription() != null && !answer.getDescription().isEmpty()) {
-				rows.add(generateAnswerDescriptionRow(answer));
-			}
+		
+		for(TreeObject answer: question.getChildren()){
+			List<PdfRow> newRows = generateRadioFieldRows(writer,radioGroup, question, (Answer) answer);
+			rows.addAll(newRows);
 		}
+		
+		return rows;
+	}
+	
+	public static List<PdfRow> generateRadioFieldRows(PdfWriter writer, PdfFormField radioGroup, Question question, Answer answer) throws BadBlockException {
+		
+		List<PdfRow> rows = new ArrayList<PdfRow>();
+
+		PdfRow row = new PdfRow(RADIO_FIELD_ROW, RADIO_FIELD_COL);
+		
+		PdfPCell field = PdfPCellGenerator.generateText(answer.getLabel(), RADIO_FIELD_COL);
+		//Its parent it's not an answer then they are first level. If not they are subanswers.
+		if (!(answer.getParent() instanceof Answer)) {
+			field.setPaddingLeft(PADDING);
+			field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), answer.getScapedPathName(), radioGroup, 0));
+		} else {
+			field.setPaddingLeft(PADDING * 2);
+			field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), answer.getScapedPathName(), radioGroup, PADDING));
+		}
+		field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
+		row.addCell(field);
+		rows.add(row);
+
+		// Add answer description if it has
+		if (answer.getDescription() != null && !answer.getDescription().isEmpty()) {
+			rows.add(generateAnswerDescriptionRow(answer));
+		}
+
+		for (TreeObject subanswer : answer.getChildren()) {
+			List<PdfRow> newRows = generateRadioFieldRows(writer,radioGroup, question, (Answer) subanswer);
+			rows.addAll(newRows);
+		}
+		
 		return rows;
 	}
 
@@ -166,41 +166,40 @@ public class PdfRowGenerator {
 	public static List<PdfRow> generateCheckFieldRows(PdfWriter writer, Question question) throws BadBlockException {
 		List<PdfRow> rows = new ArrayList<PdfRow>();
 
-		// TODO limited to only one level answer
-		for (TreeObject object : question.getChildren()) {
-			Answer answer = (Answer) object;
-			PdfRow row = new PdfRow(CHECK_FIELD_ROW, CHECK_FIELD_COL);
-
-			// if (!prefix.equals(answer.getPrefix())) {
-			// if (!answer.getPrefix().isEmpty()) {
-			// PdfPCell field = new PdfPCell(new
-			// Phrase(answer.getPrefix().get(0)));
-			// field.setPaddingLeft(PADDING);
-			// field.setBorder(BORDER);
-			// field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
-			// field.setCellEvent(new FormCheckField(writer, answer.getName() +
-			// "-cat", 0));
-			// table.addCell(field);
-			// }
-			// }
-
-			PdfPCell field = PdfPCellGenerator.generateText(answer.getLabel(), CHECK_FIELD_COL);
-			if (answer.getChildren().isEmpty()) {
-				field.setPaddingLeft(PADDING);
-				field.setCellEvent(new FormCheckField(writer, answer.getScapedPathName(), 0));
-			} else {
-				field.setPaddingLeft(PADDING * 2);
-				field.setCellEvent(new FormCheckField(writer, answer.getScapedPathName(), PADDING));
-			}
-			field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
-			row.addCell(field);
-			rows.add(row);
-
-			// Add answer description if it has
-			if (answer.getDescription() != null && !answer.getDescription().isEmpty()) {
-				rows.add(generateAnswerDescriptionRow(answer));
-			}
+		for (TreeObject answer: question.getChildren()) {
+			List<PdfRow> newRows = generateCheckFieldRows(writer, question, (Answer) answer);
+			rows.addAll(newRows);
 		}
+		return rows;
+	}
+	
+	public static List<PdfRow> generateCheckFieldRows(PdfWriter writer, Question question, Answer answer) throws BadBlockException {
+		List<PdfRow> rows = new ArrayList<PdfRow>();
+
+		PdfRow row = new PdfRow(CHECK_FIELD_ROW, CHECK_FIELD_COL);
+
+		PdfPCell field = PdfPCellGenerator.generateText(answer.getLabel(), CHECK_FIELD_COL);
+		if (!(answer.getParent() instanceof Answer)) {
+			field.setPaddingLeft(PADDING);
+			field.setCellEvent(new FormCheckField(writer, answer.getScapedPathName(), 0));
+		} else {
+			field.setPaddingLeft(PADDING * 2);
+			field.setCellEvent(new FormCheckField(writer, answer.getScapedPathName(), PADDING));
+		}
+		field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
+		row.addCell(field);
+		rows.add(row);
+
+		// Add answer description if it has
+		if (answer.getDescription() != null && !answer.getDescription().isEmpty()) {
+			rows.add(generateAnswerDescriptionRow(answer));
+		}
+		
+		for (TreeObject subanswer : answer.getChildren()) {
+			List<PdfRow> newRows = generateCheckFieldRows(writer, question, (Answer) subanswer);
+			rows.addAll(newRows);
+		}
+
 		return rows;
 	}
 
