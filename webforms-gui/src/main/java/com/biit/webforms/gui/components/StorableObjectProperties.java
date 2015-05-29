@@ -61,6 +61,11 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	protected void initValues() {
 		String valueCreatedBy = "";
 		String valueUpdatedBy = "";
+		
+		if(getInstance()==null){
+			return;
+		}
+		
 		try {
 			valueCreatedBy = getInstance().getCreatedBy() == null ? "" : LiferayServiceAccess.getInstance()
 					.getUserById(getInstance().getCreatedBy()).getEmailAddress();
