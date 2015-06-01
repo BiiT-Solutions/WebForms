@@ -126,7 +126,7 @@ public class ComponentCell extends CustomComponent implements LayoutClickNotifie
 		}
 	}
 
-	private void registerTouchCallback() {
+	protected void registerTouchCallback() {
 		if (touchCallback != null) {
 			addLayoutClickListener(touchCallback);
 			Iterator<Component> componentItr = rootLayout.iterator();
@@ -140,7 +140,7 @@ public class ComponentCell extends CustomComponent implements LayoutClickNotifie
 		}
 	}
 
-	private void unregisterTouchCallback() {
+	protected void unregisterTouchCallback() {
 		if (touchCallback != null) {
 			removeLayoutClickListener(touchCallback);
 			Iterator<Component> componentItr = rootLayout.iterator();

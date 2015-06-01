@@ -182,7 +182,8 @@ public class TableTreeObject extends TreeTable {
 			}
 
 			// Update
-			setValuesToItem(item, element);
+			((ComponentCellTreeObject)item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).getValue()).update(element);
+			//setValuesToItem(item, element);
 		}
 	}
 
@@ -215,26 +216,6 @@ public class TableTreeObject extends TreeTable {
 			removeRow(child);
 		}
 		removeItem(element);
-	}
-
-	/**
-	 * Adds item to table. This function is a specialization of
-	 * {@link TreeTable#addItemAfter(Object, Object)} for form members.
-	 * 
-	 * @param element
-	 */
-	public void addRowAfter(Object previousItemId, TreeObject element, TreeObject parent) {
-		if (element != null) {
-			Item item = addItemAfter(previousItemId, (Object) element);
-			if (parent != null) {
-				setChildrenAllowed(parent, true);
-				setParent(element, parent);
-				setCollapsed(parent, false);
-			}
-			setValuesToItem(item, element);
-			setValue(element);
-			setChildrenAllowed(element, false);
-		}
 	}
 
 	/**
@@ -410,5 +391,4 @@ public class TableTreeObject extends TreeTable {
 		}
 		return element;
 	}
-
 }

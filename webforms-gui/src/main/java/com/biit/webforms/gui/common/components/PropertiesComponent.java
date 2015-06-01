@@ -68,7 +68,6 @@ public class PropertiesComponent extends CustomComponent implements Component.Fo
 					}
 				});
 				newInstance.addNewElementListener(new ElementAddedListener() {
-
 					@Override
 					public void elementAdded(Object newElement) {
 						fireElementAddedListener(newElement);

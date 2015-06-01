@@ -75,13 +75,6 @@ public class TableTreeObjectLabel extends TableTreeObject {
 		}
 	}
 
-	public void updateVisibilityIcon(TreeObject treeObject) {
-		updateRow(treeObject);
-		for (TreeObject child : treeObject.getChildren()) {
-			updateVisibilityIcon(child);
-		}
-	}
-
 	public Set<Object> getCollapsedStatus(TreeObject treeObject) {
 		Set<Object> collapsedItems = new HashSet<>();
 		getCollapsedStatus(treeObject, collapsedItems);

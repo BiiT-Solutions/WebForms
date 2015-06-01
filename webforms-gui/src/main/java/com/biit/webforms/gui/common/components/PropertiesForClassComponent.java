@@ -81,7 +81,6 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 	}
 
 	private void addValueChangeListenerToField(AbstractField<?> component) {
-		// if(field.isEnabled())
 		component.setImmediate(true);
 		component.addValueChangeListener(new FieldValueChangeListener(component));
 	}

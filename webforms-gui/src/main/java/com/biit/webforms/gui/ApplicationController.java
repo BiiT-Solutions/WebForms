@@ -55,6 +55,7 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
+import com.biit.webforms.gui.exceptions.LinkCanOnlyBePerformedOnWholeBlock;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -929,7 +930,7 @@ public class ApplicationController {
 	 * @throws ElementIsReadOnly
 	 */
 	public TreeObject linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm, EmptyBlockCannotBeInserted,
-			ElementIsReadOnly {
+			ElementIsReadOnly, LinkCanOnlyBePerformedOnWholeBlock {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' link Block '"
 				+ block + "' in '" + formInUse + "' ");
 
@@ -960,8 +961,7 @@ public class ApplicationController {
 				return null;
 			}
 		} else {
-			MessageManager.showError(LanguageCodes.ERROR_LINK_BLOCK_NOT_COMPLETE);
-			return null;
+			throw new LinkCanOnlyBePerformedOnWholeBlock();
 		}
 	}
 

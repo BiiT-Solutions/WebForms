@@ -40,6 +40,7 @@ import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.TableTreeObjectLabel;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.WindowTreeObject;
+import com.biit.webforms.gui.exceptions.LinkCanOnlyBePerformedOnWholeBlock;
 import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectHidden;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
@@ -451,7 +452,7 @@ public class Designer extends SecuredWebPage {
 								}
 							}
 							upperMenu.updateHideButton(row.isHiddenElement());
-							table.updateVisibilityIcon(row);
+							table.updateRow(row);
 						}
 					} else {
 						MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
@@ -750,6 +751,8 @@ public class Designer extends SecuredWebPage {
 							LanguageCodes.WARNING_DESCRIPTION_EMPTY_BLOCK);
 				} catch (ElementIsReadOnly e) {
 					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				} catch (LinkCanOnlyBePerformedOnWholeBlock e) {
+					MessageManager.showError(LanguageCodes.ERROR_LINK_BLOCK_NOT_COMPLETE);
 				}
 			}
 		});

@@ -15,6 +15,7 @@ public class ComponentCellTreeObject extends ComponentCell {
 	}
 
 	public void update(TreeObject treeObject) {
+		unregisterTouchCallback();
 		clear();
 		if (treeObject instanceof BaseForm) {
 			addLabel(treeObject.getLabel());
@@ -27,6 +28,7 @@ public class ComponentCellTreeObject extends ComponentCell {
 		if (statusIconProvider.getIcon(treeObject) != null) {
 			addIcon(statusIconProvider.getIcon(treeObject));
 		}
+		registerTouchCallback();
 	}
 
 }
