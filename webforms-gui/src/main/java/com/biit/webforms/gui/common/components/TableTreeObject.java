@@ -183,7 +183,6 @@ public class TableTreeObject extends TreeTable {
 
 			// Update
 			((ComponentCellTreeObject)item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).getValue()).update(element);
-			//setValuesToItem(item, element);
 		}
 	}
 
