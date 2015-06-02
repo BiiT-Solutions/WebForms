@@ -68,7 +68,7 @@ import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.biit.webforms.validators.ValidateFormComplete;
-import com.biit.webforms.xforms.XFormsExporter;
+import com.biit.webforms.xforms.XFormsSimpleFormExporter;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -361,7 +361,7 @@ public class FormManager extends SecuredWebPage {
 				@Override
 				public InputStream getInputStream() {
 					try {
-						return new XFormsExporter(form).generateXFormsLanguage();
+						return new XFormsSimpleFormExporter(form).generateXFormsLanguage();
 					} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
 							| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException
 							| UnsupportedEncodingException e) {

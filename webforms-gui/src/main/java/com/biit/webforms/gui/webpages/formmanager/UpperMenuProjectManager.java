@@ -13,7 +13,7 @@ import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.theme.ThemeIcons;
-import com.biit.webforms.xforms.XFormsExporter;
+import com.biit.webforms.xforms.XFormsSimpleFormExporter;
 import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickListener;
@@ -82,7 +82,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		exportBaseFormMetadataJson.setVisible(enableExportJson);
 
 		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
-		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsExporter.APP_NAME);
+		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsSimpleFormExporter.APP_NAME);
 		opener.setFeatures("target=_new");
 		previewXForms = new IconButton(LanguageCodes.CAPTION_PREVIEW_XFORMS, ThemeIcons.PREVIEW_XFORMS,
 				LanguageCodes.TOOLTIP_PREVIEW_XFORMS, IconSize.BIG);

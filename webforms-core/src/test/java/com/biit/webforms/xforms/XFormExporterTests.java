@@ -20,7 +20,7 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyExcepti
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.utils.FormUtils;
-import com.biit.webforms.xforms.XFormsExporter;
+import com.biit.webforms.xforms.XFormsSimpleFormExporter;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -36,6 +36,6 @@ public class XFormExporterTests {
 			NotValidTreeObjectException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError, ElementIsReadOnly, FlowNotAllowedException, UnsupportedEncodingException {
 		Form form = FormUtils.createCompleteForm();
-		new XFormsExporter(form).generateXFormsLanguage();
+		new XFormsSimpleFormExporter(form).generateXFormsLanguage();
 	}
 }

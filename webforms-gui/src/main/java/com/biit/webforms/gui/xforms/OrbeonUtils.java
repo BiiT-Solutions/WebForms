@@ -15,7 +15,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.persistence.xforms.exceptions.AccessNotAllowed;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedXFormException;
-import com.biit.webforms.xforms.XFormsExporter;
+import com.biit.webforms.xforms.XFormsSimpleFormExporter;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -77,7 +77,7 @@ public class OrbeonUtils {
 	public static String getXFormsData(Form form) throws NotValidTreeObjectException, NotValidChildException,
 			IOException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
-		XFormsExporter xformExporter = new XFormsExporter(form);
+		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form);
 		BufferedInputStream in = new BufferedInputStream(xformExporter.generateXFormsLanguage());
 		byte[] contents = new byte[1024];
 
