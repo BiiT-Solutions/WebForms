@@ -75,7 +75,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	public String getCategoryModelPage(XFormsCategory xFormsCategory) throws NotExistingDynamicFieldException,
 			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		StringBuilder text = new StringBuilder();
-		text.append("<xh:html xmlns:xh=\"http://www.w3.org/1999/xhtml\" xmlns:xf=\"http://www.w3.org/2002/xforms\" xmlns:xxf=\"http://orbeon.org/oxf/xml/xforms\" xmlns:ev=\"http://www.w3.org/2001/xml-events\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">");
+		text.append("<xh:html xmlns:xh=\"http://www.w3.org/1999/xhtml\" xmlns:xf=\"http://www.w3.org/2002/xforms\" xmlns:xxf=\"http://orbeon.org/oxf/xml/xforms\" xmlns:ev=\"http://www.w3.org/2001/xml-events\" xmlns:fr=\"http://orbeon.org/oxf/xml/form-runner\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">");
 		text.append(getHeader());
 		text.append(getBody());
 		text.append("</xh:html>");
