@@ -7,7 +7,6 @@ import java.util.Set;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.utils.date.DateManager;
-import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.UserSessionHandler;
@@ -19,6 +18,8 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.ISimpleBlockViewDao;
 import com.biit.webforms.persistence.entity.IWebformsBlockView;
 import com.biit.webforms.persistence.entity.SimpleBlockView;
+import com.biit.webforms.security.WebformsActivity;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.data.Item;
@@ -47,7 +48,7 @@ public class TableBlock extends Table {
 	private void initializeBlockTable() {
 		List<SimpleBlockView> blocks = new ArrayList<>();
 
-		Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
+		Set<Organization> userOrganizations = WebformsBasicAuthorizationService.getInstance()
 				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 		try {
 			for (Organization organization : userOrganizations) {
@@ -74,7 +75,7 @@ public class TableBlock extends Table {
 			Item item = addItem(block);
 			item.getItemProperty(TreeTableBlockProperties.BLOCK_LABEL).setValue(block.getLabel());
 
-			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+			Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
 					UserSessionHandler.getUser(), block.getOrganizationId());
 			if (organization != null) {
 				item.getItemProperty(TreeTableBlockProperties.ORGANIZATION).setValue(organization.getName());

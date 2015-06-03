@@ -11,7 +11,6 @@ import org.xml.sax.SAXException;
 
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.liferay.security.IActivity;
-import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -24,6 +23,7 @@ import com.biit.webforms.gui.webpages.compare.structure.UpperMenu;
 import com.biit.webforms.gui.webpages.compare.structure.XmlWindowUpload;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.xml.XmlUtils;
 import com.biit.webforms.xsd.WebformsXsdForm;
 import com.vaadin.data.Property.ValueChangeEvent;

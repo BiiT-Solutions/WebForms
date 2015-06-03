@@ -16,9 +16,6 @@ import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ValidateReport;
-import com.biit.webforms.authentication.WebformsActivity;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
-import com.biit.webforms.authentication.exception.BadAbcdLink;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -26,11 +23,14 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
+import com.biit.webforms.gui.exceptions.BadAbcdLink;
 import com.biit.webforms.gui.webpages.validation.ValidationUpperMenu;
 import com.biit.webforms.gui.webpages.validation.WindowCompareAbcdForm;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.security.WebformsActivity;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.biit.webforms.validators.CompareFormAbcdStructure;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.validators.ValidateFormComplete;
@@ -161,7 +161,7 @@ public class Validation extends SecuredWebPage {
 			for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
 				if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 						simpleFormView.getOrganizationId(), AbcdActivity.READ)
-						&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+						&& WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
 								UserSessionHandler.getUser(), simpleFormView.getOrganizationId(),
 								WebformsActivity.FORM_EDITING)) {
 					linkAbcdForm.add(simpleFormView);

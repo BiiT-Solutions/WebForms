@@ -13,9 +13,6 @@ import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.webforms.authentication.FormWithSameNameException;
-import com.biit.webforms.authentication.WebformsActivity;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -25,6 +22,7 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
 import com.biit.webforms.gui.components.WindowNameGroup;
+import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.gui.webpages.blockmanager.TableBlock;
 import com.biit.webforms.gui.webpages.blockmanager.UpperMenuBlockManager;
 import com.biit.webforms.language.LanguageCodes;
@@ -33,6 +31,8 @@ import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.IWebformsBlockView;
 import com.biit.webforms.persistence.entity.SimpleBlockView;
+import com.biit.webforms.security.WebformsActivity;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.VaadinServlet;
@@ -89,14 +89,14 @@ public class BlockManager extends SecuredWebPage {
 			IWebformsBlockView block = getSelectedBlock();
 
 			boolean blockNotNull = block != null;
-			boolean canCreateBlocks = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+			boolean canCreateBlocks = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_EDITING);
 
 			upperMenu.getNewBlock().setEnabled(canCreateBlocks);
 
 			upperMenu.getRemoveBlock().setEnabled(
 					blockNotNull
-							&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+							&& WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
 									UserSessionHandler.getUser(), block, WebformsActivity.BLOCK_REMOVE));
 
 			// Bottom menu

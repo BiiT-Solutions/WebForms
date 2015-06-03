@@ -24,12 +24,6 @@ import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.validation.ValidateReport;
-import com.biit.webforms.authentication.FormWithSameNameException;
-import com.biit.webforms.authentication.WebformsActivity;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
-import com.biit.webforms.authentication.exception.BadAbcdLink;
-import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
-import com.biit.webforms.authentication.exception.NotValidAbcdForm;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
@@ -44,6 +38,10 @@ import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.utils.RootForm;
+import com.biit.webforms.gui.exceptions.BadAbcdLink;
+import com.biit.webforms.gui.exceptions.FormWithSameNameException;
+import com.biit.webforms.gui.exceptions.NewVersionWithoutFinalDesignException;
+import com.biit.webforms.gui.exceptions.NotValidAbcdForm;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderBaseFormMetadataJson;
@@ -66,6 +64,8 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.xforms.XFormsPersistence;
+import com.biit.webforms.security.WebformsActivity;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.biit.webforms.utils.ZipTools;
@@ -194,7 +194,7 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+				Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
 						UserSessionHandler.getUser(), getSelectedForm().getOrganizationId());
 				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
 						XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
@@ -406,7 +406,7 @@ public class FormManager extends SecuredWebPage {
 						xmlFiles.addAll(formExporter.getAllcategoryModelPages());
 						xmlFileNames.addAll(formExporter.getAllCategoriesFileNames());
 
-						byte[] zipFile = ZipTools.zipFiles(xmlFiles, xmlFileNames);
+						byte[] zipFile = ZipTools.zipFiles(xmlFiles, xmlFileNames, formExporter.getOrbeonAppFolder());
 
 						return new ByteArrayInputStream(zipFile);
 					} catch (IOException | NotValidTreeObjectException | NotValidChildException
@@ -427,7 +427,7 @@ public class FormManager extends SecuredWebPage {
 	private void publishXForms() {
 		Form form = loadAndValidateForm();
 		if (form != null) {
-			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+			Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
 					UserSessionHandler.getUser(), form.getOrganizationId());
 			if (OrbeonUtils.saveFormInOrbeon(form, organization, false)) {
 				MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
@@ -438,7 +438,7 @@ public class FormManager extends SecuredWebPage {
 	private void previewXForms() {
 		Form form = loadAndValidateForm();
 		if (form != null) {
-			Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+			Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
 					UserSessionHandler.getUser(), form.getOrganizationId());
 			if (!OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization, true)) {
 				// If xforms is not generated, close the popup.
@@ -542,7 +542,7 @@ public class FormManager extends SecuredWebPage {
 		for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
 			if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 					simpleFormView.getOrganizationId(), AbcdActivity.READ)
-					&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+					&& WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 							simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
 				linkAbcdForm.add(simpleFormView);
 			}
@@ -752,11 +752,11 @@ public class FormManager extends SecuredWebPage {
 
 			boolean rowInstanceOfRootForm = row instanceof RootForm;
 			boolean rowNotNullAndForm = rowNotNull && !rowInstanceOfRootForm;
-			boolean canCreateForms = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+			boolean canCreateForms = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
 					UserSessionHandler.getUser(), WebformsActivity.FORM_EDITING);
-			boolean canCreateNewVersion = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+			boolean canCreateNewVersion = WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
 					UserSessionHandler.getUser(), selectedForm, WebformsActivity.FORM_NEW_VERSION);
-			boolean canLinkVersion = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+			boolean canLinkVersion = WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
 					UserSessionHandler.getUser(), selectedForm, WebformsActivity.FORM_EDITING);
 
 			upperMenu.setEnabled(true);
@@ -774,11 +774,11 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.getImpactAnalysis().setEnabled(rowNotNullAndForm);
 
 			upperMenu.getRemoveForm().setVisible(
-					WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+					WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
 							UserSessionHandler.getUser(), WebformsActivity.FORM_REMOVE));
 			upperMenu.getRemoveForm().setEnabled(
 					rowNotNullAndForm
-							&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+							&& WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
 									UserSessionHandler.getUser(), selectedForm, WebformsActivity.FORM_REMOVE));
 
 			// Bottom menu

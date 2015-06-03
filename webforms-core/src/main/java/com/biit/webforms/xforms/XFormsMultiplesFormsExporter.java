@@ -20,6 +20,7 @@ import com.biit.webforms.xml.XmlUtils;
  * - StepN-categoryName. A category exported in an independent file. .<br>
  */
 public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
+	private final static String DEFAULT_SUBMISSION = "initial-instance.xml";
 
 	public XFormsMultiplesFormsExporter(Form form) throws NotValidTreeObjectException, NotValidChildException {
 		super(form);
@@ -87,7 +88,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 		for (XFormsCategory xFormsCategory : getXFormsCategories()) {
 			boolean firstCategory = xFormsCategory.getSource().getParent().getChildren()
 					.indexOf(xFormsCategory.getSource()) == 0;
-			text.append("<page path=\"/xforms-wizard-pfc/");
+			text.append("<page path=\"/" + getOrbeonAppFolder() + "/");
 			if (!firstCategory) {
 				text.append(xFormsCategory.getSource().getName());
 			}
@@ -95,7 +96,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 			// First page have defined the form structure.
 			text.append(" view=\"" + getCategoryFileName(xFormsCategory) + "\"");
 			if (firstCategory) {
-				text.append(" default-submission=\" initial-instance.xml\"");
+				text.append(" default-submission=\"" + DEFAULT_SUBMISSION + "\"");
 			}
 			text.append(" />");
 		}
@@ -143,6 +144,10 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 		body.append("</fr:view>");
 		body.append("</xh:body>");
 		return body.toString();
+	}
+
+	public String getOrbeonAppFolder() {
+		return getForm().getSimpleAsciiName();
 	}
 
 }

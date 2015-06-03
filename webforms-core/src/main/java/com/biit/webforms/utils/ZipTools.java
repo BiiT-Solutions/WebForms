@@ -26,11 +26,25 @@ public class ZipTools {
 			String currentFile = String.format("%0" + digits + "d", i);
 			fileNames.add("export_" + currentFile + ".xml");
 		}
-		return zipFiles(filesToZip, fileNames);
+		return zipFiles(filesToZip, fileNames, null);
 	}
 
-	public static byte[] zipFiles(List<String> filesToZip, List<String> fileNames) throws IOException,
-			IllegalArgumentException {
+	/**
+	 * Compress and pack a set of files represented as String into one ZIP file. The user can define the name of the
+	 * files and the directory of the form.
+	 * 
+	 * @param filesToZip
+	 *            List of files content as String.
+	 * @param fileNames
+	 *            A list of file names. Must have the same length than the filesToZip.
+	 * @param directory
+	 *            Directory inside the zip file where the files will be inserted.
+	 * @return
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 */
+	public static byte[] zipFiles(List<String> filesToZip, List<String> fileNames, String directory)
+			throws IOException, IllegalArgumentException {
 
 		if (filesToZip == null || fileNames == null || filesToZip.size() < fileNames.size()) {
 			throw new IllegalArgumentException("The number of files and the number of file's names must be the same!");
@@ -40,7 +54,7 @@ public class ZipTools {
 		ZipOutputStream zos = new ZipOutputStream(baos);
 
 		for (int i = 0; i < filesToZip.size(); i++) {
-			addFileToZip(zos, filesToZip.get(i).getBytes(Charset.forName("UTF-8")), fileNames.get(i));
+			addFileToZip(zos, filesToZip.get(i).getBytes(Charset.forName("UTF-8")), fileNames.get(i), directory);
 		}
 
 		zos.closeEntry();
@@ -48,8 +62,13 @@ public class ZipTools {
 		return baos.toByteArray();
 	}
 
-	private static void addFileToZip(ZipOutputStream zos, byte[] data, String name) throws IOException {
-		ZipEntry entry = new ZipEntry(name);
+	private static void addFileToZip(ZipOutputStream zos, byte[] data, String name, String folder) throws IOException {
+		ZipEntry entry;
+		if (folder == null) {
+			entry = new ZipEntry(name);
+		} else {
+			entry = new ZipEntry(folder + "/" + name);
+		}
 		entry.setSize(data.length);
 		zos.putNextEntry(entry);
 		zos.write(data);
