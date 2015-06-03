@@ -27,6 +27,18 @@ public class TableTreeObjectLabel extends TableTreeObject {
 				LanguageCodes.CAPTION_LABEL.translation(), null, Align.LEFT);
 	}
 
+	public void updateRow(TreeObject element) {
+		super.updateRow(element);
+		Item item = getItem(element);
+		String label = element.getLabel();
+		if (label == null) {
+			label = new String();
+		}
+		if(item!=null){
+			setLabelToItem(item, label);
+		}
+	}
+	
 	@Override
 	protected void setValuesToItem(Item item, TreeObject element) {
 		super.setValuesToItem(item, element);

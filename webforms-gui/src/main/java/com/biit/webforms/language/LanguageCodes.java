@@ -234,6 +234,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_PROPERTIES_CATEGORY("caption.properties.category"),
 	CAPTION_PROPERTIES_FORM("caption.properties.form"),
 	CAPTION_PROPERTIES_SYSTEM_FIELD("caption.properties.system.field"),
+	CAPTION_PROPERTIES_DYNAMIC_QUESTION("caption.properties.dynamic.question"),
 	CAPTION_SAVE_AS_BLOCK("caption.save.as.block"),
 	CAPTION_INSERT_NEW_BLOCK("caption.insert.new.block"),
 	CAPTION_LINK_BLOCK("caption.link.block"),
