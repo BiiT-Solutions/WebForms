@@ -49,7 +49,6 @@ import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderBaseFormMetadataJson;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderJson;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderXsd;
-import com.biit.webforms.gui.webpages.formmanager.WindowGenerateMultipleXForms;
 import com.biit.webforms.gui.webpages.formmanager.WindowGenerateXml;
 import com.biit.webforms.gui.webpages.formmanager.WindowImpactAnalysis;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
@@ -69,7 +68,9 @@ import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
+import com.biit.webforms.utils.ZipTools;
 import com.biit.webforms.validators.ValidateFormComplete;
+import com.biit.webforms.xforms.XFormsMultiplesFormsExporter;
 import com.biit.webforms.xforms.XFormsSimpleFormExporter;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
@@ -375,6 +376,7 @@ public class FormManager extends SecuredWebPage {
 					} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
 							| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException
 							| UnsupportedEncodingException e) {
+						MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 						WebformsLogger.errorMessage(this.getClass().getName(), e);
 						return null;
 					}
@@ -389,7 +391,35 @@ public class FormManager extends SecuredWebPage {
 	private void downloadXFormsMultiple() {
 		final Form form = loadAndValidateForm();
 		if (form != null) {
-			WindowGenerateMultipleXForms window = new WindowGenerateMultipleXForms(form);
+			WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
+
+				@Override
+				public InputStream getInputStream() {
+					try {
+						List<String> xmlFiles = new ArrayList<>();
+						List<String> xmlFileNames = new ArrayList<>();
+						XFormsMultiplesFormsExporter formExporter = new XFormsMultiplesFormsExporter(form);
+						xmlFiles.add(formExporter.getInitialInstancePage());
+						xmlFileNames.add("initial-instance.xml");
+						xmlFiles.add(formExporter.getCategoriesFlowPage());
+						xmlFileNames.add("page-flow.xml");
+						xmlFiles.addAll(formExporter.getAllcategoryModelPages());
+						xmlFileNames.addAll(formExporter.getAllCategoriesFileNames());
+
+						byte[] zipFile = ZipTools.zipFiles(xmlFiles, xmlFileNames);
+
+						return new ByteArrayInputStream(zipFile);
+					} catch (IOException | NotValidTreeObjectException | NotValidChildException
+							| NotExistingDynamicFieldException | InvalidDateException | StringRuleSyntaxError
+							| PostCodeRuleSyntaxError e) {
+						MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+						WebformsLogger.errorMessage(this.getClass().getName(), e);
+						return null;
+					}
+				}
+			});
+			window.setIndeterminate(true);
+			window.setFilename(form.getLabel() + ".zip");
 			window.showCentered();
 		}
 	}
