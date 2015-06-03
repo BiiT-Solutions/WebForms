@@ -53,12 +53,15 @@ import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
+import com.biit.webforms.persistence.entity.exceptions.FlowDependencyExistException;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -395,7 +398,14 @@ public class Designer extends SecuredWebPage {
 								table.updateRow(table.getParentRowItem(row));
 							} catch (DependencyExistException | ChildrenNotFoundException e) {
 								table.setValue(row);
-								MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
+								if(e instanceof FlowDependencyExistException){
+									MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
+								}else if(e instanceof DependencyDynamicAnswerExistException){
+									MessageManager.showError(LanguageCodes.ERROR_DYNAMIC_ANSWER_DEPENDENCY);
+								}else{
+									MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+									WebformsLogger.errorMessage(this.getClass().getName(), e);
+								}								
 							} catch (ElementIsReadOnly e) {
 								table.setValue(row);
 								MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
@@ -521,6 +531,25 @@ public class Designer extends SecuredWebPage {
 				finishForm();
 			}
 		});
+		
+		upperMenu.addNewDynamicAnswerListener(new ClickListener() {
+			private static final long serialVersionUID = 6905174400430714888L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				try {
+					TreeObject selectedRow = table.getSelectedRow();
+					DynamicAnswer newDynamicQuestion = UserSessionHandler.getController().addNewDynamicQuestion(
+							selectedRow.getAncestorThatAccepts(DynamicAnswer.class));
+					table.addRow(newDynamicQuestion, newDynamicQuestion.getParent());
+				} catch (NotValidChildException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				}
+			}
+		});
+		
 		return upperMenu;
 	}
 
@@ -583,6 +612,8 @@ public class Designer extends SecuredWebPage {
 					canEdit && selectedRowHierarchyAllows(Text.class) && !rowIsBlockReference);
 			upperMenu.getNewAnswerButton().setEnabled(
 					canEdit && selectedRowHierarchyAllows(Answer.class) && !rowIsBlockReference);
+			upperMenu.getNewDynamicAnswer().setEnabled(
+					canEdit && selectedRowHierarchyAllows(DynamicAnswer.class) && !rowIsBlockReference);
 			upperMenu.getNewSubanswerButton()
 					.setEnabled(
 							canEdit

@@ -71,7 +71,7 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 		while (itr.hasNext()) {
 			Component component = itr.next();
 			if (component instanceof AbstractComponentContainer) {
-				addValueChangeListenerToFieldsInContainer(container);
+				addValueChangeListenerToFieldsInContainer((AbstractComponentContainer)component);
 			} else {
 				if (component instanceof AbstractField<?>) {
 					addValueChangeListenerToField((AbstractField<?>) component);

@@ -2,6 +2,7 @@ package com.biit.webforms.gui.common.components;
 
 import com.biit.form.entity.BaseForm;
 import com.biit.form.entity.TreeObject;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
 
 public class ComponentCellTreeObject extends ComponentCell {
 	private static final long serialVersionUID = 76595396879136434L;
@@ -19,7 +20,9 @@ public class ComponentCellTreeObject extends ComponentCell {
 		clear();
 		if (treeObject instanceof BaseForm) {
 			addLabel(treeObject.getLabel());
-		} else {
+		} else if(treeObject instanceof DynamicAnswer){
+			addLabel(((DynamicAnswer)treeObject).getReferenceName());
+		}else{
 			addLabel(treeObject.getName());
 		}
 		if (iconProvider.getIcon(treeObject) != null) {

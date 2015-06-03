@@ -126,7 +126,14 @@ public enum ThemeIcons implements IThemeIcon {
 	PAGE_NOT_FOUND("page.not.found.svg"),
 	
 	ELEMENT_SHOW("element.show.svg"),
-	ELEMENT_HIDE("element.hide.svg"),
+	ELEMENT_HIDE("element.hide.svg"), 
+	
+	DESIGNER_NEW_DYNAMIC_ANSWER("alert.svg"), 
+	DESIGNER_DYNAMIC_QUESTION("alert.svg"), 
+	
+	ADD_REFERENCE("alert.svg"),
+	REMOVE_REFERENCE("alert.svg"),
+	
 	;
 
 	private String value;

@@ -143,7 +143,7 @@ public class ComponentInsertAnswer extends CustomComponent {
 			rootLayout.setEnabled(false);
 		} else {
 			rootLayout.setEnabled(true);
-			for (TreeObject child : currentQuestion.getChildren()) {
+			for (TreeObject child : currentQuestion.getChildren(Answer.class)) {
 				answerTable.loadTreeObject(child, null);
 			}
 			answerTable.setValue(null);
