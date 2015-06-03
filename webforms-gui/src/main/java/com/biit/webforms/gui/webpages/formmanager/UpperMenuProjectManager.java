@@ -28,7 +28,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private final IconButton submenuNew, newForm, newFormVersion, removeForm,
 			importAbcdForm, importJsonForm;
 	private final IconButton linkAbcdForm;
-	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms;
+	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms, downloadXFormsMultiple;
 	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson, exportXml,
 			exportBaseFormMetadataJson;
 	private final IconButton impactAnalysis, compareContent;
@@ -91,6 +91,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_PUBLISH_XFORMS, IconSize.BIG);
 		downloadXForms = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS, ThemeIcons.DOWNLOAD_XFORMS,
 				LanguageCodes.TOOLTIP_DOWNLOAD_XFORMS, IconSize.BIG);
+		downloadXFormsMultiple = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS, ThemeIcons.DOWNLOAD_XFORMS,
+				LanguageCodes.TOOLTIP_DOWNLOAD_XFORMS, IconSize.BIG);
 
 		impactAnalysis = new IconButton(LanguageCodes.CAPTION_IMPACT_ANALYSIS, ThemeIcons.IMPACT_ANALYSIS,
 				LanguageCodes.TOOLTIP_IMPACT_ANALISYS, IconSize.BIG);
@@ -110,7 +112,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
 				exportFlowPdf, exportXsd, exportXml, exportJson, exportBaseFormMetadataJson);
 		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
-				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
+				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms, downloadXFormsMultiple);
 		opener.extend(previewXForms);
 
 		addIconButton(impactAnalysis);
@@ -175,6 +177,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public void addDownloadXFormsListener(ClickListener listener) {
 		downloadXForms.addClickListener(listener);
+	}
+	
+	public void addDownloadXFormsMultipleListener(ClickListener listener) {
+		downloadXFormsMultiple.addClickListener(listener);
 	}
 
 	public void addRemoveFormListener(ClickListener listener) {

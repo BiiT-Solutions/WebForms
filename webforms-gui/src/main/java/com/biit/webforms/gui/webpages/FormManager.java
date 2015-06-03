@@ -49,6 +49,8 @@ import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderBaseFormMetadataJson;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderJson;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderXsd;
+import com.biit.webforms.gui.webpages.formmanager.WindowGenerateMultipleXForms;
+import com.biit.webforms.gui.webpages.formmanager.WindowGenerateXml;
 import com.biit.webforms.gui.webpages.formmanager.WindowImpactAnalysis;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportJson;
@@ -232,6 +234,14 @@ public class FormManager extends SecuredWebPage {
 				downloadXForms();
 			}
 		});
+		upperMenu.addDownloadXFormsMultipleListener(new ClickListener() {
+			private static final long serialVersionUID = 7112180518114190965L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				downloadXFormsMultiple();
+			}
+		});
 		upperMenu.addExportXsdListener(new ClickListener() {
 			private static final long serialVersionUID = -2359606371849802798L;
 
@@ -372,6 +382,14 @@ public class FormManager extends SecuredWebPage {
 			});
 			window.setIndeterminate(true);
 			window.setFilename(form.getLabel() + ".txt");
+			window.showCentered();
+		}
+	}
+
+	private void downloadXFormsMultiple() {
+		final Form form = loadAndValidateForm();
+		if (form != null) {
+			WindowGenerateMultipleXForms window = new WindowGenerateMultipleXForms(form);
 			window.showCentered();
 		}
 	}
