@@ -39,7 +39,6 @@ public class DynamicAnswer extends BaseAnswer implements FlowConditionScript{
 	public void setName(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		super.setName(getComparationId());
 	}
-	
 
 	public String getReferenceName(){
 		if(reference!=null){

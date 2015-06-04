@@ -35,7 +35,7 @@ class FormComboBox extends FormTextField {
 				choices.add(answer.getLabel());
 			}else{
 				DynamicAnswer answer = (DynamicAnswer) option;
-				choices.add(answer.getLabel());
+				choices.add(answer.getReferenceName());
 			}
 		}
 

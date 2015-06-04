@@ -10,6 +10,7 @@ import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Text;
 import com.lowagie.text.pdf.BaseField;
@@ -133,7 +134,7 @@ public class PdfRowGenerator {
 		if(baseAnswer instanceof Answer){
 			answerText = baseAnswer.getLabel();
 		}else{
-			answerText = baseAnswer.getName();
+			answerText = ((DynamicAnswer)baseAnswer).getReferenceName();
 		}
 		
 		PdfPCell field = PdfPCellGenerator.generateText(answerText, RADIO_FIELD_COL);
@@ -192,7 +193,7 @@ public class PdfRowGenerator {
 		if(baseAnswer instanceof Answer){
 			answerText = baseAnswer.getLabel();
 		}else{
-			answerText = baseAnswer.getName();
+			answerText = ((DynamicAnswer)baseAnswer).getReferenceName();
 		}
 		
 		PdfPCell field = PdfPCellGenerator.generateText(answerText, CHECK_FIELD_COL);

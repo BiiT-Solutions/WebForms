@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Text;
 import com.lowagie.text.Document;
@@ -60,6 +62,12 @@ public class ParagraphGenerator {
 	}
 
 	public static Paragraph generateNameParagraph(TreeObject object) {
+		if (object instanceof Answer && object.getParent()!=null && object.getParent() instanceof Answer){
+			return new Paragraph(" - <" + object.getName() + ">", PdfFont.SMALL_FONT.getFont());
+		}
+		if (object instanceof DynamicAnswer){
+			return new Paragraph("<" + ((DynamicAnswer)object).getReferenceName() + ">", PdfFont.SMALL_FONT.getFont());
+		}
 		return new Paragraph("<" + object.getName() + ">", PdfFont.SMALL_FONT.getFont());
 	}
 

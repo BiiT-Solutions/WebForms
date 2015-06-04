@@ -31,18 +31,18 @@ public class PdfBlockGenerator {
 	public static PdfTableBlock generateAnnexQuestionTableBlock(Question question) {
 		PdfTableBlock block = null;
 		try {
-			block = new PdfTableBlock(1 + question.getChildren().size(), 4);
+			block = new PdfTableBlock(1 + question.getAllChildrenInHierarchy(BaseAnswer.class).size(), 4);
 
 			block.insertRow(PdfRowGenerator.generateAnnexQuestion(question));
 
 			if (!question.getChildren().isEmpty()) {
-				block.insertCol(PdfCol.generateWhiteCol(question.getChildren().size(), 1));
+				block.insertCol(PdfCol.generateWhiteCol(question.getAllChildrenInHierarchy(BaseAnswer.class).size(), 1));
 				for (TreeObject child : question.getChildren()) {
 					// They are all answers
 					block.insertRow(PdfRowGenerator.generateAnnexAnswer((BaseAnswer) child));
-//					for(TreeObject subChild: child.getChildren()){
-//						block.insertRow(PdfRowGenerator.generateAnnexAnswer((BaseAnswer) child));
-//					}
+					for(TreeObject subChild: child.getChildren()){
+						block.insertRow(PdfRowGenerator.generateAnnexAnswer((BaseAnswer) subChild));
+					}
 				}
 			}
 		} catch (BadBlockException e) {
