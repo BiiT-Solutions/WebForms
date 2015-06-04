@@ -181,6 +181,11 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 		return resource.toString();
 	}
 
+	/**
+	 * Adds next and previous button at the end of the page. 
+	 * @param xformsObject
+	 * @return
+	 */
 	private String generateNextAndPreviousButtons(XFormsObject<?> xformsObject) {
 		StringBuilder resource = new StringBuilder();
 		resource.append("<xh:tr>");
@@ -224,6 +229,19 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	protected String getEventsDefinitions(XFormsObject<?> xFormsObject) {
 		StringBuilder events = new StringBuilder();
 
+		getNextAndPreviousButtonEvents(events, xFormsObject);
+		getSkipEmptyCategoryEvents(events, xFormsObject);
+
+		return events.toString();
+	}
+
+	/**
+	 * Create events for next and previous buttons.
+	 * 
+	 * @param events
+	 * @param xFormsObject
+	 */
+	private void getNextAndPreviousButtonEvents(StringBuilder events, XFormsObject<?> xFormsObject) {
 		if (xFormsObject instanceof XFormsCategory) {
 			XFormsCategory xFormsCategory = (XFormsCategory) xFormsObject;
 			int xFormsCategoryIndex = xFormsCategory.getSource().getParent().getChildren()
@@ -241,6 +259,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 						xFormsCategory.getSource().getParent().getChildren().get(xFormsCategoryIndex + 1));
 			}
 
+			events.append("<!-- Next / Previous button events -->");
 			if (previousXFormsCategory != null) {
 				events.append("<xf:submission id=\"previous-submission\" resource=\"/" + getOrbeonAppFolder() + "/"
 						+ getCategoryPage(previousXFormsCategory) + "\" method=\"post\" replace=\"all\"/>");
@@ -250,8 +269,28 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 						+ getCategoryPage(nextXFormsCategory) + "\" method=\"post\" replace=\"all\"/>");
 			}
 		}
+	}
 
-		return events.toString();
+	/**
+	 * If a page has no visible elements is skipped.
+	 * 
+	 * @param events
+	 * @param xFormsObject
+	 */
+	private void getSkipEmptyCategoryEvents(StringBuilder events, XFormsObject<?> xFormsObject) {
+		events.append("<!-- Keep track of enabled/disabled status -->");
+		events.append("<xf:instance id=\"totalVisibleElements\">");
+		events.append("<value>0</value>");
+		events.append("</xf:instance>");
+		events.append("<!-- Update for each element -->");
+		for (XFormsObject<?> xFormQuestion : xFormsObject.getAllChildrenInHierarchy(XFormsQuestion.class)) {
+			events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + xFormQuestion.getSectionControlName()
+					+ "\" ref=\"instance('totalVisibleElements')\" value=\"instance('totalVisibleElements') + 1\"/>");
+			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + xFormQuestion.getSectionControlName()
+					+ "\" ref=\"instance('totalVisibleElements')\" value=\"instance('totalVisibleElements') - 1\"/>");
+		}
+		events.append("<!-- Redirect to next page -->");
+		events.append("<xf:send ev:event=\"xforms-ready\" submission=\"next-submission\" if=\"instance('totalVisibleElements') = 0\"/>");
 	}
 
 	@Override
