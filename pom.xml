@@ -75,6 +75,7 @@
 		<project.scm.id>git</project.scm.id>
 		<versions-maven-plugin.version>2.1</versions-maven-plugin.version>
 		<commons-io.version>2.4</commons-io.version>
+		<jersey.version>2.17</jersey.version>
 		<!-- BiiT dependencies -->
 		<abcd.version>[1.4,1.5)</abcd.version>
 		<liferay-service-common.version>[0.6,0.7)</liferay-service-common.version>

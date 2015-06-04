@@ -90,6 +90,41 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
+	public static Form fromJson(String jsonString) {
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
+		gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
+		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectDeserializer<Category>(Category.class));
+		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupDeserializer<Group>(Group.class));
+		gsonBuilder.registerTypeAdapter(Question.class, new QuestionDeserializer());
+		gsonBuilder.registerTypeAdapter(Text.class, new TextDeserializer());
+		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldDeserializer());
+		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerDeserializer());
+		Gson gson = gsonBuilder.create();
+
+		return (Form) gson.fromJson(jsonString, Form.class);
+	}
+
+	/**
+	 * Moves an object of the tree to last position in @toParent returns @objectToMove
+	 * @param objectToMove
+	 * @param toParent
+	 * @throws ChildrenNotFoundException
+	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
+	 */
+	public static synchronized TreeObject move(TreeObject objectToMove, TreeObject toParent)
+			throws ChildrenNotFoundException, NotValidChildException, ElementIsReadOnly {
+		if(!Objects.equals(objectToMove.getAncestor(Form.class), toParent.getAncestor(Form.class))){
+			throw new NotValidChildException("Root form for each element is different");
+		}
+		TreeObject newInstanceOfObjectToMove = TreeObject.move(objectToMove, toParent);
+				
+		Form form = (Form) objectToMove.getAncestor(Form.class);
+		form.updateRuleReferences();
+		return newInstanceOfObjectToMove;
+	}
+
 	@Enumerated(EnumType.STRING)
 	private FormWorkStatus status;
 
@@ -410,6 +445,32 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return metadata;
 	}
 
+	/**
+	 * Get index of child. If the element is a category of a LinkedBuildingBlock try to find it in the Block References.
+	 * 
+	 * @param child
+	 * @return
+	 */
+	@Override
+	public Integer getIndex(TreeObject child) {
+		// Standard form element.
+		int index = getChildren().indexOf(child);
+		if (index >= 0) {
+			return index;
+		}
+		// Child not found. Maybe is a category of a block reference.
+		for (TreeObject blockReference : getChildren()) {
+			if (blockReference instanceof BlockReference) {
+				index = blockReference.getIndex(child);
+				if (index >= 0) {
+					// Return the index of the block reference.
+					return getIndex(blockReference);
+				}
+			}
+		}
+		return -1;
+	}
+
 	public String getLabelWithouthSpaces() {
 		return getLabel().replace(" ", "_");
 	}
@@ -449,6 +510,17 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public FormWorkStatus getStatus() {
 		return status;
+	}
+
+	/**
+	 * For some cases, i.e. using Springcache we need to initialize all sets (disabling the Lazy loading).
+	 * 
+	 * @param elements
+	 */
+	@Override
+	public void initializeSets() {
+		super.initializeSets();
+		getFlows().size();
 	}
 
 	/**
@@ -536,6 +608,14 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 	}
 
+	@Override
+	public void resetUserTimestampInfo(Long userId) {
+		super.resetUserTimestampInfo(userId);
+		for (Flow flow : getFlows()) {
+			flow.resetUserTimestampInfo(userId);
+		}
+	}
+
 	public void setDescription(String description) throws FieldTooLongException {
 		if (description == null) {
 			description = "";
@@ -620,10 +700,18 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return gson.toJson(this);
 	}
 
+	@Override
+	public void updateChildrenSortSeqs() {
+		super.updateChildrenSortSeqs();
+		for(Flow flow: getFlows()){
+			flow.updateConditionSortSeq();
+		}
+	}
+	
 	public void updateRuleReferences() {
 		updateRuleReferences(getFlows());
 	}
-
+	
 	public void updateRuleReferences(Set<Flow> flows) {
 		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
 		HashMap<String, TreeObject> mappedElements = new HashMap<>();
@@ -632,94 +720,6 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 		for (Flow rule : flows) {
 			rule.updateReferences(mappedElements);
-		}
-	}
-
-	public static Form fromJson(String jsonString) {
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
-		gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
-		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectDeserializer<Category>(Category.class));
-		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupDeserializer<Group>(Group.class));
-		gsonBuilder.registerTypeAdapter(Question.class, new QuestionDeserializer());
-		gsonBuilder.registerTypeAdapter(Text.class, new TextDeserializer());
-		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldDeserializer());
-		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerDeserializer());
-		Gson gson = gsonBuilder.create();
-
-		return (Form) gson.fromJson(jsonString, Form.class);
-	}
-
-	/**
-	 * For some cases, i.e. using Springcache we need to initialize all sets (disabling the Lazy loading).
-	 * 
-	 * @param elements
-	 */
-	@Override
-	public void initializeSets() {
-		super.initializeSets();
-		getFlows().size();
-	}
-
-	@Override
-	public void resetUserTimestampInfo(Long userId) {
-		super.resetUserTimestampInfo(userId);
-		for (Flow flow : getFlows()) {
-			flow.resetUserTimestampInfo(userId);
-		}
-	}
-
-	/**
-	 * Get index of child. If the element is a category of a LinkedBuildingBlock try to find it in the Block References.
-	 * 
-	 * @param child
-	 * @return
-	 */
-	@Override
-	public Integer getIndex(TreeObject child) {
-		// Standard form element.
-		int index = getChildren().indexOf(child);
-		if (index >= 0) {
-			return index;
-		}
-		// Child not found. Maybe is a category of a block reference.
-		for (TreeObject blockReference : getChildren()) {
-			if (blockReference instanceof BlockReference) {
-				index = blockReference.getIndex(child);
-				if (index >= 0) {
-					// Return the index of the block reference.
-					return getIndex(blockReference);
-				}
-			}
-		}
-		return -1;
-	}
-	
-	/**
-	 * Moves an object of the tree to last position in @toParent returns @objectToMove
-	 * @param objectToMove
-	 * @param toParent
-	 * @throws ChildrenNotFoundException
-	 * @throws NotValidChildException
-	 * @throws ElementIsReadOnly
-	 */
-	public static synchronized TreeObject move(TreeObject objectToMove, TreeObject toParent)
-			throws ChildrenNotFoundException, NotValidChildException, ElementIsReadOnly {
-		if(!Objects.equals(objectToMove.getAncestor(Form.class), toParent.getAncestor(Form.class))){
-			throw new NotValidChildException("Root form for each element is different");
-		}
-		TreeObject newInstanceOfObjectToMove = TreeObject.move(objectToMove, toParent);
-				
-		Form form = (Form) objectToMove.getAncestor(Form.class);
-		form.updateRuleReferences();
-		return newInstanceOfObjectToMove;
-	}
-	
-	@Override
-	public void updateChildrenSortSeqs() {
-		super.updateChildrenSortSeqs();
-		for(Flow flow: getFlows()){
-			flow.updateConditionSortSeq();
 		}
 	}
 }
