@@ -149,7 +149,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws InvalidFlowInForm
 	 */
 	protected String getBodyStructure(String structure, boolean html) {
-		String text = "<xf:" + structure + " ref=\"$form-resources/" + getPath() + "/" + structure + "\"";
+		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/" + structure + "\"";
 		if (html) {
 			text += " mediatype=\"text/html\" ";
 		}

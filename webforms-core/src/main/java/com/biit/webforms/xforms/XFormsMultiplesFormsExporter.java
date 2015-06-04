@@ -145,4 +145,12 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 		return getForm().getSimpleAsciiName();
 	}
 
+	/**
+	 * In this case, the input comes from an instance.
+	 */
+	@Override
+	protected String getInput() {
+		return "<xf:instance src=\"input:instance\" id=\"fr-form-instance\"/>";
+	}
+
 }

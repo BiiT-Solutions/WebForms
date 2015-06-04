@@ -140,4 +140,10 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		return body.toString();
 	}
 
+	@Override
+	protected String getInput() {
+		//Not needed, only for multiple files.
+		return "";
+	}
+
 }

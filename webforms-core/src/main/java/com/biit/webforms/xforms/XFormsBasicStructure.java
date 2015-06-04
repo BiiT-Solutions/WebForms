@@ -159,6 +159,7 @@ public abstract class XFormsBasicStructure {
 		header.append("<xh:meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
 		header.append("<xh:title>" + getForm().getLabel() + "</xh:title>");
 		header.append("<xf:model id=\"fr-form-model\" xxf:expose-xpath-types=\"true\">");
+		header.append(getInput());
 		header.append("<xf:instance xxf:readonly=\"true\" id=\"fr-form-metadata\" xxf:exclude-result-prefixes=\"#all\">");
 		header.append(getMetaData(getForm()));
 		header.append("</xf:instance>");
@@ -172,6 +173,12 @@ public abstract class XFormsBasicStructure {
 		header.append("</xh:head>");
 		return header.toString();
 	}
+	
+	/**
+	 * Sets the xforms tags for getting data for a different file.
+	 * @return
+	 */
+	protected abstract String getInput();
 
 	/**
 	 * Creates the model section of XForms.
