@@ -296,6 +296,9 @@ public abstract class XFormsObject<T extends TreeObject> {
 			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError;
 
 	protected abstract void getSectionBody(StringBuilder body);
+	
+	
+	//protected abstract void getStandardXFormsBody(StringBuilder body);
 
 	protected String getDefinition() {
 		String section = "<" + getName() + ">";

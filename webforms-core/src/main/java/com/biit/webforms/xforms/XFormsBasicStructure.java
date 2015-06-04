@@ -273,4 +273,18 @@ public abstract class XFormsBasicStructure {
 		}
 		return body.toString();
 	}
+	
+	
+	protected String getStandardXFormsBodySection(){
+		StringBuilder body = new StringBuilder();
+		
+		// Add hidden email field.
+		body.append(XFormsHiddenEmailField.getBody());
+		
+		for (XFormsCategory category : getXFormsCategories()) {
+			category.getSectionBody(body);
+		}
+		
+		return body.toString();
+	}
 }

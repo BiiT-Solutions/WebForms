@@ -132,16 +132,11 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	@Override
 	protected String getBody() {
 		StringBuilder body = new StringBuilder("<xh:body>");
-		body.append("<fr:view>");
-		body.append("<fr:body xmlns:xbl=\"http://www.w3.org/ns/xbl\" ");
-		body.append("xmlns:dataModel=\"java:org.orbeon.oxf.fb.DataModel\" ");
-		body.append("xmlns:oxf=\"http://www.orbeon.com/oxf/processors\" ");
-		body.append("xmlns:p=\"http://www.orbeon.com/oxf/pipeline\" >");
+		body.append("<xh:table cellpadding=\"3\">");
 
-		body.append(getBodySection());
+		body.append(getStandardXFormsBodySection());
 
-		body.append("</fr:body>");
-		body.append("</fr:view>");
+		body.append("</xh:table>");
 		body.append("</xh:body>");
 		return body.toString();
 	}
