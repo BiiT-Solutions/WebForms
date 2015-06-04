@@ -273,8 +273,26 @@ public class Form extends BaseForm implements IWebformsFormView {
 			copy.copyRules(this, false);
 			copy.updateRuleReferences();
 		}
+		
+		copy.updateDynamicAnswers();
 
 		return copy;
+	}
+
+	private void updateDynamicAnswers() {
+		updateDynamicAnswers(getAllChildrenInHierarchy(Question.class));		
+	}
+
+	private void updateDynamicAnswers(Set<TreeObject> allQuestionsInHierarchy) {
+		HashMap<String,Question> questions = new HashMap<>();
+		for(TreeObject child: allQuestionsInHierarchy){
+			questions.put(child.getComparationId(),(Question) child);
+		}
+		
+		for(TreeObject child: getAllChildrenInHierarchy(DynamicAnswer.class)){
+			DynamicAnswer answer = (DynamicAnswer) child;
+			answer.setReference(questions.get(answer.getReference().getComparationId()));
+		}
 	}
 
 	/**

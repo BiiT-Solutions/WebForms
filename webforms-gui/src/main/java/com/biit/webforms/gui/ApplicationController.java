@@ -64,6 +64,7 @@ import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.CompleteFormView;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
@@ -494,6 +495,18 @@ public class ApplicationController {
 	public Question addNewQuestion(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
 		return (Question) insertTreeObject(Question.class, parent, "Question");
+	}
+	
+	
+	public DynamicAnswer addNewDynamicQuestion(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
+		setUnsavedFormChanges(true);
+		DynamicAnswer answer = (DynamicAnswer) insertTreeObject(DynamicAnswer.class, parent, "Dynamic");
+		try {
+			answer.setLabel(LanguageCodes.DYNAMIC_ANSWER_LABEL.translation());
+		} catch (FieldTooLongException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		return answer;
 	}
 
 	/**

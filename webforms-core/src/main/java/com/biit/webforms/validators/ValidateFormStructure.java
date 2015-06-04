@@ -10,6 +10,7 @@ public class ValidateFormStructure extends CompositeValidator<Form> {
 		super(Form.class);
 		add(ValidateBaseForm.class);
 		add(ValidateSubanswers.class);
+		add(ValidateDynamicAnswers.class);
 	}
 
 }

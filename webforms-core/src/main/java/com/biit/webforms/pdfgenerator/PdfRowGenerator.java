@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biit.form.entity.BaseAnswer;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.logger.WebformsLogger;
@@ -32,7 +33,7 @@ public class PdfRowGenerator {
 	private static final int QUESTION_DESCRIPTION_ROW = 1;
 	private static final int QUESTION_DESCRIPTION_COL = 2;
 
-	public static PdfRow generateAnnexAnswer(Answer answer) {
+	public static PdfRow generateAnnexAnswer(BaseAnswer answer) {
 		PdfPCell labelCell = PdfPCellGenerator.generateLabelCell(answer);
 		labelCell.setColspan(2);
 		PdfPCell nameCell = PdfPCellGenerator.generateNameCell(answer);
@@ -116,38 +117,47 @@ public class PdfRowGenerator {
 		PdfFormField radioGroup = bt.getRadioGroup(false, true);
 		
 		for(TreeObject answer: question.getChildren()){
-			List<PdfRow> newRows = generateRadioFieldRows(writer,radioGroup, question, (Answer) answer);
+			List<PdfRow> newRows = generateRadioFieldRows(writer,radioGroup, question, (BaseAnswer) answer);
 			rows.addAll(newRows);
 		}
 		
 		return rows;
 	}
 	
-	public static List<PdfRow> generateRadioFieldRows(PdfWriter writer, PdfFormField radioGroup, Question question, Answer answer) throws BadBlockException {
-		
+	public static List<PdfRow> generateRadioFieldRows(PdfWriter writer, PdfFormField radioGroup, Question question, BaseAnswer baseAnswer) throws BadBlockException {
 		List<PdfRow> rows = new ArrayList<PdfRow>();
 
 		PdfRow row = new PdfRow(RADIO_FIELD_ROW, RADIO_FIELD_COL);
 		
-		PdfPCell field = PdfPCellGenerator.generateText(answer.getLabel(), RADIO_FIELD_COL);
+		String answerText = null;
+		if(baseAnswer instanceof Answer){
+			answerText = baseAnswer.getLabel();
+		}else{
+			answerText = baseAnswer.getName();
+		}
+		
+		PdfPCell field = PdfPCellGenerator.generateText(answerText, RADIO_FIELD_COL);
 		//Its parent it's not an answer then they are first level. If not they are subanswers.
-		if (!(answer.getParent() instanceof Answer)) {
+		if (!(baseAnswer.getParent() instanceof Answer)) {
 			field.setPaddingLeft(PADDING);
-			field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), answer.getScapedPathName(), radioGroup, 0));
+			field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), baseAnswer.getScapedPathName(), radioGroup, 0));
 		} else {
 			field.setPaddingLeft(PADDING * 2);
-			field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), answer.getScapedPathName(), radioGroup, PADDING));
+			field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), baseAnswer.getScapedPathName(), radioGroup, PADDING));
 		}
 		field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
 		row.addCell(field);
 		rows.add(row);
 
 		// Add answer description if it has
-		if (answer.getDescription() != null && !answer.getDescription().isEmpty()) {
-			rows.add(generateAnswerDescriptionRow(answer));
+		if(baseAnswer instanceof Answer){
+			Answer answer = (Answer) baseAnswer;
+			if (answer.getDescription() != null && !answer.getDescription().isEmpty()) {
+				rows.add(generateAnswerDescriptionRow(answer));
+			}
 		}
 
-		for (TreeObject subanswer : answer.getChildren()) {
+		for (TreeObject subanswer : baseAnswer.getChildren()) {
 			List<PdfRow> newRows = generateRadioFieldRows(writer,radioGroup, question, (Answer) subanswer);
 			rows.addAll(newRows);
 		}
@@ -167,35 +177,45 @@ public class PdfRowGenerator {
 		List<PdfRow> rows = new ArrayList<PdfRow>();
 
 		for (TreeObject answer: question.getChildren()) {
-			List<PdfRow> newRows = generateCheckFieldRows(writer, question, (Answer) answer);
+			List<PdfRow> newRows = generateCheckFieldRows(writer, question, (BaseAnswer) answer);
 			rows.addAll(newRows);
 		}
 		return rows;
 	}
 	
-	public static List<PdfRow> generateCheckFieldRows(PdfWriter writer, Question question, Answer answer) throws BadBlockException {
+	public static List<PdfRow> generateCheckFieldRows(PdfWriter writer, Question question, BaseAnswer baseAnswer) throws BadBlockException {
 		List<PdfRow> rows = new ArrayList<PdfRow>();
 
 		PdfRow row = new PdfRow(CHECK_FIELD_ROW, CHECK_FIELD_COL);
-
-		PdfPCell field = PdfPCellGenerator.generateText(answer.getLabel(), CHECK_FIELD_COL);
-		if (!(answer.getParent() instanceof Answer)) {
+		
+		String answerText = null;
+		if(baseAnswer instanceof Answer){
+			answerText = baseAnswer.getLabel();
+		}else{
+			answerText = baseAnswer.getName();
+		}
+		
+		PdfPCell field = PdfPCellGenerator.generateText(answerText, CHECK_FIELD_COL);
+		if (!(baseAnswer.getParent() instanceof Answer)) {
 			field.setPaddingLeft(PADDING);
-			field.setCellEvent(new FormCheckField(writer, answer.getScapedPathName(), 0));
+			field.setCellEvent(new FormCheckField(writer, baseAnswer.getScapedPathName(), 0));
 		} else {
 			field.setPaddingLeft(PADDING * 2);
-			field.setCellEvent(new FormCheckField(writer, answer.getScapedPathName(), PADDING));
+			field.setCellEvent(new FormCheckField(writer, baseAnswer.getScapedPathName(), PADDING));
 		}
 		field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
 		row.addCell(field);
 		rows.add(row);
 
-		// Add answer description if it has
-		if (answer.getDescription() != null && !answer.getDescription().isEmpty()) {
-			rows.add(generateAnswerDescriptionRow(answer));
+		if(baseAnswer instanceof Answer){
+			Answer answer = (Answer)baseAnswer;
+			// Add answer description if it has
+			if (answer.getDescription() != null && !answer.getDescription().isEmpty()) {
+				rows.add(generateAnswerDescriptionRow(answer));
+			}
 		}
 		
-		for (TreeObject subanswer : answer.getChildren()) {
+		for (TreeObject subanswer : baseAnswer.getChildren()) {
 			List<PdfRow> newRows = generateCheckFieldRows(writer, question, (Answer) subanswer);
 			rows.addAll(newRows);
 		}

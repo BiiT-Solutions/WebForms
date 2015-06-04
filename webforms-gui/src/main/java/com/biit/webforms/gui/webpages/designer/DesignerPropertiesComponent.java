@@ -15,6 +15,6 @@ public class DesignerPropertiesComponent extends PropertiesComponent {
 		registerPropertiesComponent(new PropertiesText());
 		registerPropertiesComponent(new PropertiesSystemField());
 		registerPropertiesComponent(new PropertiesAnswer());
-		registerPropertiesComponent(new PropertiesDynamicQuestion());
+		registerPropertiesComponent(new PropertiesDynamicAnswer());
 	}
 }
