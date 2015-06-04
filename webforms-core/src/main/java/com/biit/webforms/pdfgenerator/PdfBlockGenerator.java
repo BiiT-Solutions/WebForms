@@ -3,11 +3,11 @@ package com.biit.webforms.pdfgenerator;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.biit.form.entity.BaseAnswer;
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
-import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
@@ -39,8 +39,10 @@ public class PdfBlockGenerator {
 				block.insertCol(PdfCol.generateWhiteCol(question.getChildren().size(), 1));
 				for (TreeObject child : question.getChildren()) {
 					// They are all answers
-					// TODO change for nested answers.
-					block.insertRow(PdfRowGenerator.generateAnnexAnswer((Answer) child));
+					block.insertRow(PdfRowGenerator.generateAnnexAnswer((BaseAnswer) child));
+//					for(TreeObject subChild: child.getChildren()){
+//						block.insertRow(PdfRowGenerator.generateAnnexAnswer((BaseAnswer) child));
+//					}
 				}
 			}
 		} catch (BadBlockException e) {
