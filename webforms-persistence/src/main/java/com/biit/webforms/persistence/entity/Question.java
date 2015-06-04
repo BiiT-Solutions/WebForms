@@ -255,6 +255,10 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		}
 		return finalAnswers;
 	}
+	
+	public boolean containsDynamicAnswer(){
+		return !getAllChildrenInHierarchy(DynamicAnswer.class).isEmpty();
+	}
 
 	/**
 	 * Returns the answer with value == @answerValue otherwise returns null.

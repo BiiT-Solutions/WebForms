@@ -105,10 +105,9 @@ public class XmlExporter {
 		String xmlBaseAddress = WebformsConfigurationReader.getInstance().getXmlBaseAddress();
 
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		sb.append("<" + form.getLabelWithouthSpaces() + " xmlns=\"" + xmlBaseAddress + ""
-				+ form.getLabelWithouthSpaces()
-				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"" + xmlBaseAddress
-				+ " schema.xsd" + form.getLabelWithouthSpaces() + "\">");
+		sb.append("<" + form.getLabelWithouthSpaces() + " xmlns=\"" + xmlBaseAddress + "" + form.getLabelWithouthSpaces()
+				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"" + xmlBaseAddress + " schema.xsd"
+				+ form.getLabelWithouthSpaces() + "\">");
 		for (Flow flow : path) {
 			if (flow.getOrigin() instanceof Text || flow.getOrigin() instanceof SystemField) {
 				continue;
@@ -194,12 +193,17 @@ public class XmlExporter {
 	}
 
 	private void generateRandomQuestion(StringBuilder sb, Question question) {
-		LinkedHashSet<Answer> finalAnswers = question.getFinalAnswers();
-		List<Answer> answers = new ArrayList<>();
-		answers.addAll(finalAnswers);
+		if (!question.containsDynamicAnswer()) {
+			LinkedHashSet<Answer> finalAnswers = question.getFinalAnswers();
+			List<Answer> answers = new ArrayList<>();
+			answers.addAll(finalAnswers);
 
-		if (!finalAnswers.isEmpty()) {
-			sb.append(answers.get(random.nextInt(answers.size())).getName());
+			if (!finalAnswers.isEmpty()) {
+				sb.append(answers.get(random.nextInt(answers.size())).getName());
+			}
+		} else {
+			//If it's a random question with dynamic answers we just use a random text 
+			sb.append("dynamic answer");
 		}
 	}
 
