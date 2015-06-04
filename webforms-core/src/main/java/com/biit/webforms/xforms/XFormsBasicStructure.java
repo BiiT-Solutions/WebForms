@@ -109,6 +109,7 @@ public abstract class XFormsBasicStructure {
 		for (TreeObject child : form.getChildren()) {
 			XFormsCategory xFormsCategory = createXFormsCategory((Category) child);
 			xFormsCategories.add(xFormsCategory);
+			getXFormsHelper().addXFormsObject(xFormsCategory);
 		}
 	}
 
@@ -153,8 +154,8 @@ public abstract class XFormsBasicStructure {
 	 * @throws PostCodeRuleSyntaxError
 	 * @throws DateRuleSyntaxError
 	 */
-	protected String getHeader() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
+	protected String getHeader(XFormsObject<?> xFormsObject) throws NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		StringBuilder header = new StringBuilder("<xh:head>");
 		header.append("<xh:meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
 		header.append("<xh:title>" + getForm().getLabel() + "</xh:title>");
@@ -164,18 +165,22 @@ public abstract class XFormsBasicStructure {
 		header.append(getMetaData(getForm()));
 		header.append("</xf:instance>");
 		header.append(getModelInstance());
-		header.append(getBinding());
+		header.append(getBinding(xFormsObject));
 		header.append(getAttachments());
-		header.append(getResources());
+		header.append(getResources(xFormsObject));
 		header.append(getInstances());
 		header.append(getTemplatesOfLoops());
+		header.append(getEventsDefinitions(xFormsObject));
 		header.append("</xf:model>");
 		header.append("</xh:head>");
 		return header.toString();
 	}
-	
+
+	protected abstract String getEventsDefinitions(XFormsObject<?> xFormsObject);
+
 	/**
 	 * Sets the xforms tags for getting data for a different file.
+	 * 
 	 * @return
 	 */
 	protected abstract String getInput();
@@ -204,20 +209,29 @@ public abstract class XFormsBasicStructure {
 	 * @throws PostCodeRuleSyntaxError
 	 * @throws DateRuleSyntaxError
 	 */
-	private String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
+	private String getBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		StringBuilder binding = new StringBuilder();
 		binding.append("<xf:bind id=\"fr-form-binds\" ref=\"instance('fr-form-instance')\">");
 
-		// Add hidden email field.
-		binding.append(XFormsHiddenEmailField.getBinding());
+		binding.append(getElementBinding(xformsObject));
 
-		for (XFormsCategory category : getXFormsCategories()) {
-			category.getBinding(binding);
-		}
 		binding.append(" </xf:bind>");
 		return binding.toString();
 	}
+
+	/**
+	 * Get the element biding from an element. If the element is null gets the binding for all elements of the form.
+	 * 
+	 * @param xformsObject
+	 * @return
+	 * @throws NotExistingDynamicFieldException
+	 * @throws InvalidDateException
+	 * @throws StringRuleSyntaxError
+	 * @throws PostCodeRuleSyntaxError
+	 */
+	protected abstract String getElementBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError;
 
 	private String getTemplatesOfLoops() {
 		String templates = "";
@@ -230,21 +244,18 @@ public abstract class XFormsBasicStructure {
 	/**
 	 * Creates all resources of the form (labels initial values, ...).
 	 * 
+	 * @param xFormsCategory
+	 *            if not null, gete resources for only this category
 	 * @return
 	 * @throws NotExistingDynamicFieldException
-	 * @throws InvalidFlowInForm
 	 */
-	private String getResources() throws NotExistingDynamicFieldException {
+	private String getResources(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException {
 		StringBuilder resource = new StringBuilder("<xf:instance id=\"fr-form-resources\" xxf:readonly=\"false\">");
 		resource.append("<resources>");
 		resource.append("<resource xml:lang=\"en\">");
 
-		// Add hidden email field.
-		resource.append(XFormsHiddenEmailField.getResources());
-
-		for (XFormsCategory category : getXFormsCategories()) {
-			resource.append(category.getResources());
-		}
+		// Add resources
+		resource.append(getElementResources(xformsObject));
 
 		resource.append("</resource>");
 		resource.append("</resources>");
@@ -254,13 +265,22 @@ public abstract class XFormsBasicStructure {
 	}
 
 	/**
+	 * Creates the hierarchy of the resources.
+	 * 
+	 * @param xformsObject
+	 * @return
+	 * @throws NotExistingDynamicFieldException
+	 */
+	protected abstract String getElementResources(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException;
+
+	/**
 	 * Creates the body section of the XForm.
 	 * 
 	 * @param form
 	 * @return
 	 * @throws InvalidFlowInForm
 	 */
-	protected abstract String getBody();
+	protected abstract String getBody(XFormsObject<?> xformsObject);
 
 	/**
 	 * Shows the sections defined in the header.
@@ -269,29 +289,5 @@ public abstract class XFormsBasicStructure {
 	 * @return
 	 * @throws InvalidFlowInForm
 	 */
-	protected String getBodySection() {
-		StringBuilder body = new StringBuilder();
-
-		// Add hidden email field.
-		body.append(XFormsHiddenEmailField.getBody());
-
-		for (XFormsCategory category : getXFormsCategories()) {
-			category.getSectionBody(body);
-		}
-		return body.toString();
-	}
-	
-	
-	protected String getStandardXFormsBodySection(){
-		StringBuilder body = new StringBuilder();
-		
-		// Add hidden email field.
-		body.append(XFormsHiddenEmailField.getBody());
-		
-		for (XFormsCategory category : getXFormsCategories()) {
-			category.getSectionBody(body);
-		}
-		
-		return body.toString();
-	}
+	protected abstract String getBodySection(XFormsObject<?> xformsObject);
 }

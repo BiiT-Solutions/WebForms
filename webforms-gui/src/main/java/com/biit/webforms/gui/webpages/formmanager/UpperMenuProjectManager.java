@@ -91,8 +91,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_PUBLISH_XFORMS, IconSize.BIG);
 		downloadXForms = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS, ThemeIcons.DOWNLOAD_XFORMS,
 				LanguageCodes.TOOLTIP_DOWNLOAD_XFORMS, IconSize.BIG);
-		downloadXFormsMultiple = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS, ThemeIcons.DOWNLOAD_XFORMS,
-				LanguageCodes.TOOLTIP_DOWNLOAD_XFORMS, IconSize.BIG);
+		downloadXFormsMultiple = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS_MULTIPLE, ThemeIcons.DOWNLOAD_XFORMS_MULTIPLE,
+				LanguageCodes.TOOLTIP_DOWNLOAD_XFORMS_MULTIPLE, IconSize.BIG);
 
 		impactAnalysis = new IconButton(LanguageCodes.CAPTION_IMPACT_ANALYSIS, ThemeIcons.IMPACT_ANALYSIS,
 				LanguageCodes.TOOLTIP_IMPACT_ANALISYS, IconSize.BIG);

@@ -76,8 +76,8 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		xforms.append("xmlns:sql=\"http://orbeon.org/oxf/xml/sql\"  ");
 		xforms.append("xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
 		xforms.append("xmlns:fb=\"http://orbeon.org/oxf/xml/form-builder\">");
-		xforms.append(getHeader());
-		xforms.append(getBody());
+		xforms.append(getHeader(null));
+		xforms.append(getBody(null));
 		xforms.append("</xh:html>");
 		return xforms.toString();
 	}
@@ -119,12 +119,13 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	/**
 	 * Creates the body section of the XForm.
 	 * 
-	 * @param form
+	 * @param xFormsObject
+	 * 
 	 * @return
 	 * @throws InvalidFlowInForm
 	 */
 	@Override
-	protected String getBody() {
+	protected String getBody(XFormsObject<?> xFormsObject) {
 		StringBuilder body = new StringBuilder("<xh:body>");
 		body.append("<fr:view>");
 		body.append("<fr:body xmlns:xbl=\"http://www.w3.org/ns/xbl\" ");
@@ -132,7 +133,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		body.append("xmlns:oxf=\"http://www.orbeon.com/oxf/processors\" ");
 		body.append("xmlns:p=\"http://www.orbeon.com/oxf/pipeline\" >");
 
-		body.append(getBodySection());
+		body.append(getBodySection(xFormsObject));
 
 		body.append("</fr:body>");
 		body.append("</fr:view>");
@@ -142,8 +143,67 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	@Override
 	protected String getInput() {
-		//Not needed, only for multiple files.
+		// Not needed, only for multiple files.
 		return "";
+	}
+
+	/**
+	 * Get all elements resources structure.
+	 * 
+	 * @param xformsObject
+	 *            is ignored.
+	 */
+	@Override
+	protected String getElementResources(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException {
+		StringBuilder resource = new StringBuilder();
+		// Add hidden email field.
+		resource.append(XFormsHiddenEmailField.getResources());
+
+		for (XFormsCategory category : getXFormsCategories()) {
+			resource.append(category.getResources());
+		}
+		return resource.toString();
+	}
+
+	/**
+	 * @param xformsObject
+	 *            ignored in this case.
+	 */
+	@Override
+	protected String getBodySection(XFormsObject<?> xformsObject) {
+		StringBuilder body = new StringBuilder();
+
+		// Add hidden email field.
+		body.append(XFormsHiddenEmailField.getBody());
+
+		for (XFormsCategory category : getXFormsCategories()) {
+			category.getSectionBody(body);
+		}
+		return body.toString();
+	}
+
+	@Override
+	protected String getEventsDefinitions(XFormsObject<?> xFormsObject) {
+		// No events needed.
+		return "";
+	}
+
+	/**
+	 * @param xformsObject
+	 *            ignored in this case.
+	 */
+	@Override
+	protected String getElementBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		StringBuilder binding = new StringBuilder();
+		// Add hidden email field.
+		binding.append(XFormsHiddenEmailField.getBinding());
+
+		for (XFormsCategory category : getXFormsCategories()) {
+			category.getBinding(binding);
+		}
+
+		return binding.toString();
 	}
 
 }

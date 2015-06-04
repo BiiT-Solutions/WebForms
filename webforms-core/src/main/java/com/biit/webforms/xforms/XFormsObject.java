@@ -68,12 +68,14 @@ public abstract class XFormsObject<T extends TreeObject> {
 			XFormsObject<?> newChild;
 			if (child instanceof Category) {
 				newChild = new XFormsCategory(xFormsHelper, (Category) child);
+				xFormsHelper.addXFormsObject(newChild);
 			} else if (child instanceof Group) {
 				if (((Group) child).isRepeatable()) {
 					newChild = new XFormsRepeatableGroup(xFormsHelper, (Group) child);
 				} else {
 					newChild = new XFormsGroup(xFormsHelper, (Group) child);
 				}
+				xFormsHelper.addXFormsObject(newChild);
 			} else if (child instanceof BaseQuestion) {
 				if (child instanceof Text) {
 					newChild = new XFormsText(xFormsHelper, (Text) child);
@@ -85,6 +87,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 				xFormsHelper.addXFormsQuestion((XFormsQuestion) newChild);
 			} else if (child instanceof Answer) {
 				newChild = new XFormsAnswer(xFormsHelper, (Answer) child);
+				xFormsHelper.addXFormsObject(newChild);
 			} else {
 				// Forms cannot be a valid child.
 				throw new NotValidChildException("Inserted child '" + child + "' is not valid. ");
@@ -149,7 +152,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws InvalidFlowInForm
 	 */
 	protected String getBodyStructure(String structure, boolean html) {
-		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/" + structure + "\"";
+		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/"
+				+ structure + "\"";
 		if (html) {
 			text += " mediatype=\"text/html\" ";
 		}
@@ -296,9 +300,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError;
 
 	protected abstract void getSectionBody(StringBuilder body);
-	
-	
-	//protected abstract void getStandardXFormsBody(StringBuilder body);
+
+	// protected abstract void getStandardXFormsBody(StringBuilder body);
 
 	protected String getDefinition() {
 		String section = "<" + getName() + ">";
@@ -378,7 +381,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 				visibility.append(getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()));
 				// Date is a specific case. Already has some data.
 			} else if (((TokenAnswerNeeded) token).isDateField()) {
-				//Dates are uses as string due to avoid error when fields are hidden and have an empty value. 
+				// Dates are uses as string due to avoid error when fields are hidden and have an empty value.
 				visibility
 						.append("string-length($")
 						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
@@ -505,14 +508,14 @@ public abstract class XFormsObject<T extends TreeObject> {
 			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
 			visibility.append(" format-date(adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
 					.append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
-					.append("'), '"+DATE_FORMAT+"')");
+					.append("'), '" + DATE_FORMAT + "')");
 		} else {
 			visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
 					.append("/text() ");
 			visibility.append(token.getType().getOrbeonRepresentation()).append(
 					" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
 			visibility.append(xPathOperation).append("('P").append(token.getValue())
-					.append(token.getDatePeriodUnit().getAbbreviature()).append("'), '"+DATE_FORMAT+"')");
+					.append(token.getDatePeriodUnit().getAbbreviature()).append("'), '" + DATE_FORMAT + "')");
 		}
 	}
 
