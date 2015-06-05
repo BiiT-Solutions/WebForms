@@ -67,8 +67,21 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	// Abcd Rest service
 	private static final String ABCD_REST_SERVICE_USER = "abcd.rest.user";
 	private static final String ABCD_REST_SERVICE_PASSWORD = "abcd.rest.password";
+	private static final String ABCD_REST_SERVICE_URL = "abcd.rest.url";
+	private static final String ABCD_REST_SERVICE_ALL_SIMPLE_FORMS_PATH = "abcd.rest.path.all.simple.forms";
+	private static final String ABCD_REST_SERVICE_SIMPLE_FORM_LABEL_ORG = "abcd.rest.path.simple.form.label.org";
+	private static final String ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID = "abcd.rest.path.complete.form.by.id";
+	private static final String ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION = "abcd.rest.path.complete.form.by.label.organization.version";
+	private static final String ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION = "abcd.rest.path.complete.forms.by.organization";
+
 	private static final String DEFAULT_ABCD_REST_SERVICE_USER = "user";
-	private static final String DEFAULT_ABCD_REST_SERVICE_PASSWORD = "pass";
+	private static final String DEFAULT_ABCD_REST_SERVICE_PASSWORD = "password";
+	private static final String DEFAULT_ABCD_REST_SERVICE_URL = "http://127.0.0.1:8080/";
+	private static final String DEFAULT_ABCD_REST_SERVICE_ALL_SIMPLE_FORMS_PATH = "simple";
+	private static final String DEFAULT_ABCD_REST_SERVICE_SIMPLE_FORM_LABEL_ORG = "simple";
+	private static final String DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID = "form";
+	private static final String DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION = "form";
+	private static final String DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION = "form";
 
 	private static WebformsConfigurationReader instance;
 
@@ -102,6 +115,14 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 
 		addProperty(ABCD_REST_SERVICE_USER, DEFAULT_ABCD_REST_SERVICE_USER);
 		addProperty(ABCD_REST_SERVICE_PASSWORD, DEFAULT_ABCD_REST_SERVICE_PASSWORD);
+		addProperty(ABCD_REST_SERVICE_URL, DEFAULT_ABCD_REST_SERVICE_URL);
+		addProperty(ABCD_REST_SERVICE_ALL_SIMPLE_FORMS_PATH, DEFAULT_ABCD_REST_SERVICE_ALL_SIMPLE_FORMS_PATH);
+		addProperty(ABCD_REST_SERVICE_SIMPLE_FORM_LABEL_ORG, DEFAULT_ABCD_REST_SERVICE_SIMPLE_FORM_LABEL_ORG);
+		addProperty(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID, DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID);
+		addProperty(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION,
+				DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION);
+		addProperty(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION,
+				DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
 
 		addPropertiesSource(new PropertiesSourceFile(DATABASE_CONFIG_FILE));
 		addPropertiesSource(new SystemVariablePropertiesSourceFile(WEBFORMS_SYSTEM_VARIABLE_CONFIG,
@@ -235,5 +256,29 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 
 	public String getAbcdRestServicePassword() {
 		return getPropertyLogException(ABCD_REST_SERVICE_PASSWORD);
+	}
+
+	public String getAbcdRestServiceUrl() {
+		return getPropertyLogException(ABCD_REST_SERVICE_URL);
+	}
+
+	public String getAbcdRestServiceAllSimpleFormViewsPath() {
+		return getPropertyLogException(ABCD_REST_SERVICE_ALL_SIMPLE_FORMS_PATH);
+	}
+
+	public String getAbcdRestServiceSimpleFormViewByLabelAndOrganizationPath() {
+		return getPropertyLogException(ABCD_REST_SERVICE_SIMPLE_FORM_LABEL_ORG);
+	}
+
+	public String getAbcdRestServiceCompleteFormByIdPath() {
+		return getPropertyLogException(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID);
+	}
+
+	public String getAbcdRestServiceCompleteFormByLabelFormAndOrganizationPath() {
+		return getPropertyLogException(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION);
+	}
+	
+	public String getAbcdRestServiceCompleteFormsByOrganizationPath() {
+		return getPropertyLogException(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
 	}
 }

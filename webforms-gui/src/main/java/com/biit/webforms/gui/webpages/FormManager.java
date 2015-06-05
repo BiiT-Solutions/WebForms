@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.biit.abcd.core.SpringContextHelper;
-import com.biit.abcd.security.AbcdActivity;
-import com.biit.abcd.security.AbcdAuthorizationService;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
@@ -331,7 +329,8 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	/**
-	 * Loads a forms and tries to validate. If the form is not validated returns null
+	 * Loads a forms and tries to validate. If the form is not validated returns
+	 * null
 	 * 
 	 * @return
 	 */
@@ -479,28 +478,23 @@ public class FormManager extends SecuredWebPage {
 		List<com.biit.abcd.persistence.entity.SimpleFormView> availableForms;
 		if (form.getLinkedFormLabel() == null) {
 			// Not linked yet. Show all available forms.
-			availableForms = UserSessionHandler.getController().getSimpleFormDaoAbcd().getAll();
+			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdForCurrentUser();
 		} else {
 			// Already linked form, show only the versions of this form.
-			availableForms = UserSessionHandler
-					.getController()
-					.getSimpleFormDaoAbcd()
-					.getSimpleFormViewByLabelAndOrganization(form.getLinkedFormLabel(),
-							form.getLinkedFormOrganizationId());
+			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdByLabelAndOrganization(
+					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
 		}
 
 		// Let user choose the version.
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
 		for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
-			if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-					simpleFormView.getOrganizationId(), AbcdActivity.READ)
-					&& WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+			if (WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 							simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
 				linkAbcdForm.add(simpleFormView);
 			}
 		}
 
-		linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleAbcdForms(form));
+		linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleFormViewsFromAbcd(form));
 		linkAbcdForm.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
