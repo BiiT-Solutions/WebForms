@@ -235,14 +235,16 @@ public class FormManager extends SecuredWebPage {
 				downloadXForms();
 			}
 		});
-		upperMenu.addDownloadXFormsMultipleListener(new ClickListener() {
-			private static final long serialVersionUID = 7112180518114190965L;
+		if (upperMenu != null) {
+			upperMenu.addDownloadXFormsMultipleListener(new ClickListener() {
+				private static final long serialVersionUID = 7112180518114190965L;
 
-			@Override
-			public void buttonClick(ClickEvent event) {
-				downloadXFormsMultiple();
-			}
-		});
+				@Override
+				public void buttonClick(ClickEvent event) {
+					downloadXFormsMultiple();
+				}
+			});
+		}
 		upperMenu.addExportXsdListener(new ClickListener() {
 			private static final long serialVersionUID = -2359606371849802798L;
 
@@ -542,8 +544,9 @@ public class FormManager extends SecuredWebPage {
 		for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
 			if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 					simpleFormView.getOrganizationId(), AbcdActivity.READ)
-					&& WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-							simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
+					&& WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
+							UserSessionHandler.getUser(), simpleFormView.getOrganizationId(),
+							WebformsActivity.FORM_EDITING)) {
 				linkAbcdForm.add(simpleFormView);
 			}
 		}
