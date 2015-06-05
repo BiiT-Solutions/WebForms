@@ -88,17 +88,17 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			// So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
 			if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_PAST)) {
-				contraints.append(" constraint=\"string-length($"
-						+ getXFormsHelper().getXFormsObject(getSource()).getBindingName()
+				contraints.append(" constraint=\"string-length("
+						+ getXFormsHelper().getXFormsObject(getSource()).getXPath()
 						+ "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ())\" ");
 			} else if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE)) {
-				contraints.append(" constraint=\"string-length($"
-						+ getXFormsHelper().getXFormsObject(getSource()).getBindingName()
+				contraints.append(" constraint=\"string-length("
+						+ getXFormsHelper().getXFormsObject(getSource()).getXPath()
 						+ "/text())=0 or . &gt;= adjust-date-to-timezone(current-date(), ())\" ");
 			} else if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_BIRTHDAY)) {
 				contraints
-						.append(" constraint=\"string-length($"
-								+ getXFormsHelper().getXFormsObject(getSource()).getBindingName()
+						.append(" constraint=\"string-length("
+								+ getXFormsHelper().getXFormsObject(getSource()).getXPath()
 								+ "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ()) and (year-from-date(current-date()) - year-from-date(.) &lt;= ")
 						.append(MAX_YEARS_BIRTHDAY).append(")\" ");
 			}

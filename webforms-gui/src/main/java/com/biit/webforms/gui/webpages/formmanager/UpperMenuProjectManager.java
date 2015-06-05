@@ -3,8 +3,7 @@ package com.biit.webforms.gui.webpages.formmanager;
 import java.io.IOException;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.webforms.authentication.WebformsActivity;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
@@ -12,6 +11,8 @@ import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.security.WebformsActivity;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.xforms.XFormsSimpleFormExporter;
 import com.vaadin.server.BrowserWindowOpener;
@@ -25,10 +26,9 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private final IconButton submenuNew, newForm, newFormVersion, removeForm,
-			importAbcdForm, importJsonForm;
+	private final IconButton submenuNew, newForm, newFormVersion, removeForm, importAbcdForm, importJsonForm;
 	private final IconButton linkAbcdForm;
-	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms;
+	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms, downloadXFormsMultiple;
 	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson, exportXml,
 			exportBaseFormMetadataJson;
 	private final IconButton impactAnalysis, compareContent;
@@ -39,12 +39,14 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public UpperMenuProjectManager() {
 		super();
-		
-		boolean enableExportJson=false;
-		boolean enableImportJson=false;		
+
+		boolean enableExportJson = false;
+		boolean enableImportJson = false;
 		try {
-			enableExportJson = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(), WebformsActivity.EXPORT_JSON);
-			enableImportJson = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(), WebformsActivity.IMPORT_JSON);
+			enableExportJson = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+					UserSessionHandler.getUser(), WebformsActivity.EXPORT_JSON);
+			enableImportJson = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+					UserSessionHandler.getUser(), WebformsActivity.IMPORT_JSON);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -59,7 +61,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		importJsonForm = new IconButton(LanguageCodes.CAPTION_IMPORT_JSON_FORM,
 				ThemeIcons.FORM_MANAGER_IMPORT_JSON_FORM, LanguageCodes.TOOLTIP_IMPORT_JSON_FORM, IconSize.BIG);
 		importJsonForm.setVisible(enableImportJson);
-		
+
 		linkAbcdForm = new IconButton(LanguageCodes.CAPTION_LINK_ABCD_FORM, ThemeIcons.FORM_MANAGER_LINK_ABCD_FORM,
 				LanguageCodes.TOOLTIP_LINK_ABCD_FORM, IconSize.BIG);
 
@@ -73,7 +75,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		exportJson = new IconButton(LanguageCodes.CAPTION_EXPORT_JSON, ThemeIcons.EXPORT_JSON,
 				LanguageCodes.TOOLTIP_EXPORT_JSON, IconSize.BIG);
 		exportJson.setVisible(enableExportJson);
-		
+
 		exportXml = new IconButton(LanguageCodes.CAPTION_EXPORT_XML, ThemeIcons.EXPORT_XML,
 				LanguageCodes.TOOLTIP_EXPORT_XML, IconSize.BIG);
 
@@ -91,6 +93,12 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_PUBLISH_XFORMS, IconSize.BIG);
 		downloadXForms = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS, ThemeIcons.DOWNLOAD_XFORMS,
 				LanguageCodes.TOOLTIP_DOWNLOAD_XFORMS, IconSize.BIG);
+		if (WebformsConfigurationReader.getInstance().isXFormsToMultipleFilesEnabled()) {
+			downloadXFormsMultiple = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS_MULTIPLE,
+					ThemeIcons.DOWNLOAD_XFORMS_MULTIPLE, LanguageCodes.TOOLTIP_DOWNLOAD_XFORMS_MULTIPLE, IconSize.BIG);
+		} else {
+			downloadXFormsMultiple = null;
+		}
 
 		impactAnalysis = new IconButton(LanguageCodes.CAPTION_IMPACT_ANALYSIS, ThemeIcons.IMPACT_ANALYSIS,
 				LanguageCodes.TOOLTIP_IMPACT_ANALISYS, IconSize.BIG);
@@ -110,7 +118,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
 				exportFlowPdf, exportXsd, exportXml, exportJson, exportBaseFormMetadataJson);
 		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
-				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms);
+				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms, downloadXFormsMultiple);
 		opener.extend(previewXForms);
 
 		addIconButton(impactAnalysis);
@@ -175,6 +183,12 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public void addDownloadXFormsListener(ClickListener listener) {
 		downloadXForms.addClickListener(listener);
+	}
+
+	public void addDownloadXFormsMultipleListener(ClickListener listener) {
+		if (downloadXFormsMultiple != null) {
+			downloadXFormsMultiple.addClickListener(listener);
+		}
 	}
 
 	public void addRemoveFormListener(ClickListener listener) {

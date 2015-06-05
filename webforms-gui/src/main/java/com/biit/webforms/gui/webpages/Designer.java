@@ -20,13 +20,7 @@ import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.webforms.authentication.FormWithSameNameException;
-import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
-import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
-import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
-import com.biit.webforms.authentication.exception.EmptyBlockCannotBeInserted;
-import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
@@ -40,7 +34,12 @@ import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.TableTreeObjectLabel;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.WindowTreeObject;
+import com.biit.webforms.gui.exceptions.CategoryWithSameNameAlreadyExistsInForm;
+import com.biit.webforms.gui.exceptions.DestinyIsContainedAtOrigin;
+import com.biit.webforms.gui.exceptions.EmptyBlockCannotBeInserted;
+import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.gui.exceptions.LinkCanOnlyBePerformedOnWholeBlock;
+import com.biit.webforms.gui.exceptions.SameOriginAndDestinationException;
 import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectHidden;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
@@ -60,6 +59,8 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.security.WebformsActivity;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDependencyExistException;
 import com.vaadin.data.Property.ReadOnlyException;
@@ -588,7 +589,7 @@ public class Designer extends SecuredWebPage {
 					&& (selectedElement instanceof BaseCategory);
 			boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 					UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
-			boolean canStoreBlock = WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+			boolean canStoreBlock = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
 			boolean selectedRowIsAnswer = (table.getSelectedRow() != null)
 					&& (table.getSelectedRow() instanceof Answer);
@@ -742,7 +743,8 @@ public class Designer extends SecuredWebPage {
 			public void acceptAction(WindowAcceptCancel window) {
 				// Insert block in form
 				try {
-					TreeObject insertedElement = UserSessionHandler.getController().insertBlock(windowBlocks.getSelectedBlock());
+					TreeObject insertedElement = UserSessionHandler.getController().insertBlock(
+							windowBlocks.getSelectedBlock());
 					clearAndUpdateFormTable();
 					table.expand(insertedElement);
 					table.setValue(insertedElement);
@@ -769,7 +771,8 @@ public class Designer extends SecuredWebPage {
 			public void acceptAction(WindowAcceptCancel window) {
 				// Insert block in form
 				try {
-					TreeObject linkedElement = UserSessionHandler.getController().linkBlock(windowBlocks.getSelectedBlock());
+					TreeObject linkedElement = UserSessionHandler.getController().linkBlock(
+							windowBlocks.getSelectedBlock());
 					clearAndUpdateFormTable();
 					table.expand(linkedElement);
 					table.setValue(linkedElement);
@@ -804,7 +807,8 @@ public class Designer extends SecuredWebPage {
 					TreeObject whatToMove = table.getSelectedRow();
 					TreeObject whereToMove = moveWindow.getSelectedTreeObject();
 					if (!whereToMove.isReadOnly()) {
-						TreeObject movedObjectNewInstance = UserSessionHandler.getController().moveTo(whatToMove, whereToMove);
+						TreeObject movedObjectNewInstance = UserSessionHandler.getController().moveTo(whatToMove,
+								whereToMove);
 						window.close();
 						table.setValue(null);
 						table.removeRow(whatToMove);

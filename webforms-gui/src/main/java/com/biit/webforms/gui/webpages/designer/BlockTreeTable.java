@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.biit.form.entity.TreeObject;
-import com.biit.webforms.authentication.WebformsActivity;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
@@ -17,6 +15,8 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.security.WebformsActivity;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.liferay.portal.model.Organization;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
@@ -44,7 +44,7 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 	}
 
 	private void initializeBlockTable() {
-		Set<Organization> organizations = WebformsAuthorizationService.getInstance()
+		Set<Organization> organizations = WebformsBasicAuthorizationService.getInstance()
 				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 		List<Block> blocks = new ArrayList<>();
 		try {
@@ -72,7 +72,7 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 		if (item != null) {
 			if (element instanceof Form) {
 				Long organizationId = ((Form) element).getOrganizationId();
-				Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+				Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
 						UserSessionHandler.getUser(), organizationId);
 				if (organization != null) {
 					item.getItemProperty(BlockTreeTableProperties.ORGANIZATION).setValue(organization.getName());

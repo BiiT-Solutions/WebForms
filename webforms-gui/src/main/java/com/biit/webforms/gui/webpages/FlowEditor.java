@@ -11,7 +11,6 @@ import com.biit.form.entity.TreeObject;
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
-import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.flow.FlowCleaner;
 import com.biit.webforms.gui.UserSessionHandler;
@@ -47,6 +46,7 @@ import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
+import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.vaadin.data.Container.Filterable;
@@ -352,19 +352,19 @@ public class FlowEditor extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				try {
 					UserSessionHandler.getController().saveForm();
-					//Refresh the table.
-					//Now the form has changes so current selected elements are not exactly the same as the ones 
-					//in the form, so we search for the new instances and replace the selection.
-					//Also we redraw the current form.
+					// Refresh the table.
+					// Now the form has changes so current selected elements are not exactly the same as the ones
+					// in the form, so we search for the new instances and replace the selection.
+					// Also we redraw the current form.
 					@SuppressWarnings("unchecked")
 					Set<Object> selectedObjects = new HashSet<Object>((Set<Object>) tableFlows.getValue());
 					Set<Object> newSelectedObjects = new HashSet<Object>();
 					tableFlows.setRows(UserSessionHandler.getController().getCompleteFormView().getFlows());
-					for(Flow newFlow: UserSessionHandler.getController().getCompleteFormView().getFlows()){
-						if(selectedObjects.contains(newFlow)){
+					for (Flow newFlow : UserSessionHandler.getController().getCompleteFormView().getFlows()) {
+						if (selectedObjects.contains(newFlow)) {
 							newSelectedObjects.add(newFlow);
 							selectedObjects.remove(newFlow);
-							if(selectedObjects.isEmpty()){
+							if (selectedObjects.isEmpty()) {
 								break;
 							}
 						}
@@ -372,7 +372,7 @@ public class FlowEditor extends SecuredWebPage {
 					tableFlows.setValue(null);
 					tableFlows.setValue(newSelectedObjects);
 					formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getCompleteFormView(), null);
-					
+
 					if (UserSessionHandler.getController().getFormInUse() instanceof Block) {
 						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
 								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);

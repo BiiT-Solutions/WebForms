@@ -1,13 +1,9 @@
-package com.biit.webforms.gui.webpages;
+package com.biit.webforms.gui.webpages.formmanager;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.vaadin.risto.stepper.IntStepper;
 
@@ -18,6 +14,7 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.utils.ZipTools;
 import com.biit.webforms.utils.exporters.xml.XmlExporter;
 import com.biit.webforms.utils.exporters.xml.exceptions.ElementWithoutNextElement;
 import com.biit.webforms.utils.exporters.xml.exceptions.TooMuchIterationsWhileGeneratingPath;
@@ -95,7 +92,7 @@ public class WindowGenerateXml extends WindowAcceptCancel {
 					XmlExporter exporter = new XmlExporter(form);
 					List<String> xmlFiles = exporter.generate(stepper.getValue());
 
-					byte[] zipFile = zipFiles(xmlFiles);					
+					byte[] zipFile = ZipTools.zipFiles(xmlFiles);					
 
 					return new ByteArrayInputStream(zipFile);
 				} catch (IOException | BadFormedExpressions | ElementWithoutNextElement
@@ -109,30 +106,6 @@ public class WindowGenerateXml extends WindowAcceptCancel {
 		downloader.setIndeterminate(true);
 		downloader.setFilename(getFilename());
 		downloader.showCentered();
-	}
-	
-	private byte[] zipFiles(List<String> xmlFiles) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ZipOutputStream zos = new ZipOutputStream(baos);
-
-		int numberOfFiles = xmlFiles.size();
-		int digits = (int)(Math.log10(numberOfFiles)+1);		
-		
-		for(int i=0; i<xmlFiles.size();i++){
-			String currentFile = String.format("%0"+digits+"d", i);
-			addFileToZip(zos, xmlFiles.get(i).getBytes(Charset.forName("UTF-8")), "export_"+currentFile+".xml");
-		}
-
-		zos.closeEntry();
-		zos.close();
-		return baos.toByteArray();
-	}
-
-	private void addFileToZip(ZipOutputStream zos, byte[] data, String name) throws IOException {
-		ZipEntry entry = new ZipEntry(name);
-		entry.setSize(data.length);
-		zos.putNextEntry(entry);
-		zos.write(data);
 	}
 
 	private String getFilename() {

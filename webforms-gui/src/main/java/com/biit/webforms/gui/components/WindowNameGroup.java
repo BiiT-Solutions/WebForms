@@ -6,12 +6,12 @@ import java.util.Set;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.liferay.portal.model.Organization;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
@@ -61,14 +61,14 @@ public class WindowNameGroup extends WindowAcceptCancel {
 		organizationField.setNullSelectionAllowed(false);
 		organizationField.setWidth("100%");
 		try {
-			Set<Organization> organizations = WebformsAuthorizationService.getInstance().getUserOrganizations(
+			Set<Organization> organizations = WebformsBasicAuthorizationService.getInstance().getUserOrganizations(
 					UserSessionHandler.getUser());
 			Iterator<Organization> itr = organizations.iterator();
 			while (itr.hasNext()) {
 				Organization organization = itr.next();
 				for (IActivity activity : exclusivePermissionFilter) {
 					// If the user doesn't comply to all activities in the filter in the group, then exit
-					if (!WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+					if (!WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 							organization, activity)) {
 						itr.remove();
 						break;

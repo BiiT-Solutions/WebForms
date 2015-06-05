@@ -1,4 +1,4 @@
-package com.biit.webforms.authentication.exception;
+package com.biit.webforms.gui.exceptions;
 
 public class BadAbcdLink extends Exception {
 
