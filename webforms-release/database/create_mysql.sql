@@ -183,6 +183,22 @@
         primary key (ID)
     );
 
+    create table tree_dynamic_answer (
+        ID bigint not null,
+        comparationId varchar(190) not null,
+        createdBy DOUBLE,
+        creationTime datetime not null,
+        updateTime datetime,
+        updatedBy DOUBLE,
+        label varchar(1000),
+        name varchar(190),
+        originalReference varchar(190) not null,
+        sortSeq bigint not null,
+        parent_ID bigint,
+        reference_ID bigint,
+        primary key (ID)
+    );
+
     create table tree_forms (
         ID bigint not null,
         comparationId varchar(190) not null,
@@ -344,6 +360,12 @@
     alter table tree_categories 
         add constraint UK_gtcyh8mle277igwtb5dvhjkr1  unique (comparationId);
 
+    alter table tree_dynamic_answer 
+        add constraint UK_2ydjana3hlpsw5bkxkt3bsrq8  unique (ID);
+
+    alter table tree_dynamic_answer 
+        add constraint UK_rkkl8hjn6deghh7wvdq1rxnkf  unique (comparationId);
+
     alter table tree_forms 
         add constraint UK_gyfbqpo5jwnsoftogc0bs77k0  unique (label, version, organizationId);
 
@@ -446,6 +468,11 @@
         add constraint FK_oxol3v3ulc6h3hwmdxskxx8vn 
         foreign key (tree_blocks_references_ID) 
         references tree_blocks_references (ID);
+
+    alter table tree_dynamic_answer 
+        add constraint FK_1focp8yixjr3i902hvvklx3wi 
+        foreign key (reference_ID) 
+        references tree_questions (ID);
 
 	CREATE TABLE `hibernate_sequence` (
 		`next_val` bigint(20) DEFAULT NULL

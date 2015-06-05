@@ -50,7 +50,7 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject> {
 		} else if (object instanceof SystemField) {
 			return ThemeIcons.DESIGNER_SYSTEM_FIELD;
 		} else if (object instanceof DynamicAnswer){
-			return ThemeIcons.DESIGNER_DYNAMIC_QUESTION;
+			return ThemeIcons.DESIGNER_DYNAMIC_ANSWER;
 		}
 		return null;
 	}
