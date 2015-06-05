@@ -182,7 +182,8 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	}
 
 	/**
-	 * Adds next and previous button at the end of the page. 
+	 * Adds next and previous button at the end of the page.
+	 * 
 	 * @param xformsObject
 	 * @return
 	 */
@@ -279,15 +280,17 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	 */
 	private void getSkipEmptyCategoryEvents(StringBuilder events, XFormsObject<?> xFormsObject) {
 		events.append("<!-- Keep track of enabled/disabled status -->");
-		events.append("<xf:instance id=\"totalVisibleElements\">");
+		events.append("<xf:instance id=\"totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName() + "\">");
 		events.append("<value>0</value>");
 		events.append("</xf:instance>");
 		events.append("<!-- Update for each element -->");
 		for (XFormsObject<?> xFormQuestion : xFormsObject.getAllChildrenInHierarchy(XFormsQuestion.class)) {
 			events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + xFormQuestion.getSectionControlName()
-					+ "\" ref=\"instance('totalVisibleElements')\" value=\"instance('totalVisibleElements') + 1\"/>");
+					+ "\" ref=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
+					+ "')\" value=\"instance('totalVisibleElements') + 1\"/>");
 			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + xFormQuestion.getSectionControlName()
-					+ "\" ref=\"instance('totalVisibleElements')\" value=\"instance('totalVisibleElements') - 1\"/>");
+					+ "\" ref=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
+					+ "')\" value=\"instance('totalVisibleElements') - 1\"/>");
 		}
 		events.append("<!-- Redirect to next page -->");
 		events.append("<xf:send ev:event=\"xforms-ready\" submission=\"next-submission\" if=\"instance('totalVisibleElements') = 0\"/>");
