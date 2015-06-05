@@ -137,7 +137,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 		body.append(getBodySection(xFormsObject));
 
 		// Add Next and previous buttons.
-		body.append(generateNextAndPreviousButtons(xFormsObject));
+		body.append(generateNextPreviousSubmitButtons(xFormsObject));
 
 		body.append("</xh:table>");
 		body.append("</xh:body>");
@@ -187,7 +187,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	 * @param xformsObject
 	 * @return
 	 */
-	private String generateNextAndPreviousButtons(XFormsObject<?> xformsObject) {
+	private String generateNextPreviousSubmitButtons(XFormsObject<?> xformsObject) {
 		StringBuilder resource = new StringBuilder();
 		resource.append("<xh:tr>");
 		resource.append("<xh:td>");
@@ -204,6 +204,13 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 			resource.append("<xf:trigger>");
 			resource.append("<xf:label>Next &gt;</xf:label>");
 			resource.append("<xf:send ev:event=\"DOMActivate\" submission=\"next-submission\"/>");
+			resource.append("</xf:trigger>");
+		}
+
+		if (getXFormsCategories().indexOf(xformsObject) == getXFormsCategories().size() - 1) {
+			resource.append("<xf:trigger>");
+			resource.append("<xf:label>Submit</xf:label>");
+			resource.append("<xf:send ev:event=\"DOMActivate\" submission=\"submit-form\"/>");
 			resource.append("</xf:trigger>");
 		}
 
@@ -231,6 +238,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 		StringBuilder events = new StringBuilder();
 
 		getNextAndPreviousButtonEvents(events, xFormsObject);
+		getSubmitButtonEvent(events, xFormsObject);
 		getSkipEmptyCategoryEvents(events, xFormsObject);
 
 		return events.toString();
@@ -272,6 +280,19 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 		}
 	}
 
+	private void getSubmitButtonEvent(StringBuilder events, XFormsObject<?> xFormsObject) {
+		if (xFormsObject instanceof XFormsCategory) {
+			XFormsCategory xFormsCategory = (XFormsCategory) xFormsObject;
+			// Only last category
+			if (xFormsCategory.getSource().getParent().getChildren().indexOf(xFormsCategory.getSource()) == getXFormsCategories()
+					.size() - 1) {
+				events.append("<xf:submission id=\"submit-form\" method=\"put\" resource=\"\" replace=\"none\" >");
+				events.append("<xf:message ev:event=\"xforms-submit-error\" level=\"modal\">An error occurred while saving!</xf:message>");
+				events.append("</xf:submission>");
+			}
+		}
+	}
+
 	/**
 	 * If a page has no visible elements is skipped.
 	 * 
@@ -288,10 +309,11 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 			events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + xFormQuestion.getSectionControlName()
 					+ "\" ref=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
 					+ "')\" value=\"instance('totalVisibleElements') + 1\"/>");
-//			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + xFormQuestion.getSectionControlName()
-//					+ "\" ref=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
-//					+ "')\" value=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
-//					+ "') - 1\"/>");
+			// events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" +
+			// xFormQuestion.getSectionControlName()
+			// + "\" ref=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
+			// + "')\" value=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
+			// + "') - 1\"/>");
 		}
 		events.append("<!-- Redirect to next page -->");
 		events.append("<xf:send ev:event=\"xforms-ready\" submission=\"next-submission\" if=\"instance('totalVisibleElements-"
