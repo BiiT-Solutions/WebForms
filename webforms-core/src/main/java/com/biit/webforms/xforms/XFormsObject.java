@@ -383,15 +383,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 			} else if (((TokenAnswerNeeded) token).isDateField()) {
 				// Dates are uses as string due to avoid error when fields are hidden and have an empty value.
 				visibility
-						.append("string-length($")
+						.append("string-length(")
 						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getBindingName()).append("/text()) &gt; 0");
+								.getXPath()).append("/text()) &gt; 0");
 				// Any input field must have an answer.
 			} else {
 				visibility
-						.append("string-length($")
+						.append("string-length(")
 						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getBindingName()).append("/text()) &gt; 0");
+								.getXPath()).append("/text()) &gt; 0");
 			}
 		} else {
 			// An operator 'and', 'or', ...
@@ -408,8 +408,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getMultiCheckBoxVisibility(StringBuilder visibility, TokenComparationAnswer token) {
-		visibility.append("contains(concat($")
-				.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+		visibility.append("contains(concat(")
+				.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 				.append(", ' '), concat('").append(token.getAnswer().getName()).append("', ' '))");
 	}
 
@@ -421,8 +421,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getBasicSelectionVisibility(StringBuilder visibility, TokenComparationAnswer token) {
-		visibility.append("$").append(
-				getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getBindingName());
+		visibility.append(
+				getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath());
 		visibility.append(token.getType().getOrbeonRepresentation());
 		visibility.append("'").append(((TokenComparationAnswer) token).getAnswer()).append("'");
 	}
@@ -440,14 +440,14 @@ public abstract class XFormsObject<T extends TreeObject> {
 		if (token.getQuestion().getAnswerFormat() != null) {
 			switch (token.getQuestion().getAnswerFormat()) {
 			case NUMBER:
-				visibility.append("number($")
-						.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName()).append(")");
+				visibility.append("number(")
+						.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append(")");
 				visibility.append(" ").append(token.getType().getOrbeonRepresentation()).append(" ");
 				visibility.append(token.getValue());
 				break;
 			case TEXT:
 			case POSTAL_CODE:
-				visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName());
+				visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath());
 				visibility.append(" ").append(token.getType().getOrbeonRepresentation());
 				visibility.append(" '").append(token.getValue()).append("'");
 				break;
@@ -465,8 +465,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 						date = formatter.parse(token.getValue());
 						// Compare it as string. Less problems with null dates. $dateField/text() ge '2015-05-27'
 						formatter.applyPattern(XPATH_DATE_FORMAT);
-						visibility.append("$")
-								.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+						visibility
+								.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 								.append("/text() ");
 						visibility.append(token.getType().getOrbeonRepresentation());
 						visibility.append(" '").append(formatter.format(date)).append("'");
@@ -503,14 +503,14 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// adjust-date-to-timezone is used to remove timestamp
 			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
-			visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 					.append("/text() ");
 			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
 			visibility.append(" format-date(adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
 					.append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
 					.append("'), '" + DATE_FORMAT + "')");
 		} else {
-			visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 					.append("/text() ");
 			visibility.append(token.getType().getOrbeonRepresentation()).append(
 					" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
