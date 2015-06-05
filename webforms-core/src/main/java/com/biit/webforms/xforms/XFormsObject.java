@@ -20,6 +20,7 @@ import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
@@ -85,6 +86,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 				xFormsHelper.addXFormsQuestion((XFormsQuestion) newChild);
 			} else if (child instanceof Answer) {
 				newChild = new XFormsAnswer(xFormsHelper, (Answer) child);
+			} else if (child instanceof DynamicAnswer){
+				newChild = new XFormsDynamicAnswer(xFormsHelper, (DynamicAnswer) child);
 			} else {
 				// Forms cannot be a valid child.
 				throw new NotValidChildException("Inserted child '" + child + "' is not valid. ");

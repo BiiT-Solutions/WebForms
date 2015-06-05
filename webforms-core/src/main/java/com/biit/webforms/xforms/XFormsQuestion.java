@@ -12,6 +12,7 @@ import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
@@ -284,16 +285,20 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 				row.append("<xf:item><xf:label>[Select...]</xf:label><xf:value/></xf:item>");
 			}
 
+			
 			// Only one itemset for elements without subanswers.
 			boolean simpleElementsAdded = false;
 			for (XFormsObject<? extends TreeObject> answer : getChildren()) {
-				if (!answer.getChildren().isEmpty() || !simpleElementsAdded) {
+				if (answer.getSource() instanceof DynamicAnswer){
 					answer.getSectionBody(row);
-					if (answer.getChildren().isEmpty()) {
-						simpleElementsAdded = true;
+				}else{
+					if (!answer.getChildren().isEmpty() || !simpleElementsAdded) {
+						answer.getSectionBody(row);
+						if (answer.getChildren().isEmpty()) {
+							simpleElementsAdded = true;
+						}
 					}
 				}
-
 			}
 		}
 	}

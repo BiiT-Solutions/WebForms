@@ -1,6 +1,9 @@
 package com.biit.webforms.xml;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -22,7 +25,8 @@ import javax.xml.validation.Validator;
 
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+
+import com.biit.webforms.logger.WebformsLogger;
 
 public class XmlUtils {
 	public static final String XML_CODIFICATION = "UTF-8";
@@ -48,10 +52,16 @@ public class XmlUtils {
 			// Create data
 			t.transform(ds, new StreamResult(result));
 			return result;
-		} catch (SAXParseException e) {
-			throw new RuntimeException(e);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			WebformsLogger.warning(XmlUtils.class.getName(), "Unexpected failure while processing xml file. Storing content in temp file");
+			try{
+				File temp = File.createTempFile("webforms_xml_prettify", "xml");
+				BufferedWriter bw = new BufferedWriter(new FileWriter(temp));
+	    	    bw.write(xml);
+	    	    bw.close();				
+			}catch(IOException ioe){				
+			}
+			throw new RuntimeException(e);			
 		}
 	}
 
