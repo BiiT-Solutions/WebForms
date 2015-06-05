@@ -288,12 +288,14 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 			events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + xFormQuestion.getSectionControlName()
 					+ "\" ref=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
 					+ "')\" value=\"instance('totalVisibleElements') + 1\"/>");
-			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + xFormQuestion.getSectionControlName()
-					+ "\" ref=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
-					+ "')\" value=\"instance('totalVisibleElements') - 1\"/>");
+//			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + xFormQuestion.getSectionControlName()
+//					+ "\" ref=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
+//					+ "')\" value=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
+//					+ "') - 1\"/>");
 		}
 		events.append("<!-- Redirect to next page -->");
-		events.append("<xf:send ev:event=\"xforms-ready\" submission=\"next-submission\" if=\"instance('totalVisibleElements') = 0\"/>");
+		events.append("<xf:send ev:event=\"xforms-ready\" submission=\"next-submission\" if=\"instance('totalVisibleElements-"
+				+ xFormsObject.getSource().getSimpleAsciiName() + "') = 0\"/>");
 	}
 
 	@Override
