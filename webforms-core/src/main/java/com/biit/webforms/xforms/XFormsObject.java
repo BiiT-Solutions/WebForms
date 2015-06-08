@@ -555,7 +555,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 		}
 
 		// Store for future reuse.
-		System.out.println(getSource() + " -> " + simplifiedVisibility);
 		getXFormsHelper().addVisibilityOfQuestionAsToken(getSource(), simplifiedVisibility);
 
 		// Convert to String.
