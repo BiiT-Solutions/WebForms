@@ -24,7 +24,6 @@ public class PropertiesForm extends PropertiesBaseForm<Form> {
 
 	@Override
 	public void updateElement() {
-		System.out.println("########################################### "+getLabelTextField().isValid());
 		if (getLabelTextField().isValid() && getLabelTextField().getValue() != null
 				&& getLabelTextField().getValue().length() > 0) {
 			try {
