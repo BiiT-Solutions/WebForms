@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -29,8 +30,13 @@ class FormComboBox extends FormTextField {
 
 		List<String> choices = new ArrayList<>();
 		for (TreeObject option : options) {
-			Answer answer = (Answer) option;
-			choices.add(answer.getLabel());
+			if(option instanceof Answer){
+				Answer answer = (Answer) option;
+				choices.add(answer.getLabel());
+			}else{
+				DynamicAnswer answer = (DynamicAnswer) option;
+				choices.add(answer.getReferenceName());
+			}
 		}
 
 		tf.setChoices(choices.toArray(new String[choices.size()]));

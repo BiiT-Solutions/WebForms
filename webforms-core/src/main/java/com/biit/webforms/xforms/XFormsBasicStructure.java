@@ -10,8 +10,13 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.utils.date.DateManager;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.xforms.exceptions.DateRuleSyntaxError;
+import com.biit.webforms.xforms.exceptions.InvalidDateException;
+import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
+import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
+import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
-public class XFormsBasicStructure {
+public abstract class XFormsBasicStructure {
 	public final static String APP_NAME = "WebForms";
 	protected final static String CHARSET = "UTF-8";
 	private List<XFormsCategory> xFormsCategories;
@@ -102,9 +107,15 @@ public class XFormsBasicStructure {
 	private void createXFormObjectsStructure() throws NotValidTreeObjectException, NotValidChildException {
 		xFormsCategories = new ArrayList<>();
 		for (TreeObject child : form.getChildren()) {
-			XFormsCategory xFormsCategory = new XFormsCategory(xFormsHelper, (Category) child);
+			XFormsCategory xFormsCategory = createXFormsCategory((Category) child);
 			xFormsCategories.add(xFormsCategory);
+			getXFormsHelper().addXFormsObject(xFormsCategory);
 		}
+	}
+
+	protected XFormsCategory createXFormsCategory(Category category) throws NotValidTreeObjectException,
+			NotValidChildException {
+		return new XFormsCategory(getXFormsHelper(), category);
 	}
 
 	protected Form getForm() {
@@ -112,7 +123,7 @@ public class XFormsBasicStructure {
 	}
 
 	protected String getFormStructure() {
-		StringBuilder text =  new StringBuilder("<form>");
+		StringBuilder text = new StringBuilder("<form>");
 
 		// Add hidden email field.
 		text.append(XFormsHiddenEmailField.getModel());
@@ -127,4 +138,156 @@ public class XFormsBasicStructure {
 	protected List<XFormsCategory> getXFormsCategories() {
 		return xFormsCategories;
 	}
+
+	protected XFormsHelper getXFormsHelper() {
+		return xFormsHelper;
+	}
+
+	/**
+	 * Starts the creation of the header part in a XForm.
+	 * 
+	 * @param form
+	 * @return
+	 * @throws NotExistingDynamicFieldException
+	 * @throws InvalidFlowInForm
+	 * @throws StringRuleSyntaxError
+	 * @throws PostCodeRuleSyntaxError
+	 * @throws DateRuleSyntaxError
+	 */
+	protected String getHeader(XFormsObject<?> xFormsObject) throws NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		StringBuilder header = new StringBuilder("<xh:head>");
+		header.append("<xh:meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
+		header.append("<xh:title>" + getForm().getLabel() + "</xh:title>");
+		header.append("<xf:model id=\"fr-form-model\" xxf:expose-xpath-types=\"true\">");
+		header.append(getInput());
+		header.append("<xf:instance xxf:readonly=\"true\" id=\"fr-form-metadata\" xxf:exclude-result-prefixes=\"#all\">");
+		header.append(getMetaData(getForm()));
+		header.append("</xf:instance>");
+		header.append(getModelInstance());
+		header.append(getBinding(xFormsObject));
+		header.append(getAttachments());
+		header.append(getResources(xFormsObject));
+		header.append(getInstances());
+		header.append(getTemplatesOfLoops());
+		header.append(getEventsDefinitions(xFormsObject));
+		header.append("</xf:model>");
+		header.append("</xh:head>");
+		return header.toString();
+	}
+
+	protected abstract String getEventsDefinitions(XFormsObject<?> xFormsObject);
+
+	/**
+	 * Sets the xforms tags for getting data for a different file.
+	 * 
+	 * @return
+	 */
+	protected abstract String getInput();
+
+	/**
+	 * Creates the model section of XForms.
+	 * 
+	 * @param form
+	 * @return
+	 * @throws InvalidFlowInForm
+	 */
+	protected String getModelInstance() {
+		StringBuilder text = new StringBuilder("<xf:instance id=\"fr-form-instance\">");
+		text.append(getFormStructure());
+		text.append("</xf:instance>");
+		return text.toString();
+	}
+
+	/**
+	 * Bind the model with the presentation of the form.
+	 * 
+	 * @return
+	 * @throws NotExistingDynamicFieldException
+	 * @throws InvalidFlowInForm
+	 * @throws StringRuleSyntaxError
+	 * @throws PostCodeRuleSyntaxError
+	 * @throws DateRuleSyntaxError
+	 */
+	private String getBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		StringBuilder binding = new StringBuilder();
+		binding.append("<xf:bind id=\"fr-form-binds\" ref=\"instance('fr-form-instance')\">");
+
+		binding.append(getElementBinding(xformsObject));
+
+		binding.append(" </xf:bind>");
+		return binding.toString();
+	}
+
+	/**
+	 * Get the element biding from an element. If the element is null gets the binding for all elements of the form.
+	 * 
+	 * @param xformsObject
+	 * @return
+	 * @throws NotExistingDynamicFieldException
+	 * @throws InvalidDateException
+	 * @throws StringRuleSyntaxError
+	 * @throws PostCodeRuleSyntaxError
+	 */
+	protected abstract String getElementBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError;
+
+	private String getTemplatesOfLoops() {
+		String templates = "";
+		for (XFormsCategory xFormsCategory : getXFormsCategories()) {
+			templates += xFormsCategory.getTemplates();
+		}
+		return templates;
+	}
+
+	/**
+	 * Creates all resources of the form (labels initial values, ...).
+	 * 
+	 * @param xFormsCategory
+	 *            if not null, gete resources for only this category
+	 * @return
+	 * @throws NotExistingDynamicFieldException
+	 */
+	private String getResources(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException {
+		StringBuilder resource = new StringBuilder("<xf:instance id=\"fr-form-resources\" xxf:readonly=\"false\">");
+		resource.append("<resources>");
+		resource.append("<resource xml:lang=\"en\">");
+
+		// Add resources
+		resource.append(getElementResources(xformsObject));
+
+		resource.append("</resource>");
+		resource.append("</resources>");
+		resource.append("</xf:instance>");
+
+		return resource.toString();
+	}
+
+	/**
+	 * Creates the hierarchy of the resources.
+	 * 
+	 * @param xformsObject
+	 * @return
+	 * @throws NotExistingDynamicFieldException
+	 */
+	protected abstract String getElementResources(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException;
+
+	/**
+	 * Creates the body section of the XForm.
+	 * 
+	 * @param form
+	 * @return
+	 * @throws InvalidFlowInForm
+	 */
+	protected abstract String getBody(XFormsObject<?> xformsObject);
+
+	/**
+	 * Shows the sections defined in the header.
+	 * 
+	 * @param form
+	 * @return
+	 * @throws InvalidFlowInForm
+	 */
+	protected abstract String getBodySection(XFormsObject<?> xformsObject);
 }

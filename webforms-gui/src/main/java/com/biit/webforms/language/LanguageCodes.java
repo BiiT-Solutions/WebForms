@@ -33,6 +33,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_VALIDATE_CONDITIONS("caption.validate.conditions"),
 	CAPTION_VALIDATE_FORM("caption.validate.form"),
 	CAPTION_IMPACT_ANALYSIS("caption.impact.analysis"),
+	IMPACT_ANALYSIS_TEXT("impact.analysis.text"),
 	CAPTION_SETTINGS_TITLE("caption.settings.title"),
 	CAPTION_SETTINGS_LOG_OUT("caption.setting.log.out"),
 	CAPTION_PROCEED_LOG_OUT("caption.proceed.log.out"),
@@ -244,6 +245,8 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_VALIDATE_DUPLICATE_ANSWER_VALUE("caption.validate.duplicate.answer.value"),
 	CAPTION_NAME_TOO_LARGE("caption.name.too.large"),
 	CAPTION_LINKED_FORM("caption.linked.form"),
+	CAPTION_NEW_DYNAMIC_ANSWER("caption.new.dynamic.answer"),
+	TOOLTIP_NEW_DYNAMIC_ANSWER("tooltip.new.dynamic.answer"),
 	
 	TOOLTIP_NEW_CATEGORY("tooltip.new.category"),
 	TOOLTIP_NEW_SUBCATEGORY("tooltip.new.subcategory"),
@@ -451,9 +454,11 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_PREVIEW_XFORMS("caption.preview.xforms"), 
 	CAPTION_PUBLISH_XFORMS("caption.publish.xforms"),
 	CAPTION_DOWNLOAD_XFORMS("caption.download.xforms"),
+	CAPTION_DOWNLOAD_XFORMS_MULTIPLE("caption.download.xforms.multiple"),
 	TOOLTIP_PREVIEW_XFORMS("tooltip.preview.xforms"),
 	TOOLTIP_PUBLISH_XFORMS("tooltip.publish.xforms"),
-	TOOLTIP_DOWNLOAD_XFORMS("tooltip.download.xforms"), 
+	TOOLTIP_DOWNLOAD_XFORMS("tooltip.download.xforms"),
+	TOOLTIP_DOWNLOAD_XFORMS_MULTIPLE("tooltip.download.xforms.multiple"), 
 	
 	CAPTION_NEW("caption.new"), 
 	TOOLTIP_NEW("tooltip.new"), 
@@ -499,6 +504,9 @@ public enum LanguageCodes implements ILanguageCode {
 	VALIDATION_NULL_VALUE("validation.null.value"),
 	VALIDATION_CONDITION_WITH_NOT_MANDATORY_QUESTION("validation.condition.with.not.mandatory.question"),
 	VALIDATION_FLOW_BLOCKED_IN_QUESTION("validation.flow.blocked.in.question"),
+	VALIDATION_MULTIPLE_DYNAMIC_ANSWERS_REFERENCE_SAME_QUESTION("validation.multiple.dynamic.answers.reference.same.question"),
+	VALIDATION_DYNAMIC_ANSWER_NULL_VALUE("validation.dynamic.answer.null.value"), 
+	VALIDATION_DYNAMIC_ANSWER_REFERENCE_INVALID("validation.dynamic.answer.reference.invalid"),
 	
 	WARNING_ABCD_FORM_LINKED_NOT_VALID("abcd.form.linked.not.valid"),
 	WARNING_ABCD_FORM_LINKED_NOT_VALID_DESCRIPTION("abcd.form.linked.not.valid.description"),
@@ -539,7 +547,18 @@ public enum LanguageCodes implements ILanguageCode {
 	PAGE_NOT_FOUND("page.not.found"),
 	PAGE_ERROR("page.error"), 
 	
-	WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT("warning.cannot.show.element"),
+	WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT("warning.cannot.show.element"), 
+	
+	CAPTION_ADD_REFERENCE("caption.add.reference"), 
+	CAPTION_REMOVE_REFERENCE("caption.remove.reference"), 
+	TOOLTIP_ADD_REFERENCE("tooltip.add.reference"), 
+	TOOLTIP_REMOVE_REFERENCE("tooltip.remove.reference"), 
+	
+	CAPTION_SEARCH_DYNAMIC_REFERENCE("caption.search.dynamic.reference"), 
+	NULL_VALUE_SEARCH_DYNAMIC_REFERENCE("null.value.search.dynamic.reference"), 
+	DYNAMIC_ANSWER_LABEL("dynamic.answer.label"), 
+	
+	ERROR_DYNAMIC_ANSWER_DEPENDENCY("error.dynamic.answer.dependency"),	
 	
 	;
 

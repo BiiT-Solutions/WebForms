@@ -3,8 +3,6 @@ package com.biit.webforms.gui.components;
 import java.io.IOException;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.webforms.authentication.WebformsActivity;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
@@ -18,6 +16,8 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.security.WebformsActivity;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.biit.webforms.theme.ThemeIcons;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -117,7 +117,7 @@ public class UpperMenuWebforms extends UpperMenu {
 				});
 		// Clear cache for admin users.
 		try {
-			if (WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+			if (WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 					WebformsActivity.EVICT_CACHE)) {
 				clearCacheButton.setVisible(true);
 				clearCacheButton.setWidth("100%");

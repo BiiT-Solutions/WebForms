@@ -103,7 +103,8 @@ public enum ThemeIcons implements IThemeIcon {
 	EXPORT("form.export.svg"), 
 	PREVIEW_XFORMS("form.preview.svg"),
 	PUBLISH_XFORMS("form.xforms.svg"),
-	DOWNLOAD_XFORMS("form.download.svg"), 
+	DOWNLOAD_XFORMS("form.download.svg"),
+	DOWNLOAD_XFORMS_MULTIPLE("form.download.multiple.svg"),
 	BUILDING_BLOCK_MENU("page.building.block.manager.svg"), 
 	OTHER_ELEMENTS_MENU("form.design.others.svg"), 
 	
@@ -126,7 +127,11 @@ public enum ThemeIcons implements IThemeIcon {
 	PAGE_NOT_FOUND("page.not.found.svg"),
 	
 	ELEMENT_SHOW("element.show.svg"),
-	ELEMENT_HIDE("element.hide.svg"),
+	ELEMENT_HIDE("element.hide.svg"), 
+	
+	DESIGNER_NEW_DYNAMIC_ANSWER("form.dynamic.element.svg"), 
+	DESIGNER_DYNAMIC_ANSWER("form.dynamic.element.svg"), 
+	
 	;
 
 	private String value;

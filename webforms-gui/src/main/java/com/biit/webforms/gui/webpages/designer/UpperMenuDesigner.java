@@ -20,7 +20,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	private final IconButton blockMenu, saveAsBlockButton, insertBlockButton, linkBlockButton;
 	private final IconButton otherElementsMenu, newSubanswerButton, newTextButton, newSystemFieldButton;
 	private final IconButton newCategoryButton, newGroupButton, newQuestionButton, newAnswerButton, moveButton,
-			deleteButton, upButton, downButton, finish, exportToJavaCode, hideButton;
+			deleteButton, upButton, downButton, finish, exportToJavaCode, hideButton, newDynamicAnswer;
 
 	public UpperMenuDesigner() {
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
@@ -48,6 +48,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_NEW_TEXT);
 		newSystemFieldButton = new IconButton(LanguageCodes.CAPTION_NEW_SYSTEM_FIELD,
 				ThemeIcons.DESIGNER_NEW_SYSTEM_FIELD, LanguageCodes.TOOLTIP_NEW_SYSTEM_FIELD);
+		newDynamicAnswer = new IconButton(LanguageCodes.CAPTION_NEW_DYNAMIC_ANSWER,
+				ThemeIcons.DESIGNER_NEW_DYNAMIC_ANSWER, LanguageCodes.TOOLTIP_NEW_DYNAMIC_ANSWER);
 		moveButton = new IconButton(LanguageCodes.COMMON_CAPTION_MOVE, ThemeIcons.DESIGNER_MOVE,
 				LanguageCodes.COMMON_TOOLTIP_MOVE);
 		upButton = new IconButton(LanguageCodes.COMMON_CAPTION_UP, ThemeIcons.ELEMENT_MOVE_UP,
@@ -89,7 +91,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(newAnswerButton);
 		
 		otherElementsMenu = addSubMenu(ThemeIcons.OTHER_ELEMENTS_MENU, LanguageCodes.COMMON_CAPTION_OTHER_ELEMENTS_SUBMENU,
-				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, newSubanswerButton, newTextButton,
+				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, newSubanswerButton, newDynamicAnswer, newTextButton,
 				newSystemFieldButton); 
 		
 		addIconButton(moveButton);
@@ -167,6 +169,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public void addHideButtonListener(ClickListener listener) {
 		hideButton.addClickListener(listener);
 	}
+	
+	public void addNewDynamicAnswerListener(ClickListener listener) {
+		newDynamicAnswer.addClickListener(listener);
+	}
 
 	public IconButton getSaveButton() {
 		return saveButton;
@@ -211,6 +217,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public IconButton getNewSubanswerButton() {
 		return newSubanswerButton;
 	}
+	
+	public IconButton getNewDynamicQuestionButton() {
+		return newDynamicAnswer;
+	}
 
 	public IconButton getMoveButton() {
 		return moveButton;
@@ -226,6 +236,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public IconButton getDownButton() {
 		return downButton;
+	}
+	
+	public IconButton getNewDynamicAnswer(){
+		return newDynamicAnswer;
 	}
 
 	public void addFinishListener(ClickListener clickListener) {

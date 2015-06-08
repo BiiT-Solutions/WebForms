@@ -1,9 +1,4 @@
 
-    create table dynamic_question_references (
-        tree_dynamic_questions_ID bigint not null,
-        references_ID bigint not null
-    );
-
     create table flow (
         ID bigint not null,
         comparationId varchar(190) not null,
@@ -188,7 +183,7 @@
         primary key (ID)
     );
 
-    create table tree_dynamic_questions (
+    create table tree_dynamic_answer (
         ID bigint not null,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
@@ -200,9 +195,7 @@
         originalReference varchar(190) not null,
         sortSeq bigint not null,
         parent_ID bigint,
-        horizontal bit not null,
-        mandatory bit not null,
-        type integer,
+        reference_ID bigint,
         primary key (ID)
     );
 
@@ -367,11 +360,11 @@
     alter table tree_categories 
         add constraint UK_gtcyh8mle277igwtb5dvhjkr1  unique (comparationId);
 
-    alter table tree_dynamic_questions 
-        add constraint UK_dx1dgb1j8euhnd97f9wdfkdon  unique (ID);
+    alter table tree_dynamic_answer 
+        add constraint UK_2ydjana3hlpsw5bkxkt3bsrq8  unique (ID);
 
-    alter table tree_dynamic_questions 
-        add constraint UK_cux3sdbd03f3lhb9bvlbubc0  unique (comparationId);
+    alter table tree_dynamic_answer 
+        add constraint UK_rkkl8hjn6deghh7wvdq1rxnkf  unique (comparationId);
 
     alter table tree_forms 
         add constraint UK_gyfbqpo5jwnsoftogc0bs77k0  unique (label, version, organizationId);
@@ -405,11 +398,6 @@
 
     alter table tree_texts 
         add constraint UK_qe6275omm38jd6s7q9frwpdet  unique (comparationId);
-
-    alter table dynamic_question_references 
-        add constraint FK_3gmn2yfe592lv3v3gmt24wgem 
-        foreign key (tree_dynamic_questions_ID) 
-        references tree_dynamic_questions (ID);
 
     alter table token 
         add constraint FK_1jkae8phlxx6soqblc3rk1s04 
@@ -480,6 +468,11 @@
         add constraint FK_oxol3v3ulc6h3hwmdxskxx8vn 
         foreign key (tree_blocks_references_ID) 
         references tree_blocks_references (ID);
+
+    alter table tree_dynamic_answer 
+        add constraint FK_1focp8yixjr3i902hvvklx3wi 
+        foreign key (reference_ID) 
+        references tree_questions (ID);
 
 	CREATE TABLE `hibernate_sequence` (
 		`next_val` bigint(20) DEFAULT NULL

@@ -76,8 +76,8 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		xforms.append("xmlns:sql=\"http://orbeon.org/oxf/xml/sql\"  ");
 		xforms.append("xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
 		xforms.append("xmlns:fb=\"http://orbeon.org/oxf/xml/form-builder\">");
-		xforms.append(getHeader());
-		xforms.append(getBody());
+		xforms.append(getHeader(null));
+		xforms.append(getBody(null));
 		xforms.append("</xh:html>");
 		return xforms.toString();
 	}
@@ -117,117 +117,15 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	}
 
 	/**
-	 * Bind the model with the presentation of the form.
-	 * 
-	 * @return
-	 * @throws NotExistingDynamicFieldException
-	 * @throws InvalidFlowInForm
-	 * @throws StringRuleSyntaxError
-	 * @throws PostCodeRuleSyntaxError
-	 * @throws DateRuleSyntaxError
-	 */
-	private String getBinding() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-		StringBuilder binding = new StringBuilder();
-		binding.append("<xf:bind id=\"fr-form-binds\" ref=\"instance('fr-form-instance')\">");
-
-		// Add hidden email field.
-		binding.append(XFormsHiddenEmailField.getBinding());
-
-		for (XFormsCategory category : getXFormsCategories()) {
-			category.getBinding(binding);
-		}
-		binding.append(" </xf:bind>");
-		return binding.toString();
-	}
-
-	/**
-	 * Starts the creation of the header part in a XForm.
-	 * 
-	 * @param form
-	 * @return
-	 * @throws NotExistingDynamicFieldException
-	 * @throws InvalidFlowInForm
-	 * @throws StringRuleSyntaxError
-	 * @throws PostCodeRuleSyntaxError
-	 * @throws DateRuleSyntaxError
-	 */
-	private String getHeader() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-		StringBuilder header = new StringBuilder("<xh:head>");
-		header.append("<xh:meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
-		header.append("<xh:title>" + getForm().getLabel() + "</xh:title>");
-		header.append("<xf:model id=\"fr-form-model\" xxf:expose-xpath-types=\"true\">");
-		header.append("<xf:instance xxf:readonly=\"true\" id=\"fr-form-metadata\" xxf:exclude-result-prefixes=\"#all\">");
-		header.append(getMetaData(getForm()));
-		header.append("</xf:instance>");
-		header.append(getModelInstance());
-		header.append(getBinding());
-		header.append(getAttachments());
-		header.append(getResources());
-		header.append(getInstances());
-		header.append(getTemplatesOfLoops());
-		header.append("</xf:model>");
-		header.append("</xh:head>");
-		return header.toString();
-	}
-
-	private String getTemplatesOfLoops() {
-		String templates = "";
-		for (XFormsCategory xFormsCategory : getXFormsCategories()) {
-			templates += xFormsCategory.getTemplates();
-		}
-		return templates;
-	}
-
-	/**
-	 * Creates the model section of XForms.
-	 * 
-	 * @param form
-	 * @return
-	 * @throws InvalidFlowInForm
-	 */
-	private String getModelInstance() {
-		StringBuilder text = new StringBuilder("<xf:instance id=\"fr-form-instance\">");
-		text.append(getFormStructure());
-		text.append("</xf:instance>");
-		return text.toString();
-	}
-
-	/**
-	 * Creates all resources of the form (labels initial values, ...).
-	 * 
-	 * @return
-	 * @throws NotExistingDynamicFieldException
-	 * @throws InvalidFlowInForm
-	 */
-	private String getResources() throws NotExistingDynamicFieldException {
-		StringBuilder resource = new StringBuilder("<xf:instance id=\"fr-form-resources\" xxf:readonly=\"false\">");
-		resource.append("<resources>");
-		resource.append("<resource xml:lang=\"en\">");
-
-		// Add hidden email field.
-		resource.append(XFormsHiddenEmailField.getResources());
-
-		for (XFormsCategory category : getXFormsCategories()) {
-			resource.append(category.getResources());
-		}
-
-		resource.append("</resource>");
-		resource.append("</resources>");
-		resource.append("</xf:instance>");
-
-		return resource.toString();
-	}
-
-	/**
 	 * Creates the body section of the XForm.
 	 * 
-	 * @param form
+	 * @param xFormsObject
+	 * 
 	 * @return
 	 * @throws InvalidFlowInForm
 	 */
-	private String getBody() {
+	@Override
+	protected String getBody(XFormsObject<?> xFormsObject) {
 		StringBuilder body = new StringBuilder("<xh:body>");
 		body.append("<fr:view>");
 		body.append("<fr:body xmlns:xbl=\"http://www.w3.org/ns/xbl\" ");
@@ -235,7 +133,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		body.append("xmlns:oxf=\"http://www.orbeon.com/oxf/processors\" ");
 		body.append("xmlns:p=\"http://www.orbeon.com/oxf/pipeline\" >");
 
-		body.append(getBodySection());
+		body.append(getBodySection(xFormsObject));
 
 		body.append("</fr:body>");
 		body.append("</fr:view>");
@@ -243,14 +141,36 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		return body.toString();
 	}
 
+	@Override
+	protected String getInput() {
+		// Not needed, only for multiple files.
+		return "";
+	}
+
 	/**
-	 * Shows the sections defined in the header.
+	 * Get all elements resources structure.
 	 * 
-	 * @param form
-	 * @return
-	 * @throws InvalidFlowInForm
+	 * @param xformsObject
+	 *            is ignored.
 	 */
-	private String getBodySection() {
+	@Override
+	protected String getElementResources(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException {
+		StringBuilder resource = new StringBuilder();
+		// Add hidden email field.
+		resource.append(XFormsHiddenEmailField.getResources());
+
+		for (XFormsCategory category : getXFormsCategories()) {
+			resource.append(category.getResources());
+		}
+		return resource.toString();
+	}
+
+	/**
+	 * @param xformsObject
+	 *            ignored in this case.
+	 */
+	@Override
+	protected String getBodySection(XFormsObject<?> xformsObject) {
 		StringBuilder body = new StringBuilder();
 
 		// Add hidden email field.
@@ -261,4 +181,29 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		}
 		return body.toString();
 	}
+
+	@Override
+	protected String getEventsDefinitions(XFormsObject<?> xFormsObject) {
+		// No events needed.
+		return "";
+	}
+
+	/**
+	 * @param xformsObject
+	 *            ignored in this case.
+	 */
+	@Override
+	protected String getElementBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		StringBuilder binding = new StringBuilder();
+		// Add hidden email field.
+		binding.append(XFormsHiddenEmailField.getBinding());
+
+		for (XFormsCategory category : getXFormsCategories()) {
+			category.getBinding(binding);
+		}
+
+		return binding.toString();
+	}
+
 }

@@ -14,9 +14,7 @@ import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ValidateReport;
-import com.biit.webforms.authentication.WebformsActivity;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
-import com.biit.webforms.authentication.exception.BadAbcdLink;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -24,11 +22,13 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
+import com.biit.webforms.gui.exceptions.BadAbcdLink;
 import com.biit.webforms.gui.webpages.validation.ValidationUpperMenu;
 import com.biit.webforms.gui.webpages.validation.WindowCompareAbcdForm;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.validators.CompareFormAbcdStructure;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.validators.ValidateFormComplete;
@@ -38,6 +38,8 @@ import com.biit.webforms.validators.ValidateLogic;
 import com.biit.webforms.validators.reports.BackwardFlow;
 import com.biit.webforms.validators.reports.ConditionWithNotMandatoryQuestion;
 import com.biit.webforms.validators.reports.DifferentDateUnitForQuestionsReport;
+import com.biit.webforms.validators.reports.DynamicAnswerNullReference;
+import com.biit.webforms.validators.reports.DynamicAnswerReferenceInvalid;
 import com.biit.webforms.validators.reports.FlowBlockedInQuestion;
 import com.biit.webforms.validators.reports.FlowOriginIsNotMandatory;
 import com.biit.webforms.validators.reports.FormAnswerNotFound;
@@ -50,6 +52,7 @@ import com.biit.webforms.validators.reports.IncompleteLogicReport;
 import com.biit.webforms.validators.reports.InvalidFlowCondition;
 import com.biit.webforms.validators.reports.InvalidFlowSubformat;
 import com.biit.webforms.validators.reports.LinkedFormStructureNotCompatible;
+import com.biit.webforms.validators.reports.MultipleDynamicAnswersReferenceTheSameQuestion;
 import com.biit.webforms.validators.reports.MultipleEndFormsFromSameElement;
 import com.biit.webforms.validators.reports.MultipleEndLoopsFromSameElement;
 import com.biit.webforms.validators.reports.MultipleFlowsWithSameOriginAndDestiny;
@@ -437,6 +440,16 @@ public class Validation extends SecuredWebPage {
 			} else if (report instanceof FormElementWithoutFlowIn) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_ELEMENT_NO_FLOW_IN,
 						new Object[] { ((FormElementWithoutFlowIn) report).getOrigin().getPathName() }));
+			} else if (report instanceof MultipleDynamicAnswersReferenceTheSameQuestion) {
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_MULTIPLE_DYNAMIC_ANSWERS_REFERENCE_SAME_QUESTION,
+						new Object[] { ((MultipleDynamicAnswersReferenceTheSameQuestion) report).getQuestion().getPathName(), ((MultipleDynamicAnswersReferenceTheSameQuestion) report).getAnswer()
+						.getReference().getPathName() }));
+			} else if (report instanceof DynamicAnswerNullReference) {
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_DYNAMIC_ANSWER_NULL_VALUE,
+						new Object[] { ((DynamicAnswerNullReference) report).getQuestion().getPathName() }));
+			} else if (report instanceof DynamicAnswerReferenceInvalid) {
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_DYNAMIC_ANSWER_REFERENCE_INVALID,
+						new Object[] { ((DynamicAnswerReferenceInvalid) report).getQuestion().getPathName(), ((DynamicAnswerReferenceInvalid) report).getReference().getPathName() }));
 			} else if (report instanceof NullValueReport) {
 				// Only advise once.
 				if (!nullReportAdded) {

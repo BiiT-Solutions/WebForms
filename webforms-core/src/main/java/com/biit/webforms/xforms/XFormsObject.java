@@ -20,6 +20,7 @@ import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
@@ -68,12 +69,14 @@ public abstract class XFormsObject<T extends TreeObject> {
 			XFormsObject<?> newChild;
 			if (child instanceof Category) {
 				newChild = new XFormsCategory(xFormsHelper, (Category) child);
+				xFormsHelper.addXFormsObject(newChild);
 			} else if (child instanceof Group) {
 				if (((Group) child).isRepeatable()) {
 					newChild = new XFormsRepeatableGroup(xFormsHelper, (Group) child);
 				} else {
 					newChild = new XFormsGroup(xFormsHelper, (Group) child);
 				}
+				xFormsHelper.addXFormsObject(newChild);
 			} else if (child instanceof BaseQuestion) {
 				if (child instanceof Text) {
 					newChild = new XFormsText(xFormsHelper, (Text) child);
@@ -85,6 +88,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 				xFormsHelper.addXFormsQuestion((XFormsQuestion) newChild);
 			} else if (child instanceof Answer) {
 				newChild = new XFormsAnswer(xFormsHelper, (Answer) child);
+				xFormsHelper.addXFormsObject(newChild);
+			} else if (child instanceof DynamicAnswer){
+				newChild = new XFormsDynamicAnswer(xFormsHelper, (DynamicAnswer) child);
+				xFormsHelper.addXFormsObject(newChild);
 			} else {
 				// Forms cannot be a valid child.
 				throw new NotValidChildException("Inserted child '" + child + "' is not valid. ");
@@ -149,7 +156,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws InvalidFlowInForm
 	 */
 	protected String getBodyStructure(String structure, boolean html) {
-		String text = "<xf:" + structure + " ref=\"$form-resources/" + getPath() + "/" + structure + "\"";
+		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/"
+				+ structure + "\"";
 		if (html) {
 			text += " mediatype=\"text/html\" ";
 		}
@@ -297,6 +305,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	protected abstract void getSectionBody(StringBuilder body);
 
+	// protected abstract void getStandardXFormsBody(StringBuilder body);
+
 	protected String getDefinition() {
 		String section = "<" + getName() + ">";
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
@@ -375,17 +385,17 @@ public abstract class XFormsObject<T extends TreeObject> {
 				visibility.append(getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()));
 				// Date is a specific case. Already has some data.
 			} else if (((TokenAnswerNeeded) token).isDateField()) {
-				//Dates are uses as string due to avoid error when fields are hidden and have an empty value. 
+				// Dates are uses as string due to avoid error when fields are hidden and have an empty value.
 				visibility
-						.append("string-length($")
+						.append("string-length(")
 						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getBindingName()).append("/text()) &gt; 0");
+								.getXPath()).append("/text()) &gt; 0");
 				// Any input field must have an answer.
 			} else {
 				visibility
-						.append("string-length($")
+						.append("string-length(")
 						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getBindingName()).append("/text()) &gt; 0");
+								.getXPath()).append("/text()) &gt; 0");
 			}
 		} else {
 			// An operator 'and', 'or', ...
@@ -402,8 +412,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getMultiCheckBoxVisibility(StringBuilder visibility, TokenComparationAnswer token) {
-		visibility.append("contains(concat($")
-				.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+		visibility.append("contains(concat(")
+				.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 				.append(", ' '), concat('").append(token.getAnswer().getName()).append("', ' '))");
 	}
 
@@ -415,8 +425,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getBasicSelectionVisibility(StringBuilder visibility, TokenComparationAnswer token) {
-		visibility.append("$").append(
-				getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getBindingName());
+		visibility.append(
+				getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath());
 		visibility.append(token.getType().getOrbeonRepresentation());
 		visibility.append("'").append(((TokenComparationAnswer) token).getAnswer()).append("'");
 	}
@@ -434,14 +444,14 @@ public abstract class XFormsObject<T extends TreeObject> {
 		if (token.getQuestion().getAnswerFormat() != null) {
 			switch (token.getQuestion().getAnswerFormat()) {
 			case NUMBER:
-				visibility.append("number($")
-						.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName()).append(")");
+				visibility.append("number(")
+						.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append(")");
 				visibility.append(" ").append(token.getType().getOrbeonRepresentation()).append(" ");
 				visibility.append(token.getValue());
 				break;
 			case TEXT:
 			case POSTAL_CODE:
-				visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName());
+				visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath());
 				visibility.append(" ").append(token.getType().getOrbeonRepresentation());
 				visibility.append(" '").append(token.getValue()).append("'");
 				break;
@@ -459,8 +469,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 						date = formatter.parse(token.getValue());
 						// Compare it as string. Less problems with null dates. $dateField/text() ge '2015-05-27'
 						formatter.applyPattern(XPATH_DATE_FORMAT);
-						visibility.append("$")
-								.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+						visibility
+								.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 								.append("/text() ");
 						visibility.append(token.getType().getOrbeonRepresentation());
 						visibility.append(" '").append(formatter.format(date)).append("'");
@@ -497,19 +507,19 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// adjust-date-to-timezone is used to remove timestamp
 			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
-			visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 					.append("/text() ");
 			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
 			visibility.append(" format-date(adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
 					.append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
-					.append("'), '"+DATE_FORMAT+"')");
+					.append("'), '" + DATE_FORMAT + "')");
 		} else {
-			visibility.append("$").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getBindingName())
+			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 					.append("/text() ");
 			visibility.append(token.getType().getOrbeonRepresentation()).append(
 					" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
 			visibility.append(xPathOperation).append("('P").append(token.getValue())
-					.append(token.getDatePeriodUnit().getAbbreviature()).append("'), '"+DATE_FORMAT+"')");
+					.append(token.getDatePeriodUnit().getAbbreviature()).append("'), '" + DATE_FORMAT + "')");
 		}
 	}
 

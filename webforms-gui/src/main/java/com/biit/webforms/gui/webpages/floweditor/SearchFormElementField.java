@@ -78,7 +78,7 @@ public class SearchFormElementField extends SearchButtonField {
 
 	public void setTreeObject(TreeObject treeObject) {
 		if (treeObject != null) {
-			setValue(treeObject, treeObject.getName());
+			setValue(treeObject, treeObject.getPathName());
 		} else {
 			clear();
 		}

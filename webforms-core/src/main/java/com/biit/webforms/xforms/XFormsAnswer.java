@@ -38,7 +38,7 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	public void getSectionBody(StringBuilder stringBuilder) {
 		// An itemset for standard answers.
 		if (getSource().getChildren().isEmpty()) {
-			stringBuilder.append("<xf:itemset ref=\"$form-resources/");
+			stringBuilder.append("<xf:itemset ref=\"instance('fr-form-resources')/resource/");
 			stringBuilder.append(getParent().getPath() + "/item\" class=\"" + getCssClass() + "\" >");
 			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
 			stringBuilder.append("<xf:value ref=\"value\" />");
@@ -48,7 +48,7 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 			int subanswerParentsCounter = ((Question) getSource().getParent())
 					.getAnswerWithSubanswersIndex((BaseAnswer) getSource());
 			// Parent answer.
-			stringBuilder.append("<xf:itemset ref=\"$form-resources/");
+			stringBuilder.append("<xf:itemset ref=\"instance('fr-form-resources')/resource/");
 			stringBuilder.append(getParent().getPath() + "/item" + subanswerParentsCounter + "\" class=\""
 					+ getCssClass() + " " + PARENT_ANSWER_CSS_CLASS + "\" >");
 			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
@@ -57,7 +57,7 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 			stringBuilder.append("</xf:itemset>");
 
 			// Subanswer
-			stringBuilder.append("<xf:itemset ref=\"$form-resources/");
+			stringBuilder.append("<xf:itemset ref=\"instance('fr-form-resources')/resource/");
 			stringBuilder.append(getParent().getPath() + "/item" + subanswerParentsCounter + "/subitem"
 					+ subanswerParentsCounter + "\" class=\"" + getCssClass() + " " + SUBANSWER_CSS_CLASS + "\" >");
 			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
@@ -153,7 +153,7 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	 */
 	@Override
 	protected String getBodyStructure(String structure, boolean html) {
-		String text = "<xf:" + structure + " ref=\"$form-resources/" + getPath() + "/" + structure + "\"";
+		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/" + structure + "\"";
 		if (html) {
 			text += " mediatype=\"text/html\"";
 		}

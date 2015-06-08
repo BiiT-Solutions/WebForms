@@ -9,13 +9,13 @@ import com.biit.form.entity.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.utils.date.DateManager;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.liferay.portal.model.Organization;
 import com.vaadin.data.Item;
 import com.vaadin.ui.TreeTable;
@@ -121,7 +121,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(form.getLabel());
 		item.getItemProperty(TreeTableBaseFormProperties.VERSION).setValue(form.getVersion() + "");
 
-		Organization organization = WebformsAuthorizationService.getInstance().getOrganization(
+		Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
 				UserSessionHandler.getUser(), form.getOrganizationId());
 		if (organization != null) {
 			item.getItemProperty(TreeTableBaseFormProperties.ORGANIZATION).setValue(organization.getName());

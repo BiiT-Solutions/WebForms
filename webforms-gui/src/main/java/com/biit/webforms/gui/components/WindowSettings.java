@@ -3,8 +3,6 @@ package com.biit.webforms.gui.components;
 import java.io.IOException;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.webforms.authentication.WebformsActivity;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
@@ -19,6 +17,8 @@ import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.security.WebformsActivity;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -70,7 +70,7 @@ public class WindowSettings extends Window {
 
 		// Clear cache for admin users.
 		try {
-			if (WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+			if (WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 					WebformsActivity.EVICT_CACHE)) {
 				Button clearCacheButton = new Button(
 						ServerTranslate.translate(LanguageCodes.CAPTION_SETTINGS_CLEAR_CACHE), new ClickListener() {
@@ -84,7 +84,7 @@ public class WindowSettings extends Window {
 										//Remove database cache.
 										formDao.evictAllCache();
 										//Reset Liferay Users pool.
-										WebformsAuthorizationService.getInstance().reset();
+										WebformsBasicAuthorizationService.getInstance().reset();
 										ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
 										WebformsLogger.info(this.getClass().getName(), "User '"
 												+ UserSessionHandler.getUser().getEmailAddress()

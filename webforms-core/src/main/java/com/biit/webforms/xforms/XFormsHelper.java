@@ -173,7 +173,11 @@ class XFormsHelper {
 		xFormsQuestions.add(xFormsQuestion);
 		xformsFromTreeObject.put(xFormsQuestion.getSource(), xFormsQuestion);
 	}
-
+	
+	public void addXFormsObject(XFormsObject<?> xFormsObject){
+		xformsFromTreeObject.put(xFormsObject.getSource(), xFormsObject);
+	}
+	
 	public XFormsQuestion getPreviousElement(XFormsQuestion xFormsQuestion) {
 		if (xFormsQuestion != null) {
 			int index = xFormsQuestions.indexOf(xFormsQuestion);

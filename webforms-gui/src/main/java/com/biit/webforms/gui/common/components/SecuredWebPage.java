@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
@@ -13,6 +12,7 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.liferay.portal.model.User;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 
@@ -46,7 +46,7 @@ public abstract class SecuredWebPage extends WebPage {
 				try {
 					if (accessAuthorizationsRequired() != null && !accessAuthorizationsRequired().isEmpty()) {
 						for (IActivity activity : accessAuthorizationsRequired()) {
-							if (!WebformsAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(user,
+							if (!WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(user,
 									activity)) {
 								WebformsLogger.debug(this.getClass().getName(), "User: "
 										+ UserSessionHandler.getUser().getEmailAddress()

@@ -12,6 +12,7 @@ import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
@@ -87,12 +88,18 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			// So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
 			if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_PAST)) {
-				contraints.append(" constraint=\". &lt;= adjust-date-to-timezone(current-date(), ())\" ");
+				contraints.append(" constraint=\"string-length("
+						+ getXFormsHelper().getXFormsObject(getSource()).getXPath()
+						+ "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ())\" ");
 			} else if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE)) {
-				contraints.append(" constraint=\". &gt;= adjust-date-to-timezone(current-date(), ())\" ");
+				contraints.append(" constraint=\"string-length("
+						+ getXFormsHelper().getXFormsObject(getSource()).getXPath()
+						+ "/text())=0 or . &gt;= adjust-date-to-timezone(current-date(), ())\" ");
 			} else if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_BIRTHDAY)) {
 				contraints
-						.append(" constraint=\". &lt;= adjust-date-to-timezone(current-date(), ()) and (year-from-date(current-date()) - year-from-date(.) &lt;= ")
+						.append(" constraint=\"string-length("
+								+ getXFormsHelper().getXFormsObject(getSource()).getXPath()
+								+ "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ()) and (year-from-date(current-date()) - year-from-date(.) &lt;= ")
 						.append(MAX_YEARS_BIRTHDAY).append(")\" ");
 			}
 		}
@@ -278,16 +285,20 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 				row.append("<xf:item><xf:label>[Select...]</xf:label><xf:value/></xf:item>");
 			}
 
+			
 			// Only one itemset for elements without subanswers.
 			boolean simpleElementsAdded = false;
 			for (XFormsObject<? extends TreeObject> answer : getChildren()) {
-				if (!answer.getChildren().isEmpty() || !simpleElementsAdded) {
+				if (answer.getSource() instanceof DynamicAnswer){
 					answer.getSectionBody(row);
-					if (answer.getChildren().isEmpty()) {
-						simpleElementsAdded = true;
+				}else{
+					if (!answer.getChildren().isEmpty() || !simpleElementsAdded) {
+						answer.getSectionBody(row);
+						if (answer.getChildren().isEmpty()) {
+							simpleElementsAdded = true;
+						}
 					}
 				}
-
 			}
 		}
 	}

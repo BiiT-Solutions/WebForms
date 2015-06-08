@@ -105,7 +105,9 @@ public class UpperMenu extends HorizontalButtonGroup {
 	public IconButton generateSubMenu(IThemeIcon icon, ILanguageCode caption, ILanguageCode tooltip,
 			final IconButton... buttons) {
 		for (IconButton button : buttons) {
-			button.addStyleName("v-popover-upper-submenu");
+			if (button != null) {
+				button.addStyleName("v-popover-upper-submenu");
+			}
 		}
 
 		final IconButton subMenu = new IconButton(caption, icon, tooltip, IconSize.BIG);
@@ -122,20 +124,23 @@ public class UpperMenu extends HorizontalButtonGroup {
 				popover.setClosable(true);
 
 				for (final IconButton button : buttons) {
-					button.setWidth(getIconSize());
-					button.setHeight(UPPER_MENU_HEIGHT);
-					rootLayout.addComponent(button);
-					button.addClickListener(new ClickListener() {
-						private static final long serialVersionUID = -2214568128797434177L;
+					if (button != null) {
+						button.setWidth(getIconSize());
+						button.setHeight(UPPER_MENU_HEIGHT);
+						rootLayout.addComponent(button);
+						button.addClickListener(new ClickListener() {
+							private static final long serialVersionUID = -2214568128797434177L;
 
-						@Override
-						public void buttonClick(ClickEvent event) {
-							// Close original popover. XForms preview must have the menu open until the view is created.
-							if (!button.getCaption().equals(LanguageCodes.CAPTION_PREVIEW_XFORMS.translation())) {
-								popover.close();
+							@Override
+							public void buttonClick(ClickEvent event) {
+								// Close original popover. XForms preview must have the menu open until the view is
+								// created.
+								if (!button.getCaption().equals(LanguageCodes.CAPTION_PREVIEW_XFORMS.translation())) {
+									popover.close();
+								}
 							}
-						}
-					});
+						});
+					}
 				}
 				popover.showRelativeTo(subMenu);
 			}

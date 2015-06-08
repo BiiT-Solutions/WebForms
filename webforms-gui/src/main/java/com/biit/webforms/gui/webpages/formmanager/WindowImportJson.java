@@ -9,14 +9,14 @@ import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.webforms.authentication.FormWithSameNameException;
-import com.biit.webforms.authentication.WebformsActivity;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.security.WebformsActivity;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.liferay.portal.model.Organization;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
@@ -71,7 +71,7 @@ public class WindowImportJson extends WindowAcceptCancel {
 
 		IActivity[] exclusivePermissionFilter = new IActivity[] { WebformsActivity.FORM_EDITING };
 		try {
-			Set<Organization> organizations = WebformsAuthorizationService
+			Set<Organization> organizations = WebformsBasicAuthorizationService
 					.getInstance().getUserOrganizations(
 							UserSessionHandler.getUser());
 			Iterator<Organization> itr = organizations.iterator();
@@ -80,7 +80,7 @@ public class WindowImportJson extends WindowAcceptCancel {
 				for (IActivity activity : exclusivePermissionFilter) {
 					// If the user doesn't comply to all activities in the
 					// filter in the group, then exit
-					if (!WebformsAuthorizationService.getInstance()
+					if (!WebformsBasicAuthorizationService.getInstance()
 							.isAuthorizedActivity(UserSessionHandler.getUser(),
 									organization, activity)) {
 						itr.remove();

@@ -4,6 +4,7 @@ import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.IconProvider;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.common.theme.IThemeIcon;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
@@ -48,6 +49,8 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject> {
 			return ThemeIcons.DESIGNER_INFO_TEXT;
 		} else if (object instanceof SystemField) {
 			return ThemeIcons.DESIGNER_SYSTEM_FIELD;
+		} else if (object instanceof DynamicAnswer){
+			return ThemeIcons.DESIGNER_DYNAMIC_ANSWER;
 		}
 		return null;
 	}
