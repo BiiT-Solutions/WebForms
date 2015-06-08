@@ -29,6 +29,7 @@ class XFormsHelper {
 	private HashMap<TreeObject, XFormsObject<? extends TreeObject>> xformsFromTreeObject;
 	private List<XFormsQuestion> xFormsQuestions;
 	private Set<Flow> flows;
+	private Set<Flow> defaultFlows;
 	private HashMap<TreeObject, Set<Flow>> flowsByOrigin;
 	private HashMap<TreeObject, Set<Flow>> flowsByDestiny;
 	// Control names must be unique.
@@ -44,6 +45,7 @@ class XFormsHelper {
 		usedControlNames = new HashSet<String>();
 		controlNames = new HashMap<>();
 		flows = new HashSet<Flow>();
+		defaultFlows = new HashSet<Flow>();
 		flowsByOrigin = new HashMap<>();
 		flowsByDestiny = new HashMap<>();
 
@@ -66,6 +68,7 @@ class XFormsHelper {
 				flow.setOrigin(questions.get(i));
 				flow.setDestiny(questions.get(i + 1));
 				addFlow(flow);
+				defaultFlows.add(flow);
 			}
 		}
 	}
@@ -132,14 +135,14 @@ class XFormsHelper {
 				tokens.addAll(flow.getConditionSimpleTokens());
 				if (flow.getOrigin() instanceof Question) {
 					// Input field must filled up!
-					//if (((Question) flow.getOrigin()).getAnswerType().equals(AnswerType.INPUT)) {
-						if (!tokens.isEmpty()) {
-							tokens.add(Token.and());
-						}
-						tokens.add(new TokenAnswerNeeded((BaseQuestion) flow.getOrigin(), ((Question) flow.getOrigin())
-								.getAnswerFormat() != null
-								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
-					//}
+					// if (((Question) flow.getOrigin()).getAnswerType().equals(AnswerType.INPUT)) {
+					if (!tokens.isEmpty()) {
+						tokens.add(Token.and());
+					}
+					tokens.add(new TokenAnswerNeeded((BaseQuestion) flow.getOrigin(), ((Question) flow.getOrigin())
+							.getAnswerFormat() != null
+							&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+					// }
 				}
 				return tokens;
 			}
@@ -173,11 +176,11 @@ class XFormsHelper {
 		xFormsQuestions.add(xFormsQuestion);
 		xformsFromTreeObject.put(xFormsQuestion.getSource(), xFormsQuestion);
 	}
-	
-	public void addXFormsObject(XFormsObject<?> xFormsObject){
+
+	public void addXFormsObject(XFormsObject<?> xFormsObject) {
 		xformsFromTreeObject.put(xFormsObject.getSource(), xFormsObject);
 	}
-	
+
 	public XFormsQuestion getPreviousElement(XFormsQuestion xFormsQuestion) {
 		if (xFormsQuestion != null) {
 			int index = xFormsQuestions.indexOf(xFormsQuestion);
@@ -229,6 +232,10 @@ class XFormsHelper {
 			}
 		}
 		return controlNames.get(treeObject);
+	}
+
+	public Set<Flow> getDefaultFlows() {
+		return defaultFlows;
 	}
 
 }

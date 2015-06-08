@@ -89,7 +89,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 			} else if (child instanceof Answer) {
 				newChild = new XFormsAnswer(xFormsHelper, (Answer) child);
 				xFormsHelper.addXFormsObject(newChild);
-			} else if (child instanceof DynamicAnswer){
+			} else if (child instanceof DynamicAnswer) {
 				newChild = new XFormsDynamicAnswer(xFormsHelper, (DynamicAnswer) child);
 				xFormsHelper.addXFormsObject(newChild);
 			} else {
@@ -388,14 +388,14 @@ public abstract class XFormsObject<T extends TreeObject> {
 				// Dates are uses as string due to avoid error when fields are hidden and have an empty value.
 				visibility
 						.append("string-length(")
-						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getXPath()).append("/text()) &gt; 0");
+						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getXPath())
+						.append("/text()) &gt; 0");
 				// Any input field must have an answer.
 			} else {
 				visibility
 						.append("string-length(")
-						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getXPath()).append("/text()) &gt; 0");
+						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getXPath())
+						.append("/text()) &gt; 0");
 			}
 		} else {
 			// An operator 'and', 'or', ...
@@ -412,8 +412,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getMultiCheckBoxVisibility(StringBuilder visibility, TokenComparationAnswer token) {
-		visibility.append("contains(concat(")
-				.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
+		visibility.append("contains(concat(").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 				.append(", ' '), concat('").append(token.getAnswer().getName()).append("', ' '))");
 	}
 
@@ -425,8 +424,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getBasicSelectionVisibility(StringBuilder visibility, TokenComparationAnswer token) {
-		visibility.append(
-				getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath());
+		visibility.append(getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath());
 		visibility.append(token.getType().getOrbeonRepresentation());
 		visibility.append("'").append(((TokenComparationAnswer) token).getAnswer()).append("'");
 	}
@@ -444,8 +442,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 		if (token.getQuestion().getAnswerFormat() != null) {
 			switch (token.getQuestion().getAnswerFormat()) {
 			case NUMBER:
-				visibility.append("number(")
-						.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append(")");
+				visibility.append("number(").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
+						.append(")");
 				visibility.append(" ").append(token.getType().getOrbeonRepresentation()).append(" ");
 				visibility.append(token.getValue());
 				break;
@@ -469,9 +467,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 						date = formatter.parse(token.getValue());
 						// Compare it as string. Less problems with null dates. $dateField/text() ge '2015-05-27'
 						formatter.applyPattern(XPATH_DATE_FORMAT);
-						visibility
-								.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
-								.append("/text() ");
+						visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append(
+								"/text() ");
 						visibility.append(token.getType().getOrbeonRepresentation());
 						visibility.append(" '").append(formatter.format(date)).append("'");
 					} catch (ParseException e) {
@@ -507,15 +504,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// adjust-date-to-timezone is used to remove timestamp
 			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
-			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
-					.append("/text() ");
+			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append("/text() ");
 			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
 			visibility.append(" format-date(adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
 					.append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
 					.append("'), '" + DATE_FORMAT + "')");
 		} else {
-			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
-					.append("/text() ");
+			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append("/text() ");
 			visibility.append(token.getType().getOrbeonRepresentation()).append(
 					" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
 			visibility.append(xPathOperation).append("('P").append(token.getValue())
@@ -536,11 +531,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 		// One flow with condition, is same visibility as previous element.
 		if (flows.size() == 1) {
-			if (((Flow) flows.iterator().next()).getCondition().isEmpty()) {
-				String previousElementVisibility = getXFormsHelper().getVisibilityOfElement(getSource());
-				if (previousElementVisibility != null) {
-					return previousElementVisibility;
-				}
+			Flow flow = ((Flow) flows.iterator().next());
+			if (flow.getCondition().isEmpty()) {
+				// String previousElementVisibility = getXFormsHelper().getVisibilityOfElement(getSource());
+				// if (previousElementVisibility != null) {
+				// return previousElementVisibility;
+				// }
+
+				// Changed to the use of events.
+				return "instance('visible')/" + getXFormsHelper().getUniqueName(flow.getOrigin()) + " != 'false'";
 			}
 		}
 

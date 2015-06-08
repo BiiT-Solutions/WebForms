@@ -6,10 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Set;
 
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.xforms.exceptions.DateRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
@@ -184,8 +187,54 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	@Override
 	protected String getEventsDefinitions(XFormsObject<?> xFormsObject) {
-		// No events needed.
-		return "";
+		StringBuilder events = new StringBuilder();
+		addVisibilityEvents(events);
+		return events.toString();
+	}
+
+	/**
+	 * Create the events needed to hide an element that depends on a previous element visibility.
+	 * 
+	 * @param events
+	 */
+	private void addVisibilityEvents(StringBuilder events) {
+		addVisibilityStructure(events);
+		addVisibilityObservers(events);
+	}
+
+	private void addVisibilityStructure(StringBuilder events) {
+
+		events.append("<!-- Keep track of visible/hidden status -->");
+		events.append("<xf:instance id=\"visible\">");
+		events.append("<var>");
+
+		for (XFormsCategory xFormCategory : getXFormsCategories()) {
+			events.append(xFormCategory.getDefinition());
+		}
+
+		events.append("</var>");
+		events.append("</xf:instance>");
+	}
+
+	private void addVisibilityObservers(StringBuilder events) {
+		for (Flow flow : getXFormsHelper().getDefaultFlows()) {
+			// Element visibility.
+			events.append("<!-- Change the visibility status for '" + flow.getOrigin().getName() + "'. -->");
+			String elementName = getXFormsHelper().getUniqueName(flow.getOrigin());
+			String controlName = getXFormsHelper().getXFormsObject(flow.getOrigin()).getSectionControlName();
+			events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + controlName
+					+ "\" ref=\"instance('visible')/" + elementName + "\" value=\"'true'\"/>");
+			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + controlName
+					+ "\" ref=\"instance('visible')/" + elementName + "\" value=\"'false'\"/>");
+
+			// Category visibility.
+			events.append("<!-- Update category showed elements count for '" + flow.getOrigin().getName() + "'. -->");
+			String catId = getXFormsHelper().getUniqueName(flow.getOrigin().getAncestor(Category.class));
+			events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + controlName
+					+ "\" ref=\"instance('visible')/" + catId + "\" value=\"instance('visible')/" + catId + " + 1\"/>");
+			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + controlName
+					+ "\" ref=\"instance('visible')/" + catId + "\" value=\"instance('visible')/" + catId + " - 1\"/>");
+		}
 	}
 
 	/**
