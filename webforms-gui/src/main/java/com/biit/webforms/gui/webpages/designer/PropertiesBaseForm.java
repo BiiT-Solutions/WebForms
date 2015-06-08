@@ -24,7 +24,7 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 
 	@Override
 	protected void firePropertyUpdateOnExitListener() {
-		//Form updateTime is not updated when detached. 
+		// Form updateTime is not updated when detached.
 	}
 
 	@Override
@@ -32,6 +32,8 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 		label = new TextField(LanguageCodes.CAPTION_NAME.translation());
 		label.setWidth(WIDTH);
 		label.setEnabled(true);
+		label.addValidator(new ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
+		label.addValidator(new ValidatorTreeObjectNameLength());
 
 		version = new TextField(LanguageCodes.CAPTION_VERSION.translation());
 		version.setWidth(WIDTH);

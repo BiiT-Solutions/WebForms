@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.biit.abcd.security.AbcdActivity;
-import com.biit.abcd.security.AbcdAuthorizationService;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.form.validators.reports.DuplicatedNestedName;
@@ -16,6 +14,7 @@ import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ValidateReport;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -30,7 +29,6 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.security.WebformsActivity;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.biit.webforms.validators.CompareFormAbcdStructure;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.validators.ValidateFormComplete;
@@ -153,25 +151,22 @@ public class Validation extends SecuredWebPage {
 		List<com.biit.abcd.persistence.entity.SimpleFormView> availableForms;
 		if (form.getLinkedFormLabel() != null) {
 			// Already linked form, show only the versions of this form.
-			availableForms = UserSessionHandler
-					.getController()
-					.getSimpleFormDaoAbcd()
-					.getSimpleFormViewByLabelAndOrganization(form.getLinkedFormLabel(),
-							form.getLinkedFormOrganizationId());
+			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdByLabelAndOrganization(
+					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
+
+			System.out.println("Available forms size: " + availableForms.size());
 
 			// Let user choose the version.
 			WindowCompareAbcdForm linkAbcdForm = new WindowCompareAbcdForm(form);
 			for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
-				if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-						simpleFormView.getOrganizationId(), AbcdActivity.READ)
-						&& WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
-								UserSessionHandler.getUser(), simpleFormView.getOrganizationId(),
-								WebformsActivity.FORM_EDITING)) {
+
+				if (WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+						simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
 					linkAbcdForm.add(simpleFormView);
 				}
 			}
 
-			linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleAbcdForms(form));
+			linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleFormViewsFromAbcd(form));
 			linkAbcdForm.addAcceptActionListener(new AcceptActionListener() {
 
 				@Override
@@ -183,19 +178,14 @@ public class Validation extends SecuredWebPage {
 						// Create the report.
 						CompareFormAbcdStructure validator = new CompareFormAbcdStructure(UserSessionHandler
 								.getController().getCompleteFormView());
-						try {
-							validator.validate(UserSessionHandler.getController().getAbcdForm(abcdForm.getId()), report);
-							if (report.isValid()) {
-								setLinkedFormsCorrectMessage();
-							} else {
-								setValidationReport(report);
-							}
-							linkWindow.close();
-						} catch (UnexpectedDatabaseException e) {
-							WebformsLogger.errorMessage(this.getClass().getName(), e);
-							MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-									LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+						validator.validate(UserSessionHandler.getController().getFormFromAbcdById(abcdForm.getId()),
+								report);
+						if (report.isValid()) {
+							setLinkedFormsCorrectMessage();
+						} else {
+							setValidationReport(report);
 						}
+						linkWindow.close();
 					}
 				}
 			});
@@ -360,7 +350,8 @@ public class Validation extends SecuredWebPage {
 						new Object[] { ((InvalidFlowCondition) report).getFlow().toString() }));
 			} else if (report instanceof ConditionWithNotMandatoryQuestion) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_CONDITION_WITH_NOT_MANDATORY_QUESTION,
-						new Object[] { ((ConditionWithNotMandatoryQuestion) report).getQuestion().getPathName(), ((ConditionWithNotMandatoryQuestion) report).getFlow().toString() }));
+						new Object[] { ((ConditionWithNotMandatoryQuestion) report).getQuestion().getPathName(),
+								((ConditionWithNotMandatoryQuestion) report).getFlow().toString() }));
 			} else if (report instanceof InvalidFlowSubformat) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INVALID_FLOW_SUBFORMAT,
 						new Object[] { ((InvalidFlowSubformat) report).getInvalidToken().toString(),
@@ -396,7 +387,7 @@ public class Validation extends SecuredWebPage {
 								((FormElementNotFound) report).getFormWithElement().getVersion(),
 								((FormElementNotFound) report).getElementMissed().getPathName(),
 								((FormElementNotFound) report).getFormWithoutElement().getLabel(),
-								((FormElementNotFound) report).getFormWithoutElement().getVersion()}));
+								((FormElementNotFound) report).getFormWithoutElement().getVersion() }));
 			} else if (report instanceof FormGroupRepeatableStatusIsDifferent) {
 				text.append(ServerTranslate.translate(
 						LanguageCodes.VALIDATION_LINKED_FORM_ABCD_GROUP_REPEATABLE_STATUS_IS_DIFFERENT, new Object[] {

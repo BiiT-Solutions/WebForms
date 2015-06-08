@@ -59,6 +59,12 @@
 			<version>${commons-io.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Jersey Client, Jersey Container, Jersey + Spring -->
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

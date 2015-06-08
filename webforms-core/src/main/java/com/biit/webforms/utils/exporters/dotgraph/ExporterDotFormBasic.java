@@ -20,7 +20,7 @@ public abstract class ExporterDotFormBasic<T> extends ExporterDot<T> {
 		if (rule.isOthers()) {
 			label = "OTHERS";
 		} else {	
-			label = filterDotLanguage(rule.getConditionString());
+			label = filterDotLanguage(rule.getConditionStringWithFormat());
 		}
 		
 		switch (rule.getFlowType()) {
