@@ -47,11 +47,6 @@
 		<property name="jpaDialect" ref="jpaDialect" />
 		<qualifier value="webformsTransactionManager"/>
 	</bean>
-	<bean id="transactionManagerAbcd" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="abcdManagerFactory" />
-		<property name="jpaDialect" ref="jpaDialect" />
-		<qualifier value="abcdTransactionManager"/>
-	</bean>
 
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
 
@@ -70,26 +65,10 @@
 		<property name="jpaProperties" ref="webformsJpaProperties" />
 		<qualifier value="webformsManagerFactory"/>
 	</bean>
-	<bean id="abcdManagerFactory"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="dataSource" ref="abcdDataSource" />
-		<property name="persistenceUnitName" value="abcdPersistenceUnit" />
-		<property name="packagesToScan">
-			<list>
-				<value>com.biit.abcd.persistence.**.*</value>
-			</list>
-		</property>
-		<property name="jpaVendorAdapter" ref="hibernateVendor" />
-		<property name="jpaProperties" ref="abcdJpaProperties" />
-		<qualifier value="abcdManagerFactory"/>
-	</bean>
 	
 	<!-- Entity managers -->
 	<bean id="webformsEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" >            
         <property name="entityManagerFactory" ref="webformsManagerFactory" />
-	</bean>
-	<bean id="abcdEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" >            
-        <property name="entityManagerFactory" ref="abcdManagerFactory" />
 	</bean>
 
 	<!-- Data Source -->
@@ -99,20 +78,6 @@
 		<property name="jdbcUrl" value="${webforms.hibernate.connection.url}" />
 		<property name="user" value="${webforms.hibernate.connection.username}" />
 		<property name="password" value="${webforms.hibernate.connection.password}" />
-		<!-- C3p0 -->
-		<property name="minPoolSize" value="${c3p0.min_size}" />
-		<property name="maxPoolSize" value="${c3p0.max_size}" />
-		<property name="maxStatements" value="${c3p0.max_statements}" />
-		<property name="idleConnectionTestPeriod" value="${c3p0.idle_test_period}" />
-		<property name="loginTimeout" value="${c3p0.timeout}" />
-		<property name="acquireIncrement" value="${c3p0.acquire_increment}" />
-	</bean>
-	<bean id="abcdDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-		destroy-method="close">
-		<property name="driverClass" value="${abcd.hibernate.connection.driver_class}" />
-		<property name="jdbcUrl" value="${abcd.hibernate.connection.url}" />
-		<property name="user" value="${abcd.hibernate.connection.username}" />
-		<property name="password" value="${abcd.hibernate.connection.password}" />
 		<!-- C3p0 -->
 		<property name="minPoolSize" value="${c3p0.min_size}" />
 		<property name="maxPoolSize" value="${c3p0.max_size}" />
@@ -134,13 +99,6 @@
 		<property name="sourceMap">
 			<map merge="true">
 				<entry key="hibernate.hbm2ddl.import_files" value="${webforms.hibernate.hbm2ddl.import_files}" />
-			</map>
-		</property>
-	</bean>
-	<bean id="abcdJpaProperties" parent="commonJpaProperties">
-		<property name="sourceMap">
-			<map merge="true">
-				<entry key="hibernate.hbm2ddl.import_files" value="${abcd.hibernate.hbm2ddl.import_files}" />
 			</map>
 		</property>
 	</bean>
@@ -209,11 +167,6 @@
 	<bean name="webformsFormDao" class="com.biit.webforms.persistence.dao.hibernate.FormDao" />
 	<bean name="simpleFormDaoWebforms"
 		class="com.biit.webforms.persistence.dao.hibernate.SimpleFormViewDao" />
-	<bean name="formDaoAbcd" class="com.biit.abcd.persistence.dao.hibernate.FormDao" />
-	<bean name="simpleFormDaoAbcd"
-		class="com.biit.abcd.persistence.dao.hibernate.SimpleFormViewDao" />
-	<bean name="customVariableDao"
-		class="com.biit.abcd.persistence.dao.hibernate.CustomVariableDao" />
 		
 	<!--  Cache Configuration  -->
 	<cache:annotation-driven />
