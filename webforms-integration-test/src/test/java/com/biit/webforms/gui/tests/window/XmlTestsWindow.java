@@ -6,7 +6,7 @@ import com.vaadin.testbench.By;
 
 public class XmlTestsWindow extends GenericAcceptCancelWindow {
 
-	private static final String CLASS_NAME = "com.biit.webforms.gui.webpages.WindowGenerateXml";
+	private static final String CLASS_NAME = "com.biit.webforms.gui.webpages.formmanager.WindowGenerateXml";
 	public static final String STEPPER_CLASS = "gwt-TextBox";
 	private static final String CLOSE_ELEMENT_NAME = "v-window-closebox";
 
