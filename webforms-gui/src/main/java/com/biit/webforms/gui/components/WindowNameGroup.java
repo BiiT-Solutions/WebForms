@@ -4,15 +4,20 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.biit.form.entity.BaseForm;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.webpages.designer.ValidatorTreeObjectName;
+import com.biit.webforms.gui.webpages.designer.ValidatorTreeObjectNameLength;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.liferay.portal.model.Organization;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -56,6 +61,17 @@ public class WindowNameGroup extends WindowAcceptCancel {
 		textField = new TextField(inputFieldCaption);
 		textField.focus();
 		textField.setWidth("100%");
+		textField.addValidator(new ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
+		textField.addValidator(new ValidatorTreeObjectNameLength());
+
+		textField.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = 4953347262492851075L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				textField.isValid();
+			}
+		});
 
 		organizationField = new ComboBox(groupCaption);
 		organizationField.setNullSelectionAllowed(false);
@@ -106,5 +122,9 @@ public class WindowNameGroup extends WindowAcceptCancel {
 
 	public void setValue(String value) {
 		textField.setValue(value);
+	}
+	
+	public boolean isValid(){
+		return textField.isValid();
 	}
 }

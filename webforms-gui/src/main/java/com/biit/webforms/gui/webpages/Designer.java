@@ -210,8 +210,7 @@ public class Designer extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-					// TODO remove print
-					e.printStackTrace();
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				} catch (ElementCannotBePersistedException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
 							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
