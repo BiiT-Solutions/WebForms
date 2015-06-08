@@ -77,6 +77,11 @@ public class FormManager extends VaadinGuiWebpage {
 		}
 		getExportButton().waitForVaadin();
 		getExportButton().click();
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void clickExportFlowButton() {
