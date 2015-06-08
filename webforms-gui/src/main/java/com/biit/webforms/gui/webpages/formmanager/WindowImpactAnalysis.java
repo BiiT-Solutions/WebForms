@@ -33,7 +33,7 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 	private static final String LABEL_HEIGHT = "20px";
 	private static final String VERSION_COMBOBOX_WIDTH = "100px";
 
-	private Label formName;
+	private Label formNameLabel;
 	private ComboBox version;
 	private IWebformsFormView form;
 
@@ -123,10 +123,10 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 		rootLayout.setSizeFull();
 		rootLayout.setSpacing(true);
 
-		formName = new Label();
-		formName.setImmediate(true);
-		formName.setWidth(null);
-		formName.setHeight(LABEL_HEIGHT);
+		formNameLabel = new Label();
+		formNameLabel.setImmediate(true);
+		formNameLabel.setWidth(null);
+		formNameLabel.setHeight(LABEL_HEIGHT);
 
 		version = new ComboBox(LanguageCodes.CAPTION_VERSION.translation());
 		version.setWidth(VERSION_COMBOBOX_WIDTH);
@@ -134,13 +134,17 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 		version.setNullSelectionAllowed(false);
 		version.setTextInputAllowed(false);
 
-		rootLayout.addComponent(formName);
-		rootLayout.setComponentAlignment(formName, Alignment.MIDDLE_CENTER);
+		rootLayout.addComponent(formNameLabel);
+		rootLayout.setComponentAlignment(formNameLabel, Alignment.MIDDLE_CENTER);
 		rootLayout.addComponent(version);
 		rootLayout.setComponentAlignment(version, Alignment.MIDDLE_CENTER);
 		rootLayout.setExpandRatio(version, 1.0f);
 
 		return rootLayout;
+	}
+
+	private void setLabel(IWebformsFormView form) {
+		formNameLabel.setValue(LanguageCodes.IMPACT_ANALYSIS_TEXT.translation() + " '" + form.getLabel()+"'.");
 	}
 
 	public void setForm(IWebformsFormView form) {
@@ -149,7 +153,7 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 	}
 
 	private void updateUi() {
-		formName.setValue(form.getLabel());
+		setLabel(form);
 
 		List<SimpleFormView> forms = UserSessionHandler.getController().getSimpleFormVersionsWebforms(form.getLabel(),
 				form.getOrganizationId());
