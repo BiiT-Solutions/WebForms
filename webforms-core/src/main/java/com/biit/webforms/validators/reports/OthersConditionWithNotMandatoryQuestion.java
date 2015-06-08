@@ -8,7 +8,7 @@ public class OthersConditionWithNotMandatoryQuestion extends Report {
 
 	public OthersConditionWithNotMandatoryQuestion(Question question) {
 		super(ReportLevel.ERROR, "Question '" + question.getPathName()
-				+ "' is not mandatory and has an 'others' flow.");
+				+ "' is not mandatory and has an 'others' flow as output.");
 	}
 
 }
