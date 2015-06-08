@@ -27,6 +27,7 @@ import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FlowType;
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
@@ -173,6 +174,26 @@ public class Flow extends StorableObject {
 		}
 
 		return sb.toString();
+	}
+	
+	public String getConditionStringWithFormat(){
+		StringBuilder sb = new StringBuilder();
+
+		Iterator<Token> itr = getCondition().iterator();
+
+		while (itr.hasNext()) {
+			Token next = itr.next();
+			if(next.getType()==TokenTypes.RETURN){
+				sb.append("\n");
+			}else{
+				sb.append(next);
+			}
+			if (itr.hasNext()) {
+				sb.append(TOKEN_SEPARATOR);
+			}
+		}
+
+		return sb.toString();		
 	}
 
 	@Override
