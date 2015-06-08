@@ -21,7 +21,9 @@ public enum WebMap {
 
 	COMPARE_STRUCTURE(CompareStructure.class),
 
-	COMPARE_CONTENT(CompareContent.class),
+	COMPARE_CONTENT(CompareContent.class), 
+	
+	WEBSERVICE_CALL_EDITOR(WebserviceCall.class),
 
 	;
 

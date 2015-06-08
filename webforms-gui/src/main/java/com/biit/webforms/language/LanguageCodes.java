@@ -558,7 +558,15 @@ public enum LanguageCodes implements ILanguageCode {
 	NULL_VALUE_SEARCH_DYNAMIC_REFERENCE("null.value.search.dynamic.reference"), 
 	DYNAMIC_ANSWER_LABEL("dynamic.answer.label"), 
 	
-	ERROR_DYNAMIC_ANSWER_DEPENDENCY("error.dynamic.answer.dependency"),	
+	ERROR_DYNAMIC_ANSWER_DEPENDENCY("error.dynamic.answer.dependency"), 
+	
+	CAPTION_EDIT_WEBSERVICE_CALL("caption.edit.webservice.call"),
+	TOOLTIP_EDIT_WEBSERVICE_CALL("tooltip.edit.webservice.call"), 
+	
+	WEBSERVICE_CALL_TABLE_NAME("webservice.call.table.name"), 
+	CAPTION_WEBSERVICE_CALL_NAME("caption.webservice.call.name"), 
+	CAPTION_WEBSERVICE_NAME("caption.webservice.name"), 
+	CAPTION_WEBSERVICE_CALL_TRIGGER("caption.webservice.call.trigger"),	
 	
 	;
 

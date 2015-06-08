@@ -132,6 +132,8 @@ public enum ThemeIcons implements IThemeIcon {
 	DESIGNER_NEW_DYNAMIC_ANSWER("form.dynamic.element.svg"), 
 	DESIGNER_DYNAMIC_ANSWER("form.dynamic.element.svg"), 
 	
+	EDIT_WEBSERVICE_CALL("alert.svg"), 
+	
 	;
 
 	private String value;
