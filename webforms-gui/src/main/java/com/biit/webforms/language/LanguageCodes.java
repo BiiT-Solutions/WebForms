@@ -33,6 +33,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_VALIDATE_CONDITIONS("caption.validate.conditions"),
 	CAPTION_VALIDATE_FORM("caption.validate.form"),
 	CAPTION_IMPACT_ANALYSIS("caption.impact.analysis"),
+	IMPACT_ANALYSIS_TEXT("impact.analysis.text"),
 	CAPTION_SETTINGS_TITLE("caption.settings.title"),
 	CAPTION_SETTINGS_LOG_OUT("caption.setting.log.out"),
 	CAPTION_PROCEED_LOG_OUT("caption.proceed.log.out"),
