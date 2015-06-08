@@ -24,7 +24,8 @@ public class PropertiesForm extends PropertiesBaseForm<Form> {
 
 	@Override
 	public void updateElement() {
-		if (getLabelTextField().getValue() != null && getLabelTextField().getValue().length() > 0) {
+		if (getLabelTextField().isValid() && getLabelTextField().getValue() != null
+				&& getLabelTextField().getValue().length() > 0) {
 			try {
 				// Checks if already exists a form with this label and its version.
 				if (!formDao.exists(getLabelTextField().getValue(), ((BaseForm) getInstance()).getVersion(),

@@ -190,6 +190,7 @@ public class ApplicationController {
 
 		// Create new form
 		Form newform = createForm(formLabel, organizationId);
+		newform.setCreatedBy(UserSessionHandler.getUser().getUserId());
 
 		// Persist form.
 		try {

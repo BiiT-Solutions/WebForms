@@ -689,6 +689,9 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
+				if(!newFormWindow.isValid()){
+					return;
+				}
 				if (newFormWindow.getValue() == null || newFormWindow.getValue().isEmpty()) {
 					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_FORM_NOT_CREATED,
 							LanguageCodes.COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME);
