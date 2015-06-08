@@ -1501,10 +1501,11 @@ public class ApplicationController {
 		if (form.getLabel() != null && form.getOrganizationId() != null) {
 			List<SimpleFormView> views = getAllSimpleFormViewsFromAbcdByLabelAndOrganization(form.getLinkedFormLabel(),
 					form.getLinkedFormOrganizationId());
-
-			for (SimpleFormView view : views) {
-				if (form.getLinkedFormVersions().contains(view.getVersion())) {
-					linkedSimpleAbcdForms.add(view);
+			if (views != null) {
+				for (SimpleFormView view : views) {
+					if (form.getLinkedFormVersions().contains(view.getVersion())) {
+						linkedSimpleAbcdForms.add(view);
+					}
 				}
 			}
 		}

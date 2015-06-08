@@ -26,26 +26,46 @@ public class AbcdRestClient {
 	private static final String PARAMETER_NAME = "parameter";
 
 	public static List<SimpleFormView> getSimpleFormViewsFromAbcdByUserEmail(String url, String path, String userEmail) {
-		return getSimpleFormViewsFromAbcd(url, path, userEmail);
+		if (userEmail != null) {
+			return getSimpleFormViewsFromAbcd(url, path, userEmail);
+		} else {
+			return null;
+		}
 	}
 
 	public static List<SimpleFormView> getSimpleFormViewsFromAbcdByLabelAndOrganization(String url, String path,
 			String userEmail, String formLabel, Long organization) {
-		return getSimpleFormViewsFromAbcd(url, path, userEmail, formLabel, organization.toString());
+		if ((userEmail != null) && (formLabel != null) && (organization != null)) {
+			return getSimpleFormViewsFromAbcd(url, path, userEmail, formLabel, organization.toString());
+		} else {
+			return null;
+		}
 	}
 
 	public static Form getFormFromAbcdByLabelOrganizationAndVersion(String url, String path, String userEmail,
 			String formLabel, Long formOrganization, Integer formVersion) {
-		return getFormFromAbcd(url, path, userEmail, formLabel, formOrganization.toString(), formVersion.toString());
+		if ((userEmail != null) && (formLabel != null) && (formOrganization != null) && (formVersion != null)) {
+			return getFormFromAbcd(url, path, userEmail, formLabel, formOrganization.toString(), formVersion.toString());
+		} else {
+			return null;
+		}
 	}
 
 	public static Form getFormFromAbcdById(String url, String path, String userEmail, Long formId) {
-		return getFormFromAbcd(url, path, userEmail, formId.toString());
+		if ((userEmail != null) && (formId != null)) {
+			return getFormFromAbcd(url, path, userEmail, formId.toString());
+		} else {
+			return null;
+		}
 	}
 
 	public static List<Form> getFormsFromAbcdByOrganization(String url, String path, String userEmail,
 			Long formOrganization) {
-		return getFormsFromAbcd(url, path, userEmail, formOrganization.toString());
+		if ((userEmail != null) && (formOrganization != null)) {
+			return getFormsFromAbcd(url, path, userEmail, formOrganization.toString());
+		} else {
+			return null;
+		}
 	}
 
 	private static List<SimpleFormView> getSimpleFormViewsFromAbcd(String url, String path, String... parameters) {
