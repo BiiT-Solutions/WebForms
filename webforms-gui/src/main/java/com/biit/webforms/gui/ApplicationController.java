@@ -34,17 +34,6 @@ import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.validation.ValidateReport;
-import com.biit.webforms.authentication.FormWithSameNameException;
-import com.biit.webforms.authentication.WebformsActivity;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
-import com.biit.webforms.authentication.exception.BadAbcdLink;
-import com.biit.webforms.authentication.exception.CategoryWithSameNameAlreadyExistsInForm;
-import com.biit.webforms.authentication.exception.DestinyIsContainedAtOrigin;
-import com.biit.webforms.authentication.exception.EmptyBlockCannotBeInserted;
-import com.biit.webforms.authentication.exception.NewVersionWithoutFinalDesignException;
-import com.biit.webforms.authentication.exception.NotEnoughRightsToChangeStatusException;
-import com.biit.webforms.authentication.exception.NotValidAbcdForm;
-import com.biit.webforms.authentication.exception.SameOriginAndDestinationException;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
@@ -55,7 +44,16 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
+import com.biit.webforms.gui.exceptions.BadAbcdLink;
+import com.biit.webforms.gui.exceptions.CategoryWithSameNameAlreadyExistsInForm;
+import com.biit.webforms.gui.exceptions.DestinyIsContainedAtOrigin;
+import com.biit.webforms.gui.exceptions.EmptyBlockCannotBeInserted;
+import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.gui.exceptions.LinkCanOnlyBePerformedOnWholeBlock;
+import com.biit.webforms.gui.exceptions.NewVersionWithoutFinalDesignException;
+import com.biit.webforms.gui.exceptions.NotEnoughRightsToChangeStatusException;
+import com.biit.webforms.gui.exceptions.NotValidAbcdForm;
+import com.biit.webforms.gui.exceptions.SameOriginAndDestinationException;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -84,6 +82,8 @@ import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyE
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+import com.biit.webforms.security.WebformsActivity;
+import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.biit.webforms.utils.conversor.ConversorAbcdFormToForm;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.liferay.portal.model.Organization;
@@ -1216,7 +1216,7 @@ public class ApplicationController {
 			public Collection<com.biit.abcd.persistence.entity.Form> getAll() throws UnexpectedDatabaseException {
 				List<com.biit.abcd.persistence.entity.Form> forms = new ArrayList<>();
 
-				Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
+				Set<Organization> userOrganizations = WebformsBasicAuthorizationService.getInstance()
 						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 				for (Organization organization : userOrganizations) {
 					forms.addAll(getFormDaoAbcd().getAll(organization.getOrganizationId()));
@@ -1238,7 +1238,7 @@ public class ApplicationController {
 
 				List<com.biit.webforms.persistence.entity.SimpleFormView> simpleForms = simpleFormDaoWebforms.getAll();
 
-				Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
+				Set<Organization> userOrganizations = WebformsBasicAuthorizationService.getInstance()
 						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 
 				for (com.biit.webforms.persistence.entity.SimpleFormView form : simpleForms) {
@@ -1277,7 +1277,7 @@ public class ApplicationController {
 					userAbcdOrganizationIds.add(organization.getOrganizationId());
 				}
 
-				Set<Organization> userOrganizationsFromWebforms = WebformsAuthorizationService.getInstance()
+				Set<Organization> userOrganizationsFromWebforms = WebformsBasicAuthorizationService.getInstance()
 						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(),
 								WebformsActivity.FORM_EDITING);
 				HashSet<Long> userWebformsOrganizationIds = new HashSet<Long>();
@@ -1325,7 +1325,7 @@ public class ApplicationController {
 	 */
 	public Set<Organization> getOrganizatiosWhereUser(IActivity... activitiesFilter) {
 		try {
-			Set<Organization> organizations = WebformsAuthorizationService.getInstance().getUserOrganizations(
+			Set<Organization> organizations = WebformsBasicAuthorizationService.getInstance().getUserOrganizations(
 					UserSessionHandler.getUser());
 			Iterator<Organization> itr = organizations.iterator();
 			while (itr.hasNext()) {
@@ -1333,7 +1333,7 @@ public class ApplicationController {
 				for (IActivity activity : activitiesFilter) {
 					// If the user doesn't comply to all activities in the
 					// filter in the group, then exit
-					if (!WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+					if (!WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
 							organization, activity)) {
 						itr.remove();
 						break;
@@ -1383,7 +1383,7 @@ public class ApplicationController {
 	public void changeFormStatus(IWebformsFormView formView, FormWorkStatus value)
 			throws NotEnoughRightsToChangeStatusException, ElementCannotBePersistedException {
 		// Can downgrade
-		boolean userCanDowngradeStatus = WebformsAuthorizationService.getInstance().isAuthorizedActivity(
+		boolean userCanDowngradeStatus = WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
 				UserSessionHandler.getUser(), formView, WebformsActivity.FORM_STATUS_DOWNGRADE);
 
 		if (!formView.getStatus().isMovingForward(value)) {

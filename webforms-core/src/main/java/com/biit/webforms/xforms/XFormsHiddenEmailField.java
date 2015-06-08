@@ -37,8 +37,8 @@ public class XFormsHiddenEmailField {
 
 	public static String getBody() {
 		return "<xf:input bind=\"" + BIND_NAME + "\" id=\"" + CONTROL_NAME + "\">"
-				+ "<xf:label mediatype=\"text/html\" ref=\"$form-resources/" + MODEL_NAME + "/label\"/>"
-				+ "<xf:hint ref=\"$form-resources/" + MODEL_NAME + "/hint\"/>" + "<xf:alert ref=\"$form-resources/"
+				+ "<xf:label mediatype=\"text/html\" ref=\"instance('fr-form-resources')/resource/" + MODEL_NAME + "/label\"/>"
+				+ "<xf:hint ref=\"instance('fr-form-resources')/resource/" + MODEL_NAME + "/hint\"/>" + "<xf:alert ref=\"instance('fr-form-resources')/resource/"
 				+ MODEL_NAME + "/alert\"/>" + "</xf:input>";
 
 	}

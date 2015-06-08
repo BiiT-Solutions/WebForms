@@ -43,7 +43,7 @@ public class XmlUtils {
 
 			// Indentation
 			t.setOutputProperty(OutputKeys.INDENT, "yes");
-			t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "8");
 			// XML header
 			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 			// t.setOutputProperty(OutputKeys.STANDALONE, "yes");

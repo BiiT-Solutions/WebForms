@@ -1,4 +1,4 @@
-package com.biit.webforms.authentication;
+package com.biit.webforms.security;
 
 public enum WebformsRoles {
 	

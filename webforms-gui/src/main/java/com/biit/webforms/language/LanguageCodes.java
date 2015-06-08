@@ -453,9 +453,11 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_PREVIEW_XFORMS("caption.preview.xforms"), 
 	CAPTION_PUBLISH_XFORMS("caption.publish.xforms"),
 	CAPTION_DOWNLOAD_XFORMS("caption.download.xforms"),
+	CAPTION_DOWNLOAD_XFORMS_MULTIPLE("caption.download.xforms.multiple"),
 	TOOLTIP_PREVIEW_XFORMS("tooltip.preview.xforms"),
 	TOOLTIP_PUBLISH_XFORMS("tooltip.publish.xforms"),
-	TOOLTIP_DOWNLOAD_XFORMS("tooltip.download.xforms"), 
+	TOOLTIP_DOWNLOAD_XFORMS("tooltip.download.xforms"),
+	TOOLTIP_DOWNLOAD_XFORMS_MULTIPLE("tooltip.download.xforms.multiple"), 
 	
 	CAPTION_NEW("caption.new"), 
 	TOOLTIP_NEW("tooltip.new"), 
