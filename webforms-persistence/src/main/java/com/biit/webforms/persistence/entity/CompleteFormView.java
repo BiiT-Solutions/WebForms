@@ -510,4 +510,31 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		return gson.toJson(form);
 	}
 
+	@Override
+	public void addWebserviceCall(WebserviceCall webservviceCall){
+		if(form!=null){
+			form.addWebserviceCall(webservviceCall);
+		}
+	}
+	
+	@Override
+	public Set<WebserviceCall> getWebserviceCalls(){
+		HashSet<WebserviceCall> calls = new HashSet<>();
+		if(form!=null){
+			calls.addAll(form.getWebserviceCalls());
+			for (TreeObject child : form.getChildren()) {
+				// Add linked block children
+				if (child instanceof BlockReference) {
+					calls.addAll(((BlockReference) child).getReference().getWebserviceCalls());
+				}
+			}
+		}
+		return calls;
+	}
+
+	public void removeWebserviceCall(WebserviceCall call) {
+		if(form!=null){
+			form.getWebserviceCalls().remove(call);
+		}
+	}
 }

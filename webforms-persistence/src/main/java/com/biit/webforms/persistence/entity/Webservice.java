@@ -1,18 +1,18 @@
 package com.biit.webforms.persistence.entity;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.enumerations.PortType;
 
 @Entity
 @Table(name = "webservices")
@@ -37,26 +37,47 @@ public class Webservice extends StorableObject {
 	
 	private String port;
 	
-	private String serviceName;
+	private String path;
 	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "webservice")
-	private List<WebservicePort> ports;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "webservice", fetch=FetchType.EAGER)
+	private Set<WebservicePort> webservicePorts;
 	
 	public Webservice() {
 		super();
-		ports = new ArrayList<WebservicePort>();
+		webservicePorts = new HashSet<WebservicePort>();
 	}
 
 	@Override
 	public Set<StorableObject> getAllInnerStorableObjects() {
 		Set<StorableObject> storableObjects = new HashSet<StorableObject>();
-		storableObjects.addAll(ports);
+		storableObjects.addAll(getWebservicePorts());
+		for(WebservicePort port: getWebservicePorts()){
+			storableObjects.addAll(port.getAllInnerStorableObjects());
+		}			
 		return storableObjects;
 	}
 
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		
+		if(object instanceof Webservice){
+			copyBasicInfo(object);
+			Webservice webservice = (Webservice) object;
+			setName(webservice.getName());
+			setDescription(webservice.getDescription());
+			setInputXml(webservice.getInputXml());
+			setOutputXml(webservice.getOutputXml());
+			setProtocol(webservice.getProtocol());
+			setHost(webservice.getHost());
+			setPort(webservice.getPort());
+			setPath(webservice.getPath());
+			for(WebservicePort port: webservice.getWebservicePorts()){
+				WebservicePort copy = new WebservicePort();
+				copy.copyData(port);
+				getWebservicePorts().add(copy);
+			}
+		}else{
+			throw new NotValidStorableObjectException("Element of class '"+object.getClass().getName()+"' is not compatible with '"+Webservice.class.getName()+"'");
+		}
 	}
 
 	public String getInputXml() {
@@ -99,16 +120,16 @@ public class Webservice extends StorableObject {
 		this.port = port;
 	}
 
-	public String getServiceName() {
-		return serviceName;
+	public String getPath() {
+		return path;
 	}
 
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
-	public List<WebservicePort> getPorts() {
-		return ports;
+	public Set<WebservicePort> getWebservicePorts() {
+		return webservicePorts;
 	}
 
 	public String getName() {
@@ -125,6 +146,32 @@ public class Webservice extends StorableObject {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getUrl() {
+		return getProtocol()+"://"+getHost()+":"+getPort()+"/"+getPath();
+	}
+	
+	public Set<WebservicePort> getXmlPorts(PortType type){
+		Set<WebservicePort> filteredPorts = new HashSet<>();
+		for(WebservicePort port: getWebservicePorts()){
+			if(port.getType().equals(type)){
+				filteredPorts.add(port);
+			}
+		}
+		return filteredPorts;
+	}
+
+	public Set<WebservicePort> getInputPorts() {
+		return getXmlPorts(PortType.INPUT);
+	}
+	
+	public Set<WebservicePort> getOutputPorts() {
+		return getXmlPorts(PortType.OUTPUT);
+	}
+	
+	public Set<WebservicePort> getValidatePorts() {
+		return getXmlPorts(PortType.VALIDATION);
 	}
 	
 }

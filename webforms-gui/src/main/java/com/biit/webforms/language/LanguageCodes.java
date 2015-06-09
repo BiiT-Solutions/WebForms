@@ -566,7 +566,28 @@ public enum LanguageCodes implements ILanguageCode {
 	WEBSERVICE_CALL_TABLE_NAME("webservice.call.table.name"), 
 	CAPTION_WEBSERVICE_CALL_NAME("caption.webservice.call.name"), 
 	CAPTION_WEBSERVICE_NAME("caption.webservice.name"), 
-	CAPTION_WEBSERVICE_CALL_TRIGGER("caption.webservice.call.trigger"),	
+	CAPTION_WEBSERVICE_CALL_TRIGGER("caption.webservice.call.trigger"), 
+	
+	CAPTION_ADD_WEBSERVICE_CALL("caption.add.webservice.call"), 
+	TOOLTIP_ADD_WEBSERVICE_CALL("tooltip.add.webservice.call"), 
+	CAPTION_REMOVE_WEBSERVICE_CALL("caption.remove.webservice.call"), 
+	TOOLTIP_REMOVE_WEBSERVICE_CALL("tooltip.remove.webservice.call"), 
+	
+	WEBSERVICES_TABLE_NAME("webservices.table.name"), 
+	WEBSERVICES_TABLE_DESCRIPTION("webservices.table.description"), 
+	WEBSERVICES_TABLE_URL("webservices.table.url"), 
+	
+	PORT_TABLE_NAME("port.table.name"), 
+	PORT_TABLE_FORM_ELEMENT("port.table.form.element"), 
+	
+	CAPTION_EDIT_WEBSERVICE_LINK("caption.edit.webservice.link"), 
+	TOOLTIP_EDIT_WEBSERVICE_LINK("tooltip.edit.webservice.link"), 
+	CAPTION_REMOVE_WEBSERVICE_LINK("caption.remove.webservice.link"), 
+	TOOLTIP_REMOVE_WEBSERVICE_LINK("caption.remove.webservice.link"), 
+	
+	TABLE_OUTPUT_LINK_IS_EDITABLE("table.output.link.is.editable"), 
+	IS_EDITABLE("is.editable"), 
+	IS_NOT_EDITABLE("is.not.editable"),
 	
 	;
 

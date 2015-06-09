@@ -92,6 +92,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
 	private Set<Flow> rules;
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
+	private Set<WebserviceCall> webserviceCalls;
 
 	private String linkedFormLabel;
 
@@ -111,6 +114,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		description = new String();
 		rules = new HashSet<>();
 		linkedFormVersions = new HashSet<>();
+		webserviceCalls = new HashSet<>();
 	}
 
 	public Form(String label, User user, Long organizationId) throws FieldTooLongException,
@@ -119,6 +123,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		status = FormWorkStatus.DESIGN;
 		description = new String();
 		rules = new HashSet<>();
+		webserviceCalls = new HashSet<>();
 		linkedFormVersions = new HashSet<>();
 		setCreatedBy(user);
 		setUpdatedBy(user);
@@ -665,6 +670,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public void initializeSets() {
 		super.initializeSets();
 		getFlows().size();
+		getWebserviceCalls().size();
 	}
 
 	@Override
@@ -727,5 +733,13 @@ public class Form extends BaseForm implements IWebformsFormView {
 		for(Flow flow: getFlows()){
 			flow.updateConditionSortSeq();
 		}
+	}
+	
+	public Set<WebserviceCall> getWebserviceCalls(){
+		return webserviceCalls;
+	}
+	
+	public void addWebserviceCall(WebserviceCall webservviceCall){
+		webserviceCalls.add(webservviceCall);
 	}
 }

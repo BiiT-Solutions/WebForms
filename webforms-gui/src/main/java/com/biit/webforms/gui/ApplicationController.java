@@ -59,6 +59,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
+import com.biit.webforms.persistence.dao.IWebserviceDao;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
@@ -73,6 +74,8 @@ import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.Webservice;
+import com.biit.webforms.persistence.entity.WebserviceCall;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
@@ -98,6 +101,7 @@ public class ApplicationController {
 	private IFormDao formDao;
 	private IBlockDao blockDao;
 	private ISimpleFormViewDao simpleFormDaoWebforms;
+	private IWebserviceDao webserviceDao;
 
 	private Form lastEditedForm;
 	private Form formInUse;
@@ -112,6 +116,7 @@ public class ApplicationController {
 		formDao = (IFormDao) helper.getBean("webformsFormDao");
 		blockDao = (IBlockDao) helper.getBean("blockDao");
 		simpleFormDaoWebforms = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms"));
+		webserviceDao = (IWebserviceDao) helper.getBean("webserviceDao");
 	}
 
 	/**
@@ -1510,5 +1515,20 @@ public class ApplicationController {
 			}
 		}
 		return linkedSimpleAbcdForms;
+	}
+
+	public Set<Webservice> getAllWebservices() {
+		Set<Webservice> webservices = new HashSet<Webservice>();
+		webservices.addAll(webserviceDao.getAll());
+		return webservices;
+	}
+
+	public void generateNewWebserviceCall(String name, Webservice webservice) {
+		WebserviceCall call = new WebserviceCall(name,webservice);
+		UserSessionHandler.getController().getCompleteFormView().addWebserviceCall(call);
+	}
+
+	public void removeWebserviceCall(WebserviceCall call) {
+		UserSessionHandler.getController().getCompleteFormView().removeWebserviceCall(call);
 	}
 }

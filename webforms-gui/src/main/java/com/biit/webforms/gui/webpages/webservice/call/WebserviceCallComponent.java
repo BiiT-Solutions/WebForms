@@ -2,6 +2,9 @@ package com.biit.webforms.gui.webpages.webservice.call;
 
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.persistence.entity.WebserviceCall;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -17,16 +20,22 @@ public class WebserviceCallComponent extends CustomComponent{
 	private static final String WEBSERVICE_CALL_DATA_HEIGHT = "100px";
 	
 	private final VerticalLayout rootLayout;
-	private final Table inputTable;
-	private final Table outputTable;
+	private final TableInputLinks inputTable;
+	private final TableOutputLinks outputTable;
 	private final Table validationTable;
 	private final TextField webserviceCallName;
 	private final TextField webserviceName;
 	private final SearchFormElementField webserviceCallTrigger;
+	private final ValueChangeListener inputValueChangeListener;
+	private final ValueChangeListener outputValueChangeListener;
+	private final ValueChangeListener validationValueChangeListener;
+	
+	private WebserviceCall webserviceCall;
 
 	public WebserviceCallComponent() {
 		rootLayout = new VerticalLayout();
 		rootLayout.setSizeFull();
+		rootLayout.setMargin(true);
 		
 		setCompositionRoot(rootLayout);
 		
@@ -34,11 +43,51 @@ public class WebserviceCallComponent extends CustomComponent{
 		webserviceName = new TextField();
 		webserviceCallTrigger = new SearchFormElementField();
 		
-		inputTable = new Table();
-		outputTable = new Table();
+		inputValueChangeListener = new ValueChangeListener() {
+			private static final long serialVersionUID = -6889903544916406512L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				setTableToNullSilently(outputTable,outputValueChangeListener);
+				setTableToNullSilently(validationTable,validationValueChangeListener);
+			}
+		};
+		outputValueChangeListener = new ValueChangeListener() {
+			private static final long serialVersionUID = -5773928794741079464L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				setTableToNullSilently(inputTable,inputValueChangeListener);
+				setTableToNullSilently(validationTable,validationValueChangeListener);
+			}
+		};
+		validationValueChangeListener = new ValueChangeListener() {
+			private static final long serialVersionUID = -3907254412145157798L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				setTableToNullSilently(outputTable,outputValueChangeListener);
+				setTableToNullSilently(inputTable,validationValueChangeListener);
+			}
+		};
+		
+		inputTable = new TableInputLinks();
+		outputTable = new TableOutputLinks();
 		validationTable = new Table();
+		inputTable.setSelectable(true);
+		outputTable.setSelectable(true);
+		validationTable.setSelectable(true);
+		inputTable.addValueChangeListener(inputValueChangeListener);
+		outputTable.addValueChangeListener(outputValueChangeListener);
+		validationTable.addValueChangeListener(validationValueChangeListener);
 		
 		initLayout();
+	}
+	
+	private void setTableToNullSilently(Table table, ValueChangeListener listener){
+		table.removeValueChangeListener(listener);
+		table.setValue(null);;
+		table.addValueChangeListener(listener);
 	}
 
 	private void initLayout() {
@@ -78,6 +127,7 @@ public class WebserviceCallComponent extends CustomComponent{
 		
 		HorizontalLayout tableLayout = new HorizontalLayout();
 		tableLayout.setSizeFull();
+		tableLayout.setSpacing(true);
 		
 		tableLayout.addComponent(inputTable);
 		tableLayout.addComponent(outputTable);
@@ -85,6 +135,32 @@ public class WebserviceCallComponent extends CustomComponent{
 		
 		rootLayout.addComponent(tableLayout);
 		rootLayout.setExpandRatio(tableLayout, 1.0f);
+		
+	}
+
+	public void setValue(WebserviceCall value) {
+		this.webserviceCall = value;
+		refreshUi();
+	}
+
+	private void refreshUi() {
+		webserviceCallName.setEnabled(true);
+		webserviceName.setEnabled(true);
+		if(webserviceCall==null){
+			webserviceCallName.setValue("");
+			webserviceName.setValue("");
+		}else{
+			webserviceCallName.setValue(webserviceCall.getName());
+			webserviceName.setValue(webserviceCall.getName());
+		}
+		webserviceCallName.setEnabled(false);
+		webserviceName.setEnabled(false);
+		
+		
+		
+		inputTable.addRows(webserviceCall.getInputLinks());
+		outputTable.addRows(webserviceCall.getOutputLinks());
+		
 		
 	}
 }

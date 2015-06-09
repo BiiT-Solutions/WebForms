@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -12,6 +14,7 @@ import javax.persistence.UniqueConstraint;
 
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.enumerations.PortType;
 
 @Entity
 @Table(name = "webservice_ports",uniqueConstraints =  { @UniqueConstraint(columnNames = { "name", "webservice"}) })
@@ -33,6 +36,9 @@ public class WebservicePort extends StorableObject {
 	private String xpath;
 	
 	private String validationValues;
+	
+	@Enumerated(EnumType.STRING)
+	private PortType type;
 
 	@Override
 	public Set<StorableObject> getAllInnerStorableObjects() {
@@ -90,6 +96,14 @@ public class WebservicePort extends StorableObject {
 
 	public void setValidationValues(String validationValues) {
 		this.validationValues = validationValues;
+	}
+
+	public PortType getType() {
+		return type;
+	}
+
+	public void setType(PortType type) {
+		this.type = type;
 	}
 
 }

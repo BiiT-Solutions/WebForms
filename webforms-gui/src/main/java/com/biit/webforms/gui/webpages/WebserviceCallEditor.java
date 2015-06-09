@@ -3,6 +3,7 @@ package com.biit.webforms.gui.webpages;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
@@ -10,20 +11,25 @@ import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.webpages.webservice.call.UpperMenu;
 import com.biit.webforms.gui.webpages.webservice.call.WebserviceCallComponent;
 import com.biit.webforms.gui.webpages.webservice.call.WebserviceCallTable;
+import com.biit.webforms.gui.webpages.webservice.call.WindowWebservices;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.WebserviceCall;
 import com.biit.webforms.security.WebformsActivity;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.HorizontalLayout;
 
-public class WebserviceCall extends SecuredWebPage {
+public class WebserviceCallEditor extends SecuredWebPage {
 	private static final long serialVersionUID = 2762557506974832944L;
 	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
 			Arrays.asList(WebformsActivity.READ));
@@ -32,7 +38,7 @@ public class WebserviceCall extends SecuredWebPage {
 	private final WebserviceCallTable webserviceCallTable;
 	private final WebserviceCallComponent webserviceCallComponent;
 	
-	public WebserviceCall() {
+	public WebserviceCallEditor() {
 		super();
 		webserviceCallTable= new WebserviceCallTable();
 		webserviceCallComponent = new WebserviceCallComponent();
@@ -58,6 +64,16 @@ public class WebserviceCall extends SecuredWebPage {
 		rootLayout.setMargin(true);
 		
 		webserviceCallTable.setSizeFull();
+		webserviceCallTable.setSelectable(true);
+		webserviceCallTable.addValueChangeListener(new ValueChangeListener() {
+			private static final long serialVersionUID = 8481401135465039411L;
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				updateUpperMenu();
+				updateWebserviceCallConfigComponent();
+			}
+		});
 
 		webserviceCallComponent.setSizeFull();
 
@@ -67,6 +83,13 @@ public class WebserviceCall extends SecuredWebPage {
 		rootLayout.setExpandRatio(webserviceCallComponent, 0.8f);
 		
 		getWorkingArea().addComponent(rootLayout);
+		
+		updateUpperMenu();
+		updateWebserviceCallTable();
+	}
+	
+	private void updateWebserviceCallConfigComponent(){
+		webserviceCallComponent.setValue((WebserviceCall)webserviceCallTable.getValue());
 	}
 
 	private UpperMenu createUpperMenu() {
@@ -80,8 +103,45 @@ public class WebserviceCall extends SecuredWebPage {
 				save();
 			}
 		});
+		upperMenu.getAddWebserviceCall().addClickListener(new ClickListener() {
+			private static final long serialVersionUID = -5403005874224040697L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				addNewWebserviceCall();
+			}
+		});
+		upperMenu.getRemoveWebserviceCall().addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 7856452655739065643L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				removeWebserviceCall();
+			}
+		});
 		
 		return upperMenu;
+	}
+
+	protected void removeWebserviceCall() {
+		UserSessionHandler.getController().removeWebserviceCall((WebserviceCall) webserviceCallTable.getValue());
+		webserviceCallTable.removeItem(webserviceCallTable.getValue());
+		webserviceCallTable.setValue(null);		
+	}
+
+	protected void addNewWebserviceCall() {
+		WindowWebservices window = new WindowWebservices();
+		window.addAcceptActionListener(new AcceptActionListener() {
+			
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				WindowWebservices windowWebservices = (WindowWebservices) window;
+				UserSessionHandler.getController().generateNewWebserviceCall(windowWebservices.getName(),windowWebservices.getWebservice());
+				updateWebserviceCallTable();
+				window.close();
+			}
+		});
+		window.showCentered();
 	}
 
 	protected void save() {
@@ -103,4 +163,26 @@ public class WebserviceCall extends SecuredWebPage {
 		return activityPermissions;
 	}
 
+	private void updateWebserviceCallTable(){
+		WebserviceCall selectedCall = (WebserviceCall) webserviceCallTable.getValue();
+		webserviceCallTable.setValue(null);
+		webserviceCallTable.removeAllItems();
+		Set<WebserviceCall> calls = UserSessionHandler.getController().getCompleteFormView().getWebserviceCalls();
+		webserviceCallTable.addRows(calls);
+		if(selectedCall!=null){
+			for(WebserviceCall call: calls){
+				if(selectedCall.getComparationId().equals(call.getComparationId())){
+					webserviceCallTable.setValue(call);
+				}
+			}
+		}
+	}
+
+	private void updateUpperMenu() {
+		boolean webserviceCallSelected = webserviceCallTable.getValue()!=null;
+		
+		upperMenu.getRemoveWebserviceCall().setEnabled(webserviceCallSelected);
+		upperMenu.getEditWebserviceLink().setEnabled(webserviceCallSelected);
+		upperMenu.getRemoveWebserviceLink().setEnabled(webserviceCallSelected);
+	}
 }

@@ -134,6 +134,12 @@ public enum ThemeIcons implements IThemeIcon {
 	
 	EDIT_WEBSERVICE_CALL("alert.svg"), 
 	
+	ADD_WEBSERVICE_CALL("alert.svg"), 
+	REMOVE_WEBSERVICE_CALL("alert.svg"), 
+	
+	EDIT_WEBSERVICE_PORT("alert.svg"),
+	REMOVE_WEBSERVICE_PORT("alert.svg"), 
+	
 	;
 
 	private String value;

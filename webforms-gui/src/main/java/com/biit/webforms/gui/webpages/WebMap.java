@@ -23,7 +23,7 @@ public enum WebMap {
 
 	COMPARE_CONTENT(CompareContent.class), 
 	
-	WEBSERVICE_CALL_EDITOR(WebserviceCall.class),
+	WEBSERVICE_CALL_EDITOR(WebserviceCallEditor.class),
 
 	;
 
