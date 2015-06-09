@@ -113,4 +113,15 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 	protected String getCassGroupClass() {
 		return CSS_CLASS_GROUP;
 	}
+
+	@Override
+	protected String getVisibilityStructure()  {
+		String section = "<" + getUniqueName() + ">";
+		section += "0";
+		section += "</" + getUniqueName() + ">";
+		for (XFormsObject<? extends TreeObject> child : getChildren()) {
+			section += child.getVisibilityStructure();
+		}
+		return section;
+	}
 }

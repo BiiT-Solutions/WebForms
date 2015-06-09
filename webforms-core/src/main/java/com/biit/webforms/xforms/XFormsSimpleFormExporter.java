@@ -208,7 +208,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		events.append("<var>");
 
 		for (XFormsCategory xFormCategory : getXFormsCategories()) {
-			events.append(xFormCategory.getDefinition());
+			events.append(xFormCategory.getVisibilityStructure());
 		}
 
 		events.append("</var>");

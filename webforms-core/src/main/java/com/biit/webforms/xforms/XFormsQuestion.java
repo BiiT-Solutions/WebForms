@@ -381,4 +381,14 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		return classList;
 	}
 
+	@Override
+	protected String getVisibilityStructure()  {
+		String section = "<" + getUniqueName() + ">";
+	    section += "false";
+		section += "</" + getUniqueName() + ">";
+		for (XFormsObject<? extends TreeObject> child : getChildren()) {
+			section += child.getVisibilityStructure();
+		}
+		return section;
+	}
 }
