@@ -13,6 +13,7 @@ import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.webforms.condition.TokenUtils;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -529,7 +530,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 		// String visibility = getRelevantByFlows(flowsTo);
 		StringBuilder visibility = new StringBuilder();
 
-		// One flow with condition, is same visibility as previous element.
+		// One flow without condition, is the same visibility as the previous element.
 		if (flows.size() == 1) {
 			Flow flow = ((Flow) flows.iterator().next());
 			if (flow.getCondition().isEmpty()) {
@@ -569,9 +570,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 			flowvisibility.append(" ");
 		}
 
-		if (flowvisibility.length() > 0) {
-			visibility.append("(").append(flowvisibility).append(")");
-		}
+		visibility.append(flowvisibility);
 
 		return visibility.toString();
 	}
@@ -592,7 +591,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// Others must assure that the question is answered.
 			if (flow.isOthers()) {
 				if (existPreviousCondition(flowvisibility)) {
-					flowvisibility.add(Token.and());
+					flowvisibility.add(Token.getAndToken());
 				}
 				flowvisibility.add(new TokenAnswerNeeded((WebformsBaseQuestion) flow.getOrigin(),
 						(flow.getOrigin() instanceof Question)
@@ -601,14 +600,27 @@ public abstract class XFormsObject<T extends TreeObject> {
 				// If condition is empty, inherit the relevance of the previous element. Others also has empty
 				// condition.
 			} else if (flow.getCondition().isEmpty()) {
-				List<Token> previousVisibility = getXFormsHelper().getPreviousVisibilityTokens(flow);
+				List<Token> previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(flow.getOrigin());
+				// Not stored visibility. First element!
+				if (previousVisibility == null) {
+					previousVisibility = new ArrayList<>();
+				}
 				if (!previousVisibility.isEmpty()) {
 					// Add 'AND'.
 					if (existPreviousCondition(flowvisibility)) {
-						flowvisibility.add(Token.and());
+						flowvisibility.add(Token.getAndToken());
 					}
 
+					// Add parenthesis if needed. Needed only if does not starts with a parenthesis or starts with one
+					// and the closing one is not the last one.
+					boolean addParenthesis = TokenUtils.needsEnclosingParenthesis(previousVisibility);
+					if (addParenthesis) {
+						flowvisibility.add(Token.getLeftParenthesisToken());
+					}
 					flowvisibility.addAll(previousVisibility);
+					if (addParenthesis) {
+						flowvisibility.add(Token.getRigthParenthesisToken());
+					}
 				}
 			} else {
 				// Some rules must pass through a specific question despite condition is from previous question. We can
@@ -629,7 +641,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 				if (flow.getOrigin() instanceof WebformsBaseQuestion) {
 					if (!originUsedInCondition) {
 						if (existPreviousCondition(flowvisibility)) {
-							flowvisibility.add(Token.and());
+							flowvisibility.add(Token.getAndToken());
 						}
 						flowvisibility.add(new TokenAnswerNeeded((WebformsBaseQuestion) flow.getOrigin(), (flow
 								.getOrigin() instanceof Question)
@@ -639,17 +651,22 @@ public abstract class XFormsObject<T extends TreeObject> {
 				}
 			}
 
-			// Concat rule to relevant rules.
+			// Concatenate rule to relevant rules.
 			if (existPreviousCondition(flowvisibility)) {
 				// Connector with previous rule if exists.
 				if (!visibility.isEmpty()) {
-					visibility.add(Token.or());
+					visibility.add(Token.getOrToken());
 				}
 
 				// Add visibility of previous element.
-				visibility.add(Token.leftPar());
+				boolean addParenthesis = TokenUtils.needsEnclosingParenthesis(flowvisibility) && !visibility.isEmpty();
+				if (addParenthesis) {
+					visibility.add(Token.getLeftParenthesisToken());
+				}
 				visibility.addAll(flowvisibility);
-				visibility.add(Token.rigthPar());
+				if (addParenthesis) {
+					visibility.add(Token.getRigthParenthesisToken());
+				}
 			}
 		}
 		return visibility;
@@ -663,6 +680,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 */
 	private boolean existPreviousCondition(List<Token> flowChain) {
 		for (Token token : flowChain) {
+			// Skip any parenthesis, look for real rules.
 			if (token instanceof TokenComparationValue || token instanceof TokenComparationAnswer) {
 				return true;
 			}
@@ -671,7 +689,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Returns the opposite value used in Orbeon. Note: <= the opposite is >=. The equals is mantained.
+	 * Returns the opposite value used in Orbeon. Note: <= the opposite is >=. The equals is maintained.
 	 * 
 	 * @return
 	 */

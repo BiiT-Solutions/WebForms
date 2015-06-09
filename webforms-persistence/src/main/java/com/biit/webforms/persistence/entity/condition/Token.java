@@ -141,23 +141,23 @@ public class Token extends StorableObject {
 		// There are no references to update
 	}
 
-	public static Token not() {
+	public static Token getNotToken() {
 		return getToken(TokenTypes.NOT);
 	}
 
-	public static Token leftPar() {
+	public static Token getLeftParenthesisToken() {
 		return getToken(TokenTypes.LEFT_PAR);
 	}
 
-	public static Token rigthPar() {
+	public static Token getRigthParenthesisToken() {
 		return getToken(TokenTypes.RIGHT_PAR);
 	}
 
-	public static Token and() {
+	public static Token getAndToken() {
 		return getToken(TokenTypes.AND);
 	}
 
-	public static Token or() {
+	public static Token getOrToken() {
 		return getToken(TokenTypes.OR);
 	}
 

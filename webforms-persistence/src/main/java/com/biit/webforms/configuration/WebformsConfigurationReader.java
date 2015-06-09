@@ -9,10 +9,10 @@ import com.biit.utils.configuration.exception.PropertyNotFoundException;
 import com.biit.webforms.logger.WebformsLogger;
 
 public class WebformsConfigurationReader extends ConfigurationReader {
-	
+
 	private static final String DATABASE_CONFIG_FILE = "settings.conf";
 	private static final String WEBFORMS_SYSTEM_VARIABLE_CONFIG = "WEBFORMS_CONFIG";
-	
+
 	private static final String ID_REGEX_EMAIL = "regexEmail";
 	private static final String ID_REGEX_AMOUNT = "regexAmount";
 	private static final String ID_REGEX_BIRTHDAY = "regexDateBirthday";
@@ -32,7 +32,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String ID_XML_BASE_ADDRESS = "xmlBaseAddress";
 	private static final String ID_BUILDING_BLOCK_LINKS_VISIBLE = "button.link.block.visible";
 	private static final String ID_XFORMS_MULTIPLE_FILES_VISIBLE = "button.xforms.multiple.visible";
-	
+
 	private static final String DEFAULT_REGEX_EMAIL = "[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]+(\\.[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]|[a-zA-Z!#$%&'*+\\-/=?^_`{|}~])*@[a-zA-Z0-9](\\.[a-zA-Z0-9-]|[a-zA-Z0-9-])*[a-zA-Z0-9]";
 	private static final String DEFAULT_REGEX_AMOUNT = "[0-9]+\\.[0-9]*€";
 	private static final String DEFAULT_REGEX_BIRTHDAY = "([0-9]{1,2}[-/]){1,2}[0-9]{4}";
@@ -62,9 +62,28 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 
 	private static final String DEFAULT_XFORMS_USER = "user";
 	private static final String DEFAULT_XFORMS_PASSWORD = "pass";
-	private static final String DEFAULT_XFORMS_DATABASE = "orbeon";	
+	private static final String DEFAULT_XFORMS_DATABASE = "orbeon";
 	private static final String DEFAULT_XFORMS_DATABASE_HOST = "localhost";
 	private static final String DEFAULT_XFORMS_FORM_RUNNER = "http://127.0.0.1:8080/orbeon/fr";
+
+	// Abcd Rest service
+	private static final String ABCD_REST_SERVICE_USER = "abcd.rest.user";
+	private static final String ABCD_REST_SERVICE_PASSWORD = "abcd.rest.password";
+	private static final String ABCD_REST_SERVICE_URL = "abcd.rest.url";
+	private static final String ABCD_REST_SERVICE_ALL_SIMPLE_FORMS_PATH = "abcd.rest.path.all.simple.forms";
+	private static final String ABCD_REST_SERVICE_SIMPLE_FORM_LABEL_ORG = "abcd.rest.path.simple.form.label.org";
+	private static final String ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID = "abcd.rest.path.complete.form.by.id";
+	private static final String ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION = "abcd.rest.path.complete.form.by.label.organization.version";
+	private static final String ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION = "abcd.rest.path.complete.forms.by.organization";
+
+	private static final String DEFAULT_ABCD_REST_SERVICE_USER = "user";
+	private static final String DEFAULT_ABCD_REST_SERVICE_PASSWORD = "password";
+	private static final String DEFAULT_ABCD_REST_SERVICE_URL = "http://127.0.0.1:8080/";
+	private static final String DEFAULT_ABCD_REST_SERVICE_ALL_SIMPLE_FORMS_PATH = "simple";
+	private static final String DEFAULT_ABCD_REST_SERVICE_SIMPLE_FORM_LABEL_ORG = "simple";
+	private static final String DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID = "form";
+	private static final String DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION = "form";
+	private static final String DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION = "form";
 
 	private static WebformsConfigurationReader instance;
 
@@ -73,13 +92,13 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 
 		addProperty(ID_REGEX_EMAIL, DEFAULT_REGEX_EMAIL);
 		addProperty(ID_REGEX_AMOUNT, DEFAULT_REGEX_AMOUNT);
-		addProperty(ID_REGEX_BIRTHDAY, DEFAULT_REGEX_BIRTHDAY);		
-		addProperty(ID_GRAPHVIZ_PATH, DEFAULT_GRAPHVIZ_PATH);		
-		addProperty(ID_REGEX_TEXT, DEFAULT_REGEX_TEXT);		
-		addProperty(ID_REGEX_PHONE, DEFAULT_REGEX_PHONE);		
-		addProperty(ID_REGEX_IBAN, DEFAULT_REGEX_IBAN);		
-		addProperty(ID_REGEX_BSN, DEFAULT_REGEX_BSN);		
-		addProperty(ID_REGEX_DATE, DEFAULT_REGEX_DATE);		
+		addProperty(ID_REGEX_BIRTHDAY, DEFAULT_REGEX_BIRTHDAY);
+		addProperty(ID_GRAPHVIZ_PATH, DEFAULT_GRAPHVIZ_PATH);
+		addProperty(ID_REGEX_TEXT, DEFAULT_REGEX_TEXT);
+		addProperty(ID_REGEX_PHONE, DEFAULT_REGEX_PHONE);
+		addProperty(ID_REGEX_IBAN, DEFAULT_REGEX_IBAN);
+		addProperty(ID_REGEX_BSN, DEFAULT_REGEX_BSN);
+		addProperty(ID_REGEX_DATE, DEFAULT_REGEX_DATE);
 		addProperty(ID_REGEX_DATE_PERIOD, DEFAULT_REGEX_DATE_PERIOD);
 		addProperty(ID_REGEX_NUMBER, DEFAULT_REGEX_NUMBER);
 		addProperty(ID_REGEX_FLOAT, DEFAULT_REGEX_FLOAT);
@@ -90,15 +109,27 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		addProperty(ID_XML_BASE_ADDRESS, DEFAULT_XML_BASE_ADDRESS);
 		addProperty(ID_BUILDING_BLOCK_LINKS_VISIBLE, DEFAULT_BUILDING_BLOCK_LINKS_VISIBLE);
 		addProperty(ID_XFORMS_MULTIPLE_FILES_VISIBLE, DEFAULT_XFORMS_MULTIPLE_FILES_VISIBLE);
-		
+
 		addProperty(ID_XFORMS_USER, DEFAULT_XFORMS_USER);
 		addProperty(ID_XFORMS_PASSWORD, DEFAULT_XFORMS_PASSWORD);
 		addProperty(ID_XFORMS_DATABASE, DEFAULT_XFORMS_DATABASE);
 		addProperty(ID_XFORMS_DATABASE_HOST, DEFAULT_XFORMS_DATABASE_HOST);
 		addProperty(ID_XFORMS_FORM_RUNNER, DEFAULT_XFORMS_FORM_RUNNER);
 
+		addProperty(ABCD_REST_SERVICE_USER, DEFAULT_ABCD_REST_SERVICE_USER);
+		addProperty(ABCD_REST_SERVICE_PASSWORD, DEFAULT_ABCD_REST_SERVICE_PASSWORD);
+		addProperty(ABCD_REST_SERVICE_URL, DEFAULT_ABCD_REST_SERVICE_URL);
+		addProperty(ABCD_REST_SERVICE_ALL_SIMPLE_FORMS_PATH, DEFAULT_ABCD_REST_SERVICE_ALL_SIMPLE_FORMS_PATH);
+		addProperty(ABCD_REST_SERVICE_SIMPLE_FORM_LABEL_ORG, DEFAULT_ABCD_REST_SERVICE_SIMPLE_FORM_LABEL_ORG);
+		addProperty(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID, DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID);
+		addProperty(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION,
+				DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION);
+		addProperty(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION,
+				DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
+
 		addPropertiesSource(new PropertiesSourceFile(DATABASE_CONFIG_FILE));
-		addPropertiesSource(new SystemVariablePropertiesSourceFile(WEBFORMS_SYSTEM_VARIABLE_CONFIG, DATABASE_CONFIG_FILE));
+		addPropertiesSource(new SystemVariablePropertiesSourceFile(WEBFORMS_SYSTEM_VARIABLE_CONFIG,
+				DATABASE_CONFIG_FILE));
 
 		readConfigurations();
 	}
@@ -123,7 +154,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 			return null;
 		}
 	}
-	
+
 	public String getGraphvizBinPath() {
 		return getPropertyLogException(ID_GRAPHVIZ_PATH);
 	}
@@ -220,6 +251,38 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 
 	public boolean isLinkBloksEnabled() {
 		return Boolean.parseBoolean(getPropertyLogException(ID_BUILDING_BLOCK_LINKS_VISIBLE));
+	}
+
+	public String getAbcdRestServiceUser() {
+		return getPropertyLogException(ABCD_REST_SERVICE_USER);
+	}
+
+	public String getAbcdRestServicePassword() {
+		return getPropertyLogException(ABCD_REST_SERVICE_PASSWORD);
+	}
+
+	public String getAbcdRestServiceUrl() {
+		return getPropertyLogException(ABCD_REST_SERVICE_URL);
+	}
+
+	public String getAbcdRestServiceAllSimpleFormViewsPath() {
+		return getPropertyLogException(ABCD_REST_SERVICE_ALL_SIMPLE_FORMS_PATH);
+	}
+
+	public String getAbcdRestServiceSimpleFormViewByLabelAndOrganizationPath() {
+		return getPropertyLogException(ABCD_REST_SERVICE_SIMPLE_FORM_LABEL_ORG);
+	}
+
+	public String getAbcdRestServiceCompleteFormByIdPath() {
+		return getPropertyLogException(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID);
+	}
+
+	public String getAbcdRestServiceCompleteFormByLabelFormAndOrganizationPath() {
+		return getPropertyLogException(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION);
+	}
+	
+	public String getAbcdRestServiceCompleteFormsByOrganizationPath() {
+		return getPropertyLogException(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
 	}
 	
 	public boolean isXFormsToMultipleFilesEnabled(){

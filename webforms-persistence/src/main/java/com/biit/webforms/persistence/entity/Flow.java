@@ -27,6 +27,7 @@ import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FlowType;
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
@@ -174,6 +175,26 @@ public class Flow extends StorableObject {
 
 		return sb.toString();
 	}
+	
+	public String getConditionStringWithFormat(){
+		StringBuilder sb = new StringBuilder();
+
+		Iterator<Token> itr = getCondition().iterator();
+
+		while (itr.hasNext()) {
+			Token next = itr.next();
+			if(next.getType()==TokenTypes.RETURN){
+				sb.append("\n");
+			}else{
+				sb.append(next);
+			}
+			if (itr.hasNext()) {
+				sb.append(TOKEN_SEPARATOR);
+			}
+		}
+
+		return sb.toString();		
+	}
 
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
@@ -264,12 +285,12 @@ public class Flow extends StorableObject {
 					// to avoid exceptions.
 					return condition;
 				}
-				otherCondition.add(Token.not());
-				otherCondition.add(Token.leftPar());
+				otherCondition.add(Token.getNotToken());
+				otherCondition.add(Token.getLeftParenthesisToken());
 				otherCondition.addAll(flow.getConditionSimpleTokens());
-				otherCondition.add(Token.rigthPar());
+				otherCondition.add(Token.getRigthParenthesisToken());
 				if (itr.hasNext()) {
-					otherCondition.add(Token.and());
+					otherCondition.add(Token.getAndToken());
 				}
 			}
 			return otherCondition;

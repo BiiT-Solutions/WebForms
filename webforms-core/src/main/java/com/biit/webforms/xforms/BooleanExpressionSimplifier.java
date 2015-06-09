@@ -64,12 +64,12 @@ public class BooleanExpressionSimplifier {
 				if (token.getType().equals(TokenTypes.NOT)) {
 					// Not exist a parenthesis.
 					if (i < newTokens.length - 1 && !tokens.get(newTokens[i + 1]).getType().equals(TokenTypes.LEFT_PAR)) {
-						result.add(Token.leftPar());
+						result.add(Token.getLeftParenthesisToken());
 						leftParenthesisAdded++;
 					}
 				} else {
 					while (leftParenthesisAdded > 0) {
-						result.add(Token.rigthPar());
+						result.add(Token.getRigthParenthesisToken());
 						leftParenthesisAdded--;
 					}
 				}

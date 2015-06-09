@@ -135,14 +135,14 @@ class XFormsHelper {
 				tokens.addAll(flow.getConditionSimpleTokens());
 				if (flow.getOrigin() instanceof Question) {
 					// Input field must filled up!
-					// if (((Question) flow.getOrigin()).getAnswerType().equals(AnswerType.INPUT)) {
-					if (!tokens.isEmpty()) {
-						tokens.add(Token.and());
-					}
-					tokens.add(new TokenAnswerNeeded((BaseQuestion) flow.getOrigin(), ((Question) flow.getOrigin())
-							.getAnswerFormat() != null
-							&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
-					// }
+					//if (((Question) flow.getOrigin()).getAnswerType().equals(AnswerType.INPUT)) {
+						if (!tokens.isEmpty()) {
+							tokens.add(Token.getAndToken());
+						}
+						tokens.add(new TokenAnswerNeeded((BaseQuestion) flow.getOrigin(), ((Question) flow.getOrigin())
+								.getAnswerFormat() != null
+								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+					//}
 				}
 				return tokens;
 			}
@@ -151,7 +151,7 @@ class XFormsHelper {
 			if (flowsToElement != null) {
 				for (Flow flowToOrigin : flowsToElement) {
 					if (!tokens.isEmpty()) {
-						tokens.add(Token.or());
+						tokens.add(Token.getOrToken());
 					}
 					tokens.addAll(getPreviousVisibilityTokens(flowToOrigin));
 				}

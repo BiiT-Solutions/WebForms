@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.biit.abcd.core.SpringContextHelper;
-import com.biit.abcd.security.AbcdActivity;
-import com.biit.abcd.security.AbcdAuthorizationService;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
@@ -24,6 +22,7 @@ import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.validation.ValidateReport;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
@@ -344,14 +343,15 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	/**
-	 * Loads a forms and tries to validate. If the form is not validated returns null
+	 * Loads a forms and tries to validate. If the form is not validated returns
+	 * null
 	 * 
 	 * @return
 	 */
 	private CompleteFormView loadAndValidateForm() {
 		CompleteFormView form = (CompleteFormView) loadCompleteForm(getSelectedForm());
 
-		// Xforms only can use with valid forms.
+		// Xforms only can use valid forms.
 		ValidateFormComplete validator = new ValidateFormComplete();
 		validator.setStopOnFail(true);
 
@@ -527,31 +527,28 @@ public class FormManager extends SecuredWebPage {
 		final Form form = loadForm(getSelectedForm());
 
 		List<com.biit.abcd.persistence.entity.SimpleFormView> availableForms;
+		
+		System.out.println("LINKED LABEL: " + form.getLinkedFormLabel());
+		
 		if (form.getLinkedFormLabel() == null) {
 			// Not linked yet. Show all available forms.
-			availableForms = UserSessionHandler.getController().getSimpleFormDaoAbcd().getAll();
+			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdForCurrentUser();
 		} else {
 			// Already linked form, show only the versions of this form.
-			availableForms = UserSessionHandler
-					.getController()
-					.getSimpleFormDaoAbcd()
-					.getSimpleFormViewByLabelAndOrganization(form.getLinkedFormLabel(),
-							form.getLinkedFormOrganizationId());
+			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdByLabelAndOrganization(
+					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
 		}
 
 		// Let user choose the version.
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
 		for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
-			if (AbcdAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-					simpleFormView.getOrganizationId(), AbcdActivity.READ)
-					&& WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
-							UserSessionHandler.getUser(), simpleFormView.getOrganizationId(),
-							WebformsActivity.FORM_EDITING)) {
+			if (WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
+							simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
 				linkAbcdForm.add(simpleFormView);
 			}
 		}
 
-		linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleAbcdForms(form));
+		linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleFormViewsFromAbcd(form));
 		linkAbcdForm.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override

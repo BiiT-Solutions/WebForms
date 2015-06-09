@@ -636,7 +636,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public void updateRuleReferences() {
 		updateRuleReferences(getFlows());
 	}
-
+	
 	public void updateRuleReferences(Set<Flow> flows) {
 		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
 		HashMap<String, TreeObject> mappedElements = new HashMap<>();

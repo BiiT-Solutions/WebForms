@@ -11,10 +11,7 @@ import java.util.Set;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.biit.abcd.persistence.dao.ISimpleFormViewDao;
 import com.biit.abcd.persistence.entity.SimpleFormView;
-import com.biit.abcd.security.AbcdActivity;
-import com.biit.abcd.security.AbcdAuthorizationService;
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.form.entity.TreeObject;
@@ -34,6 +31,8 @@ import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.validation.ValidateReport;
+import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
@@ -59,6 +58,7 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
@@ -86,6 +86,7 @@ import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.biit.webforms.utils.conversor.ConversorAbcdFormToForm;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
+import com.biit.webforms.webservice.rest.client.AbcdRestClient;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
@@ -96,9 +97,7 @@ public class ApplicationController {
 
 	private IFormDao formDao;
 	private IBlockDao blockDao;
-	private com.biit.abcd.persistence.dao.IFormDao formDaoAbcd;
-	private ISimpleFormViewDao simpleFormDaoAbcd;
-	private com.biit.webforms.persistence.dao.ISimpleFormViewDao simpleFormDaoWebforms;
+	private ISimpleFormViewDao simpleFormDaoWebforms;
 
 	private Form lastEditedForm;
 	private Form formInUse;
@@ -112,15 +111,12 @@ public class ApplicationController {
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		formDao = (IFormDao) helper.getBean("webformsFormDao");
 		blockDao = (IBlockDao) helper.getBean("blockDao");
-		formDaoAbcd = (com.biit.abcd.persistence.dao.IFormDao) helper.getBean("formDaoAbcd");
-		simpleFormDaoAbcd = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoAbcd"));
-		simpleFormDaoWebforms = ((com.biit.webforms.persistence.dao.ISimpleFormViewDao) helper
-				.getBean("simpleFormDaoWebforms"));
+		simpleFormDaoWebforms = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms"));
 	}
 
 	/**
-	 * User action to create a form on memory no persistence is done. Needs a unique name where name.length() < 190
-	 * characters.
+	 * User action to create a form on memory no persistence is done. Needs a
+	 * unique name where name.length() < 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -177,7 +173,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form. Needs a unique name where name.length() < 190 characters.
+	 * User action to create a form. Needs a unique name where name.length() <
+	 * 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -242,10 +239,6 @@ public class ApplicationController {
 		return newBlock;
 	}
 
-	public com.biit.abcd.persistence.entity.Form getAbcdForm(Long id) throws UnexpectedDatabaseException {
-		return formDaoAbcd.get(id);
-	}
-
 	/**
 	 * Function to import abcd forms
 	 * 
@@ -271,7 +264,7 @@ public class ApplicationController {
 
 		// Read the original form and validate.
 		com.biit.abcd.persistence.entity.Form abcdForm;
-		abcdForm = formDaoAbcd.get(simpleFormView.getId());
+		abcdForm = getFormFromAbcdById(simpleFormView.getId());
 
 		ValidateBaseForm validator = new ValidateBaseForm();
 		ValidateReport report = new ValidateReport();
@@ -301,7 +294,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns the List of Abcd Forms linked to a form or empty list if there are no links.
+	 * Returns the List of Abcd Forms linked to a form or empty list if there
+	 * are no links.
 	 * 
 	 * @param form
 	 * @return
@@ -313,8 +307,8 @@ public class ApplicationController {
 		List<com.biit.abcd.persistence.entity.Form> linkedForms = new ArrayList<>();
 		if (form != null && form.getLinkedFormLabel() != null && form.getLinkedFormOrganizationId() != null) {
 			for (Integer version : form.getLinkedFormVersions()) {
-				com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.getForm(form.getLinkedFormLabel(),
-						version, form.getLinkedFormOrganizationId());
+				com.biit.abcd.persistence.entity.Form abcdForm = getFormFromAbcdByLabelOrganizationAndVersion(
+						form.getLinkedFormLabel(), form.getLinkedFormOrganizationId(), version);
 				if (abcdForm == null) {
 					throw new BadAbcdLink();
 				}
@@ -325,7 +319,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns abcd simpleViewForm linked to form using it's name, version and organizationId.
+	 * Returns abcd simpleViewForm linked to form using it's name, version and
+	 * organizationId.
 	 * 
 	 * @param form
 	 * @return
@@ -333,9 +328,8 @@ public class ApplicationController {
 	public List<com.biit.abcd.persistence.entity.SimpleFormView> getLinkedSimpleAbcdForms(Form form) {
 		List<com.biit.abcd.persistence.entity.SimpleFormView> linkedSimpleAbcdForms = new ArrayList<>();
 		if (form.getLabel() != null && form.getOrganizationId() != null) {
-			List<com.biit.abcd.persistence.entity.SimpleFormView> views = simpleFormDaoAbcd
-					.getSimpleFormViewByLabelAndOrganization(form.getLinkedFormLabel(),
-							form.getLinkedFormOrganizationId());
+			List<com.biit.abcd.persistence.entity.SimpleFormView> views = getAllSimpleFormViewsFromAbcdByLabelAndOrganization(
+					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
 			for (com.biit.abcd.persistence.entity.SimpleFormView view : views) {
 				if (form.getLinkedFormVersions().contains(view.getVersion())) {
 					linkedSimpleAbcdForms.add(view);
@@ -497,8 +491,7 @@ public class ApplicationController {
 		setUnsavedFormChanges(true);
 		return (Question) insertTreeObject(Question.class, parent, "Question");
 	}
-	
-	
+
 	public DynamicAnswer addNewDynamicQuestion(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
 		DynamicAnswer answer = (DynamicAnswer) insertTreeObject(DynamicAnswer.class, parent, "Dynamic");
@@ -550,7 +543,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Creates any kind of TreeObject descendant with @name and inserts into parent if possible.
+	 * Creates any kind of TreeObject descendant with @name and inserts into
+	 * parent if possible.
 	 * 
 	 * @param classType
 	 * @param parent
@@ -853,8 +847,9 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
-	 * hierarchy seed and introduces to current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone
+	 * of the block using the element as hierarchy seed and introduces to
+	 * current form as a new category.
 	 * 
 	 * @param selectedRow
 	 * @return Inserted category
@@ -893,14 +888,14 @@ public class ApplicationController {
 			Block blockToInsert = (Block) block.getAncestor(Block.class);
 			Block copiedBlock = (Block) blockToInsert.generateFormCopiedSimplification(block);
 			copiedBlock.resetIds();
-			
+
 			TreeObject insertedCategory = copiedBlock.getChildren().get(0);
 
 			formInUse.addChildren(copiedBlock.getChildren());
 			formInUse.addFlows(copiedBlock.getFlows());
 
 			setUnsavedFormChanges(true);
-			
+
 			return insertedCategory;
 		} catch (NotValidStorableObjectException | NotValidChildException | CharacterNotAllowedException e) {
 			// Impossible.
@@ -910,12 +905,14 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Linked building blocks are translated to standard blocks to avoid changes after the form is finished.
+	 * Linked building blocks are translated to standard blocks to avoid changes
+	 * after the form is finished.
 	 */
 	private void lockLinkedBlocks(Form form) {
 		Form completeForm = form;
 
-		// Convert to CompleteForm to use all methods of filtering hide elements.
+		// Convert to CompleteForm to use all methods of filtering hide
+		// elements.
 		if (!(completeForm instanceof CompleteFormView)) {
 			completeForm = new CompleteFormView(form);
 		}
@@ -924,7 +921,8 @@ public class ApplicationController {
 		List<TreeObject> children = ((CompleteFormView) completeForm).getAllNotHiddenChildren();
 		Set<Flow> flows = ((CompleteFormView) completeForm).getFlows();
 
-		// Reset the parent to the form. Force updating database to correct elements.
+		// Reset the parent to the form. Force updating database to correct
+		// elements.
 		((CompleteFormView) completeForm).getForm().getChildren().clear();
 		((CompleteFormView) completeForm).getForm().getChildren().addAll(children);
 
@@ -935,16 +933,17 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
-	 * hierarchy seed and introduces to current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone
+	 * of the block using the element as hierarchy seed and introduces to
+	 * current form as a new category.
 	 * 
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
 	 * @throws EmptyBlockCannotBeInserted
 	 * @throws ElementIsReadOnly
 	 */
-	public TreeObject linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm, EmptyBlockCannotBeInserted,
-			ElementIsReadOnly, LinkCanOnlyBePerformedOnWholeBlock {
+	public TreeObject linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm,
+			EmptyBlockCannotBeInserted, ElementIsReadOnly, LinkCanOnlyBePerformedOnWholeBlock {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' link Block '"
 				+ block + "' in '" + formInUse + "' ");
 
@@ -984,7 +983,7 @@ public class ApplicationController {
 	 * 
 	 * @param origin
 	 * @param destiny
-	 * @return 
+	 * @return
 	 * @throws NotValidChildException
 	 * @throws SameOriginAndDestinationException
 	 * @throws DestinyIsContainedAtOrigin
@@ -1015,7 +1014,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * This function is called when the UI has expired. The implementation needs to free any "locked" resources
+	 * This function is called when the UI has expired. The implementation needs
+	 * to free any "locked" resources
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
@@ -1035,8 +1035,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Update flow content. This function currently is a direct call to the structure function. If the flow is not on
-	 * the form, it gets added.
+	 * Update flow content. This function currently is a direct call to the
+	 * structure function. If the flow is not on the form, it gets added.
 	 * 
 	 * @param flow
 	 * @param origin
@@ -1072,8 +1072,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Updates flow update time and updated by in flow. The content of the flow was already modified by
-	 * {@link WindowFlow}
+	 * Updates flow update time and updated by in flow. The content of the flow
+	 * was already modified by {@link WindowFlow}
 	 * 
 	 * @param flow
 	 */
@@ -1206,21 +1206,16 @@ public class ApplicationController {
 		return blockDao;
 	}
 
-	public com.biit.abcd.persistence.dao.IFormDao getFormDaoAbcd() {
-		return formDaoAbcd;
-	}
-
 	public TreeTableProvider<com.biit.abcd.persistence.entity.Form> getTreeTableAbcdFormsProvider() {
 		TreeTableProvider<com.biit.abcd.persistence.entity.Form> provider = new TreeTableProvider<com.biit.abcd.persistence.entity.Form>() {
 
 			@Override
 			public Collection<com.biit.abcd.persistence.entity.Form> getAll() throws UnexpectedDatabaseException {
 				List<com.biit.abcd.persistence.entity.Form> forms = new ArrayList<>();
-
-				Set<Organization> userOrganizations = WebformsBasicAuthorizationService.getInstance()
+				Set<Organization> userOrganizations = WebformsAuthorizationService.getInstance()
 						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
 				for (Organization organization : userOrganizations) {
-					forms.addAll(getFormDaoAbcd().getAll(organization.getOrganizationId()));
+					forms.addAll(getFormsFromAbcdByOrganization(organization.getOrganizationId()));
 				}
 				return forms;
 			}
@@ -1257,58 +1252,23 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Get all forms where the user has READ permission in ABCD and EDIT permissions in Webforms.
+	 * Get all forms where the user has READ permission in ABCD and EDIT
+	 * permissions in Webforms.
 	 * 
 	 * @return
 	 */
 	public TreeTableProvider<SimpleFormView> getTreeTableSimpleAbcdFormsProvider() {
 		TreeTableProvider<SimpleFormView> provider = new TreeTableProvider<SimpleFormView>() {
-
 			@Override
 			public Collection<SimpleFormView> getAll() {
-				List<SimpleFormView> forms = new ArrayList<>();
-
-				// Get all organizations where user has read permissions and
-				// store ids in a hash map. User must be in the same
-				// organizations in both ABCD and WebForms.
-				Set<Organization> userOrganizationsFromAbcd = AbcdAuthorizationService.getInstance()
-						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), AbcdActivity.READ);
-				HashSet<Long> userAbcdOrganizationIds = new HashSet<Long>();
-				for (Organization organization : userOrganizationsFromAbcd) {
-					userAbcdOrganizationIds.add(organization.getOrganizationId());
-				}
-
-				Set<Organization> userOrganizationsFromWebforms = WebformsBasicAuthorizationService.getInstance()
-						.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(),
-								WebformsActivity.FORM_EDITING);
-				HashSet<Long> userWebformsOrganizationIds = new HashSet<Long>();
-				for (Organization organization : userOrganizationsFromWebforms) {
-					userWebformsOrganizationIds.add(organization.getOrganizationId());
-				}
-
-				// Get all simple forms and add to the form list if their
-				// organization id is on the organization id map.
-				List<SimpleFormView> simpleForms = getSimpleFormDaoAbcd().getAll();
-				for (SimpleFormView simpleForm : simpleForms) {
-					if (userAbcdOrganizationIds.contains(simpleForm.getOrganizationId())
-							&& userWebformsOrganizationIds.contains(simpleForm.getOrganizationId())) {
-						forms.add(simpleForm);
-					}
-				}
-
-				return forms;
+				return getAllSimpleFormViewsFromAbcdForCurrentUser();
 			}
 		};
-
 		return provider;
 	}
 
-	public ISimpleFormViewDao getSimpleFormDaoAbcd() {
-		return simpleFormDaoAbcd;
-	}
-
 	public void validateCompatibility(Form currentForm, IBaseFormView abcdSimpleForm) throws BadAbcdLink {
-		com.biit.abcd.persistence.entity.Form abcdForm = formDaoAbcd.get(abcdSimpleForm.getId());
+		com.biit.abcd.persistence.entity.Form abcdForm = getFormFromAbcdById(abcdSimpleForm.getId());
 		ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(currentForm);
 		ValidateReport report = new ValidateReport();
 		validator.validate(abcdForm, report);
@@ -1318,8 +1278,43 @@ public class ApplicationController {
 		}
 	}
 
+	public List<SimpleFormView> getAllSimpleFormViewsFromAbcdByLabelAndOrganization(String label, Long organizationId) {
+		return AbcdRestClient.getSimpleFormViewsFromAbcdByLabelAndOrganization(WebformsConfigurationReader
+				.getInstance().getAbcdRestServiceUrl(), WebformsConfigurationReader.getInstance()
+				.getAbcdRestServiceSimpleFormViewByLabelAndOrganizationPath(), UserSessionHandler.getUser()
+				.getEmailAddress(), label, organizationId);
+	}
+
+	public List<SimpleFormView> getAllSimpleFormViewsFromAbcdForCurrentUser() {
+		return AbcdRestClient.getSimpleFormViewsFromAbcdByUserEmail(WebformsConfigurationReader.getInstance()
+				.getAbcdRestServiceUrl(), WebformsConfigurationReader.getInstance()
+				.getAbcdRestServiceAllSimpleFormViewsPath(), UserSessionHandler.getUser().getEmailAddress());
+	}
+
+	public com.biit.abcd.persistence.entity.Form getFormFromAbcdById(Long formId) {
+		return AbcdRestClient.getFormFromAbcdById(WebformsConfigurationReader.getInstance().getAbcdRestServiceUrl(),
+				WebformsConfigurationReader.getInstance().getAbcdRestServiceCompleteFormByIdPath(), UserSessionHandler
+						.getUser().getEmailAddress(), formId);
+	}
+
+	public List<com.biit.abcd.persistence.entity.Form> getFormsFromAbcdByOrganization(Long organizationId) {
+		return AbcdRestClient.getFormsFromAbcdByOrganization(WebformsConfigurationReader.getInstance()
+				.getAbcdRestServiceUrl(), WebformsConfigurationReader.getInstance()
+				.getAbcdRestServiceCompleteFormsByOrganizationPath(), UserSessionHandler.getUser().getEmailAddress(),
+				organizationId);
+	}
+
+	public com.biit.abcd.persistence.entity.Form getFormFromAbcdByLabelOrganizationAndVersion(String formLabel,
+			Long formOrganization, Integer formVersion) {
+		return AbcdRestClient.getFormFromAbcdByLabelOrganizationAndVersion(WebformsConfigurationReader.getInstance()
+				.getAbcdRestServiceUrl(), WebformsConfigurationReader.getInstance()
+				.getAbcdRestServiceCompleteFormByLabelFormAndOrganizationPath(), UserSessionHandler.getUser()
+				.getEmailAddress(), formLabel, formOrganization, formVersion);
+	}
+
 	/**
-	 * Returns all organizations where user has permission to do all the activities in activitiesFilter.
+	 * Returns all organizations where user has permission to do all the
+	 * activities in activitiesFilter.
 	 * 
 	 * @param activitiesFilter
 	 * @return
@@ -1334,8 +1329,8 @@ public class ApplicationController {
 				for (IActivity activity : activitiesFilter) {
 					// If the user doesn't comply to all activities in the
 					// filter in the group, then exit
-					if (!WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-							organization, activity)) {
+					if (!WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
+							UserSessionHandler.getUser(), organization, activity)) {
 						itr.remove();
 						break;
 					}
@@ -1356,7 +1351,7 @@ public class ApplicationController {
 		unsavedFormChanges = value;
 	}
 
-	public com.biit.webforms.persistence.dao.ISimpleFormViewDao getSimpleFormDaoWebforms() {
+	public ISimpleFormViewDao getSimpleFormDaoWebforms() {
 		return simpleFormDaoWebforms;
 	}
 
@@ -1406,7 +1401,6 @@ public class ApplicationController {
 	public void evictAllCache() {
 		formDao.evictAllCache();
 		blockDao.evictAllCache();
-		formDaoAbcd.evictAllCache();
 		clearParameters();
 	}
 
@@ -1416,7 +1410,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Defines if any form is using an element in its flow (as origin or destination).
+	 * Defines if any form is using an element in its flow (as origin or
+	 * destination).
 	 * 
 	 * @param element
 	 * @return
@@ -1442,8 +1437,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * True if exist a flow that it does not pertain to the referenced block but points from/to an element of the
-	 * referenced block.
+	 * True if exist a flow that it does not pertain to the referenced block but
+	 * points from/to an element of the referenced block.
 	 * 
 	 * @param elementOfReferencedBlock
 	 * @return
@@ -1469,7 +1464,8 @@ public class ApplicationController {
 					}
 				}
 			} else if (flow.getDestiny().equals(elementOfReferencedBlock)) {
-				// Flow cames from the element and comes from outside of the block.
+				// Flow cames from the element and comes from outside of the
+				// block.
 				if (flow.getOrigin() != null && blockReference.getReference() != null) {
 					boolean outsideOfBlock = true;
 					for (StorableObject object : blockReference.getReference().getAllInnerStorableObjects()) {
@@ -1491,5 +1487,28 @@ public class ApplicationController {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Returns abcd simpleViewForm linked to form using it's name, version and
+	 * organizationId.
+	 * 
+	 * @param form
+	 * @return
+	 */
+	public List<SimpleFormView> getLinkedSimpleFormViewsFromAbcd(Form form) {
+		List<SimpleFormView> linkedSimpleAbcdForms = new ArrayList<>();
+		if (form.getLabel() != null && form.getOrganizationId() != null) {
+			List<SimpleFormView> views = getAllSimpleFormViewsFromAbcdByLabelAndOrganization(form.getLinkedFormLabel(),
+					form.getLinkedFormOrganizationId());
+			if (views != null) {
+				for (SimpleFormView view : views) {
+					if (form.getLinkedFormVersions().contains(view.getVersion())) {
+						linkedSimpleAbcdForms.add(view);
+					}
+				}
+			}
+		}
+		return linkedSimpleAbcdForms;
 	}
 }

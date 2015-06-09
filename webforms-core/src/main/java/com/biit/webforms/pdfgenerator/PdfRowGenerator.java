@@ -110,7 +110,7 @@ public class PdfRowGenerator {
 	public static List<PdfRow> generateRadioFieldRows(PdfWriter writer, Question question) throws BadBlockException {
 		List<PdfRow> rows = new ArrayList<PdfRow>();
 
-		RadioCheckField bt = new RadioCheckField(writer, null, question.getScapedPathName(), "");
+		RadioCheckField bt = new RadioCheckField(writer, null, question.getComparationId(), "");
 		bt.setCheckType(RadioCheckField.TYPE_CIRCLE);
 		bt.setBorderStyle(PdfBorderDictionary.STYLE_SOLID);
 		bt.setBorderColor(Color.black);
@@ -141,10 +141,10 @@ public class PdfRowGenerator {
 		//Its parent it's not an answer then they are first level. If not they are subanswers.
 		if (!(baseAnswer.getParent() instanceof Answer)) {
 			field.setPaddingLeft(PADDING);
-			field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), baseAnswer.getScapedPathName(), radioGroup, 0));
+			field.setCellEvent(new FormRadioField(writer, question.getComparationId(), baseAnswer.getComparationId(), radioGroup, 0));
 		} else {
 			field.setPaddingLeft(PADDING * 2);
-			field.setCellEvent(new FormRadioField(writer, question.getScapedPathName(), baseAnswer.getScapedPathName(), radioGroup, PADDING));
+			field.setCellEvent(new FormRadioField(writer, question.getComparationId(), baseAnswer.getComparationId(), radioGroup, PADDING));
 		}
 		field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
 		row.addCell(field);
@@ -199,10 +199,10 @@ public class PdfRowGenerator {
 		PdfPCell field = PdfPCellGenerator.generateText(answerText, CHECK_FIELD_COL);
 		if (!(baseAnswer.getParent() instanceof Answer)) {
 			field.setPaddingLeft(PADDING);
-			field.setCellEvent(new FormCheckField(writer, baseAnswer.getScapedPathName(), 0));
+			field.setCellEvent(new FormCheckField(writer, baseAnswer.getComparationId(), 0));
 		} else {
 			field.setPaddingLeft(PADDING * 2);
-			field.setCellEvent(new FormCheckField(writer, baseAnswer.getScapedPathName(), PADDING));
+			field.setCellEvent(new FormCheckField(writer, baseAnswer.getComparationId(), PADDING));
 		}
 		field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
 		row.addCell(field);

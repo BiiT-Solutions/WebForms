@@ -45,16 +45,16 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 	@Override
 	public List<Token> getSimpleTokens() {
 		List<Token> simpleTokens = new ArrayList<Token>();
-		simpleTokens.add(Token.leftPar());
+		simpleTokens.add(Token.getLeftParenthesisToken());
 		if (!values.isEmpty()) {
 			simpleTokens.add(TokenComparationAnswer.getTokenEqual(question, values.get(0).getAnswerValue()));
 			for (int i = 1; i < values.size(); i++) {
-				simpleTokens.add(TokenComparationValue.or());
+				simpleTokens.add(TokenComparationValue.getOrToken());
 				simpleTokens.add(TokenComparationAnswer.getTokenEqual(question, values.get(i).getAnswerValue()));
 			}
 
 		}
-		simpleTokens.add(Token.rigthPar());
+		simpleTokens.add(Token.getRigthParenthesisToken());
 		return simpleTokens;
 	}
 
