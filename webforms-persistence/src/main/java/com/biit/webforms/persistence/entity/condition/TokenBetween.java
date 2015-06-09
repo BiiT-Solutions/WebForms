@@ -44,11 +44,11 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 	@Override
 	public List<Token> getSimpleTokens() {
 		List<Token> simpleTokens = new ArrayList<Token>();
-		simpleTokens.add(Token.leftPar());
+		simpleTokens.add(Token.getLeftParenthesisToken());
 		simpleTokens.add(TokenComparationValue.getTokenGreaterEqual(question, subformat, datePeriodUnit, valueStart));
-		simpleTokens.add(Token.and());
+		simpleTokens.add(Token.getAndToken());
 		simpleTokens.add(TokenComparationValue.getTokenLessEqual(question, subformat, datePeriodUnit, valueEnd));
-		simpleTokens.add(Token.rigthPar());
+		simpleTokens.add(Token.getRigthParenthesisToken());
 		return simpleTokens;
 	}
 

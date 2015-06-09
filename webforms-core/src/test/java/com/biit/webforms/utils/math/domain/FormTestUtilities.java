@@ -192,7 +192,7 @@ public class FormTestUtilities {
 		Form form = createForm("test1", cat1);
 		
 		// Flow
-		Flow flow = createNormalFlow(qu3, info1, false, token(qu1,"==","a"),Token.or(),Token.leftPar(),token(qu2,"==","d"),Token.and(),token(qu3,"==","f"),Token.rigthPar());
+		Flow flow = createNormalFlow(qu3, info1, false, token(qu1,"==","a"),Token.getOrToken(),Token.getLeftParenthesisToken(),token(qu2,"==","d"),Token.getAndToken(),token(qu3,"==","f"),Token.getRigthParenthesisToken());
 		Flow flowOthers = createEndFlow(qu3, true);
 		
 		form.addFlow(flow);
@@ -202,7 +202,7 @@ public class FormTestUtilities {
 	}
 
 	private static Token or() {
-		return Token.or();
+		return Token.getOrToken();
 	}
 	
 	private static Text createText(String name, String value) throws FieldTooLongException, CharacterNotAllowedException {

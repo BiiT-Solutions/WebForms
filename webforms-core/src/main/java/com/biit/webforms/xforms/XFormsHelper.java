@@ -134,7 +134,7 @@ class XFormsHelper {
 					// Input field must filled up!
 					//if (((Question) flow.getOrigin()).getAnswerType().equals(AnswerType.INPUT)) {
 						if (!tokens.isEmpty()) {
-							tokens.add(Token.and());
+							tokens.add(Token.getAndToken());
 						}
 						tokens.add(new TokenAnswerNeeded((BaseQuestion) flow.getOrigin(), ((Question) flow.getOrigin())
 								.getAnswerFormat() != null
@@ -148,7 +148,7 @@ class XFormsHelper {
 			if (flowsToElement != null) {
 				for (Flow flowToOrigin : flowsToElement) {
 					if (!tokens.isEmpty()) {
-						tokens.add(Token.or());
+						tokens.add(Token.getOrToken());
 					}
 					tokens.addAll(getPreviousVisibilityTokens(flowToOrigin));
 				}
