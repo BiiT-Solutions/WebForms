@@ -4,14 +4,11 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.biit.form.entity.BaseForm;
 import com.biit.liferay.access.exceptions.AuthenticationRequired;
 import com.biit.liferay.security.IActivity;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
-import com.biit.webforms.gui.webpages.designer.ValidatorTreeObjectName;
-import com.biit.webforms.gui.webpages.designer.ValidatorTreeObjectNameLength;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.WebformsBasicAuthorizationService;
@@ -61,8 +58,8 @@ public class WindowNameGroup extends WindowAcceptCancel {
 		textField = new TextField(inputFieldCaption);
 		textField.focus();
 		textField.setWidth("100%");
-		textField.addValidator(new ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
-		textField.addValidator(new ValidatorTreeObjectNameLength());
+		//textField.addValidator(new ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
+		//textField.addValidator(new ValidatorTreeObjectNameLength());
 
 		textField.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = 4953347262492851075L;
