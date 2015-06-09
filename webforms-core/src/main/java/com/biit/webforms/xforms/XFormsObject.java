@@ -540,7 +540,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 				// }
 
 				// Changed to the use of events.
-				return "instance('visible')/" + getXFormsHelper().getUniqueName(flow.getOrigin()) + " != 'false'";
+				return "(instance('visible')/" + getXFormsHelper().getUniqueName(flow.getOrigin()) + " != 'false' and "
+						+ getMustBeAnsweredRule(getXFormsHelper().getSourceOfRelevance(flow)) + ")";
 			}
 		}
 
@@ -573,6 +574,25 @@ public abstract class XFormsObject<T extends TreeObject> {
 		visibility.append(flowvisibility);
 
 		return visibility.toString();
+	}
+
+	private String getMustBeAnsweredRule(Set<TreeObject> sources) {
+		StringBuilder rule = new StringBuilder();
+		if (sources.size() > 1) {
+			rule.append("(");
+		}
+		Iterator<TreeObject> iterator = sources.iterator();
+		while (iterator.hasNext()) {
+			TreeObject source = iterator.next();
+			rule.append("string-length(" + getXFormsHelper().getXFormsObject(source).getXPath() + "/text()) &gt; 0");
+			if (iterator.hasNext()) {
+				rule.append(" or ");
+			}
+		}
+		if (sources.size() > 1) {
+			rule.append(")");
+		}
+		return rule.toString();
 	}
 
 	/**

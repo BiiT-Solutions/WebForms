@@ -135,14 +135,14 @@ class XFormsHelper {
 				tokens.addAll(flow.getConditionSimpleTokens());
 				if (flow.getOrigin() instanceof Question) {
 					// Input field must filled up!
-					//if (((Question) flow.getOrigin()).getAnswerType().equals(AnswerType.INPUT)) {
-						if (!tokens.isEmpty()) {
-							tokens.add(Token.getAndToken());
-						}
-						tokens.add(new TokenAnswerNeeded((BaseQuestion) flow.getOrigin(), ((Question) flow.getOrigin())
-								.getAnswerFormat() != null
-								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
-					//}
+					// if (((Question) flow.getOrigin()).getAnswerType().equals(AnswerType.INPUT)) {
+					if (!tokens.isEmpty()) {
+						tokens.add(Token.getAndToken());
+					}
+					tokens.add(new TokenAnswerNeeded((BaseQuestion) flow.getOrigin(), ((Question) flow.getOrigin())
+							.getAnswerFormat() != null
+							&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+					// }
 				}
 				return tokens;
 			}
@@ -158,6 +158,35 @@ class XFormsHelper {
 			}
 		}
 		return tokens;
+	}
+
+	/**
+	 * Return all the elements which answers has impact to a question visibility.
+	 * 
+	 * @param flow
+	 * @return
+	 */
+	public Set<TreeObject> getSourceOfRelevance(Flow flow) {
+		Set<TreeObject> sources = new HashSet<>();
+		// Has a condition, the flow does not inherit relevance rule.
+		if (!flow.getCondition().isEmpty()) {
+			sources.add(flow.getOrigin());
+			return sources;
+		}
+
+		Set<Flow> flowsFromOrigin = flowsByOrigin.get(flow.getOrigin());
+		// Has more than one outgoing flow, the flow does not inherit relevance rule.
+		if (flowsFromOrigin.size() > 1) {
+			sources.add(flow.getOrigin());
+			return sources;
+		}
+
+		Set<Flow> flowsToOrigin = flowsByDestiny.get(flow.getOrigin());
+		for (Flow flowTo : flowsToOrigin) {
+			sources.addAll(getSourceOfRelevance(flowTo));
+		}
+
+		return sources;
 	}
 
 	public TreeObject getNextQuestion(TreeObject treeObject) {
