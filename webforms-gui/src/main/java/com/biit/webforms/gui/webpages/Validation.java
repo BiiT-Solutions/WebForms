@@ -154,8 +154,6 @@ public class Validation extends SecuredWebPage {
 			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdByLabelAndOrganization(
 					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
 
-			System.out.println("Available forms size: " + availableForms.size());
-
 			// Let user choose the version.
 			WindowCompareAbcdForm linkAbcdForm = new WindowCompareAbcdForm(form);
 			for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
