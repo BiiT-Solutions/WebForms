@@ -413,8 +413,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getMultiCheckBoxVisibility(StringBuilder visibility, TokenComparationAnswer token) {
+		// Not equals is translated as a not.
+		if (token.getType().equals(TokenTypes.NE)) {
+			visibility.append("not(");
+		}
 		visibility.append("contains(concat(").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 				.append(", ' '), concat('").append(token.getAnswer().getName()).append("', ' '))");
+		if (token.getType().equals(TokenTypes.NE)) {
+			visibility.append(")");
+		}
 	}
 
 	/**
