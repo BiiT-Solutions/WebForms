@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
-import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.xforms.exceptions.DateRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
@@ -216,19 +217,19 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	}
 
 	private void addVisibilityObservers(StringBuilder events) {
-		for (Flow flow : getXFormsHelper().getDefaultFlows()) {
+		for (TreeObject question : getForm().getAllChildrenInHierarchy(BaseQuestion.class)) {
 			// Element visibility.
-			events.append("<!-- Change the visibility status for '" + flow.getOrigin().getName() + "'. -->");
-			String elementName = getXFormsHelper().getUniqueName(flow.getOrigin());
-			String controlName = getXFormsHelper().getXFormsObject(flow.getOrigin()).getSectionControlName();
+			events.append("<!-- Change the visibility status for '" + question + "'. -->");
+			String elementName = getXFormsHelper().getUniqueName(question);
+			String controlName = getXFormsHelper().getXFormsObject(question).getSectionControlName();
 			events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + controlName
 					+ "\" ref=\"instance('visible')/" + elementName + "\" value=\"'true'\"/>");
 			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + controlName
 					+ "\" ref=\"instance('visible')/" + elementName + "\" value=\"'false'\"/>");
 
 			// Category visibility.
-			events.append("<!-- Update category showed elements count for '" + flow.getOrigin().getName() + "'. -->");
-			String catId = getXFormsHelper().getUniqueName(flow.getOrigin().getAncestor(Category.class));
+			events.append("<!-- Update category showed elements count for '" + question.getName() + "'. -->");
+			String catId = getXFormsHelper().getUniqueName(question.getAncestor(Category.class));
 			events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + controlName
 					+ "\" ref=\"instance('visible')/" + catId + "\" value=\"instance('visible')/" + catId + " + 1\"/>");
 			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + controlName

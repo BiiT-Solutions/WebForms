@@ -10,23 +10,17 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
 
-/**
- * Used for representing that a previous question must be answered. As string-length('previous-question')>0 This token
- * must not been stored in database.
- */
-public class TokenAnswerNeeded extends Token {
-	private static final long serialVersionUID = 1610423674018638342L;
+public class TokenOthersMustBeAnswered extends Token {
+	private static final long serialVersionUID = -5314559285041409174L;
 	private BaseQuestion question;
-	private boolean dateField;
 
-	public TokenAnswerNeeded() {
+	public TokenOthersMustBeAnswered() {
 		super();
 	}
 
-	public TokenAnswerNeeded(BaseQuestion question, boolean dateField) {
+	public TokenOthersMustBeAnswered(BaseQuestion question) {
 		super();
 		this.question = question;
-		this.dateField = dateField;
 	}
 
 	@Override
@@ -41,7 +35,7 @@ public class TokenAnswerNeeded extends Token {
 			referenceString = question.getPathName();
 		}
 
-		return "length(" + referenceString + ")" + getType() + "0";
+		return "others(" + referenceString + ")";
 	}
 
 	@Override
@@ -51,7 +45,7 @@ public class TokenAnswerNeeded extends Token {
 			referenceString = question.getPathName().replaceAll("[^A-Za-z0-9_.]", "_");
 		}
 
-		return "answer[" + referenceString + "]";
+		return "others[" + referenceString + "]";
 	}
 
 	public BaseQuestion getQuestion() {
@@ -60,24 +54,19 @@ public class TokenAnswerNeeded extends Token {
 
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		if (object instanceof TokenAnswerNeeded) {
+		if (object instanceof TokenOthersMustBeAnswered) {
 			super.copyData(object);
-			TokenAnswerNeeded token = (TokenAnswerNeeded) object;
+			TokenOthersMustBeAnswered token = (TokenOthersMustBeAnswered) object;
 			question = token.getQuestion();
-			dateField = token.isDateField();
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
-					+ TokenAnswerNeeded.class.getName());
+					+ TokenOthersMustBeAnswered.class.getName());
 		}
 	}
 
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		question = (Question) mappedElements.get(question.getComparationId());
-	}
-
-	public boolean isDateField() {
-		return dateField;
 	}
 
 }

@@ -31,6 +31,7 @@ import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -387,25 +388,35 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// $control-name=1
 			getInputFieldVisibility(visibility, (TokenComparationValue) token);
 		} else if (token instanceof TokenAnswerNeeded) {
-			// Infotext has no input. We must copy relevant rule from this element.
-			if ((((TokenAnswerNeeded) token).getQuestion() instanceof Text)
-					|| (((TokenAnswerNeeded) token).getQuestion() instanceof SystemField)) {
-				visibility.append(getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()));
-				// Date is a specific case. Already has some data.
-			} else if (((TokenAnswerNeeded) token).isDateField()) {
-				// Dates are uses as string due to avoid error when fields are hidden and have an empty value.
-				visibility
-						.append("string-length(")
-						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getXPath())
-						.append("/text()) &gt; 0");
-				// Any input field must have an answer.
-			} else {
-				visibility
-						.append("string-length(")
-						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getXPath())
-						.append("/text()) &gt; 0");
-			}
+			// // Infotext has no input. We must copy relevant rule from this element.
+			// if ((((TokenAnswerNeeded) token).getQuestion() instanceof Text)
+			// || (((TokenAnswerNeeded) token).getQuestion() instanceof SystemField)) {
+			// visibility.append(getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()));
+			// // Date is a specific case. Already has some data.
+			// } else if (((TokenAnswerNeeded) token).isDateField()) {
+			// // Dates are uses as string due to avoid error when fields are hidden and have an empty value.
+			// visibility
+			// .append("string-length(")
+			// .append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getXPath())
+			// .append("/text()) &gt; 0");
+			// // Any input field must have an answer.
+			// } else {
+			// visibility
+			// .append("string-length(")
+			// .append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getXPath())
+			// .append("/text()) &gt; 0");
+			// }
+
+			// Flow uses the question not as condition, only of the source of the flow.
+			visibility.append("instance('visible')/"
+					+ getXFormsHelper().getUniqueName(((TokenAnswerNeeded) token).getQuestion()) + " != 'false'");
+		} else if (token instanceof TokenOthersMustBeAnswered) {
+			visibility
+					.append("string-length(")
+					.append(getXFormsHelper().getXFormsObject(((TokenOthersMustBeAnswered) token).getQuestion())
+							.getXPath()).append("/text()) &gt; 0");
 		} else if (token instanceof TokenInheritRelevant) {
+			// Uses same visibility that this element.
 			visibility.append("instance('visible')/"
 					+ getXFormsHelper().getUniqueName(((TokenInheritRelevant) token).getInheritedQuestion())
 					+ " != 'false'");
@@ -424,8 +435,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getMultiCheckBoxVisibility(StringBuilder visibility, TokenComparationAnswer token) {
+		// Not equals is translated as a not.
+		if (token.getType().equals(TokenTypes.NE)) {
+			visibility.append("not(");
+		}
 		visibility.append("contains(concat(").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 				.append(", ' '), concat('").append(token.getAnswer().getName()).append("', ' '))");
+		if (token.getType().equals(TokenTypes.NE)) {
+			visibility.append(")");
+		}
 	}
 
 	/**
@@ -545,10 +563,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 		if (flows.size() == 1) {
 			Flow flow = ((Flow) flows.iterator().next());
 			if (flow.getCondition().isEmpty()) {
-				 String previousElementVisibility = getXFormsHelper().getVisibilityOfElement(getSource());
-				 if (previousElementVisibility != null) {
-				 return previousElementVisibility;
-				 }
+				String previousElementVisibility = getXFormsHelper().getVisibilityOfElement(getSource());
+				if (previousElementVisibility != null) {
+					return previousElementVisibility;
+				}
 
 				// Changed to the use of events.
 				return "(instance('visible')/" + getXFormsHelper().getUniqueName(flow.getOrigin()) + " != 'false')";
@@ -599,22 +617,28 @@ public abstract class XFormsObject<T extends TreeObject> {
 		for (Flow flow : flows) {
 			List<Token> flowvisibility = flow.getConditionSimpleTokens();
 
-			// Others must assure that the question is answered.
+			// Others must assure that the question is answered it it is mandatory. Otherwise without answering the
+			// question the others is also true.
 			if (flow.isOthers()) {
 				List<Token> othersVisibility = new ArrayList<>();
-				othersVisibility.addAll(flowvisibility);
-				if (existPreviousCondition(flowvisibility)) {
-					othersVisibility.add(0, Token.getLeftParenthesisToken());
-					othersVisibility.add(Token.getAndToken());
-				}
-				othersVisibility.add(new TokenAnswerNeeded((WebformsBaseQuestion) flow.getOrigin(),
-						(flow.getOrigin() instanceof Question)
-								&& ((Question) flow.getOrigin()).getAnswerFormat() != null
-								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
-				if (existPreviousCondition(flowvisibility)) {
+				// Others needs that all the conditions are answered.
+				othersVisibility.add(new TokenOthersMustBeAnswered(flow.getOrigin()));
+				// for (Token token : flow.getCondition()) {
+				// if (token instanceof TokenWithQuestion) {
+				// // Condition must be answered.
+				// othersVisibility.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token).getQuestion()));
+				// } else {
+				// // If are multiple conditions, we need to add also the and/or conjunction
+				// othersVisibility.add(token.generateCopy());
+				// }
+				// }
+				// Add parenthesis if needed.
+				if (existPreviousCondition(flowvisibility) && !othersVisibility.isEmpty()) {
+					flowvisibility.add(0, Token.getLeftParenthesisToken());
+					othersVisibility.add(0, Token.getAndToken());
 					othersVisibility.add(Token.getRigthParenthesisToken());
 				}
-				flowvisibility = othersVisibility;
+				flowvisibility.addAll(othersVisibility);
 				// If condition is empty, inherit the relevance of the previous element. Others also has empty
 				// condition.
 			} else if (flow.getCondition().isEmpty()) {
@@ -669,10 +693,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 						if (existPreviousCondition(flowvisibility)) {
 							flowvisibility.add(Token.getAndToken());
 						}
-						flowvisibility.add(new TokenAnswerNeeded((WebformsBaseQuestion) flow.getOrigin(), (flow
-								.getOrigin() instanceof Question)
-								&& ((Question) flow.getOrigin()).getAnswerFormat() != null
-								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+						flowvisibility.add(new TokenAnswerNeeded(flow.getOrigin(),
+								(flow.getOrigin() instanceof Question)
+										&& ((Question) flow.getOrigin()).getAnswerFormat() != null
+										&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 					}
 				}
 			}
