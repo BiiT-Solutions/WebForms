@@ -388,26 +388,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// $control-name=1
 			getInputFieldVisibility(visibility, (TokenComparationValue) token);
 		} else if (token instanceof TokenAnswerNeeded) {
-			// // Infotext has no input. We must copy relevant rule from this element.
-			// if ((((TokenAnswerNeeded) token).getQuestion() instanceof Text)
-			// || (((TokenAnswerNeeded) token).getQuestion() instanceof SystemField)) {
-			// visibility.append(getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()));
-			// // Date is a specific case. Already has some data.
-			// } else if (((TokenAnswerNeeded) token).isDateField()) {
-			// // Dates are uses as string due to avoid error when fields are hidden and have an empty value.
-			// visibility
-			// .append("string-length(")
-			// .append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getXPath())
-			// .append("/text()) &gt; 0");
-			// // Any input field must have an answer.
-			// } else {
-			// visibility
-			// .append("string-length(")
-			// .append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getXPath())
-			// .append("/text()) &gt; 0");
-			// }
-
-			// Flow uses the question not as condition, only of the source of the flow.
+			// Check the event.
 			visibility.append("instance('visible')/"
 					+ getXFormsHelper().getUniqueName(((TokenAnswerNeeded) token).getQuestion()) + " != 'false'");
 		} else if (token instanceof TokenOthersMustBeAnswered) {
@@ -640,16 +621,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 			if (flow.isOthers()) {
 				List<Token> othersVisibility = new ArrayList<>();
 				// Others needs that all the conditions are answered.
-				othersVisibility.add(new TokenOthersMustBeAnswered(flow.getOrigin()));
-				// for (Token token : flow.getCondition()) {
-				// if (token instanceof TokenWithQuestion) {
-				// // Condition must be answered.
-				// othersVisibility.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token).getQuestion()));
-				// } else {
-				// // If are multiple conditions, we need to add also the and/or conjunction
-				// othersVisibility.add(token.generateCopy());
-				// }
-				// }
+				for (Token token : flowvisibility) {
+					if (token instanceof TokenWithQuestion) {
+						// Condition must be answered.
+						othersVisibility.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token).getQuestion()));
+					} else if (token.getType().equals(TokenTypes.AND) || token.getType().equals(TokenTypes.OR)) {
+						// If are multiple conditions, we need to add also the and/or conjunction
+						othersVisibility.add(token.generateCopy());
+					}
+				}
 				// Add parenthesis if needed.
 				if (existPreviousCondition(flowvisibility) && !othersVisibility.isEmpty()) {
 					flowvisibility.add(0, Token.getLeftParenthesisToken());
