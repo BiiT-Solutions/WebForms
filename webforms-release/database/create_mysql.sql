@@ -42,11 +42,11 @@
         sortSeq bigint not null,
         type varchar(255) not null,
         flow_ID bigint not null,
+        question_ID bigint,
         datePeriodUnit varchar(255),
         subformat varchar(255) not null,
         valueEnd varchar(255),
         valueStart varchar(255),
-        question_ID bigint,
         primary key (ID)
     );
 
@@ -60,8 +60,8 @@
         sortSeq bigint not null,
         type varchar(255) not null,
         flow_ID bigint not null,
-        answer_ID bigint,
         question_ID bigint,
+        answer_ID bigint,
         primary key (ID)
     );
 
@@ -75,10 +75,10 @@
         sortSeq bigint not null,
         type varchar(255) not null,
         flow_ID bigint not null,
+        question_ID bigint,
         datePeriodUnit varchar(255),
         subformat varchar(255) not null,
         value varchar(255),
-        question_ID bigint,
         primary key (ID)
     );
 

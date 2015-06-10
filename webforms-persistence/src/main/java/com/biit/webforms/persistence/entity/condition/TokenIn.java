@@ -9,7 +9,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -30,9 +29,6 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 public class TokenIn extends TokenComplex implements ITokenQuestion {
 	private static final long serialVersionUID = -1264101992865476909L;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	private Question question;
-
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "tokenIn")
 	@BatchSize(size = 100)
 	@OrderBy(value = "sortSeq ASC")
@@ -47,10 +43,10 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 		List<Token> simpleTokens = new ArrayList<Token>();
 		simpleTokens.add(Token.getLeftParenthesisToken());
 		if (!values.isEmpty()) {
-			simpleTokens.add(TokenComparationAnswer.getTokenEqual(question, values.get(0).getAnswerValue()));
+			simpleTokens.add(TokenComparationAnswer.getTokenEqual(getQuestion(), values.get(0).getAnswerValue()));
 			for (int i = 1; i < values.size(); i++) {
 				simpleTokens.add(TokenComparationValue.getOrToken());
-				simpleTokens.add(TokenComparationAnswer.getTokenEqual(question, values.get(i).getAnswerValue()));
+				simpleTokens.add(TokenComparationAnswer.getTokenEqual(getQuestion(), values.get(i).getAnswerValue()));
 			}
 
 		}
@@ -63,7 +59,6 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 		if (object instanceof TokenIn) {
 			super.copyData(object);
 			TokenIn token = (TokenIn) object;
-			this.question = token.question;
 			this.values = new ArrayList<>();
 			for (TokenInValue value : token.values) {
 				TokenInValue valueCopy = value.generateCopy();
@@ -78,7 +73,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
-		question = (Question) mappedElements.get(question.getOriginalReference());
+		setQuestion((Question) mappedElements.get(getQuestion().getOriginalReference()));
 		for (TokenInValue value : values) {
 			if (value.getAnswerValue() != null) {
 				value.setAnswerValue((Answer) mappedElements.get(value.getAnswerValue().getOriginalReference()));
@@ -90,7 +85,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 		try {
 			TokenIn token = new TokenIn();
 			token.setType(TokenTypes.IN);
-			token.question = question;
+			token.setQuestion(question);
 			for (Answer answer : answers) {
 				TokenInValue value = new TokenInValue();
 				value.setAnswerValue(answer);
@@ -107,18 +102,14 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 	@Override
 	public String toString() {
 		String referenceString = null;
-		if (question != null) {
-			referenceString = question.getPathName();
+		if (getQuestion() != null) {
+			referenceString = getQuestion().getPathName();
 		}
 		String answerString = null;
 		if (values != null) {
 			answerString = values.toString();
 		}
 		return referenceString + " " + getType() + " " + answerString;
-	}
-
-	public Question getQuestion() {
-		return question;
 	}
 
 	public List<Answer> getAnswerValues() {
@@ -163,10 +154,6 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 		return values;
 	}
 
-	public void setQuestion(Question question) {
-		this.question = question;
-	}
-
 	public void setValues(List<TokenInValue> values) {
 		this.values.clear();
 		for (TokenInValue value : values) {
@@ -188,10 +175,6 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 		if (token instanceof TokenIn) {
 			TokenIn tokenIn = (TokenIn) token;
 			if (super.isContentEqual(token)) {
-				if (!question.getPathName().equals(tokenIn.question.getPathName())) {
-					return false;
-				}
-
 				if (values.size() != tokenIn.values.size()) {
 					return false;
 				}
@@ -206,11 +189,11 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void resetUserTimestampInfo(Long userId) {
 		super.resetUserTimestampInfo(userId);
-		for(TokenInValue value: getValues()){
+		for (TokenInValue value : getValues()) {
 			value.resetUserTimestampInfo(userId);
 		}
 	}
