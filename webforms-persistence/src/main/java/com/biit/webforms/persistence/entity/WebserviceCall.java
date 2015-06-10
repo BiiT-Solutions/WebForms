@@ -100,15 +100,46 @@ public class WebserviceCall extends StorableObject {
 		return filteredLinks;
 	}
 	
-	public Set<WebserviceCallLink> getInputLinks(){
+	public Set<WebserviceCallLink> getUsedInputLinks(){
 		return getLinks(PortType.INPUT);
 	}
 	
-	public Set<WebserviceCallLink> getOutputLinks(){
+	public Set<WebserviceCallLink> getUsedOutputLinks(){
 		return getLinks(PortType.OUTPUT);
 	}
 	
-	public Set<WebserviceCallLink> getValidationLinks(){
+	public Set<WebserviceCallLink> getUsedValidationLinks(){
 		return getLinks(PortType.VALIDATION);
+	}
+	
+	public Set<WebserviceCallLink> getAllInputLinks(){
+		return getAllLinks(PortType.INPUT);
+	}
+	
+	public Set<WebserviceCallLink> getAllOutputLinks(){
+		return getAllLinks(PortType.OUTPUT);
+	}
+	
+	public Set<WebserviceCallLink> getAllValidationLinks(){
+		return getAllLinks(PortType.VALIDATION);
+	}
+	
+	private Set<WebserviceCallLink> getAllLinks(PortType type){
+		Set<WebserviceCallLink> links = getLinks(type);
+		Set<WebservicePort> ports = getWebservice().getXmlPorts(type);
+		
+		for(WebservicePort port: ports){
+			boolean exists = false;
+			for(WebserviceCallLink link: links){
+				if(link.getWebservicePort().equals(port)){
+					exists = true;
+					break;
+				}
+			}
+			if(!exists){
+				links.add(new WebserviceCallLink(port));
+			}
+		}
+		return links;
 	}
 }

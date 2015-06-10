@@ -1,8 +1,11 @@
 package com.biit.webforms.gui.webpages.webservice.call;
 
+import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.WebserviceCall;
+import com.biit.webforms.persistence.entity.WebserviceCallLink;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.CustomComponent;
@@ -155,12 +158,105 @@ public class WebserviceCallComponent extends CustomComponent{
 		}
 		webserviceCallName.setEnabled(false);
 		webserviceName.setEnabled(false);
+				
+		inputTable.addRows(webserviceCall.getAllInputLinks());
+		outputTable.addRows(webserviceCall.getAllOutputLinks());		
 		
-		
-		
-		inputTable.addRows(webserviceCall.getInputLinks());
-		outputTable.addRows(webserviceCall.getOutputLinks());
-		
-		
+	}
+
+	public void clearSelectedLink() {
+		WebserviceCallLink selected = getSelectedLink();
+		if(selected!=null){
+			webserviceCall.getLinks().remove(selected);
+			selected.clear();
+			updateUiLinkInformation(selected);
+		}
+	}
+
+	private void updateUiLinkInformation(WebserviceCallLink selected) {
+		switch(selected.getWebservicePort().getType()){
+		case INPUT:
+			inputTable.updateRow(selected);
+			break;
+		case OUTPUT:
+			outputTable.updateRow(selected);
+			break;
+		case VALIDATION:
+			//TODO
+			//validationTable.updateRow(selected);
+			break;
+		}
+	}
+
+	public WebserviceCallLink getSelectedLink() {
+		if(inputTable.getValue()!=null){
+			return (WebserviceCallLink) inputTable.getValue();
+		}
+		if(outputTable.getValue()!=null){
+			return (WebserviceCallLink) outputTable.getValue();
+		}
+		if(validationTable.getValue()!=null){
+			return (WebserviceCallLink) validationTable.getValue();
+		}
+		return null;
+	}
+
+	public void editSelectedLink() {
+		WebserviceCallLink selected = getSelectedLink();
+		if(selected!=null){
+			switch (selected.getWebservicePort().getType()) {
+			case INPUT:
+				editInputLink(selected);
+				break;
+			case OUTPUT:
+				editOutputLink(selected);
+				break;
+			case VALIDATION:
+				editValidationLink(selected);
+				break;
+			}
+		}
+	}
+
+	private void editValidationLink(final WebserviceCallLink selected) {
+		WindowValidationInputLink window = new WindowValidationInputLink();
+		window.setValue(selected);
+		window.addAcceptActionListener(new AcceptActionListener() {
+			
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				webserviceCall.getLinks().add(selected);
+				window.close();
+			}
+		});
+		window.showCentered();
+	}
+
+	private void editOutputLink(final WebserviceCallLink selected) {
+		WindowOutputInputLink window = new WindowOutputInputLink();
+		window.setValue(selected);
+		window.addAcceptActionListener(new AcceptActionListener() {
+			
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				webserviceCall.getLinks().add(selected);
+				window.close();
+			}
+		});
+		window.showCentered();
+	}
+
+	private void editInputLink(final WebserviceCallLink selected) {
+		WindowEditInputLink window = new WindowEditInputLink();
+		window.setValue(selected);
+		window.addAcceptActionListener(new AcceptActionListener() {
+			
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				webserviceCall.getLinks().add(selected);
+				window.close();
+			}
+		});
+		window.showCentered();
 	}
 }

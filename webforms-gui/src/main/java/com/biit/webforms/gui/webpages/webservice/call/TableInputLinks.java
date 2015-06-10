@@ -32,6 +32,13 @@ public class TableInputLinks extends Table{
 		updateRow(item,port);
 	}
 
+	public void updateRow(WebserviceCallLink link){
+		Item item = getItem(link);
+		if(item!=null){
+			updateRow(item,link);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	protected void updateRow(Item item, WebserviceCallLink link) {
 		item.getItemProperty(Properties.PORT_NAME).setValue(link.getWebservicePort().getName());

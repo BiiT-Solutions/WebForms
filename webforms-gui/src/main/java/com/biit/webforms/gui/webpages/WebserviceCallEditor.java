@@ -119,8 +119,32 @@ public class WebserviceCallEditor extends SecuredWebPage {
 				removeWebserviceCall();
 			}
 		});
+		upperMenu.getEditWebserviceLink().addClickListener(new ClickListener() {
+			private static final long serialVersionUID = -3649609785468773475L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				editSelectedLink();
+			}
+		});
+		upperMenu.getRemoveWebserviceLink().addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 2869493023360292398L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				cleanSelectedLink();
+			}
+		});
 		
 		return upperMenu;
+	}
+
+	protected void cleanSelectedLink() {
+		webserviceCallComponent.clearSelectedLink();
+	}
+
+	protected void editSelectedLink() {
+		webserviceCallComponent.editSelectedLink();
 	}
 
 	protected void removeWebserviceCall() {
