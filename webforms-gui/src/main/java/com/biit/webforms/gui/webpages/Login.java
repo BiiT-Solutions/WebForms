@@ -113,7 +113,7 @@ public class Login extends WebPageComponent {
 								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER,
 								new Object[] { (String) usernameField.getValue() })));
 						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
-								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE);
+								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_TRYAGAIN);
 					} catch (IOException | WebServiceAccessError | NotConnectedToWebServiceException e) {
 						WebformsLogger.errorMessage(this.getClass().getName(), e);
 						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
@@ -148,7 +148,7 @@ public class Login extends WebPageComponent {
 									new Object[] { (String) usernameField.getValue() })));
 							MessageManager.showError(
 									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
-									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE);
+									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_TRYAGAIN);
 						} catch (IOException | WebServiceAccessError | NotConnectedToWebServiceException e) {
 							WebformsLogger.errorMessage(this.getClass().getName(), e);
 							MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,

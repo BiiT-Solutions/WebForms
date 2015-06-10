@@ -33,22 +33,20 @@ public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 	}
 
 	@Override
-	protected void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
+	protected void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// Do nothing
 	}
 
 	@Override
 	protected void getSectionBody(StringBuilder stringBuilder) {
-		if(getSource().getReference().getAnswerType() == AnswerType.INPUT){
+		if (getSource().getReference().getAnswerType() == AnswerType.INPUT) {
 			getSectionBodyInputField(stringBuilder);
-		}else{
+		} else {
 			getSectionBodySelection(stringBuilder);
 		}
 	}
 
-	
-	
 	private void getSectionBodySelection(StringBuilder stringBuilder) {
 		// An itemset for standard selections.
 		stringBuilder.append("<xf:itemset ref=\"$form-resources/");
@@ -69,8 +67,8 @@ public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 		stringBuilder.append(getReferenceFormXPathParent());
 		stringBuilder.append("\"");
 		stringBuilder.append(" class=\"" + getCssClass() + "\" >");
-		stringBuilder.append("<xf:label ref=\""+getSource().getReference().getName()+"\" " + isHtmlText() + " />");
-		stringBuilder.append("<xf:value ref=\""+getSource().getReference().getName()+"\" />");
+		stringBuilder.append("<xf:label ref=\"" + getSource().getReference().getName() + "\" " + isHtmlText() + " />");
+		stringBuilder.append("<xf:value ref=\"" + getSource().getReference().getName() + "\" />");
 		stringBuilder.append("<xf:hint ref=\"hint\" />");
 		stringBuilder.append("</xf:itemset>");
 	}
@@ -81,20 +79,20 @@ public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 		return path.substring(0, lastIndex);
 	}
 
-	private String getReferenceFormXPath(){
+	private String getReferenceFormXPath() {
 		String currentPath = getXFormsHelper().getXFormsObject(getSource().getReference()).getXPath();
 		return currentPath.replace("form/", "");
 	}
-	
-	private String getReferencePath(){
+
+	private String getReferencePath() {
 		return getXFormsHelper().getXFormsObject(getSource().getReference()).getPath();
 	}
-	
+
 	@Override
 	public Set<Flow> getFlowsTo() {
 		return new HashSet<>();
 	}
-	
+
 	protected String isHtmlText() {
 		switch (((Question) getSource().getParent()).getAnswerType()) {
 		case MULTIPLE_SELECTION:
@@ -103,7 +101,7 @@ public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 			return "";
 		}
 	}
-	
+
 	/**
 	 * Dynamic Answer has no definitions in the model.
 	 */
@@ -111,7 +109,7 @@ public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 	public String getDefinition() {
 		return "";
 	}
-	
+
 	/**
 	 * Dynamic Answers don't have resources.
 	 */
@@ -119,7 +117,7 @@ public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 	protected String getResources() throws NotExistingDynamicFieldException {
 		return "";
 	}
-	
+
 	@Override
 	protected String getCssClass() {
 		return super.getCssClass() + " " + CSS_CLASS_ANSWER;
@@ -141,5 +139,10 @@ public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 		}
 		text += " />";
 		return text;
+	}
+
+	@Override
+	protected String getVisibilityStructure() {
+		return "";
 	}
 }

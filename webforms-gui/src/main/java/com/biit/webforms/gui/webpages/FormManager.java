@@ -528,8 +528,6 @@ public class FormManager extends SecuredWebPage {
 
 		List<com.biit.abcd.persistence.entity.SimpleFormView> availableForms;
 		
-		System.out.println("LINKED LABEL: " + form.getLinkedFormLabel());
-		
 		if (form.getLinkedFormLabel() == null) {
 			// Not linked yet. Show all available forms.
 			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdForCurrentUser();
