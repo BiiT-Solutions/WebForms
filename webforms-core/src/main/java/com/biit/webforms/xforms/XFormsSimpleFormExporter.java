@@ -23,7 +23,8 @@ import com.biit.webforms.xml.XmlUtils;
  * The obtained string will have different sections: <br>
  * - Metadata. Different information about the form and xforms language.<br>
  * - Model. The basic structure of the form. <br>
- * - Binding. Used to link the model with some behavior of the component, such as relevance.<br>
+ * - Binding. Used to link the model with some behavior of the component, such
+ * as relevance.<br>
  * - Resources. Defines the visualization for each component: label, hint, help. <br>
  * - Templates. This is for loops only <br>
  * - Body. Relation all previous data. <br>
@@ -133,12 +134,40 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		body.append("xmlns:oxf=\"http://www.orbeon.com/oxf/processors\" ");
 		body.append("xmlns:p=\"http://www.orbeon.com/oxf/pipeline\" >");
 
+		setCategoriesMenu(body);
 		body.append(getBodySection(xFormsObject));
 
 		body.append("</fr:body>");
 		body.append("</fr:view>");
 		body.append("</xh:body>");
 		return body.toString();
+	}
+
+	/**
+	 * Defines the categories menu browser on top of the form
+	 * 
+	 * @param body
+	 */
+	private void setCategoriesMenu(StringBuilder body) {
+		body.append("<xh:div id='categories_menu'>");
+		body.append("<xh:table>");
+		body.append("<xh:tr>");
+
+		for (XFormsCategory category : getXFormsCategories()) {
+			body.append("<xh:td>");
+			body.append("<xf:trigger appearance=\"minimal\">");
+			body.append("<xf:label>" + category.getName() + "</xf:label>");
+			body.append("</xf:trigger>");
+			body.append("</xh:td>");
+		}
+		
+		body.append("<xh:td>");
+		body.append("<xf:label>" + category.getName() + "</xf:label>");
+		body.append("</xh:td>");
+
+		body.append("</xh:tr>");
+		body.append("</xh:table>");
+		body.append("</xh:div>");
 	}
 
 	@Override
