@@ -1003,4 +1003,16 @@ $open-sans-pathPrefix: "./fonts/";
 	.v-table-cell-content-tree-cell-disabled {
 		opacity: 0.5;
 	}
+	
+	/* webservice call */
+	.v-webservice-call.v-customcomponent-v-webservice-call {
+	    border: #c2c3c4;
+	    border-style: solid;
+	    border-width: 1px;
+	}
+	
+	.v-webservice-call .v-verticallayout.v-layout.v-vertical.v-widget.v-has-width.v-has-height.v-margin-top.v-margin-right.v-margin-bottom.v-margin-left {
+	    padding-bottom: 18px;
+	}
+	
 }

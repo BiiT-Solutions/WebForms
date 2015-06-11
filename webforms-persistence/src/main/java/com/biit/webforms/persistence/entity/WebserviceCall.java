@@ -13,7 +13,6 @@ import javax.persistence.Table;
 
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
-import com.biit.webforms.enumerations.PortType;
 
 @Entity
 @Table(name = "webservice_call")
@@ -26,25 +25,31 @@ public class WebserviceCall extends StorableObject {
 	@Column(nullable = false)
 	private String name;
 
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
-	private Webservice webservice;
+	private String webserviceName;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "call")
-	private Set<WebserviceCallLink> links;
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true)
+	private Set<WebserviceCallInputLink> inputLinks;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true)
+	private Set<WebserviceCallOutputLink> outputLinks;
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true)
+	private Set<WebserviceCallValidationLink> validateLinks;
 
 	protected WebserviceCall() {
 		super();
-		links = new HashSet<WebserviceCallLink>();
+		inputLinks = new HashSet<>();
+		outputLinks = new HashSet<>();
+		validateLinks = new HashSet<>();
 	}
 	
 	public WebserviceCall(String name, Webservice webservice){
 		super();
 		setName(name);
-		setWebservice(webservice);
-		links = new HashSet<WebserviceCallLink>();
-		for(WebservicePort port: webservice.getWebservicePorts()){
-			links.add(new WebserviceCallLink(port));
-		}
+		setWebserviceName(webservice.getName());
+		inputLinks = new HashSet<>();
+		outputLinks = new HashSet<>();
+		validateLinks = new HashSet<>();
 	}
 	
 	@Override
@@ -58,15 +63,20 @@ public class WebserviceCall extends StorableObject {
 			copyBasicInfo(object);
 			WebserviceCall call = (WebserviceCall) object;
 			setName(call.getName());
-			setWebservice(call.getWebservice());
-			links.clear();
-			for(WebserviceCallLink link: call.getLinks()){
-				WebserviceCallLink copiedLink = new WebserviceCallLink();
-				copiedLink.copyData(link);
-				links.add(copiedLink);
-			}
+			setWebserviceName(call.getWebserviceName());
+			copyLinkData(inputLinks,call.getInputLinks());
+			copyLinkData(outputLinks,call.getOutputLinks());
+			copyLinkData(validateLinks,call.getValidateLinks());
 		}else{
 			throw new NotValidStorableObjectException("Element of class '"+object.getClass().getName()+"' is not compatible with '"+WebserviceCall.class.getName()+"'");
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <T extends WebserviceCallLink> void copyLinkData(Set<T> destiny, Set<T> source) throws NotValidStorableObjectException{
+		destiny.clear();
+		for(WebserviceCallLink link: source){
+			destiny.add((T)link.generateCopy());
 		}
 	}
 
@@ -78,68 +88,43 @@ public class WebserviceCall extends StorableObject {
 		this.name = name;
 	}
 
-	public Webservice getWebservice() {
-		return webservice;
+	public String getWebserviceName() {
+		return webserviceName;
 	}
 
-	public void setWebservice(Webservice webservice) {
-		this.webservice = webservice;
+	public void setWebserviceName(String name) {
+		this.webserviceName = name;
 	}
 
-	public Set<WebserviceCallLink> getLinks() {
-		return links;
+	public Set<WebserviceCallInputLink> getInputLinks() {
+		return inputLinks;
 	}
-	
-	public Set<WebserviceCallLink> getLinks(PortType type) {
-		Set<WebserviceCallLink> filteredLinks = new HashSet<WebserviceCallLink>();
-		for(WebserviceCallLink link: getLinks()){
-			if(link.getWebservicePort().getType().equals(type)){
-				filteredLinks.add(link);
-			}
-		}
-		return filteredLinks;
+
+	public void setInputLinks(Set<WebserviceCallInputLink> inputLinks) {
+		this.inputLinks = inputLinks;
 	}
-	
-	public Set<WebserviceCallLink> getUsedInputLinks(){
-		return getLinks(PortType.INPUT);
+
+	public Set<WebserviceCallOutputLink> getOutputLinks() {
+		return outputLinks;
 	}
-	
-	public Set<WebserviceCallLink> getUsedOutputLinks(){
-		return getLinks(PortType.OUTPUT);
+
+	public void setOutputLinks(Set<WebserviceCallOutputLink> outputLinks) {
+		this.outputLinks = outputLinks;
 	}
-	
-	public Set<WebserviceCallLink> getUsedValidationLinks(){
-		return getLinks(PortType.VALIDATION);
+
+	public Set<WebserviceCallValidationLink> getValidateLinks() {
+		return validateLinks;
 	}
-	
-	public Set<WebserviceCallLink> getAllInputLinks(){
-		return getAllLinks(PortType.INPUT);
+
+	public void setValidateLinks(Set<WebserviceCallValidationLink> validateLinks) {
+		this.validateLinks = validateLinks;
 	}
-	
-	public Set<WebserviceCallLink> getAllOutputLinks(){
-		return getAllLinks(PortType.OUTPUT);
+
+	public Form getForm() {
+		return form;
 	}
-	
-	public Set<WebserviceCallLink> getAllValidationLinks(){
-		return getAllLinks(PortType.VALIDATION);
-	}
-	
-	private Set<WebserviceCallLink> getAllLinks(PortType type){
-		Set<WebserviceCallLink> links = getLinks(type);
-		Set<WebservicePort> ports = getWebservice().getXmlPorts(type);
-		
-		for(WebservicePort port: ports){
-			boolean exists = false;
-			for(WebserviceCallLink link: links){
-				if(link.getWebservicePort().equals(port)){
-					exists = true;
-					break;
-				}
-			}
-			if(!exists){
-				links.add(new WebserviceCallLink(port));
-			}
-		}
-		return links;
+
+	public void setForm(Form form) {
+		this.form = form;
 	}
 }

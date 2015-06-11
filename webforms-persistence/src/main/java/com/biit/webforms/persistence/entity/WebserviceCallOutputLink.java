@@ -1,0 +1,59 @@
+package com.biit.webforms.persistence.entity;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+
+@Entity
+@Table(name = "webservice_call_output_link")
+public class WebserviceCallOutputLink extends WebserviceCallLink {
+	private static final long serialVersionUID = -107489603701913849L;
+	
+	private static final boolean EDITABLE_DEFAULT_VALUE = true;
+	
+	private boolean isEditable;
+	
+	protected WebserviceCallOutputLink() {
+		super();
+		setEditable(EDITABLE_DEFAULT_VALUE);
+	}
+	
+	public WebserviceCallOutputLink(WebserviceIoPort port){
+		super(port);
+		setEditable(EDITABLE_DEFAULT_VALUE);
+	}
+	
+	public boolean isEditable() {
+		return isEditable;
+	}
+
+	public void setEditable(boolean isEditable) {
+		this.isEditable = isEditable;
+	}
+	
+	@Override
+	public void copyData(StorableObject object) throws NotValidStorableObjectException{
+		super.copyData(object);
+		if(object instanceof WebserviceCallOutputLink){
+			WebserviceCallOutputLink link = (WebserviceCallOutputLink) object;
+			setEditable(link.isEditable());
+		}else{
+			throw new NotValidStorableObjectException("Element of class '"+object.getClass().getName()+"' is not compatible with '"+this.getClass().getName()+"'");
+		}
+	}
+	
+	@Override
+	public void clear(){
+		super.clear();
+		setEditable(EDITABLE_DEFAULT_VALUE);
+	}
+	
+	@Override
+	public WebserviceCallLink generateCopy() throws NotValidStorableObjectException {
+		WebserviceCallOutputLink link = new WebserviceCallOutputLink();
+		link.copyData(this);
+		return link;
+	}
+}

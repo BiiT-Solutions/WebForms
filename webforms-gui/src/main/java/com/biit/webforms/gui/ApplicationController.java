@@ -60,6 +60,7 @@ import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.dao.IWebserviceDao;
+import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
@@ -1530,5 +1531,9 @@ public class ApplicationController {
 
 	public void removeWebserviceCall(WebserviceCall call) {
 		UserSessionHandler.getController().getCompleteFormView().removeWebserviceCall(call);
+	}
+
+	public Webservice findWebservice(String webserviceName) throws WebserviceNotFoundException {
+		return webserviceDao.findWebservice(webserviceName);
 	}
 }

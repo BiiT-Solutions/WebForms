@@ -587,7 +587,23 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	TABLE_OUTPUT_LINK_IS_EDITABLE("table.output.link.is.editable"), 
 	IS_EDITABLE("is.editable"), 
-	IS_NOT_EDITABLE("is.not.editable"),
+	IS_NOT_EDITABLE("is.not.editable"), 
+	
+	CAPTION_SELECT_FORM_ELEMENT("caption.select.form.element"), 
+	CAPTION_IS_EDITABLE("caption.is.editable"), 
+	
+	CAPTION_WEBSERVICE_CALL_INPUT_LINK("caption.webservice.call.input.link"),
+	CAPTION_WEBSERVICE_CALL_OUTPUT_LINK("caption.webservice.call.output.link"),
+	CAPTION_WEBSERVICE_CALL_VALIDATION_LINK("caption.webservice.call.validation.link"), 
+	
+	WINDOW_EDIT_INPUT_LINK("window.edit.input.link"),
+	WINDOW_EDIT_OUTPUT_LINK("window.edit.output.link"), 
+	
+	TABLE_VALIDATION_LINK_ERROR_CODE("table.validation.link.error.code"), 
+	TABLE_VALIDATION_LINK_MESSAGE("table.validation.link.message"), 
+	
+	CAPTION_VALIDATION_LINK_ERROR_MESSAGE("caption.validation.link.error.message"),
+	CAPTION_WINDOW_EDIT_VALIDATION_LINK("caption.window.edit.validation.link"),
 	
 	;
 

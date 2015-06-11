@@ -11,6 +11,7 @@
  				<include name="removeElement" />
 				<include name="blockLink" />
 				<include name="persistForm" />
+				<include name="webserviceDefinitionJsonTest" />
 			</run>
 		</groups>
 		<classes>
@@ -21,6 +22,7 @@
 			<class name="com.biit.webforms.persistence.RemoveTest" />
 			<class name="com.biit.webforms.persistence.BlockLinkTests" />
 			<class name="com.biit.webforms.persistence.PersistForm" />
+			<class name="com.biit.webforms.persistence.WebserviceDefinitionJsonTest" />
 		</classes>
 	</test>
 </suite>

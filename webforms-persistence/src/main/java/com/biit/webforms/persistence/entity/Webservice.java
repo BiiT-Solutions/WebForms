@@ -3,34 +3,13 @@ package com.biit.webforms.persistence.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import com.biit.persistence.entity.StorableObject;
-import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
-import com.biit.webforms.enumerations.PortType;
-
-@Entity
-@Table(name = "webservices")
-public class Webservice extends StorableObject {
-	private static final long serialVersionUID = -8611580709413698997L;
-	public static final int MAX_NAME_LENGTH = 100;
-	public static final int MAX_DESCRIPTION_LENGTH = 250;
+public class Webservice {
 	
-	@Column(length = MAX_NAME_LENGTH, unique=true)
 	private String name;
-	
-	@Column(length = MAX_DESCRIPTION_LENGTH)
-	private String description;
-	
-	private String inputXml;
-	
-	private String outputXml;
-	
+			
 	private String protocol;
 	
 	private String host;
@@ -39,61 +18,17 @@ public class Webservice extends StorableObject {
 	
 	private String path;
 	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "webservice", fetch=FetchType.EAGER)
-	private Set<WebservicePort> webservicePorts;
+	private Set<WebserviceIoPort> inputPorts;
+	
+	private Set<WebserviceIoPort> outputPorts;
+	
+	private Set<WebserviceValidationPort> validationPorts;
 	
 	public Webservice() {
 		super();
-		webservicePorts = new HashSet<WebservicePort>();
-	}
-
-	@Override
-	public Set<StorableObject> getAllInnerStorableObjects() {
-		Set<StorableObject> storableObjects = new HashSet<StorableObject>();
-		storableObjects.addAll(getWebservicePorts());
-		for(WebservicePort port: getWebservicePorts()){
-			storableObjects.addAll(port.getAllInnerStorableObjects());
-		}			
-		return storableObjects;
-	}
-
-	@Override
-	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		if(object instanceof Webservice){
-			copyBasicInfo(object);
-			Webservice webservice = (Webservice) object;
-			setName(webservice.getName());
-			setDescription(webservice.getDescription());
-			setInputXml(webservice.getInputXml());
-			setOutputXml(webservice.getOutputXml());
-			setProtocol(webservice.getProtocol());
-			setHost(webservice.getHost());
-			setPort(webservice.getPort());
-			setPath(webservice.getPath());
-			for(WebservicePort port: webservice.getWebservicePorts()){
-				WebservicePort copy = new WebservicePort();
-				copy.copyData(port);
-				getWebservicePorts().add(copy);
-			}
-		}else{
-			throw new NotValidStorableObjectException("Element of class '"+object.getClass().getName()+"' is not compatible with '"+Webservice.class.getName()+"'");
-		}
-	}
-
-	public String getInputXml() {
-		return inputXml;
-	}
-
-	public void setInputXml(String inputXml) {
-		this.inputXml = inputXml;
-	}
-
-	public String getOutputXml() {
-		return outputXml;
-	}
-
-	public void setOutputXml(String outputXml) {
-		this.outputXml = outputXml;
+		inputPorts = new HashSet<>();
+		outputPorts = new HashSet<>();
+		validationPorts = new HashSet<>();
 	}
 
 	public String getProtocol() {
@@ -128,10 +63,6 @@ public class Webservice extends StorableObject {
 		this.path = path;
 	}
 
-	public Set<WebservicePort> getWebservicePorts() {
-		return webservicePorts;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -140,38 +71,46 @@ public class Webservice extends StorableObject {
 		this.name = name;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public String getUrl() {
 		return getProtocol()+"://"+getHost()+":"+getPort()+"/"+getPath();
 	}
-	
-	public Set<WebservicePort> getXmlPorts(PortType type){
-		Set<WebservicePort> filteredPorts = new HashSet<>();
-		for(WebservicePort port: getWebservicePorts()){
-			if(port.getType().equals(type)){
-				filteredPorts.add(port);
-			}
-		}
-		return filteredPorts;
+
+	public Set<WebserviceIoPort> getInputPorts() {
+		return inputPorts;
 	}
 
-	public Set<WebservicePort> getInputPorts() {
-		return getXmlPorts(PortType.INPUT);
+	public void setInputPorts(Set<WebserviceIoPort> inputPorts) {
+		this.inputPorts = inputPorts;
+	}
+
+	public Set<WebserviceIoPort> getOutputPorts() {
+		return outputPorts;
+	}
+
+	public void setOutputPorts(Set<WebserviceIoPort> outputPorts) {
+		this.outputPorts = outputPorts;
+	}
+
+	public Set<WebserviceValidationPort> getValidationPorts() {
+		return validationPorts;
+	}
+
+	public void setValidationPorts(Set<WebserviceValidationPort> validationPorts) {
+		this.validationPorts = validationPorts;
 	}
 	
-	public Set<WebservicePort> getOutputPorts() {
-		return getXmlPorts(PortType.OUTPUT);
+	public String toJson(){
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.setPrettyPrinting();
+		Gson gson = gsonBuilder.create();
+		
+		return gson.toJson(this);
 	}
 	
-	public Set<WebservicePort> getValidatePorts() {
-		return getXmlPorts(PortType.VALIDATION);
+	public static Webservice fromJson(String jsonString){
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		Gson gson = gsonBuilder.create();
+
+		return (Webservice) gson.fromJson(jsonString, Webservice.class);
 	}
-	
 }

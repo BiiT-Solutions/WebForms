@@ -48,6 +48,7 @@ public class WindowWebservices extends WindowAcceptCancel{
 		table.addRows(UserSessionHandler.getController().getAllWebservices());
 		table.setSelectable(true);
 		table.setNullSelectionAllowed(false);
+		table.sortByName();
 		
 		//Select the first element if any.
 		if(table.getItemIds().isEmpty()){

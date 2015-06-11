@@ -4,6 +4,7 @@ import com.biit.form.entity.BaseQuestion;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
+import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
@@ -31,14 +32,14 @@ public class WindowEditInputLink extends WindowAcceptCancel{
 		setContent(generateContent());
 	}
 
-	private Component generateContent() {
+	protected Component generateContent() {
+		searchFormElement.setCaption(LanguageCodes.CAPTION_SELECT_FORM_ELEMENT.translation());
 		searchFormElement.setWidth("100%");
 		searchFormElement.setSelectableFilter(SystemField.class,Question.class);
 		searchFormElement.addValueChangeListener(new SearchFormElementChanged() {
 			
 			@Override
 			public void currentElement(Object object) {
-				getValue().setFormElement((BaseQuestion) object);
 				updateAcceptButton();
 			}
 		});
@@ -55,13 +56,15 @@ public class WindowEditInputLink extends WindowAcceptCancel{
 		getAcceptButton().setEnabled(searchFormElement.getValue()!=null);
 	}
 
-	private void configure() {
-		setDraggable(false);
+	protected void configure() {
+		setDraggable(true);
 		setModal(true);
 		setResizable(false);
 
 		setWidth(WINDOW_WIDTH);
 		setHeight(WINDOW_HEIGHT);
+		
+		setCaption(LanguageCodes.WINDOW_EDIT_INPUT_LINK.translation());
 	}
 
 	public void setValue(WebserviceCallLink value) {
@@ -76,6 +79,14 @@ public class WindowEditInputLink extends WindowAcceptCancel{
 
 	public FormLayout getRootLayout() {
 		return rootLayout;
+	}
+	
+	public void updateValue(){
+		getValue().setFormElement((BaseQuestion) searchFormElement.getValue());
+	}
+
+	protected SearchFormElementField getSearchFormElement() {
+		return searchFormElement;
 	}
 	
 }

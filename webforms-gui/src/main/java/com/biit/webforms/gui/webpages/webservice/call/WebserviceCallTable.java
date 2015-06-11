@@ -33,4 +33,8 @@ public class WebserviceCallTable extends Table{
 	public void updateRow(Item item, WebserviceCall call){
 		item.getItemProperty(Property.NAME).setValue(call.getName());
 	}
+	
+	public void sortByName() {
+		sort(new Object[]{Property.NAME}, new boolean[]{true});
+	}
 }

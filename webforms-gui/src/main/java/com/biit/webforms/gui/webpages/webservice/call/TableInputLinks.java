@@ -41,10 +41,14 @@ public class TableInputLinks extends Table{
 	
 	@SuppressWarnings("unchecked")
 	protected void updateRow(Item item, WebserviceCallLink link) {
-		item.getItemProperty(Properties.PORT_NAME).setValue(link.getWebservicePort().getName());
+		item.getItemProperty(Properties.PORT_NAME).setValue(link.getWebservicePort());
 		if(link.getFormElement()!=null){
 			item.getItemProperty(Properties.FORM_ELEMENT).setValue(link.getFormElement().getPathName());
 		}
+	}
+
+	public void sortByName() {
+		sort(new Object[]{Properties.PORT_NAME}, new boolean[]{true});
 	}
 
 }

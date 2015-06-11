@@ -1,0 +1,37 @@
+{
+  "name": "validate_bsn",
+  "protocol": "https",
+  "host": "localhost",
+  "port": "8081",
+  "path": "rest/checkBsn",
+  "inputPorts": [
+    {
+      "name": "bsn",
+      "xpath": ""
+    }
+  ],
+  "outputPorts": [
+    {
+      "name": "adress",
+      "xpath": "/adress"
+    },
+    {
+      "name": "name",
+      "xpath": "/name"
+    },
+    {
+      "name": "surname",
+      "xpath": "/surname"
+    }
+  ],
+  "validationPorts": [
+    {
+      "validationValues": [
+        "NOT_FOUND",
+        "INVALID_BSN"
+      ],
+      "name": "validation",
+      "xpath": "/validation"
+    }
+  ]
+}

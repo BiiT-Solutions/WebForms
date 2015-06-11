@@ -1,8 +1,13 @@
 package com.biit.webforms.persistence.dao;
 
-import com.biit.persistence.dao.IJpaGenericDao;
+import java.util.Set;
+
+import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
 import com.biit.webforms.persistence.entity.Webservice;
 
-public interface IWebserviceDao extends IJpaGenericDao<Webservice, Long>  {
+public interface IWebserviceDao {
 
+	Set<Webservice> getAll();
+	
+	Webservice findWebservice(String name) throws WebserviceNotFoundException;
 }

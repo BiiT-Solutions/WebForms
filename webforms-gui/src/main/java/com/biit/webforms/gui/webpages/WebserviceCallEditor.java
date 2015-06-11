@@ -86,10 +86,16 @@ public class WebserviceCallEditor extends SecuredWebPage {
 		
 		updateUpperMenu();
 		updateWebserviceCallTable();
+		selectFirstTableItem();
 	}
 	
+	private void selectFirstTableItem() {
+		webserviceCallTable.setValue(webserviceCallTable.getItemIds().iterator().next());
+	}
+
 	private void updateWebserviceCallConfigComponent(){
 		webserviceCallComponent.setValue((WebserviceCall)webserviceCallTable.getValue());
+		webserviceCallComponent.setEnabled((WebserviceCall)webserviceCallTable.getValue()!=null);
 	}
 
 	private UpperMenu createUpperMenu() {
@@ -171,6 +177,8 @@ public class WebserviceCallEditor extends SecuredWebPage {
 	protected void save() {
 		try {
 			UserSessionHandler.getController().saveForm();
+			MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE,
+					LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
@@ -200,11 +208,11 @@ public class WebserviceCallEditor extends SecuredWebPage {
 				}
 			}
 		}
+		webserviceCallTable.sortByName();
 	}
 
 	private void updateUpperMenu() {
 		boolean webserviceCallSelected = webserviceCallTable.getValue()!=null;
-		
 		upperMenu.getRemoveWebserviceCall().setEnabled(webserviceCallSelected);
 		upperMenu.getEditWebserviceLink().setEnabled(webserviceCallSelected);
 		upperMenu.getRemoveWebserviceLink().setEnabled(webserviceCallSelected);

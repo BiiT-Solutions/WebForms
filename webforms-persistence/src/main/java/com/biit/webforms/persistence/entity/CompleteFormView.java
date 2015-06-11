@@ -513,6 +513,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	@Override
 	public void addWebserviceCall(WebserviceCall webservviceCall){
 		if(form!=null){
+			webservviceCall.setForm(form);
 			form.addWebserviceCall(webservviceCall);
 		}
 	}
