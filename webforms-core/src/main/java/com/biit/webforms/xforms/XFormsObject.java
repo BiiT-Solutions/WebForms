@@ -647,7 +647,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 				flowvisibility.addAll(othersVisibility);
 				// If condition is empty, inherit the relevance of the previous element. Others also has empty
 				// condition.
-				System.out.println(othersVisibility);
 			} else if (flow.getCondition().isEmpty()) {
 				// List<Token> previousVisibility = getXFormsHelper().getPreviousVisibilityTokens(flow);
 				List<Token> previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(flow.getOrigin());
