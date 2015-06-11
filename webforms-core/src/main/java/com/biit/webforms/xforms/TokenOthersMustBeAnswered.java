@@ -10,6 +10,10 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
 
+/**
+ * This dummy token indicates that the "OTHERS" rule must be answered. This token is translated to Orbeon as
+ * string-lenght()>0.
+ */
 public class TokenOthersMustBeAnswered extends Token {
 	private static final long serialVersionUID = -5314559285041409174L;
 	private BaseQuestion question;

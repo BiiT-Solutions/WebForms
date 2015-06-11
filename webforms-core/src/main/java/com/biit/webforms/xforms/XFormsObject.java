@@ -623,9 +623,17 @@ public abstract class XFormsObject<T extends TreeObject> {
 				// Others needs that all the conditions are answered.
 				for (Token token : flowvisibility) {
 					if (token instanceof TokenWithQuestion) {
-						// Condition must be answered.
-						othersVisibility.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token).getQuestion()));
-					} else if (token.getType().equals(TokenTypes.AND) || token.getType().equals(TokenTypes.OR)) {
+						// Condition must be answered if mandatory
+						if ((((TokenWithQuestion) token).getQuestion()).isMandatory()) {
+							othersVisibility.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token)
+									.getQuestion()));
+						} else {
+							// No token added: remove previous AND or OR.
+							if (isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
+								othersVisibility.remove(othersVisibility.size() - 1);
+							}
+						}
+					} else if (isLogicalOperator(token)) {
 						// If are multiple conditions, we need to add also the and/or conjunction
 						othersVisibility.add(token.generateCopy());
 					}
@@ -639,6 +647,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 				flowvisibility.addAll(othersVisibility);
 				// If condition is empty, inherit the relevance of the previous element. Others also has empty
 				// condition.
+				System.out.println(othersVisibility);
 			} else if (flow.getCondition().isEmpty()) {
 				// List<Token> previousVisibility = getXFormsHelper().getPreviousVisibilityTokens(flow);
 				List<Token> previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(flow.getOrigin());
@@ -718,6 +727,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 			}
 		}
 		return visibility;
+	}
+
+	/**
+	 * Returns if the token is a AND or a OR.
+	 * @param token
+	 * @return
+	 */
+	private boolean isLogicalOperator(Token token) {
+		return token.getType().equals(TokenTypes.AND) || token.getType().equals(TokenTypes.OR);
 	}
 
 	/**
