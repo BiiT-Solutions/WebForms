@@ -390,7 +390,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// Infotext has no input. We must copy relevant rule from this element.
 			if ((((TokenAnswerNeeded) token).getQuestion() instanceof Text)
 					|| (((TokenAnswerNeeded) token).getQuestion() instanceof SystemField)) {
-				visibility.append(getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()));
+				visibility.append("("
+						+ getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()) + ")");
 				// Date is a specific case. Already has some data.
 			} else if (((TokenAnswerNeeded) token).isDateField()) {
 				// Dates are uses as string due to avoid error when fields are hidden and have an empty value.
@@ -424,8 +425,24 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getMultiCheckBoxVisibility(StringBuilder visibility, TokenComparationAnswer token) {
+		// Not equals is translated as a not.
+		if (token.getType().equals(TokenTypes.NE)) {
+			// Not Equals is true if the answer is empty! Avoid it.
+			if (token.getQuestion().isMandatory()) {
+				visibility.append("(string-length("
+						+ getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath()
+						+ "/text()) &gt; 0 and ");
+			}
+			visibility.append("not(");
+		}
 		visibility.append("contains(concat(").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 				.append(", ' '), concat('").append(token.getAnswer().getName()).append("', ' '))");
+		if (token.getType().equals(TokenTypes.NE)) {
+			visibility.append(")");
+			if (token.getQuestion().isMandatory()) {
+				visibility.append(")");
+			}
+		}
 	}
 
 	/**
@@ -436,9 +453,18 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getBasicSelectionVisibility(StringBuilder visibility, TokenComparationAnswer token) {
+		// Not Equals is true if the answer is empty! Avoid it.
+		if (token.getQuestion().isMandatory() && token.getType().equals(TokenTypes.NE)) {
+			visibility.append("(string-length("
+					+ getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath()
+					+ "/text()) &gt; 0 and ");
+		}
 		visibility.append(getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath());
 		visibility.append(token.getType().getOrbeonRepresentation());
 		visibility.append("'").append(((TokenComparationAnswer) token).getAnswer()).append("'");
+		if (token.getQuestion().isMandatory() && token.getType().equals(TokenTypes.NE)) {
+			visibility.append(")");
+		}
 	}
 
 	/**
