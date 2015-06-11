@@ -15,9 +15,9 @@ public class TokenUtils {
 	 */
 	public static boolean needsEnclosingParenthesis(List<Token> condition) {
 		// If it Has a Or or And, does not starts with a parenthesis.
-		return isMultiplePredicate(condition) && (!condition.get(0).getType().equals(TokenTypes.LEFT_PAR)
+		return isMultiplePredicate(condition) && ((!condition.get(0).getType().equals(TokenTypes.LEFT_PAR)
 		// The ending parenthesis does not match with the starting one.
-				|| condition.indexOf(getClosingParenthesis(condition.get(0), condition)) != condition.size() - 1);
+				|| condition.indexOf(getClosingParenthesis(condition.get(0), condition)) != condition.size() - 1));
 	}
 
 	public static boolean isMultiplePredicate(List<Token> condition) {

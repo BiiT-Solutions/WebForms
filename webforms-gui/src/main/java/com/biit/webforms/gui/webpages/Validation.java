@@ -30,6 +30,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.validators.CompareFormAbcdStructure;
+import com.biit.webforms.validators.EmptyFlowIsNotAlone;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.validators.ValidateFormComplete;
 import com.biit.webforms.validators.ValidateFormFlows;
@@ -441,21 +442,27 @@ public class Validation extends SecuredWebPage {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_ELEMENT_NO_FLOW_IN,
 						new Object[] { ((FormElementWithoutFlowIn) report).getOrigin().getPathName() }));
 			} else if (report instanceof MultipleDynamicAnswersReferenceTheSameQuestion) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_MULTIPLE_DYNAMIC_ANSWERS_REFERENCE_SAME_QUESTION,
-						new Object[] { ((MultipleDynamicAnswersReferenceTheSameQuestion) report).getQuestion().getPathName(), ((MultipleDynamicAnswersReferenceTheSameQuestion) report).getAnswer()
-						.getReference().getPathName() }));
+				text.append(ServerTranslate.translate(
+						LanguageCodes.VALIDATION_MULTIPLE_DYNAMIC_ANSWERS_REFERENCE_SAME_QUESTION, new Object[] {
+								((MultipleDynamicAnswersReferenceTheSameQuestion) report).getQuestion().getPathName(),
+								((MultipleDynamicAnswersReferenceTheSameQuestion) report).getAnswer().getReference()
+										.getPathName() }));
 			} else if (report instanceof DynamicAnswerNullReference) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_DYNAMIC_ANSWER_NULL_VALUE,
 						new Object[] { ((DynamicAnswerNullReference) report).getQuestion().getPathName() }));
 			} else if (report instanceof DynamicAnswerReferenceInvalid) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_DYNAMIC_ANSWER_REFERENCE_INVALID,
-						new Object[] { ((DynamicAnswerReferenceInvalid) report).getQuestion().getPathName(), ((DynamicAnswerReferenceInvalid) report).getReference().getPathName() }));
+						new Object[] { ((DynamicAnswerReferenceInvalid) report).getQuestion().getPathName(),
+								((DynamicAnswerReferenceInvalid) report).getReference().getPathName() }));
 			} else if (report instanceof NullValueReport) {
 				// Only advise once.
 				if (!nullReportAdded) {
 					text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_NULL_VALUE));
 					nullReportAdded = true;
 				}
+			} else if (report instanceof EmptyFlowIsNotAlone) {
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_EMPTY_FLOW_IS_NOT_ALONE,
+						new Object[] { ((EmptyFlowIsNotAlone) report).getFlow().getOrigin().getPathName() }));
 			} else {
 				text.append(report.getReport());
 			}
