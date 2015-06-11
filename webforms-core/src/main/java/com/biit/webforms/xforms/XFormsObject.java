@@ -383,7 +383,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// Infotext has no input. We must copy relevant rule from this element.
 			if ((((TokenAnswerNeeded) token).getQuestion() instanceof Text)
 					|| (((TokenAnswerNeeded) token).getQuestion() instanceof SystemField)) {
-				visibility.append(getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()));
+				visibility.append("("
+						+ getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()) + ")");
 				// Date is a specific case. Already has some data.
 			} else if (((TokenAnswerNeeded) token).isDateField()) {
 				// Dates are uses as string due to avoid error when fields are hidden and have an empty value.
