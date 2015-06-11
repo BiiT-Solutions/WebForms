@@ -56,9 +56,9 @@ public class ValidateLogic extends SimpleValidator<Form> {
 				} catch (DifferentDateUnitForQuestions e) {
 					assertTrue(false, new DifferentDateUnitForQuestionsReport(element, e.getQuestionsAffected()));
 				}
-				try{
-					new FlowDomainBlockedByPreviousQuestion(form,(BaseQuestion) element);
-				} catch (FlowDomainBlocked e){
+				try {
+					new FlowDomainBlockedByPreviousQuestion(form, (BaseQuestion) element);
+				} catch (FlowDomainBlocked e) {
 					assertTrue(false, new FlowBlockedInQuestion((BaseQuestion) element));
 				}
 			} catch (Exception e) {
