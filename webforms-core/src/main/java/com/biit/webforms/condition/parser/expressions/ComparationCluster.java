@@ -81,7 +81,7 @@ public class ComparationCluster extends Expression implements WebformsExpression
 	public boolean checkBlockByMinTerms(Form form, BaseQuestion element) {
 		if(token instanceof ITokenQuestion){
 			Question question = ((ITokenQuestion) token).getQuestion();
-			if(FormWalker.anyPathFromOriginDoesntPassThrough(form, null, element, question)){
+			if (FormWalker.anyPathFromOriginDoesntPassThrough(form, null, element, question)){
 				return true;
 			}
 		}

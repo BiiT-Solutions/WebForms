@@ -15,9 +15,9 @@ public class TokenUtils {
 	 */
 	public static boolean needsEnclosingParenthesis(List<Token> condition) {
 		// If it Has a Or or And, does not starts with a parenthesis.
-		return isComposedPredicate(condition) && (!condition.get(0).getType().equals(TokenTypes.LEFT_PAR)
+		return isComposedPredicate(condition) && ((!condition.get(0).getType().equals(TokenTypes.LEFT_PAR)
 		// The ending parenthesis does not match with the starting one.
-				|| condition.indexOf(getClosingParenthesis(condition.get(0), condition)) != condition.size() - 1);
+				|| condition.indexOf(getClosingParenthesis(condition.get(0), condition)) != condition.size() - 1));
 	}
 
 	public static boolean isComposedPredicate(List<Token> condition) {

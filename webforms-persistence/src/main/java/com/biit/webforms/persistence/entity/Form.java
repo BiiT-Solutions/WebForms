@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -267,23 +268,23 @@ public class Form extends BaseForm implements IWebformsFormView {
 			copy.copyRules(this, false);
 			copy.updateRuleReferences();
 		}
-		
+
 		copy.updateDynamicAnswers();
 
 		return copy;
 	}
 
 	private void updateDynamicAnswers() {
-		updateDynamicAnswers(getAllChildrenInHierarchy(Question.class));		
+		updateDynamicAnswers(getAllChildrenInHierarchy(Question.class));
 	}
 
 	private void updateDynamicAnswers(Set<TreeObject> allQuestionsInHierarchy) {
-		HashMap<String,Question> questions = new HashMap<>();
-		for(TreeObject child: allQuestionsInHierarchy){
-			questions.put(child.getComparationId(),(Question) child);
+		HashMap<String, Question> questions = new HashMap<>();
+		for (TreeObject child : allQuestionsInHierarchy) {
+			questions.put(child.getComparationId(), (Question) child);
 		}
-		
-		for(TreeObject child: getAllChildrenInHierarchy(DynamicAnswer.class)){
+
+		for (TreeObject child : getAllChildrenInHierarchy(DynamicAnswer.class)) {
 			DynamicAnswer answer = (DynamicAnswer) child;
 			answer.setReference(questions.get(answer.getReference().getComparationId()));
 		}
@@ -370,6 +371,13 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return getFlows(getChild(originPath), getChild(destinyPath));
 	}
 
+	/**
+	 * Gets all flows that has as source and destiny the input parameters.
+	 * 
+	 * @param origin
+	 * @param destiny
+	 * @return
+	 */
 	public Set<Flow> getFlows(TreeObject origin, TreeObject destiny) {
 		Set<Flow> selectedFlows = new HashSet<Flow>();
 		for (Flow flow : getFlows()) {
@@ -636,7 +644,46 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public void updateRuleReferences() {
 		updateRuleReferences(getFlows());
 	}
-	
+
+	public Set<List<Flow>> getAllFlowsFromOriginToDestiny(BaseQuestion origin, BaseQuestion destiny,
+			HashMap<TreeObject, Integer> questionIndex, ComputedFlowView computedFlowsView) {
+		Set<List<Flow>> availablePaths = new HashSet<List<Flow>>();
+		Set<Flow> flowsTo = computedFlowsView.getFlowsByDestiny(destiny);
+		for (Flow flow : flowsTo) {
+			// Flows that comes from question hat are previous to the origin, can be discarded.
+			if (questionIndex.get(flow.getOrigin()) < questionIndex.get(origin)) {
+				continue;
+			}
+			// Add recursively all the paths.
+			List<Flow> path = new ArrayList<>();
+			Set<List<Flow>> parentAvailablePaths = getAllFlowsFromOriginToDestiny(origin, flow.getOrigin(),
+					questionIndex, computedFlowsView);
+			for (List<Flow> incomingPaths : parentAvailablePaths) {
+				path.addAll(incomingPaths);
+				path.add(flow);
+			}
+			availablePaths.add(path);
+		}
+		return availablePaths;
+	}
+
+	/**
+	 * Gets the relationship between questions and the global index in the form.
+	 * 
+	 * @return
+	 */
+	public HashMap<TreeObject, Integer> getQuestionsInOrder() {
+		HashMap<TreeObject, Integer> questionIndex = new HashMap<>();
+		LinkedHashSet<TreeObject> orderedQuestions = getAllChildrenInHierarchy(BaseQuestion.class);
+		int index = 0;
+		Iterator<TreeObject> iterator = orderedQuestions.iterator();
+		while (iterator.hasNext()) {
+			questionIndex.put(iterator.next(), new Integer(index));
+			index++;
+		}
+		return questionIndex;
+	}
+
 	public void updateRuleReferences(Set<Flow> flows) {
 		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
 		HashMap<String, TreeObject> mappedElements = new HashMap<>();
@@ -700,9 +747,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Moves an object of the tree to last position in @toParent returns @objectToMove
+	 * 
 	 * @param objectToMove
 	 * @param toParent
 	 * @throws ChildrenNotFoundException
@@ -711,20 +759,20 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 */
 	public static synchronized TreeObject move(TreeObject objectToMove, TreeObject toParent)
 			throws ChildrenNotFoundException, NotValidChildException, ElementIsReadOnly {
-		if(!Objects.equals(objectToMove.getAncestor(Form.class), toParent.getAncestor(Form.class))){
+		if (!Objects.equals(objectToMove.getAncestor(Form.class), toParent.getAncestor(Form.class))) {
 			throw new NotValidChildException("Root form for each element is different");
 		}
 		TreeObject newInstanceOfObjectToMove = TreeObject.move(objectToMove, toParent);
-				
+
 		Form form = (Form) objectToMove.getAncestor(Form.class);
 		form.updateRuleReferences();
 		return newInstanceOfObjectToMove;
 	}
-	
+
 	@Override
 	public void updateChildrenSortSeqs() {
 		super.updateChildrenSortSeqs();
-		for(Flow flow: getFlows()){
+		for (Flow flow : getFlows()) {
 			flow.updateConditionSortSeq();
 		}
 	}
