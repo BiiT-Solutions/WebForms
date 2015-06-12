@@ -31,6 +31,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.validators.CompareFormAbcdStructure;
 import com.biit.webforms.validators.EmptyFlowIsNotAlone;
+import com.biit.webforms.validators.FlowConditionIsUseless;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.validators.ValidateFormComplete;
 import com.biit.webforms.validators.ValidateFormFlows;
@@ -463,6 +464,9 @@ public class Validation extends SecuredWebPage {
 			} else if (report instanceof EmptyFlowIsNotAlone) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_EMPTY_FLOW_IS_NOT_ALONE,
 						new Object[] { ((EmptyFlowIsNotAlone) report).getFlow().getOrigin().getPathName() }));
+			} else if (report instanceof FlowConditionIsUseless){
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_CONDITION_IS_USELESS,
+						new Object[] { ((FlowConditionIsUseless) report).getFlow(),  ((FlowConditionIsUseless) report).getCondition()}));
 			} else {
 				text.append(report.getReport());
 			}
