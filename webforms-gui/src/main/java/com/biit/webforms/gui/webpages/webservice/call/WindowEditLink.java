@@ -14,7 +14,7 @@ import com.biit.webforms.persistence.entity.WebserviceCallLink;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 
-public class WindowEditInputLink extends WindowAcceptCancel{
+public class WindowEditLink extends WindowAcceptCancel{
 	private static final long serialVersionUID = -8577100119556278102L;
 
 	private static final String WINDOW_WIDTH = "300px";
@@ -24,7 +24,7 @@ public class WindowEditInputLink extends WindowAcceptCancel{
 	private final FormLayout rootLayout;
 	private final SearchFormElementField searchFormElement;
 	
-	public WindowEditInputLink() {
+	public WindowEditLink() {
 		super();
 		rootLayout = new FormLayout();
 		searchFormElement = new SearchFormElementField(Form.class, Category.class, Group.class,SystemField.class,Question.class);
@@ -63,8 +63,6 @@ public class WindowEditInputLink extends WindowAcceptCancel{
 
 		setWidth(WINDOW_WIDTH);
 		setHeight(WINDOW_HEIGHT);
-		
-		setCaption(LanguageCodes.WINDOW_EDIT_INPUT_LINK.translation());
 	}
 
 	public void setValue(WebserviceCallLink value) {
