@@ -35,7 +35,7 @@ public abstract class WebserviceCallLink extends StorableObject{
 		setWebservicePort("");
 	}
 	
-	public WebserviceCallLink(WebserviceIoPort port){
+	public WebserviceCallLink(WebservicePort port){
 		super();
 		setWebservicePort(port.getName());
 

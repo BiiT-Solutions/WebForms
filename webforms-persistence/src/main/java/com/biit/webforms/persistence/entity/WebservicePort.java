@@ -1,17 +1,17 @@
 package com.biit.webforms.persistence.entity;
 
 
-public class WebserviceIoPort {
+public class WebservicePort {
 	
 	private String name;
 	
 	private String xpath;
 	
-	public WebserviceIoPort(){
+	public WebservicePort(){
 		
 	}
 	
-	public WebserviceIoPort(String name, String xpath) {
+	public WebservicePort(String name, String xpath) {
 		setName(name);
 		setXpath(xpath);
 	}

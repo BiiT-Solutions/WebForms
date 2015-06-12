@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class WebserviceValidationPort extends WebserviceIoPort{
+public class WebserviceValidationPort extends WebservicePort{
 
 	private List<String> errorCodes;
 	

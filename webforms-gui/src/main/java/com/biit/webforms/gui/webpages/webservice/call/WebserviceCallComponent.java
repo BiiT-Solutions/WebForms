@@ -16,7 +16,7 @@ import com.biit.webforms.persistence.entity.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.WebserviceCallLink;
 import com.biit.webforms.persistence.entity.WebserviceCallOutputLink;
 import com.biit.webforms.persistence.entity.WebserviceCallValidationLink;
-import com.biit.webforms.persistence.entity.WebserviceIoPort;
+import com.biit.webforms.persistence.entity.WebservicePort;
 import com.biit.webforms.persistence.entity.WebserviceValidationPort;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -235,14 +235,14 @@ public class WebserviceCallComponent extends CustomComponent {
 	 * @return
 	 */
 	private Set<WebserviceCallLink> getAllOutputLinks() {
-		Set<WebserviceIoPort> outputPorts = webservice.getOutputPorts();
+		Set<WebservicePort> outputPorts = webservice.getOutputPorts();
 		Set<WebserviceCallOutputLink> existentLinks = webserviceCall.getOutputLinks();
 		Set<WebserviceCallLink> allLinks = new HashSet<>();
 		for (WebserviceCallOutputLink link : existentLinks) {
 			allLinks.add(link);
 		}
 
-		for (WebserviceIoPort port : outputPorts) {
+		for (WebservicePort port : outputPorts) {
 			boolean exists = false;
 			for (WebserviceCallOutputLink link : existentLinks) {
 				if (link.getWebservicePort().equals(port.getName())) {
@@ -258,14 +258,14 @@ public class WebserviceCallComponent extends CustomComponent {
 	}
 
 	private Set<WebserviceCallLink> getAllInputLinks() {
-		Set<WebserviceIoPort> outputPorts = webservice.getInputPorts();
+		Set<WebservicePort> outputPorts = webservice.getInputPorts();
 		Set<WebserviceCallInputLink> existentLinks = webserviceCall.getInputLinks();
 		Set<WebserviceCallLink> allLinks = new HashSet<>();
 		for (WebserviceCallInputLink link : existentLinks) {
 			allLinks.add(link);
 		}
 
-		for (WebserviceIoPort port : outputPorts) {
+		for (WebservicePort port : outputPorts) {
 			boolean exists = false;
 			for (WebserviceCallInputLink link : existentLinks) {
 				if (link.getWebservicePort().equals(port.getName())) {

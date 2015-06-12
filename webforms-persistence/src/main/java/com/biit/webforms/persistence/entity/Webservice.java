@@ -18,9 +18,9 @@ public class Webservice {
 	
 	private String path;
 	
-	private Set<WebserviceIoPort> inputPorts;
+	private Set<WebservicePort> inputPorts;
 	
-	private Set<WebserviceIoPort> outputPorts;
+	private Set<WebservicePort> outputPorts;
 	
 	private Set<WebserviceValidationPort> validationPorts;
 	
@@ -75,19 +75,19 @@ public class Webservice {
 		return getProtocol()+"://"+getHost()+":"+getPort()+"/"+getPath();
 	}
 
-	public Set<WebserviceIoPort> getInputPorts() {
+	public Set<WebservicePort> getInputPorts() {
 		return inputPorts;
 	}
 
-	public void setInputPorts(Set<WebserviceIoPort> inputPorts) {
+	public void setInputPorts(Set<WebservicePort> inputPorts) {
 		this.inputPorts = inputPorts;
 	}
 
-	public Set<WebserviceIoPort> getOutputPorts() {
+	public Set<WebservicePort> getOutputPorts() {
 		return outputPorts;
 	}
 
-	public void setOutputPorts(Set<WebserviceIoPort> outputPorts) {
+	public void setOutputPorts(Set<WebservicePort> outputPorts) {
 		this.outputPorts = outputPorts;
 	}
 

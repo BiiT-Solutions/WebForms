@@ -14,7 +14,7 @@ public class WebserviceCallInputLink extends WebserviceCallLink{
 		super();
 	}
 	
-	public WebserviceCallInputLink(WebserviceIoPort port){
+	public WebserviceCallInputLink(WebservicePort port){
 		super(port);
 	}
 

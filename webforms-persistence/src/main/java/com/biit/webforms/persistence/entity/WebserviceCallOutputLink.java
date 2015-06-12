@@ -20,7 +20,7 @@ public class WebserviceCallOutputLink extends WebserviceCallLink {
 		setEditable(EDITABLE_DEFAULT_VALUE);
 	}
 	
-	public WebserviceCallOutputLink(WebserviceIoPort port){
+	public WebserviceCallOutputLink(WebservicePort port){
 		super(port);
 		setEditable(EDITABLE_DEFAULT_VALUE);
 	}

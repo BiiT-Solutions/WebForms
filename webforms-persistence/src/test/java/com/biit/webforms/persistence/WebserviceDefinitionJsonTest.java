@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 
 import com.biit.webforms.persistence.dao.IWebserviceDao;
 import com.biit.webforms.persistence.entity.Webservice;
-import com.biit.webforms.persistence.entity.WebserviceIoPort;
+import com.biit.webforms.persistence.entity.WebservicePort;
 import com.biit.webforms.persistence.entity.WebserviceValidationPort;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -49,10 +49,10 @@ public class WebserviceDefinitionJsonTest extends AbstractTransactionalTestNGSpr
 		webservice.setHost(WEBSERVICE_HOST);
 		webservice.setPort(WEBSERVICE_PORT);
 		webservice.setPath(WEBSERVICE_PATH);
-		webservice.getInputPorts().add(new WebserviceIoPort(INPUT_PORT,INPUT_XPATH));
-		webservice.getOutputPorts().add(new WebserviceIoPort(OUTPUT_PORT_1,OUTPUT_XPATH_1));
-		webservice.getOutputPorts().add(new WebserviceIoPort(OUTPUT_PORT_2,OUTPUT_XPATH_2));
-		webservice.getOutputPorts().add(new WebserviceIoPort(OUTPUT_PORT_3,OUTPUT_XPATH_3));
+		webservice.getInputPorts().add(new WebservicePort(INPUT_PORT,INPUT_XPATH));
+		webservice.getOutputPorts().add(new WebservicePort(OUTPUT_PORT_1,OUTPUT_XPATH_1));
+		webservice.getOutputPorts().add(new WebservicePort(OUTPUT_PORT_2,OUTPUT_XPATH_2));
+		webservice.getOutputPorts().add(new WebservicePort(OUTPUT_PORT_3,OUTPUT_XPATH_3));
 		webservice.getValidationPorts().add(new WebserviceValidationPort(VALIDATION_PORT,VALIDATION_XPATH,NOT_FOUND,INVALID_BSN));
 		
 		String jsonString = webservice.toJson();
@@ -65,11 +65,11 @@ public class WebserviceDefinitionJsonTest extends AbstractTransactionalTestNGSpr
 		Assert.assertEquals(parsedJson.getHost(), WEBSERVICE_HOST);
 		Assert.assertEquals(parsedJson.getPort(), WEBSERVICE_PORT);
 		
-		for(WebserviceIoPort input : parsedJson.getInputPorts()){
+		for(WebservicePort input : parsedJson.getInputPorts()){
 			Assert.assertTrue(input.getName().equals(INPUT_PORT));
 			Assert.assertTrue(input.getXpath().equals(INPUT_XPATH));
 		}
-		for(WebserviceIoPort output : parsedJson.getOutputPorts()){
+		for(WebservicePort output : parsedJson.getOutputPorts()){
 			Assert.assertTrue(output.getName().equals(OUTPUT_PORT_1)||output.getName().equals(OUTPUT_PORT_2)||output.getName().equals(OUTPUT_PORT_3));
 			Assert.assertTrue(output.getXpath().equals(OUTPUT_XPATH_1)||output.getXpath().equals(OUTPUT_XPATH_2)||output.getXpath().equals(OUTPUT_XPATH_3));
 		}
