@@ -558,21 +558,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 		// String visibility = getRelevantByFlows(flowsTo);
 		StringBuilder visibility = new StringBuilder();
 
-		// One flow without condition, is the same visibility as the previous element.
-		if (flows.size() == 1) {
-			Flow flow = ((Flow) flows.iterator().next());
-			if (flow.getCondition().isEmpty()) {
-				String previousElementVisibility = getXFormsHelper().getVisibilityOfElement(getSource());
-				if (previousElementVisibility != null) {
-					return previousElementVisibility;
-				}
-
-				// Changed to the use of events.
-				return "(instance('visible')/" + getXFormsHelper().getUniqueName(flow.getOrigin()) + " != 'false')";
-			}
-		}
-
-		// More than one flow.
 		// Get all visibility rule as tokens.
 		List<Token> visibilityAsToken = getRelevantByFlowsAsTokens(flows);
 		if (visibilityAsToken.isEmpty()) {
@@ -620,7 +605,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// question the others is also true.
 			if (flow.isOthers()) {
 				List<Token> othersVisibility = new ArrayList<>();
-				// Others needs that all the conditions are answered.
+				// Others needs that all the conditions are answered if mandatory.
 				for (Token token : flowvisibility) {
 					if (token instanceof TokenWithQuestion) {
 						// Condition must be answered if mandatory
@@ -629,38 +614,44 @@ public abstract class XFormsObject<T extends TreeObject> {
 									.getQuestion()));
 						} else {
 							// No token added: remove previous AND or OR.
-							if (isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
+							if (TokenUtils.isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
 								othersVisibility.remove(othersVisibility.size() - 1);
 							}
 						}
-					} else if (isLogicalOperator(token)) {
+					} else if (TokenUtils.isLogicalOperator(token)) {
 						// If are multiple conditions, we need to add also the and/or conjunction
 						othersVisibility.add(token.generateCopy());
 					}
 				}
-				// Add parenthesis if needed.
+				// Add parenthesis to new tokens created.
+				if (TokenUtils.needsEnclosingParenthesis(othersVisibility)) {
+					othersVisibility.add(0, Token.getLeftParenthesisToken());
+					othersVisibility.add(Token.getRigthParenthesisToken());
+				}
+
+				// Add parenthesis to all predicate if needed.
 				if (existPreviousCondition(flowvisibility) && !othersVisibility.isEmpty()) {
 					flowvisibility.add(0, Token.getLeftParenthesisToken());
 					othersVisibility.add(0, Token.getAndToken());
 					othersVisibility.add(Token.getRigthParenthesisToken());
 				}
 				flowvisibility.addAll(othersVisibility);
+
+				// Ensure origin is visible.
+				List<Token> previousVisibility = getPreviousVisibility(flow.getOrigin());
+				if (previousVisibility != null && !previousVisibility.isEmpty()) {
+					flowvisibility.add(0, Token.getLeftParenthesisToken());
+					flowvisibility.add(Token.getAndToken());
+					flowvisibility.addAll(previousVisibility);
+					flowvisibility.add(Token.getRigthParenthesisToken());
+				}
+
 				// If condition is empty, inherit the relevance of the previous element. Others also has empty
 				// condition.
 			} else if (flow.getCondition().isEmpty()) {
-				// List<Token> previousVisibility = getXFormsHelper().getPreviousVisibilityTokens(flow);
-				List<Token> previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(flow.getOrigin());
-				// Not stored visibility. First element or is another element that also inherits relevant rule.
-				if (previousVisibility == null) {
-					// If it is first element.
-					if (getXFormsHelper().getFlowsWithDestiny(flow.getOrigin()).isEmpty()) {
-						previousVisibility = new ArrayList<>();
-					} else {
-						// not first element, inherited relevant rule
-						previousVisibility = new ArrayList<>();
-						previousVisibility.add(new TokenInheritRelevant(flow.getOrigin()));
-					}
-				}
+				// Get previous visibility.
+				List<Token> previousVisibility = getPreviousVisibility(flow.getOrigin());
+
 				if (!previousVisibility.isEmpty()) {
 					// Add 'AND'.
 					if (existPreviousCondition(flowvisibility)) {
@@ -729,12 +720,50 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Returns if the token is a AND or a OR.
-	 * @param token
+	 * Obtains the previous element visibility. Can be an event if the previous element is a question, a copy of the
+	 * relevant rule if the previous one is a system field.
+	 * 
+	 * @param flow
 	 * @return
 	 */
-	private boolean isLogicalOperator(Token token) {
-		return token.getType().equals(TokenTypes.AND) || token.getType().equals(TokenTypes.OR);
+	private List<Token> getPreviousVisibility(BaseQuestion element) {
+		List<Token> previousVisibility = null;
+		// If it is first element.
+		if (getXFormsHelper().getFlowsWithDestiny(element).isEmpty()) {
+			// No visibility rules defined.
+			previousVisibility = new ArrayList<>();
+		} else {
+			// not first element, inherited relevant rule
+			previousVisibility = new ArrayList<>();
+			// Inherit must skip all hidden elements by default, as system fields.
+			BaseQuestion origin = element;
+			while (isAlwaysHiddenElement(origin)) {
+				Set<Flow> previousFlow = getXFormsHelper().getFlowsWithDestiny(origin);
+				if (previousFlow.size() > 1) {
+					// If the system field has a complex flow, we cannot use events but inherit the relevant
+					// rule.
+					break;
+				} else {
+					// Get previous element by flow.
+					origin = previousFlow.iterator().next().getOrigin();
+				}
+			}
+			if (!isAlwaysHiddenElement(origin)) {
+				// Event visibility from previous element
+				previousVisibility.add(new TokenInheritRelevant(origin));
+			} else {
+				// Copy relevant rule. Due to visibility of the previous element is always false.
+				previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(origin);
+			}
+		}
+		return previousVisibility;
+	}
+
+	private boolean isAlwaysHiddenElement(BaseQuestion element) {
+		if (element == null) {
+			return false;
+		}
+		return (element instanceof SystemField);
 	}
 
 	/**
