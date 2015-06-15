@@ -26,7 +26,8 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private final IconButton submenuNew, newForm, newFormVersion, removeForm, importAbcdForm, importJsonForm;
+	private final IconButton submenuNew, newForm, newFormVersion, webformReference, removeForm, importAbcdForm,
+			importJsonForm;
 	private final IconButton linkAbcdForm;
 	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms, downloadXFormsMultiple;
 	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson, exportXml,
@@ -61,6 +62,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		importJsonForm = new IconButton(LanguageCodes.CAPTION_IMPORT_JSON_FORM,
 				ThemeIcons.FORM_MANAGER_IMPORT_JSON_FORM, LanguageCodes.TOOLTIP_IMPORT_JSON_FORM, IconSize.BIG);
 		importJsonForm.setVisible(enableImportJson);
+
+		webformReference = new IconButton(LanguageCodes.CAPTION_LINK_WEBFORMS_FORM,
+				ThemeIcons.FORM_MANAGER_LINK_WEBFORMS_FORM, LanguageCodes.TOOLTIP_LINK_WEBFORMS_FORM, IconSize.BIG);
 
 		linkAbcdForm = new IconButton(LanguageCodes.CAPTION_LINK_ABCD_FORM, ThemeIcons.FORM_MANAGER_LINK_ABCD_FORM,
 				LanguageCodes.TOOLTIP_LINK_ABCD_FORM, IconSize.BIG);
@@ -107,7 +111,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_COMPARE_CONTENT, IconSize.BIG);
 
 		submenuNew = addSubMenu(ThemeIcons.NEW, LanguageCodes.CAPTION_NEW, LanguageCodes.TOOLTIP_NEW, newForm,
-				newFormVersion, importAbcdForm, importJsonForm);
+				webformReference, newFormVersion, importAbcdForm, importJsonForm);
 
 		removeForm = new IconButton(LanguageCodes.CAPTION_REMOVE_FORM, ThemeIcons.DELETE_FORM,
 				LanguageCodes.CAPTION_REMOVE_FORM, IconSize.MEDIUM);
@@ -131,6 +135,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public void addNewFormVersionListener(ClickListener listener) {
 		newFormVersion.addClickListener(listener);
+	}
+
+	public void addWebformReferenceListener(ClickListener listener) {
+		webformReference.addClickListener(listener);
 	}
 
 	public void addImportAbcdForm(ClickListener listener) {

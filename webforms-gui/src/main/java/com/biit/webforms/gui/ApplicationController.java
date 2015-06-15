@@ -336,6 +336,36 @@ public class ApplicationController {
 		return linkedSimpleAbcdForms;
 	}
 
+	/**
+	 * Creates a new form that has a reference another form.
+	 * 
+	 * @param form
+	 * @param formLabel
+	 * @param organizationId
+	 * @return
+	 * @throws NotValidStorableObjectException
+	 * @throws CharacterNotAllowedException
+	 * @throws FieldTooLongException
+	 * @throws FormWithSameNameException
+	 * @throws UnexpectedDatabaseException
+	 */
+	public Form createNewLinkedForm(Form form, String formLabel, Long organizationId)
+			throws NotValidStorableObjectException, CharacterNotAllowedException, FieldTooLongException,
+			FormWithSameNameException, UnexpectedDatabaseException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+				+ "' createNewLinkedForm " + form);
+
+		Form newForm = createForm(formLabel, organizationId);
+		newForm.setFormReference(form);
+		try {
+			formDao.makePersistent(newForm);
+		} catch (ConstraintViolationException cve) {
+			WebformsLogger.errorMessage(ApplicationController.class.getName(), cve);
+			throw cve;
+		}
+		return newForm;
+	}
+
 	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException,
 			NotValidStorableObjectException, CharacterNotAllowedException, UnexpectedDatabaseException,
 			ElementCannotBePersistedException {

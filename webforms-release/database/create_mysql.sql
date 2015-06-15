@@ -143,6 +143,7 @@
         linkedFormLabel varchar(255),
         linkedFormOrganizationId bigint,
         status varchar(255),
+        formReference_ID bigint,
         primary key (ID)
     );
 
@@ -217,7 +218,14 @@
         linkedFormLabel varchar(255),
         linkedFormOrganizationId bigint,
         status varchar(255),
+        formReference_ID bigint,
         primary key (ID)
+    );
+
+    create table tree_forms_references_hidden_elements (
+        tree_forms_ID bigint not null,
+        elementsToHide_ID bigint not null,
+        primary key (tree_forms_ID, elementsToHide_ID)
     );
 
     create table tree_groups (

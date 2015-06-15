@@ -148,6 +148,14 @@ public class FormManager extends SecuredWebPage {
 				newFormVersion();
 			}
 		});
+		upperMenu.addWebformReferenceListener(new ClickListener() {
+			private static final long serialVersionUID = -7767871226211072684L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				linkWebformsForm();
+			}
+		});
 		upperMenu.addImportAbcdForm(new ClickListener() {
 			private static final long serialVersionUID = -2591404148252216954L;
 
@@ -343,8 +351,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	/**
-	 * Loads a forms and tries to validate. If the form is not validated returns
-	 * null
+	 * Loads a forms and tries to validate. If the form is not validated returns null
 	 * 
 	 * @return
 	 */
@@ -527,7 +534,7 @@ public class FormManager extends SecuredWebPage {
 		final Form form = loadForm(getSelectedForm());
 
 		List<com.biit.abcd.persistence.entity.SimpleFormView> availableForms;
-		
+
 		if (form.getLinkedFormLabel() == null) {
 			// Not linked yet. Show all available forms.
 			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdForCurrentUser();
@@ -541,7 +548,7 @@ public class FormManager extends SecuredWebPage {
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
 		for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
 			if (WebformsAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-							simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
+					simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
 				linkAbcdForm.add(simpleFormView);
 			}
 		}
@@ -645,6 +652,48 @@ public class FormManager extends SecuredWebPage {
 		return bottomMenu;
 	}
 
+	private void linkWebformsForm() {
+		final WindowNameGroup newFormWindow = new WindowNameGroup(LanguageCodes.COMMON_CAPTION_NAME.translation(),
+				LanguageCodes.COMMON_CAPTION_GROUP.translation(), new IActivity[] { WebformsActivity.FORM_EDITING });
+		newFormWindow.setCaption(LanguageCodes.CAPTION_NEW_FORM.translation());
+		newFormWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_FORM.translation());
+		newFormWindow.showCentered();
+		newFormWindow.addAcceptActionListener(new AcceptActionListener() {
+
+			@Override
+			public void acceptAction(WindowAcceptCancel window) {
+				if (!newFormWindow.isValid()) {
+					return;
+				}
+				if (newFormWindow.getValue() == null || newFormWindow.getValue().isEmpty()) {
+					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_FORM_NOT_CREATED,
+							LanguageCodes.COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME);
+					return;
+				}
+				try {
+					if (newFormWindow.getOrganization() != null) {
+						Form newForm;
+						newForm = UserSessionHandler.getController().createNewLinkedForm(loadForm(getSelectedForm()),
+								newFormWindow.getValue(), newFormWindow.getOrganization().getOrganizationId());
+						addFormToTable(newForm);
+						formTable.selectForm(newForm);
+						newFormWindow.close();
+					}
+				} catch (FieldTooLongException e) {
+					MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
+				} catch (FormWithSameNameException e) {
+					MessageManager.showError(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
+				} catch (CharacterNotAllowedException e) {
+					// Impossible
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				} catch (UnexpectedDatabaseException | NotValidStorableObjectException e) {
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+				}
+			}
+		});
+	}
+
 	private void newFormVersion() {
 		Form newForm;
 		try {
@@ -690,7 +739,7 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
-				if(!newFormWindow.isValid()){
+				if (!newFormWindow.isValid()) {
 					return;
 				}
 				if (newFormWindow.getValue() == null || newFormWindow.getValue().isEmpty()) {

@@ -21,7 +21,10 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -106,12 +109,20 @@ public class Form extends BaseForm implements IWebformsFormView {
 	@Transient
 	private boolean isLastVersion;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Form formReference;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "tree_forms_references_hidden_elements")
+	private Set<TreeObject> elementsToHide;
+
 	public Form() {
 		super();
 		status = FormWorkStatus.DESIGN;
 		description = new String();
 		rules = new HashSet<>();
 		linkedFormVersions = new HashSet<>();
+		formReference = null;
 	}
 
 	public Form(String label, User user, Long organizationId) throws FieldTooLongException,
@@ -124,6 +135,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		setCreatedBy(user);
 		setUpdatedBy(user);
 		setOrganizationId(organizationId);
+		formReference = null;
 	}
 
 	public void addFlow(Flow rule) throws FlowNotAllowedException {
@@ -712,6 +724,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public void initializeSets() {
 		super.initializeSets();
 		getFlows().size();
+		if (formReference != null) {
+			formReference.initializeSets();
+		}
 	}
 
 	@Override
@@ -775,5 +790,13 @@ public class Form extends BaseForm implements IWebformsFormView {
 		for (Flow flow : getFlows()) {
 			flow.updateConditionSortSeq();
 		}
+	}
+
+	public Form getFormReference() {
+		return formReference;
+	}
+
+	public void setFormReference(Form formReference) {
+		this.formReference = formReference;
 	}
 }

@@ -72,16 +72,24 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	public List<TreeObject> getChildren() {
 		List<TreeObject> children = new ArrayList<>();
 		if (form != null) {
+			if (form.getFormReference() != null) {
+				for (TreeObject child : form.getFormReference().getChildren()) {
+					if (child instanceof BlockReference) {
+						Block block = ((BlockReference) child).getReference();
+						for (TreeObject linkedChild : convertBlockReference(block)) {
+							children.add(linkedChild);
+							updateHiddenElements((BlockReference) child, linkedChild);
+						}
+					} else {
+						child.setReadOnly(true);
+						children.add(child);
+					}
+				}
+			}
 			for (TreeObject child : form.getChildren()) {
 				if (child instanceof BlockReference) {
 					Block block = ((BlockReference) child).getReference();
-					for (TreeObject linkedChild : block.getChildren()) {
-						linkedChild.setReadOnly(true);
-						try {
-							linkedChild.setParent(form);
-						} catch (NotValidParentException e) {
-							WebformsLogger.errorMessage(this.getClass().getName(), e);
-						}
+					for (TreeObject linkedChild : convertBlockReference(block)) {
 						children.add(linkedChild);
 						updateHiddenElements((BlockReference) child, linkedChild);
 					}
@@ -89,6 +97,20 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 					children.add(child);
 				}
 			}
+		}
+		return children;
+	}
+
+	private List<TreeObject> convertBlockReference(Block block) {
+		List<TreeObject> children = new ArrayList<>();
+		for (TreeObject linkedChild : block.getChildren()) {
+			linkedChild.setReadOnly(true);
+			try {
+				linkedChild.setParent(form);
+			} catch (NotValidParentException e) {
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+			children.add(linkedChild);
 		}
 		return children;
 	}
@@ -114,9 +136,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 								WebformsLogger.errorMessage(this.getClass().getName(), e);
 							}
 							children.add(linkedChild);
-							//Update hidden flag of new copied elements.
+							// Update hidden flag of new copied elements.
 							updateHiddenElements((BlockReference) child, linkedChild);
-							//Use hidden flag to discard the hidden elements. 
+							// Use hidden flag to discard the hidden elements.
 							removeAllHiddenElements(linkedChild);
 						}
 					} else {
@@ -147,7 +169,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	private void updateHiddenElements(BlockReference block, TreeObject linkedChild) {
 		// Mark element as hidden.
 		for (TreeObject hiddenElement : block.getElementsToHide()) {
-			// Can be a copy. Compare by orginal reference.
+			// Can be a copy. Compare by original reference.
 			if (hiddenElement.getOriginalReference().equals(linkedChild.getOriginalReference())) {
 				linkedChild.setHiddenElement(true);
 			}
@@ -279,7 +301,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				}
 			}
 		}
-		flows.addAll(form.getFlows());		
+		flows.addAll(form.getFlows());
 		form.updateRuleReferences(flows);
 		return flows;
 	}

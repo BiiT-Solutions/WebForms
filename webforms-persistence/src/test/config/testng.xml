@@ -4,13 +4,13 @@
 		preserve-order="true">
 		<groups>
 			<run>
-<!-- 				<exclude name="ehCache" /> -->
 				<include name="formElements" />
  				<include name="blockTest" />
  				<include name="ruleTest" />
  				<include name="removeElement" />
 				<include name="blockLink" />
 				<include name="persistForm" />
+				<include name="formReference" />
 			</run>
 		</groups>
 		<classes>
@@ -21,6 +21,7 @@
 			<class name="com.biit.webforms.persistence.RemoveTest" />
 			<class name="com.biit.webforms.persistence.BlockLinkTests" />
 			<class name="com.biit.webforms.persistence.PersistForm" />
+			<class name="com.biit.webforms.persistence.FormReference" />
 		</classes>
 	</test>
 </suite>
