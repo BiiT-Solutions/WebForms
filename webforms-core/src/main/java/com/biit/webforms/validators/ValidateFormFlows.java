@@ -25,6 +25,9 @@ public class ValidateFormFlows extends SimpleValidator<Form> {
 		AllBaseQuestionHaveFlowInValidator allBaseQuestionHaveFlowInValidator = new AllBaseQuestionHaveFlowInValidator();
 		allBaseQuestionHaveFlowInValidator.validate(form, getReport());
 		
+		ValidateEmptyFlows validateEmptyFlows = new ValidateEmptyFlows();
+		validateEmptyFlows.validate(form, getReport());
+		
 //		FlowOriginDestinyUnicityValidator flowOriginDestinyUnicityValidator = new FlowOriginDestinyUnicityValidator();
 //		flowOriginDestinyUnicityValidator.validate(form, getReport());
 	}

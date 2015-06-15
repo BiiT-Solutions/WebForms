@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.ExpectedTokenNotFound;
@@ -19,7 +18,6 @@ import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.parselets.InfixParselet;
 import com.biit.webforms.utils.parser.parselets.PrefixParselet;
-
 
 public class Parser {
 
@@ -44,8 +42,7 @@ public class Parser {
 	}
 
 	/**
-	 * Register a new infix parselet (They are also used for postfix
-	 * expressions).
+	 * Register a new infix parselet (They are also used for postfix expressions).
 	 * 
 	 * @param tokenType
 	 * @param parselet
@@ -59,7 +56,8 @@ public class Parser {
 	}
 
 	public Expression parseExpression(int precedence) throws ParseException, ExpectedTokenNotFound,
-			NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException, EmptyParenthesisException {
+			NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException,
+			EmptyParenthesisException {
 		Token token = consume();
 		if (token == null) {
 			// EOF reached
@@ -89,22 +87,23 @@ public class Parser {
 	}
 
 	/**
-	 * Method to parse the expression fully. It will raise an exception if there
-	 * are no consumed tokens
+	 * Method to parse the expression fully. It will raise an exception if there are no consumed tokens
 	 * 
 	 * @return
-	 * @throws MissingParenthesisException 
-	 * @throws IncompleteBinaryOperatorException 
-	 * @throws NoMoreTokensException 
-	 * @throws ExpectedTokenNotFound 
-	 * @throws ParseException 
-	 * @throws ExpressionNotWellFormedException 
-	 * @throws EmptyParenthesisException 
+	 * @throws MissingParenthesisException
+	 * @throws IncompleteBinaryOperatorException
+	 * @throws NoMoreTokensException
+	 * @throws ExpectedTokenNotFound
+	 * @throws ParseException
+	 * @throws ExpressionNotWellFormedException
+	 * @throws EmptyParenthesisException
 	 */
-	public Expression parseCompleteExpression() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException, EmptyParenthesisException {
+	public Expression parseCompleteExpression() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
+			IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException,
+			EmptyParenthesisException {
 		Expression expression = parseExpression();
 		Token nextToken = lookAhead(0);
-		if(nextToken!=null){
+		if (nextToken != null) {
 			throw new ExpressionNotWellFormedException(nextToken);
 		}
 		return expression;

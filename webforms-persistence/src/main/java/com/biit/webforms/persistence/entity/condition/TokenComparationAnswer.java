@@ -18,14 +18,10 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 
 @Entity
 @Table(name = "token_comparation_answer")
-public class TokenComparationAnswer extends Token implements ITokenQuestion {
+public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQuestion {
 	private static final long serialVersionUID = 2099093205161281219L;
 
-	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ,
-			TokenTypes.NE };
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	private Question question;
+	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE };
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Answer answer;
@@ -34,8 +30,7 @@ public class TokenComparationAnswer extends Token implements ITokenQuestion {
 		super();
 	}
 
-	public TokenComparationAnswer(TokenTypes tokenType)
-			throws NotValidTokenType {
+	public TokenComparationAnswer(TokenTypes tokenType) throws NotValidTokenType {
 		super(tokenType);
 	}
 
@@ -44,46 +39,40 @@ public class TokenComparationAnswer extends Token implements ITokenQuestion {
 		return tokenTypes;
 	}
 
-	public void setContent(Question reference, TokenTypes tokenType,
-			Answer answer) throws NotValidTokenType {
-		this.question = reference;
+	public void setContent(Question reference, TokenTypes tokenType, Answer answer) throws NotValidTokenType {
+		setQuestion(reference);
 		setType(tokenType);
 		this.answer = answer;
 	}
 
-	public void setContent(TokenTypes tokenType, Answer answer)
-			throws NotValidTokenType {
-		setContent(this.question, tokenType, answer);
+	public void setContent(TokenTypes tokenType, Answer answer) throws NotValidTokenType {
+		setContent(getQuestion(), tokenType, answer);
 	}
 
-	public static TokenComparationAnswer getToken(Question question,
-			TokenTypes tokenType, Answer answer) {
+	public static TokenComparationAnswer getToken(Question question, TokenTypes tokenType, Answer answer) {
 		try {
 			TokenComparationAnswer token = new TokenComparationAnswer();
 			token.setContent(question, tokenType, answer);
 			return token;
 		} catch (NotValidTokenType e) {
-			WebformsLogger.errorMessage(TokenComparationValue.class.getName(),
-					e);
+			WebformsLogger.errorMessage(TokenComparationValue.class.getName(), e);
 			return null;
 		}
 	}
 
-	public static TokenComparationAnswer getTokenEqual(Question question,
-			Answer answer) {
+	public static TokenComparationAnswer getTokenEqual(Question question, Answer answer) {
 		return getToken(question, TokenTypes.EQ, answer);
 	}
 
-	public static TokenComparationAnswer getTokenNotEqual(Question question,
-			Answer answer) {
+	public static TokenComparationAnswer getTokenNotEqual(Question question, Answer answer) {
 		return getToken(question, TokenTypes.NE, answer);
 	}
 
 	@Override
 	public String toString() {
 		String referenceString = null;
-		if (question != null) {
-			referenceString = question.getName();
+		if (getQuestion() != null) {
+			referenceString = getQuestion().getName();
 		}
 		String answerString = null;
 		if (answer != null) {
@@ -92,35 +81,26 @@ public class TokenComparationAnswer extends Token implements ITokenQuestion {
 		return referenceString + getType() + answerString;
 	}
 
-	public Question getQuestion() {
-		return question;
-	}
-
 	public Answer getAnswer() {
 		return answer;
 	}
 
 	@Override
-	public void copyData(StorableObject object)
-			throws NotValidStorableObjectException {
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof TokenComparationAnswer) {
 			super.copyData(object);
 			TokenComparationAnswer token = (TokenComparationAnswer) object;
-			question = token.getQuestion();
 			answer = token.getAnswer();
 		} else {
-			throw new NotValidStorableObjectException(object.getClass()
-					.getName()
-					+ " is not compatible with "
+			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
 					+ TokenComparationAnswer.class.getName());
 		}
 	}
 
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
-		if (question != null) {
-			question = (Question) mappedElements.get(question
-					.getOriginalReference());
+		if (getQuestion() != null) {
+			setQuestion((Question) mappedElements.get(getQuestion().getOriginalReference()));
 			if (answer != null) {
 				answer = (Answer) mappedElements.get(answer.getOriginalReference());
 			}
@@ -130,35 +110,27 @@ public class TokenComparationAnswer extends Token implements ITokenQuestion {
 	@Override
 	public String getExpressionSimplifierRepresentation() {
 		String referenceString = null;
-		if (question != null) {
-			referenceString = question.getPathName().replaceAll(
-					"[^A-Za-z0-9_./]", "_");
+		if (getQuestion() != null) {
+			referenceString = getQuestion().getPathName().replaceAll("[^A-Za-z0-9_./]", "_");
 		}
 		String answerString = null;
 		if (answer != null) {
 			answerString = answer.getName();
 		}
-		return referenceString
-				+ getType().getExpressionSimplifierRepresentation()
-				+ answerString;
+		return referenceString + getType().getExpressionSimplifierRepresentation() + answerString;
 	}
 
 	@Override
 	public String getExpressionEditorRepresentation() {
 		String referenceString = null;
-		if (question != null) {
-			referenceString = question.getPathName();
+		if (getQuestion() != null) {
+			referenceString = getQuestion().getPathName();
 		}
 		String answerString = null;
 		if (answer != null) {
 			answerString = answer.getName();
 		}
-		return referenceString + getType().getExpressionEditorRepresentation()
-				+ answerString;
-	}
-
-	public void setQuestion(Question question) {
-		this.question = question;
+		return referenceString + getType().getExpressionEditorRepresentation() + answerString;
 	}
 
 	public void setAnswer(Answer answer) {
@@ -166,21 +138,14 @@ public class TokenComparationAnswer extends Token implements ITokenQuestion {
 	}
 
 	/**
-	 * Compares two token ComparationAnswer. it must be of token comparation
-	 * type.
+	 * Compares two token ComparationAnswer. it must be of token comparation type.
 	 */
 	@Override
 	public boolean isContentEqual(Token token) {
 		if (token instanceof TokenComparationAnswer) {
 			TokenComparationAnswer comparationAnswer = (TokenComparationAnswer) token;
 			if (super.isContentEqual(token)) {
-				if (!question.getPathName().equals(
-						comparationAnswer.question.getPathName())) {
-					return false;
-				}
-
-				if (!answer.getPathName().equals(
-						comparationAnswer.answer.getPathName())) {
+				if (!answer.getPathName().equals(comparationAnswer.answer.getPathName())) {
 					return false;
 				}
 

@@ -11,6 +11,7 @@ public class ValidateFlow extends CompositeValidator<Flow> {
 		add(AllQuestionAnswerValueUseFinalAnswer.class);
 		add(ValidateFlowCondition.class);
 		add(ValidateFlowSubformat.class);
+		//add(ValidateOthersCondition.class);
+		//add(ValidateUselessConditions.class);
 	}
-
 }

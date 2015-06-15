@@ -285,12 +285,12 @@ public class Flow extends StorableObject {
 					// to avoid exceptions.
 					return condition;
 				}
-				otherCondition.add(Token.not());
-				otherCondition.add(Token.leftPar());
+				otherCondition.add(Token.getNotToken());
+				otherCondition.add(Token.getLeftParenthesisToken());
 				otherCondition.addAll(flow.getConditionSimpleTokens());
-				otherCondition.add(Token.rigthPar());
+				otherCondition.add(Token.getRigthParenthesisToken());
 				if (itr.hasNext()) {
-					otherCondition.add(Token.and());
+					otherCondition.add(Token.getAndToken());
 				}
 			}
 			return otherCondition;

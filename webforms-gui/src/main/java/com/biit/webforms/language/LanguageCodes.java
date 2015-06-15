@@ -507,6 +507,8 @@ public enum LanguageCodes implements ILanguageCode {
 	VALIDATION_MULTIPLE_DYNAMIC_ANSWERS_REFERENCE_SAME_QUESTION("validation.multiple.dynamic.answers.reference.same.question"),
 	VALIDATION_DYNAMIC_ANSWER_NULL_VALUE("validation.dynamic.answer.null.value"), 
 	VALIDATION_DYNAMIC_ANSWER_REFERENCE_INVALID("validation.dynamic.answer.reference.invalid"),
+	VALIDATION_EMPTY_FLOW_IS_NOT_ALONE("validation.empty.flow.is.not.alone"),
+	VALIDATION_CONDITION_IS_USELESS("validation.condition.is.useless"),
 	
 	WARNING_ABCD_FORM_LINKED_NOT_VALID("abcd.form.linked.not.valid"),
 	WARNING_ABCD_FORM_LINKED_NOT_VALID_DESCRIPTION("abcd.form.linked.not.valid.description"),

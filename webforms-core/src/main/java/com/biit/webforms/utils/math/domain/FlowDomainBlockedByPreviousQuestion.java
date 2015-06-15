@@ -21,12 +21,10 @@ import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 
 /**
- * Class to check if the domain of a question can be blocked by a previous
- * question.
+ * Class to check if the domain of a question can be blocked by a previous question.
  * 
- * A domain can be blocked when the flow condition minterms only reference
- * questions that can't be accessed from current flow or won't be accessed in
- * all the possible flows that arrive to current question
+ * A domain can be blocked when the flow condition simple tokens only reference questions that can't be accessed from
+ * current flow or won't be accessed in all the possible flows that arrive to current question
  * 
  *
  */
@@ -34,61 +32,59 @@ public class FlowDomainBlockedByPreviousQuestion {
 
 	public FlowDomainBlockedByPreviousQuestion(Form form, BaseQuestion element) throws FlowDomainBlocked {
 		Set<Flow> flowsOfElement = form.getFlowsFrom(element);
-		if(flowsOfElement.isEmpty()){
-			//Automatic flow. This can't block the user ever.
+		if (flowsOfElement.isEmpty()) {
+			// Automatic flow. This can't block the user ever.
 			return;
 		}
-		
-		//This element has more than one exit flow.
+
+		// This element has more than one exit flow.
 		boolean isBlocked = false;
-		for(Flow flow: flowsOfElement){
-			if(flow.isOthers()){
-				if(flowsOfElement.size()==1){
-					//One flow only (OTHERS)
+		for (Flow flow : flowsOfElement) {
+			if (flow.isOthers()) {
+				if (flowsOfElement.size() == 1) {
+					// One flow only (OTHERS)
 					return;
 				}
 				continue;
 			}
-			//Get only the condition simple tokens.
+			// Get only the condition simple tokens.
 			List<Token> condition = flow.getConditionSimpleTokens();
-			if(checkAllMinTermsAreFromOriginQuestion(element, condition)){
+			if (checkAllMinTermsAreFromOriginQuestion(element, condition)) {
 				continue;
 			}
-			
+
 			try {
-				WebformsExpression  expression = (WebformsExpression) new WebformsParser(condition.iterator()).parseCompleteExpression();
-				isBlocked = isBlocked ||expression.checkBlockByMinTerms(form, element);
-			} catch (ParseException | ExpectedTokenNotFound
-					| NoMoreTokensException | IncompleteBinaryOperatorException
-					| MissingParenthesisException
-					| ExpressionNotWellFormedException
-					| EmptyParenthesisException e) {
-				//This should never happen it should have been checked already.
+				WebformsExpression expression = (WebformsExpression) new WebformsParser(condition.iterator())
+						.parseCompleteExpression();
+				isBlocked = isBlocked || expression.checkBlockByMinTerms(form, element);
+			} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException | IncompleteBinaryOperatorException
+					| MissingParenthesisException | ExpressionNotWellFormedException | EmptyParenthesisException e) {
+				// This should never happen it should have been checked already.
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
 		}
-		
-		if(isBlocked){
+
+		if (isBlocked) {
 			throw new FlowDomainBlocked();
 		}
 	}
 
 	/**
 	 * Check if all minterms (Tokens Q=A) are from
+	 * 
 	 * @param element
 	 * @param condition
 	 * @return
 	 */
-	private boolean checkAllMinTermsAreFromOriginQuestion(BaseQuestion element,
-			List<Token> condition) {
-		for(Token token: condition){
-			if(token instanceof ITokenQuestion){
-				if(!((ITokenQuestion) token).getQuestion().equals(element)){
+	private boolean checkAllMinTermsAreFromOriginQuestion(BaseQuestion element, List<Token> condition) {
+		for (Token token : condition) {
+			if (token instanceof ITokenQuestion) {
+				if (!((ITokenQuestion) token).getQuestion().equals(element)) {
 					return false;
 				}
 			}
 		}
 		return true;
 	}
-	
+
 }

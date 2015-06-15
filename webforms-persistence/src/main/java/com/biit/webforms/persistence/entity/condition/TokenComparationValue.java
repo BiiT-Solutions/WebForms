@@ -1,16 +1,11 @@
 package com.biit.webforms.persistence.entity.condition;
 
-import java.util.HashMap;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -22,14 +17,11 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 
 @Entity
 @Table(name = "token_comparation_value")
-public class TokenComparationValue extends Token implements ITokenQuestion {
+public class TokenComparationValue extends TokenWithQuestion implements ITokenQuestion {
 	private static final long serialVersionUID = 8580195041605107217L;
 
 	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.LT,
 			TokenTypes.GT, TokenTypes.LE, TokenTypes.GE };
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	private Question question;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -55,8 +47,8 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 
 	public void setContent(Question reference, TokenTypes tokenType, AnswerSubformat subformat,
 			DatePeriodUnit datePeriodUnit, String value) throws NotValidTokenType {
-		this.setType(tokenType);
-		this.question = reference;
+		setType(tokenType);
+		setQuestion(reference);
 		this.subformat = subformat;
 		this.datePeriodUnit = datePeriodUnit;
 		this.value = value;
@@ -64,7 +56,7 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 
 	public void setContent(TokenTypes tokenType, AnswerSubformat subformat, DatePeriodUnit datePeriodUnit, String value)
 			throws NotValidTokenType {
-		setContent(this.question, tokenType, subformat, datePeriodUnit, value);
+		setContent(getQuestion(), tokenType, subformat, datePeriodUnit, value);
 	}
 
 	public static TokenComparationValue getToken(TokenTypes tokenType, Question reference, AnswerSubformat subformat,
@@ -112,8 +104,8 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 	@Override
 	public String toString() {
 		String referenceString = null;
-		if (question != null) {
-			referenceString = question.getPathName();
+		if (getQuestion() != null) {
+			referenceString = getQuestion().getPathName();
 		}
 
 		if (subformat == AnswerSubformat.DATE_PERIOD) {
@@ -125,8 +117,8 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 
 	public String getLocalizedString(String localizedDatePeriodUnit) {
 		String referenceString = null;
-		if (question != null) {
-			referenceString = question.getPathName();
+		if (getQuestion() != null) {
+			referenceString = getQuestion().getPathName();
 		}
 
 		if (subformat == AnswerSubformat.DATE_PERIOD) {
@@ -140,8 +132,8 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 	@Override
 	public String getExpressionSimplifierRepresentation() {
 		String referenceString = null;
-		if (question != null) {
-			referenceString = question.getPathName().replaceAll("[^A-Za-z0-9_./]", "_");
+		if (getQuestion()  != null) {
+			referenceString = getQuestion().getPathName().replaceAll("[^A-Za-z0-9_./]", "_");
 		}
 		return referenceString + getType().getExpressionSimplifierRepresentation() + value;
 	}
@@ -149,14 +141,10 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 	@Override
 	public String getExpressionEditorRepresentation() {
 		String referenceString = null;
-		if (question != null) {
-			referenceString = question.getPathName();
+		if (getQuestion()  != null) {
+			referenceString = getQuestion() .getPathName();
 		}
 		return referenceString + getType().getExpressionEditorRepresentation() + value;
-	}
-
-	public Question getQuestion() {
-		return question;
 	}
 
 	public String getValue() {
@@ -176,7 +164,6 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 		if (object instanceof TokenComparationValue) {
 			super.copyData(object);
 			TokenComparationValue token = (TokenComparationValue) object;
-			question = token.getQuestion();
 			subformat = token.getSubformat();
 			datePeriodUnit = token.getDatePeriodUnit();
 			value = token.getValue();
@@ -184,15 +171,6 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
 					+ TokenComparationValue.class.getName());
 		}
-	}
-
-	@Override
-	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
-		question = (Question) mappedElements.get(question.getOriginalReference());
-	}
-
-	public void setQuestion(Question question) {
-		this.question = question;
 	}
 
 	public void setSubformat(AnswerSubformat subformat) {
@@ -215,10 +193,6 @@ public class TokenComparationValue extends Token implements ITokenQuestion {
 		if (token instanceof TokenComparationValue) {
 			TokenComparationValue comparationValue = (TokenComparationValue) token;
 			if (super.isContentEqual(token)) {
-				if (!question.getPathName().equals(comparationValue.question.getPathName())) {
-					return false;
-				}
-
 				if (subformat != comparationValue.subformat) {
 					return false;
 				}

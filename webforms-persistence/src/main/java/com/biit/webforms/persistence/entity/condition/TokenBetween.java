@@ -1,18 +1,14 @@
 package com.biit.webforms.persistence.entity.condition;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -26,9 +22,6 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 @Table(name = "token_between")
 public class TokenBetween extends TokenComplex implements ITokenQuestion {
 	private static final long serialVersionUID = -8760649306071342145L;
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	private Question question;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -44,20 +37,13 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 	@Override
 	public List<Token> getSimpleTokens() {
 		List<Token> simpleTokens = new ArrayList<Token>();
-		simpleTokens.add(Token.leftPar());
-		simpleTokens.add(TokenComparationValue.getTokenGreaterEqual(question, subformat, datePeriodUnit, valueStart));
-		simpleTokens.add(Token.and());
-		simpleTokens.add(TokenComparationValue.getTokenLessEqual(question, subformat, datePeriodUnit, valueEnd));
-		simpleTokens.add(Token.rigthPar());
+		simpleTokens.add(Token.getLeftParenthesisToken());
+		simpleTokens.add(TokenComparationValue.getTokenGreaterEqual(getQuestion(), subformat, datePeriodUnit,
+				valueStart));
+		simpleTokens.add(Token.getAndToken());
+		simpleTokens.add(TokenComparationValue.getTokenLessEqual(getQuestion(), subformat, datePeriodUnit, valueEnd));
+		simpleTokens.add(Token.getRigthParenthesisToken());
 		return simpleTokens;
-	}
-
-	public Question getQuestion() {
-		return question;
-	}
-
-	public void setQuestion(Question question) {
-		this.question = question;
 	}
 
 	public AnswerSubformat getSubformat() {
@@ -97,7 +83,6 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 		if (object instanceof TokenBetween) {
 			super.copyData(object);
 			TokenBetween token = (TokenBetween) object;
-			this.question = token.question;
 			this.subformat = token.subformat;
 			this.datePeriodUnit = token.datePeriodUnit;
 			this.valueStart = token.valueStart;
@@ -109,15 +94,10 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 	}
 
 	@Override
-	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
-		question = (Question) mappedElements.get(question.getOriginalReference());
-	}
-
-	@Override
 	public String toString() {
 		String referenceString = null;
-		if (question != null) {
-			referenceString = question.getPathName();
+		if (getQuestion() != null) {
+			referenceString = getQuestion().getPathName();
 			if (subformat == AnswerSubformat.DATE_PERIOD) {
 				referenceString += " (" + datePeriodUnit + ")";
 			}
@@ -138,7 +118,7 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 		try {
 			TokenBetween token = new TokenBetween();
 			token.setType(TokenTypes.BETWEEN);
-			token.question = question;
+			token.setQuestion(question);
 			token.setContent(datePeriodUnit, valueStart, valueEnd);
 			return token;
 		} catch (NotValidTokenType e) {
@@ -149,7 +129,7 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 
 	public void setContent(DatePeriodUnit datePeriodUnit, String valueStart, String valueEnd) {
 		if (datePeriodUnit == null) {
-			subformat = question.getAnswerSubformat();
+			subformat = getQuestion().getAnswerSubformat();
 		} else {
 			subformat = AnswerSubformat.DATE_PERIOD;
 		}
@@ -171,10 +151,6 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 		if (token instanceof TokenBetween) {
 			TokenBetween between = (TokenBetween) token;
 			if (super.isContentEqual(token)) {
-				if (!question.getPathName().equals(between.question.getPathName())) {
-					return false;
-				}
-
 				if (subformat != between.subformat) {
 					return false;
 				}

@@ -59,10 +59,9 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.security.WebformsBasicAuthorizationService;
-import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDependencyExistException;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -398,14 +397,14 @@ public class Designer extends SecuredWebPage {
 								table.updateRow(table.getParentRowItem(row));
 							} catch (DependencyExistException | ChildrenNotFoundException e) {
 								table.setValue(row);
-								if(e instanceof FlowDependencyExistException){
-									MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
-								}else if(e instanceof DependencyDynamicAnswerExistException){
+								if (e instanceof DependencyDynamicAnswerExistException) {
 									MessageManager.showError(LanguageCodes.ERROR_DYNAMIC_ANSWER_DEPENDENCY);
-								}else{
+								} else if (e instanceof DependencyExistException) {
+									MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
+								} else {
 									MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 									WebformsLogger.errorMessage(this.getClass().getName(), e);
-								}								
+								}
 							} catch (ElementIsReadOnly e) {
 								table.setValue(row);
 								MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
@@ -531,7 +530,7 @@ public class Designer extends SecuredWebPage {
 				finishForm();
 			}
 		});
-		
+
 		upperMenu.addNewDynamicAnswerListener(new ClickListener() {
 			private static final long serialVersionUID = 6905174400430714888L;
 
@@ -549,7 +548,7 @@ public class Designer extends SecuredWebPage {
 				}
 			}
 		});
-		
+
 		return upperMenu;
 	}
 

@@ -13,6 +13,7 @@ import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.webforms.condition.TokenUtils;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -30,6 +31,7 @@ import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -89,7 +91,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 			} else if (child instanceof Answer) {
 				newChild = new XFormsAnswer(xFormsHelper, (Answer) child);
 				xFormsHelper.addXFormsObject(newChild);
-			} else if (child instanceof DynamicAnswer){
+			} else if (child instanceof DynamicAnswer) {
 				newChild = new XFormsDynamicAnswer(xFormsHelper, (DynamicAnswer) child);
 				xFormsHelper.addXFormsObject(newChild);
 			} else {
@@ -316,6 +318,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 		return section;
 	}
 
+	/**
+	 * Used for storing values of events related to visibility.
+	 * 
+	 * @return
+	 */
+	protected abstract String getVisibilityStructure();
+
 	protected XFormsObject<? extends TreeObject> getParent() {
 		return parent;
 	}
@@ -379,24 +388,19 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// $control-name=1
 			getInputFieldVisibility(visibility, (TokenComparationValue) token);
 		} else if (token instanceof TokenAnswerNeeded) {
-			// Infotext has no input. We must copy relevant rule from this element.
-			if ((((TokenAnswerNeeded) token).getQuestion() instanceof Text)
-					|| (((TokenAnswerNeeded) token).getQuestion() instanceof SystemField)) {
-				visibility.append(getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()));
-				// Date is a specific case. Already has some data.
-			} else if (((TokenAnswerNeeded) token).isDateField()) {
-				// Dates are uses as string due to avoid error when fields are hidden and have an empty value.
-				visibility
-						.append("string-length(")
-						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getXPath()).append("/text()) &gt; 0");
-				// Any input field must have an answer.
-			} else {
-				visibility
-						.append("string-length(")
-						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion())
-								.getXPath()).append("/text()) &gt; 0");
-			}
+			// Check the event.
+			visibility.append("instance('visible')/"
+					+ getXFormsHelper().getUniqueName(((TokenAnswerNeeded) token).getQuestion()) + " != 'false'");
+		} else if (token instanceof TokenOthersMustBeAnswered) {
+			visibility
+					.append("string-length(")
+					.append(getXFormsHelper().getXFormsObject(((TokenOthersMustBeAnswered) token).getQuestion())
+							.getXPath()).append("/text()) &gt; 0");
+		} else if (token instanceof TokenInheritRelevant) {
+			// Uses same visibility that this element.
+			visibility.append("instance('visible')/"
+					+ getXFormsHelper().getUniqueName(((TokenInheritRelevant) token).getInheritedQuestion())
+					+ " != 'false'");
 		} else {
 			// An operator 'and', 'or', ...
 			visibility.append(token.getType().getOrbeonRepresentation());
@@ -412,9 +416,24 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getMultiCheckBoxVisibility(StringBuilder visibility, TokenComparationAnswer token) {
-		visibility.append("contains(concat(")
-				.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
+		// Not equals is translated as a not.
+		if (token.getType().equals(TokenTypes.NE)) {
+			// Not Equals is true if the answer is empty! Avoid it.
+			if (token.getQuestion().isMandatory()) {
+				visibility.append("(string-length("
+						+ getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath()
+						+ "/text()) &gt; 0 and ");
+			}
+			visibility.append("not(");
+		}
+		visibility.append("contains(concat(").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
 				.append(", ' '), concat('").append(token.getAnswer().getName()).append("', ' '))");
+		if (token.getType().equals(TokenTypes.NE)) {
+			visibility.append(")");
+			if (token.getQuestion().isMandatory()) {
+				visibility.append(")");
+			}
+		}
 	}
 
 	/**
@@ -425,10 +444,18 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @return
 	 */
 	private void getBasicSelectionVisibility(StringBuilder visibility, TokenComparationAnswer token) {
-		visibility.append(
-				getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath());
+		// Not Equals is true if the answer is empty! Avoid it.
+		if (token.getQuestion().isMandatory() && token.getType().equals(TokenTypes.NE)) {
+			visibility.append("(string-length("
+					+ getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath()
+					+ "/text()) &gt; 0 and ");
+		}
+		visibility.append(getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath());
 		visibility.append(token.getType().getOrbeonRepresentation());
 		visibility.append("'").append(((TokenComparationAnswer) token).getAnswer()).append("'");
+		if (token.getQuestion().isMandatory() && token.getType().equals(TokenTypes.NE)) {
+			visibility.append(")");
+		}
 	}
 
 	/**
@@ -444,8 +471,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 		if (token.getQuestion().getAnswerFormat() != null) {
 			switch (token.getQuestion().getAnswerFormat()) {
 			case NUMBER:
-				visibility.append("number(")
-						.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append(")");
+				visibility.append("number(").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
+						.append(")");
 				visibility.append(" ").append(token.getType().getOrbeonRepresentation()).append(" ");
 				visibility.append(token.getValue());
 				break;
@@ -469,9 +496,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 						date = formatter.parse(token.getValue());
 						// Compare it as string. Less problems with null dates. $dateField/text() ge '2015-05-27'
 						formatter.applyPattern(XPATH_DATE_FORMAT);
-						visibility
-								.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
-								.append("/text() ");
+						visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append(
+								"/text() ");
 						visibility.append(token.getType().getOrbeonRepresentation());
 						visibility.append(" '").append(formatter.format(date)).append("'");
 					} catch (ParseException e) {
@@ -507,15 +533,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// adjust-date-to-timezone is used to remove timestamp
 			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
-			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
-					.append("/text() ");
+			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append("/text() ");
 			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
 			visibility.append(" format-date(adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
 					.append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
 					.append("'), '" + DATE_FORMAT + "')");
 		} else {
-			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
-					.append("/text() ");
+			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append("/text() ");
 			visibility.append(token.getType().getOrbeonRepresentation()).append(
 					" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
 			visibility.append(xPathOperation).append("('P").append(token.getValue())
@@ -534,17 +558,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 		// String visibility = getRelevantByFlows(flowsTo);
 		StringBuilder visibility = new StringBuilder();
 
-		// One flow with condition, is same visibility as previous element.
-		if (flows.size() == 1) {
-			if (((Flow) flows.iterator().next()).getCondition().isEmpty()) {
-				String previousElementVisibility = getXFormsHelper().getVisibilityOfElement(getSource());
-				if (previousElementVisibility != null) {
-					return previousElementVisibility;
-				}
-			}
-		}
-
-		// More than one flow.
 		// Get all visibility rule as tokens.
 		List<Token> visibilityAsToken = getRelevantByFlowsAsTokens(flows);
 		if (visibilityAsToken.isEmpty()) {
@@ -570,9 +583,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 			flowvisibility.append(" ");
 		}
 
-		if (flowvisibility.length() > 0) {
-			visibility.append("(").append(flowvisibility).append(")");
-		}
+		visibility.append(flowvisibility);
 
 		return visibility.toString();
 	}
@@ -590,26 +601,73 @@ public abstract class XFormsObject<T extends TreeObject> {
 		for (Flow flow : flows) {
 			List<Token> flowvisibility = flow.getConditionSimpleTokens();
 
-			// Others must assure that the question is answered.
+			// Others must assure that the question is answered it it is mandatory. Otherwise without answering the
+			// question the others is also true.
 			if (flow.isOthers()) {
-				if (existPreviousCondition(flowvisibility)) {
-					flowvisibility.add(Token.and());
+				List<Token> othersVisibility = new ArrayList<>();
+				// Others needs that all the conditions are answered if mandatory.
+				for (Token token : flowvisibility) {
+					if (token instanceof TokenWithQuestion) {
+						// Condition must be answered if mandatory
+						if ((((TokenWithQuestion) token).getQuestion()).isMandatory()) {
+							othersVisibility.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token)
+									.getQuestion()));
+						} else {
+							// No token added: remove previous AND or OR.
+							if (TokenUtils.isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
+								othersVisibility.remove(othersVisibility.size() - 1);
+							}
+						}
+					} else if (TokenUtils.isLogicalOperator(token)) {
+						// If are multiple conditions, we need to add also the and/or conjunction
+						othersVisibility.add(token.generateCopy());
+					}
 				}
-				flowvisibility.add(new TokenAnswerNeeded((WebformsBaseQuestion) flow.getOrigin(),
-						(flow.getOrigin() instanceof Question)
-								&& ((Question) flow.getOrigin()).getAnswerFormat() != null
-								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+				// Add parenthesis to new tokens created.
+				if (TokenUtils.needsEnclosingParenthesis(othersVisibility)) {
+					othersVisibility.add(0, Token.getLeftParenthesisToken());
+					othersVisibility.add(Token.getRigthParenthesisToken());
+				}
+
+				// Add parenthesis to all predicate if needed.
+				if (existPreviousCondition(flowvisibility) && !othersVisibility.isEmpty()) {
+					flowvisibility.add(0, Token.getLeftParenthesisToken());
+					othersVisibility.add(0, Token.getAndToken());
+					othersVisibility.add(Token.getRigthParenthesisToken());
+				}
+				flowvisibility.addAll(othersVisibility);
+
+				// Ensure origin is visible.
+				List<Token> previousVisibility = getPreviousVisibility(flow.getOrigin());
+				if (previousVisibility != null && !previousVisibility.isEmpty()) {
+					flowvisibility.add(0, Token.getLeftParenthesisToken());
+					flowvisibility.add(Token.getAndToken());
+					flowvisibility.addAll(previousVisibility);
+					flowvisibility.add(Token.getRigthParenthesisToken());
+				}
+
 				// If condition is empty, inherit the relevance of the previous element. Others also has empty
 				// condition.
 			} else if (flow.getCondition().isEmpty()) {
-				List<Token> previousVisibility = getXFormsHelper().getPreviousVisibilityTokens(flow);
+				// Get previous visibility.
+				List<Token> previousVisibility = getPreviousVisibility(flow.getOrigin());
+
 				if (!previousVisibility.isEmpty()) {
 					// Add 'AND'.
 					if (existPreviousCondition(flowvisibility)) {
-						flowvisibility.add(Token.and());
+						flowvisibility.add(Token.getAndToken());
 					}
 
+					// Add parenthesis if needed. Needed only if does not starts with a parenthesis or starts with one
+					// and the closing one is not the last one.
+					boolean addParenthesis = TokenUtils.needsEnclosingParenthesis(previousVisibility);
+					if (addParenthesis) {
+						flowvisibility.add(Token.getLeftParenthesisToken());
+					}
 					flowvisibility.addAll(previousVisibility);
+					if (addParenthesis) {
+						flowvisibility.add(Token.getRigthParenthesisToken());
+					}
 				}
 			} else {
 				// Some rules must pass through a specific question despite condition is from previous question. We can
@@ -630,30 +688,82 @@ public abstract class XFormsObject<T extends TreeObject> {
 				if (flow.getOrigin() instanceof WebformsBaseQuestion) {
 					if (!originUsedInCondition) {
 						if (existPreviousCondition(flowvisibility)) {
-							flowvisibility.add(Token.and());
+							flowvisibility.add(Token.getAndToken());
 						}
-						flowvisibility.add(new TokenAnswerNeeded((WebformsBaseQuestion) flow.getOrigin(), (flow
-								.getOrigin() instanceof Question)
-								&& ((Question) flow.getOrigin()).getAnswerFormat() != null
-								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+						flowvisibility.add(new TokenAnswerNeeded(flow.getOrigin(),
+								(flow.getOrigin() instanceof Question)
+										&& ((Question) flow.getOrigin()).getAnswerFormat() != null
+										&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 					}
 				}
 			}
 
-			// Concat rule to relevant rules.
+			// Concatenate rule to relevant rules.
 			if (existPreviousCondition(flowvisibility)) {
 				// Connector with previous rule if exists.
 				if (!visibility.isEmpty()) {
-					visibility.add(Token.or());
+					visibility.add(Token.getOrToken());
 				}
 
 				// Add visibility of previous element.
-				visibility.add(Token.leftPar());
+				boolean addParenthesis = TokenUtils.needsEnclosingParenthesis(flowvisibility) && !visibility.isEmpty();
+				if (addParenthesis) {
+					visibility.add(Token.getLeftParenthesisToken());
+				}
 				visibility.addAll(flowvisibility);
-				visibility.add(Token.rigthPar());
+				if (addParenthesis) {
+					visibility.add(Token.getRigthParenthesisToken());
+				}
 			}
 		}
 		return visibility;
+	}
+
+	/**
+	 * Obtains the previous element visibility. Can be an event if the previous element is a question, a copy of the
+	 * relevant rule if the previous one is a system field.
+	 * 
+	 * @param flow
+	 * @return
+	 */
+	private List<Token> getPreviousVisibility(BaseQuestion element) {
+		List<Token> previousVisibility = null;
+		// If it is first element.
+		if (getXFormsHelper().getFlowsWithDestiny(element).isEmpty()) {
+			// No visibility rules defined.
+			previousVisibility = new ArrayList<>();
+		} else {
+			// not first element, inherited relevant rule
+			previousVisibility = new ArrayList<>();
+			// Inherit must skip all hidden elements by default, as system fields.
+			BaseQuestion origin = element;
+			while (isAlwaysHiddenElement(origin)) {
+				Set<Flow> previousFlow = getXFormsHelper().getFlowsWithDestiny(origin);
+				if (previousFlow.size() > 1) {
+					// If the system field has a complex flow, we cannot use events but inherit the relevant
+					// rule.
+					break;
+				} else {
+					// Get previous element by flow.
+					origin = previousFlow.iterator().next().getOrigin();
+				}
+			}
+			if (!isAlwaysHiddenElement(origin)) {
+				// Event visibility from previous element
+				previousVisibility.add(new TokenInheritRelevant(origin));
+			} else {
+				// Copy relevant rule. Due to visibility of the previous element is always false.
+				previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(origin);
+			}
+		}
+		return previousVisibility;
+	}
+
+	private boolean isAlwaysHiddenElement(BaseQuestion element) {
+		if (element == null) {
+			return false;
+		}
+		return (element instanceof SystemField);
 	}
 
 	/**
@@ -664,7 +774,9 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 */
 	private boolean existPreviousCondition(List<Token> flowChain) {
 		for (Token token : flowChain) {
-			if (token instanceof TokenComparationValue || token instanceof TokenComparationAnswer) {
+			// Skip any parenthesis, look for real rules.
+			if (token instanceof TokenComparationValue || token instanceof TokenComparationAnswer
+					|| token instanceof TokenInheritRelevant) {
 				return true;
 			}
 		}
@@ -672,7 +784,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Returns the opposite value used in Orbeon. Note: <= the opposite is >=. The equals is mantained.
+	 * Returns the opposite value used in Orbeon. Note: <= the opposite is >=. The equals is maintained.
 	 * 
 	 * @return
 	 */

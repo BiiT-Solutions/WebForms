@@ -153,7 +153,8 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	 */
 	@Override
 	protected String getBodyStructure(String structure, boolean html) {
-		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/" + structure + "\"";
+		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/"
+				+ structure + "\"";
 		if (html) {
 			text += " mediatype=\"text/html\"";
 		}
@@ -179,6 +180,11 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	@Override
 	protected String getCssClass() {
 		return super.getCssClass() + " " + CSS_CLASS_ANSWER;
+	}
+
+	@Override
+	protected String getVisibilityStructure() {
+		return "";
 	}
 
 }
