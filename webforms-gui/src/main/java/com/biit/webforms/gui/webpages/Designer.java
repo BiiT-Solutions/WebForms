@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.biit.abcd.core.SpringContextHelper;
 import com.biit.form.entity.BaseAnswer;
@@ -733,7 +734,7 @@ public class Designer extends SecuredWebPage {
 	 * Opens Insert Block window
 	 */
 	private void openInsertBlock() {
-		final WindowBlocks windowBlocks = new WindowBlocks(LanguageCodes.CAPTION_INSERT_NEW_BLOCK);
+		final WindowBlocks windowBlocks = new WindowBlocks(LanguageCodes.CAPTION_INSERT_NEW_BLOCK, null);
 		windowBlocks.showCentered();
 		windowBlocks.addAcceptActionListener(new AcceptActionListener() {
 
@@ -761,7 +762,9 @@ public class Designer extends SecuredWebPage {
 	}
 
 	private void openLinkBlock() {
-		final WindowBlocks windowBlocks = new WindowBlocks(LanguageCodes.CAPTION_LINK_BLOCK);
+		Set<Class<? extends TreeObject>> selectableElements = new HashSet<>();
+		selectableElements.add(Block.class);
+		final WindowBlocks windowBlocks = new WindowBlocks(LanguageCodes.CAPTION_LINK_BLOCK, selectableElements);
 		windowBlocks.showCentered();
 		windowBlocks.addAcceptActionListener(new AcceptActionListener() {
 
@@ -818,7 +821,7 @@ public class Designer extends SecuredWebPage {
 						retrieveCollapsedTableState();
 						table.expand(movedObjectNewInstance);
 
-						// FIX to force a jump to this point in table.
+						// Fix to force a jump to this point in table.
 						table.setValue(null);
 						table.setValue(movedObjectNewInstance);
 					} else {
