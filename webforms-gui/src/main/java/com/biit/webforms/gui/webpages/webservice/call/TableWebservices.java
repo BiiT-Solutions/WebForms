@@ -20,8 +20,7 @@ public class TableWebservices extends Table{
 		super();
 		
 		addContainerProperty(Properties.NAME,String.class,"",LanguageCodes.WEBSERVICES_TABLE_NAME.translation(),null,Align.LEFT);
-//		addContainerProperty(Properties.DESCRIPTION,String.class,"",LanguageCodes.WEBSERVICES_TABLE_DESCRIPTION.translation(),null,Align.LEFT);
-		addContainerProperty(Properties.URL,String.class,"",LanguageCodes.WEBSERVICES_TABLE_URL.translation(),null,Align.LEFT);
+		addContainerProperty(Properties.DESCRIPTION,String.class,"",LanguageCodes.WEBSERVICES_TABLE_DESCRIPTION.translation(),null,Align.LEFT);
 	}
 
 	public void addRows(Set<Webservice> webservices) {
@@ -38,8 +37,7 @@ public class TableWebservices extends Table{
 	@SuppressWarnings("unchecked")
 	private void updateRow(Item item, Webservice webservice) {
 		item.getItemProperty(Properties.NAME).setValue(webservice.getName());
-//		item.getItemProperty(Properties.DESCRIPTION).setValue(webservice.getDescription());
-		item.getItemProperty(Properties.URL).setValue(webservice.getUrl());
+		item.getItemProperty(Properties.DESCRIPTION).setValue(webservice.getDescription());
 	}
 	
 	public void sortByName() {

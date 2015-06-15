@@ -15,6 +15,7 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
+import com.biit.webforms.gui.webpages.webservice.call.IWebserviceCallLinkValueChange;
 import com.biit.webforms.gui.webpages.webservice.call.UpperMenu;
 import com.biit.webforms.gui.webpages.webservice.call.WebserviceCallComponent;
 import com.biit.webforms.gui.webpages.webservice.call.WebserviceCallTable;
@@ -22,6 +23,9 @@ import com.biit.webforms.gui.webpages.webservice.call.WindowWebservices;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.WebserviceCall;
+import com.biit.webforms.persistence.entity.WebserviceCallInputLink;
+import com.biit.webforms.persistence.entity.WebserviceCallLink;
+import com.biit.webforms.persistence.entity.WebserviceCallOutputLink;
 import com.biit.webforms.security.WebformsActivity;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -37,6 +41,7 @@ public class WebserviceCallEditor extends SecuredWebPage {
 	private UpperMenu upperMenu;
 	private final WebserviceCallTable webserviceCallTable;
 	private final WebserviceCallComponent webserviceCallComponent;
+	private WebserviceCallLink selectedWebserviceCallLink;
 	
 	public WebserviceCallEditor() {
 		super();
@@ -74,8 +79,17 @@ public class WebserviceCallEditor extends SecuredWebPage {
 				updateWebserviceCallConfigComponent();
 			}
 		});
+		
 
 		webserviceCallComponent.setSizeFull();
+		webserviceCallComponent.addListener(new IWebserviceCallLinkValueChange() {
+			
+			@Override
+			public void valueChange(WebserviceCallLink link) {
+				selectedWebserviceCallLink = link;
+				updateUpperMenu();
+			}
+		});
 
 		rootLayout.addComponent(webserviceCallTable);
 		rootLayout.addComponent(webserviceCallComponent);
@@ -89,8 +103,13 @@ public class WebserviceCallEditor extends SecuredWebPage {
 		selectFirstTableItem();
 	}
 	
+	/**
+	 * Select first table item if any.
+	 */
 	private void selectFirstTableItem() {
-		webserviceCallTable.setValue(webserviceCallTable.getItemIds().iterator().next());
+		if(!webserviceCallTable.getItemIds().isEmpty()){
+			webserviceCallTable.setValue(webserviceCallTable.getItemIds().iterator().next());
+		}
 	}
 
 	private void updateWebserviceCallConfigComponent(){
@@ -166,9 +185,10 @@ public class WebserviceCallEditor extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				WindowWebservices windowWebservices = (WindowWebservices) window;
-				UserSessionHandler.getController().generateNewWebserviceCall(windowWebservices.getName(),windowWebservices.getWebservice());
+				WebserviceCall call = UserSessionHandler.getController().generateNewWebserviceCall(windowWebservices.getName(),windowWebservices.getWebservice());
 				updateWebserviceCallTable();
 				window.close();
+				webserviceCallTable.setValue(call);
 			}
 		});
 		window.showCentered();
@@ -177,6 +197,7 @@ public class WebserviceCallEditor extends SecuredWebPage {
 	protected void save() {
 		try {
 			UserSessionHandler.getController().saveForm();
+			updateWebserviceCallTable();
 			MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE,
 					LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
 		} catch (UnexpectedDatabaseException e) {
@@ -197,6 +218,8 @@ public class WebserviceCallEditor extends SecuredWebPage {
 
 	private void updateWebserviceCallTable(){
 		WebserviceCall selectedCall = (WebserviceCall) webserviceCallTable.getValue();
+		WebserviceCallLink selectedLink = selectedWebserviceCallLink;
+		
 		webserviceCallTable.setValue(null);
 		webserviceCallTable.removeAllItems();
 		Set<WebserviceCall> calls = UserSessionHandler.getController().getCompleteFormView().getWebserviceCalls();
@@ -205,6 +228,21 @@ public class WebserviceCallEditor extends SecuredWebPage {
 			for(WebserviceCall call: calls){
 				if(selectedCall.getComparationId().equals(call.getComparationId())){
 					webserviceCallTable.setValue(call);
+					if(selectedLink!=null){
+						if(selectedLink instanceof WebserviceCallInputLink){
+							for(WebserviceCallInputLink link: call.getInputLinks()){
+								if(link.getComparationId().equals(selectedLink.getComparationId())){
+									webserviceCallComponent.select(link);
+								}
+							}
+						}else if(selectedLink instanceof WebserviceCallOutputLink){
+							for(WebserviceCallOutputLink link: call.getOutputLinks()){
+								if(link.getComparationId().equals(selectedLink.getComparationId())){
+									webserviceCallComponent.select(link);
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -214,7 +252,7 @@ public class WebserviceCallEditor extends SecuredWebPage {
 	private void updateUpperMenu() {
 		boolean webserviceCallSelected = webserviceCallTable.getValue()!=null;
 		upperMenu.getRemoveWebserviceCall().setEnabled(webserviceCallSelected);
-		upperMenu.getEditWebserviceLink().setEnabled(webserviceCallSelected);
-		upperMenu.getRemoveWebserviceLink().setEnabled(webserviceCallSelected);
+		upperMenu.getEditWebserviceLink().setEnabled(webserviceCallSelected&&selectedWebserviceCallLink!=null);
+		upperMenu.getRemoveWebserviceLink().setEnabled(webserviceCallSelected&&selectedWebserviceCallLink!=null);
 	}
 }

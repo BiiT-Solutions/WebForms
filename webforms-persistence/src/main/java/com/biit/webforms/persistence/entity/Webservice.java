@@ -9,6 +9,8 @@ import com.google.gson.GsonBuilder;
 public class Webservice {
 	
 	private String name;
+	
+	private String description;
 			
 	private String protocol;
 	
@@ -18,17 +20,14 @@ public class Webservice {
 	
 	private String path;
 	
-	private Set<WebservicePort> inputPorts;
+	private Set<WebserviceValidatedPort> inputPorts;
 	
 	private Set<WebservicePort> outputPorts;
-	
-	private Set<WebserviceValidationPort> validationPorts;
 	
 	public Webservice() {
 		super();
 		inputPorts = new HashSet<>();
 		outputPorts = new HashSet<>();
-		validationPorts = new HashSet<>();
 	}
 
 	public String getProtocol() {
@@ -75,11 +74,11 @@ public class Webservice {
 		return getProtocol()+"://"+getHost()+":"+getPort()+"/"+getPath();
 	}
 
-	public Set<WebservicePort> getInputPorts() {
+	public Set<WebserviceValidatedPort> getInputPorts() {
 		return inputPorts;
 	}
 
-	public void setInputPorts(Set<WebservicePort> inputPorts) {
+	public void setInputPorts(Set<WebserviceValidatedPort> inputPorts) {
 		this.inputPorts = inputPorts;
 	}
 
@@ -89,14 +88,6 @@ public class Webservice {
 
 	public void setOutputPorts(Set<WebservicePort> outputPorts) {
 		this.outputPorts = outputPorts;
-	}
-
-	public Set<WebserviceValidationPort> getValidationPorts() {
-		return validationPorts;
-	}
-
-	public void setValidationPorts(Set<WebserviceValidationPort> validationPorts) {
-		this.validationPorts = validationPorts;
 	}
 	
 	public String toJson(){
@@ -112,5 +103,13 @@ public class Webservice {
 		Gson gson = gsonBuilder.create();
 
 		return (Webservice) gson.fromJson(jsonString, Webservice.class);
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

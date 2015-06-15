@@ -1,11 +1,17 @@
 {
   "name": "validate_bsn",
+  "description": "ipsum lorem...",
   "protocol": "https",
   "host": "localhost",
   "port": "8081",
   "path": "rest/checkBsn",
   "inputPorts": [
     {
+      "validationXpath": "/validation",
+      "errorCodes": [
+        "NOT_FOUND",
+        "INVALID_BSN"
+      ],
       "name": "bsn",
       "xpath": ""
     }
@@ -22,16 +28,6 @@
     {
       "name": "surname",
       "xpath": "/surname"
-    }
-  ],
-  "validationPorts": [
-    {
-      "errorCodes": [
-        "NOT_FOUND",
-        "INVALID_BSN"
-      ],
-      "name": "validation",
-      "xpath": "/validation"
     }
   ]
 }

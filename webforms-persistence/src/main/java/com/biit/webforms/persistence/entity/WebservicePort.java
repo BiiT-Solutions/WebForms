@@ -7,7 +7,7 @@ public class WebservicePort {
 	
 	private String xpath;
 	
-	public WebservicePort(){
+	protected WebservicePort(){
 		
 	}
 	

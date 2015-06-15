@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.biit.persistence.entity.StorableObject;
@@ -11,7 +12,10 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 public class WebserviceCallOutputLink extends WebserviceCallLink {
 	private static final long serialVersionUID = -107489603701913849L;
 	
-	private static final boolean EDITABLE_DEFAULT_VALUE = true;
+	private static final boolean EDITABLE_DEFAULT_VALUE = false;
+	
+	@ManyToOne(optional = false)
+	protected WebserviceCall webserviceCall;
 	
 	private boolean isEditable;
 	
@@ -55,5 +59,23 @@ public class WebserviceCallOutputLink extends WebserviceCallLink {
 		WebserviceCallOutputLink link = new WebserviceCallOutputLink();
 		link.copyData(this);
 		return link;
+	}
+	
+	@Override
+	public void setWebserviceCall(WebserviceCall webserviceCall) {
+		this.webserviceCall = webserviceCall;
+	}
+
+	@Override
+	public WebserviceCall getWebserviceCall() {
+		return webserviceCall;
+	}
+	
+	@Override
+	public void remove() {
+		if(webserviceCall!=null){
+			webserviceCall.getOutputLinks().remove(this);
+			setWebserviceCall(null);
+		}
 	}
 }

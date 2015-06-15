@@ -7,7 +7,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 
-public class WindowEditOutputLink extends WindowEditInputLink{
+public class WindowEditOutputLink extends WindowEditLink{
 	private static final long serialVersionUID = -8870174498133141330L;
 	
 	private CheckBox checkbox;

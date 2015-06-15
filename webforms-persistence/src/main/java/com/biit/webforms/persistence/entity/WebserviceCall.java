@@ -26,21 +26,20 @@ public class WebserviceCall extends StorableObject {
 	private String name;
 
 	private String webserviceName;
+	
+	@ManyToOne(optional = true)
+	private Question formElementTrigger;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true, mappedBy="webserviceCall")
 	private Set<WebserviceCallInputLink> inputLinks;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true, mappedBy="webserviceCall")
 	private Set<WebserviceCallOutputLink> outputLinks;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true)
-	private Set<WebserviceCallValidationLink> validateLinks;
-
 	protected WebserviceCall() {
 		super();
 		inputLinks = new HashSet<>();
 		outputLinks = new HashSet<>();
-		validateLinks = new HashSet<>();
 	}
 	
 	public WebserviceCall(String name, Webservice webservice){
@@ -49,7 +48,6 @@ public class WebserviceCall extends StorableObject {
 		setWebserviceName(webservice.getName());
 		inputLinks = new HashSet<>();
 		outputLinks = new HashSet<>();
-		validateLinks = new HashSet<>();
 	}
 	
 	@Override
@@ -66,7 +64,6 @@ public class WebserviceCall extends StorableObject {
 			setWebserviceName(call.getWebserviceName());
 			copyLinkData(inputLinks,call.getInputLinks());
 			copyLinkData(outputLinks,call.getOutputLinks());
-			copyLinkData(validateLinks,call.getValidateLinks());
 		}else{
 			throw new NotValidStorableObjectException("Element of class '"+object.getClass().getName()+"' is not compatible with '"+WebserviceCall.class.getName()+"'");
 		}
@@ -112,19 +109,29 @@ public class WebserviceCall extends StorableObject {
 		this.outputLinks = outputLinks;
 	}
 
-	public Set<WebserviceCallValidationLink> getValidateLinks() {
-		return validateLinks;
-	}
-
-	public void setValidateLinks(Set<WebserviceCallValidationLink> validateLinks) {
-		this.validateLinks = validateLinks;
-	}
-
 	public Form getForm() {
 		return form;
 	}
 
 	public void setForm(Form form) {
 		this.form = form;
+	}
+	
+	public Question getFormElementTrigger() {
+		return formElementTrigger;
+	}
+
+	public void setFormElementTrigger(Question formElementTrigger) {
+		this.formElementTrigger = formElementTrigger;
+	}
+
+	public void addOutputLink(WebserviceCallOutputLink link) {
+		outputLinks.add(link);
+		link.setWebserviceCall(this);
+	}
+
+	public void addInputLink(WebserviceCallInputLink link) {
+		inputLinks.add(link);
+		link.setWebserviceCall(this);
 	}
 }

@@ -21,9 +21,6 @@ public abstract class WebserviceCallLink extends StorableObject{
 
 	private static final int WEBSERVICE_PORT_MAX_LENGTH = 250;
 	
-	@ManyToOne(optional = false)
-	protected WebserviceCall webserviceCall;
-	
 	@Column(length=WEBSERVICE_PORT_MAX_LENGTH)
 	private String webservicePort;
 	
@@ -69,6 +66,7 @@ public abstract class WebserviceCallLink extends StorableObject{
 	}
 	
 	public void clear(){
+		setWebservicePort(null);
 		setFormElement(null);
 	}
 
@@ -82,12 +80,10 @@ public abstract class WebserviceCallLink extends StorableObject{
 
 	public abstract WebserviceCallLink generateCopy() throws NotValidStorableObjectException;
 
-	public WebserviceCall getWebserviceCall() {
-		return webserviceCall;
-	}
+	public abstract void setWebserviceCall(WebserviceCall webserviceCall);
+	
+	public abstract WebserviceCall getWebserviceCall();
 
-	public void setWebserviceCall(WebserviceCall webserviceCall) {
-		this.webserviceCall = webserviceCall;
-	}
+	public abstract void remove();
 	
 }

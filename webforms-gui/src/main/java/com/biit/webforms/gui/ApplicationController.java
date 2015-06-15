@@ -1524,9 +1524,10 @@ public class ApplicationController {
 		return webservices;
 	}
 
-	public void generateNewWebserviceCall(String name, Webservice webservice) {
+	public WebserviceCall generateNewWebserviceCall(String name, Webservice webservice) {
 		WebserviceCall call = new WebserviceCall(name,webservice);
 		UserSessionHandler.getController().getCompleteFormView().addWebserviceCall(call);
+		return call;
 	}
 
 	public void removeWebserviceCall(WebserviceCall call) {

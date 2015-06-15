@@ -16,11 +16,12 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IWebserviceDao;
 import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
 import com.biit.webforms.persistence.entity.Webservice;
+import com.google.gson.JsonSyntaxException;
 
 @Repository
 public class WebserviceDao implements IWebserviceDao {
 
-	//For resource path we need to use / directly. Is OS independent
+	// For resource path we need to use / directly. Is OS independent
 	private static final String WEBSERVICE_RESOURCE_PATH = "webservices/";
 	private static final String WEBFORMS_WEBSERVICE_CONFIG_PATH = "WEBFORMS_CONFIG_WEBSERVICES";
 
@@ -28,39 +29,49 @@ public class WebserviceDao implements IWebserviceDao {
 	public Set<Webservice> getAll() {
 		Set<Webservice> webservices = new HashSet<Webservice>();
 		URL url = FileReader.class.getClassLoader().getResource(WEBSERVICE_RESOURCE_PATH);
-		if(url!=null){
+		if (url != null) {
 			try {
 				File dir = new File(url.toURI());
-			    for (File file : dir.listFiles()) {
-			    	String fileContent = new String(Files.readAllBytes(file.toPath()),Charset.forName("UTF-8"));
-			        webservices.add(Webservice.fromJson(fileContent));
-			    }
+				for (File file : dir.listFiles()) {
+					String fileContent = new String(Files.readAllBytes(file.toPath()), Charset.forName("UTF-8"));
+					try {
+						webservices.add(Webservice.fromJson(fileContent));
+					} catch (JsonSyntaxException e) {
+						WebformsLogger.errorMessage(this.getClass().getName(), "Error parsing json file '" + file.getAbsolutePath()
+								+ "' cause '" + e.getMessage() + "'");
+					}
+				}
 			} catch (URISyntaxException | IOException e) {
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			} 
+			}
 		}
-		
+
 		String optionalPath = System.getenv(WEBFORMS_WEBSERVICE_CONFIG_PATH);
-		if(optionalPath!=null){
+		if (optionalPath != null) {
 			try {
 				File dir = new File(optionalPath);
-			    for (File file : dir.listFiles()) {
-			        String fileContent = new String(Files.readAllBytes(file.toPath()),Charset.forName("UTF-8"));
-			        webservices.add(Webservice.fromJson(fileContent));
-			    }
+				for (File file : dir.listFiles()) {
+					String fileContent = new String(Files.readAllBytes(file.toPath()), Charset.forName("UTF-8"));
+					try {
+						webservices.add(Webservice.fromJson(fileContent));
+					} catch (JsonSyntaxException e) {
+						WebformsLogger.errorMessage(this.getClass().getName(), "Error parsing json file '" + file.getAbsolutePath()
+								+ "' cause '" + e.getMessage() + "'");
+					}
+				}
 			} catch (IOException e) {
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
 		}
-		
+
 		return webservices;
 	}
 
 	@Override
 	public Webservice findWebservice(String name) throws WebserviceNotFoundException {
 		Set<Webservice> webservices = getAll();
-		for(Webservice webservice:webservices){
-			if(webservice.getName().equals(name)){
+		for (Webservice webservice : webservices) {
+			if (webservice.getName().equals(name)) {
 				return webservice;
 			}
 		}
