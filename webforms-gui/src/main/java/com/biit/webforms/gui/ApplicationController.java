@@ -115,8 +115,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form on memory no persistence is done. Needs a
-	 * unique name where name.length() < 190 characters.
+	 * User action to create a form on memory no persistence is done. Needs a unique name where name.length() < 190
+	 * characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -173,8 +173,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * User action to create a form. Needs a unique name where name.length() <
-	 * 190 characters.
+	 * User action to create a form. Needs a unique name where name.length() < 190 characters.
 	 * 
 	 * @param formLabel
 	 * @return
@@ -294,8 +293,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns the List of Abcd Forms linked to a form or empty list if there
-	 * are no links.
+	 * Returns the List of Abcd Forms linked to a form or empty list if there are no links.
 	 * 
 	 * @param form
 	 * @return
@@ -319,8 +317,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns abcd simpleViewForm linked to form using it's name, version and
-	 * organizationId.
+	 * Returns abcd simpleViewForm linked to form using it's name, version and organizationId.
 	 * 
 	 * @param form
 	 * @return
@@ -543,8 +540,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Creates any kind of TreeObject descendant with @name and inserts into
-	 * parent if possible.
+	 * Creates any kind of TreeObject descendant with @name and inserts into parent if possible.
 	 * 
 	 * @param classType
 	 * @param parent
@@ -847,9 +843,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone
-	 * of the block using the element as hierarchy seed and introduces to
-	 * current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
+	 * hierarchy seed and introduces to current form as a new category.
 	 * 
 	 * @param selectedRow
 	 * @return Inserted category
@@ -905,8 +900,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Linked building blocks are translated to standard blocks to avoid changes
-	 * after the form is finished.
+	 * Linked building blocks are translated to standard blocks to avoid changes after the form is finished.
 	 */
 	private void lockLinkedBlocks(Form form) {
 		Form completeForm = form;
@@ -933,9 +927,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Inserts element belonging group to current form. This generates a clone
-	 * of the block using the element as hierarchy seed and introduces to
-	 * current form as a new category.
+	 * Inserts element belonging group to current form. This generates a clone of the block using the element as
+	 * hierarchy seed and introduces to current form as a new category.
 	 * 
 	 * @param selectedRow
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
@@ -994,7 +987,10 @@ public class ApplicationController {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' move '"
 				+ origin + "' to '" + destiny + "'.");
 		if (origin.equals(destiny)) {
-			throw new SameOriginAndDestinationException("Origin and destination are the same element");
+			throw new SameOriginAndDestinationException("Origin and destination are the same element.");
+		}
+		if (origin.getParent().equals(destiny)) {
+			throw new DestinyIsContainedAtOrigin("Element is already inside the selected element.");
 		}
 		if (origin.contains(destiny)) {
 			throw new DestinyIsContainedAtOrigin("Origin is contained inside destination element.");
@@ -1014,8 +1010,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * This function is called when the UI has expired. The implementation needs
-	 * to free any "locked" resources
+	 * This function is called when the UI has expired. The implementation needs to free any "locked" resources
 	 */
 	public void freeLockedResources() {
 		clearFormInUse();
@@ -1035,8 +1030,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Update flow content. This function currently is a direct call to the
-	 * structure function. If the flow is not on the form, it gets added.
+	 * Update flow content. This function currently is a direct call to the structure function. If the flow is not on
+	 * the form, it gets added.
 	 * 
 	 * @param flow
 	 * @param origin
@@ -1072,8 +1067,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Updates flow update time and updated by in flow. The content of the flow
-	 * was already modified by {@link WindowFlow}
+	 * Updates flow update time and updated by in flow. The content of the flow was already modified by
+	 * {@link WindowFlow}
 	 * 
 	 * @param flow
 	 */
@@ -1252,8 +1247,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Get all forms where the user has READ permission in ABCD and EDIT
-	 * permissions in Webforms.
+	 * Get all forms where the user has READ permission in ABCD and EDIT permissions in Webforms.
 	 * 
 	 * @return
 	 */
@@ -1313,8 +1307,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns all organizations where user has permission to do all the
-	 * activities in activitiesFilter.
+	 * Returns all organizations where user has permission to do all the activities in activitiesFilter.
 	 * 
 	 * @param activitiesFilter
 	 * @return
@@ -1410,8 +1403,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Defines if any form is using an element in its flow (as origin or
-	 * destination).
+	 * Defines if any form is using an element in its flow (as origin or destination).
 	 * 
 	 * @param element
 	 * @return
@@ -1437,8 +1429,8 @@ public class ApplicationController {
 	}
 
 	/**
-	 * True if exist a flow that it does not pertain to the referenced block but
-	 * points from/to an element of the referenced block.
+	 * True if exist a flow that it does not pertain to the referenced block but points from/to an element of the
+	 * referenced block.
 	 * 
 	 * @param elementOfReferencedBlock
 	 * @return
@@ -1490,8 +1482,7 @@ public class ApplicationController {
 	}
 
 	/**
-	 * Returns abcd simpleViewForm linked to form using it's name, version and
-	 * organizationId.
+	 * Returns abcd simpleViewForm linked to form using it's name, version and organizationId.
 	 * 
 	 * @param form
 	 * @return
