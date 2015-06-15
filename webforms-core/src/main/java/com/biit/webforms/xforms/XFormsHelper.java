@@ -139,9 +139,9 @@ class XFormsHelper {
 					if (!tokens.isEmpty()) {
 						tokens.add(Token.getAndToken());
 					}
-					tokens.add(new TokenAnswerNeeded((BaseQuestion) flow.getOrigin(), ((Question) flow.getOrigin())
-							.getAnswerFormat() != null
-							&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+					tokens.add(new TokenAnswerNeeded(flow.getOrigin(),
+							((Question) flow.getOrigin()).getAnswerFormat() != null
+									&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 					// }
 				}
 				return tokens;

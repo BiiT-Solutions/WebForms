@@ -31,6 +31,7 @@ import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -387,26 +388,16 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// $control-name=1
 			getInputFieldVisibility(visibility, (TokenComparationValue) token);
 		} else if (token instanceof TokenAnswerNeeded) {
-			// Infotext has no input. We must copy relevant rule from this element.
-			if ((((TokenAnswerNeeded) token).getQuestion() instanceof Text)
-					|| (((TokenAnswerNeeded) token).getQuestion() instanceof SystemField)) {
-				visibility.append("("
-						+ getXFormsHelper().getVisibilityOfElement(((TokenAnswerNeeded) token).getQuestion()) + ")");
-				// Date is a specific case. Already has some data.
-			} else if (((TokenAnswerNeeded) token).isDateField()) {
-				// Dates are uses as string due to avoid error when fields are hidden and have an empty value.
-				visibility
-						.append("string-length(")
-						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getXPath())
-						.append("/text()) &gt; 0");
-				// Any input field must have an answer.
-			} else {
-				visibility
-						.append("string-length(")
-						.append(getXFormsHelper().getXFormsObject(((TokenAnswerNeeded) token).getQuestion()).getXPath())
-						.append("/text()) &gt; 0");
-			}
+			// Check the event.
+			visibility.append("instance('visible')/"
+					+ getXFormsHelper().getUniqueName(((TokenAnswerNeeded) token).getQuestion()) + " != 'false'");
+		} else if (token instanceof TokenOthersMustBeAnswered) {
+			visibility
+					.append("string-length(")
+					.append(getXFormsHelper().getXFormsObject(((TokenOthersMustBeAnswered) token).getQuestion())
+							.getXPath()).append("/text()) &gt; 0");
 		} else if (token instanceof TokenInheritRelevant) {
+			// Uses same visibility that this element.
 			visibility.append("instance('visible')/"
 					+ getXFormsHelper().getUniqueName(((TokenInheritRelevant) token).getInheritedQuestion())
 					+ " != 'false'");
@@ -567,21 +558,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 		// String visibility = getRelevantByFlows(flowsTo);
 		StringBuilder visibility = new StringBuilder();
 
-		// One flow without condition, is the same visibility as the previous element.
-		if (flows.size() == 1) {
-			Flow flow = ((Flow) flows.iterator().next());
-			if (flow.getCondition().isEmpty()) {
-				 String previousElementVisibility = getXFormsHelper().getVisibilityOfElement(getSource());
-				 if (previousElementVisibility != null) {
-				 return previousElementVisibility;
-				 }
-
-				// Changed to the use of events.
-				return "(instance('visible')/" + getXFormsHelper().getUniqueName(flow.getOrigin()) + " != 'false')";
-			}
-		}
-
-		// More than one flow.
 		// Get all visibility rule as tokens.
 		List<Token> visibilityAsToken = getRelevantByFlowsAsTokens(flows);
 		if (visibilityAsToken.isEmpty()) {
@@ -625,38 +601,57 @@ public abstract class XFormsObject<T extends TreeObject> {
 		for (Flow flow : flows) {
 			List<Token> flowvisibility = flow.getConditionSimpleTokens();
 
-			// Others must assure that the question is answered.
+			// Others must assure that the question is answered it it is mandatory. Otherwise without answering the
+			// question the others is also true.
 			if (flow.isOthers()) {
 				List<Token> othersVisibility = new ArrayList<>();
-				othersVisibility.addAll(flowvisibility);
-				if (existPreviousCondition(flowvisibility)) {
-					othersVisibility.add(0, Token.getLeftParenthesisToken());
-					othersVisibility.add(Token.getAndToken());
+				// Others needs that all the conditions are answered if mandatory.
+				for (Token token : flowvisibility) {
+					if (token instanceof TokenWithQuestion) {
+						// Condition must be answered if mandatory
+						if ((((TokenWithQuestion) token).getQuestion()).isMandatory()) {
+							othersVisibility.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token)
+									.getQuestion()));
+						} else {
+							// No token added: remove previous AND or OR.
+							if (TokenUtils.isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
+								othersVisibility.remove(othersVisibility.size() - 1);
+							}
+						}
+					} else if (TokenUtils.isLogicalOperator(token)) {
+						// If are multiple conditions, we need to add also the and/or conjunction
+						othersVisibility.add(token.generateCopy());
+					}
 				}
-				othersVisibility.add(new TokenAnswerNeeded((WebformsBaseQuestion) flow.getOrigin(),
-						(flow.getOrigin() instanceof Question)
-								&& ((Question) flow.getOrigin()).getAnswerFormat() != null
-								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
-				if (existPreviousCondition(flowvisibility)) {
+				// Add parenthesis to new tokens created.
+				if (TokenUtils.needsEnclosingParenthesis(othersVisibility)) {
+					othersVisibility.add(0, Token.getLeftParenthesisToken());
 					othersVisibility.add(Token.getRigthParenthesisToken());
 				}
-				flowvisibility = othersVisibility;
+
+				// Add parenthesis to all predicate if needed.
+				if (existPreviousCondition(flowvisibility) && !othersVisibility.isEmpty()) {
+					flowvisibility.add(0, Token.getLeftParenthesisToken());
+					othersVisibility.add(0, Token.getAndToken());
+					othersVisibility.add(Token.getRigthParenthesisToken());
+				}
+				flowvisibility.addAll(othersVisibility);
+
+				// Ensure origin is visible.
+				List<Token> previousVisibility = getPreviousVisibility(flow.getOrigin());
+				if (previousVisibility != null && !previousVisibility.isEmpty()) {
+					flowvisibility.add(0, Token.getLeftParenthesisToken());
+					flowvisibility.add(Token.getAndToken());
+					flowvisibility.addAll(previousVisibility);
+					flowvisibility.add(Token.getRigthParenthesisToken());
+				}
+
 				// If condition is empty, inherit the relevance of the previous element. Others also has empty
 				// condition.
 			} else if (flow.getCondition().isEmpty()) {
-				// List<Token> previousVisibility = getXFormsHelper().getPreviousVisibilityTokens(flow);
-				List<Token> previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(flow.getOrigin());
-				// Not stored visibility. First element or is another element that also inherits relevant rule.
-				if (previousVisibility == null) {
-					// If it is first element.
-					if (getXFormsHelper().getFlowsWithDestiny(flow.getOrigin()).isEmpty()) {
-						previousVisibility = new ArrayList<>();
-					} else {
-						// not first element, inherited relevant rule
-						previousVisibility = new ArrayList<>();
-						previousVisibility.add(new TokenInheritRelevant(flow.getOrigin()));
-					}
-				}
+				// Get previous visibility.
+				List<Token> previousVisibility = getPreviousVisibility(flow.getOrigin());
+
 				if (!previousVisibility.isEmpty()) {
 					// Add 'AND'.
 					if (existPreviousCondition(flowvisibility)) {
@@ -695,10 +690,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 						if (existPreviousCondition(flowvisibility)) {
 							flowvisibility.add(Token.getAndToken());
 						}
-						flowvisibility.add(new TokenAnswerNeeded((WebformsBaseQuestion) flow.getOrigin(), (flow
-								.getOrigin() instanceof Question)
-								&& ((Question) flow.getOrigin()).getAnswerFormat() != null
-								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+						flowvisibility.add(new TokenAnswerNeeded(flow.getOrigin(),
+								(flow.getOrigin() instanceof Question)
+										&& ((Question) flow.getOrigin()).getAnswerFormat() != null
+										&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 					}
 				}
 			}
@@ -722,6 +717,53 @@ public abstract class XFormsObject<T extends TreeObject> {
 			}
 		}
 		return visibility;
+	}
+
+	/**
+	 * Obtains the previous element visibility. Can be an event if the previous element is a question, a copy of the
+	 * relevant rule if the previous one is a system field.
+	 * 
+	 * @param flow
+	 * @return
+	 */
+	private List<Token> getPreviousVisibility(BaseQuestion element) {
+		List<Token> previousVisibility = null;
+		// If it is first element.
+		if (getXFormsHelper().getFlowsWithDestiny(element).isEmpty()) {
+			// No visibility rules defined.
+			previousVisibility = new ArrayList<>();
+		} else {
+			// not first element, inherited relevant rule
+			previousVisibility = new ArrayList<>();
+			// Inherit must skip all hidden elements by default, as system fields.
+			BaseQuestion origin = element;
+			while (isAlwaysHiddenElement(origin)) {
+				Set<Flow> previousFlow = getXFormsHelper().getFlowsWithDestiny(origin);
+				if (previousFlow.size() > 1) {
+					// If the system field has a complex flow, we cannot use events but inherit the relevant
+					// rule.
+					break;
+				} else {
+					// Get previous element by flow.
+					origin = previousFlow.iterator().next().getOrigin();
+				}
+			}
+			if (!isAlwaysHiddenElement(origin)) {
+				// Event visibility from previous element
+				previousVisibility.add(new TokenInheritRelevant(origin));
+			} else {
+				// Copy relevant rule. Due to visibility of the previous element is always false.
+				previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(origin);
+			}
+		}
+		return previousVisibility;
+	}
+
+	private boolean isAlwaysHiddenElement(BaseQuestion element) {
+		if (element == null) {
+			return false;
+		}
+		return (element instanceof SystemField);
 	}
 
 	/**
