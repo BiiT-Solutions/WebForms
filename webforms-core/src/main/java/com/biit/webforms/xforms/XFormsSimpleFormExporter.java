@@ -158,14 +158,10 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		for (XFormsCategory category : getXFormsCategories()) {
 			body.append("<xh:td>");
 			body.append("<xf:trigger appearance=\"minimal\">");
-			body.append("<xf:label>" + category.getName() + "</xf:label>");
+			body.append("<xf:label>" + category.getUniqueName() + "</xf:label>");
 			body.append("</xf:trigger>");
 			body.append("</xh:td>");
 		}
-		
-		body.append("<xh:td>");
-		body.append("<xf:label>" + category.getName() + "</xf:label>");
-		body.append("</xh:td>");
 
 		body.append("</xh:tr>");
 		body.append("</xh:table>");
@@ -217,11 +213,13 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	protected String getEventsDefinitions(XFormsObject<?> xFormsObject) {
 		StringBuilder events = new StringBuilder();
 		addVisibilityEvents(events);
+		addCategoryMenuEvents(events);
 		return events.toString();
 	}
 
 	/**
-	 * Create the events needed to hide an element that depends on a previous element visibility.
+	 * Create the events needed to hide an element that depends on a previous
+	 * element visibility.
 	 * 
 	 * @param events
 	 */
@@ -263,6 +261,30 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + controlName
 					+ "\" ref=\"instance('visible')/" + catId + "\" value=\"instance('visible')/" + catId + " - 1\"/>");
 		}
+	}
+
+	private void addCategoryMenuEvents(StringBuilder events) {
+		addCategoryMenuVisibilityStructure(events);
+		//addHideCategoryObservers(events);
+	}
+
+	private void addCategoryMenuVisibilityStructure(StringBuilder events) {
+		events.append("<!-- Keep track of category menu visible/hidden status -->");
+		events.append("<xf:instance id=\"category-menu-visibility\">");
+		events.append("<var>");
+
+		for (int index = 0; index < getXFormsCategories().size(); index++) {
+			XFormsCategory xFormCategory = getXFormsCategories().get(index);
+			events.append("<" + xFormCategory.getUniqueName() + ">");
+			if (index == 0) {
+				events.append("true");
+			} else {
+				events.append("false");
+			}
+			events.append("</" + xFormCategory.getUniqueName() + ">");
+		}
+		events.append("</var>");
+		events.append("</xf:instance>");
 	}
 
 	/**
