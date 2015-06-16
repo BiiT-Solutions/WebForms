@@ -288,6 +288,53 @@
         primary key (ID)
     );
 
+    create table webservice_call (
+        ID bigint not null,
+        comparationId varchar(190) not null,
+        createdBy DOUBLE,
+        creationTime datetime not null,
+        updateTime datetime,
+        updatedBy DOUBLE,
+        name varchar(255) not null,
+        webserviceName varchar(255),
+        form_ID bigint not null,
+        formElementTrigger_ID bigint,
+        primary key (ID)
+    );
+
+    create table webservice_call_input_link (
+        ID bigint not null,
+        comparationId varchar(190) not null,
+        createdBy DOUBLE,
+        creationTime datetime not null,
+        updateTime datetime,
+        updatedBy DOUBLE,
+        webservicePort varchar(250),
+        formElement_ID bigint,
+        webserviceCall_ID bigint not null,
+        primary key (ID)
+    );
+
+    create table webservice_call_input_link_errors (
+        ID bigint not null,
+        errorCode varchar(255),
+        errorMessage varchar(255)
+    );
+
+    create table webservice_call_output_link (
+        ID bigint not null,
+        comparationId varchar(190) not null,
+        createdBy DOUBLE,
+        creationTime datetime not null,
+        updateTime datetime,
+        updatedBy DOUBLE,
+        webservicePort varchar(250),
+        formElement_ID bigint,
+        isEditable bit not null,
+        webserviceCall_ID bigint not null,
+        primary key (ID)
+    );
+
     alter table flow 
         add constraint UK_kffbghchm5cku772ng2gmaofa  unique (ID);
 
@@ -399,6 +446,24 @@
     alter table tree_texts 
         add constraint UK_qe6275omm38jd6s7q9frwpdet  unique (comparationId);
 
+    alter table webservice_call 
+        add constraint UK_bh1l5k7kne9rc6jlkt1y0xvx  unique (ID);
+
+    alter table webservice_call 
+        add constraint UK_mfxxle3ihnquqxog0ijnoyak6  unique (comparationId);
+
+    alter table webservice_call_input_link 
+        add constraint UK_i3b2fh7rfs8p8v8xkqolpd57f  unique (ID);
+
+    alter table webservice_call_input_link 
+        add constraint UK_r4e49ykfejtivfhvpq389x26x  unique (comparationId);
+
+    alter table webservice_call_output_link 
+        add constraint UK_ok4mtc0pr7mfm73jpyora6kqp  unique (ID);
+
+    alter table webservice_call_output_link 
+        add constraint UK_gsqntlasoa0sjbacff6ftndla  unique (comparationId);
+
     alter table token 
         add constraint FK_1jkae8phlxx6soqblc3rk1s04 
         foreign key (flow_ID) 
@@ -473,6 +538,26 @@
         add constraint FK_1focp8yixjr3i902hvvklx3wi 
         foreign key (reference_ID) 
         references tree_questions (ID);
+
+    alter table webservice_call 
+        add constraint FK_2xn7e1m6tonvvq55wg2uelswf 
+        foreign key (formElementTrigger_ID) 
+        references tree_questions (ID);
+
+    alter table webservice_call_input_link 
+        add constraint FK_gh8lglngvsku2hb11oki042l 
+        foreign key (webserviceCall_ID) 
+        references webservice_call (ID);
+
+    alter table webservice_call_input_link_errors 
+        add constraint FK_kkh7ildmbyq4iqj566ovuhi2 
+        foreign key (ID) 
+        references webservice_call_input_link (ID);
+
+    alter table webservice_call_output_link 
+        add constraint FK_6xdyavaobw5ajkh22m3wpl63d 
+        foreign key (webserviceCall_ID) 
+        references webservice_call (ID);
 
 	CREATE TABLE `hibernate_sequence` (
 		`next_val` bigint(20) DEFAULT NULL

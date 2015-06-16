@@ -132,13 +132,13 @@ public enum ThemeIcons implements IThemeIcon {
 	DESIGNER_NEW_DYNAMIC_ANSWER("form.dynamic.element.svg"), 
 	DESIGNER_DYNAMIC_ANSWER("form.dynamic.element.svg"), 
 	
-	EDIT_WEBSERVICE_CALL("alert.svg"), 
+	EDIT_WEBSERVICE_CALL("webservice.svg"), 
 	
-	ADD_WEBSERVICE_CALL("alert.svg"), 
-	REMOVE_WEBSERVICE_CALL("alert.svg"), 
+	ADD_WEBSERVICE_CALL("webservice.add.svg"), 
+	REMOVE_WEBSERVICE_CALL("webservice.remove.svg"), 
 	
-	EDIT_WEBSERVICE_PORT("alert.svg"),
-	REMOVE_WEBSERVICE_PORT("alert.svg"), 
+	EDIT_WEBSERVICE_PORT("webservice.edit.svg"),
+	REMOVE_WEBSERVICE_PORT("webservice.clear.svg"), 
 	
 	;
 
