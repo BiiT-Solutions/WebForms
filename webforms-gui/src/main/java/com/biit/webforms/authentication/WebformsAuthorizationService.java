@@ -2,6 +2,7 @@ package com.biit.webforms.authentication;
 
 import com.biit.form.entity.IBaseFormView;
 import com.biit.webforms.gui.UiAccesser;
+import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.liferay.portal.model.User;
 
@@ -20,6 +21,14 @@ public class WebformsAuthorizationService extends WebformsBasicAuthorizationServ
 	public boolean isFormEditable(IBaseFormView form, User user) {
 		boolean userLockedForm = UiAccesser.isUserUserUsingForm(user, form);
 		return userLockedForm && isAuthorizedToForm(form, user);
+	}
+
+	public boolean isElementEditable(IBaseFormView form, User user) {
+		boolean isLinkedForm = false;
+		if (form instanceof Form) {
+			isLinkedForm = ((Form) form).getFormReference() != null;
+		}
+		return isFormEditable(form, user) && !isLinkedForm;
 	}
 
 	public boolean isFormReadOnly(IBaseFormView form, User user) {

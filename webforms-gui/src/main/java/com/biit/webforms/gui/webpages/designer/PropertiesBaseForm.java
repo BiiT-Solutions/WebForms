@@ -51,7 +51,7 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 		commonProperties.addComponent(version);
 		commonProperties.addComponent(description);
 
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 

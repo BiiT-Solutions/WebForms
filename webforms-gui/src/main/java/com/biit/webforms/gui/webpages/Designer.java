@@ -438,7 +438,7 @@ public class Designer extends SecuredWebPage {
 						MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
 								LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
 					} else {
-						//It is not an element or is a form reference element.
+						// It is not an element or is a form reference element.
 						if (row.isHiddenElement()) {
 							if (UserSessionHandler.getController().getFormInUse().showElement(row)) {
 								row.setHiddenElement(false);
@@ -593,6 +593,7 @@ public class Designer extends SecuredWebPage {
 		try {
 			boolean formIsBlock = getCurrentForm() instanceof Block;
 			boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
+			boolean formHasLinkedForm =  UserSessionHandler.getController().getFormInUse().getFormReference() != null;
 			boolean rowIsNull = selectedElement == null;
 			boolean rowIsForm = selectedElement instanceof Form;
 			boolean rowIsElementReference = selectedElement != null && selectedElement.isReadOnly();
@@ -607,44 +608,54 @@ public class Designer extends SecuredWebPage {
 			boolean isHidden = selectedElement != null && selectedElement.isHiddenElement();
 
 			upperMenu.getSaveButton().setEnabled(canEdit);
-			upperMenu.getBlockMenu().setEnabled(canEdit);
-			upperMenu.getOtherElementsMenu().setEnabled(canEdit);
+			upperMenu.getBlockMenu().setEnabled(canEdit && !formHasLinkedForm);
+			upperMenu.getOtherElementsMenu().setEnabled(canEdit && !formHasLinkedForm);
 			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock && !rowIsForm);
-			upperMenu.getInsertBlockButton().setEnabled(canEdit);
-			upperMenu.getInsertBlockButton().setVisible(!formIsBlock);
+			upperMenu.getInsertBlockButton().setEnabled(canEdit && !formHasLinkedForm);
+			upperMenu.getInsertBlockButton().setVisible(!formIsBlock && !formHasLinkedForm);
 			upperMenu.getNewCategoryButton().setEnabled(
-					canEdit && (formIsBlockAndNoCategories || (!formIsBlock)) && !rowIsElementReference);
+					canEdit && (formIsBlockAndNoCategories || (!formIsBlock)) && !rowIsElementReference
+							&& !formHasLinkedForm);
 			upperMenu.getNewGroupButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(Group.class) && !rowIsElementReference);
+					canEdit && selectedRowHierarchyAllows(Group.class) && !rowIsElementReference && !formHasLinkedForm);
 			upperMenu.getNewQuestionButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(Question.class) && !rowIsElementReference);
+					canEdit && selectedRowHierarchyAllows(Question.class) && !rowIsElementReference
+							&& !formHasLinkedForm);
 			upperMenu.getNewSystemFieldButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(SystemField.class) && !rowIsElementReference);
+					canEdit && selectedRowHierarchyAllows(SystemField.class) && !rowIsElementReference
+							&& !formHasLinkedForm);
 			upperMenu.getNewTextButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(Text.class) && !rowIsElementReference);
-			upperMenu.getNewAnswerButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(Answer.class) && !rowIsElementReference);
+					canEdit && selectedRowHierarchyAllows(Text.class) && !rowIsElementReference && !formHasLinkedForm);
+			upperMenu.getNewAnswerButton()
+					.setEnabled(
+							canEdit && selectedRowHierarchyAllows(Answer.class) && !rowIsElementReference
+									&& !formHasLinkedForm);
 			upperMenu.getNewDynamicAnswer().setEnabled(
-					canEdit && selectedRowHierarchyAllows(DynamicAnswer.class) && !rowIsElementReference);
+					canEdit && selectedRowHierarchyAllows(DynamicAnswer.class) && !rowIsElementReference
+							&& !formHasLinkedForm);
 			upperMenu.getNewSubanswerButton()
 					.setEnabled(
 							canEdit
+									&& !formHasLinkedForm
 									&& !rowIsElementReference
 									&& selectedRowIsAnswer
 									&& selectedRowHierarchyAllows(Answer.class)
 									&& (isParentQuestionOfType(table.getSelectedRow(),
 											AnswerType.SINGLE_SELECTION_RADIO) || isParentQuestionOfType(
 											table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
-			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm && !rowIsElementReference);
+			upperMenu.getMoveButton().setEnabled(
+					canEdit && !rowIsNull && !rowIsForm && !rowIsElementReference && !formHasLinkedForm);
 			upperMenu.getDeleteButton().setEnabled(
-					canEdit && !rowIsNull && !rowIsForm
+					canEdit && !rowIsNull && !rowIsForm && !formHasLinkedForm
 							&& (!rowIsElementReference || selectedElement instanceof Category));
 			upperMenu.getUpButton().setEnabled(
-					canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory));
+					canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory)
+							&& !formHasLinkedForm);
 			upperMenu.getDownButton().setEnabled(
-					canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory));
+					canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory)
+							&& !formHasLinkedForm);
 			upperMenu.getFinish().setVisible(!formIsBlock);
-			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
+			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit && !formHasLinkedForm);
 			upperMenu.getDeleteButton().setVisible(!rowIsElementReference);
 			upperMenu.updateHideButton(isHidden);
 			upperMenu.getHideButton().setVisible(!upperMenu.getDeleteButton().isVisible());

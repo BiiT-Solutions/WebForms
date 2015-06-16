@@ -45,7 +45,7 @@ public class PropertiesText extends StorableObjectProperties<Text> {
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(description);
 		
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
