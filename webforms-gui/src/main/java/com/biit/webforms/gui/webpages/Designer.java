@@ -428,45 +428,57 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
-				// Do not remove an element of a block if is in use in any external flow of the block.
 				try {
 					BlockReference blockReference = UserSessionHandler.getController().getCompleteFormView()
 							.getBlockReference(row);
-					if (!UserSessionHandler.getController().existExternalFlowToReferencedElementOrItsChildren(row,
-							blockReference)) {
-						if (blockReference != null) {
-							if (row.isHiddenElement()) {
-								if (blockReference.showElement(row)) {
-									row.setHiddenElement(false);
+					// Do not remove an element of a block if it is in use in any external flow of the block.
+					if (blockReference != null
+							&& UserSessionHandler.getController().existExternalFlowToReferencedElementOrItsChildren(
+									row, blockReference)) {
+						MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
+								LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
+					} else {
+						//It is not an element or is a form reference element.
+						if (row.isHiddenElement()) {
+							if (UserSessionHandler.getController().getFormInUse().showElement(row)) {
+								row.setHiddenElement(false);
+								if (blockReference != null) {
 									WebformsLogger.info(this.getClass().getName(), "User '"
 											+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '"
 											+ row + "' of block '" + blockReference + "'.");
-									UserSessionHandler.getController().setUnsavedFormChanges(true);
 								} else {
-									MessageManager
-											.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
+									WebformsLogger.info(this.getClass().getName(), "User '"
+											+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '"
+											+ row + "'.");
 								}
+								UserSessionHandler.getController().setUnsavedFormChanges(true);
 							} else {
-								try {
-									if (blockReference.hideElement(row)) {
-										row.setHiddenElement(true);
+								MessageManager
+										.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
+							}
+						} else {
+							try {
+								if (UserSessionHandler.getController().getFormInUse().hideElement(row)) {
+									row.setHiddenElement(true);
+									if (blockReference != null) {
 										WebformsLogger
 												.info(this.getClass().getName(), "User '"
 														+ UserSessionHandler.getUser().getEmailAddress()
 														+ "' has hide element '" + row + "' of block '"
 														+ blockReference + "'.");
-										UserSessionHandler.getController().setUnsavedFormChanges(true);
+									} else {
+										WebformsLogger.info(this.getClass().getName(), "User '"
+												+ UserSessionHandler.getUser().getEmailAddress()
+												+ "' has hide element '" + row + "'.");
 									}
-								} catch (ElementCannotBeRemovedException e) {
-									WebformsLogger.errorMessage(this.getClass().getName(), e);
+									UserSessionHandler.getController().setUnsavedFormChanges(true);
 								}
+							} catch (ElementCannotBeRemovedException e) {
+								WebformsLogger.errorMessage(this.getClass().getName(), e);
 							}
-							upperMenu.updateHideButton(row.isHiddenElement());
-							table.updateRow(row);
 						}
-					} else {
-						MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
-								LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
+						upperMenu.updateHideButton(row.isHiddenElement());
+						table.updateRow(row);
 					}
 				} catch (ReadOnlyException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
@@ -583,16 +595,16 @@ public class Designer extends SecuredWebPage {
 			boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
 			boolean rowIsNull = selectedElement == null;
 			boolean rowIsForm = selectedElement instanceof Form;
-			boolean rowIsBlockReference = selectedElement == null || selectedElement.isReadOnly();
-			boolean rowIsBlockReferenceCategory = selectedElement == null || selectedElement.isReadOnly()
-					&& (selectedElement instanceof BaseCategory);
+			boolean rowIsElementReference = selectedElement != null && selectedElement.isReadOnly();
+			boolean rowIsBlockReferenceCategory = rowIsElementReference && (selectedElement instanceof BaseCategory)
+					&& (selectedElement.getParent() instanceof Block);
 			boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 					UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 			boolean canStoreBlock = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
 			boolean selectedRowIsAnswer = (table.getSelectedRow() != null)
 					&& (table.getSelectedRow() instanceof Answer);
-			boolean isHidden = selectedElement == null || selectedElement.isHiddenElement();
+			boolean isHidden = selectedElement != null && selectedElement.isHiddenElement();
 
 			upperMenu.getSaveButton().setEnabled(canEdit);
 			upperMenu.getBlockMenu().setEnabled(canEdit);
@@ -601,42 +613,42 @@ public class Designer extends SecuredWebPage {
 			upperMenu.getInsertBlockButton().setEnabled(canEdit);
 			upperMenu.getInsertBlockButton().setVisible(!formIsBlock);
 			upperMenu.getNewCategoryButton().setEnabled(
-					canEdit && (formIsBlockAndNoCategories || (!formIsBlock)) && !rowIsBlockReference);
+					canEdit && (formIsBlockAndNoCategories || (!formIsBlock)) && !rowIsElementReference);
 			upperMenu.getNewGroupButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(Group.class) && !rowIsBlockReference);
+					canEdit && selectedRowHierarchyAllows(Group.class) && !rowIsElementReference);
 			upperMenu.getNewQuestionButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(Question.class) && !rowIsBlockReference);
+					canEdit && selectedRowHierarchyAllows(Question.class) && !rowIsElementReference);
 			upperMenu.getNewSystemFieldButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(SystemField.class) && !rowIsBlockReference);
+					canEdit && selectedRowHierarchyAllows(SystemField.class) && !rowIsElementReference);
 			upperMenu.getNewTextButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(Text.class) && !rowIsBlockReference);
+					canEdit && selectedRowHierarchyAllows(Text.class) && !rowIsElementReference);
 			upperMenu.getNewAnswerButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(Answer.class) && !rowIsBlockReference);
+					canEdit && selectedRowHierarchyAllows(Answer.class) && !rowIsElementReference);
 			upperMenu.getNewDynamicAnswer().setEnabled(
-					canEdit && selectedRowHierarchyAllows(DynamicAnswer.class) && !rowIsBlockReference);
+					canEdit && selectedRowHierarchyAllows(DynamicAnswer.class) && !rowIsElementReference);
 			upperMenu.getNewSubanswerButton()
 					.setEnabled(
 							canEdit
-									&& !rowIsBlockReference
+									&& !rowIsElementReference
 									&& selectedRowIsAnswer
 									&& selectedRowHierarchyAllows(Answer.class)
 									&& (isParentQuestionOfType(table.getSelectedRow(),
 											AnswerType.SINGLE_SELECTION_RADIO) || isParentQuestionOfType(
 											table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
-			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm && !rowIsBlockReference);
+			upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm && !rowIsElementReference);
 			upperMenu.getDeleteButton().setEnabled(
 					canEdit && !rowIsNull && !rowIsForm
-							&& (!rowIsBlockReference || selectedElement instanceof Category));
+							&& (!rowIsElementReference || selectedElement instanceof Category));
 			upperMenu.getUpButton().setEnabled(
-					canEdit && !rowIsNull && !rowIsForm && (!rowIsBlockReference || rowIsBlockReferenceCategory));
+					canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory));
 			upperMenu.getDownButton().setEnabled(
-					canEdit && !rowIsNull && !rowIsForm && (!rowIsBlockReference || rowIsBlockReferenceCategory));
+					canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory));
 			upperMenu.getFinish().setVisible(!formIsBlock);
 			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
+			upperMenu.getDeleteButton().setVisible(!rowIsElementReference);
 			upperMenu.updateHideButton(isHidden);
-			upperMenu.getHideButton().setEnabled(rowIsBlockReference && !rowIsBlockReferenceCategory && canEdit);
-			upperMenu.getDeleteButton().setVisible(!rowIsBlockReference || rowIsBlockReferenceCategory);
-			upperMenu.getHideButton().setVisible(rowIsBlockReference && !rowIsBlockReferenceCategory);
+			upperMenu.getHideButton().setVisible(!upperMenu.getDeleteButton().isVisible());
+			upperMenu.getHideButton().setEnabled(rowIsElementReference && !rowIsBlockReferenceCategory && canEdit);
 			upperMenu.getOtherElementsMenu().setEnabled(
 					upperMenu.getNewSubanswerButton().isEnabled() || upperMenu.getNewTextButton().isEnabled()
 							|| upperMenu.getNewSystemFieldButton().isEnabled());

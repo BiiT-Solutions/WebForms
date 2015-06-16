@@ -74,10 +74,7 @@ public class XmlExporter {
 
 		LinkedHashSet<TreeObject> questions = form.getAllChildrenInHierarchy(BaseQuestion.class);
 		// Remove all hidden elements.
-		Set<BlockReference> blockReferences = ((CompleteFormView) form).getAllBlockReferences();
-		for (BlockReference blockReference : blockReferences) {
-			questions.removeAll(blockReference.getAllElementsToHide());
-		}
+		questions.removeAll(form.getAllElementsToHide());
 		if (questions.isEmpty()) {
 			return null;
 		}

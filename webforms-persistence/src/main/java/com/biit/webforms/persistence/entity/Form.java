@@ -43,6 +43,7 @@ import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.ComputedFlowView;
@@ -123,6 +124,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		rules = new HashSet<>();
 		linkedFormVersions = new HashSet<>();
 		formReference = null;
+		elementsToHide = new HashSet<>();
 	}
 
 	public Form(String label, User user, Long organizationId) throws FieldTooLongException,
@@ -136,6 +138,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		setUpdatedBy(user);
 		setOrganizationId(organizationId);
 		formReference = null;
+		elementsToHide = new HashSet<>();
 	}
 
 	public void addFlow(Flow rule) throws FlowNotAllowedException {
@@ -168,9 +171,74 @@ public class Form extends BaseForm implements IWebformsFormView {
 			linkedFormLabel = ((Form) object).getLinkedFormLabel();
 			setLinkedFormVersions(((Form) object).getLinkedFormVersions());
 			linkedFormOrganizationId = ((Form) object).getLinkedFormOrganizationId();
+
+			elementsToHide.addAll(((Form) object).getElementsToHide());
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Form only supports the same type copy");
 		}
+	}
+
+	/**
+	 * Returns all elements that the user has selected to hide.
+	 * 
+	 * @return
+	 */
+	public Set<TreeObject> getElementsToHide() {
+		return elementsToHide;
+	}
+
+	/**
+	 * Returns all elements that the user has selected to hide and the elements that are children of this elements.
+	 * 
+	 * @return
+	 */
+	public Set<TreeObject> getAllElementsToHide() {
+		Set<TreeObject> elementsToHide = new HashSet<>();
+		for (TreeObject elementToHide : getElementsToHide()) {
+			elementsToHide.add(elementToHide);
+			elementsToHide.addAll(elementToHide.getAll(TreeObject.class));
+		}
+		return elementsToHide;
+	}
+
+	/**
+	 * Mark an element as hidden.
+	 * 
+	 * @param element
+	 * @return true if the element has change its state to hidden.
+	 * @throws ElementCannotBeRemovedException
+	 */
+	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
+		if (!formReference.getAllInnerStorableObjects().contains(element)) {
+			throw new ElementCannotBeRemovedException("Element '" + element
+					+ "' does not exists in the Building block.");
+		}
+		// If parent is hidden, do not hide this element.
+		boolean toHide = true;
+		for (TreeObject ancestor : element.getAncestors()) {
+			if (elementsToHide.contains(ancestor)) {
+				toHide = false;
+				break;
+			}
+		}
+		if (toHide) {
+			elementsToHide.add(element);
+		}
+		return toHide;
+	}
+
+	/**
+	 * Shows a hidden element.
+	 * 
+	 * @param element
+	 * @return true if the element has change its state to not hidden.
+	 */
+	public boolean showElement(TreeObject element) {
+		if (elementsToHide.contains(element)) {
+			elementsToHide.remove(element);
+			return true;
+		}
+		return false;
 	}
 
 	/**

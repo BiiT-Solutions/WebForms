@@ -78,9 +78,10 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 						Block block = ((BlockReference) child).getReference();
 						for (TreeObject linkedChild : convertBlockReference(block)) {
 							children.add(linkedChild);
-							updateHiddenElements((BlockReference) child, linkedChild);
+							updateHiddenElements(linkedChild);
 						}
 					} else {
+						updateHiddenElements(child);
 						child.setReadOnly(true);
 						children.add(child);
 					}
@@ -91,7 +92,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 					Block block = ((BlockReference) child).getReference();
 					for (TreeObject linkedChild : convertBlockReference(block)) {
 						children.add(linkedChild);
-						updateHiddenElements((BlockReference) child, linkedChild);
+						updateHiddenElements(linkedChild);
 					}
 				} else {
 					children.add(child);
@@ -137,7 +138,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 							}
 							children.add(linkedChild);
 							// Update hidden flag of new copied elements.
-							updateHiddenElements((BlockReference) child, linkedChild);
+							updateHiddenElements(linkedChild);
 							// Use hidden flag to discard the hidden elements.
 							removeAllHiddenElements(linkedChild);
 						}
@@ -166,9 +167,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	 * @param block
 	 * @param linkedChild
 	 */
-	private void updateHiddenElements(BlockReference block, TreeObject linkedChild) {
+	private void updateHiddenElements(TreeObject linkedChild) {
 		// Mark element as hidden.
-		for (TreeObject hiddenElement : block.getElementsToHide()) {
+		for (TreeObject hiddenElement : form.getElementsToHide()) {
 			// Can be a copy. Compare by original reference.
 			if (hiddenElement.getOriginalReference().equals(linkedChild.getOriginalReference())) {
 				linkedChild.setHiddenElement(true);
@@ -177,7 +178,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 
 		// Check its children
 		for (TreeObject child : linkedChild.getChildren()) {
-			updateHiddenElements(block, child);
+			updateHiddenElements(child);
 		}
 	}
 
@@ -338,10 +339,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	public ComputedFlowView getComputedFlowsView() {
 		LinkedHashSet<TreeObject> allBaseQuestions = getAllChildrenInHierarchy(BaseQuestion.class);
 		// Remove all hidden elements.
-		Set<BlockReference> blockReferences = getAllBlockReferences();
-		for (BlockReference blockReference : blockReferences) {
-			allBaseQuestions.removeAll(blockReference.getAllElementsToHide());
-		}
+		allBaseQuestions.removeAll(form.getAllElementsToHide());
 		ComputedFlowView computedView = new ComputedFlowView();
 
 		if (!allBaseQuestions.isEmpty()) {
