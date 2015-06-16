@@ -312,14 +312,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				if (!flow.isHidden()) {
 					Flow copiedFlow = flow.generateCopy();
 					// Maybe some others are alone, remove the others condition.
-					System.out.println(flow);
-					System.out.println(flow.getOrigin() + " -> "
-							+ form.getFormReference().getFlowsFrom(flow.getOrigin()));
 					if (filterHiddenFlows(form.getFormReference().getFlowsFrom(flow.getOrigin())).size() < 2) {
-						System.out.println("No others!");
 						copiedFlow.setOthers(false);
 						copiedFlow.setCondition(new ArrayList<Token>());
-						System.out.println("-->" + flow);
 					}
 					copiedFlow.resetIds();
 					copiedFlow.setReadOnly(true);
