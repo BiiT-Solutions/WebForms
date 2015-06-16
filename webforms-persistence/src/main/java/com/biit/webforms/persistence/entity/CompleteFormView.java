@@ -303,7 +303,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				}
 			}
 		}
-		
+
 		form.updateRuleReferences(flows);
 
 		if (form.getFormReference() != null) {
@@ -311,6 +311,16 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			for (Flow flow : form.getFormReference().getFlows()) {
 				if (!flow.isHidden()) {
 					Flow copiedFlow = flow.generateCopy();
+					// Maybe some others are alone, remove the others condition.
+					System.out.println(flow);
+					System.out.println(flow.getOrigin() + " -> "
+							+ form.getFormReference().getFlowsFrom(flow.getOrigin()));
+					if (filterHiddenFlows(form.getFormReference().getFlowsFrom(flow.getOrigin())).size() < 2) {
+						System.out.println("No others!");
+						copiedFlow.setOthers(false);
+						copiedFlow.setCondition(new ArrayList<Token>());
+						System.out.println("-->" + flow);
+					}
 					copiedFlow.resetIds();
 					copiedFlow.setReadOnly(true);
 					flows.add(copiedFlow);
@@ -320,6 +330,16 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 
 		flows.addAll(form.getFlows());
 		return flows;
+	}
+
+	private Set<Flow> filterHiddenFlows(Set<Flow> flows) {
+		Set<Flow> finalFlows = new HashSet<Flow>();
+		for (Flow flow : flows) {
+			if (!flow.isHidden()) {
+				finalFlows.add(flow);
+			}
+		}
+		return finalFlows;
 	}
 
 	/**
