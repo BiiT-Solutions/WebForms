@@ -220,7 +220,7 @@ public class FlowEditor extends SecuredWebPage {
 		for (Object itemId : itemIds) {
 			selectedNew = itemId != null && itemId.equals(tableFlows.getNewFlowId());
 		}
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 
 		Object selectedRow = null;
@@ -520,7 +520,7 @@ public class FlowEditor extends SecuredWebPage {
 	 * @param flow
 	 */
 	private void editFlowAction(Flow flow) {
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		if (canEdit) {
 			createFlowWindow(flow);
