@@ -754,7 +754,11 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 */
 	public HashMap<TreeObject, Integer> getQuestionsInOrder() {
 		HashMap<TreeObject, Integer> questionIndex = new HashMap<>();
-		LinkedHashSet<TreeObject> orderedQuestions = getAllChildrenInHierarchy(BaseQuestion.class);
+		LinkedHashSet<TreeObject> orderedQuestions = new LinkedHashSet<>();
+		if (formReference != null) {
+			orderedQuestions.addAll(getAllChildrenInHierarchy(BaseQuestion.class));
+		}
+		orderedQuestions.addAll(getAllChildrenInHierarchy(BaseQuestion.class));
 		int index = 0;
 		Iterator<TreeObject> iterator = orderedQuestions.iterator();
 		while (iterator.hasNext()) {
@@ -766,6 +770,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public void updateRuleReferences(Set<Flow> flows) {
 		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
+		if (formReference != null) {
+			currentElements.addAll(formReference.getAllChildrenInHierarchy(TreeObject.class));
+		}
 		HashMap<String, TreeObject> mappedElements = new HashMap<>();
 		for (TreeObject currentElement : currentElements) {
 			mappedElements.put(currentElement.getOriginalReference(), currentElement);
@@ -813,9 +820,19 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 */
 	@Override
 	public Integer getIndex(TreeObject child) {
+		// Form references are at the beginning.
+		if (getFormReference() != null) {
+			int index = getFormReference().getChildren().indexOf(child);
+			if (index >= 0) {
+				return index;
+			}
+		}
 		// Standard form element.
 		int index = getChildren().indexOf(child);
 		if (index >= 0) {
+			if (getFormReference() != null) {
+				return index + getFormReference().getChildren().size();
+			}
 			return index;
 		}
 		// Child not found. Maybe is a category of a block reference.

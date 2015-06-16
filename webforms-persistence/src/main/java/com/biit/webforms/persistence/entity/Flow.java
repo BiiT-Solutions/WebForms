@@ -155,8 +155,18 @@ public class Flow extends StorableObject {
 		}
 		// Flow destiny cannot be prior to origin.
 		if (!flowType.isDestinyNull()) {
-			if (!(origin.compareTo(destiny) == -1)) {
-				throw new FlowDestinyIsBeforeOriginException();
+			// If both nodes are in the same form.
+			if (origin.getAncestor(Form.class).equals(destiny.getAncestor(Form.class))) {
+				if (!(origin.compareTo(destiny) == -1)) {
+					throw new FlowDestinyIsBeforeOriginException();
+				}
+			} else {
+				// Form reference always is the first one. Therefore origin must be there.
+				if (((Form) destiny.getAncestor(Form.class)).getFormReference() == null
+						|| !(((Form) destiny.getAncestor(Form.class)).getFormReference().equals(origin
+								.getAncestor(Form.class)))) {
+					throw new FlowDestinyIsBeforeOriginException();
+				}
 			}
 		}
 	}
@@ -175,17 +185,17 @@ public class Flow extends StorableObject {
 
 		return sb.toString();
 	}
-	
-	public String getConditionStringWithFormat(){
+
+	public String getConditionStringWithFormat() {
 		StringBuilder sb = new StringBuilder();
 
 		Iterator<Token> itr = getCondition().iterator();
 
 		while (itr.hasNext()) {
 			Token next = itr.next();
-			if(next.getType()==TokenTypes.RETURN){
+			if (next.getType() == TokenTypes.RETURN) {
 				sb.append("\n");
-			}else{
+			} else {
 				sb.append(next);
 			}
 			if (itr.hasNext()) {
@@ -193,7 +203,7 @@ public class Flow extends StorableObject {
 			}
 		}
 
-		return sb.toString();		
+		return sb.toString();
 	}
 
 	@Override
@@ -208,6 +218,9 @@ public class Flow extends StorableObject {
 			this.setDestiny(flow.getDestiny());
 			this.setOthers(flow.isOthers());
 			this.setCondition(flow.generateCopyCondition());
+			this.setForm(flow.getForm());
+			this.setGenerated(flow.isGenerated());
+			this.setReadOnly(flow.isReadOnly());
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
 					+ Flow.class.getName());
@@ -236,7 +249,7 @@ public class Flow extends StorableObject {
 
 	private List<Token> generateCopyCondition() {
 		List<Token> conditionCopy = new ArrayList<Token>();
-		for (Token token : condition) {
+		for (Token token : getCondition()) {
 			conditionCopy.add(token.generateCopy());
 		}
 		return conditionCopy;
@@ -322,7 +335,7 @@ public class Flow extends StorableObject {
 	public void setCondition(List<Token> condition) {
 		this.condition.clear();
 		this.condition.addAll(condition);
-		for (Token token : this.condition) {
+		for (Token token : getCondition()) {
 			token.setFlow(this);
 		}
 	}

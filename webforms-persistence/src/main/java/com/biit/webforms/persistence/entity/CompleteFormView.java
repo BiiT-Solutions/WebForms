@@ -288,8 +288,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			return flows;
 		}
 
+		// Add linked children
 		for (TreeObject child : form.getChildren()) {
-			// Add linked block children
+			// For block reference.
 			if (child instanceof BlockReference) {
 				for (Flow flow : ((BlockReference) child).getReference().getFlows()) {
 					if (!flow.isHidden()) {
@@ -302,8 +303,22 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				}
 			}
 		}
-		flows.addAll(form.getFlows());
+		
 		form.updateRuleReferences(flows);
+
+		if (form.getFormReference() != null) {
+			// For form reference
+			for (Flow flow : form.getFormReference().getFlows()) {
+				if (!flow.isHidden()) {
+					Flow copiedFlow = flow.generateCopy();
+					copiedFlow.resetIds();
+					copiedFlow.setReadOnly(true);
+					flows.add(copiedFlow);
+				}
+			}
+		}
+
+		flows.addAll(form.getFlows());
 		return flows;
 	}
 
@@ -337,7 +352,11 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	 */
 	@Override
 	public ComputedFlowView getComputedFlowsView() {
-		LinkedHashSet<TreeObject> allBaseQuestions = getAllChildrenInHierarchy(BaseQuestion.class);
+		LinkedHashSet<TreeObject> allBaseQuestions = new LinkedHashSet<>();
+		if (form.getFormReference() != null) {
+			allBaseQuestions.addAll(form.getFormReference().getAllChildrenInHierarchy(BaseQuestion.class));
+		}
+		allBaseQuestions.addAll(getAllChildrenInHierarchy(BaseQuestion.class));
 		// Remove all hidden elements.
 		allBaseQuestions.removeAll(form.getAllElementsToHide());
 		ComputedFlowView computedView = new ComputedFlowView();
