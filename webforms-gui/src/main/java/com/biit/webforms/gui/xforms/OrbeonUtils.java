@@ -77,7 +77,7 @@ public class OrbeonUtils {
 	public static String getXFormsData(Form form) throws NotValidTreeObjectException, NotValidChildException,
 			IOException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
-		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form);
+		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form,UserSessionHandler.getController().getAllWebservices());
 		BufferedInputStream in = new BufferedInputStream(xformExporter.generateXFormsLanguage());
 		byte[] contents = new byte[1024];
 

@@ -1,10 +1,10 @@
 {
   "name": "validate_bsn",
   "description": "ipsum lorem...",
-  "protocol": "https",
+  "protocol": "http",
   "host": "localhost",
   "port": "8082",
-  "path": "rest/checkBsn",
+  "path": "rest/getUserData",
   "inputPorts": [
     {
       "errorCodes": [
@@ -12,21 +12,21 @@
         "not valid"
       ],
       "name": "bsn",
-      "xpath": "/validation"
+      "xpath": "/bsn"
     }
   ],
   "outputPorts": [
     {
       "name": "adress",
-      "xpath": "/adress"
+      "xpath": "/data/address"
     },
     {
       "name": "name",
-      "xpath": "/name"
+      "xpath": "/data/name"
     },
     {
       "name": "surname",
-      "xpath": "/surname"
+      "xpath": "/data/surname"
     }
   ]
 }

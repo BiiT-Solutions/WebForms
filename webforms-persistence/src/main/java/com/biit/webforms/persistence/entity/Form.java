@@ -790,4 +790,13 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public void addWebserviceCall(WebserviceCall webservviceCall){
 		webserviceCalls.add(webservviceCall);
 	}
+
+	public boolean usesWebservice(Webservice webservice) {
+		for(WebserviceCall call: getWebserviceCalls()){
+			if(Objects.equals(call.getWebserviceName(),webservice.getName())){
+				return true;
+			}
+		}
+		return false;
+	}
 }

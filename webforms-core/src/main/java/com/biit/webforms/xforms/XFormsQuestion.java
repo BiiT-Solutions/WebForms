@@ -15,6 +15,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebserviceCallOutputLink;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
@@ -65,9 +66,19 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		binding.append("ref=\"").append(getName()).append("\" ");
 		getXFormsType(binding);
 		isMandatory(binding);
+		isReadOnly(binding);
 		getConstraints(binding);
 		getRelevantStructure(binding);
 		binding.append(" />");
+	}
+
+	private void isReadOnly(StringBuilder binding) {
+		WebserviceCallOutputLink link = getXFormsHelper().getWebserviceCallOutputLink(getSource());
+		if(link!=null && !link.isEditable()){
+			binding.append("readonly=\"true()\" ");
+		}else{
+			binding.append("readonly=\"false()\" ");
+		}
 	}
 
 	protected void isMandatory(StringBuilder binding) {
@@ -359,7 +370,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	protected String getCalculateStructure(String flow) {
 		String parsedFlow = flow.replace("$", "../$");
 		// Calculate set readonly as true by default.
-		return " calculate=\"if(" + parsedFlow + ") then . else ''\" readonly=\"false\"";
+		return " calculate=\"if(" + parsedFlow + ") then . else ''\"";
 	}
 
 	/**

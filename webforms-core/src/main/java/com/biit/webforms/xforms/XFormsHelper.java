@@ -13,6 +13,8 @@ import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebserviceCall;
+import com.biit.webforms.persistence.entity.WebserviceCallOutputLink;
 import com.biit.webforms.persistence.entity.condition.Token;
 
 /**
@@ -35,6 +37,7 @@ class XFormsHelper {
 	// Control names must be unique.
 	private HashMap<TreeObject, String> controlNames;
 	private Set<String> usedControlNames;
+	private HashMap<BaseQuestion, WebserviceCallOutputLink> webserviceOuput;
 
 	protected XFormsHelper(Form form) {
 		questions = new ArrayList<>();
@@ -48,6 +51,7 @@ class XFormsHelper {
 		defaultFlows = new HashSet<Flow>();
 		flowsByOrigin = new HashMap<>();
 		flowsByDestiny = new HashMap<>();
+		webserviceOuput = new HashMap<>();
 
 		// Set questions in order.
 		LinkedHashSet<TreeObject> allBaseQuestions = form.getAllChildrenInHierarchy(BaseQuestion.class);
@@ -71,6 +75,16 @@ class XFormsHelper {
 				defaultFlows.add(flow);
 			}
 		}
+		
+		for(WebserviceCall call: form.getWebserviceCalls()){
+			for(WebserviceCallOutputLink link: call.getOutputLinks()){
+				webserviceOuput.put(link.getFormElement(), link);
+			}
+		}
+	}
+	
+	public WebserviceCallOutputLink getWebserviceCallOutputLink(BaseQuestion question){
+		return webserviceOuput.get(question);
 	}
 
 	private void addFlow(Flow flow) {

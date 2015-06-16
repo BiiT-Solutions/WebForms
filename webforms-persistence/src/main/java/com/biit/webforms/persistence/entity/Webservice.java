@@ -112,4 +112,21 @@ public class Webservice {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	private WebservicePort findPort(WebserviceCallLink link,Set<WebservicePort> ports){
+		for(WebservicePort port: ports){
+			if(link.getWebservicePort().equals(port.getName())){
+				return port;
+			}
+		}
+		return null;
+	}
+	
+	public WebservicePort findOutputPort(WebserviceCallOutputLink link){
+		return findPort(link, getOutputPorts());
+	}
+	
+	public WebserviceValidatedPort findInputPort(WebserviceCallInputLink link){
+		return (WebserviceValidatedPort) findPort(link, new HashSet<WebservicePort>(getInputPorts()));
+	}
 }
