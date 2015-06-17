@@ -2,9 +2,10 @@ package com.biit.webforms.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.Properties;
 
 import com.biit.webforms.utils.exceptions.ExecutableCanNotBeExecuted;
@@ -126,9 +127,12 @@ public class OsUtils {
 	public static File writeInTempFile(String prefix, String sufix, String string) throws IOException {
 		File temp;
 		temp = File.createTempFile(prefix, sufix);
-		FileWriter fout = new FileWriter(temp);
-		fout.write(string);
-		fout.close();
-		return temp;		
+
+		FileOutputStream fileStream = new FileOutputStream(temp);
+		OutputStreamWriter writer = new OutputStreamWriter(fileStream, "UTF-8");
+
+		writer.write(string);
+		writer.close();
+		return temp;
 	}
 }
