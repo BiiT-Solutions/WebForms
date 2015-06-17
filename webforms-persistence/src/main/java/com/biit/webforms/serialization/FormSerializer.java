@@ -12,6 +12,7 @@ public class FormSerializer extends BaseFormSerializer<Form> {
 	@Override
 	public JsonElement serialize(Form src, Type typeOfSrc,
 			JsonSerializationContext context) {
+		System.out.println("Serializing '" + src + "'  -> " +  src.getAllNotHiddenChildren());
 		final JsonObject jsonObject = (JsonObject) super.serialize(src,	typeOfSrc, context);
 
 		jsonObject.add("description", context.serialize(src.getDescription()));

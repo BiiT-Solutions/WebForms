@@ -342,7 +342,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void exportXmlListener() {
-		Form form = loadAndValidateForm();
+		CompleteFormView form = loadAndValidateForm();
 
 		if (form != null) {
 			WindowGenerateXml window = new WindowGenerateXml(form);

@@ -389,8 +389,6 @@ public class Form extends BaseForm implements IWebformsFormView {
 		for (TreeObject elementToHide : getElementsToHide()) {
 			newElementsToHide.add(questions.get(elementToHide.getComparationId()));
 		}
-		System.out.println("---------------");
-		System.out.println(newElementsToHide);
 		elementsToHide = newElementsToHide;
 	}
 
@@ -742,7 +740,6 @@ public class Form extends BaseForm implements IWebformsFormView {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
-		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
 		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectSerializer<Category>());
 		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());

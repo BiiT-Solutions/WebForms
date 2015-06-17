@@ -12,6 +12,7 @@ public class BaseFormSerializer<T extends BaseForm> extends TreeObjectSerializer
 	@Override
 	public JsonElement serialize(T src, Type typeOfSrc,
 			JsonSerializationContext context) {
+		System.out.println("Serializing '" + src + "'  -> " +  src.getAllNotHiddenChildren());
 		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
 		
 		jsonObject.add("version", context.serialize(src.getVersion()));

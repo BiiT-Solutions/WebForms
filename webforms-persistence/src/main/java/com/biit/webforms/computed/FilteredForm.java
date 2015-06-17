@@ -27,7 +27,7 @@ public class FilteredForm {
 		this.originalForm = originalForm;
 		this.filter = filter;
 
-		filteredElements = filter.getAllChildrenInHierarchy(BaseQuestion.class);
+		filteredElements = filter.getAllNotHiddenChildrenInHierarchy(BaseQuestion.class);
 
 		flows = originalForm.getComputedFlowsView();
 

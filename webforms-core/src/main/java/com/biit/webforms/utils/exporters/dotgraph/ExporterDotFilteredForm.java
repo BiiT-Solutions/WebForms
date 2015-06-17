@@ -56,6 +56,9 @@ public class ExporterDotFilteredForm extends ExporterDotFormBasic<FilteredForm> 
 	@Override
 	public String generateDotNodeChilds(FilteredForm structure) {
 		String dotNodes = new String();
+		System.out.println("--------------------------------");
+		System.out.println(structure);
+		System.out.println(structure.getFilteredForm());
 		for (TreeObject child : structure.getFilteredForm().getChildren()) {
 			dotNodes += (new ExporterDotCategory()).generateDotNodeList((Category) child);
 		}

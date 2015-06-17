@@ -184,7 +184,7 @@ public class Flow extends StorableObject {
 		while (itr.hasNext()) {
 			Token next = itr.next();
 			if (next.getType() == TokenTypes.RETURN) {
-				sb.append("\n");
+				sb.append("\\n");
 			} else {
 				sb.append(next);
 			}
@@ -525,7 +525,8 @@ public class Flow extends StorableObject {
 	 */
 	public boolean isHidden() {
 		// Check source and destiny.
-		if (getOrigin().isHiddenElement() || getDestiny().isHiddenElement()) {
+		if ((getOrigin() != null && getOrigin().isHiddenElement())
+				|| (getDestiny() != null && getDestiny().isHiddenElement())) {
 			return true;
 		}
 		// Check condition.

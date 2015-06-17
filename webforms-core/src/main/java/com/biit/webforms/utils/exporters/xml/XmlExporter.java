@@ -70,9 +70,7 @@ public class XmlExporter {
 		// node to visit is always the node with the least visits. This solution
 		// prioritizes the appearance of each question.
 
-		LinkedHashSet<TreeObject> questions = form.getAllChildrenInHierarchy(BaseQuestion.class);
-		// Remove all hidden elements.
-		questions.removeAll(form.getAllElementsToHide());
+		LinkedHashSet<TreeObject> questions = form.getAllNotHiddenChildrenInHierarchy(BaseQuestion.class);
 		if (questions.isEmpty()) {
 			return null;
 		}
