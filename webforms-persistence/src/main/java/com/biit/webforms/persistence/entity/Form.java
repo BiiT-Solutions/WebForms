@@ -172,7 +172,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 			setLinkedFormVersions(((Form) object).getLinkedFormVersions());
 			linkedFormOrganizationId = ((Form) object).getLinkedFormOrganizationId();
 
-			elementsToHide.addAll(((Form) object).getElementsToHide());
+			setFormReference(((Form) object).getFormReference());
+			elementsToHide = new HashSet<>((((Form) object).getElementsToHide()));
+			updateElementsToHide();
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Form only supports the same type copy");
 		}
@@ -368,6 +370,21 @@ public class Form extends BaseForm implements IWebformsFormView {
 			DynamicAnswer answer = (DynamicAnswer) child;
 			answer.setReference(questions.get(answer.getReference().getComparationId()));
 		}
+	}
+
+	/**
+	 * Update references for a new copy, version... of the form.
+	 */
+	private void updateElementsToHide() {
+		HashMap<String, TreeObject> questions = new HashMap<>();
+		for (TreeObject question : getAllChildrenInHierarchy(BaseQuestion.class)) {
+			questions.put(question.getComparationId(), question);
+		}
+		Set<TreeObject> newElementsToHide = new HashSet<>();
+		for (TreeObject elementToHide : getElementsToHide()) {
+			newElementsToHide.add(questions.get(elementToHide.getComparationId()));
+		}
+		elementsToHide = newElementsToHide;
 	}
 
 	/**
@@ -578,6 +595,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 				if (rules != null && form.rules != null && rules.size() != form.rules.size()) {
 					return false;
 				}
+
 				if (rules != null) {
 					for (Flow rule : rules) {
 						String originPath = rule.getOrigin().getPathName();
@@ -608,6 +626,22 @@ public class Form extends BaseForm implements IWebformsFormView {
 				}
 				if (linkedFormOrganizationId != null && !linkedFormOrganizationId.equals(form.linkedFormOrganizationId)) {
 					return false;
+				}
+
+				if (formReference != null && !formReference.equals(form.getFormReference())) {
+					return false;
+				}
+
+				for (TreeObject elementToHide : elementsToHide) {
+					boolean contains = false;
+					for (TreeObject elementToHideInOtherForm : form.getElementsToHide()) {
+						if (elementToHide.getComparationId().equals(elementToHideInOtherForm.getComparationId())) {
+							contains = true;
+						}
+					}
+					if (!contains) {
+						return false;
+					}
 				}
 
 				return true;

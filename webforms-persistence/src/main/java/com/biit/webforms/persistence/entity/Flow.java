@@ -249,7 +249,8 @@ public class Flow extends StorableObject {
 
 	private List<Token> generateCopyCondition() {
 		List<Token> conditionCopy = new ArrayList<Token>();
-		for (Token token : getCondition()) {
+		//We only copy the real conditions tokens, we cannot use getCondition();
+		for (Token token : condition) {
 			conditionCopy.add(token.generateCopy());
 		}
 		return conditionCopy;
@@ -460,42 +461,45 @@ public class Flow extends StorableObject {
 		this.generated = value;
 	}
 
-	public boolean isContentEqual(Flow formRule) {
+	public boolean isContentEqual(Flow flow) {
 
-		if (!origin.getPathName().equals(formRule.origin.getPathName())) {
+		if (!getOrigin().getPathName().equals(flow.getOrigin().getPathName())) {
 			return false;
 		}
 
-		if (flowType != formRule.flowType) {
+		if (getFlowType() != flow.getFlowType()) {
 			return false;
 		}
 
-		if ((destiny != null && formRule.destiny == null) || (destiny == null) && formRule.destiny != null) {
+		if ((destiny != null && flow.destiny == null) || (destiny == null) && flow.destiny != null) {
 			return false;
 		}
 
-		if (destiny != null && formRule.destiny != null
-				&& !destiny.getPathName().equals(formRule.destiny.getPathName())) {
+		if (destiny != null && flow.destiny != null && !destiny.getPathName().equals(flow.destiny.getPathName())) {
 			return false;
 		}
 
-		if (others != formRule.others) {
+		if (others != flow.others) {
 			return false;
 		}
 
-		if ((condition != null && formRule.condition == null) || (condition == null && formRule.condition != null)) {
+		if ((getCondition() != null && flow.getCondition() == null) || (getCondition() == null && flow.getCondition() != null)) {
 			return false;
 		}
 
-		if (condition != null && formRule.condition != null) {
-			if (condition.size() != formRule.condition.size()) {
+		if (getCondition() != null && flow.getCondition() != null) {
+			if (getCondition().size() != flow.getCondition().size()) {
 				return false;
 			}
-			for (int i = 0; i < condition.size(); i++) {
-				if (!condition.get(i).isContentEqual(formRule.condition.get(i))) {
+			for (int i = 0; i < getCondition().size(); i++) {
+				if (!getCondition().get(i).isContentEqual(flow.getCondition().get(i))) {
 					return false;
 				}
 			}
+		}
+
+		if (readOnly != flow.readOnly) {
+			return false;
 		}
 
 		return true;

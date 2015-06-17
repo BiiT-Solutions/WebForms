@@ -104,6 +104,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 		checkEquals(form, formV2);
 		// Different version content is not equal
 		Assert.assertFalse(form.isContentEqual(formV2));
+		//Put the same version number and must be the same!
 		formV2.setVersion(form.getVersion());
 		Assert.assertTrue(form.isContentEqual(formV2));
 
