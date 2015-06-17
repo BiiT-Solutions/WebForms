@@ -136,14 +136,38 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		body.append("xmlns:dataModel=\"java:org.orbeon.oxf.fb.DataModel\" ");
 		body.append("xmlns:oxf=\"http://www.orbeon.com/oxf/processors\" ");
 		body.append("xmlns:p=\"http://www.orbeon.com/oxf/pipeline\" >");
-
 		setCategoriesMenu(body);
+		body.append("<xh:div class=\"webforms-category-components\" id=\"webforms-category-components\">");
 		body.append(getBodySection(xFormsObject));
-
+		body.append("</xh:div>");
+		// Script that manages the previous/next buttons of the runner
+		body.append("<script type=\"text/javascript\" src=\"/orbeon/forms/assets/categories-menu.js\"/>");
 		body.append("</fr:body>");
+		createFormRunnerButtons(body);
 		body.append("</fr:view>");
 		body.append("</xh:body>");
 		return body.toString();
+	}
+
+	private void createFormRunnerButtons(StringBuilder body) {
+		body.append("<fr:buttons xmlns:oxf=\"http://www.orbeon.com/oxf/processors\"");
+		body.append(" xmlns:p=\"http://www.orbeon.com/oxf/pipeline\"");
+		body.append(" xmlns:xbl=\"http://www.w3.org/ns/xbl\">");
+		body.append("<xf:trigger id=\"previous-button\">");
+		body.append("<xf:label>Previous</xf:label>");
+		body.append("<xf:action ev:event=\"DOMActivate\">");
+		body.append("<xf:load resource=\"javascript:clickPreviousCategory()\"/>");
+		body.append("</xf:action>");
+		body.append("</xf:trigger>");
+		body.append("<xf:trigger id=\"next-button\">");
+		body.append("<xf:label>Next</xf:label>");
+		body.append("<xf:action ev:event=\"DOMActivate\">");
+		body.append("<xf:load resource=\"javascript:clickNextCategory()\"/>");
+		body.append("</xf:action>");
+		body.append("</xf:trigger>");
+		body.append("<fr:save-draft-button/>");
+		body.append("<fr:submit-button/>");
+		body.append("</fr:buttons>");
 	}
 
 	/**
@@ -152,20 +176,34 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	 * @param body
 	 */
 	private void setCategoriesMenu(StringBuilder body) {
-		body.append("<xh:div id='categories_menu'>");
-		body.append("<xh:table>");
-		body.append("<xh:tr>");
+		body.append("<xh:div id=\"categories_menu\" class=\"categories-menu\">");
+		body.append("<xh:ul class=\"webforms-list-no-bullets\">");
 
 		for (XFormsCategory category : getXFormsCategories()) {
-			body.append("<xh:td>");
-			body.append("<xf:trigger appearance=\"minimal\">");
-			body.append("<xf:label>" + category.getUniqueName() + "</xf:label>");
+			body.append("<xh:li class=\"webforms-list-no-bullets-element {if(instance('show-category')/"
+					+ category.getUniqueName()
+					+ "='true') then 'webforms-list-no-bullets-element-selected' else ''}\">");
+			body.append("<xf:trigger appearance=\"minimal\" class=\"{if(instance('category-menu-button-active')/"
+					+ category.getUniqueName() + "='false') then 'category-button-disabled' else ''}\">");
+			body.append("<xf:label>" + category.getSource().getLabel() + "</xf:label>");
+			body.append("<xf:action ev:event=\"DOMActivate\">");
+
+			for (XFormsCategory categoryAux : getXFormsCategories()) {
+				if (categoryAux.equals(category)) {
+					body.append("<xf:setvalue ref=\"instance('show-category')/" + categoryAux.getUniqueName()
+							+ "\">true</xf:setvalue>");
+				} else {
+					body.append("<xf:setvalue ref=\"instance('show-category')/" + categoryAux.getUniqueName()
+							+ "\">false</xf:setvalue>");
+				}
+			}
+			body.append("<xf:load resource=\"javascript:enableDisablePreviousNextButtons()\"/>");
+			body.append("</xf:action>");
 			body.append("</xf:trigger>");
-			body.append("</xh:td>");
+			body.append("</xh:li>");
 		}
 
-		body.append("</xh:tr>");
-		body.append("</xh:table>");
+		body.append("</xh:ul>");
 		body.append("</xh:div>");
 	}
 
@@ -200,10 +238,8 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	@Override
 	protected String getBodySection(XFormsObject<?> xformsObject) {
 		StringBuilder body = new StringBuilder();
-
 		// Add hidden email field.
 		body.append(XFormsHiddenEmailField.getBody());
-
 		for (XFormsCategory category : getXFormsCategories()) {
 			category.getSectionBody(body);
 		}
@@ -266,13 +302,13 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	private void addCategoryMenuEvents(StringBuilder events) {
 		addCategoryMenuVisibilityStructure(events);
-		//addHideCategoryObservers(events);
+		addCategoryMenuVisibilityEvents(events);
 	}
 
 	private void addCategoryMenuVisibilityStructure(StringBuilder events) {
-		events.append("<!-- Keep track of category menu visible/hidden status -->");
-		events.append("<xf:instance id=\"category-menu-visibility\">");
-		events.append("<var>");
+		events.append("<!-- Keeps track of category menu buttons status -->");
+		events.append("<xf:instance id=\"category-menu-button-active\">");
+		events.append("<category-menu-button-active>");
 
 		for (int index = 0; index < getXFormsCategories().size(); index++) {
 			XFormsCategory xFormCategory = getXFormsCategories().get(index);
@@ -284,8 +320,52 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 			}
 			events.append("</" + xFormCategory.getUniqueName() + ">");
 		}
-		events.append("</var>");
+		events.append("</category-menu-button-active>");
 		events.append("</xf:instance>");
+
+		events.append("<!-- Keeps track of the category that should be shown based on the categroy menu buttons -->");
+		events.append("<xf:instance id=\"show-category\">");
+		events.append("<show-category>");
+
+		for (int index = 0; index < getXFormsCategories().size(); index++) {
+			XFormsCategory xFormCategory = getXFormsCategories().get(index);
+			events.append("<" + xFormCategory.getUniqueName() + ">");
+			if (index == 0) {
+				events.append("true");
+			} else {
+				events.append("false");
+			}
+			events.append("</" + xFormCategory.getUniqueName() + ">");
+		}
+		events.append("</show-category>");
+		events.append("</xf:instance>");
+	}
+
+	private void addCategoryMenuVisibilityEvents(StringBuilder events) {
+		events.append("<!-- Through these events the category menu buttons are enabled/disabled -->");
+
+		events.append("<xf:action ev:event=\"xforms-enabled xforms-disabled\"");
+		events.append(" ev:observer=\"");
+		for (XFormsCategory category : getXFormsCategories()) {
+			events.append(category.getUniqueName() + "-control ");
+		}
+		events.append("\"> <xf:load resource=\"javascript:enableDisablePreviousNextButtons()\"/>");
+		events.append("</xf:action>");
+
+		for (XFormsCategory category : getXFormsCategories()) {
+			// Enable category button event
+			events.append("<xf:action ev:event=\"xforms-enabled\" ev:observer=\"" + category.getUniqueName()
+					+ "-control\">");
+			events.append("<xf:setvalue ref=\"instance('category-menu-button-active')/" + category.getUniqueName()
+					+ "\">true</xf:setvalue>");
+			events.append("</xf:action>");
+			// Disable category button event
+			events.append("<xf:action ev:event=\"xforms-disabled\" ev:observer=\"" + category.getUniqueName()
+					+ "-control\" if=\"instance('visible')/" + category.getUniqueName() + "=0\">");
+			events.append("<xf:setvalue ref=\"instance('category-menu-button-active')/" + category.getUniqueName()
+					+ "\">false</xf:setvalue>");
+			events.append("</xf:action>");
+		}
 	}
 
 	/**
