@@ -155,18 +155,8 @@ public class Flow extends StorableObject {
 		}
 		// Flow destiny cannot be prior to origin.
 		if (!flowType.isDestinyNull()) {
-			// If both nodes are in the same form.
-			if (origin.getAncestor(Form.class).equals(destiny.getAncestor(Form.class))) {
-				if (!(origin.compareTo(destiny) == -1)) {
-					throw new FlowDestinyIsBeforeOriginException();
-				}
-			} else {
-				// Form reference always is the first one. Therefore origin must be there.
-				if (((Form) destiny.getAncestor(Form.class)).getFormReference() == null
-						|| !(((Form) destiny.getAncestor(Form.class)).getFormReference().equals(origin
-								.getAncestor(Form.class)))) {
-					throw new FlowDestinyIsBeforeOriginException();
-				}
+			if (!(origin.compareTo(destiny) == -1)) {
+				throw new FlowDestinyIsBeforeOriginException();
 			}
 		}
 	}
@@ -249,7 +239,7 @@ public class Flow extends StorableObject {
 
 	private List<Token> generateCopyCondition() {
 		List<Token> conditionCopy = new ArrayList<Token>();
-		//We only copy the real conditions tokens, we cannot use getCondition();
+		// We only copy the real conditions tokens, we cannot use getCondition();
 		for (Token token : condition) {
 			conditionCopy.add(token.generateCopy());
 		}
@@ -483,7 +473,8 @@ public class Flow extends StorableObject {
 			return false;
 		}
 
-		if ((getCondition() != null && flow.getCondition() == null) || (getCondition() == null && flow.getCondition() != null)) {
+		if ((getCondition() != null && flow.getCondition() == null)
+				|| (getCondition() == null && flow.getCondition() != null)) {
 			return false;
 		}
 
@@ -496,6 +487,10 @@ public class Flow extends StorableObject {
 					return false;
 				}
 			}
+		}
+
+		if (generated != flow.generated) {
+			return false;
 		}
 
 		if (readOnly != flow.readOnly) {

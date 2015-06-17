@@ -883,6 +883,27 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
+	 * Real index taking in account the form reference elements. 
+	 * @param child
+	 * @return
+	 */
+	@Override
+	public Integer getRelativeIndex(TreeObject child) {
+		// Normal form without linked form.
+		if (getFormReference() == null) {
+			return getIndex(child);
+		}
+		// Linked Form is before the elements of the form.
+		if (getChildren().contains(child)) {
+			return getIndex(child) + getFormReference().getChildren().size();
+		}
+		if (getFormReference().getChildren().contains(child)) {
+			return getFormReference().getIndex(child);
+		}
+		return -1;
+	}
+
+	/**
 	 * Moves an object of the tree to last position in @toParent returns @objectToMove
 	 * 
 	 * @param objectToMove
