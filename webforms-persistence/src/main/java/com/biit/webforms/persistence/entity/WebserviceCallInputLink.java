@@ -3,12 +3,14 @@ package com.biit.webforms.persistence.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
@@ -23,6 +25,7 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "webservice_call_input_link_errors", joinColumns = @JoinColumn(name = "ID"))
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true, mappedBy="webserviceCallInput")
 	private Set<WebserviceCallInputErrors> errors;
 
 	protected WebserviceCallInputLink() {
@@ -34,8 +37,13 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 		super(port);
 		errors = new HashSet<>();
 		for (String errorCode : port.getErrorCodes()) {
-			errors.add(new WebserviceCallInputErrors(errorCode, ""));
+			addWebserviceCallInputError(new WebserviceCallInputErrors(errorCode, ""));			
 		}
+	}
+
+	private void addWebserviceCallInputError(WebserviceCallInputErrors webserviceCallInputErrors) {
+		errors.add(webserviceCallInputErrors);
+		webserviceCallInputErrors.setWebserviceCallInput(this);
 	}
 
 	@Override
@@ -63,10 +71,6 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 			}
 		}
 		return validErrors;
-	}
-
-	public void setErrors(Set<WebserviceCallInputErrors> errors) {
-		this.errors = errors;
 	}
 
 	@Override
