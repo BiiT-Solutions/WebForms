@@ -392,10 +392,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 			visibility.append("instance('visible')/"
 					+ getXFormsHelper().getUniqueName(((TokenAnswerNeeded) token).getQuestion()) + " != 'false'");
 		} else if (token instanceof TokenOthersMustBeAnswered) {
+			// Others ensure that question is answered with a string-length() or checks that is not visible with the
+			// event.
 			visibility
-					.append("string-length(")
+					.append("(string-length(")
 					.append(getXFormsHelper().getXFormsObject(((TokenOthersMustBeAnswered) token).getQuestion())
-							.getXPath()).append("/text()) &gt; 0");
+							.getXPath())
+					.append("/text()) &gt; 0 or instance('visible')/"
+							+ getXFormsHelper().getUniqueName(((TokenOthersMustBeAnswered) token).getQuestion())
+							+ " = 'false')");
 		} else if (token instanceof TokenInheritRelevant) {
 			// Uses same visibility that this element.
 			visibility.append("instance('visible')/"
