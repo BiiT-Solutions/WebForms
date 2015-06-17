@@ -317,7 +317,6 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 						copiedFlow.setOthers(false);
 						copiedFlow.setCondition(new ArrayList<Token>());
 					}
-					copiedFlow.resetIds();
 					copiedFlow.setReadOnly(true);
 					flows.add(copiedFlow);
 				}
