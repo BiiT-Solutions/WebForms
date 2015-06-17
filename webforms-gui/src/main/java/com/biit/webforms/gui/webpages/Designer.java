@@ -134,6 +134,7 @@ public class Designer extends SecuredWebPage {
 
 		table = new TableTreeObjectLabel();
 		table.setPageLength(0);
+		table.setHiddenElementShown(true);
 		table.setIconProvider(new IconProviderTreeObjectWebforms());
 		table.setStatusIconProvider(new IconProviderTreeObjectHidden());
 		table.setSizeFull();

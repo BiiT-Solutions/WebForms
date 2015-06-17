@@ -520,7 +520,7 @@ public class FlowEditor extends SecuredWebPage {
 	 * @param flow
 	 */
 	private void editFlowAction(Flow flow) {
-		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
+		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		if (canEdit) {
 			createFlowWindow(flow);

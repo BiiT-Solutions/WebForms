@@ -35,9 +35,11 @@ public class TableTreeObject extends TreeTable {
 
 	// Stores the complete Form view equivalences.
 	private Map<String, TreeObject> rootElements;
-	
+
 	private ExpandListener expandListener;
 	private CollapseListener collapseListener;
+
+	private boolean hiddenElementShown = false;
 
 	protected enum TreeObjectTableProperties {
 		ELEMENT_NAME
@@ -71,7 +73,7 @@ public class TableTreeObject extends TreeTable {
 		addExpandListener(expandListener);
 		addCollapseListener(collapseListener);
 	}
-	
+
 	public void disableFixForJumpingTableWhenExpandOrCollapse() {
 		removeExpandListener(expandListener);
 		removeCollapseListener(collapseListener);
@@ -84,11 +86,9 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Loads a tree object structure recursively. At the end of the process
-	 * selects the root element inserted. element. It can also be specified an
-	 * array of filterClasses. If this is not specified, then every kind of
-	 * element is allowed. Else only the elements in the hierarchy whose path is
-	 * made of valid elements.
+	 * Loads a tree object structure recursively. At the end of the process selects the root element inserted. element.
+	 * It can also be specified an array of filterClasses. If this is not specified, then every kind of element is
+	 * allowed. Else only the elements in the hierarchy whose path is made of valid elements.
 	 * 
 	 * @param element
 	 * @param parent
@@ -110,7 +110,9 @@ public class TableTreeObject extends TreeTable {
 
 				List<TreeObject> children = element.getChildren();
 				for (TreeObject child : children) {
-					loadTreeObject(child, element, false, filterClases);
+					if (isHiddenElementShown() || !child.isHiddenElement()) {
+						loadTreeObject(child, element, false, filterClases);
+					}
 				}
 			}
 		}
@@ -136,8 +138,7 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Adds a new row to the table. Default configuration makes that adding a
-	 * new row also selects.
+	 * Adds a new row to the table. Default configuration makes that adding a new row also selects.
 	 * 
 	 * @param element
 	 * @param parent
@@ -182,13 +183,13 @@ public class TableTreeObject extends TreeTable {
 			}
 
 			// Update
-			((ComponentCellTreeObject)item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).getValue()).update(element);
+			((ComponentCellTreeObject) item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).getValue())
+					.update(element);
 		}
 	}
 
 	/**
-	 * Removes any row of the table of a child of element that does not exists
-	 * any more.
+	 * Removes any row of the table of a child of element that does not exists any more.
 	 * 
 	 * @param element
 	 */
@@ -218,8 +219,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Gets Name property to show form a TreeObject element. If the name can't
-	 * be defined, then raises a {@link UnsupportedOperationException}
+	 * Gets Name property to show form a TreeObject element. If the name can't be defined, then raises a
+	 * {@link UnsupportedOperationException}
 	 * 
 	 * @param element
 	 * @return
@@ -293,8 +294,7 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Collapse the tree in a specific hierarchy level to inner levels. The
-	 * level is specified by a class.
+	 * Collapse the tree in a specific hierarchy level to inner levels. The level is specified by a class.
 	 * 
 	 * @param collapseFrom
 	 */
@@ -361,8 +361,7 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Return the parent row of the row of the element. Form is translated to
-	 * CompleteFormView.
+	 * Return the parent row of the row of the element. Form is translated to CompleteFormView.
 	 * 
 	 * @param element
 	 * @return
@@ -389,5 +388,13 @@ public class TableTreeObject extends TreeTable {
 			return rootElements.get(element.getComparationId());
 		}
 		return element;
+	}
+
+	public boolean isHiddenElementShown() {
+		return hiddenElementShown;
+	}
+
+	public void setHiddenElementShown(boolean hiddenElementShown) {
+		this.hiddenElementShown = hiddenElementShown;
 	}
 }
