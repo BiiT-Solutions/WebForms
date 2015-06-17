@@ -6,7 +6,7 @@
 				<include name="testDomain" />
  			 	<include name="testFlowDomain" />
  			 	<include name="testFlowDomainRedundant" />
- 			 	<include name="testFlowDomainBlockedPreviousQuestion" />
+ 			 	<exclude name="testFlowDomainBlockedPreviousQuestion" /> <!-- no longer used -->
 				<include name="booleanExpressions" />
 				<include name="linkValidation" />
 				<include name="missingFlowIn" />
