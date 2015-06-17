@@ -206,7 +206,6 @@ public class WindowFlow extends WindowAcceptCancel {
 			@Override
 			public void currentElement(Object object) {
 				if (object != null) {
-					updateSearchDestiny();
 					updateConditionTreeObjectSearch((TreeObject) object);
 				} else {
 					searchDestiny.clear();
@@ -221,12 +220,6 @@ public class WindowFlow extends WindowAcceptCancel {
 
 	protected void updateConditionTreeObjectSearch(TreeObject treeObject) {
 		conditionEditor.selectReferenceElement(treeObject);
-		// TODO filter
-	}
-
-	protected void updateSearchDestiny() {
-		// TODO Auto-generated method stub
-
 	}
 
 	private Component generateSearchDestinyContent() {

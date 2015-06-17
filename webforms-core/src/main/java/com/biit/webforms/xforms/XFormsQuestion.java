@@ -2,7 +2,6 @@ package com.biit.webforms.xforms;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -81,7 +80,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	private boolean hasConstrainsts() {
-		return hasTypeConstraint() || hasWebserviceValidation();
+		return hasSubtypeConstraint() || hasWebserviceValidation();
 	}
 
 	private boolean hasWebserviceValidation() {
@@ -101,7 +100,11 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * 
 	 * @return
 	 */
-	private boolean hasTypeConstraint() {
+	private boolean hasSubtypeConstraint() {
+		if(!(getSource() instanceof Question) || ((Question) getSource()).getAnswerSubformat() == null){
+			return false;
+		}
+
 		switch (((Question) getSource()).getAnswerSubformat()) {
 		case PHONE:
 		case POSTAL_CODE:
@@ -149,7 +152,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * @return
 	 */
 	protected void getConstraints(StringBuilder constraints) {
-		if (hasTypeConstraint()) {
+		if (hasSubtypeConstraint()) {
 			getTypeConstraints(constraints);
 		}
 		if (hasWebserviceValidation()) {
@@ -164,14 +167,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		for (WebserviceCallInputLink inputLink : inputLinks) {
 			callInputErrors.addAll(inputLink.getValidErrors());
 		}
-
-		Collections.sort(callInputErrors, new Comparator<WebserviceCallInputErrors>() {
-
-			@Override
-			public int compare(WebserviceCallInputErrors o1, WebserviceCallInputErrors o2) {
-				return o1.getErrorCode().compareTo(o2.getErrorCode());
-			}
-		});
+		Collections.sort(callInputErrors);
+		
 		return callInputErrors;
 	}
 
@@ -180,8 +177,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 		for (int i = 0; i < webserviceValidations.size(); i++) {
 			String webserviceValidatorInstance = getWebserviceValidatorInstance(webserviceValidations.get(i).getWebserviceCallInput());
-			constraints.append("<xf:constraint id=\"webservice-constraint-" + i + "-validation\" ");
-			constraints.append("value=\"instance('" + webserviceValidatorInstance + "') != '");
+			constraints.append("<xf:constraint id=\"webservice-constraint-"+ getXFormsHelper().getUniqueName(getSource()) +"-" + i + "-validation\" ");
+			constraints.append("value=\"instance('" + webserviceValidatorInstance + "')"+webserviceValidations.get(i).getWebserviceCallInput().getValidationXpath()+" != '");
 			constraints.append(webserviceValidations.get(i).getErrorCode());
 			constraints.append("'\"/>");
 		}
@@ -197,8 +194,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			return;
 		}
 
-		// We define constraint as date-constraint-[unique name]
-		constraints.append("<xf:constraint id=\"date-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "\" ");
+		// We define constraint as subtype-constraint-[unique name]
+		constraints.append("<xf:constraint id=\"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation\" ");
 		constraints.append("value=\"");
 		// Add condition depending on answer subformat.
 
@@ -212,17 +209,16 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 		switch (((Question) getSource()).getAnswerSubformat()) {
 		case PHONE:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPhone()).append("')");
+			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPhone()).append("$')");
 			break;
 		case POSTAL_CODE:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPostalCode())
-					.append("')");
+			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPostalCode()).append("$')");
 			break;
 		case BSN:
-			constraints.append(". = '' or matches(., '").append(WebformsConfigurationReader.getInstance().getRegexBsn()).append("')");
+			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexBsn()).append("$')");
 			break;
 		case IBAN:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexIban()).append("')");
+			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexIban()).append("$')");
 			break;
 		case DATE_FUTURE:
 			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &gt;= adjust-date-to-timezone(current-date(), ())");
@@ -256,7 +252,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	@Override
 	protected String getAlert() {
 		StringBuilder sb = new StringBuilder();
-		if (getSource() instanceof Question && ((Question) getSource()).getAnswerSubformat() != null) {
+		if (getSource() instanceof Question && ((Question) getSource()).getAnswerSubformat()!=null) {
 			switch (((Question) getSource()).getAnswerSubformat()) {
 			case DATE_FUTURE:
 				sb.append("<alert><![CDATA[Date must be at the future!]]></alert>");
@@ -284,11 +280,19 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			case FLOAT:
 			case AMOUNT:
 			case DATE_PERIOD:
+				sb.append("<alert><![CDATA[Missing or incorrect value]]></alert>");
 				break;
 			}
 		}
 		
-		
+		if(hasWebserviceValidation()){
+			List<WebserviceCallInputErrors> webserviceValidations = getWebserviceCallInputErrors();
+			for(WebserviceCallInputErrors inputError: webserviceValidations){
+				sb.append("<alert><![CDATA[");
+				sb.append(inputError.getErrorMessage());
+				sb.append("]]></alert>");
+			}
+		}		
 		
 		String alert = sb.toString();
 		if(!alert.isEmpty()){
@@ -360,7 +364,21 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 				+ getCssClass() + "\" bind=\"" + getBindingId() + "\">");
 		section.append(getBodyLabel());
 		section.append(getBodyHint());
-		section.append(getBodyAlert());
+		
+		//Add subtype constraint
+		if(hasSubtypeConstraint()){
+			section.append(getAlert(1,"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation"));
+		}else{
+			section.append(getAlert(1,null));
+		}
+		//Add webservice alerts
+		if(hasWebserviceValidation()){
+			List<WebserviceCallInputErrors> webserviceValidations = getWebserviceCallInputErrors();
+			for (int i = 0; i < webserviceValidations.size(); i++) {
+				section.append(getAlert(i+2,"webservice-constraint-"+ getXFormsHelper().getUniqueName(getSource()) +"-" + i + "-validation"));
+			}
+		}
+		
 		section.append(getBodyHelp());
 		createElementAnswersItems(section);
 		section.append("</xf:" + getElementFormDefinition() + " >");

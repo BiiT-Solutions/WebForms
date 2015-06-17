@@ -55,20 +55,6 @@ public class FormComparation {
 		searchRemovedElements(oldForm, newForm);
 		searchNewElements(oldForm, newForm);
 		searchUpdatedElements(oldForm, newForm);
-		
-		searchRemovedFlows(oldForm,newForm);
-		searchNewFlows(oldForm,newForm);
-//		searchUpdatedFlows(oldForm,newForm);
-	}
-
-	private void searchNewFlows(Form oldForm, Form newForm) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void searchRemovedFlows(Form oldForm, Form newForm) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	private void searchUpdatedElements(Form oldForm, Form newForm) {

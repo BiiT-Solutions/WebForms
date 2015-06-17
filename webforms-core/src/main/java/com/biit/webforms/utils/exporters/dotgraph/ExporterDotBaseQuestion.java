@@ -12,7 +12,6 @@ public class ExporterDotBaseQuestion extends ExporterDot<BaseQuestion> {
 
 	@Override
 	public String export(BaseQuestion structure) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -27,7 +26,6 @@ public class ExporterDotBaseQuestion extends ExporterDot<BaseQuestion> {
 
 	@Override
 	public String generateDotNodeFlow(BaseQuestion structure) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -68,7 +66,6 @@ public class ExporterDotBaseQuestion extends ExporterDot<BaseQuestion> {
 
 	@Override
 	public String generateDotNodeChilds(BaseQuestion structure) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

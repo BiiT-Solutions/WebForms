@@ -12,7 +12,8 @@
         "not valid"
       ],
       "name": "bsn",
-      "xpath": "/bsn"
+      "xpath": "/bsn",
+      "validationXpath": "/valid"
     }
   ],
   "outputPorts": [

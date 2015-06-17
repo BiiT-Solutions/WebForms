@@ -276,6 +276,11 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 			events.append("<xf:var name=\"control-value\" value=\""+webservice.findOutputPort(outputLink).getXpath()+"\"/>");
        		events.append("</xf:action>");
 		}
+		for(WebserviceCallInputLink inputLink: call.getInputLinks()){
+			if(inputLink.getValidationXpath()!=null){
+				events.append("<xf:insert ref=\"instance('"+call.getName()+"-"+inputLink.getWebservicePort()+"-instance')\" origin=\"instance('fr-service-response-instance')\"/>");
+			}
+		}
 		events.append("</xf:action>");
 		events.append("</xf:action>");
 	}
@@ -383,4 +388,25 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		return binding.toString();
 	}
 
+	/**
+	 * Creates the model section of XForms. But also adds the webservice validation members
+	 * 
+	 * @param form
+	 * @return
+	 * @throws InvalidFlowInForm
+	 */
+	@Override
+	protected String getModelInstance() {
+		StringBuilder text = new StringBuilder(super.getModelInstance());
+		
+		for(WebserviceCall call: getForm().getWebserviceCalls()){
+			for(WebserviceCallInputLink inputLink: call.getInputLinks()){
+				text.append("<xf:instance id=\""+call.getName()+"-"+inputLink.getWebservicePort()+"-instance\">");
+				text.append("<valid/>");
+				text.append("</xf:instance>");
+			}
+		}
+
+		return text.toString();
+	}
 }

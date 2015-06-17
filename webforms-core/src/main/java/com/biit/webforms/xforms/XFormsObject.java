@@ -166,6 +166,21 @@ public abstract class XFormsObject<T extends TreeObject> {
 		text += " />";
 		return text;
 	}
+	
+	protected String getAlert(Integer position, String validation){
+		String text = "<xf:alert ref=\"instance('fr-form-resources')/resource/" + getPath() + "/alert";
+		if(position!=null){
+			text+="["+position+"]";
+		}
+		text+="\"";
+		
+		if(validation!=null){
+			text+=" validation=\""+validation+"\"";
+		}
+		text+="/>";
+		
+		return text;
+	}
 
 	/**
 	 * Return the complete path of the element.

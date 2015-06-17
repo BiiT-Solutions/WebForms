@@ -11,7 +11,6 @@ public class ExporterDotGroup extends ExporterDot<Group> {
 
 	@Override
 	public String export(Group structure) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -70,7 +69,6 @@ public class ExporterDotGroup extends ExporterDot<Group> {
 
 	@Override
 	public String generateDotNodeFlow(Group structure) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

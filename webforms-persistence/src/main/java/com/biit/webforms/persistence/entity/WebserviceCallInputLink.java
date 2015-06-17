@@ -27,6 +27,8 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 	@CollectionTable(name = "webservice_call_input_link_errors", joinColumns = @JoinColumn(name = "ID"))
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true, mappedBy="webserviceCallInput")
 	private Set<WebserviceCallInputErrors> errors;
+	
+	private String validationXpath;
 
 	protected WebserviceCallInputLink() {
 		super();
@@ -36,6 +38,7 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 	public WebserviceCallInputLink(WebserviceValidatedPort port) {
 		super(port);
 		errors = new HashSet<>();
+		setValidationXpath(port.getValidationXpath());
 		for (String errorCode : port.getErrorCodes()) {
 			addWebserviceCallInputError(new WebserviceCallInputErrors(errorCode, ""));			
 		}
@@ -89,5 +92,13 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 			webserviceCall.getInputLinks().remove(this);
 			setWebserviceCall(null);
 		}
+	}
+
+	public String getValidationXpath() {
+		return validationXpath;
+	}
+
+	public void setValidationXpath(String validationXpath) {
+		this.validationXpath = validationXpath;
 	}
 }

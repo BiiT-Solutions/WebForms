@@ -11,7 +11,6 @@ public class ExporterDotCategory extends ExporterDot<Category> {
 
 	@Override
 	public String export(Category structure) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -56,7 +55,6 @@ public class ExporterDotCategory extends ExporterDot<Category> {
 
 	@Override
 	public String generateDotNodeFlow(Category structure) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

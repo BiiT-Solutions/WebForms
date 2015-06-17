@@ -52,7 +52,6 @@ public class BinaryOperator extends Expression implements WebformsExpression {
 		if (type == TokenTypes.OR) {
 			return new BinaryOperator(left.negate(), TokenTypes.AND, right.negate());
 		}
-		// TODO anything else is unexpected.
 		throw new RuntimeException("unexpected");
 	}
 

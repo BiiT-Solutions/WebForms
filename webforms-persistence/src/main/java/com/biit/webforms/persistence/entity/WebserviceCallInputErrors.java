@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "webservice_call_input_link_errors")
-public class WebserviceCallInputErrors implements Serializable{
+public class WebserviceCallInputErrors implements Serializable, Comparable<WebserviceCallInputErrors>{
 	private static final long serialVersionUID = -939386770345155248L;
 	
 	@Id
@@ -63,5 +63,14 @@ public class WebserviceCallInputErrors implements Serializable{
 
 	public void setWebserviceCallInput(WebserviceCallInputLink webserviceCallInput) {
 		this.webserviceCallInput = webserviceCallInput;
+	}
+
+	@Override
+	public int compareTo(WebserviceCallInputErrors arg0) {
+		if(arg0 ==null){
+			return 1;
+		}else{
+			return this.getErrorCode().compareTo(arg0.getErrorCode());
+		}
 	}
 }

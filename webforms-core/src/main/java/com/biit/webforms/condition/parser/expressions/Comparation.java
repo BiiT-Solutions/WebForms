@@ -39,13 +39,11 @@ public class Comparation extends Expression {
 
 	@Override
 	public Expression flatten() {
-		// TODO
 		throw new RuntimeException("Not implemented");
 	}
 
 	@Override
 	public Expression negate() {
-		// TODO
 		throw new RuntimeException("Not implemented");
 	}
 
