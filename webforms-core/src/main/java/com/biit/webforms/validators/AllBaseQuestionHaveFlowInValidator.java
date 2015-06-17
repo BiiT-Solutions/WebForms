@@ -22,10 +22,7 @@ public class AllBaseQuestionHaveFlowInValidator extends SimpleValidator<Form> {
 	protected void validateImplementation(Form form) {
 		ComputedFlowView flows = form.getComputedFlowsView();
 
-		LinkedHashSet<TreeObject> baseQuestions = form.getAllChildrenInHierarchy(BaseQuestion.class);
-
-		// Ignore hidden questions.
-		baseQuestions.removeAll(form.getAllElementsToHide());
+		LinkedHashSet<TreeObject> baseQuestions = form.getAllNotHiddenChildrenInHierarchy(BaseQuestion.class);
 
 		if (!baseQuestions.isEmpty()) {
 			Iterator<TreeObject> itr = baseQuestions.iterator();

@@ -173,8 +173,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 			linkedFormOrganizationId = ((Form) object).getLinkedFormOrganizationId();
 
 			setFormReference(((Form) object).getFormReference());
-			elementsToHide = new HashSet<>((((Form) object).getElementsToHide()));
-			updateElementsToHide();
+			updateElementsToHide(((Form) object).getElementsToHide());
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Form only supports the same type copy");
 		}
@@ -374,16 +373,24 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	/**
 	 * Update references for a new copy, version... of the form.
+	 * @param elementsToHide 
 	 */
-	private void updateElementsToHide() {
+	private void updateElementsToHide(Set<TreeObject> elementsToHide) {
 		HashMap<String, TreeObject> questions = new HashMap<>();
 		for (TreeObject question : getAllChildrenInHierarchy(BaseQuestion.class)) {
 			questions.put(question.getComparationId(), question);
+		}
+		if (getFormReference() != null) {
+			for (TreeObject question : getFormReference().getAllChildrenInHierarchy(BaseQuestion.class)) {
+				questions.put(question.getComparationId(), question);
+			}
 		}
 		Set<TreeObject> newElementsToHide = new HashSet<>();
 		for (TreeObject elementToHide : getElementsToHide()) {
 			newElementsToHide.add(questions.get(elementToHide.getComparationId()));
 		}
+		System.out.println("---------------");
+		System.out.println(newElementsToHide);
 		elementsToHide = newElementsToHide;
 	}
 
@@ -883,7 +890,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * Real index taking in account the form reference elements. 
+	 * Real index taking in account the form reference elements.
+	 * 
 	 * @param child
 	 * @return
 	 */
