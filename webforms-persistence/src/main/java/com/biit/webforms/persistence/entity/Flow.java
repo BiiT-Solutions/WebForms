@@ -184,7 +184,7 @@ public class Flow extends StorableObject {
 		while (itr.hasNext()) {
 			Token next = itr.next();
 			if(next.getType()==TokenTypes.RETURN){
-				sb.append("\n");
+				sb.append("\\n");
 			}else{
 				sb.append(next);
 			}
