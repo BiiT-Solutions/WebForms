@@ -1,0 +1,49 @@
+.category-show-disabled {
+	display: none;
+}
+
+.category-button-disabled{
+	pointer-events: none;
+}
+
+.category-button-disabled a{
+	color: #C0C0C0 ;
+}
+
+.webforms-list-no-bullets {
+	list-style-type: none;
+	margin: 0 0 0 0 !important;
+}
+
+.categories-menu{
+	float: left;
+	width: 200px;
+	text-align: center;
+	margin-top: 25px;
+}
+
+.webforms-category-components{
+	margin-left: 200px;
+	width: auto;
+	vertical-align: top;
+	position: relative;
+}
+
+.webforms-list-no-bullets-element{
+	margin: 5px;
+}
+
+.webforms-list-no-bullets-element-selected{
+	background-color: gainsboro;
+}
+
+.fr-body{
+	display: inline-block !important;
+	width: 100%;
+}
+
+
+.orbeon .xbl-fr-section .fr-section-content{
+	display: inline-block;
+	width: 96%;
+}
