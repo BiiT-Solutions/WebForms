@@ -132,16 +132,6 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		return children;
 	}
 
-	private void removeAllHiddenElements(TreeObject treeObject) {
-		for (TreeObject child : new ArrayList<>(treeObject.getChildren())) {
-			if (child.isHiddenElement()) {
-				treeObject.getChildren().remove(child);
-			} else {
-				removeAllHiddenElements(child);
-			}
-		}
-	}
-
 	/**
 	 * Set the elements selected by the user in a Block Reference and its children as hidden.
 	 * 
@@ -525,8 +515,6 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 
 	@Override
 	public String toJson() {
-		System.out.println("1- Hidden '" + getClass().getName() + "': " + getElementsToHide());
-		System.out.println("1- Serializing '" + this + "'  -> " + this.getAllNotHiddenChildren());
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
@@ -550,8 +538,6 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		CompleteFormView form = new CompleteFormView();
 		try {
 			form.copyData(this);
-			System.out.println("12- Hidden '" + form.getClass().getName() + "': " + form.getElementsToHide());
-			System.out.println("12- Serializing '" + form + "'  -> " + form.getAllNotHiddenChildren());
 		} catch (NotValidStorableObjectException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}

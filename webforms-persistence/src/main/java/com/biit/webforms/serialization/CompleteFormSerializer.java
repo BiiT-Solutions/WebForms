@@ -11,8 +11,6 @@ public class CompleteFormSerializer extends BaseFormSerializer<CompleteFormView>
 
 	@Override
 	public JsonElement serialize(CompleteFormView src, Type typeOfSrc, JsonSerializationContext context) {
-		System.out.println("2- Hidden '" + src.getClass().getName() + "': " + src.getElementsToHide());
-		System.out.println("2- Serializing '" + src + "'  -> " + src.getAllNotHiddenChildren());
 		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
 
 		jsonObject.add("description", context.serialize(src.getDescription()));
