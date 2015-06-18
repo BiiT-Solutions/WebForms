@@ -544,4 +544,12 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		return gson.toJson(this);
 	}
 
+	@Override
+	public Form getFormReference() {
+		if (getForm() != null) {
+			return getForm().getFormReference();
+		}
+		return null;
+	}
+
 }
