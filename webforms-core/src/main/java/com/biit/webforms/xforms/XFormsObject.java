@@ -665,6 +665,12 @@ public abstract class XFormsObject<T extends TreeObject> {
 				if (!previousVisibility.isEmpty()) {
 					// Add 'AND'.
 					if (existPreviousCondition(flowvisibility)) {
+						// Add parenthesis.
+						if (TokenUtils.needsEnclosingParenthesis(flowvisibility)) {
+							flowvisibility.add(0, Token.getLeftParenthesisToken());
+							flowvisibility.add(Token.getRigthParenthesisToken());
+						}
+
 						flowvisibility.add(Token.getAndToken());
 					}
 
@@ -698,6 +704,11 @@ public abstract class XFormsObject<T extends TreeObject> {
 				if (flow.getOrigin() instanceof WebformsBaseQuestion) {
 					if (!originUsedInCondition) {
 						if (existPreviousCondition(flowvisibility)) {
+							// Add parenthesis.
+							if (TokenUtils.needsEnclosingParenthesis(flowvisibility)) {
+								flowvisibility.add(0, Token.getLeftParenthesisToken());
+								flowvisibility.add(Token.getRigthParenthesisToken());
+							}
 							flowvisibility.add(Token.getAndToken());
 						}
 						flowvisibility.add(new TokenAnswerNeeded(flow.getOrigin(),
