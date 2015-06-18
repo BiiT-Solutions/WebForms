@@ -458,23 +458,23 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void exportXsd() {
-		CompleteFormView form = loadCompleteForm(getSelectedForm());
+		CompleteFormView completeFormView = loadCompleteForm(getSelectedForm());
 
 		ValidateFormComplete validator = new ValidateFormComplete();
 		validator.setStopOnFail(true);
 
 		ValidateReport report = new ValidateReport();
-		validator.validate(form, report);
+		validator.validate(completeFormView, report);
 		if (report.isValid()) {
-			new WindowDownloaderXsd(form, getSelectedForm().getLabel() + ".xsd");
+			new WindowDownloaderXsd(completeFormView, getSelectedForm().getLabel() + ".xsd");
 		} else {
 			MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_VALID, LanguageCodes.VALIDATE_FORM);
 		}
 	}
 
 	private void exportJson() {
-		CompleteFormView form = loadCompleteForm(getSelectedForm());
-		new WindowDownloaderJson(form, form.getLabel() + ".json");
+		CompleteFormView completeFormView = loadCompleteForm(getSelectedForm());
+		new WindowDownloaderJson(completeFormView, completeFormView.getLabel() + ".json");
 	}
 
 	private void exportBaseFormMetadataJson() {

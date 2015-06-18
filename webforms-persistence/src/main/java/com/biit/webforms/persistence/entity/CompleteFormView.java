@@ -31,6 +31,7 @@ import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.serialization.AnswerSerializer;
 import com.biit.webforms.serialization.BaseRepeatableGroupSerializer;
+import com.biit.webforms.serialization.CompleteFormSerializer;
 import com.biit.webforms.serialization.DynamicAnswerSerializer;
 import com.biit.webforms.serialization.FormSerializer;
 import com.biit.webforms.serialization.QuestionSerializer;
@@ -157,8 +158,10 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		}
 
 		// Check its children
-		for (TreeObject child : linkedChild.getChildren()) {
-			updateHiddenElements(child);
+		if (!linkedChild.isHiddenElement()) {
+			for (TreeObject child : linkedChild.getChildren()) {
+				updateHiddenElements(child);
+			}
 		}
 	}
 
@@ -475,6 +478,14 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	@Override
+	public Set<TreeObject> getElementsToHide() {
+		if (form != null) {
+			return form.getElementsToHide();
+		}
+		return new HashSet<>();
+	}
+
+	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof CompleteFormView) {
 			try {
@@ -514,10 +525,12 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 
 	@Override
 	public String toJson() {
+		System.out.println("1- Hidden '" + getClass().getName() + "': " + getElementsToHide());
+		System.out.println("1- Serializing '" + this + "'  -> " + this.getAllNotHiddenChildren());
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
-		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
+		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new CompleteFormSerializer());
 		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectSerializer<Category>());
 		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
@@ -537,11 +550,13 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		CompleteFormView form = new CompleteFormView();
 		try {
 			form.copyData(this);
+			System.out.println("12- Hidden '" + form.getClass().getName() + "': " + form.getElementsToHide());
+			System.out.println("12- Serializing '" + form + "'  -> " + form.getAllNotHiddenChildren());
 		} catch (NotValidStorableObjectException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 
-		return gson.toJson(form);
+		return gson.toJson(this);
 	}
 
 }

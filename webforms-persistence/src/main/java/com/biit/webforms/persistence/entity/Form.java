@@ -387,6 +387,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 		Set<TreeObject> newElementsToHide = new HashSet<>();
 		for (TreeObject elementToHide : getElementsToHide()) {
+			System.out.println(elementToHide + " -> " + questions.get(elementToHide.getComparationId()));
 			newElementsToHide.add(questions.get(elementToHide.getComparationId()));
 		}
 		elementsToHide = newElementsToHide;
