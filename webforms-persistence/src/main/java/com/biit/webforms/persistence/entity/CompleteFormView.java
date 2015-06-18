@@ -31,7 +31,6 @@ import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.serialization.AnswerSerializer;
 import com.biit.webforms.serialization.BaseRepeatableGroupSerializer;
-import com.biit.webforms.serialization.CompleteFormSerializer;
 import com.biit.webforms.serialization.DynamicAnswerSerializer;
 import com.biit.webforms.serialization.FormSerializer;
 import com.biit.webforms.serialization.QuestionSerializer;
@@ -55,7 +54,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	private Form form;
 
 	// Original block -> copied block
-	private Map<Block, Block> copiedBlocks;
+	private transient Map<Block, Block> copiedBlocks;
 
 	public CompleteFormView() {
 		copiedBlocks = new HashMap<>();
@@ -518,7 +517,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
-		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new CompleteFormSerializer());
+		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
 		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectSerializer<Category>());
 		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
