@@ -656,7 +656,7 @@ public class Designer extends SecuredWebPage {
 					canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory)
 							&& !formHasLinkedForm);
 			upperMenu.getFinish().setVisible(!formIsBlock);
-			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit && !formHasLinkedForm);
+			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 			upperMenu.getDeleteButton().setVisible(!rowIsElementReference);
 			upperMenu.updateHideButton(isHidden);
 			upperMenu.getHideButton().setVisible(!upperMenu.getDeleteButton().isVisible());

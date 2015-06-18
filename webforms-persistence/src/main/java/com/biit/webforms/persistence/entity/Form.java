@@ -171,9 +171,6 @@ public class Form extends BaseForm implements IWebformsFormView {
 			linkedFormLabel = ((Form) object).getLinkedFormLabel();
 			setLinkedFormVersions(((Form) object).getLinkedFormVersions());
 			linkedFormOrganizationId = ((Form) object).getLinkedFormOrganizationId();
-
-			setFormReference(((Form) object).getFormReference());
-			updateElementsToHide(((Form) object).getElementsToHide());
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Form only supports the same type copy");
 		}
@@ -348,6 +345,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 		if (copyChilds) {
 			copy.copyRules(this, false);
 			copy.updateRuleReferences();
+
+			copy.setFormReference(getFormReference());
+			copy.updateElementsToHide(getElementsToHide());
 		}
 
 		copy.updateDynamicAnswers();
@@ -373,23 +373,24 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	/**
 	 * Update references for a new copy, version... of the form.
-	 * @param elementsToHide 
+	 * 
+	 * @param elementsToHide
 	 */
 	private void updateElementsToHide(Set<TreeObject> elementsToHide) {
-		HashMap<String, TreeObject> questions = new HashMap<>();
-		for (TreeObject question : getAllChildrenInHierarchy(BaseQuestion.class)) {
-			questions.put(question.getComparationId(), question);
+		HashMap<String, TreeObject> elements = new HashMap<>();
+		for (TreeObject element : getAllChildrenInHierarchy(TreeObject.class)) {
+			elements.put(element.getComparationId(), element);
 		}
 		if (getFormReference() != null) {
-			for (TreeObject question : getFormReference().getAllChildrenInHierarchy(BaseQuestion.class)) {
-				questions.put(question.getComparationId(), question);
+			for (TreeObject element : getFormReference().getAllChildrenInHierarchy(TreeObject.class)) {
+				elements.put(element.getComparationId(), element);
 			}
 		}
 		Set<TreeObject> newElementsToHide = new HashSet<>();
 		for (TreeObject elementToHide : elementsToHide) {
-			newElementsToHide.add(questions.get(elementToHide.getComparationId()));
+			newElementsToHide.add(elements.get(elementToHide.getComparationId()));
 		}
-		elementsToHide = newElementsToHide;
+		setElementsToHide(newElementsToHide);
 	}
 
 	/**
@@ -943,5 +944,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public void setFormReference(Form formReference) {
 		this.formReference = formReference;
+	}
+
+	public void setElementsToHide(Set<TreeObject> elementsToHide) {
+		this.elementsToHide = elementsToHide;
 	}
 }
