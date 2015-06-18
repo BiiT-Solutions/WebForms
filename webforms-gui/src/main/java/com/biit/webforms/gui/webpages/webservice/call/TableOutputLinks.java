@@ -15,6 +15,8 @@ public class TableOutputLinks extends TableInputLinks{
 	public TableOutputLinks() {
 		super();
 		addContainerProperty(Properties.IS_EDITABLE, String.class, "", LanguageCodes.TABLE_OUTPUT_LINK_IS_EDITABLE.translation(), null, Align.LEFT);
+		
+		setVisibleColumns(TableInputLinks.Properties.PORT_NAME,TableInputLinks.Properties.FORM_ELEMENT,Properties.IS_EDITABLE,TableInputLinks.Properties.ELEMENT_TYPE,TableInputLinks.Properties.ELEMENT_FORMAT,TableInputLinks.Properties.ELEMENT_SUBFORMAT);
 	}
 	
 	@Override

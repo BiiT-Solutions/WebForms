@@ -605,7 +605,11 @@ public enum LanguageCodes implements ILanguageCode {
 	TABLE_VALIDATION_LINK_MESSAGE("table.validation.link.message"), 
 	
 	CAPTION_VALIDATION_LINK_ERROR_MESSAGE("caption.validation.link.error.message"),
-	CAPTION_WINDOW_EDIT_VALIDATION_LINK("caption.window.edit.validation.link"),
+	CAPTION_WINDOW_EDIT_VALIDATION_LINK("caption.window.edit.validation.link"), 
+	
+	PORT_TABLE_ELEMENT_TYPE("caption.port.table.element.type"), 
+	PORT_TABLE_ELEMENT_FORMAT("caption.port.table.element.format"), 
+	PORT_TABLE_ELEMENT_SUBFORMAT("caption.port.table.element.subformat"),
 	
 	;
 

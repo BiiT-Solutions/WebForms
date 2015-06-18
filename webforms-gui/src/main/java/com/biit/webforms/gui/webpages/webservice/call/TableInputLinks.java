@@ -13,12 +13,18 @@ public class TableInputLinks extends Table{
 	enum Properties{
 		PORT_NAME,
 		FORM_ELEMENT,
+		ELEMENT_TYPE,
+		ELEMENT_FORMAT,
+		ELEMENT_SUBFORMAT,
 	};
 
 	public TableInputLinks() {
 		super();
 		addContainerProperty(Properties.PORT_NAME, String.class, "", LanguageCodes.PORT_TABLE_NAME.translation(), null, Align.LEFT);
 		addContainerProperty(Properties.FORM_ELEMENT, String.class, "", LanguageCodes.PORT_TABLE_FORM_ELEMENT.translation(), null, Align.LEFT);
+		addContainerProperty(Properties.ELEMENT_TYPE, String.class, "", LanguageCodes.PORT_TABLE_ELEMENT_TYPE.translation(), null, Align.LEFT);
+		addContainerProperty(Properties.ELEMENT_FORMAT, String.class, "", LanguageCodes.PORT_TABLE_ELEMENT_FORMAT.translation(), null, Align.LEFT);
+		addContainerProperty(Properties.ELEMENT_SUBFORMAT, String.class, "", LanguageCodes.PORT_TABLE_ELEMENT_SUBFORMAT.translation(), null, Align.LEFT);
 	}
 	
 	public void addRows(Set<WebserviceCallLink> links){
