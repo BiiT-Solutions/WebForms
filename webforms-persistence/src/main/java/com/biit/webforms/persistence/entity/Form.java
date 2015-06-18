@@ -343,11 +343,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 		Form copy = (Form) super.generateCopy(copyParentHierarchy, copyChilds);
 
 		if (copyChilds) {
-			copy.copyRules(this, false);
-			copy.updateRuleReferences();
-
 			copy.setFormReference(getFormReference());
 			copy.updateElementsToHide(getElementsToHide());
+			copy.copyRules(this, false);
+			copy.updateRuleReferences();
 		}
 
 		copy.updateDynamicAnswers();
@@ -362,12 +361,12 @@ public class Form extends BaseForm implements IWebformsFormView {
 	private void updateDynamicAnswers(Set<TreeObject> allQuestionsInHierarchy) {
 		HashMap<String, Question> questions = new HashMap<>();
 		for (TreeObject child : allQuestionsInHierarchy) {
-			questions.put(child.getComparationId(), (Question) child);
+			questions.put(child.getOriginalReference(), (Question) child);
 		}
 
 		for (TreeObject child : getAllChildrenInHierarchy(DynamicAnswer.class)) {
 			DynamicAnswer answer = (DynamicAnswer) child;
-			answer.setReference(questions.get(answer.getReference().getComparationId()));
+			answer.setReference(questions.get(answer.getReference().getOriginalReference()));
 		}
 	}
 
@@ -379,16 +378,16 @@ public class Form extends BaseForm implements IWebformsFormView {
 	private void updateElementsToHide(Set<TreeObject> elementsToHide) {
 		HashMap<String, TreeObject> elements = new HashMap<>();
 		for (TreeObject element : getAllChildrenInHierarchy(TreeObject.class)) {
-			elements.put(element.getComparationId(), element);
+			elements.put(element.getOriginalReference(), element);
 		}
 		if (getFormReference() != null) {
 			for (TreeObject element : getFormReference().getAllChildrenInHierarchy(TreeObject.class)) {
-				elements.put(element.getComparationId(), element);
+				elements.put(element.getOriginalReference(), element);
 			}
 		}
 		Set<TreeObject> newElementsToHide = new HashSet<>();
 		for (TreeObject elementToHide : elementsToHide) {
-			newElementsToHide.add(elements.get(elementToHide.getComparationId()));
+			newElementsToHide.add(elements.get(elementToHide.getOriginalReference()));
 		}
 		setElementsToHide(newElementsToHide);
 	}
