@@ -123,29 +123,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	@Override
 	public List<TreeObject> getAllNotHiddenChildren() {
 		List<TreeObject> children = new ArrayList<>();
-		if (form != null) {
-			// Must use the real children of the form.
-			for (TreeObject child : form.getChildren()) {
-				if (!child.isHiddenElement()) {
-					if (child instanceof BlockReference) {
-						Block copiedBlock = getCopyOfReferencedBlock(((BlockReference) child));
-						for (TreeObject linkedChild : copiedBlock.getAllNotHiddenChildren()) {
-							linkedChild.setReadOnly(true);
-							try {
-								linkedChild.setParent(form);
-							} catch (NotValidParentException e) {
-								WebformsLogger.errorMessage(this.getClass().getName(), e);
-							}
-							children.add(linkedChild);
-							// Update hidden flag of new copied elements.
-							updateHiddenElements(linkedChild);
-							// Use hidden flag to discard the hidden elements.
-							removeAllHiddenElements(linkedChild);
-						}
-					} else {
-						children.add(child);
-					}
-				}
+		for (TreeObject child : getChildren()) {
+			if (!child.isHiddenElement()) {
+				children.add(child);
 			}
 		}
 		return children;
