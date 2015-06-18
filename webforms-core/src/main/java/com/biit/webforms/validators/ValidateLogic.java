@@ -9,15 +9,12 @@ import com.biit.utils.validation.ReportLevel;
 import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.utils.math.domain.FlowDomainBlockedByPreviousQuestion;
 import com.biit.webforms.utils.math.domain.FlowUnitDomain;
 import com.biit.webforms.utils.math.domain.exceptions.BadFormedExpressions;
 import com.biit.webforms.utils.math.domain.exceptions.DifferentDateUnitForQuestions;
-import com.biit.webforms.utils.math.domain.exceptions.FlowDomainBlocked;
 import com.biit.webforms.utils.math.domain.exceptions.IncompleteLogic;
 import com.biit.webforms.utils.math.domain.exceptions.RedundantLogic;
 import com.biit.webforms.validators.reports.DifferentDateUnitForQuestionsReport;
-import com.biit.webforms.validators.reports.FlowBlockedInQuestion;
 import com.biit.webforms.validators.reports.IncompleteLogicReport;
 import com.biit.webforms.validators.reports.NotValidCondition;
 import com.biit.webforms.validators.reports.RedundantLogicReport;
@@ -55,11 +52,6 @@ public class ValidateLogic extends SimpleValidator<Form> {
 					assertTrue(false, new RedundantLogicReport(element));
 				} catch (DifferentDateUnitForQuestions e) {
 					assertTrue(false, new DifferentDateUnitForQuestionsReport(element, e.getQuestionsAffected()));
-				}
-				try {
-					new FlowDomainBlockedByPreviousQuestion(form, (BaseQuestion) element);
-				} catch (FlowDomainBlocked e) {
-					assertTrue(false, new FlowBlockedInQuestion((BaseQuestion) element));
 				}
 			} catch (Exception e) {
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
