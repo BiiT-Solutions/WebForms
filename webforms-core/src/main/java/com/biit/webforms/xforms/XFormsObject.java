@@ -56,7 +56,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 		setSource(treeObject);
 		this.xFormsHelper = xFormsHelper;
 		children = new ArrayList<>();
-		for (TreeObject child : treeObject.getChildren()) {
+		for (TreeObject child : treeObject.getAllNotHiddenChildren()) {
 			if (!child.isHiddenElement()) {
 				addChild(child);
 			}

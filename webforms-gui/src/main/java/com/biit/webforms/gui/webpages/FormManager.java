@@ -374,14 +374,14 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void downloadXForms() {
-		final Form form = loadAndValidateForm();
-		if (form != null) {
+		final CompleteFormView completeFormView = loadAndValidateForm();
+		if (completeFormView != null) {
 			WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
 
 				@Override
 				public InputStream getInputStream() {
 					try {
-						return new XFormsSimpleFormExporter(form).generateXFormsLanguage();
+						return new XFormsSimpleFormExporter(completeFormView).generateXFormsLanguage();
 					} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
 							| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException
 							| UnsupportedEncodingException e) {
@@ -392,7 +392,7 @@ public class FormManager extends SecuredWebPage {
 				}
 			});
 			window.setIndeterminate(true);
-			window.setFilename(form.getLabel() + ".txt");
+			window.setFilename(completeFormView.getLabel() + ".txt");
 			window.showCentered();
 		}
 	}
