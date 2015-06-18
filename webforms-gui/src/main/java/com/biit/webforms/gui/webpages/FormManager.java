@@ -352,7 +352,7 @@ public class FormManager extends SecuredWebPage {
 		CompleteFormView form = (CompleteFormView) loadCompleteForm(getSelectedForm());
 
 		// Xforms only can use valid forms.
-		ValidateFormComplete validator = new ValidateFormComplete();
+		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController().getAllWebservices());
 		validator.setStopOnFail(true);
 
 		ValidateReport report = new ValidateReport();
@@ -453,7 +453,7 @@ public class FormManager extends SecuredWebPage {
 	private void exportXsd() {
 		CompleteFormView form = loadCompleteForm(getSelectedForm());
 
-		ValidateFormComplete validator = new ValidateFormComplete();
+		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController().getAllWebservices());
 		validator.setStopOnFail(true);
 
 		ValidateReport report = new ValidateReport();

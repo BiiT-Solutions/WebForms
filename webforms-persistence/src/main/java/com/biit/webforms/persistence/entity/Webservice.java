@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.gson.Gson;
@@ -77,6 +78,15 @@ public class Webservice {
 	public Set<WebserviceValidatedPort> getInputPorts() {
 		return inputPorts;
 	}
+	
+	public WebserviceValidatedPort getInputPort(String name){
+		for(WebserviceValidatedPort input: getInputPorts()){
+			if(Objects.equals(input.getName(),name)){
+				return input;
+			}
+		}
+		return null;
+	}
 
 	public void setInputPorts(Set<WebserviceValidatedPort> inputPorts) {
 		this.inputPorts = inputPorts;
@@ -84,6 +94,15 @@ public class Webservice {
 
 	public Set<WebservicePort> getOutputPorts() {
 		return outputPorts;
+	}
+	
+	public WebservicePort getOutputPort(String name){
+		for(WebservicePort output: getOutputPorts()){
+			if(Objects.equals(output.getName(),name)){
+				return output;
+			}
+		}
+		return null;
 	}
 
 	public void setOutputPorts(Set<WebservicePort> outputPorts) {

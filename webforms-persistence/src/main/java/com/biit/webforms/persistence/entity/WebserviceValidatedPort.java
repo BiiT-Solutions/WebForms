@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class WebserviceValidatedPort extends WebservicePort{
-
+	
 	private String validationXpath;
 	private List<String> errorCodes;
 	

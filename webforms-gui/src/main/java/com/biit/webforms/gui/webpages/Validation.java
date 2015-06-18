@@ -263,7 +263,7 @@ public class Validation extends SecuredWebPage {
 	}
 
 	private void completeValidation() {
-		ValidateFormComplete validator = new ValidateFormComplete();
+		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController().getAllWebservices());
 		ValidateReport report = new ValidateReport();
 		validator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
 

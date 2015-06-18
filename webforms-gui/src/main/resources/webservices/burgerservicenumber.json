@@ -13,21 +13,33 @@
       ],
       "name": "bsn",
       "xpath": "/bsn",
-      "validationXpath": "/valid"
+      "validationXpath": "/valid",
+      "type": "INPUT",
+      "format": "TEXT",
+      "subformat": "BSN"
     }
   ],
   "outputPorts": [
     {
       "name": "adress",
-      "xpath": "/data/address"
+      "xpath": "/data/address",
+      "type": "INPUT",
+      "format": "TEXT",
+      "subformat": "TEXT"
     },
     {
       "name": "name",
-      "xpath": "/data/name"
+      "xpath": "/data/name",
+      "type": "INPUT",
+      "format": "TEXT",
+      "subformat": "TEXT"
     },
     {
       "name": "surname",
-      "xpath": "/data/surname"
+      "xpath": "/data/surname",
+      "type": "INPUT",
+      "format": "TEXT",
+      "subformat": "TEXT"
     }
   ]
 }
