@@ -689,11 +689,11 @@ public class Form extends BaseForm implements IWebformsFormView {
 		this.isLastVersion = isLastVersion;
 	}
 
-	protected void setLinkedFormLabel(String linkedFormLabel) {
+	public void setLinkedFormLabel(String linkedFormLabel) {
 		this.linkedFormLabel = linkedFormLabel;
 	}
 
-	protected void setLinkedFormOrganizationId(Long linkedFormOrganizationId) {
+	public void setLinkedFormOrganizationId(Long linkedFormOrganizationId) {
 		this.linkedFormOrganizationId = linkedFormOrganizationId;
 	}
 
@@ -720,7 +720,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 	}
 
-	protected void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
+	public void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
 		this.linkedFormVersions.clear();
 		if (linkedFormVersions != null) {
 			this.linkedFormVersions.addAll(linkedFormVersions);

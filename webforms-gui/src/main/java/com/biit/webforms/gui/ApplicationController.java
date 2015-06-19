@@ -358,6 +358,9 @@ public class ApplicationController {
 
 		Form newForm = createForm(formLabel, organizationId);
 		newForm.setFormReference(form);
+		newForm.setLinkedFormLabel(form.getLinkedFormLabel());
+		newForm.setLinkedFormOrganizationId(form.getLinkedFormOrganizationId());
+		newForm.setLinkedFormVersions(form.getLinkedFormVersions());
 		try {
 			formDao.makePersistent(newForm);
 		} catch (ConstraintViolationException cve) {
