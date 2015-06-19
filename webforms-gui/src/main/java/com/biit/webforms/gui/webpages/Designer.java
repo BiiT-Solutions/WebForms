@@ -432,8 +432,12 @@ public class Designer extends SecuredWebPage {
 				try {
 					BlockReference blockReference = UserSessionHandler.getController().getCompleteFormView()
 							.getBlockReference(row);
-					// Do not remove an element of a block if it is in use in any external flow of the block.
-					if (blockReference != null
+					// Do not hide an element of a form reference if it is in use in any external flow.
+					if (UserSessionHandler.getController().existDefinedFlowToReferencedElementOrItsChildren(row)) {
+						MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
+								LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
+						// Do not remove an element of a block if it is in use in any external flow of the block.
+					} else if (blockReference != null
 							&& UserSessionHandler.getController().existExternalFlowToReferencedElementOrItsChildren(
 									row, blockReference)) {
 						MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
@@ -594,7 +598,7 @@ public class Designer extends SecuredWebPage {
 		try {
 			boolean formIsBlock = getCurrentForm() instanceof Block;
 			boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
-			boolean formHasLinkedForm =  UserSessionHandler.getController().getFormInUse().getFormReference() != null;
+			boolean formHasLinkedForm = UserSessionHandler.getController().getFormInUse().getFormReference() != null;
 			boolean rowIsNull = selectedElement == null;
 			boolean rowIsForm = selectedElement instanceof Form;
 			boolean rowIsElementReference = selectedElement != null && selectedElement.isReadOnly();

@@ -75,6 +75,7 @@ import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
@@ -1505,6 +1506,37 @@ public class ApplicationController {
 		}
 		for (TreeObject child : elementOfReferencedBlock.getChildren()) {
 			if (existExternalFlowToReferencedElementOrItsChildren(child, blockReference)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * True if the user has explicitly defined a flow that uses this element.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public boolean existDefinedFlowToReferencedElementOrItsChildren(TreeObject element) {
+		Set<Flow> flows = getCompleteFormView().getForm().getFlows();
+		for (Flow flow : flows) {
+			// Flow uses the element.
+			if (flow.getOrigin().equals(element)) {
+				return true;
+			} else if (flow.getDestiny().equals(element)) {
+				return true;
+			}
+			for (Token token : flow.getCondition()) {
+				if (token instanceof TokenWithQuestion) {
+					if (((TokenWithQuestion) token).getQuestion().equals(element)) {
+						return true;
+					}
+				}
+			}
+		}
+		for (TreeObject child : element.getChildren()) {
+			if (existDefinedFlowToReferencedElementOrItsChildren(child)) {
 				return true;
 			}
 		}
