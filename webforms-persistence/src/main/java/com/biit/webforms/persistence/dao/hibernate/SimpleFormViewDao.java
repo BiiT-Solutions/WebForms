@@ -53,7 +53,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 	@Override
 	public List<SimpleFormView> getAll() {
 		Query query = entityManager
-				.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, max.maxversion "
+				.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, tf.formReferenceID, max.maxversion "
 						+ "FROM tree_forms tf INNER JOIN "
 						+ "(SELECT MAX(version) AS maxversion, label, organizationId FROM tree_forms "
 						+ "GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
@@ -89,7 +89,11 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 				formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
 			}
 
-			formView.setLastVersion(((Integer) row[13]).equals((Integer) row[3]));
+			if (row[13] != null) {
+				formView.setFormReferenceId(((BigInteger) row[13]).longValue());
+			}
+
+			formView.setLastVersion(((Integer) row[14]).equals((Integer) row[3]));
 
 			formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 

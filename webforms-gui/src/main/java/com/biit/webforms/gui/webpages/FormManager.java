@@ -58,6 +58,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
@@ -93,11 +94,13 @@ public class FormManager extends SecuredWebPage {
 	private FormEditBottomMenu bottomMenu;
 
 	private IFormDao formDao;
+	private ISimpleFormViewDao simpleFormDao;
 
 	public FormManager() {
 		super();
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		formDao = (IFormDao) helper.getBean("webformsFormDao");
+		simpleFormDao = (ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms");
 	}
 
 	@Override
@@ -314,14 +317,30 @@ public class FormManager extends SecuredWebPage {
 	private void removeSelectedForm() {
 		Form selectedForm;
 		try {
-			selectedForm = formDao.get(((IWebformsFormView) formTable.getValue()).getId());
-			if (selectedForm != null) {
-				// Remove the form.
-				formDao.makeTransient(selectedForm);
-				WebformsLogger.info(this.getClass().getName(),
-						"User '" + UserSessionHandler.getUser().getEmailAddress() + "' has removed form '"
+			if (formTable.getValue() != null) {
+				// Checks is other form is using the selected one as a reference.
+				boolean existFormReference = false;
+				for (SimpleFormView simpleFormView : simpleFormDao.getAll()) {
+					if (simpleFormView.getFormReferenceId() != null
+							&& simpleFormView.getFormReferenceId().equals(
+									(((IWebformsFormView) formTable.getValue()).getId()))) {
+						existFormReference = true;
+					}
+				}
+				if (!existFormReference) {
+					selectedForm = formDao.get(((IWebformsFormView) formTable.getValue()).getId());
+					if (selectedForm != null) {
+						// Remove the form.
+						formDao.makeTransient(selectedForm);
+						WebformsLogger.info(this.getClass().getName(), "User '"
+								+ UserSessionHandler.getUser().getEmailAddress() + "' has removed form '"
 								+ selectedForm.getLabel() + "' (version " + selectedForm.getVersion() + ").");
-				formTable.refreshTableData();
+						formTable.refreshTableData();
+					}
+				} else {
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE,
+							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_FORM_DESCRIPTION);
+				}
 			}
 		} catch (ElementCannotBeRemovedException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE);

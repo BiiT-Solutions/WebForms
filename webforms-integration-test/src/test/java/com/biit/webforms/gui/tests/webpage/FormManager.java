@@ -23,6 +23,7 @@ import com.vaadin.testbench.elements.TreeTableElement;
 public class FormManager extends VaadinGuiWebpage {
 
 	private static final String NEW_BUTTON_CAPTION = "New";
+	private static final String NEW_REFERENCE_BUTTON_CAPTION = "Link Form";
 	private static final String FORM_BUTTON_CAPTION = "Form";
 	private static final String NEW_VERSION_BUTTON_CAPTION = "Version";
 	private static final String FORM_ABCD_BUTTON_CAPTION = "From ABCD";
@@ -161,6 +162,12 @@ public class FormManager extends VaadinGuiWebpage {
 		openNewFormWindow();
 		getNewFormWindow().createNewForm(formName);
 	}
+	
+	public void createNewFormReference(String formName) {
+		deleteAllCreatedForms();
+		openNewFormReferenceWindow();
+		getNewFormWindow().createNewForm(formName);
+	}
 
 	public void createNewFormWithOrganization(String formName, String organizationName)
 			throws OrganizationNotEditableException {
@@ -264,6 +271,10 @@ public class FormManager extends VaadinGuiWebpage {
 	public ButtonElement getNewButton() {
 		return getButtonElement(NEW_BUTTON_CAPTION);
 	}
+	
+	public ButtonElement getNewReferenceButton() {
+		return getButtonElement(NEW_REFERENCE_BUTTON_CAPTION);
+	}
 
 	public ButtonElement getNewFormButton() {
 		return getButtonElement(FORM_BUTTON_CAPTION);
@@ -327,6 +338,11 @@ public class FormManager extends VaadinGuiWebpage {
 	private void openNewFormWindow() {
 		getNewButton().click();
 		getNewFormButton().click();
+	}
+	
+	private void openNewFormReferenceWindow() {
+		getNewButton().click();
+		getNewReferenceButton().click();
 	}
 
 	private void scrollRightUpperButtonMenu() {

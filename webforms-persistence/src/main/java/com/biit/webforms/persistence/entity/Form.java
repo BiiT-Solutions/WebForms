@@ -111,6 +111,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	private boolean isLastVersion;
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "formReferenceID")
 	private Form formReference;
 
 	@ManyToMany(fetch = FetchType.EAGER)

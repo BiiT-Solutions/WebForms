@@ -143,7 +143,7 @@
         linkedFormLabel varchar(255),
         linkedFormOrganizationId bigint,
         status varchar(255),
-        formReference_ID bigint,
+        formReferenceID bigint,
         primary key (ID)
     );
 
@@ -212,7 +212,7 @@
         linkedFormLabel varchar(255),
         linkedFormOrganizationId bigint,
         status varchar(255),
-        formReference_ID bigint,
+        formReferenceID bigint,
         primary key (ID)
     );
 
