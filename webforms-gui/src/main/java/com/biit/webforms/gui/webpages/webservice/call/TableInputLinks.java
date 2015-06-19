@@ -71,25 +71,25 @@ public class TableInputLinks extends Table {
 		item.getItemProperty(Properties.PORT_NAME).setValue(link.getWebservicePort());
 		if (link.getFormElement() != null) {
 			item.getItemProperty(Properties.FORM_ELEMENT).setValue(link.getFormElement().getPathName());
-			if (webservicePort != null) {
-				if (webservicePort.getType() != null) {
-					item.getItemProperty(Properties.ELEMENT_TYPE).setValue(
-							AnswerTypeUi.getFromAnswerType(webservicePort.getType()).getLanguageCode().translation());
-				}else{
-					item.getItemProperty(Properties.ELEMENT_TYPE).setValue("");
-				}
-				if (webservicePort.getFormat() != null) {
-					item.getItemProperty(Properties.ELEMENT_FORMAT).setValue(
-							AnswerFormatUi.getFromAnswerFormat(webservicePort.getFormat()).getLanguageCode().translation());
-				}else{
-					item.getItemProperty(Properties.ELEMENT_FORMAT).setValue("");
-				}
-				if (webservicePort.getSubformat() != null) {
-					item.getItemProperty(Properties.ELEMENT_SUBFORMAT).setValue(
-							AnswerSubformatUi.get(webservicePort.getSubformat()).getLanguageCode().translation());
-				}else{
-					item.getItemProperty(Properties.ELEMENT_SUBFORMAT).setValue("");
-				}
+		}
+		if (webservicePort != null) {
+			if (webservicePort.getType() != null) {
+				item.getItemProperty(Properties.ELEMENT_TYPE).setValue(
+						AnswerTypeUi.getFromAnswerType(webservicePort.getType()).getLanguageCode().translation());
+			}else{
+				item.getItemProperty(Properties.ELEMENT_TYPE).setValue("");
+			}
+			if (webservicePort.getFormat() != null) {
+				item.getItemProperty(Properties.ELEMENT_FORMAT).setValue(
+						AnswerFormatUi.getFromAnswerFormat(webservicePort.getFormat()).getLanguageCode().translation());
+			}else{
+				item.getItemProperty(Properties.ELEMENT_FORMAT).setValue("");
+			}
+			if (webservicePort.getSubformat() != null) {
+				item.getItemProperty(Properties.ELEMENT_SUBFORMAT).setValue(
+						AnswerSubformatUi.get(webservicePort.getSubformat()).getLanguageCode().translation());
+			}else{
+				item.getItemProperty(Properties.ELEMENT_SUBFORMAT).setValue("");
 			}
 		}
 	}
