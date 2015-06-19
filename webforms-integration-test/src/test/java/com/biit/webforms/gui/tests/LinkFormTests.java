@@ -88,39 +88,39 @@ public class LinkFormTests extends WebFormsTester {
 		logOut();
 	}
 
-	/**
+	/**0
 	 * Hidding a referenced question also hides the flow related to this question.
 	 */
-	 @Test(groups = "linkedForms")
-	 public void hideElement1() {
-	 printTestNameInDebugTrace("hideElement1");
-	 loginAndCreateFormReference();
-	 goToFlowManagerPage();
-	 Assert.assertNotNull(getFlowManagerPage().getFlowRulesTable().getRow(0));
-	 goToDesignerPage();
-	
-	 // Hide question1
-	 // Select category and uncollapse it.
-	 getDesignerPage().getTreeTable().getRow(1).toggleExpanded();
-	 getDesignerPage().getTreeTable().waitForVaadin();
-	 // Click on a row sometimes fails. Use cell better.
-	 getDesignerPage().getTreeTable().getCell(2, 0).click();
-	 getDesignerPage().getTreeTable().waitForVaadin();
-	
-	 // hide element.
-	 sleep();
-	 Assert.assertTrue(getDesignerPage().getHideButton().isEnabled());
-	 getDesignerPage().getHideButton().click();
-	 getDesignerPage().saveDesign();
-	
-	 goToFlowManagerPage();
-	 // Flow table has a dummy list. Then always exists one row.
-	 Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[0]")).size(), 1);
-	 Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[1]")).size(), 0);
-	
-	 deleteFormAndFormReference();
-	 logOut();
-	 }
+	@Test(groups = "linkedForms")
+	public void hideElement1() {
+		printTestNameInDebugTrace("hideElement1");
+		loginAndCreateFormReference();
+		goToFlowManagerPage();
+		Assert.assertNotNull(getFlowManagerPage().getFlowRulesTable().getRow(0));
+		goToDesignerPage();
+
+		// Hide question1
+		// Select category and uncollapse it.
+		getDesignerPage().getTreeTable().getRow(1).toggleExpanded();
+		getDesignerPage().getTreeTable().waitForVaadin();
+		// Click on a row sometimes fails. Use cell better.
+		getDesignerPage().getTreeTable().getCell(2, 0).click();
+		getDesignerPage().getTreeTable().waitForVaadin();
+
+		// hide element.
+		sleep();
+		Assert.assertTrue(getDesignerPage().getHideButton().isEnabled());
+		getDesignerPage().getHideButton().click();
+		getDesignerPage().saveDesign();
+
+		goToFlowManagerPage();
+		// Flow table has a dummy list. Then always exists one row.
+		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[0]")).size(), 1);
+		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[1]")).size(), 0);
+
+		deleteFormAndFormReference();
+		logOut();
+	}
 
 	@Test(groups = "linkedForms")
 	public void modifyFormReferenceAlsoModifyForm() throws FieldNotEditableException {
