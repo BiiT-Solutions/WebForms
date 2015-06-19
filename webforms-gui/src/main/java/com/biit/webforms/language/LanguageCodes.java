@@ -609,7 +609,15 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	PORT_TABLE_ELEMENT_TYPE("caption.port.table.element.type"), 
 	PORT_TABLE_ELEMENT_FORMAT("caption.port.table.element.format"), 
-	PORT_TABLE_ELEMENT_SUBFORMAT("caption.port.table.element.subformat"),
+	PORT_TABLE_ELEMENT_SUBFORMAT("caption.port.table.element.subformat"), 
+	
+	WEBSERVICE_CALL_CORRUPTION("webservice.call.corruption"), 
+	WEBSERVICE_CALL_INCOMPATIBLE_FIELD("webservice.call.incompatible.field"), 
+	WEBSERVICE_CALL_INPUT_AFTER_TRIGGER("webservice.call.input.after.trigger"), 
+	WEBSERVICE_CALL_INPUT_NULL("webservice.call.input.null"), 
+	WEBSERVICE_CALL_OUTPUT_AFTER_TRIGGER("webservice.call.output.after.trigger"), 
+	WEBSERVICE_CALL_REFERENCES_UNEXISTING_WEBSERVICE("webservice.call.references.unexisting.webservice"),
+	WEBSERVICE_CALL_TRIGGER_NULL("webservice.call.trigger.null"),
 	
 	;
 
