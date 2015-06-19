@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 
 @Entity
@@ -25,9 +26,9 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "webservice_call_input_link_errors", joinColumns = @JoinColumn(name = "ID"))
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true, mappedBy="webserviceCallInput")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "webserviceCallInput")
 	private Set<WebserviceCallInputErrors> errors;
-	
+
 	private String validationXpath;
 
 	protected WebserviceCallInputLink() {
@@ -40,7 +41,7 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 		errors = new HashSet<>();
 		setValidationXpath(port.getValidationXpath());
 		for (String errorCode : port.getErrorCodes()) {
-			addWebserviceCallInputError(new WebserviceCallInputErrors(errorCode, ""));			
+			addWebserviceCallInputError(new WebserviceCallInputErrors(errorCode, ""));
 		}
 	}
 
@@ -54,6 +55,22 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 		WebserviceCallInputLink link = new WebserviceCallInputLink();
 		link.copyData(this);
 		return link;
+	}
+
+	@Override
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
+		if (object instanceof WebserviceCallInputLink) {
+			super.copyData(object);
+			WebserviceCallInputLink link = (WebserviceCallInputLink) object;
+			
+			setValidationXpath(link.getValidationXpath());
+			for(WebserviceCallInputErrors error: getErrors()){
+				addWebserviceCallInputError(new WebserviceCallInputErrors(error.getErrorCode(), error.getErrorMessage()));
+			}
+		} else {
+			throw new NotValidStorableObjectException("Element of class '" + object.getClass().getName() + "' is not compatible with '"
+					+ this.getClass().getName() + "'");
+		}
 	}
 
 	public Set<WebserviceCallInputErrors> getErrors() {
@@ -88,7 +105,7 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 
 	@Override
 	public void remove() {
-		if(webserviceCall!=null){
+		if (webserviceCall != null) {
 			webserviceCall.getInputLinks().remove(this);
 			setWebserviceCall(null);
 		}
@@ -100,5 +117,12 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 
 	public void setValidationXpath(String validationXpath) {
 		this.validationXpath = validationXpath;
+	}
+
+	public void resetIds() {
+		super.resetIds();
+		for (WebserviceCallInputErrors error : getErrors()) {
+			error.resetIds();
+		}
 	}
 }

@@ -73,4 +73,8 @@ public class WebserviceCallInputErrors implements Serializable, Comparable<Webse
 			return this.getErrorCode().compareTo(arg0.getErrorCode());
 		}
 	}
+
+	public void resetIds() {
+		id = null;
+	}
 }

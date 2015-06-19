@@ -786,7 +786,7 @@ public class FormManager extends SecuredWebPage {
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);
 			bottomMenu.getEditFlowButton().setEnabled(rowNotNullAndForm);
 			bottomMenu.getValidateForm().setEnabled(rowNotNullAndForm);
-			bottomMenu.getValidateForm().setEnabled(rowNotNullAndForm);
+			bottomMenu.getEditWebserviceCall().setEnabled(rowNotNullAndForm);
 			bottomMenu.getCompareStructureButton().setEnabled(rowNotNullAndForm);
 
 		} catch (IOException | AuthenticationRequired e) {
@@ -798,6 +798,7 @@ public class FormManager extends SecuredWebPage {
 			bottomMenu.getEditFormButton().setEnabled(false);
 			bottomMenu.getEditFlowButton().setEnabled(false);
 			bottomMenu.getValidateForm().setEnabled(false);
+			bottomMenu.getEditWebserviceCall().setEnabled(false);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.entity;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -85,5 +86,11 @@ public abstract class WebserviceCallLink extends StorableObject{
 	public abstract WebserviceCall getWebserviceCall();
 
 	public abstract void remove();
+
+	public void updateReferences(HashMap<String, BaseQuestion> references) {
+		if(getFormElement()!=null){
+			setFormElement(references.get(getFormElement().getComparationId()));
+		}
+	}
 	
 }

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -315,6 +316,14 @@ public class WebserviceCallComponent extends CustomComponent {
 	}
 
 	public void editSelectedLink() {
+		//Check read only.
+		if (UserSessionHandler.getController().getFormInUse() != null
+				&& !WebformsAuthorizationService.getInstance().isFormEditable(
+						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+			return;
+		}
+		
+		
 		WebserviceCallLink selected = getSelectedLink();
 		if (selected instanceof WebserviceCallInputLink) {
 			editInputLink((WebserviceCallInputLink) selected,webservice.getInputPort(selected.getWebservicePort()));
@@ -380,5 +389,10 @@ public class WebserviceCallComponent extends CustomComponent {
 				outputTable.setValue(link);
 			}
 		}
+	}
+
+	public void setSelectable(boolean value) {
+		inputTable.setSelectable(value);
+		outputTable.setSelectable(value);
 	}
 }

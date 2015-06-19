@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.entity;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.biit.form.entity.BaseQuestion;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 
@@ -62,6 +64,7 @@ public class WebserviceCall extends StorableObject {
 			WebserviceCall call = (WebserviceCall) object;
 			setName(call.getName());
 			setWebserviceName(call.getWebserviceName());
+			setFormElementTrigger(call.getFormElementTrigger());
 			copyLinkData(inputLinks,call.getInputLinks());
 			copyLinkData(outputLinks,call.getOutputLinks());
 		}else{
@@ -73,7 +76,9 @@ public class WebserviceCall extends StorableObject {
 	private <T extends WebserviceCallLink> void copyLinkData(Set<T> destiny, Set<T> source) throws NotValidStorableObjectException{
 		destiny.clear();
 		for(WebserviceCallLink link: source){
-			destiny.add((T)link.generateCopy());
+			T temp = (T)link.generateCopy();
+			destiny.add(temp);
+			temp.setWebserviceCall(this);
 		}
 	}
 
@@ -133,5 +138,30 @@ public class WebserviceCall extends StorableObject {
 	public void addInputLink(WebserviceCallInputLink link) {
 		inputLinks.add(link);
 		link.setWebserviceCall(this);
+	}
+
+	public void updateReferences(HashMap<String, BaseQuestion> references) {
+		if(getFormElementTrigger()!=null){
+			setFormElementTrigger((Question) references.get(getFormElementTrigger().getComparationId()));
+		}
+		for(WebserviceCallLink link: getInputLinks()){
+			link.updateReferences(references);
+		}
+		for(WebserviceCallLink link: getOutputLinks()){
+			link.updateReferences(references);
+		}
+	}
+	
+	/**
+	 * Reset 'id' and 'comparationId'
+	 */
+	public void resetIds() {
+		super.resetIds();
+		for(WebserviceCallLink link: getInputLinks()){
+			link.resetIds();
+		}
+		for(WebserviceCallLink link: getOutputLinks()){
+			link.resetIds();
+		}
 	}
 }

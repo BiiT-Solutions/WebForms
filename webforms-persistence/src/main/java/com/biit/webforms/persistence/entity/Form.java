@@ -272,11 +272,32 @@ public class Form extends BaseForm implements IWebformsFormView {
 		if (copyChilds) {
 			copy.copyRules(this, false);
 			copy.updateRuleReferences();
+			copy.webserviceCalls(this);
+			copy.updateWebserviceCallReferences();
 		}
 
 		copy.updateDynamicAnswers();
+		
 
 		return copy;
+	}
+
+	private void updateWebserviceCallReferences() {
+		HashMap<String, BaseQuestion> references = new HashMap<String, BaseQuestion>();
+		for(TreeObject object: this.getAll(BaseQuestion.class)){
+			references.put(object.getComparationId(), (BaseQuestion) object);
+		}
+		for(WebserviceCall call: getWebserviceCalls()){
+			call.updateReferences(references);
+		}
+	}
+
+	private void webserviceCalls(Form form) throws NotValidStorableObjectException {
+		 for(WebserviceCall call: form.getWebserviceCalls()){
+			 WebserviceCall copy = new WebserviceCall();
+			 copy.copyData(call);
+			 addWebserviceCall(copy);
+		 }
 	}
 
 	private void updateDynamicAnswers() {
@@ -559,6 +580,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 		for (Flow rule : getFlows()) {
 			rule.resetIds();
 		}
+		for(WebserviceCall call: getWebserviceCalls()){
+			call.resetIds();
+		}
 	}
 
 	public void setDescription(String description) throws FieldTooLongException {
@@ -789,6 +813,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	
 	public void addWebserviceCall(WebserviceCall webservviceCall){
 		webserviceCalls.add(webservviceCall);
+		webservviceCall.setForm(this);
 	}
 
 	public boolean usesWebservice(Webservice webservice) {

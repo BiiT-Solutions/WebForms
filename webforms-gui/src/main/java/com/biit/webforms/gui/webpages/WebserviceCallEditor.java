@@ -115,6 +115,13 @@ public class WebserviceCallEditor extends SecuredWebPage {
 	private void updateWebserviceCallConfigComponent(){
 		webserviceCallComponent.setValue((WebserviceCall)webserviceCallTable.getValue());
 		webserviceCallComponent.setEnabled((WebserviceCall)webserviceCallTable.getValue()!=null);
+		if (UserSessionHandler.getController().getFormInUse() != null
+				&& !WebformsAuthorizationService.getInstance().isFormEditable(
+						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+			webserviceCallComponent.setSelectable(false);
+		}else{
+			webserviceCallComponent.setSelectable(true);
+		}
 	}
 
 	private UpperMenu createUpperMenu() {
@@ -250,9 +257,21 @@ public class WebserviceCallEditor extends SecuredWebPage {
 	}
 
 	private void updateUpperMenu() {
+		if (UserSessionHandler.getController().getFormInUse() != null
+				&& !WebformsAuthorizationService.getInstance().isFormEditable(
+						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+			upperMenu.getSaveButton().setEnabled(false);
+			upperMenu.getAddWebserviceCall().setEnabled(false);
+			upperMenu.getRemoveWebserviceCall().setEnabled(false);
+			upperMenu.getEditWebserviceLink().setEnabled(false);
+			upperMenu.getRemoveWebserviceLink().setEnabled(false);
+			return;
+		}
+		
 		boolean webserviceCallSelected = webserviceCallTable.getValue()!=null;
 		upperMenu.getRemoveWebserviceCall().setEnabled(webserviceCallSelected);
 		upperMenu.getEditWebserviceLink().setEnabled(webserviceCallSelected&&selectedWebserviceCallLink!=null);
 		upperMenu.getRemoveWebserviceLink().setEnabled(webserviceCallSelected&&selectedWebserviceCallLink!=null);
 	}
 }
+
