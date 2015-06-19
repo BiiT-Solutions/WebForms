@@ -11,6 +11,7 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.WebserviceCallInputErrors;
 import com.biit.webforms.persistence.entity.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.WebserviceCallLink;
+import com.biit.webforms.persistence.entity.WebservicePort;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
@@ -67,15 +68,15 @@ public class WindowEditInputLink extends WindowEditLink{
 			TextField field = (TextField)itr.next();
 			errorValues.put(field.getCaption(),field.getValue());
 		}
-		WebserviceCallInputLink link = (WebserviceCallInputLink) getValue();
+		WebserviceCallInputLink link = (WebserviceCallInputLink) getLink();
 		for(WebserviceCallInputErrors error: link.getErrors()){
 			error.setErrorMessage(errorValues.get(error.getErrorCode()));
 		}
 	}
 	
 	@Override
-	public void setValue(WebserviceCallLink value) {
-		super.setValue(value);
+	public void setValue(WebserviceCallLink value, WebservicePort port) {
+		super.setValue(value,port);
 		WebserviceCallInputLink link = (WebserviceCallInputLink) value;
 		
 		List<WebserviceCallInputErrors> orderedErrors = new ArrayList<>();

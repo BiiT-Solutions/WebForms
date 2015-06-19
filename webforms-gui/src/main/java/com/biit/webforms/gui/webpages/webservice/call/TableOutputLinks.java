@@ -3,6 +3,7 @@ package com.biit.webforms.gui.webpages.webservice.call;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.WebserviceCallLink;
 import com.biit.webforms.persistence.entity.WebserviceCallOutputLink;
+import com.biit.webforms.persistence.entity.WebservicePort;
 import com.vaadin.data.Item;
 
 public class TableOutputLinks extends TableInputLinks{
@@ -21,8 +22,8 @@ public class TableOutputLinks extends TableInputLinks{
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	protected void updateRow(Item item, WebserviceCallLink link) {
-		super.updateRow(item,link);
+	protected void updateRow(Item item, WebserviceCallLink link, WebservicePort webservicePort) {
+		super.updateRow(item,link,webservicePort);
 		WebserviceCallOutputLink outputLink = (WebserviceCallOutputLink) link;
 		if(outputLink.isEditable()){
 			item.getItemProperty(Properties.IS_EDITABLE).setValue(LanguageCodes.IS_EDITABLE.translation());

@@ -219,8 +219,8 @@ public class WebserviceCallComponent extends CustomComponent {
 		} else {
 			webserviceCallName.setValue(webserviceCall.getName());
 			webserviceName.setValue(webservice.getName());
-			inputTable.addRows(getAllInputLinks());
-			outputTable.addRows(getAllOutputLinks());
+			inputTable.addRows(getAllInputLinks(),new HashSet<WebservicePort>(webservice.getInputPorts()));
+			outputTable.addRows(getAllOutputLinks(),webservice.getOutputPorts());
 			webserviceCallTrigger.setTreeObject(webserviceCall.getFormElementTrigger());
 
 			inputTable.sortByName();
@@ -317,18 +317,18 @@ public class WebserviceCallComponent extends CustomComponent {
 	public void editSelectedLink() {
 		WebserviceCallLink selected = getSelectedLink();
 		if (selected instanceof WebserviceCallInputLink) {
-			editInputLink((WebserviceCallInputLink) selected);
+			editInputLink((WebserviceCallInputLink) selected,webservice.getInputPort(selected.getWebservicePort()));
 			return;
 		}
 		if (selected instanceof WebserviceCallOutputLink) {
-			editOutputLink((WebserviceCallOutputLink) selected);
+			editOutputLink((WebserviceCallOutputLink) selected,webservice.getOutputPort(selected.getWebservicePort()));
 			return;
 		}
 	}
 
-	private void editOutputLink(final WebserviceCallOutputLink selected) {
+	private void editOutputLink(final WebserviceCallOutputLink link, WebservicePort port) {
 		WindowEditOutputLink window = new WindowEditOutputLink();
-		window.setValue(selected);
+		window.setValue(link,port);
 		window.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
@@ -336,17 +336,17 @@ public class WebserviceCallComponent extends CustomComponent {
 				WindowEditOutputLink windowLink = (WindowEditOutputLink) window;
 				windowLink.updateValue();
 
-				webserviceCall.addOutputLink(selected);
-				updateUiLinkInformation(selected);
+				webserviceCall.addOutputLink(link);
+				updateUiLinkInformation(link);
 				window.close();
 			}
 		});
 		window.showCentered();
 	}
 
-	private void editInputLink(final WebserviceCallInputLink selected) {
+	private void editInputLink(final WebserviceCallInputLink link, WebserviceValidatedPort port) {
 		WindowEditInputLink window = new WindowEditInputLink();
-		window.setValue(selected);
+		window.setValue(link,port);
 		window.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
@@ -354,8 +354,8 @@ public class WebserviceCallComponent extends CustomComponent {
 				WindowEditLink windowLink = (WindowEditLink) window;
 				windowLink.updateValue();
 
-				webserviceCall.addInputLink(selected);
-				updateUiLinkInformation(selected);
+				webserviceCall.addInputLink(link);
+				updateUiLinkInformation(link);
 				window.close();
 			}
 		});

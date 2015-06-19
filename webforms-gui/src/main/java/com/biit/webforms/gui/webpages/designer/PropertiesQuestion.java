@@ -152,7 +152,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 					continue;
 				}
 				answerSubformat.addItem(subformat.getSubformat());
-				answerSubformat.setItemCaption(subformat.getSubformat(), subformat.getTranslationCode().translation());
+				answerSubformat.setItemCaption(subformat.getSubformat(), subformat.getLanguageCode().translation());
 			}
 			answerSubformat.setEnabled(!getInstance().isReadOnly());
 			answerSubformat.setValue(format.getDefaultSubformat());

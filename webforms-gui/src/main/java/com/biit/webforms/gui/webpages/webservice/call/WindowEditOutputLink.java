@@ -3,6 +3,7 @@ package com.biit.webforms.gui.webpages.webservice.call;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.WebserviceCallLink;
 import com.biit.webforms.persistence.entity.WebserviceCallOutputLink;
+import com.biit.webforms.persistence.entity.WebservicePort;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
@@ -37,12 +38,12 @@ public class WindowEditOutputLink extends WindowEditLink{
 	@Override
 	public void updateValue(){
 		super.updateValue();
-		((WebserviceCallOutputLink)getValue()).setEditable(checkbox.getValue());
+		((WebserviceCallOutputLink)getLink()).setEditable(checkbox.getValue());
 	}
 	
 	@Override
-	public void setValue(WebserviceCallLink value) {
+	public void setValue(WebserviceCallLink value, WebservicePort port) {
 		checkbox.setValue(((WebserviceCallOutputLink)value).isEditable());
-		super.setValue(value);
+		super.setValue(value,port);
 	}
 }
