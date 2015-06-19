@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.biit.abcd.core.SpringContextHelper;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
@@ -57,12 +56,11 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
-import com.biit.webforms.persistence.dao.IFormDao;
-import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.SimpleFormView;
+import com.biit.webforms.persistence.entity.exceptions.FormIsUsedAsReferenceException;
 import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.security.WebformsBasicAuthorizationService;
@@ -80,7 +78,6 @@ import com.liferay.portal.model.Organization;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -93,14 +90,8 @@ public class FormManager extends SecuredWebPage {
 	private UpperMenuProjectManager upperMenu;
 	private FormEditBottomMenu bottomMenu;
 
-	private IFormDao formDao;
-	private ISimpleFormViewDao simpleFormDao;
-
 	public FormManager() {
 		super();
-		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-		formDao = (IFormDao) helper.getBean("webformsFormDao");
-		simpleFormDao = (ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms");
 	}
 
 	@Override
@@ -315,36 +306,17 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void removeSelectedForm() {
-		Form selectedForm;
 		try {
 			if (formTable.getValue() != null) {
-				// Checks is other form is using the selected one as a reference.
-				boolean existFormReference = false;
-				for (SimpleFormView simpleFormView : simpleFormDao.getAll()) {
-					if (simpleFormView.getFormReferenceId() != null
-							&& simpleFormView.getFormReferenceId().equals(
-									(((IWebformsFormView) formTable.getValue()).getId()))) {
-						existFormReference = true;
-					}
-				}
-				if (!existFormReference) {
-					selectedForm = formDao.get(((IWebformsFormView) formTable.getValue()).getId());
-					if (selectedForm != null) {
-						// Remove the form.
-						formDao.makeTransient(selectedForm);
-						WebformsLogger.info(this.getClass().getName(), "User '"
-								+ UserSessionHandler.getUser().getEmailAddress() + "' has removed form '"
-								+ selectedForm.getLabel() + "' (version " + selectedForm.getVersion() + ").");
-						formTable.refreshTableData();
-					}
-				} else {
-					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE,
-							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_FORM_DESCRIPTION);
-				}
+				UserSessionHandler.getController().removeForm(((IWebformsFormView) formTable.getValue()).getId());
+				formTable.refreshTableData();
 			}
 		} catch (ElementCannotBeRemovedException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE);
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		} catch (FormIsUsedAsReferenceException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE,
+					LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_FORM_DESCRIPTION);
 		}
 	}
 

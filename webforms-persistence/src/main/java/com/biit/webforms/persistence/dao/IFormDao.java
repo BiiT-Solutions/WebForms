@@ -11,6 +11,8 @@ public interface IFormDao extends IJpaGenericDao<Form, Long> {
 
 	boolean exists(String label, int version, long organizationId, long skipForm);
 
+	void evictCache(Long id);
+
 	// TODO
 	// /**
 	// * Filtered version of get All. Takes a Class argument and returns a list with all the elements that match the
