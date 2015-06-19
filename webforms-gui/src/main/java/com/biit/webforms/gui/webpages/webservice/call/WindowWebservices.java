@@ -3,7 +3,7 @@ package com.biit.webforms.gui.webpages.webservice.call;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.Webservice;
+import com.biit.webforms.webservices.Webservice;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Component;

@@ -1,4 +1,4 @@
-package com.biit.webforms.persistence.entity;
+package com.biit.webforms.webservices;
 
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;

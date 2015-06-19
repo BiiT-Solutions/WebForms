@@ -1,9 +1,12 @@
-package com.biit.webforms.persistence.entity;
+package com.biit.webforms.webservices;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

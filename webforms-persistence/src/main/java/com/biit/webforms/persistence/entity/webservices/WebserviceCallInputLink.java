@@ -1,4 +1,4 @@
-package com.biit.webforms.persistence.entity;
+package com.biit.webforms.persistence.entity.webservices;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.webservices.WebserviceValidatedPort;
 
 @Entity
 @Table(name = "webservice_call_input_link")

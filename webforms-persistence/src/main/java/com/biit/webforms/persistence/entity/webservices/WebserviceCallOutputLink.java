@@ -1,4 +1,4 @@
-package com.biit.webforms.persistence.entity;
+package com.biit.webforms.persistence.entity.webservices;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -6,6 +6,7 @@ import javax.persistence.Table;
 
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.webservices.WebservicePort;
 
 @Entity
 @Table(name = "webservice_call_output_link")

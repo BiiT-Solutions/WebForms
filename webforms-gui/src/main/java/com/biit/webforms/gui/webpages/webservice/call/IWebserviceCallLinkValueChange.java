@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.webservice.call;
 
-import com.biit.webforms.persistence.entity.WebserviceCallLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
 
 public interface IWebserviceCallLinkValueChange {
 

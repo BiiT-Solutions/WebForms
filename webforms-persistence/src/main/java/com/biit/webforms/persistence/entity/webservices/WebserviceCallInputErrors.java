@@ -1,4 +1,4 @@
-package com.biit.webforms.persistence.entity;
+package com.biit.webforms.persistence.entity.webservices;
 
 import java.io.Serializable;
 

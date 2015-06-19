@@ -1,4 +1,4 @@
-package com.biit.webforms.persistence.entity;
+package com.biit.webforms.persistence.entity.webservices;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import com.biit.form.entity.BaseQuestion;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.webservices.WebservicePort;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

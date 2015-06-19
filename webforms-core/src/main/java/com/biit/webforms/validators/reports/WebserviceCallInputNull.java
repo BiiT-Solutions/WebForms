@@ -2,8 +2,8 @@ package com.biit.webforms.validators.reports;
 
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
-import com.biit.webforms.persistence.entity.WebserviceCall;
-import com.biit.webforms.persistence.entity.WebserviceCallInputLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 
 public class WebserviceCallInputNull extends Report {
 

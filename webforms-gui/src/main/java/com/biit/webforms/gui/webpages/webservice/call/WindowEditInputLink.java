@@ -8,10 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.WebserviceCallInputErrors;
-import com.biit.webforms.persistence.entity.WebserviceCallInputLink;
-import com.biit.webforms.persistence.entity.WebserviceCallLink;
-import com.biit.webforms.persistence.entity.WebservicePort;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputErrors;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
+import com.biit.webforms.webservices.WebservicePort;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;

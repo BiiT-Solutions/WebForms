@@ -8,13 +8,10 @@ import java.util.Set;
 import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.Webservice;
-import com.biit.webforms.persistence.entity.WebserviceCall;
-import com.biit.webforms.persistence.entity.WebserviceCallInputLink;
-import com.biit.webforms.persistence.entity.WebserviceCallLink;
-import com.biit.webforms.persistence.entity.WebserviceCallOutputLink;
-import com.biit.webforms.persistence.entity.WebservicePort;
-import com.biit.webforms.persistence.entity.WebserviceValidatedPort;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.validators.reports.WebserviceCallCorruption;
 import com.biit.webforms.validators.reports.WebserviceCallIncompatibleField;
 import com.biit.webforms.validators.reports.WebserviceCallInputAfterTrigger;
@@ -22,6 +19,9 @@ import com.biit.webforms.validators.reports.WebserviceCallInputNull;
 import com.biit.webforms.validators.reports.WebserviceCallOutputAfterTrigger;
 import com.biit.webforms.validators.reports.WebserviceCallReferencesUnexistingWebservice;
 import com.biit.webforms.validators.reports.WebserviceCallTriggerNull;
+import com.biit.webforms.webservices.Webservice;
+import com.biit.webforms.webservices.WebservicePort;
+import com.biit.webforms.webservices.WebserviceValidatedPort;
 
 /**
  * Validate webservice calls. This validator checks that all webservice calls

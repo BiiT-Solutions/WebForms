@@ -7,8 +7,8 @@ import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.AnswerTypeUi;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.WebserviceCallLink;
-import com.biit.webforms.persistence.entity.WebservicePort;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
+import com.biit.webforms.webservices.WebservicePort;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
 

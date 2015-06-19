@@ -1,4 +1,4 @@
-package com.biit.webforms.persistence.entity;
+package com.biit.webforms.webservices;
 
 import java.util.ArrayList;
 import java.util.Arrays;

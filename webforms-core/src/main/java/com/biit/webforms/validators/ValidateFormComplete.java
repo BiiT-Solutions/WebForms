@@ -5,7 +5,7 @@ import java.util.Set;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.utils.validation.CompositeValidator;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Webservice;
+import com.biit.webforms.webservices.Webservice;
 
 public class ValidateFormComplete extends CompositeValidator<Form> {
 

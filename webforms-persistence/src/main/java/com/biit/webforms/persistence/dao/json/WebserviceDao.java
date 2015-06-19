@@ -15,7 +15,7 @@ import com.biit.utils.file.FileReader;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IWebserviceDao;
 import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
-import com.biit.webforms.persistence.entity.Webservice;
+import com.biit.webforms.webservices.Webservice;
 import com.google.gson.JsonSyntaxException;
 
 @Repository

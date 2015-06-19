@@ -1,4 +1,4 @@
-package com.biit.webforms.persistence.entity;
+package com.biit.webforms.persistence.entity.webservices;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +15,9 @@ import javax.persistence.Table;
 import com.biit.form.entity.BaseQuestion;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.webservices.Webservice;
 
 @Entity
 @Table(name = "webservice_call")
@@ -38,7 +41,7 @@ public class WebserviceCall extends StorableObject {
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true, mappedBy="webserviceCall")
 	private Set<WebserviceCallOutputLink> outputLinks;
 	
-	protected WebserviceCall() {
+	public WebserviceCall() {
 		super();
 		inputLinks = new HashSet<>();
 		outputLinks = new HashSet<>();

@@ -3,7 +3,7 @@ package com.biit.webforms.gui.webpages.webservice.call;
 import java.util.Set;
 
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.Webservice;
+import com.biit.webforms.webservices.Webservice;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
 

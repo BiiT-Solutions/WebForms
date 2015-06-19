@@ -11,9 +11,9 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 import org.testng.annotations.Test;
 
 import com.biit.webforms.persistence.dao.IWebserviceDao;
-import com.biit.webforms.persistence.entity.Webservice;
-import com.biit.webforms.persistence.entity.WebservicePort;
-import com.biit.webforms.persistence.entity.WebserviceValidatedPort;
+import com.biit.webforms.webservices.Webservice;
+import com.biit.webforms.webservices.WebservicePort;
+import com.biit.webforms.webservices.WebserviceValidatedPort;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContextTest.xml" })

@@ -13,10 +13,10 @@ import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.WebserviceCall;
-import com.biit.webforms.persistence.entity.WebserviceCallInputLink;
-import com.biit.webforms.persistence.entity.WebserviceCallOutputLink;
 import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 
 /**
  * Stores some basic data and perform basic and generic methods.
