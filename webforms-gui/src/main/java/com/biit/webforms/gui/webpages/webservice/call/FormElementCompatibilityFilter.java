@@ -1,12 +1,12 @@
 package com.biit.webforms.gui.webpages.webservice.call;
 
-import com.biit.form.entity.BaseGroup;
+import java.util.Objects;
+
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
-import com.google.gwt.thirdparty.guava.common.base.Objects;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
 
@@ -32,8 +32,8 @@ public class FormElementCompatibilityFilter implements Filter {
 		if (itemId instanceof Question) {
 			Question question = (Question) itemId;
 			//Passes filter if its a question and the type, format and subformat are equal.
-			return Objects.equal(question.getAnswerType(), type) && Objects.equal(question.getAnswerFormat(), format)
-					&& Objects.equal(question.getAnswerSubformat(), subformat);
+			return Objects.equals(question.getAnswerType(), type) && Objects.equals(question.getAnswerFormat(), format)
+					&& Objects.equals(question.getAnswerSubformat(), subformat);
 		}
 		return false;
 	}

@@ -2,17 +2,21 @@ package com.biit.webforms.validators;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Webservice;
 import com.biit.webforms.persistence.entity.WebserviceCall;
 import com.biit.webforms.persistence.entity.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.WebserviceCallLink;
 import com.biit.webforms.persistence.entity.WebserviceCallOutputLink;
+import com.biit.webforms.persistence.entity.WebservicePort;
 import com.biit.webforms.persistence.entity.WebserviceValidatedPort;
 import com.biit.webforms.validators.reports.WebserviceCallCorruption;
+import com.biit.webforms.validators.reports.WebserviceCallIncompatibleField;
 import com.biit.webforms.validators.reports.WebserviceCallInputAfterTrigger;
 import com.biit.webforms.validators.reports.WebserviceCallInputNull;
 import com.biit.webforms.validators.reports.WebserviceCallOutputAfterTrigger;
@@ -28,8 +32,7 @@ import com.biit.webforms.validators.reports.WebserviceCallTriggerNull;
  * 
  * Checks that call trigger is not null Checks input fields are not null Checks
  * that input fields are elements that appear before the trigger or they are the
- * trigger.
- * Checks that output fields are elements after trigger.
+ * trigger. Checks that output fields are elements after trigger.
  *
  */
 public class ValidateWebserviceCalls extends SimpleValidator<Form> {
@@ -54,9 +57,7 @@ public class ValidateWebserviceCalls extends SimpleValidator<Form> {
 		}
 
 		Set<WebserviceCall> calls = element.getWebserviceCalls();
-		System.out.println("Kiwiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
 		for (WebserviceCall call : calls) {
-			System.out.println("Call "+call.getName());
 			boolean criticFail = false;
 			Webservice webservice = webservices.get(call.getWebserviceName());
 			if (!checkWebserviceConsistency(call, webservice)) {
@@ -65,7 +66,6 @@ public class ValidateWebserviceCalls extends SimpleValidator<Form> {
 			}
 
 			// Check call trigger and input values are not null
-			System.out.println("Trigger "+call.getFormElementTrigger());
 			if (call.getFormElementTrigger() == null) {
 				assertTrue(false, new WebserviceCallTriggerNull(call));
 				criticFail = true;
@@ -84,7 +84,29 @@ public class ValidateWebserviceCalls extends SimpleValidator<Form> {
 
 			// Check order of elements.
 			checkOrderOfElements(call);
+			checkFieldCompatibility(call, webservice);
 		}
+	}
+
+	private void checkFieldCompatibility(WebserviceCall call, Webservice webservice) {
+		for (WebserviceCallInputLink link : call.getInputLinks()) {
+			if (link.getFormElement() != null && link.getFormElement() instanceof Question) {
+				boolean condition = checkFieldCompatibility((Question) link.getFormElement(), webservice.getInputPort(link.getWebservicePort())); 
+				assertTrue(condition, new WebserviceCallIncompatibleField(call, link));
+			}
+		}
+		for (WebserviceCallOutputLink link : call.getOutputLinks()) {
+			if (link.getFormElement() != null && link.getFormElement() instanceof Question) {
+				boolean condition = checkFieldCompatibility((Question) link.getFormElement(), webservice.getOutputPort(link.getWebservicePort())); 
+				assertTrue(condition, new WebserviceCallIncompatibleField(call, link));
+			}
+		}
+	}
+
+	private boolean checkFieldCompatibility(Question formElement, WebservicePort inputPort) {
+		return Objects.equals(formElement.getAnswerType(), inputPort.getType())
+				&& Objects.equals(formElement.getAnswerFormat(), inputPort.getFormat())
+				&& Objects.equals(formElement.getAnswerSubformat(), inputPort.getSubformat());
 	}
 
 	private boolean checkWebserviceConsistency(WebserviceCall call, Webservice webservice) {
