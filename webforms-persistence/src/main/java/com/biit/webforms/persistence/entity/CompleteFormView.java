@@ -18,6 +18,7 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidParentException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
@@ -548,6 +549,14 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			return getForm().getFormReference();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
+		if (getForm() != null) {
+			return getForm().hideElement(element);
+		}
+		return false;
 	}
 
 }
