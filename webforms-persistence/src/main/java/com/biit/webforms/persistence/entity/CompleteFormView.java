@@ -341,11 +341,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	public ComputedFlowView getComputedFlowsView() {
 		LinkedHashSet<TreeObject> allBaseQuestions = new LinkedHashSet<>();
 		if (form.getFormReference() != null) {
-			allBaseQuestions.addAll(form.getFormReference().getAllChildrenInHierarchy(BaseQuestion.class));
+			allBaseQuestions.addAll(form.getFormReference().getAllNotHiddenChildrenInHierarchy(BaseQuestion.class));
 		}
-		allBaseQuestions.addAll(getAllChildrenInHierarchy(BaseQuestion.class));
-		// Remove all hidden elements.
-		allBaseQuestions.removeAll(form.getAllElementsToHide());
+		allBaseQuestions.addAll(getAllNotHiddenChildrenInHierarchy(BaseQuestion.class));
 		ComputedFlowView computedView = new ComputedFlowView();
 
 		if (!allBaseQuestions.isEmpty()) {

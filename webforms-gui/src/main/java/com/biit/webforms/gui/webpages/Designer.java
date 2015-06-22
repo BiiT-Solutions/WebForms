@@ -443,7 +443,7 @@ public class Designer extends SecuredWebPage {
 						MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
 								LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
 					} else {
-						// It is not an element or is a form reference element.
+						// It is not an element or it is a form reference element.
 						if (row.isHiddenElement()) {
 							if (UserSessionHandler.getController().getCompleteFormView().showElement(row)) {
 								row.setHiddenElement(false);
