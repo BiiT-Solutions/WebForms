@@ -100,6 +100,7 @@ public class WebserviceCallEditor extends SecuredWebPage {
 		
 		updateUpperMenu();
 		updateWebserviceCallTable();
+		updateWebserviceCallConfigComponent();
 		selectFirstTableItem();
 	}
 	
