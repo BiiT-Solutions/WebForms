@@ -349,7 +349,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		for (XFormsCategory category : getXFormsCategories()) {
 			events.append(category.getUniqueName() + "-control ");
 		}
-		events.append("\"> <xf:load resource=\"javascript:enableDisablePreviousNextButtons()\"/>");
+		events.deleteCharAt(events.length()-1).append("\"> <xf:load resource=\"javascript:enableDisablePreviousNextButtons()\"/>");
 		events.append("</xf:action>");
 
 		for (XFormsCategory category : getXFormsCategories()) {
