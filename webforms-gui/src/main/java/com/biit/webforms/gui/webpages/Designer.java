@@ -599,9 +599,9 @@ public class Designer extends SecuredWebPage {
 			boolean formIsBlock = getCurrentForm() instanceof Block;
 			boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
 			boolean formHasLinkedForm = UserSessionHandler.getController().getFormInUse().getFormReference() != null;
-			boolean rowIsNull = selectedElement == null;
-			boolean rowIsForm = selectedElement instanceof Form;
-			boolean rowIsElementReference = selectedElement != null && selectedElement.isReadOnly();
+			boolean rowIsNull = (selectedElement == null);
+			boolean rowIsForm = (selectedElement!= null && selectedElement instanceof Form);
+			boolean rowIsElementReference = (selectedElement != null && selectedElement.isReadOnly());
 			
 			boolean rowIsBlockReferenceCategory = rowIsElementReference && (selectedElement instanceof BaseCategory)
 					&& UserSessionHandler.getController().getCompleteFormView()

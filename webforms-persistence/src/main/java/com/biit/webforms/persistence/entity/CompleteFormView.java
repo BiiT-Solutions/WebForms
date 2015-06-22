@@ -559,4 +559,12 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		return false;
 	}
 
+	@Override
+	public boolean showElement(TreeObject element) {
+		if (getForm() != null) {
+			return super.showElement(element);
+		}
+		return false;
+	}
+
 }
