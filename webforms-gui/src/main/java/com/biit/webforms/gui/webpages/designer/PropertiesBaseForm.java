@@ -15,7 +15,7 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 	private static final long serialVersionUID = -7053263006728113569L;
 	private static final String WIDTH = "200px";
 
-	private TextField label, version;
+	private TextField label, version, referenceLabel, referenceVersion;
 	private TextArea description;
 
 	public PropertiesBaseForm(Class<? extends T> type) {
@@ -32,8 +32,8 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 		label = new TextField(LanguageCodes.CAPTION_NAME.translation());
 		label.setWidth(WIDTH);
 		label.setEnabled(true);
-		//label.addValidator(new ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
-		//label.addValidator(new ValidatorTreeObjectNameLength());
+		// label.addValidator(new ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
+		// label.addValidator(new ValidatorTreeObjectNameLength());
 
 		version = new TextField(LanguageCodes.CAPTION_VERSION.translation());
 		version.setWidth(WIDTH);
@@ -44,12 +44,24 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 		description.setMaxLength(Form.MAX_DESCRIPTION_LENGTH);
 		description.setImmediate(true);
 
+		referenceLabel = new TextField(LanguageCodes.REFERENCE_CAPTION_NAME.translation());
+		referenceLabel.setWidth(WIDTH);
+		referenceLabel.setEnabled(false);
+		referenceLabel.setVisible(false);
+
+		referenceVersion = new TextField(LanguageCodes.CAPTION_VERSION.translation());
+		referenceVersion.setWidth(WIDTH);
+		referenceVersion.setEnabled(false);
+		referenceVersion.setVisible(false);
+
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
 		commonProperties.setHeight(null);
 		commonProperties.addComponent(label);
 		commonProperties.addComponent(version);
 		commonProperties.addComponent(description);
+		commonProperties.addComponent(referenceLabel);
+		commonProperties.addComponent(referenceVersion);
 
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
@@ -70,6 +82,20 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 
 		getDescriptionTextArea().setValue(((Form) getInstance()).getDescription());
 		getDescriptionTextArea().setEnabled(!((TreeObject) getInstance()).isReadOnly());
+
+		if (getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null) {
+			referenceLabel.setVisible(true);
+			referenceVersion.setVisible(true);
+			getReferenceLabel()
+					.setValue(
+							getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance())
+									.getFormReference().getLabel() : "");
+			getReferenceVersion()
+					.setValue(
+							getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance())
+									.getFormReference().getVersion() + ""
+									: "");
+		}
 	}
 
 	protected TextField getLabelTextField() {
@@ -82,5 +108,13 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 
 	protected TextArea getDescriptionTextArea() {
 		return description;
+	}
+
+	public TextField getReferenceLabel() {
+		return referenceLabel;
+	}
+
+	public TextField getReferenceVersion() {
+		return referenceVersion;
 	}
 }

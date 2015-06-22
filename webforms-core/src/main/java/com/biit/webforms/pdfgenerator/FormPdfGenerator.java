@@ -37,7 +37,9 @@ public class FormPdfGenerator extends DocumentGenerator {
 				PdfAlign.ALIGN_CENTER);
 
 		for (TreeObject child : form.getChildren()) {
-			generateAndAddCategory(document, (Category) child);
+			if (!child.isHiddenElement()) {
+				generateAndAddCategory(document, (Category) child);
+			}
 		}
 
 		document.newPage();

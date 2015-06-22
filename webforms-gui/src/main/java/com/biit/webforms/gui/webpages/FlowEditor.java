@@ -222,7 +222,7 @@ public class FlowEditor extends SecuredWebPage {
 		}
 		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
-
+		
 		Object selectedRow = null;
 		if (somethingSelected) {
 			selectedRow = itemIds.iterator().next();

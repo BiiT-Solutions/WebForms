@@ -23,6 +23,7 @@ public class SimpleFormView implements IWebformsFormView {
 	private Long linkedFormOrganizationId;
 	private FormWorkStatus status;
 	private boolean isLastVersion;
+	private Long formReferenceId;
 
 	@Override
 	public String getName() {
@@ -237,5 +238,13 @@ public class SimpleFormView implements IWebformsFormView {
 
 	public IBaseFormView generateCopy(boolean copyParentHierarchy, boolean copyChilds) {
 		return SimpleFormView.getSimpleFormView(this);
+	}
+
+	public Long getFormReferenceId() {
+		return formReferenceId;
+	}
+
+	public void setFormReferenceId(Long formReferenceId) {
+		this.formReferenceId = formReferenceId;
 	}
 }

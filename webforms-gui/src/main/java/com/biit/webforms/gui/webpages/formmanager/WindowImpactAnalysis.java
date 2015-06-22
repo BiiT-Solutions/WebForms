@@ -28,7 +28,7 @@ import com.vaadin.ui.VerticalLayout;
 
 public class WindowImpactAnalysis extends WindowAcceptCancel {
 	private static final long serialVersionUID = -7240113029111810959L;
-	private static final String IMPACT_ANALYSIS_WIDTH = "350px";
+	private static final String IMPACT_ANALYSIS_WIDTH = "400px";
 	private static final String IMPACT_ANALYSIS_HEIGHT = "250px";
 	private static final String LABEL_HEIGHT = "20px";
 	private static final String VERSION_COMBOBOX_WIDTH = "100px";

@@ -10,9 +10,8 @@ import com.google.gson.JsonSerializationContext;
 public class FormSerializer extends BaseFormSerializer<Form> {
 
 	@Override
-	public JsonElement serialize(Form src, Type typeOfSrc,
-			JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src,	typeOfSrc, context);
+	public JsonElement serialize(Form src, Type typeOfSrc, JsonSerializationContext context) {
+		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
 
 		jsonObject.add("description", context.serialize(src.getDescription()));
 		jsonObject.add("flows", context.serialize(src.getFlows()));

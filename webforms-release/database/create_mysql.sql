@@ -143,6 +143,7 @@
         linkedFormLabel varchar(255),
         linkedFormOrganizationId bigint,
         status varchar(255),
+        formReferenceID bigint,
         primary key (ID)
     );
 
@@ -160,12 +161,6 @@
         parent_ID bigint,
         reference_ID bigint not null,
         primary key (ID)
-    );
-
-    create table tree_blocks_references_hidden_elements (
-        tree_blocks_references_ID bigint not null,
-        elementsToHide_ID bigint not null,
-        primary key (tree_blocks_references_ID, elementsToHide_ID)
     );
 
     create table tree_categories (
@@ -217,7 +212,14 @@
         linkedFormLabel varchar(255),
         linkedFormOrganizationId bigint,
         status varchar(255),
+        formReferenceID bigint,
         primary key (ID)
+    );
+
+    create table tree_forms_references_hidden_elements (
+        tree_forms_ID bigint not null,
+        elementsToHide_ID bigint not null,
+        primary key (tree_forms_ID, elementsToHide_ID)
     );
 
     create table tree_groups (
@@ -463,11 +465,6 @@
         add constraint FK_c2brjl6vkdwug1svsxaf3vol3 
         foreign key (reference_ID) 
         references tree_blocks (ID);
-
-    alter table tree_blocks_references_hidden_elements 
-        add constraint FK_oxol3v3ulc6h3hwmdxskxx8vn 
-        foreign key (tree_blocks_references_ID) 
-        references tree_blocks_references (ID);
 
     alter table tree_dynamic_answer 
         add constraint FK_1focp8yixjr3i902hvvklx3wi 

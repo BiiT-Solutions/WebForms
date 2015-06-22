@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -55,7 +56,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 		setSource(treeObject);
 		this.xFormsHelper = xFormsHelper;
 		children = new ArrayList<>();
-		for (TreeObject child : treeObject.getChildren()) {
+		for (TreeObject child : treeObject.getAllNotHiddenChildren()) {
 			if (!child.isHiddenElement()) {
 				addChild(child);
 			}
@@ -606,17 +607,21 @@ public abstract class XFormsObject<T extends TreeObject> {
 		for (Flow flow : flows) {
 			List<Token> flowvisibility = flow.getConditionSimpleTokens();
 
-			// Others must assure that the question is answered it it is mandatory. Otherwise without answering the
-			// question the others is also true.
+			// Others must assure that the question is answered if it is mandatory. Otherwise without answering the
+			// question the others is always true.
 			if (flow.isOthers()) {
 				List<Token> othersVisibility = new ArrayList<>();
 				// Others needs that all the conditions are answered if mandatory.
+				// Only must check one time by flow.
+				Set<Question> alreadyCheckedQuestions = new HashSet<>();
 				for (Token token : flowvisibility) {
 					if (token instanceof TokenWithQuestion) {
 						// Condition must be answered if mandatory
-						if ((((TokenWithQuestion) token).getQuestion()).isMandatory()) {
+						if ((((TokenWithQuestion) token).getQuestion()).isMandatory()
+								&& !alreadyCheckedQuestions.contains(((TokenWithQuestion) token).getQuestion())) {
 							othersVisibility.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token)
 									.getQuestion()));
+							alreadyCheckedQuestions.add(((TokenWithQuestion) token).getQuestion());
 						} else {
 							// No token added: remove previous AND or OR.
 							if (TokenUtils.isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
@@ -660,6 +665,12 @@ public abstract class XFormsObject<T extends TreeObject> {
 				if (!previousVisibility.isEmpty()) {
 					// Add 'AND'.
 					if (existPreviousCondition(flowvisibility)) {
+						// Add parenthesis.
+						if (TokenUtils.needsEnclosingParenthesis(flowvisibility)) {
+							flowvisibility.add(0, Token.getLeftParenthesisToken());
+							flowvisibility.add(Token.getRigthParenthesisToken());
+						}
+
 						flowvisibility.add(Token.getAndToken());
 					}
 
@@ -693,6 +704,11 @@ public abstract class XFormsObject<T extends TreeObject> {
 				if (flow.getOrigin() instanceof WebformsBaseQuestion) {
 					if (!originUsedInCondition) {
 						if (existPreviousCondition(flowvisibility)) {
+							// Add parenthesis.
+							if (TokenUtils.needsEnclosingParenthesis(flowvisibility)) {
+								flowvisibility.add(0, Token.getLeftParenthesisToken());
+								flowvisibility.add(Token.getRigthParenthesisToken());
+							}
 							flowvisibility.add(Token.getAndToken());
 						}
 						flowvisibility.add(new TokenAnswerNeeded(flow.getOrigin(),

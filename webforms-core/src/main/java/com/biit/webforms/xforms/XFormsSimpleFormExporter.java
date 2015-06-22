@@ -280,7 +280,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	}
 
 	private void addVisibilityObservers(StringBuilder events) {
-		for (TreeObject question : getForm().getAllChildrenInHierarchy(BaseQuestion.class)) {
+		for (TreeObject question : getForm().getAllNotHiddenChildrenInHierarchy(BaseQuestion.class)) {
 			// Element visibility.
 			events.append("<!-- Change the visibility status for '" + question + "'. -->");
 			String elementName = getXFormsHelper().getUniqueName(question);

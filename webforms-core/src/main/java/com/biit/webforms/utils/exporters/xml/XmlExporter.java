@@ -16,8 +16,6 @@ import com.biit.webforms.condition.parser.expressions.WebformsExpression;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.persistence.entity.Answer;
-import com.biit.webforms.persistence.entity.BlockReference;
-import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
@@ -72,12 +70,7 @@ public class XmlExporter {
 		// node to visit is always the node with the least visits. This solution
 		// prioritizes the appearance of each question.
 
-		LinkedHashSet<TreeObject> questions = form.getAllChildrenInHierarchy(BaseQuestion.class);
-		// Remove all hidden elements.
-		Set<BlockReference> blockReferences = ((CompleteFormView) form).getAllBlockReferences();
-		for (BlockReference blockReference : blockReferences) {
-			questions.removeAll(blockReference.getAllElementsToHide());
-		}
+		LinkedHashSet<TreeObject> questions = form.getAllNotHiddenChildrenInHierarchy(BaseQuestion.class);
 		if (questions.isEmpty()) {
 			return null;
 		}

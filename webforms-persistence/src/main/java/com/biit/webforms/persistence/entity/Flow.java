@@ -175,17 +175,17 @@ public class Flow extends StorableObject {
 
 		return sb.toString();
 	}
-	
-	public String getConditionStringWithFormat(){
+
+	public String getConditionStringWithFormat() {
 		StringBuilder sb = new StringBuilder();
 
 		Iterator<Token> itr = getCondition().iterator();
 
 		while (itr.hasNext()) {
 			Token next = itr.next();
-			if(next.getType()==TokenTypes.RETURN){
+			if (next.getType() == TokenTypes.RETURN) {
 				sb.append("\\n");
-			}else{
+			} else {
 				sb.append(next);
 			}
 			if (itr.hasNext()) {
@@ -193,7 +193,7 @@ public class Flow extends StorableObject {
 			}
 		}
 
-		return sb.toString();		
+		return sb.toString();
 	}
 
 	@Override
@@ -208,6 +208,9 @@ public class Flow extends StorableObject {
 			this.setDestiny(flow.getDestiny());
 			this.setOthers(flow.isOthers());
 			this.setCondition(flow.generateCopyCondition());
+			this.setForm(flow.getForm());
+			this.setGenerated(flow.isGenerated());
+			this.setReadOnly(flow.isReadOnly());
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
 					+ Flow.class.getName());
@@ -236,6 +239,7 @@ public class Flow extends StorableObject {
 
 	private List<Token> generateCopyCondition() {
 		List<Token> conditionCopy = new ArrayList<Token>();
+		// We only copy the real conditions tokens, we cannot use getCondition();
 		for (Token token : condition) {
 			conditionCopy.add(token.generateCopy());
 		}
@@ -322,7 +326,7 @@ public class Flow extends StorableObject {
 	public void setCondition(List<Token> condition) {
 		this.condition.clear();
 		this.condition.addAll(condition);
-		for (Token token : this.condition) {
+		for (Token token : getCondition()) {
 			token.setFlow(this);
 		}
 	}
@@ -447,42 +451,50 @@ public class Flow extends StorableObject {
 		this.generated = value;
 	}
 
-	public boolean isContentEqual(Flow formRule) {
+	public boolean isContentEqual(Flow flow) {
 
-		if (!origin.getPathName().equals(formRule.origin.getPathName())) {
+		if (!getOrigin().getPathName().equals(flow.getOrigin().getPathName())) {
 			return false;
 		}
 
-		if (flowType != formRule.flowType) {
+		if (getFlowType() != flow.getFlowType()) {
 			return false;
 		}
 
-		if ((destiny != null && formRule.destiny == null) || (destiny == null) && formRule.destiny != null) {
+		if ((destiny != null && flow.destiny == null) || (destiny == null) && flow.destiny != null) {
 			return false;
 		}
 
-		if (destiny != null && formRule.destiny != null
-				&& !destiny.getPathName().equals(formRule.destiny.getPathName())) {
+		if (destiny != null && flow.destiny != null && !destiny.getPathName().equals(flow.destiny.getPathName())) {
 			return false;
 		}
 
-		if (others != formRule.others) {
+		if (others != flow.others) {
 			return false;
 		}
 
-		if ((condition != null && formRule.condition == null) || (condition == null && formRule.condition != null)) {
+		if ((getCondition() != null && flow.getCondition() == null)
+				|| (getCondition() == null && flow.getCondition() != null)) {
 			return false;
 		}
 
-		if (condition != null && formRule.condition != null) {
-			if (condition.size() != formRule.condition.size()) {
+		if (getCondition() != null && flow.getCondition() != null) {
+			if (getCondition().size() != flow.getCondition().size()) {
 				return false;
 			}
-			for (int i = 0; i < condition.size(); i++) {
-				if (!condition.get(i).isContentEqual(formRule.condition.get(i))) {
+			for (int i = 0; i < getCondition().size(); i++) {
+				if (!getCondition().get(i).isContentEqual(flow.getCondition().get(i))) {
 					return false;
 				}
 			}
+		}
+
+		if (generated != flow.generated) {
+			return false;
+		}
+
+		if (readOnly != flow.readOnly) {
+			return false;
 		}
 
 		return true;
@@ -513,7 +525,8 @@ public class Flow extends StorableObject {
 	 */
 	public boolean isHidden() {
 		// Check source and destiny.
-		if (getOrigin().isHiddenElement() || getDestiny().isHiddenElement()) {
+		if ((getOrigin() != null && getOrigin().isHiddenElement())
+				|| (getDestiny() != null && getDestiny().isHiddenElement())) {
 			return true;
 		}
 		// Check condition.

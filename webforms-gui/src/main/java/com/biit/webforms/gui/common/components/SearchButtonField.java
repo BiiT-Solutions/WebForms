@@ -61,15 +61,15 @@ public class SearchButtonField extends CustomComponent {
 
 			@Override
 			public void layoutClick(LayoutClickEvent event) {
-				if(event.getButton()== MouseButton.LEFT){
-				fireOpenSearchComponentListener();
+				if (event.getButton() == MouseButton.LEFT) {
+					fireOpenSearchComponentListener();
 				}
 			}
 		});
 
 		label = new Label();
 		label.setWidth(null);
-		
+
 		labelBox.addComponent(label);
 
 		clear();

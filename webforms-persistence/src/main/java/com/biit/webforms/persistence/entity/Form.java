@@ -21,7 +21,10 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -40,6 +43,7 @@ import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.ComputedFlowView;
@@ -106,12 +110,22 @@ public class Form extends BaseForm implements IWebformsFormView {
 	@Transient
 	private boolean isLastVersion;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "formReferenceID")
+	private Form formReference;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "tree_forms_references_hidden_elements")
+	private Set<TreeObject> elementsToHide;
+
 	public Form() {
 		super();
 		status = FormWorkStatus.DESIGN;
 		description = new String();
 		rules = new HashSet<>();
 		linkedFormVersions = new HashSet<>();
+		formReference = null;
+		elementsToHide = new HashSet<>();
 	}
 
 	public Form(String label, User user, Long organizationId) throws FieldTooLongException,
@@ -124,6 +138,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 		setCreatedBy(user);
 		setUpdatedBy(user);
 		setOrganizationId(organizationId);
+		formReference = null;
+		elementsToHide = new HashSet<>();
 	}
 
 	public void addFlow(Flow rule) throws FlowNotAllowedException {
@@ -159,6 +175,71 @@ public class Form extends BaseForm implements IWebformsFormView {
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Form only supports the same type copy");
 		}
+	}
+
+	/**
+	 * Returns all elements that the user has selected to hide.
+	 * 
+	 * @return
+	 */
+	public Set<TreeObject> getElementsToHide() {
+		return elementsToHide;
+	}
+
+	/**
+	 * Returns all elements that the user has selected to hide and the elements that are children of this elements.
+	 * 
+	 * @return
+	 */
+	public Set<TreeObject> getAllElementsToHide() {
+		Set<TreeObject> elementsToHide = new HashSet<>();
+		for (TreeObject elementToHide : getElementsToHide()) {
+			elementsToHide.add(elementToHide);
+			elementsToHide.addAll(elementToHide.getAll(TreeObject.class));
+		}
+		return elementsToHide;
+	}
+
+	/**
+	 * Mark an element as hidden.
+	 * 
+	 * @param element
+	 * @return true if the element has change its state to hidden.
+	 * @throws ElementCannotBeRemovedException
+	 */
+	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
+		if (element != null
+				&& ((formReference != null && !formReference.getAllInnerStorableObjects().contains(element)) || (element
+						.getAncestor(Block.class)) != null)) {
+			throw new ElementCannotBeRemovedException("Element '" + element
+					+ "' does not exists in the Building block.");
+		}
+		// If parent is hidden, do not hide this element.
+		boolean toHide = true;
+		for (TreeObject ancestor : element.getAncestors()) {
+			if (elementsToHide.contains(ancestor)) {
+				toHide = false;
+				break;
+			}
+		}
+		if (toHide) {
+			elementsToHide.add(element);
+		}
+		return toHide;
+	}
+
+	/**
+	 * Shows a hidden element.
+	 * 
+	 * @param element
+	 * @return true if the element has change its state to not hidden.
+	 */
+	public boolean showElement(TreeObject element) {
+		if (elementsToHide.contains(element)) {
+			elementsToHide.remove(element);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -265,6 +346,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 		Form copy = (Form) super.generateCopy(copyParentHierarchy, copyChilds);
 
 		if (copyChilds) {
+			copy.setFormReference(getFormReference());
+			copy.updateElementsToHide(getElementsToHide());
 			copy.copyRules(this, false);
 			copy.updateRuleReferences();
 		}
@@ -281,13 +364,35 @@ public class Form extends BaseForm implements IWebformsFormView {
 	private void updateDynamicAnswers(Set<TreeObject> allQuestionsInHierarchy) {
 		HashMap<String, Question> questions = new HashMap<>();
 		for (TreeObject child : allQuestionsInHierarchy) {
-			questions.put(child.getComparationId(), (Question) child);
+			questions.put(child.getOriginalReference(), (Question) child);
 		}
 
 		for (TreeObject child : getAllChildrenInHierarchy(DynamicAnswer.class)) {
 			DynamicAnswer answer = (DynamicAnswer) child;
-			answer.setReference(questions.get(answer.getReference().getComparationId()));
+			answer.setReference(questions.get(answer.getReference().getOriginalReference()));
 		}
+	}
+
+	/**
+	 * Update references for a new copy, version... of the form.
+	 * 
+	 * @param elementsToHide
+	 */
+	private void updateElementsToHide(Set<TreeObject> elementsToHide) {
+		HashMap<String, TreeObject> elements = new HashMap<>();
+		for (TreeObject element : getAllChildrenInHierarchy(TreeObject.class)) {
+			elements.put(element.getOriginalReference(), element);
+		}
+		if (getFormReference() != null) {
+			for (TreeObject element : getFormReference().getAllChildrenInHierarchy(TreeObject.class)) {
+				elements.put(element.getOriginalReference(), element);
+			}
+		}
+		Set<TreeObject> newElementsToHide = new HashSet<>();
+		for (TreeObject elementToHide : elementsToHide) {
+			newElementsToHide.add(elements.get(elementToHide.getOriginalReference()));
+		}
+		setElementsToHide(newElementsToHide);
 	}
 
 	/**
@@ -498,6 +603,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 				if (rules != null && form.rules != null && rules.size() != form.rules.size()) {
 					return false;
 				}
+
 				if (rules != null) {
 					for (Flow rule : rules) {
 						String originPath = rule.getOrigin().getPathName();
@@ -528,6 +634,22 @@ public class Form extends BaseForm implements IWebformsFormView {
 				}
 				if (linkedFormOrganizationId != null && !linkedFormOrganizationId.equals(form.linkedFormOrganizationId)) {
 					return false;
+				}
+
+				if (formReference != null && !formReference.equals(form.getFormReference())) {
+					return false;
+				}
+
+				for (TreeObject elementToHide : elementsToHide) {
+					boolean contains = false;
+					for (TreeObject elementToHideInOtherForm : form.getElementsToHide()) {
+						if (elementToHide.getComparationId().equals(elementToHideInOtherForm.getComparationId())) {
+							contains = true;
+						}
+					}
+					if (!contains) {
+						return false;
+					}
 				}
 
 				return true;
@@ -570,11 +692,11 @@ public class Form extends BaseForm implements IWebformsFormView {
 		this.isLastVersion = isLastVersion;
 	}
 
-	protected void setLinkedFormLabel(String linkedFormLabel) {
+	public void setLinkedFormLabel(String linkedFormLabel) {
 		this.linkedFormLabel = linkedFormLabel;
 	}
 
-	protected void setLinkedFormOrganizationId(Long linkedFormOrganizationId) {
+	public void setLinkedFormOrganizationId(Long linkedFormOrganizationId) {
 		this.linkedFormOrganizationId = linkedFormOrganizationId;
 	}
 
@@ -601,7 +723,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 	}
 
-	protected void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
+	public void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
 		this.linkedFormVersions.clear();
 		if (linkedFormVersions != null) {
 			this.linkedFormVersions.addAll(linkedFormVersions);
@@ -621,7 +743,6 @@ public class Form extends BaseForm implements IWebformsFormView {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
-		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
 		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectSerializer<Category>());
 		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
@@ -674,7 +795,11 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 */
 	public HashMap<TreeObject, Integer> getQuestionsInOrder() {
 		HashMap<TreeObject, Integer> questionIndex = new HashMap<>();
-		LinkedHashSet<TreeObject> orderedQuestions = getAllChildrenInHierarchy(BaseQuestion.class);
+		LinkedHashSet<TreeObject> orderedQuestions = new LinkedHashSet<>();
+		if (formReference != null) {
+			orderedQuestions.addAll(getAllChildrenInHierarchy(BaseQuestion.class));
+		}
+		orderedQuestions.addAll(getAllChildrenInHierarchy(BaseQuestion.class));
 		int index = 0;
 		Iterator<TreeObject> iterator = orderedQuestions.iterator();
 		while (iterator.hasNext()) {
@@ -686,6 +811,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public void updateRuleReferences(Set<Flow> flows) {
 		LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
+		if (formReference != null) {
+			currentElements.addAll(formReference.getAllChildrenInHierarchy(TreeObject.class));
+		}
 		HashMap<String, TreeObject> mappedElements = new HashMap<>();
 		for (TreeObject currentElement : currentElements) {
 			mappedElements.put(currentElement.getOriginalReference(), currentElement);
@@ -712,6 +840,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public void initializeSets() {
 		super.initializeSets();
 		getFlows().size();
+		if (formReference != null) {
+			formReference.initializeSets();
+		}
 	}
 
 	@Override
@@ -730,9 +861,19 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 */
 	@Override
 	public Integer getIndex(TreeObject child) {
+		// Form references are at the beginning.
+		// if (getFormReference() != null) {
+		// int index = getFormReference().getIndex(child);
+		// if (index >= 0) {
+		// return index;
+		// }
+		// }
 		// Standard form element.
 		int index = getChildren().indexOf(child);
 		if (index >= 0) {
+			// if (getFormReference() != null) {
+			// return index + getFormReference().getChildren().size();
+			// }
 			return index;
 		}
 		// Child not found. Maybe is a category of a block reference.
@@ -744,6 +885,29 @@ public class Form extends BaseForm implements IWebformsFormView {
 					return getIndex(blockReference);
 				}
 			}
+		}
+		return -1;
+	}
+
+	/**
+	 * Real index taking in account the form reference elements.
+	 * 
+	 * @param child
+	 * @return
+	 */
+	@Override
+	public Integer getRelativeIndex(TreeObject child) {
+		// Normal form without linked form.
+		if (getFormReference() == null) {
+			return getIndex(child);
+		}
+		int index = -1;
+		if (((index = getFormReference().getIndex(child)) >= 0)) {
+			return index;
+		}
+		// Linked Form is before the elements of the form.
+		if (getChildren().contains(child)) {
+			return getIndex(child) + getFormReference().getChildren().size();
 		}
 		return -1;
 	}
@@ -775,5 +939,31 @@ public class Form extends BaseForm implements IWebformsFormView {
 		for (Flow flow : getFlows()) {
 			flow.updateConditionSortSeq();
 		}
+	}
+
+	public Form getFormReference() {
+		return formReference;
+	}
+
+	public void setFormReference(Form formReference) {
+		this.formReference = formReference;
+	}
+
+	public void setElementsToHide(Set<TreeObject> elementsToHide) {
+		this.elementsToHide = elementsToHide;
+	}
+
+	@Override
+	public int compareTo(TreeObject arg0) {
+		if (getFormReference() != null && getFormReference().equals(arg0)) {
+			// Form reference always in first place.
+			return 1;
+		}
+		if (arg0 instanceof Form && ((Form) arg0).getFormReference() != null
+				&& ((Form) arg0).getFormReference().equals(this)) {
+			return -1;
+
+		}
+		return super.compareTo(arg0);
 	}
 }

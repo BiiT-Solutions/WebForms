@@ -106,7 +106,7 @@ public abstract class XFormsBasicStructure {
 
 	private void createXFormObjectsStructure() throws NotValidTreeObjectException, NotValidChildException {
 		xFormsCategories = new ArrayList<>();
-		for (TreeObject child : form.getChildren()) {
+		for (TreeObject child : form.getAllNotHiddenChildren()) {
 			XFormsCategory xFormsCategory = createXFormsCategory((Category) child);
 			xFormsCategories.add(xFormsCategory);
 			getXFormsHelper().addXFormsObject(xFormsCategory);

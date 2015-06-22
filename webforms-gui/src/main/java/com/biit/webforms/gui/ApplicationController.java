@@ -11,7 +11,6 @@ import java.util.Set;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.biit.abcd.persistence.entity.SimpleFormView;
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.form.entity.TreeObject;
@@ -71,16 +70,19 @@ import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.IWebformsBlockView;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
+import com.biit.webforms.persistence.entity.exceptions.FormIsUsedAsReferenceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.security.WebformsBasicAuthorizationService;
@@ -334,6 +336,39 @@ public class ApplicationController {
 			}
 		}
 		return linkedSimpleAbcdForms;
+	}
+
+	/**
+	 * Creates a new form that has a reference another form.
+	 * 
+	 * @param form
+	 * @param formLabel
+	 * @param organizationId
+	 * @return
+	 * @throws NotValidStorableObjectException
+	 * @throws CharacterNotAllowedException
+	 * @throws FieldTooLongException
+	 * @throws FormWithSameNameException
+	 * @throws UnexpectedDatabaseException
+	 */
+	public Form createNewLinkedForm(Form form, String formLabel, Long organizationId)
+			throws NotValidStorableObjectException, CharacterNotAllowedException, FieldTooLongException,
+			FormWithSameNameException, UnexpectedDatabaseException {
+		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress()
+				+ "' createNewLinkedForm " + form);
+
+		Form newForm = createForm(formLabel, organizationId);
+		newForm.setFormReference(form);
+		newForm.setLinkedFormLabel(form.getLinkedFormLabel());
+		newForm.setLinkedFormOrganizationId(form.getLinkedFormOrganizationId());
+		newForm.setLinkedFormVersions(form.getLinkedFormVersions());
+		try {
+			formDao.makePersistent(newForm);
+		} catch (ConstraintViolationException cve) {
+			WebformsLogger.errorMessage(ApplicationController.class.getName(), cve);
+			throw cve;
+		}
+		return newForm;
 	}
 
 	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException,
@@ -685,6 +720,8 @@ public class ApplicationController {
 		formInUse = savedForm;
 		setLastEditedForm(formInUse);
 		completeFormView = new CompleteFormView(getFormInUse());
+
+		cleanFormReference(formInUse.getId());
 	}
 
 	@Transactional
@@ -707,7 +744,22 @@ public class ApplicationController {
 			}
 		}
 		setUnsavedFormChanges(false);
+		cleanFormReference(mergedForm.getId());
 		return mergedForm;
+	}
+
+	/**
+	 * Evicts from cache any form that uses the form as a reference to force the update.
+	 * 
+	 * @param form
+	 */
+	private void cleanFormReference(Long formId) {
+		if (formId != null) {
+			Set<SimpleFormView> forms = getFormsUsesAsReference(formId);
+			for (SimpleFormView form : forms) {
+				formDao.evictCache(form.getId());
+			}
+		}
 	}
 
 	public void finishForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
@@ -1251,10 +1303,10 @@ public class ApplicationController {
 	 * 
 	 * @return
 	 */
-	public TreeTableProvider<SimpleFormView> getTreeTableSimpleAbcdFormsProvider() {
-		TreeTableProvider<SimpleFormView> provider = new TreeTableProvider<SimpleFormView>() {
+	public TreeTableProvider<com.biit.abcd.persistence.entity.SimpleFormView> getTreeTableSimpleAbcdFormsProvider() {
+		TreeTableProvider<com.biit.abcd.persistence.entity.SimpleFormView> provider = new TreeTableProvider<com.biit.abcd.persistence.entity.SimpleFormView>() {
 			@Override
-			public Collection<SimpleFormView> getAll() {
+			public List<com.biit.abcd.persistence.entity.SimpleFormView> getAll() {
 				return getAllSimpleFormViewsFromAbcdForCurrentUser();
 			}
 		};
@@ -1272,14 +1324,15 @@ public class ApplicationController {
 		}
 	}
 
-	public List<SimpleFormView> getAllSimpleFormViewsFromAbcdByLabelAndOrganization(String label, Long organizationId) {
+	public List<com.biit.abcd.persistence.entity.SimpleFormView> getAllSimpleFormViewsFromAbcdByLabelAndOrganization(
+			String label, Long organizationId) {
 		return AbcdRestClient.getSimpleFormViewsFromAbcdByLabelAndOrganization(WebformsConfigurationReader
 				.getInstance().getAbcdRestServiceUrl(), WebformsConfigurationReader.getInstance()
 				.getAbcdRestServiceSimpleFormViewByLabelAndOrganizationPath(), UserSessionHandler.getUser()
 				.getEmailAddress(), label, organizationId);
 	}
 
-	public List<SimpleFormView> getAllSimpleFormViewsFromAbcdForCurrentUser() {
+	public List<com.biit.abcd.persistence.entity.SimpleFormView> getAllSimpleFormViewsFromAbcdForCurrentUser() {
 		return AbcdRestClient.getSimpleFormViewsFromAbcdByUserEmail(WebformsConfigurationReader.getInstance()
 				.getAbcdRestServiceUrl(), WebformsConfigurationReader.getInstance()
 				.getAbcdRestServiceAllSimpleFormViewsPath(), UserSessionHandler.getUser().getEmailAddress());
@@ -1482,18 +1535,49 @@ public class ApplicationController {
 	}
 
 	/**
+	 * True if the user has explicitly defined a flow that uses this element.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	public boolean existDefinedFlowToReferencedElementOrItsChildren(TreeObject element) {
+		Set<Flow> flows = getCompleteFormView().getForm().getFlows();
+		for (Flow flow : flows) {
+			// Flow uses the element.
+			if (flow.getOrigin().equals(element)) {
+				return true;
+			} else if (flow.getDestiny().equals(element)) {
+				return true;
+			}
+			for (Token token : flow.getCondition()) {
+				if (token instanceof TokenWithQuestion) {
+					if (((TokenWithQuestion) token).getQuestion().equals(element)) {
+						return true;
+					}
+				}
+			}
+		}
+		for (TreeObject child : element.getChildren()) {
+			if (existDefinedFlowToReferencedElementOrItsChildren(child)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Returns abcd simpleViewForm linked to form using it's name, version and organizationId.
 	 * 
 	 * @param form
 	 * @return
 	 */
-	public List<SimpleFormView> getLinkedSimpleFormViewsFromAbcd(Form form) {
-		List<SimpleFormView> linkedSimpleAbcdForms = new ArrayList<>();
+	public List<com.biit.abcd.persistence.entity.SimpleFormView> getLinkedSimpleFormViewsFromAbcd(Form form) {
+		List<com.biit.abcd.persistence.entity.SimpleFormView> linkedSimpleAbcdForms = new ArrayList<>();
 		if (form.getLabel() != null && form.getOrganizationId() != null) {
-			List<SimpleFormView> views = getAllSimpleFormViewsFromAbcdByLabelAndOrganization(form.getLinkedFormLabel(),
-					form.getLinkedFormOrganizationId());
+			List<com.biit.abcd.persistence.entity.SimpleFormView> views = getAllSimpleFormViewsFromAbcdByLabelAndOrganization(
+					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
 			if (views != null) {
-				for (SimpleFormView view : views) {
+				for (com.biit.abcd.persistence.entity.SimpleFormView view : views) {
 					if (form.getLinkedFormVersions().contains(view.getVersion())) {
 						linkedSimpleAbcdForms.add(view);
 					}
@@ -1501,5 +1585,36 @@ public class ApplicationController {
 			}
 		}
 		return linkedSimpleAbcdForms;
+	}
+
+	public void removeForm(Long formId) throws ElementCannotBeRemovedException, FormIsUsedAsReferenceException {
+		Form selectedForm;
+		if (formId != null) {
+			// Checks is other form is using the selected one as a reference.
+			if (getFormsUsesAsReference(formId).isEmpty()) {
+				selectedForm = formDao.get(formId);
+				if (selectedForm != null) {
+					// Remove the form.
+					formDao.makeTransient(selectedForm);
+					WebformsLogger.info(this.getClass().getName(),
+							"User '" + UserSessionHandler.getUser().getEmailAddress() + "' has removed form '"
+									+ selectedForm.getLabel() + "' (version " + selectedForm.getVersion() + ").");
+
+				}
+			} else {
+				throw new FormIsUsedAsReferenceException(
+						LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_FORM_DESCRIPTION.translation());
+			}
+		}
+	}
+
+	private Set<SimpleFormView> getFormsUsesAsReference(Long formId) {
+		Set<SimpleFormView> formsThatReference = new HashSet<>();
+		for (SimpleFormView simpleFormView : simpleFormDaoWebforms.getAll()) {
+			if (simpleFormView.getFormReferenceId() != null && simpleFormView.getFormReferenceId().equals(formId)) {
+				formsThatReference.add(simpleFormView);
+			}
+		}
+		return formsThatReference;
 	}
 }

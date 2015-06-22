@@ -23,6 +23,7 @@ import com.vaadin.testbench.elements.TreeTableElement;
 public class FormManager extends VaadinGuiWebpage {
 
 	private static final String NEW_BUTTON_CAPTION = "New";
+	private static final String NEW_REFERENCE_BUTTON_CAPTION = "Link Form";
 	private static final String FORM_BUTTON_CAPTION = "Form";
 	private static final String NEW_VERSION_BUTTON_CAPTION = "Version";
 	private static final String FORM_ABCD_BUTTON_CAPTION = "From ABCD";
@@ -72,7 +73,7 @@ public class FormManager extends VaadinGuiWebpage {
 	}
 
 	public void clickExportButton() {
-		while(getExportButton()==null){
+		while (getExportButton() == null) {
 			getFormTable().waitForVaadin();
 		}
 		getExportButton().waitForVaadin();
@@ -83,7 +84,7 @@ public class FormManager extends VaadinGuiWebpage {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void clickExportFlowButton() {
 		getExportFlowButton().click();
 	}
@@ -123,7 +124,7 @@ public class FormManager extends VaadinGuiWebpage {
 	public void clickNewFormButton() {
 		getNewButton().click();
 	}
-	
+
 	public void clickNewVersionButton() {
 		getNewVersionButton().click();
 	}
@@ -131,7 +132,7 @@ public class FormManager extends VaadinGuiWebpage {
 	public void clickXFormsButton() {
 		getXFormsButton().click();
 	}
-	
+
 	public void clickXFormsDownloadButton() {
 		getXFormsDownloadButton().click();
 	}
@@ -146,8 +147,7 @@ public class FormManager extends VaadinGuiWebpage {
 
 	/**
 	 * Workaround to close the popover.<br>
-	 * When the popover is displayed only the element inside the popover can be
-	 * selected.<br>
+	 * When the popover is displayed only the element inside the popover can be selected.<br>
 	 * To close it, we have focus it and send the close key defined.
 	 */
 	public void closeNewPopover() {
@@ -159,6 +159,11 @@ public class FormManager extends VaadinGuiWebpage {
 	public void createNewForm(String formName) {
 		deleteAllCreatedForms();
 		openNewFormWindow();
+		getNewFormWindow().createNewForm(formName);
+	}
+
+	public void createNewFormReference(String formName, int row) {
+		openNewFormReferenceWindow();
 		getNewFormWindow().createNewForm(formName);
 	}
 
@@ -200,11 +205,11 @@ public class FormManager extends VaadinGuiWebpage {
 	public DownloadWindow getDownloadWindow() {
 		return downloadWindow;
 	}
-	
+
 	public DownloadWindowJson getDownloadWindowJson() {
 		return downloadWindowJson;
 	}
-	
+
 	public DownloadWindowXsd getDownloadWindowXsd() {
 		return downloadWindowXsd;
 	}
@@ -248,11 +253,11 @@ public class FormManager extends VaadinGuiWebpage {
 	public ButtonElement getImpactButton() {
 		return getButtonElement(IMPACT_BUTTON_CAPTION);
 	}
-	
+
 	public ImpactWindow getImpactWindow() {
 		return impactWindow;
 	}
-	
+
 	public ImportAbcdFormWindow getImportAbcdFormWindow() {
 		return importAbcdWindow;
 	}
@@ -260,9 +265,13 @@ public class FormManager extends VaadinGuiWebpage {
 	public ButtonElement getLinkAbcdRulesButton() {
 		return getButtonElement(LINK_ABCD_RULES_BUTTON);
 	}
-	
+
 	public ButtonElement getNewButton() {
 		return getButtonElement(NEW_BUTTON_CAPTION);
+	}
+
+	public ButtonElement getNewReferenceButton() {
+		return getButtonElement(NEW_REFERENCE_BUTTON_CAPTION);
 	}
 
 	public ButtonElement getNewFormButton() {
@@ -295,7 +304,7 @@ public class FormManager extends VaadinGuiWebpage {
 		return null;
 	}
 
-	public LinkAbcdFormWindow getWindowLinkAbcdFormWindow(){
+	public LinkAbcdFormWindow getWindowLinkAbcdFormWindow() {
 		return windowLinkAbcdFormWindow;
 	}
 
@@ -327,6 +336,11 @@ public class FormManager extends VaadinGuiWebpage {
 	private void openNewFormWindow() {
 		getNewButton().click();
 		getNewFormButton().click();
+	}
+
+	private void openNewFormReferenceWindow() {
+		getNewButton().click();
+		getNewReferenceButton().click();
 	}
 
 	private void scrollRightUpperButtonMenu() {

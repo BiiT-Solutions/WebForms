@@ -50,16 +50,16 @@ public class OsUtils {
 	public static String readPropertiesValue(String fileName, String property) throws IOException {
 		Properties prop = new Properties();
 		String propFileName = fileName;
-		if(!propFileName.endsWith(".properties")){
+		if (!propFileName.endsWith(".properties")) {
 			propFileName += ".properties";
 		}
-		
+
 		InputStream inputStream = OsUtils.class.getClassLoader().getResourceAsStream(propFileName);
 		if (inputStream == null) {
 			throw new FileNotFoundException("Property file '" + propFileName + "' not found in the classpath");
 		}
 		prop.load(inputStream);
-		
+
 		return prop.getProperty(property);
 	}
 
@@ -118,6 +118,7 @@ public class OsUtils {
 
 	/**
 	 * Writes a temporal file with a string content
+	 * 
 	 * @param prefix
 	 * @param sufix
 	 * @param string

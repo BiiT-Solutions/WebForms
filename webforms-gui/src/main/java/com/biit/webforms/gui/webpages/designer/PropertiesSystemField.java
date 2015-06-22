@@ -38,7 +38,7 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(field);
 		
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
