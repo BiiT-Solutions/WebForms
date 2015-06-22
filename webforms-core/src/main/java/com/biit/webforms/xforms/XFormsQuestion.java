@@ -175,10 +175,10 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			case NUMBER:
 				switch (((Question) getSource()).getAnswerSubformat()) {
 				case NUMBER:
-					type.append(" type=\"xf:decimal\" ");
+					type.append(" type=\"xf:integer\" ");
 					break;
 				case FLOAT:
-					type.append(" type=\"xf:float\" ");
+					type.append(" type=\"xf:decimal\" ");
 					break;
 				default:
 					break;
