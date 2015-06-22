@@ -445,7 +445,7 @@ public class Designer extends SecuredWebPage {
 					} else {
 						// It is not an element or is a form reference element.
 						if (row.isHiddenElement()) {
-							if (UserSessionHandler.getController().getFormInUse().showElement(row)) {
+							if (UserSessionHandler.getController().getCompleteFormView().showElement(row)) {
 								row.setHiddenElement(false);
 								if (blockReference != null) {
 									WebformsLogger.info(this.getClass().getName(), "User '"
@@ -463,7 +463,7 @@ public class Designer extends SecuredWebPage {
 							}
 						} else {
 							try {
-								if (UserSessionHandler.getController().getFormInUse().hideElement(row)) {
+								if (UserSessionHandler.getController().getCompleteFormView().hideElement(row)) {
 									row.setHiddenElement(true);
 									if (blockReference != null) {
 										WebformsLogger

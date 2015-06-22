@@ -862,18 +862,18 @@ public class Form extends BaseForm implements IWebformsFormView {
 	@Override
 	public Integer getIndex(TreeObject child) {
 		// Form references are at the beginning.
-		if (getFormReference() != null) {
-			int index = getFormReference().getChildren().indexOf(child);
-			if (index >= 0) {
-				return index;
-			}
-		}
+		// if (getFormReference() != null) {
+		// int index = getFormReference().getIndex(child);
+		// if (index >= 0) {
+		// return index;
+		// }
+		// }
 		// Standard form element.
 		int index = getChildren().indexOf(child);
 		if (index >= 0) {
-			if (getFormReference() != null) {
-				return index + getFormReference().getChildren().size();
-			}
+			// if (getFormReference() != null) {
+			// return index + getFormReference().getChildren().size();
+			// }
 			return index;
 		}
 		// Child not found. Maybe is a category of a block reference.
@@ -901,12 +901,13 @@ public class Form extends BaseForm implements IWebformsFormView {
 		if (getFormReference() == null) {
 			return getIndex(child);
 		}
+		int index = -1;
+		if (((index = getFormReference().getIndex(child)) >= 0)) {
+			return index;
+		}
 		// Linked Form is before the elements of the form.
 		if (getChildren().contains(child)) {
 			return getIndex(child) + getFormReference().getChildren().size();
-		}
-		if (getFormReference().getChildren().contains(child)) {
-			return getFormReference().getIndex(child);
 		}
 		return -1;
 	}
@@ -950,5 +951,19 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	public void setElementsToHide(Set<TreeObject> elementsToHide) {
 		this.elementsToHide = elementsToHide;
+	}
+
+	@Override
+	public int compareTo(TreeObject arg0) {
+		if (getFormReference() != null && getFormReference().equals(arg0)) {
+			// Form reference always in first place.
+			return 1;
+		}
+		if (arg0 instanceof Form && ((Form) arg0).getFormReference() != null
+				&& ((Form) arg0).getFormReference().equals(this)) {
+			return -1;
+
+		}
+		return super.compareTo(arg0);
 	}
 }
