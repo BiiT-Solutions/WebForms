@@ -208,7 +208,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 * @throws ElementCannotBeRemovedException
 	 */
 	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
-		if (!formReference.getAllInnerStorableObjects().contains(element)) {
+		if (element != null
+				&& ((formReference != null && !formReference.getAllInnerStorableObjects().contains(element)) || (element
+						.getAncestor(Block.class)) != null)) {
 			throw new ElementCannotBeRemovedException("Element '" + element
 					+ "' does not exists in the Building block.");
 		}
