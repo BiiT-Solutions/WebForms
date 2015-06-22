@@ -372,7 +372,7 @@ public class FormManager extends SecuredWebPage {
 				@Override
 				public InputStream getInputStream() {
 					try {
-						return new XFormsSimpleFormExporter(completeFormView).generateXFormsLanguage();
+						return new XFormsSimpleFormExporter(completeFormView,UserSessionHandler.getController().getAllWebservices()).generateXFormsLanguage();
 					} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
 							| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException
 							| UnsupportedEncodingException e) {

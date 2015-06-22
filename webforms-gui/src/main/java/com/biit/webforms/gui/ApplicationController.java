@@ -946,6 +946,7 @@ public class ApplicationController {
 
 			formInUse.addChildren(copiedBlock.getChildren());
 			formInUse.addFlows(copiedBlock.getFlows());
+			formInUse.addWebserviceCalls(copiedBlock.getWebserviceCalls());
 
 			setUnsavedFormChanges(true);
 

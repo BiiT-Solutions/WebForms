@@ -34,14 +34,19 @@ public class WebserviceDao implements IWebserviceDao {
 				File dir = new File(url.toURI());
 				for (File file : dir.listFiles()) {
 					String fileContent = new String(Files.readAllBytes(file.toPath()), Charset.forName("UTF-8"));
-					try {
-						webservices.add(Webservice.fromJson(fileContent));
-					} catch (JsonSyntaxException e) {
-						WebformsLogger.errorMessage(this.getClass().getName(), "Error parsing json file '" + file.getAbsolutePath()
-								+ "' cause '" + e.getMessage() + "'");
+					if (fileContent != null && !fileContent.isEmpty()) {
+						try {
+							webservices.add(Webservice.fromJson(fileContent));
+						} catch (JsonSyntaxException e) {
+							WebformsLogger.errorMessage(this.getClass().getName(), "Error parsing json file '" + file.getAbsolutePath()
+									+ "' cause '" + e.getMessage() + "'");
+						}
 					}
 				}
 			} catch (URISyntaxException | IOException e) {
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			} catch (IllegalArgumentException e) {
+				// Directory doesn't exist.
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
 		}
@@ -52,11 +57,13 @@ public class WebserviceDao implements IWebserviceDao {
 				File dir = new File(optionalPath);
 				for (File file : dir.listFiles()) {
 					String fileContent = new String(Files.readAllBytes(file.toPath()), Charset.forName("UTF-8"));
-					try {
-						webservices.add(Webservice.fromJson(fileContent));
-					} catch (JsonSyntaxException e) {
-						WebformsLogger.errorMessage(this.getClass().getName(), "Error parsing json file '" + file.getAbsolutePath()
-								+ "' cause '" + e.getMessage() + "'");
+					if (fileContent != null && !fileContent.isEmpty()) {
+						try {
+							webservices.add(Webservice.fromJson(fileContent));
+						} catch (JsonSyntaxException e) {
+							WebformsLogger.errorMessage(this.getClass().getName(), "Error parsing json file '" + file.getAbsolutePath()
+									+ "' cause '" + e.getMessage() + "'");
+						}
 					}
 				}
 			} catch (IOException e) {
