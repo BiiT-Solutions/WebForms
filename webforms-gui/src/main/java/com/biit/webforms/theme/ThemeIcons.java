@@ -73,6 +73,7 @@ public enum ThemeIcons implements IThemeIcon {
 
 	FORM_MANAGER_IMPORT_ABCD_FORM("form.import.svg"), 
 	FORM_MANAGER_LINK_ABCD_FORM("form.link.svg"),
+	FORM_MANAGER_LINK_WEBFORMS_FORM("form.link.svg"),
 	
 	COMPLETE_VALIDATION("validate.document.svg"),
 	VALIDATE_STRUCTURE("validate.structure.svg"),

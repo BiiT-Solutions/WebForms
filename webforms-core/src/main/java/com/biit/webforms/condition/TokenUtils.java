@@ -41,6 +41,10 @@ public class TokenUtils {
 		return token.getType().equals(TokenTypes.AND) || token.getType().equals(TokenTypes.OR);
 	}
 
+	public static boolean isParenthesis(Token token) {
+		return token.getType().equals(TokenTypes.LEFT_PAR) || token.getType().equals(TokenTypes.RIGHT_PAR);
+	}
+
 	/**
 	 * Return the right parenthesis that closes a given left parenthesis.
 	 * 

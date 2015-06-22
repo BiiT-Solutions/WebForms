@@ -39,7 +39,7 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
 
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 

@@ -57,7 +57,7 @@ class XFormsHelper {
 		webserviceInputs = new HashMap<>();
 
 		// Set questions in order.
-		LinkedHashSet<TreeObject> allBaseQuestions = form.getAllChildrenInHierarchy(BaseQuestion.class);
+		LinkedHashSet<TreeObject> allBaseQuestions = form.getAllNotHiddenChildrenInHierarchy(BaseQuestion.class);
 		for (TreeObject element : allBaseQuestions) {
 			questions.add((BaseQuestion) element);
 		}

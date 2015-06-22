@@ -42,14 +42,13 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 	}
 
 	@Override
-	public void deserialize(JsonElement json,
-			JsonDeserializationContext context, Form element) {
+	public void deserialize(JsonElement json, JsonDeserializationContext context, Form element) {
 		JsonObject jobject = (JsonObject) json;
-		
-		HashMap<DynamicAnswer, List<String>> mapper= new HashMap<DynamicAnswer, List<String>>();
-		
+
+		HashMap<DynamicAnswer, List<String>> mapper = new HashMap<DynamicAnswer, List<String>>();
+
 		GsonBuilder gsonBuilder = new GsonBuilder();
-		//Redirects to proper deserializers.
+		// Redirects to proper deserializers.
 		gsonBuilder.registerTypeAdapter(StorableObject.class, new StorableObjectDeserializer<StorableObject>());
 		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
 		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectDeserializer<Category>(Category.class));
@@ -67,22 +66,23 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 		gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInDeserializer(element));
 		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueDeserializer(element));
 		Gson gson = gsonBuilder.create();
-		
-		element.setComparationId(parseString("comparationId",jobject,context));
+
+		element.setComparationId(parseString("comparationId", jobject, context));
 		element.setCreationTime(parseTimestamp("creationTime", jobject, context));
 		element.setUpdateTime(parseTimestamp("updateTime", jobject, context));
 		element.setCreatedBy(parseLong("createdBy", jobject, context));
 		element.setUpdatedBy(parseLong("updatedBy", jobject, context));
-		
+
 		try {
 			element.setLabel(parseString("label", jobject, context));
 			element.setDescription(parseString("description", jobject, context));
 		} catch (FieldTooLongException e) {
 			throw new JsonParseException(e);
 		}
-				
+
 		// Children deserialization
-		Type listType = new TypeToken<ArrayList<TreeObject>>() {}.getType();
+		Type listType = new TypeToken<ArrayList<TreeObject>>() {
+		}.getType();
 		JsonElement childrenJson = jobject.get("children");
 		if (childrenJson != null) {
 			List<TreeObject> children = gson.fromJson(childrenJson, listType);
@@ -92,24 +92,26 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 				throw new JsonParseException(e);
 			}
 		}
-		
-		//Link dynamic answers
-		for(DynamicAnswer dynamicAnswer: mapper.keySet()){
+
+		// Link dynamic answers
+		for (DynamicAnswer dynamicAnswer : mapper.keySet()) {
 			dynamicAnswer.setReference((Question) element.getChild(mapper.get(dynamicAnswer)));
 		}
-				
+
 		// Deserializes Flows
-		Type flowListType = new TypeToken<HashSet<Flow>>() {}.getType();
+		Type flowListType = new TypeToken<HashSet<Flow>>() {
+		}.getType();
 		JsonElement flowsJson = jobject.get("flows");
 
 		if (flowsJson != null) {
 			Set<Flow> flows = gson.fromJson(flowsJson, flowListType);
 			element.addFlows(flows);
 		}
-		
+
 	}
 
-	public static TreeObject parseTreeObjectPath(String name, Form form, JsonObject jobject, JsonDeserializationContext context) {
+	public static TreeObject parseTreeObjectPath(String name, Form form, JsonObject jobject,
+			JsonDeserializationContext context) {
 		// Deserializes reference by searching on the form.
 		Type listType = new TypeToken<List<String>>() {
 		}.getType();
@@ -120,5 +122,5 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 		}
 		return null;
 	}
-	
+
 }

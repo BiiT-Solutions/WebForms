@@ -21,23 +21,25 @@ public class ValidateDynamicAnswers extends SimpleValidator<TreeObject> {
 	@Override
 	protected void validateImplementation(TreeObject element) {
 		if (element instanceof Question) {
-			List<TreeObject> dynamicAnswers = ((Question)element).getChildren(DynamicAnswer.class);
+			List<TreeObject> dynamicAnswers = ((Question) element).getChildren(DynamicAnswer.class);
 			Set<Question> references = new HashSet<>();
 			boolean failed = false;
-			for(TreeObject dynamicAnswer: dynamicAnswers){
+			for (TreeObject dynamicAnswer : dynamicAnswers) {
 				Question currentQuestion = (Question) element;
 				DynamicAnswer currentDynamicAnswer = (DynamicAnswer) dynamicAnswer;
-				
-				assertTrue(currentDynamicAnswer.getReference()!=null , new DynamicAnswerNullReference(currentQuestion));
-				if(currentDynamicAnswer.getReference()!=null){
-					assertTrue(currentQuestion.compareTo(currentDynamicAnswer.getReference())>0 , new DynamicAnswerReferenceInvalid(currentQuestion, currentDynamicAnswer.getReference()));
-					
-					if(references.contains(currentDynamicAnswer.getReference()) && !failed){
+
+				assertTrue(currentDynamicAnswer.getReference() != null, new DynamicAnswerNullReference(currentQuestion));
+				if (currentDynamicAnswer.getReference() != null) {
+					assertTrue(currentQuestion.compareTo(currentDynamicAnswer.getReference()) > 0,
+							new DynamicAnswerReferenceInvalid(currentQuestion, currentDynamicAnswer.getReference()));
+
+					if (references.contains(currentDynamicAnswer.getReference()) && !failed) {
 						failed = true;
-						assertFalse(true, new MultipleDynamicAnswersReferenceTheSameQuestion(currentQuestion,currentDynamicAnswer));
+						assertFalse(true, new MultipleDynamicAnswersReferenceTheSameQuestion(currentQuestion,
+								currentDynamicAnswer));
 					}
 					references.add(currentDynamicAnswer.getReference());
-				}				
+				}
 			}
 		} else {
 			for (TreeObject child : element.getChildren()) {

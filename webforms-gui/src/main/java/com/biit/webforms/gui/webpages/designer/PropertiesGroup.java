@@ -45,7 +45,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		commonProperties.addComponent(label);
 		commonProperties.addComponent(repeatable);
 
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 

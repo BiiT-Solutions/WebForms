@@ -129,4 +129,10 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 		super.evictAllCache();
 	}
 
+	@Override
+	@Caching(evict = { @CacheEvict(value = "webformsforms", key = "#id", condition = "#id != null") })
+	public void evictCache(Long id) {
+		//Do nothing.
+	}
+
 }

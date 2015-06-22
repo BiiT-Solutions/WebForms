@@ -7,19 +7,19 @@ import java.io.UnsupportedEncodingException;
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.CompleteFormView;
 
 public class WindowDownloaderJson extends WindowDownloader {
 
 	private static final long serialVersionUID = 1327278107256149670L;
 
-	public WindowDownloaderJson(final Form form, String filename) {
+	public WindowDownloaderJson(final CompleteFormView completeFormView, String filename) {
 		super(new WindowDownloaderProcess() {
 
 			@Override
 			public InputStream getInputStream() {
 				try {
-					return new ByteArrayInputStream(form.toJson().getBytes("UTF-8"));
+					return new ByteArrayInputStream(completeFormView.toJson().getBytes("UTF-8"));
 				} catch (UnsupportedEncodingException e) {
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 					return null;

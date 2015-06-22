@@ -48,7 +48,7 @@ public class PropertiesDynamicAnswer extends StorableObjectProperties<DynamicAns
 		rootLayout.addComponent(search);
 		rootLayout.setMargin(new MarginInfo(true, false, true, false));
 				
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		rootLayout.setEnabled(canEdit);
 		
