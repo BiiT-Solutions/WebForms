@@ -445,7 +445,7 @@ public class Designer extends SecuredWebPage {
 					} else {
 						// It is not an element or is a form reference element.
 						if (row.isHiddenElement()) {
-							if (UserSessionHandler.getController().getFormInUse().showElement(row)) {
+							if (UserSessionHandler.getController().getCompleteFormView().showElement(row)) {
 								row.setHiddenElement(false);
 								if (blockReference != null) {
 									WebformsLogger.info(this.getClass().getName(), "User '"
@@ -463,7 +463,7 @@ public class Designer extends SecuredWebPage {
 							}
 						} else {
 							try {
-								if (UserSessionHandler.getController().getFormInUse().hideElement(row)) {
+								if (UserSessionHandler.getController().getCompleteFormView().hideElement(row)) {
 									row.setHiddenElement(true);
 									if (blockReference != null) {
 										WebformsLogger
@@ -602,8 +602,10 @@ public class Designer extends SecuredWebPage {
 			boolean rowIsNull = selectedElement == null;
 			boolean rowIsForm = selectedElement instanceof Form;
 			boolean rowIsElementReference = selectedElement != null && selectedElement.isReadOnly();
+			
 			boolean rowIsBlockReferenceCategory = rowIsElementReference && (selectedElement instanceof BaseCategory)
-					&& (selectedElement.getParent() instanceof Block);
+					&& UserSessionHandler.getController().getCompleteFormView()
+					.getBlockReference(selectedElement) != null;
 			boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 					UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 			boolean canStoreBlock = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
@@ -661,7 +663,7 @@ public class Designer extends SecuredWebPage {
 							&& !formHasLinkedForm);
 			upperMenu.getFinish().setVisible(!formIsBlock);
 			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
-			upperMenu.getDeleteButton().setVisible(!rowIsElementReference);
+			upperMenu.getDeleteButton().setVisible(!rowIsElementReference || rowIsBlockReferenceCategory);
 			upperMenu.updateHideButton(isHidden);
 			upperMenu.getHideButton().setVisible(!upperMenu.getDeleteButton().isVisible());
 			upperMenu.getHideButton().setEnabled(rowIsElementReference && !rowIsBlockReferenceCategory && canEdit);
