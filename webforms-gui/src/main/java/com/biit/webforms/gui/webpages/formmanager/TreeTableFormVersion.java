@@ -34,8 +34,8 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		ACCESS, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
 	};
 
-	public TreeTableFormVersion(TreeTableProvider<SimpleFormView> formProvider) {
-		super(formProvider);
+	public TreeTableFormVersion(TreeTableProvider<SimpleFormView> formProvider, IconProviderFormLinked iconProviderFormLinked) {
+		super(formProvider, iconProviderFormLinked);
 		configureContainerProperties();
 		setImmediate(true);
 	}
@@ -231,4 +231,5 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 			setValue(simpleFormView);
 		}
 	}
+
 }
