@@ -16,6 +16,8 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SystemField;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.theme.ThemeIcons;
 import com.vaadin.data.Container.Filter;
@@ -80,7 +82,7 @@ public class ConditionEditorControls extends TabSheet {
 	 */
 	private void initializeComposition() {
 		treeObjectTable.loadTreeObject(UserSessionHandler.getController().getCompleteFormView(), null, Form.class,
-				Category.class, Group.class, Question.class);
+				Category.class, Group.class, Question.class, SystemField.class);
 		treeObjectTable.setValue(null);
 	}
 
@@ -101,10 +103,10 @@ public class ConditionEditorControls extends TabSheet {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				if (treeObjectTable.getValue() == null || !(treeObjectTable.getValue() instanceof Question)) {
+				if (treeObjectTable.getValue() == null || !(treeObjectTable.getValue() instanceof WebformsBaseQuestion)) {
 					insertLayout.removeAllComponents();
 				} else {
-					AnswerType answerType = ((Question) treeObjectTable.getValue()).getAnswerType();
+					AnswerType answerType = ((WebformsBaseQuestion) treeObjectTable.getValue()).getAnswerType();
 					if (answerType == AnswerType.INPUT) {
 						showInsertValue();
 					} else {
@@ -136,13 +138,15 @@ public class ConditionEditorControls extends TabSheet {
 	 */
 	protected void showInsertAnswerLayout() {
 		insertLayout.removeAllComponents();
-		insertAnswer.setCurrentQuestion(getCurrentQuestion());
-		insertLayout.addComponent(insertAnswer);
-		insertLayout.setComponentAlignment(insertAnswer, Alignment.BOTTOM_CENTER);
+		if (getCurrentQuestion() instanceof Question) {
+			insertAnswer.setCurrentQuestion((Question) getCurrentQuestion());
+			insertLayout.addComponent(insertAnswer);
+			insertLayout.setComponentAlignment(insertAnswer, Alignment.BOTTOM_CENTER);
+		}
 	}
 
-	private Question getCurrentQuestion() {
-		return (Question) treeObjectTable.getValue();
+	private WebformsBaseQuestion getCurrentQuestion() {
+		return (WebformsBaseQuestion) treeObjectTable.getValue();
 	}
 
 	private Component generateReferenceTab() {

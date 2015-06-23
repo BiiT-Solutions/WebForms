@@ -15,7 +15,7 @@ import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 
 @Entity
@@ -114,7 +114,8 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 		return referenceString + " " + getType() + " (" + answerStart + ", " + answerEnd + ")";
 	}
 
-	public static Token getBetween(Question question, DatePeriodUnit datePeriodUnit, String valueStart, String valueEnd) {
+	public static Token getBetween(WebformsBaseQuestion question, DatePeriodUnit datePeriodUnit, String valueStart,
+			String valueEnd) {
 		try {
 			TokenBetween token = new TokenBetween();
 			token.setType(TokenTypes.BETWEEN);

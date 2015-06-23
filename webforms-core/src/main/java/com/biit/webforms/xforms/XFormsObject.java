@@ -167,19 +167,19 @@ public abstract class XFormsObject<T extends TreeObject> {
 		text += " />";
 		return text;
 	}
-	
-	protected String getAlert(Integer position, String validation){
+
+	protected String getAlert(Integer position, String validation) {
 		String text = "<xf:alert ref=\"instance('fr-form-resources')/resource/" + getPath() + "/alert";
-		if(position!=null){
-			text+="["+position+"]";
+		if (position != null) {
+			text += "[" + position + "]";
 		}
-		text+="\"";
-		
-		if(validation!=null){
-			text+=" validation=\""+validation+"\"";
+		text += "\"";
+
+		if (validation != null) {
+			text += " validation=\"" + validation + "\"";
 		}
-		text+="/>";
-		
+		text += "/>";
+
 		return text;
 	}
 
@@ -628,7 +628,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 				List<Token> othersVisibility = new ArrayList<>();
 				// Others needs that all the conditions are answered if mandatory.
 				// Only must check one time by flow.
-				Set<Question> alreadyCheckedQuestions = new HashSet<>();
+				Set<WebformsBaseQuestion> alreadyCheckedQuestions = new HashSet<>();
 				for (Token token : flowvisibility) {
 					if (token instanceof TokenWithQuestion) {
 						// Condition must be answered if mandatory

@@ -2,14 +2,23 @@ package com.biit.webforms.persistence.entity;
 
 import java.util.Objects;
 
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDependencyExistException;
 
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class WebformsBaseQuestion extends BaseQuestion {
 	private static final long serialVersionUID = 5749191470931873398L;
 
@@ -22,16 +31,18 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
 	}
 
 	@Override
-	public void checkDependencies() throws DependencyExistException, DependencyDynamicAnswerExistException, FlowDependencyExistException {
+	public void checkDependencies() throws DependencyExistException, DependencyDynamicAnswerExistException,
+			FlowDependencyExistException {
 		Form form = (Form) this.getAncestor(Form.class);
 		if (form == null) {
 			return;
 		}
-		
-		for(TreeObject child: form.getAllChildrenInHierarchy(DynamicAnswer.class)){
+
+		for (TreeObject child : form.getAllChildrenInHierarchy(DynamicAnswer.class)) {
 			DynamicAnswer dynamicAnswer = (DynamicAnswer) child;
-			if(Objects.equals(dynamicAnswer.getReference(), this)){
-				throw new DependencyDynamicAnswerExistException("Question '"+dynamicAnswer.getReference()+"' depends of element + '"+this+"'");
+			if (Objects.equals(dynamicAnswer.getReference(), this)) {
+				throw new DependencyDynamicAnswerExistException("Question '" + dynamicAnswer.getReference()
+						+ "' depends of element + '" + this + "'");
 			}
 		}
 
@@ -41,5 +52,13 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
 			}
 		}
 	}
+
+	public abstract AnswerFormat getAnswerFormat();
+
+	public abstract AnswerSubformat getAnswerSubformat();
+
+	public abstract AnswerType getAnswerType();
+
+	public abstract boolean isMandatory();
 
 }

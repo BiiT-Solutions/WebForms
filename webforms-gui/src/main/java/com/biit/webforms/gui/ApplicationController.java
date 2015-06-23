@@ -75,6 +75,7 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
@@ -1182,7 +1183,7 @@ public class ApplicationController {
 	 * @param value
 	 * @return
 	 */
-	public Token createTokenComparationValue(TokenTypes type, Question question, AnswerSubformat valueAnswerSubformat,
+	public Token createTokenComparationValue(TokenTypes type, WebformsBaseQuestion question, AnswerSubformat valueAnswerSubformat,
 			DatePeriodUnit datePeriodUnit, String value) {
 		Token token = TokenComparationValue.getToken(type, question, valueAnswerSubformat, datePeriodUnit, value);
 		token.setCreatedBy(UserSessionHandler.getUser());

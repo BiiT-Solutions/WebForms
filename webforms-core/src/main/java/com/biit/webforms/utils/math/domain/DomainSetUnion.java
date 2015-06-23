@@ -5,11 +5,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 
 public class DomainSetUnion extends DomainSet {
 
-	public DomainSetUnion(HashMap<Question, IDomainQuestion> inverseDomainQuestions, HashSet<DomainSet> inverseDomainSet) {
+	public DomainSetUnion(HashMap<WebformsBaseQuestion, IDomainQuestion> inverseDomainQuestions,
+			HashSet<DomainSet> inverseDomainSet) {
 		super(inverseDomainQuestions, inverseDomainSet);
 	}
 
@@ -68,7 +69,7 @@ public class DomainSetUnion extends DomainSet {
 	}
 
 	@Override
-	public boolean isEmpty() {	
+	public boolean isEmpty() {
 		for (IDomain domain : domainQuestions.values()) {
 			if (domain.isEmpty()) {
 				return true;
@@ -112,13 +113,13 @@ public class DomainSetUnion extends DomainSet {
 	}
 
 	@Override
-	public HashMap<Question, String> generateRandomValue() {		
+	public HashMap<WebformsBaseQuestion, String> generateRandomValue() {
 		List<IDomain> domains = getDomains();
-		if(domains== null || domains.isEmpty()){
-			return new HashMap<Question, String>();
+		if (domains == null || domains.isEmpty()) {
+			return new HashMap<WebformsBaseQuestion, String>();
 		}
-		for(IDomain domain:domains){
-			if(domain.isComplete()){
+		for (IDomain domain : domains) {
+			if (domain.isComplete()) {
 				continue;
 			}
 			return domain.generateRandomValue();

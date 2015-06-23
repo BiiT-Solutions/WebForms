@@ -104,6 +104,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		}
 	}
 
+	@Override
 	public AnswerFormat getAnswerFormat() {
 		return this.answerFormat;
 	}
@@ -137,6 +138,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		}
 	}
 
+	@Override
 	public AnswerSubformat getAnswerSubformat() {
 		return answerSubformat;
 	}
@@ -187,6 +189,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		}
 	}
 
+	@Override
 	public boolean isMandatory() {
 		return mandatory;
 	}

@@ -12,7 +12,7 @@ import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.TokenTypes;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 
 @Entity
@@ -20,7 +20,7 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 public abstract class TokenWithQuestion extends Token {
 	private static final long serialVersionUID = 3644011189971053183L;
 	@ManyToOne(fetch = FetchType.EAGER)
-	private Question question;
+	private WebformsBaseQuestion question;
 
 	public TokenWithQuestion() {
 		super();
@@ -30,11 +30,11 @@ public abstract class TokenWithQuestion extends Token {
 		setType(tokenType);
 	}
 
-	public Question getQuestion() {
+	public WebformsBaseQuestion getQuestion() {
 		return question;
 	}
 
-	public void setQuestion(Question question) {
+	public void setQuestion(WebformsBaseQuestion question) {
 		this.question = question;
 	}
 
@@ -53,7 +53,7 @@ public abstract class TokenWithQuestion extends Token {
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		if (question != null) {
-			question = (Question) mappedElements.get(question.getOriginalReference());
+			question = (WebformsBaseQuestion) mappedElements.get(question.getOriginalReference());
 		}
 	}
 

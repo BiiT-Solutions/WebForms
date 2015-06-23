@@ -5,11 +5,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 
 public class DomainSetIntersection extends DomainSet {
 
-	public DomainSetIntersection(HashMap<Question, IDomainQuestion> domainQuestions, HashSet<DomainSet> domainSet) {
+	public DomainSetIntersection(HashMap<WebformsBaseQuestion, IDomainQuestion> domainQuestions,
+			HashSet<DomainSet> domainSet) {
 		super(domainQuestions, domainSet);
 	}
 
@@ -24,12 +25,12 @@ public class DomainSetIntersection extends DomainSet {
 	@Override
 	public IDomain union(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {
-			return union(this, (IDomainQuestion)domain);
+			return union(this, (IDomainQuestion) domain);
 		} else {
 			if (domain instanceof DomainSetUnion) {
 				return union(this, (DomainSetUnion) domain);
 			} else {
-				return union(this, (DomainSetIntersection)domain);
+				return union(this, (DomainSetIntersection) domain);
 			}
 		}
 	}
@@ -112,13 +113,13 @@ public class DomainSetIntersection extends DomainSet {
 	}
 
 	@Override
-	public HashMap<Question, String> generateRandomValue() {
-		HashMap<Question, String> randomValue = new HashMap<Question, String>();
-		
-		for(IDomain domain: getDomains()){
+	public HashMap<WebformsBaseQuestion, String> generateRandomValue() {
+		HashMap<WebformsBaseQuestion, String> randomValue = new HashMap<WebformsBaseQuestion, String>();
+
+		for (IDomain domain : getDomains()) {
 			randomValue.putAll(domain.generateRandomValue());
 		}
-		
+
 		return randomValue;
 	}
 }

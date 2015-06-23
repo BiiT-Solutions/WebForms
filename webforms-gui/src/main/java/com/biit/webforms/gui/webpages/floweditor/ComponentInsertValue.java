@@ -16,7 +16,7 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.floweditor.listeners.InsertTokenListener;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -50,7 +50,7 @@ public class ComponentInsertValue extends CustomComponent {
 	private static final int VALUE_BUTTON_ROWS = 2;
 	private static final DatePeriodUnit DATE_FORMAT_DEFAULT_DATE_PERIOD = DatePeriodUnit.YEAR;
 
-	private Question currentQuestion;
+	private WebformsBaseQuestion currentQuestion;
 
 	private VerticalLayout insertValueLayout;
 
@@ -138,7 +138,7 @@ public class ComponentInsertValue extends CustomComponent {
 	/**
 	 * Updates insert value hint, prompt and validator.
 	 */
-	public void setCurrentQuestion(Question question) {
+	public void setCurrentQuestion(WebformsBaseQuestion question) {
 		this.currentQuestion = question;
 
 		value.removeAllValidators();
@@ -171,7 +171,7 @@ public class ComponentInsertValue extends CustomComponent {
 		insertBetweenButton.setEnabled(question.getAnswerFormat().isValidTokenType(TokenTypes.BETWEEN));
 	}
 
-	public Question getCurrentQuestion() {
+	public WebformsBaseQuestion getCurrentQuestion() {
 		return currentQuestion;
 	}
 
@@ -275,7 +275,7 @@ public class ComponentInsertValue extends CustomComponent {
 
 	protected void openWindowTokenBetween() {
 		WindowTokenBetween window = new WindowTokenBetween();
-		window.setQuestion(currentQuestion, (DatePeriodUnit) datePeriodUnit.getValue(),
+		window.setQuestion(getCurrentQuestion(), (DatePeriodUnit) datePeriodUnit.getValue(),
 				value.getValue() != null ? value.getValue() : null);
 		window.addAcceptActionListener(new AcceptActionListener() {
 

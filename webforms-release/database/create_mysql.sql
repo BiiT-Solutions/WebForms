@@ -313,14 +313,17 @@
         updatedBy DOUBLE,
         webservicePort varchar(250),
         formElement_ID bigint,
+        validationXpath varchar(255),
         webserviceCall_ID bigint not null,
         primary key (ID)
     );
 
     create table webservice_call_input_link_errors (
-        ID bigint not null,
+        ID bigint not null auto_increment,
         errorCode varchar(255),
-        errorMessage varchar(255)
+        errorMessage varchar(255),
+        webserviceCallInput_ID bigint not null,
+        primary key (ID)
     );
 
     create table webservice_call_output_link (
@@ -472,11 +475,6 @@
         references flow (ID);
 
     alter table token_between 
-        add constraint FK_6fgr694hshlk5cxvpequy9im7 
-        foreign key (question_ID) 
-        references tree_questions (ID);
-
-    alter table token_between 
         add constraint FK_ra954eotsl01s1s20r3iipvqv 
         foreign key (flow_ID) 
         references flow (ID);
@@ -487,29 +485,14 @@
         references tree_answers (ID);
 
     alter table token_comparation_answer 
-        add constraint FK_9l6aua9xkdoc2m5uve59k84kp 
-        foreign key (question_ID) 
-        references tree_questions (ID);
-
-    alter table token_comparation_answer 
         add constraint FK_qjip50m8a6wkqu9wdqw828a9l 
         foreign key (flow_ID) 
         references flow (ID);
 
     alter table token_comparation_value 
-        add constraint FK_8p15e0dwtviut3r9rikqme7xq 
-        foreign key (question_ID) 
-        references tree_questions (ID);
-
-    alter table token_comparation_value 
         add constraint FK_m1g8tiej2sbbgy2y4xoyw6g7x 
         foreign key (flow_ID) 
         references flow (ID);
-
-    alter table token_in 
-        add constraint FK_d2lp2gbfwmmp4l5td2730vkaf 
-        foreign key (question_ID) 
-        references tree_questions (ID);
 
     alter table token_in 
         add constraint FK_p9a5xftusa2qj6w2uxujwmshf 
@@ -547,9 +530,14 @@
         references webservice_call (ID);
 
     alter table webservice_call_input_link_errors 
+        add constraint FK_tab4uwlftutunr7f2dmays0v8 
+        foreign key (webserviceCallInput_ID) 
+        references webservice_call_input_link (ID);
+
+    alter table webservice_call_input_link_errors 
         add constraint FK_kkh7ildmbyq4iqj566ovuhi2 
         foreign key (ID) 
-        references webservice_call_input_link (ID);
+        references webservice_call_input_link_errors (ID);
 
     alter table webservice_call_output_link 
         add constraint FK_6xdyavaobw5ajkh22m3wpl63d 

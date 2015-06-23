@@ -5,20 +5,20 @@ import java.util.Set;
 import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 
 public class DifferentDateUnitForQuestionsReport extends Report {
 
 	private TreeObject element;
-	private Set<Question> questions;
+	private Set<WebformsBaseQuestion> questions;
 
-	public DifferentDateUnitForQuestionsReport(TreeObject element, Set<Question> questions) {
+	public DifferentDateUnitForQuestionsReport(TreeObject element, Set<WebformsBaseQuestion> questions) {
 		super(ReportLevel.ERROR, generateReport(element, questions));
 		this.element = element;
 		this.questions = questions;
 	}
 
-	private static String generateReport(TreeObject element, Set<Question> questions) {
+	private static String generateReport(TreeObject element, Set<WebformsBaseQuestion> questions) {
 		return "Flows that start from '" + element.getPathName() + "' have different time units for questions "
 				+ questions;
 	}
@@ -27,7 +27,7 @@ public class DifferentDateUnitForQuestionsReport extends Report {
 		return element;
 	}
 
-	public Set<Question> getQuestions() {
+	public Set<WebformsBaseQuestion> getQuestions() {
 		return questions;
 	}
 

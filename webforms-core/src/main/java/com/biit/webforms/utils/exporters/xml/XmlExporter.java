@@ -21,6 +21,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.utils.exporters.xml.exceptions.ElementWithoutNextElement;
 import com.biit.webforms.utils.exporters.xml.exceptions.TooMuchIterationsWhileGeneratingPath;
 import com.biit.webforms.utils.math.domain.IDomain;
@@ -82,7 +83,7 @@ public class XmlExporter {
 		for (int i = 0; i < number; i++) {
 			List<Flow> path = generatePath(startNode, questions.size());
 
-			HashMap<Question, String> valuesOfPath = createValueResult(path);
+			HashMap<WebformsBaseQuestion, String> valuesOfPath = createValueResult(path);
 			xmlFiles.add(generateXml(path, valuesOfPath));
 
 			markFlows(path);
@@ -90,7 +91,7 @@ public class XmlExporter {
 		return xmlFiles;
 	}
 
-	private String generateXml(List<Flow> path, HashMap<Question, String> valuesOfPath) {
+	private String generateXml(List<Flow> path, HashMap<WebformsBaseQuestion, String> valuesOfPath) {
 		TreeObject currentElement = null;
 
 		StringBuilder sb = new StringBuilder();
@@ -98,9 +99,10 @@ public class XmlExporter {
 		String xmlBaseAddress = WebformsConfigurationReader.getInstance().getXmlBaseAddress();
 
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		sb.append("<" + form.getLabelWithouthSpaces() + " xmlns=\"" + xmlBaseAddress + "" + form.getLabelWithouthSpaces()
-				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"" + xmlBaseAddress + " schema.xsd"
-				+ form.getLabelWithouthSpaces() + "\">");
+		sb.append("<" + form.getLabelWithouthSpaces() + " xmlns=\"" + xmlBaseAddress + ""
+				+ form.getLabelWithouthSpaces()
+				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"" + xmlBaseAddress
+				+ " schema.xsd" + form.getLabelWithouthSpaces() + "\">");
 		for (Flow flow : path) {
 			if (flow.getOrigin() instanceof Text || flow.getOrigin() instanceof SystemField) {
 				continue;
@@ -108,7 +110,7 @@ public class XmlExporter {
 
 			generateGroupChange(sb, currentElement, flow.getOrigin());
 			currentElement = flow.getOrigin();
-			generateQuestion(sb, (Question) flow.getOrigin(), valuesOfPath);
+			generateQuestion(sb, (WebformsBaseQuestion) flow.getOrigin(), valuesOfPath);
 		}
 		closeGroups(sb, currentElement);
 		sb.append("</" + form.getLabelWithouthSpaces() + ">");
@@ -123,7 +125,8 @@ public class XmlExporter {
 		}
 	}
 
-	private void generateQuestion(StringBuilder sb, Question question, HashMap<Question, String> valuesOfPath) {
+	private void generateQuestion(StringBuilder sb, WebformsBaseQuestion question,
+			HashMap<WebformsBaseQuestion, String> valuesOfPath) {
 		sb.append("<" + question.getName() + ">");
 		if (valuesOfPath.containsKey(question)) {
 			sb.append(valuesOfPath.get(question));
@@ -145,7 +148,7 @@ public class XmlExporter {
 		sb.append("</" + question.getName() + ">");
 	}
 
-	private void generateRandomInput(StringBuilder sb, Question question) {
+	private void generateRandomInput(StringBuilder sb, WebformsBaseQuestion question) {
 		switch (question.getAnswerSubformat()) {
 		case AMOUNT:
 			sb.append(random.nextInt(Integer.MAX_VALUE));
@@ -185,9 +188,9 @@ public class XmlExporter {
 		}
 	}
 
-	private void generateRandomQuestion(StringBuilder sb, Question question) {
-		if (!question.containsDynamicAnswer()) {
-			LinkedHashSet<Answer> finalAnswers = question.getFinalAnswers();
+	private void generateRandomQuestion(StringBuilder sb, WebformsBaseQuestion question) {
+		if (question instanceof Question && !((Question) question).containsDynamicAnswer()) {
+			LinkedHashSet<Answer> finalAnswers = ((Question) question).getFinalAnswers();
 			List<Answer> answers = new ArrayList<>();
 			answers.addAll(finalAnswers);
 
@@ -195,7 +198,7 @@ public class XmlExporter {
 				sb.append(answers.get(random.nextInt(answers.size())).getName());
 			}
 		} else {
-			//If it's a random question with dynamic answers we just use a random text 
+			// If it's a random question with dynamic answers we just use a random text
 			sb.append("dynamic answer");
 		}
 	}
@@ -227,8 +230,8 @@ public class XmlExporter {
 		}
 	}
 
-	private HashMap<Question, String> createValueResult(List<Flow> path) {
-		HashMap<Question, String> randomValues = new HashMap<Question, String>();
+	private HashMap<WebformsBaseQuestion, String> createValueResult(List<Flow> path) {
+		HashMap<WebformsBaseQuestion, String> randomValues = new HashMap<WebformsBaseQuestion, String>();
 		for (Flow flow : path) {
 			if (compiledDomains.get(flow) == null) {
 				// Skip empty domains

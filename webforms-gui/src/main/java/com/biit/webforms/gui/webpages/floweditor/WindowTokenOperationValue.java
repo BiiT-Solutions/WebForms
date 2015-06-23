@@ -12,6 +12,9 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SystemField;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -107,7 +110,8 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 		if (value != null) {
 			rootLayout.removeComponent(value);
 		}
-		if (token == null || !token.getQuestion().getAnswerFormat().equals(AnswerFormat.DATE)
+		if (token == null || !(token.getQuestion() instanceof Question)
+				|| !((Question) token.getQuestion()).getAnswerFormat().equals(AnswerFormat.DATE)
 				|| datePeriodUnit.getValue() != null) {
 			value = new TextField();
 			((TextField) value).setValue("");
@@ -135,14 +139,18 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 	}
 
 	public AnswerSubformat getAnswerSubformat() {
-		if (token.getQuestion().getAnswerFormat() == AnswerFormat.DATE
-				&& token.getQuestion().getAnswerSubformat() != AnswerSubformat.DATE_PERIOD) {
+		if (!(token.getQuestion() instanceof Question)) {
+			return null;
+		}
+
+		if (((Question) token.getQuestion()).getAnswerFormat() == AnswerFormat.DATE
+				&& ((Question) token.getQuestion()).getAnswerSubformat() != AnswerSubformat.DATE_PERIOD) {
 			// Date time or period format
 			if (AnswerSubformat.DATE_PERIOD.getRegex().matcher(value.getValue().toString()).matches()) {
 				return AnswerSubformat.DATE_PERIOD;
 			}
 		}
-		return token.getQuestion().getAnswerSubformat();
+		return ((Question) token.getQuestion()).getAnswerSubformat();
 	}
 
 	public String getValue() {
@@ -177,8 +185,9 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 		treeElementLabel.setValue(token.getQuestion().getName());
 
 		// Set Date period if needed
-		if (token.getQuestion().getAnswerFormat() == AnswerFormat.DATE) {
-			if (token.getQuestion().getAnswerSubformat() == AnswerSubformat.DATE_PERIOD) {
+		if ((token.getQuestion() instanceof Question)
+				&& ((Question) token.getQuestion()).getAnswerFormat() == AnswerFormat.DATE) {
+			if (((Question) token.getQuestion()).getAnswerSubformat() == AnswerSubformat.DATE_PERIOD) {
 				datePeriodUnit.setNullSelectionAllowed(false);
 			} else {
 				datePeriodUnit.setNullSelectionAllowed(true);
@@ -201,11 +210,13 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 			datePeriodUnit.setVisible(false);
 		}
 
-		for (TokenTypes type : token.getQuestion().getAnswerFormat().getValidTokenTypes()) {
+		// Standard questions have IN
+		for (TokenTypes type : ((WebformsBaseQuestion) token.getQuestion()).getAnswerFormat().getValidTokenTypes()) {
 			if (!type.equals(TokenTypes.BETWEEN) && !type.equals(TokenTypes.IN)) {
 				addTokenType(type);
 			}
 		}
+
 		operator.setValue(token.getType());
 
 		updateHintAndValidators();
@@ -226,10 +237,14 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 		updateValueField();
 		value.removeAllValidators();
 		if (value instanceof TextField) {
-			if (datePeriodUnit.getValue() == null) {
-				((TextField) value).setInputPrompt(AnswerSubformatUi.get(token.getQuestion().getAnswerSubformat())
-						.getInputPrompt());
-				value.addValidator(new ValidatorPattern(token.getQuestion().getAnswerSubformat().getRegex()));
+			// System field
+			if ((token.getQuestion() instanceof SystemField)) {
+				((TextField) value).setInputPrompt(AnswerSubformatUi.get(AnswerSubformat.TEXT).getInputPrompt());
+			} else if (datePeriodUnit.getValue() == null) {
+				((TextField) value).setInputPrompt(AnswerSubformatUi.get(
+						((Question) token.getQuestion()).getAnswerSubformat()).getInputPrompt());
+				value.addValidator(new ValidatorPattern(((Question) token.getQuestion()).getAnswerSubformat()
+						.getRegex()));
 			} else {
 				((TextField) value).setInputPrompt(AnswerSubformatUi.get(AnswerSubformat.DATE_PERIOD).getInputPrompt());
 				value.addValidator(new ValidatorPattern(AnswerSubformat.DATE_PERIOD.getRegex()));

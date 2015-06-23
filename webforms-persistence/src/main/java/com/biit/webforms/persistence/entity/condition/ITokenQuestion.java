@@ -1,9 +1,9 @@
 package com.biit.webforms.persistence.entity.condition;
 
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 
 public interface ITokenQuestion {
 
-	public Question getQuestion();
-	
+	public WebformsBaseQuestion getQuestion();
+
 }

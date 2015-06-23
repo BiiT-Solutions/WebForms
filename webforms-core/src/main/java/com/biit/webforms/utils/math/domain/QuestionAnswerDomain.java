@@ -8,17 +8,18 @@ import java.util.Set;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.utils.math.domain.exceptions.DifferentDomainQuestionOperationException;
 import com.biit.webforms.utils.math.domain.exceptions.IncompatibleDomainException;
 
 public class QuestionAnswerDomain implements IDomainQuestion {
 
-	private final Question question;
+	private final WebformsBaseQuestion question;
 	private final DiscreteSet<Answer> completeDomain;
 	private DiscreteSet<Answer> value;
 
-	public QuestionAnswerDomain(Question question) {
+	public QuestionAnswerDomain(WebformsBaseQuestion question) {
 		this.question = question;
 		this.completeDomain = new DiscreteSet<>();
 		this.value = new DiscreteSet<>();
@@ -33,10 +34,12 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 		setValue(tokenQuestionAnswer);
 	}
 
-	private void initializeCompleteDomain(Question question) {
-		LinkedHashSet<Answer> finalAnswers = question.getFinalAnswers();
-		for (Answer finalAnswer : finalAnswers) {
-			completeDomain.add(finalAnswer);
+	private void initializeCompleteDomain(WebformsBaseQuestion question) {
+		if (question instanceof Question) {
+			LinkedHashSet<Answer> finalAnswers = ((Question) question).getFinalAnswers();
+			for (Answer finalAnswer : finalAnswers) {
+				completeDomain.add(finalAnswer);
+			}
 		}
 	}
 
@@ -81,8 +84,7 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	}
 
 	/**
-	 * Returns a QuestionAnswerDomain with the inverse of the current domain
-	 * value.
+	 * Returns a QuestionAnswerDomain with the inverse of the current domain value.
 	 * 
 	 * @return
 	 */
@@ -119,9 +121,8 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	}
 
 	/**
-	 * Joins two QuestionAnswerDomains and returns a new QuestionAnswerDomain
-	 * with the result of the operation. If the domains are not compatible (Not
-	 * the same question) a null value is returned.
+	 * Joins two QuestionAnswerDomains and returns a new QuestionAnswerDomain with the result of the operation. If the
+	 * domains are not compatible (Not the same question) a null value is returned.
 	 * 
 	 * @param domain
 	 * @return
@@ -132,9 +133,9 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	public IDomain union(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {
 			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
-				return unionSameQuestion((QuestionAnswerDomain) domain);				
-			}else{
-				return new DomainSetUnion(this, (IDomainQuestion)domain);
+				return unionSameQuestion((QuestionAnswerDomain) domain);
+			} else {
+				return new DomainSetUnion(this, (IDomainQuestion) domain);
 			}
 		}
 		if (domain instanceof DomainSet) {
@@ -156,21 +157,20 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	}
 
 	/**
-	 * Intersects two QuestionAnswerDomains and returs a new
-	 * QuestionAnswerDomain with the result of the operation. If the domains are
-	 * not compatible (Not the same question) a null value is returned.
+	 * Intersects two QuestionAnswerDomains and returs a new QuestionAnswerDomain with the result of the operation. If
+	 * the domains are not compatible (Not the same question) a null value is returned.
 	 * 
 	 * @param domain
 	 * @return
 	 * @throws DifferentDomainQuestionOperationException
 	 * @throws IncompatibleDomainException
 	 */
-	public IDomain intersect(IDomain domain){
+	public IDomain intersect(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {
 			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
-				return intersectSameQuestion((QuestionAnswerDomain) domain);				
-			}else{
-				return new DomainSetIntersection(this, (IDomainQuestion)domain);
+				return intersectSameQuestion((QuestionAnswerDomain) domain);
+			} else {
+				return new DomainSetIntersection(this, (IDomainQuestion) domain);
 			}
 		}
 		if (domain instanceof DomainSet) {
@@ -178,7 +178,7 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 		}
 		return null;
 	}
-	
+
 	public IDomain intersectSameQuestion(QuestionAnswerDomain domain) {
 		QuestionAnswerDomain newDomain = new QuestionAnswerDomain(question);
 
@@ -190,14 +190,15 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 		return newDomain;
 	}
 
-	public Question getQuestion() {
+	@Override
+	public WebformsBaseQuestion getQuestion() {
 		return question;
 	}
 
 	@Override
-	public HashMap<Question, String> generateRandomValue() {
-		HashMap<Question, String> randomValue = new HashMap<>();
-		if(isEmpty()){
+	public HashMap<WebformsBaseQuestion, String> generateRandomValue() {
+		HashMap<WebformsBaseQuestion, String> randomValue = new HashMap<>();
+		if (isEmpty()) {
 			return randomValue;
 		}
 		randomValue.put(question, value.getRandomElement().toString());

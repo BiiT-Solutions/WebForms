@@ -12,7 +12,7 @@ import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 
 @Entity
@@ -45,7 +45,7 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		return tokenTypes;
 	}
 
-	public void setContent(Question reference, TokenTypes tokenType, AnswerSubformat subformat,
+	public void setContent(WebformsBaseQuestion reference, TokenTypes tokenType, AnswerSubformat subformat,
 			DatePeriodUnit datePeriodUnit, String value) throws NotValidTokenType {
 		setType(tokenType);
 		setQuestion(reference);
@@ -59,8 +59,8 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		setContent(getQuestion(), tokenType, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getToken(TokenTypes tokenType, Question reference, AnswerSubformat subformat,
-			DatePeriodUnit datePeriodUnit, String value) {
+	public static TokenComparationValue getToken(TokenTypes tokenType, WebformsBaseQuestion reference,
+			AnswerSubformat subformat, DatePeriodUnit datePeriodUnit, String value) {
 		try {
 			TokenComparationValue token = new TokenComparationValue();
 			token.setContent(reference, tokenType, subformat, datePeriodUnit, value);
@@ -71,32 +71,32 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		}
 	}
 
-	public static TokenComparationValue getTokenEqual(Question reference, AnswerSubformat subformat,
+	public static TokenComparationValue getTokenEqual(WebformsBaseQuestion reference, AnswerSubformat subformat,
 			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.EQ, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenNotEqual(Question reference, AnswerSubformat subformat,
+	public static TokenComparationValue getTokenNotEqual(WebformsBaseQuestion reference, AnswerSubformat subformat,
 			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.NE, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenLessThan(Question reference, AnswerSubformat subformat,
+	public static TokenComparationValue getTokenLessThan(WebformsBaseQuestion reference, AnswerSubformat subformat,
 			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.LT, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenGreaterThan(Question reference, AnswerSubformat subformat,
+	public static TokenComparationValue getTokenGreaterThan(WebformsBaseQuestion reference, AnswerSubformat subformat,
 			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.GT, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenLessEqual(Question reference, AnswerSubformat subformat,
+	public static TokenComparationValue getTokenLessEqual(WebformsBaseQuestion reference, AnswerSubformat subformat,
 			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.LE, reference, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getTokenGreaterEqual(Question reference, AnswerSubformat subformat,
+	public static TokenComparationValue getTokenGreaterEqual(WebformsBaseQuestion reference, AnswerSubformat subformat,
 			DatePeriodUnit datePeriodUnit, String value) {
 		return getToken(TokenTypes.GE, reference, subformat, datePeriodUnit, value);
 	}
@@ -132,7 +132,7 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 	@Override
 	public String getExpressionSimplifierRepresentation() {
 		String referenceString = null;
-		if (getQuestion()  != null) {
+		if (getQuestion() != null) {
 			referenceString = getQuestion().getPathName().replaceAll("[^A-Za-z0-9_./]", "_");
 		}
 		return referenceString + getType().getExpressionSimplifierRepresentation() + value;
@@ -141,8 +141,8 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 	@Override
 	public String getExpressionEditorRepresentation() {
 		String referenceString = null;
-		if (getQuestion()  != null) {
-			referenceString = getQuestion() .getPathName();
+		if (getQuestion() != null) {
+			referenceString = getQuestion().getPathName();
 		}
 		return referenceString + getType().getExpressionEditorRepresentation() + value;
 	}

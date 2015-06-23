@@ -21,7 +21,7 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 
 @Entity
@@ -73,7 +73,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
-		setQuestion((Question) mappedElements.get(getQuestion().getOriginalReference()));
+		setQuestion((WebformsBaseQuestion) mappedElements.get(getQuestion().getOriginalReference()));
 		for (TokenInValue value : values) {
 			if (value.getAnswerValue() != null) {
 				value.setAnswerValue((Answer) mappedElements.get(value.getAnswerValue().getOriginalReference()));
@@ -81,7 +81,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 		}
 	}
 
-	public static Token getTokenIn(Question question, Answer... answers) {
+	public static Token getTokenIn(WebformsBaseQuestion question, Answer... answers) {
 		try {
 			TokenIn token = new TokenIn();
 			token.setType(TokenTypes.IN);

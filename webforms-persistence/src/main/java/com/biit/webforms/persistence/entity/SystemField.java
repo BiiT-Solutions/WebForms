@@ -9,6 +9,9 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.logger.WebformsLogger;
 
 @Entity
@@ -48,10 +51,11 @@ public class SystemField extends WebformsBaseQuestion {
 
 	public int exportToJavaCode(StringBuilder sb, int counter) {
 		String idName = "el_" + counter;
-		
+
 		sb.append("SystemField ").append(idName).append("  = new SystemField();").append(System.lineSeparator());
 		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
-		sb.append(idName).append(".setFieldName(\"").append(this.getFieldName()).append("\");").append(System.lineSeparator());
+		sb.append(idName).append(".setFieldName(\"").append(this.getFieldName()).append("\");")
+				.append(System.lineSeparator());
 
 		return counter;
 	}
@@ -64,14 +68,34 @@ public class SystemField extends WebformsBaseQuestion {
 	 */
 	public boolean isContentEqual(TreeObject treeObject) {
 		if (treeObject instanceof SystemField) {
-			if(super.isContentEqual(treeObject)){
+			if (super.isContentEqual(treeObject)) {
 				SystemField question = (SystemField) treeObject;
-				if(this.getFieldName()!=null && !this.getFieldName().equals(question.getFieldName())){
+				if (this.getFieldName() != null && !this.getFieldName().equals(question.getFieldName())) {
 					return false;
 				}
 				return true;
 			}
 		}
+		return false;
+	}
+
+	@Override
+	public AnswerFormat getAnswerFormat() {
+		return AnswerFormat.TEXT;
+	}
+
+	@Override
+	public AnswerSubformat getAnswerSubformat() {
+		return null;
+	}
+
+	@Override
+	public AnswerType getAnswerType() {
+		return AnswerType.INPUT;
+	}
+
+	@Override
+	public boolean isMandatory() {
 		return false;
 	}
 }

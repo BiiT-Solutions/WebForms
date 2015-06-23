@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 
 public abstract class DomainSet implements IDomain {
 
 	protected static Random random = new Random();
-	protected final HashMap<Question, IDomainQuestion> domainQuestions;
+	protected final HashMap<WebformsBaseQuestion, IDomainQuestion> domainQuestions;
 	protected final HashSet<DomainSet> domainSets;
 
 	public DomainSet() {
@@ -21,7 +21,7 @@ public abstract class DomainSet implements IDomain {
 		domainSets = new HashSet<>();
 	}
 
-	public DomainSet(HashMap<Question, IDomainQuestion> domainQuestions, HashSet<DomainSet> domainSets) {
+	public DomainSet(HashMap<WebformsBaseQuestion, IDomainQuestion> domainQuestions, HashSet<DomainSet> domainSets) {
 		this.domainQuestions = domainQuestions;
 		this.domainSets = domainSets;
 	}
@@ -65,8 +65,8 @@ public abstract class DomainSet implements IDomain {
 		return domainSets;
 	}
 
-	protected HashMap<Question, IDomainQuestion> getInverseDomainQuestions() {
-		HashMap<Question, IDomainQuestion> inverseDomainQuestions = new HashMap<>();
+	protected HashMap<WebformsBaseQuestion, IDomainQuestion> getInverseDomainQuestions() {
+		HashMap<WebformsBaseQuestion, IDomainQuestion> inverseDomainQuestions = new HashMap<>();
 		for (IDomainQuestion domain : domainQuestions.values()) {
 			inverseDomainQuestions.put(domain.getQuestion(), (IDomainQuestion) domain.inverse());
 		}
@@ -139,8 +139,8 @@ public abstract class DomainSet implements IDomain {
 
 	protected static DomainSet intersection(DomainSetIntersection domainA, DomainSetUnion domainB) {
 		List<IDomain> unionDomain = new ArrayList<IDomain>();
-		
-		for(IDomain iDomain: domainB.getDomains()){
+
+		for (IDomain iDomain : domainB.getDomains()) {
 			unionDomain.add(domainA.intersect(iDomain));
 		}
 		return new DomainSetIntersection(unionDomain);
@@ -148,9 +148,9 @@ public abstract class DomainSet implements IDomain {
 
 	protected static DomainSet intersection(DomainSetUnion domainA, DomainSetUnion domainB) {
 		List<IDomain> unionDomain = new ArrayList<IDomain>();
-		
-		for(IDomain iDomain: domainA.getDomains()){
-			for(IDomain jDomain: domainB.getDomains()){
+
+		for (IDomain iDomain : domainA.getDomains()) {
+			for (IDomain jDomain : domainB.getDomains()) {
 				unionDomain.add(iDomain.intersect(jDomain));
 			}
 		}
@@ -173,19 +173,19 @@ public abstract class DomainSet implements IDomain {
 
 	protected static DomainSet union(DomainSetUnion domainA, IDomainQuestion domainB) {
 		DomainSetUnion union = new DomainSetUnion(domainA.getDomains());
-		
-		if(!domainA.contains(domainB.getQuestion())){
-			//DomainA didn't contain domainB question, so put it inside.
+
+		if (!domainA.contains(domainB.getQuestion())) {
+			// DomainA didn't contain domainB question, so put it inside.
 			union.add(domainB);
-		}else{
-//			union.add(union.getDomainQuestion(domainB.getQuestion()).union(domainB));
-//			//Recheck before monday.
-			//DomainA contained the same question
-			if(union.getDomainQuestion(domainB.getQuestion())!=null){
-				//The union has the domain add the union of both.
+		} else {
+			// union.add(union.getDomainQuestion(domainB.getQuestion()).union(domainB));
+			// //Recheck before monday.
+			// DomainA contained the same question
+			if (union.getDomainQuestion(domainB.getQuestion()) != null) {
+				// The union has the domain add the union of both.
 				union.add(union.getDomainQuestion(domainB.getQuestion()).union(domainB));
-			}else{
-				//The union has the domain inside of another group, just add it as an or
+			} else {
+				// The union has the domain inside of another group, just add it as an or
 				union.add(domainB);
 			}
 		}
@@ -204,9 +204,9 @@ public abstract class DomainSet implements IDomain {
 
 	protected static DomainSet union(DomainSetIntersection domainA, DomainSetIntersection domainB) {
 		List<IDomain> unionDomain = new ArrayList<IDomain>();
-		
-		for(IDomain iDomain: domainA.getDomains()){
-			for(IDomain jDomain: domainB.getDomains()){
+
+		for (IDomain iDomain : domainA.getDomains()) {
+			for (IDomain jDomain : domainB.getDomains()) {
 				unionDomain.add(iDomain.union(jDomain));
 			}
 		}
@@ -219,14 +219,14 @@ public abstract class DomainSet implements IDomain {
 
 	protected static DomainSet union(DomainSetUnion domainA, DomainSetUnion domainB) {
 		IDomain unionDomain = domainA;
-		for(IDomain domain: domainB.getDomains()){
+		for (IDomain domain : domainB.getDomains()) {
 			unionDomain = unionDomain.union(domain);
 		}
-		
-		return (DomainSet)unionDomain;
+
+		return (DomainSet) unionDomain;
 	}
 
-	protected boolean contains(Question question) {
+	protected boolean contains(WebformsBaseQuestion question) {
 		if (domainQuestions.containsKey(question)) {
 			return true;
 		} else {
@@ -238,8 +238,8 @@ public abstract class DomainSet implements IDomain {
 			return false;
 		}
 	}
-	
-	protected IDomainQuestion getDomainQuestion(Question question){
+
+	protected IDomainQuestion getDomainQuestion(WebformsBaseQuestion question) {
 		return domainQuestions.get(question);
 	}
 }

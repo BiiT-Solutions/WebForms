@@ -11,7 +11,7 @@ import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -40,7 +40,7 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 
 	private VerticalLayout rootLayout;
 
-	private Question question;
+	private WebformsBaseQuestion question;
 	private Label questionLabel;
 	private ComboBox datePeriod;
 	private AbstractField<?> valueStart;
@@ -146,12 +146,12 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 		return value;
 	}
 
-	public void setQuestion(Question question) {
+	public void setQuestion(WebformsBaseQuestion question) {
 		this.question = question;
 		updateQuestion();
 	}
 
-	public void setQuestion(Question question, DatePeriodUnit datePeriod, Object value) {
+	public void setQuestion(WebformsBaseQuestion question, DatePeriodUnit datePeriod, Object value) {
 		setQuestion(question);
 		this.datePeriod.setValue(datePeriod);
 		if (valueStart instanceof TextField) {
@@ -249,7 +249,7 @@ public class WindowTokenBetween extends WindowAcceptCancel {
 		return valueStart.isValid() && valueEnd.isValid();
 	}
 
-	public Question getQuestion() {
+	public WebformsBaseQuestion getQuestion() {
 		return question;
 	}
 

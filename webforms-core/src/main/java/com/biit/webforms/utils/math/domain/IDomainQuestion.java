@@ -1,9 +1,9 @@
 package com.biit.webforms.utils.math.domain;
 
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 
-public interface IDomainQuestion extends IDomain{
+public interface IDomainQuestion extends IDomain {
 
-	public Question getQuestion();
-	
+	public WebformsBaseQuestion getQuestion();
+
 }

@@ -2,7 +2,7 @@ package com.biit.webforms.utils.math.domain.range;
 
 import java.util.HashMap;
 
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.utils.math.domain.DomainSet;
 import com.biit.webforms.utils.math.domain.DomainSetIntersection;
@@ -13,16 +13,16 @@ import com.biit.webforms.utils.math.domain.ParseValueUtils;
 
 public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQuestion {
 
-	private final Question question;
+	private final WebformsBaseQuestion question;
 	private final RealLimitPair<T> completeDomain;
 	private final RealRange<T> value;
 
-	public QuestionValueDomain(Question question, RealLimitPair<T> completeDomain, RealRange<T> value) {
+	public QuestionValueDomain(WebformsBaseQuestion question, RealLimitPair<T> completeDomain, RealRange<T> value) {
 		this.question = question;
 		this.completeDomain = completeDomain;
 		this.value = value;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -35,7 +35,7 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 	}
 
 	@Override
-	public Question getQuestion() {
+	public WebformsBaseQuestion getQuestion() {
 		return question;
 	}
 
@@ -61,7 +61,8 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 	public IDomain intersect(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {
 			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
-				return new QuestionValueDomain<T>(question, completeDomain, this.value.intersection(((QuestionValueDomain<T>) domain).value));
+				return new QuestionValueDomain<T>(question, completeDomain,
+						this.value.intersection(((QuestionValueDomain<T>) domain).value));
 			} else {
 				return new DomainSetIntersection(this, (IDomainQuestion) domain);
 			}
@@ -91,7 +92,7 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 		Float floatValue = null;
 		Integer intValue = null;
 		Long longValue = null;
-		
+
 		switch (token.getSubformat()) {
 		case FLOAT:
 			floatValue = Float.parseFloat(token.getValue());
@@ -108,51 +109,52 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 		case NUMBER:
 			intValue = Integer.parseInt(token.getValue());
 			return generateIntQuestionValueDomain(token, intValue);
-		 case BSN:
-		 case EMAIL:
-		 case IBAN:
-		 case PHONE:
-		 case TEXT:
-			 return generateRangedTextDomain(token, token.getValue());
+		case BSN:
+		case EMAIL:
+		case IBAN:
+		case PHONE:
+		case TEXT:
+			return generateRangedTextDomain(token, token.getValue());
 		default:
 			return null;
 		}
 	}
-	
+
 	private static QuestionValueDomain<RangedText> generateRangedTextDomain(TokenComparationValue token, String value) {
 		RealRange<RangedText> generator = new RealStringRange();
-		return new QuestionValueDomain<RangedText>(token.getQuestion(), generator.domain(),
-				generator.generateValue(token.getType(),new RangedText(value)));
+		return new QuestionValueDomain<RangedText>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), new RangedText(value)));
 	}
 
-	private static QuestionValueDomain<PostalCode> generatePostalCodeQuestionValueDomain(TokenComparationValue token, String value) {
+	private static QuestionValueDomain<PostalCode> generatePostalCodeQuestionValueDomain(TokenComparationValue token,
+			String value) {
 		RealRange<PostalCode> generator = new RealRangePostalCode();
-		return new QuestionValueDomain<PostalCode>(token.getQuestion(), generator.domain(),
-				generator.generateValue(token.getType(),new PostalCode(value)));
+		return new QuestionValueDomain<PostalCode>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), new PostalCode(value)));
 	}
 
-	public static QuestionValueDomain<Float> generateFloatQuestionValueDomain(TokenComparationValue token, Float value){
+	public static QuestionValueDomain<Float> generateFloatQuestionValueDomain(TokenComparationValue token, Float value) {
 		RealRange<Float> generator = new RealRangeFloat();
-		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(),
-				generator.generateValue(token.getType(),value));
+		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), value));
 	}
-	
-	public static QuestionValueDomain<Long> generateLongQuestionValueDomain(TokenComparationValue token, Long value){
+
+	public static QuestionValueDomain<Long> generateLongQuestionValueDomain(TokenComparationValue token, Long value) {
 		RealRange<Long> generator = new RealRangeLong();
-		return new QuestionValueDomain<Long>(token.getQuestion(), generator.domain(),
-				generator.generateValue(token.getType(),value));
+		return new QuestionValueDomain<Long>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), value));
 	}
-	
-	public static QuestionValueDomain<Integer> generateIntQuestionValueDomain(TokenComparationValue token, Integer value){
+
+	public static QuestionValueDomain<Integer> generateIntQuestionValueDomain(TokenComparationValue token, Integer value) {
 		RealRange<Integer> generator = new RealRangeInteger();
-		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(),
-				generator.generateValue(token.getType(),value));
+		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), value));
 	}
 
 	@Override
-	public HashMap<Question, String> generateRandomValue() {
-		HashMap<Question, String> randomValue = new HashMap<>();
-		randomValue.put(question,value.generateRandomValue().toString());
+	public HashMap<WebformsBaseQuestion, String> generateRandomValue() {
+		HashMap<WebformsBaseQuestion, String> randomValue = new HashMap<>();
+		randomValue.put(question, value.generateRandomValue().toString());
 		return randomValue;
 	}
 }

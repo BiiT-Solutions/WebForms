@@ -13,7 +13,7 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 
 @Entity
@@ -39,7 +39,8 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 		return tokenTypes;
 	}
 
-	public void setContent(Question reference, TokenTypes tokenType, Answer answer) throws NotValidTokenType {
+	public void setContent(WebformsBaseQuestion reference, TokenTypes tokenType, Answer answer)
+			throws NotValidTokenType {
 		setQuestion(reference);
 		setType(tokenType);
 		this.answer = answer;
@@ -49,7 +50,7 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 		setContent(getQuestion(), tokenType, answer);
 	}
 
-	public static TokenComparationAnswer getToken(Question question, TokenTypes tokenType, Answer answer) {
+	public static TokenComparationAnswer getToken(WebformsBaseQuestion question, TokenTypes tokenType, Answer answer) {
 		try {
 			TokenComparationAnswer token = new TokenComparationAnswer();
 			token.setContent(question, tokenType, answer);
@@ -60,11 +61,11 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 		}
 	}
 
-	public static TokenComparationAnswer getTokenEqual(Question question, Answer answer) {
+	public static TokenComparationAnswer getTokenEqual(WebformsBaseQuestion question, Answer answer) {
 		return getToken(question, TokenTypes.EQ, answer);
 	}
 
-	public static TokenComparationAnswer getTokenNotEqual(Question question, Answer answer) {
+	public static TokenComparationAnswer getTokenNotEqual(WebformsBaseQuestion question, Answer answer) {
 		return getToken(question, TokenTypes.NE, answer);
 	}
 
@@ -100,7 +101,7 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 	@Override
 	public void updateReferences(HashMap<String, TreeObject> mappedElements) {
 		if (getQuestion() != null) {
-			setQuestion((Question) mappedElements.get(getQuestion().getOriginalReference()));
+			setQuestion((WebformsBaseQuestion) mappedElements.get(getQuestion().getOriginalReference()));
 			if (answer != null) {
 				answer = (Answer) mappedElements.get(answer.getOriginalReference());
 			}

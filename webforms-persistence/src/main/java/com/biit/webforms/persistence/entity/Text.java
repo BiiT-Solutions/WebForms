@@ -12,6 +12,9 @@ import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerType;
 
 @Entity
 @Table(name = "tree_texts")
@@ -100,6 +103,26 @@ public class Text extends WebformsBaseQuestion {
 				return true;
 			}
 		}
+		return false;
+	}
+
+	@Override
+	public AnswerFormat getAnswerFormat() {
+		return null;
+	}
+
+	@Override
+	public AnswerSubformat getAnswerSubformat() {
+		return null;
+	}
+
+	@Override
+	public AnswerType getAnswerType() {
+		return null;
+	}
+
+	@Override
+	public boolean isMandatory() {
 		return false;
 	}
 }

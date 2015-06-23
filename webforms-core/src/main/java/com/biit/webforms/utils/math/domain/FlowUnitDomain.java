@@ -14,7 +14,7 @@ import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.flow.FormWalker;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.utils.math.domain.exceptions.BadFormedExpressions;
@@ -58,14 +58,14 @@ public class FlowUnitDomain {
 
 	private void checkSameDateUnitForQuestion(Set<Flow> flows)
 			throws DifferentDateUnitForQuestions {
-		HashMap<Question, AnswerSubformat> questionDateUnit = new HashMap<>();
-		Set<Question> questionsAffected = new HashSet<>();
+		HashMap<WebformsBaseQuestion, AnswerSubformat> questionDateUnit = new HashMap<>();
+		Set<WebformsBaseQuestion> questionsAffected = new HashSet<>();
 		for (Flow flow : flows) {
 			List<Token> tokens = flow.getConditionSimpleTokens();
 			for (Token token : tokens) {
 				if (token instanceof TokenComparationValue) {
 					TokenComparationValue tokenValue = (TokenComparationValue) token;
-					Question question = tokenValue.getQuestion();
+					WebformsBaseQuestion question = tokenValue.getQuestion();
 					if (question.getAnswerFormat() != null
 							&& question.getAnswerFormat() == AnswerFormat.DATE) {
 						if (!questionDateUnit.containsKey(question)) {
