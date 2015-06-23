@@ -115,7 +115,7 @@ public class WebserviceCallEditor extends SecuredWebPage {
 
 	private void updateWebserviceCallConfigComponent(){
 		webserviceCallComponent.setValue((WebserviceCall)webserviceCallTable.getValue());
-		webserviceCallComponent.setEnabled((WebserviceCall)webserviceCallTable.getValue()!=null);
+		webserviceCallComponent.setEnabled((WebserviceCall)webserviceCallTable.getValue()!=null && !((WebserviceCall)webserviceCallTable.getValue()).isReadOnly());
 		if (UserSessionHandler.getController().getFormInUse() != null
 				&& !WebformsAuthorizationService.getInstance().isFormEditable(
 						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {

@@ -603,14 +603,23 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				// Add linked block children
 				if (child instanceof BlockReference) {
 					calls.addAll(((BlockReference) child).getReference().getWebserviceCalls());
+					for(WebserviceCall call: ((BlockReference) child).getReference().getWebserviceCalls()){
+						call.setReadOnly(true);
+					}
 				}
 			}
 			if (form.getFormReference() != null) {
 				calls.addAll(form.getFormReference().getWebserviceCalls());
+				for(WebserviceCall call: form.getFormReference().getWebserviceCalls()){
+					call.setReadOnly(true);
+				}
 				for (TreeObject child : form.getFormReference().getChildren()) {
 					// Add linked block children
 					if (child instanceof BlockReference) {
 						calls.addAll(((BlockReference) child).getReference().getWebserviceCalls());
+						for(WebserviceCall call: ((BlockReference) child).getReference().getWebserviceCalls()){
+							call.setReadOnly(true);
+						}
 					}
 				}
 			}

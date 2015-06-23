@@ -41,6 +41,8 @@ public class WebserviceCall extends StorableObject {
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true, mappedBy="webserviceCall")
 	private Set<WebserviceCallOutputLink> outputLinks;
 	
+	private transient boolean readOnly;
+	
 	public WebserviceCall() {
 		super();
 		inputLinks = new HashSet<>();
@@ -166,5 +168,13 @@ public class WebserviceCall extends StorableObject {
 		for(WebserviceCallLink link: getOutputLinks()){
 			link.resetIds();
 		}
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+	
+	public void setReadOnly(boolean value){
+		readOnly = value;
 	}
 }
