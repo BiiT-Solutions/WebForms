@@ -622,7 +622,9 @@ public enum LanguageCodes implements ILanguageCode {
 	WEBSERVICE_CALL_INPUT_NULL("webservice.call.input.null"), 
 	WEBSERVICE_CALL_OUTPUT_AFTER_TRIGGER("webservice.call.output.after.trigger"), 
 	WEBSERVICE_CALL_REFERENCES_UNEXISTING_WEBSERVICE("webservice.call.references.unexisting.webservice"),
-	WEBSERVICE_CALL_TRIGGER_NULL("webservice.call.trigger.null"),
+	WEBSERVICE_CALL_TRIGGER_NULL("webservice.call.trigger.null"), 
+	
+	ERROR_TREE_OBJECT_WEBSERVICE_CALL_DEPENDENCY("error.tree.object.webservice.call.dependency"),
 	
 	;
 

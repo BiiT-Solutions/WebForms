@@ -2,6 +2,7 @@ package com.biit.webforms.persistence.entity.webservices;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,13 +18,14 @@ import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.webservices.Webservice;
 
 @Entity
 @Table(name = "webservice_call")
 public class WebserviceCall extends StorableObject {
 	private static final long serialVersionUID = -8130775804790464077L;
-	
+
 	@ManyToOne(optional = false)
 	private Form form;
 
@@ -31,32 +33,32 @@ public class WebserviceCall extends StorableObject {
 	private String name;
 
 	private String webserviceName;
-	
+
 	@ManyToOne(optional = true)
 	private Question formElementTrigger;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true, mappedBy="webserviceCall")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "webserviceCall")
 	private Set<WebserviceCallInputLink> inputLinks;
-	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true, mappedBy="webserviceCall")
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "webserviceCall")
 	private Set<WebserviceCallOutputLink> outputLinks;
-	
+
 	private transient boolean readOnly;
-	
+
 	public WebserviceCall() {
 		super();
 		inputLinks = new HashSet<>();
 		outputLinks = new HashSet<>();
 	}
-	
-	public WebserviceCall(String name, Webservice webservice){
+
+	public WebserviceCall(String name, Webservice webservice) {
 		super();
 		setName(name);
 		setWebserviceName(webservice.getName());
 		inputLinks = new HashSet<>();
 		outputLinks = new HashSet<>();
 	}
-	
+
 	@Override
 	public Set<StorableObject> getAllInnerStorableObjects() {
 		return new HashSet<StorableObject>();
@@ -64,24 +66,25 @@ public class WebserviceCall extends StorableObject {
 
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		if(object instanceof WebserviceCall){
+		if (object instanceof WebserviceCall) {
 			copyBasicInfo(object);
 			WebserviceCall call = (WebserviceCall) object;
 			setName(call.getName());
 			setWebserviceName(call.getWebserviceName());
 			setFormElementTrigger(call.getFormElementTrigger());
-			copyLinkData(inputLinks,call.getInputLinks());
-			copyLinkData(outputLinks,call.getOutputLinks());
-		}else{
-			throw new NotValidStorableObjectException("Element of class '"+object.getClass().getName()+"' is not compatible with '"+WebserviceCall.class.getName()+"'");
+			copyLinkData(inputLinks, call.getInputLinks());
+			copyLinkData(outputLinks, call.getOutputLinks());
+		} else {
+			throw new NotValidStorableObjectException("Element of class '" + object.getClass().getName() + "' is not compatible with '"
+					+ WebserviceCall.class.getName() + "'");
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private <T extends WebserviceCallLink> void copyLinkData(Set<T> destiny, Set<T> source) throws NotValidStorableObjectException{
+	private <T extends WebserviceCallLink> void copyLinkData(Set<T> destiny, Set<T> source) throws NotValidStorableObjectException {
 		destiny.clear();
-		for(WebserviceCallLink link: source){
-			T temp = (T)link.generateCopy();
+		for (WebserviceCallLink link : source) {
+			T temp = (T) link.generateCopy();
 			destiny.add(temp);
 			temp.setWebserviceCall(this);
 		}
@@ -126,7 +129,7 @@ public class WebserviceCall extends StorableObject {
 	public void setForm(Form form) {
 		this.form = form;
 	}
-	
+
 	public Question getFormElementTrigger() {
 		return formElementTrigger;
 	}
@@ -146,26 +149,26 @@ public class WebserviceCall extends StorableObject {
 	}
 
 	public void updateReferences(HashMap<String, BaseQuestion> references) {
-		if(getFormElementTrigger()!=null){
+		if (getFormElementTrigger() != null) {
 			setFormElementTrigger((Question) references.get(getFormElementTrigger().getComparationId()));
 		}
-		for(WebserviceCallLink link: getInputLinks()){
+		for (WebserviceCallLink link : getInputLinks()) {
 			link.updateReferences(references);
 		}
-		for(WebserviceCallLink link: getOutputLinks()){
+		for (WebserviceCallLink link : getOutputLinks()) {
 			link.updateReferences(references);
 		}
 	}
-	
+
 	/**
 	 * Reset 'id' and 'comparationId'
 	 */
 	public void resetIds() {
 		super.resetIds();
-		for(WebserviceCallLink link: getInputLinks()){
+		for (WebserviceCallLink link : getInputLinks()) {
 			link.resetIds();
 		}
-		for(WebserviceCallLink link: getOutputLinks()){
+		for (WebserviceCallLink link : getOutputLinks()) {
 			link.resetIds();
 		}
 	}
@@ -173,8 +176,27 @@ public class WebserviceCall extends StorableObject {
 	public boolean isReadOnly() {
 		return readOnly;
 	}
-	
-	public void setReadOnly(boolean value){
+
+	public void setReadOnly(boolean value) {
 		readOnly = value;
+	}
+
+	public boolean isUsing(WebformsBaseQuestion question) {
+		if (Objects.equals(getFormElementTrigger(), question)) {
+			return true;
+		}
+
+		for (WebserviceCallLink link : getInputLinks()) {
+			if (Objects.equals(link.getFormElement(), question)) {
+				return true;
+			}
+		}
+
+		for (WebserviceCallLink link : getOutputLinks()) {
+			if (Objects.equals(link.getFormElement(), question)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

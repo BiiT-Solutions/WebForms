@@ -9,6 +9,8 @@ import com.biit.form.exceptions.DependencyExistException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
 import com.biit.webforms.persistence.entity.exceptions.FlowDependencyExistException;
+import com.biit.webforms.persistence.entity.exceptions.WebserviceDependencyExistException;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 
 public abstract class WebformsBaseQuestion extends BaseQuestion {
 	private static final long serialVersionUID = 5749191470931873398L;
@@ -22,7 +24,7 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
 	}
 
 	@Override
-	public void checkDependencies() throws DependencyExistException, DependencyDynamicAnswerExistException, FlowDependencyExistException {
+	public void checkDependencies() throws DependencyExistException, DependencyDynamicAnswerExistException, FlowDependencyExistException, WebserviceDependencyExistException {
 		Form form = (Form) this.getAncestor(Form.class);
 		if (form == null) {
 			return;
@@ -38,6 +40,12 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
 		for (Flow flow : form.getFlows()) {
 			if (flow.isDependent(this)) {
 				throw new FlowDependencyExistException("Flow '" + flow + "' depends of element '" + this + "'");
+			}
+		}
+		
+		for (WebserviceCall call: form.getWebserviceCalls()){
+			if(call.isUsing(this)){
+				throw new WebserviceDependencyExistException("Webservice call '" + call.getName() + "' depends of element '" + this + "'");
 			}
 		}
 	}

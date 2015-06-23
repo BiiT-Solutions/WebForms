@@ -61,6 +61,7 @@ import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
+import com.biit.webforms.persistence.entity.exceptions.WebserviceDependencyExistException;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.vaadin.data.Property.ReadOnlyException;
@@ -403,7 +404,9 @@ public class Designer extends SecuredWebPage {
 									MessageManager.showError(LanguageCodes.ERROR_DYNAMIC_ANSWER_DEPENDENCY);
 								} else if (e instanceof DependencyExistException) {
 									MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
-								} else {
+								} else if (e instanceof WebserviceDependencyExistException) {
+									MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_WEBSERVICE_CALL_DEPENDENCY);
+								} else{
 									MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 									WebformsLogger.errorMessage(this.getClass().getName(), e);
 								}
