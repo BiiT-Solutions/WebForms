@@ -65,6 +65,13 @@ import com.biit.webforms.validators.reports.OthersUnicityBrokenAt;
 import com.biit.webforms.validators.reports.QuestionNotFound;
 import com.biit.webforms.validators.reports.RedundantLogicReport;
 import com.biit.webforms.validators.reports.TokenUsesNonFinalAnswer;
+import com.biit.webforms.validators.reports.WebserviceCallCorruption;
+import com.biit.webforms.validators.reports.WebserviceCallIncompatibleField;
+import com.biit.webforms.validators.reports.WebserviceCallInputAfterTrigger;
+import com.biit.webforms.validators.reports.WebserviceCallInputNull;
+import com.biit.webforms.validators.reports.WebserviceCallOutputAfterTrigger;
+import com.biit.webforms.validators.reports.WebserviceCallReferencesUnexistingWebservice;
+import com.biit.webforms.validators.reports.WebserviceCallTriggerNull;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.TextArea;
@@ -263,7 +270,7 @@ public class Validation extends SecuredWebPage {
 	}
 
 	private void completeValidation() {
-		ValidateFormComplete validator = new ValidateFormComplete();
+		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController().getAllWebservices());
 		ValidateReport report = new ValidateReport();
 		validator.validate(UserSessionHandler.getController().getCompleteFormView(), report);
 
@@ -465,6 +472,20 @@ public class Validation extends SecuredWebPage {
 			} else if (report instanceof FlowConditionIsUseless){
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_CONDITION_IS_USELESS,
 						new Object[] { ((FlowConditionIsUseless) report).getFlow(),  ((FlowConditionIsUseless) report).getCondition()}));
+			} else if (report instanceof WebserviceCallCorruption){
+				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_CORRUPTION,	new Object[] { ((WebserviceCallCorruption) report).getCall().getName() }));
+			} else if (report instanceof WebserviceCallIncompatibleField){
+				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_INCOMPATIBLE_FIELD,	new Object[] { ((WebserviceCallIncompatibleField) report).getLink().getWebservicePort() , ((WebserviceCallIncompatibleField) report).getCall().getName() }));
+			} else if (report instanceof WebserviceCallInputAfterTrigger){
+				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_INPUT_AFTER_TRIGGER, new Object[] { ((WebserviceCallInputAfterTrigger) report).getLink().getWebservicePort() , ((WebserviceCallInputAfterTrigger) report).getCall().getName() }));
+			} else if (report instanceof WebserviceCallInputNull){
+				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_INPUT_NULL, new Object[] { ((WebserviceCallInputNull) report).getLink().getWebservicePort() , ((WebserviceCallInputNull) report).getCall().getName() }));
+			} else if (report instanceof WebserviceCallOutputAfterTrigger){
+				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_OUTPUT_AFTER_TRIGGER, new Object[] { ((WebserviceCallOutputAfterTrigger) report).getLink().getWebservicePort() , ((WebserviceCallOutputAfterTrigger) report).getCall().getName() }));
+			} else if (report instanceof WebserviceCallReferencesUnexistingWebservice){
+				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_REFERENCES_UNEXISTING_WEBSERVICE, new Object[] { ((WebserviceCallReferencesUnexistingWebservice) report).getCall().getName() , ((WebserviceCallReferencesUnexistingWebservice) report).getCall().getWebserviceName() }));
+			} else if (report instanceof WebserviceCallTriggerNull){
+				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_TRIGGER_NULL, new Object[] { ((WebserviceCallTriggerNull) report).getCall().getName() }));
 			} else {
 				text.append(report.getReport());
 			}

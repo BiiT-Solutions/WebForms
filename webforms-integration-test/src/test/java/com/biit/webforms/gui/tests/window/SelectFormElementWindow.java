@@ -66,4 +66,9 @@ public class SelectFormElementWindow extends GenericAcceptCancelWindow {
 	protected String getWindowId() {
 		return CLASS_NAME;
 	}
+
+	public void selectFormElement(int formElement) {
+		getTreeTable().getCell(formElement, 0).click();
+		clickAccept();
+	}
 }

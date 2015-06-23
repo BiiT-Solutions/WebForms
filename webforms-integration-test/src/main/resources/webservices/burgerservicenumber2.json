@@ -1,0 +1,45 @@
+{
+  "name": "validate_bsn2",
+  "description": "ipsum lorem... second test",
+  "protocol": "https",
+  "host": "localhost",
+  "port": "8081",
+  "path": "rest/checkBsn",
+  "inputPorts": [
+    {
+      "validationXpath": "/validation",
+      "errorCodes": [
+        "NOT_FOUND",
+        "INVALID_BSN",
+        "VALID_3",
+        "VALID_4",
+        "VALID_5",
+        "VALID_7",
+        "VALID_8"
+      ],
+      "name": "bsn",
+      "xpath": "/bsn",
+      "validationXpath": "/valid",
+      "type": "INPUT",
+      "format": "TEXT",
+      "subformat": "BSN"
+    }
+  ],
+  "outputPorts": [
+    {
+      "name": "adress",
+      "xpath": "/adress",
+      "type": "SINGLE_SELECTION_RADIO"
+    },
+    {
+      "name": "name",
+      "xpath": "/name",
+      "type": "SINGLE_SELECTION_LIST"
+    },
+    {
+      "name": "surname",
+      "xpath": "/surname",
+      "type": "MULTIPLE_SELECTION"
+    }
+  ]
+}

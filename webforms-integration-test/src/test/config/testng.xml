@@ -13,6 +13,7 @@
 				<include name="validation" />
 				<include name="linkedBlocks" />
 				<include name="linkedForms" />
+				<include name="webservices" />
 			</run>
 		</groups>
 		<classes>
@@ -26,6 +27,7 @@
 			<class name="com.biit.webforms.gui.tests.ValidationTests" />
 			<class name="com.biit.webforms.gui.tests.LinkBlockTests" />
 			<class name="com.biit.webforms.gui.tests.LinkFormTests" />
+			<class name="com.biit.webforms.gui.tests.WebservicesTests" />
 		</classes>
 	</test>
 </suite>

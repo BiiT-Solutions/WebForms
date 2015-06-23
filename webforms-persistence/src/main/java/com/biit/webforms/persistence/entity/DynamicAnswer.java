@@ -50,7 +50,6 @@ public class DynamicAnswer extends BaseAnswer implements FlowConditionScript{
 
 	@Override
 	public String getScriptRepresentation() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

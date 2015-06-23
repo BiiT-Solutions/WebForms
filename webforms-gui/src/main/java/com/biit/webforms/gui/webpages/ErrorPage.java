@@ -60,7 +60,6 @@ public class ErrorPage extends WebPageComponent {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// TODO Auto-generated method stub
 	}
 
 	public void setLabelContent(String content) {

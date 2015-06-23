@@ -32,7 +32,6 @@ public class WebpageAuthorizationService extends AuthorizationService {
 
 	@Override
 	public Set<IActivity> getRoleActivities(Role arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

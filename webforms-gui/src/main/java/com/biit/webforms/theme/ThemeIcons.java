@@ -135,6 +135,14 @@ public enum ThemeIcons implements IThemeIcon {
 	
 	FORM_MANAGER_FORM_LINKED("form.link.svg"),
 	
+	EDIT_WEBSERVICE_CALL("webservice.svg"), 
+	
+	ADD_WEBSERVICE_CALL("webservice.add.svg"), 
+	REMOVE_WEBSERVICE_CALL("webservice.remove.svg"), 
+	
+	EDIT_WEBSERVICE_PORT("webservice.edit.svg"),
+	REMOVE_WEBSERVICE_PORT("webservice.clear.svg"), 
+	
 	;
 
 	private String value;

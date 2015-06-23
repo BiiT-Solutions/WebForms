@@ -57,6 +57,7 @@ import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToFormException;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.serialization.AnswerSerializer;
 import com.biit.webforms.serialization.BaseRepeatableGroupSerializer;
 import com.biit.webforms.serialization.DynamicAnswerSerializer;
@@ -72,6 +73,7 @@ import com.biit.webforms.serialization.TokenInSerializer;
 import com.biit.webforms.serialization.TokenInValueSerializer;
 import com.biit.webforms.serialization.TokenSerializer;
 import com.biit.webforms.serialization.TreeObjectSerializer;
+import com.biit.webforms.webservices.Webservice;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.liferay.portal.model.User;
@@ -97,6 +99,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
 	private Set<Flow> rules;
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
+	private Set<WebserviceCall> webserviceCalls;
 
 	private String linkedFormLabel;
 
@@ -124,6 +129,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		description = new String();
 		rules = new HashSet<>();
 		linkedFormVersions = new HashSet<>();
+		webserviceCalls = new HashSet<>();
 		formReference = null;
 		elementsToHide = new HashSet<>();
 	}
@@ -134,6 +140,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		status = FormWorkStatus.DESIGN;
 		description = new String();
 		rules = new HashSet<>();
+		webserviceCalls = new HashSet<>();
 		linkedFormVersions = new HashSet<>();
 		setCreatedBy(user);
 		setUpdatedBy(user);
@@ -349,11 +356,32 @@ public class Form extends BaseForm implements IWebformsFormView {
 			copy.updateElementsToHide(getElementsToHide());
 			copy.copyRules(this, false);
 			copy.updateRuleReferences();
+			copy.webserviceCalls(this);
+			copy.updateWebserviceCallReferences();
 		}
 
 		copy.updateDynamicAnswers();
+		
 
 		return copy;
+	}
+
+	private void updateWebserviceCallReferences() {
+		HashMap<String, BaseQuestion> references = new HashMap<String, BaseQuestion>();
+		for(TreeObject object: this.getAll(BaseQuestion.class)){
+			references.put(object.getComparationId(), (BaseQuestion) object);
+		}
+		for(WebserviceCall call: getWebserviceCalls()){
+			call.updateReferences(references);
+		}
+	}
+
+	private void webserviceCalls(Form form) throws NotValidStorableObjectException {
+		 for(WebserviceCall call: form.getWebserviceCalls()){
+			 WebserviceCall copy = new WebserviceCall();
+			 copy.copyData(call);
+			 addWebserviceCall(copy);
+		 }
 	}
 
 	private void updateDynamicAnswers() {
@@ -675,6 +703,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 		for (Flow rule : getFlows()) {
 			rule.resetIds();
 		}
+		for(WebserviceCall call: getWebserviceCalls()){
+			call.resetIds();
+		}
 	}
 
 	public void setDescription(String description) throws FieldTooLongException {
@@ -839,6 +870,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public void initializeSets() {
 		super.initializeSets();
 		getFlows().size();
+		getWebserviceCalls().size();
 		if (formReference != null) {
 			formReference.initializeSets();
 		}
@@ -964,5 +996,29 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 		}
 		return super.compareTo(arg0);
+	}
+	
+	public Set<WebserviceCall> getWebserviceCalls(){
+		return webserviceCalls;
+	}
+	
+	public void addWebserviceCall(WebserviceCall webservviceCall){
+		webserviceCalls.add(webservviceCall);
+		webservviceCall.setForm(this);
+	}
+	
+	public void addWebserviceCalls(Set<WebserviceCall> webserviceCalls) {
+		for(WebserviceCall call: webserviceCalls){
+			addWebserviceCall(call);
+		}
+	}
+
+	public boolean usesWebservice(Webservice webservice) {
+		for(WebserviceCall call: getWebserviceCalls()){
+			if(Objects.equals(call.getWebserviceName(),webservice.getName())){
+				return true;
+			}
+		}
+		return false;
 	}
 }

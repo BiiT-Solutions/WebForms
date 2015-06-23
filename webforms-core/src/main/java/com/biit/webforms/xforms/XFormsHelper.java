@@ -14,6 +14,9 @@ import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 
 /**
  * Stores some basic data and perform basic and generic methods.
@@ -35,6 +38,11 @@ class XFormsHelper {
 	// Control names must be unique.
 	private HashMap<TreeObject, String> controlNames;
 	private Set<String> usedControlNames;
+	private HashMap<BaseQuestion, WebserviceCallOutputLink> webserviceOuput;
+	private HashMap<BaseQuestion, Set<WebserviceCallInputLink>> webserviceInputs;
+	private Set<String> usedCallNames;
+	
+	private HashMap<WebserviceCall, String> callNames;
 
 	protected XFormsHelper(Form form) {
 		questions = new ArrayList<>();
@@ -48,6 +56,10 @@ class XFormsHelper {
 		defaultFlows = new HashSet<Flow>();
 		flowsByOrigin = new HashMap<>();
 		flowsByDestiny = new HashMap<>();
+		webserviceOuput = new HashMap<>();
+		webserviceInputs = new HashMap<>();
+		callNames = new HashMap<>();
+		usedCallNames = new HashSet<>();
 
 		// Set questions in order.
 		LinkedHashSet<TreeObject> allBaseQuestions = form.getAllNotHiddenChildrenInHierarchy(BaseQuestion.class);
@@ -71,6 +83,26 @@ class XFormsHelper {
 				defaultFlows.add(flow);
 			}
 		}
+		
+		for(WebserviceCall call: form.getWebserviceCalls()){
+			for(WebserviceCallOutputLink link: call.getOutputLinks()){
+				webserviceOuput.put(link.getFormElement(), link);
+			}
+			for(WebserviceCallInputLink link: call.getInputLinks()){
+				if(webserviceInputs.get(link.getFormElement())==null){
+					webserviceInputs.put(link.getFormElement(), new HashSet<WebserviceCallInputLink>());
+				}
+				webserviceInputs.get(link.getFormElement()).add(link);
+			}
+		}
+	}
+	
+	public WebserviceCallOutputLink getWebserviceCallOutputLink(BaseQuestion question){
+		return webserviceOuput.get(question);
+	}
+	
+	public Set<WebserviceCallInputLink> getWebserviceCallInputLinks(BaseQuestion question) {
+		return webserviceInputs.get(question);
 	}
 
 	private void addFlow(Flow flow) {
@@ -261,6 +293,23 @@ class XFormsHelper {
 			}
 		}
 		return controlNames.get(treeObject);
+	}
+	
+	public String getUniqueName(WebserviceCall call){
+		if (callNames.get(call) == null) {
+			if (!usedCallNames.contains(call.getName())) {
+				callNames.put(call, call.getName());
+				usedCallNames.add(call.getName());
+			} else {
+				int i = 2;
+				while (usedCallNames.contains(call.getName() + "-" + i)) {
+					i++;
+				}
+				callNames.put(call, call.getName() + "-" + i);
+				usedCallNames.add(call.getName() + "-" + i);
+			}
+		}
+		return callNames.get(call);
 	}
 
 	public Set<Flow> getDefaultFlows() {

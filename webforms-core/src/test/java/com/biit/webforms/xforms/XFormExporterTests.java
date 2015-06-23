@@ -1,6 +1,7 @@
 package com.biit.webforms.xforms;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 
 import org.testng.annotations.Test;
 
@@ -20,6 +21,7 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyExcepti
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.utils.FormUtils;
+import com.biit.webforms.webservices.Webservice;
 import com.biit.webforms.xforms.XFormsSimpleFormExporter;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
@@ -36,6 +38,6 @@ public class XFormExporterTests {
 			NotValidTreeObjectException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError, ElementIsReadOnly, FlowNotAllowedException, UnsupportedEncodingException {
 		Form form = FormUtils.createCompleteForm();
-		new XFormsSimpleFormExporter(form).generateXFormsLanguage();
+		new XFormsSimpleFormExporter(form,new HashSet<Webservice>()).generateXFormsLanguage();
 	}
 }

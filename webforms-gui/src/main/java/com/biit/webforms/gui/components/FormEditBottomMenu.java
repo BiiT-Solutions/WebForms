@@ -18,7 +18,7 @@ import com.vaadin.ui.Button.ClickListener;
 public class FormEditBottomMenu extends BottomMenu {
 	private static final long serialVersionUID = 5814263369658754770L;
 
-	private IconButton editFormButton, editFlowButton, validateForm, compareStructure;
+	private IconButton editFormButton, editFlowButton, editWebserviceCall, validateForm, compareStructure;
 	private List<LockFormListener> listeners;
 
 	public FormEditBottomMenu() {
@@ -28,6 +28,8 @@ public class FormEditBottomMenu extends BottomMenu {
 				LanguageCodes.TOOLTIP_EDIT_FORM_DESIGN, IconSize.BIG);
 		editFlowButton = new IconButton(LanguageCodes.CAPTION_EDIT_FORM_FLOW, ThemeIcons.EDIT_FORM_FLOW,
 				LanguageCodes.TOOLTIP_EDIT_FORM_FLOW, IconSize.BIG);
+		editWebserviceCall = new IconButton(LanguageCodes.CAPTION_EDIT_WEBSERVICE_CALL, ThemeIcons.EDIT_WEBSERVICE_CALL,
+				LanguageCodes.TOOLTIP_EDIT_WEBSERVICE_CALL, IconSize.BIG);
 		validateForm = new IconButton(LanguageCodes.CAPTION_VALIDATE_FORM, ThemeIcons.VALIDATE_FORM,
 				LanguageCodes.TOOLTIP_VALIDATE_FORM, IconSize.BIG);
 		compareStructure = new IconButton(LanguageCodes.CAPTION_COMPARE_STRUCTURE, ThemeIcons.COMPARE_STRUCTURE,
@@ -51,6 +53,15 @@ public class FormEditBottomMenu extends BottomMenu {
 				ApplicationUi.navigateTo(WebMap.FLOW_EDITOR);
 			}
 		});
+		editWebserviceCall.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = -4309381087569767156L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				lockForm();
+				ApplicationUi.navigateTo(WebMap.WEBSERVICE_CALL_EDITOR);
+			}
+		});
 		validateForm.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = -4309381087569767156L;
 
@@ -70,9 +81,9 @@ public class FormEditBottomMenu extends BottomMenu {
 			}
 		});
 
-
 		addIconButton(editFormButton);
 		addIconButton(editFlowButton);
+		addIconButton(editWebserviceCall);
 		addIconButton(validateForm);
 		addIconButton(compareStructure);
 	}
@@ -83,6 +94,10 @@ public class FormEditBottomMenu extends BottomMenu {
 
 	public IconButton getEditFlowButton() {
 		return editFlowButton;
+	}
+	
+	public IconButton getEditWebserviceCall() {
+		return editWebserviceCall;
 	}
 
 	public IconButton getValidateForm() {

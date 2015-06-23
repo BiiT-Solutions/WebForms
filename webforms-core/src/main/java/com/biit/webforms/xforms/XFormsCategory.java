@@ -2,8 +2,14 @@ package com.biit.webforms.xforms;
 
 import com.biit.form.entity.BaseCategory;
 import com.biit.form.entity.BaseGroup;
+import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.xforms.exceptions.InvalidDateException;
+import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
+import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
+import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
 /**
  * Categories are Sections in Orbeon. The same as groups.
@@ -32,4 +38,45 @@ public class XFormsCategory extends XFormsGroup {
 		return CSS_CLASS_CATEGORY;
 	}
 
+	@Override
+	protected void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		binding.append("<xf:bind id=\"").append(getBindingId()).append("\" name=\"").append(getBindingName())
+				.append("\"");
+		getRelevantStructure(binding);
+
+		binding.append(" ref=\"").append(getXPath()).append("\" >");
+		// Add also children.
+		for (XFormsObject<? extends TreeObject> child : getChildren()) {
+			child.getBinding(binding);
+		}
+		binding.append("</xf:bind>");
+	}
+
+	/**
+	 * Groups are represented as sections.
+	 */
+	@Override
+	protected void getSectionBody(StringBuilder body) {
+		body.append("<fr:section id=\"").append(getSectionControlName());
+		body.append("\" class=\"").append(getCssClass());
+		if (WebformsConfigurationReader.getInstance().isXFormsCustomWizardEnabled()) {
+			body.append(getCSSDisplayConditionRule());
+		}
+		body.append("\" bind=\"").append(getBindingId()).append("\">");
+		body.append(getBodyLabel());
+		body.append(getBodyHint());
+		body.append(getBodyAlert());
+		body.append(getBodyHelp());
+		for (XFormsObject<? extends TreeObject> child : getChildren()) {
+			child.getSectionBody(body);
+		}
+		body.append("</fr:section>");
+	}
+
+	private String getCSSDisplayConditionRule() {
+		return " {if((instance('category-menu-button-active')/" + getUniqueName()
+				+ "='true') and (instance('show-category')/" + getUniqueName()
+				+ "='true')) then '' else 'category-show-disabled'}";
+	}
 }

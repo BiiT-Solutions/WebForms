@@ -49,7 +49,6 @@ public class UnaryOperator extends Expression implements WebformsExpression {
 		if (type == TokenTypes.NOT && prefix) {
 			return expression.negate();
 		} else {
-			// TODO
 			throw new RuntimeException("Not implemented");
 		}
 	}
@@ -60,7 +59,6 @@ public class UnaryOperator extends Expression implements WebformsExpression {
 			// The negation of !(A) is (A)
 			return expression;
 		} else {
-			// TODO
 			throw new RuntimeException("Not implemented");
 		}
 	}

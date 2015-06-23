@@ -371,7 +371,6 @@ public class TestFlowDomain {
 			DifferentDateUnitForQuestions {
 		Form form = loadForm("De Haagse Passage_v6.json");
 
-		// TODO FIX this thing. this element should arise a flag.
 		// Error
 		new FlowUnitDomain(form, (BaseQuestion) form.getChild("Opleidingen", "Opleiding", "Opleiding", "Welke"));
 	}

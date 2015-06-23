@@ -58,6 +58,8 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
+import com.biit.webforms.persistence.dao.IWebserviceDao;
+import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
@@ -84,11 +86,13 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyExcepti
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.FormIsUsedAsReferenceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.biit.webforms.utils.conversor.ConversorAbcdFormToForm;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.webservice.rest.client.AbcdRestClient;
+import com.biit.webforms.webservices.Webservice;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
@@ -100,6 +104,7 @@ public class ApplicationController {
 	private IFormDao formDao;
 	private IBlockDao blockDao;
 	private ISimpleFormViewDao simpleFormDaoWebforms;
+	private IWebserviceDao webserviceDao;
 
 	private Form lastEditedForm;
 	private Form formInUse;
@@ -114,6 +119,7 @@ public class ApplicationController {
 		formDao = (IFormDao) helper.getBean("webformsFormDao");
 		blockDao = (IBlockDao) helper.getBean("blockDao");
 		simpleFormDaoWebforms = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms"));
+		webserviceDao = (IWebserviceDao) helper.getBean("webserviceDao");
 	}
 
 	/**
@@ -940,6 +946,7 @@ public class ApplicationController {
 
 			formInUse.addChildren(copiedBlock.getChildren());
 			formInUse.addFlows(copiedBlock.getFlows());
+			formInUse.addWebserviceCalls(copiedBlock.getWebserviceCalls());
 
 			setUnsavedFormChanges(true);
 
@@ -1616,5 +1623,25 @@ public class ApplicationController {
 			}
 		}
 		return formsThatReference;
+	}
+
+	public Set<Webservice> getAllWebservices() {
+		Set<Webservice> webservices = new HashSet<Webservice>();
+		webservices.addAll(webserviceDao.getAll());
+		return webservices;
+	}
+
+	public WebserviceCall generateNewWebserviceCall(String name, Webservice webservice) {
+		WebserviceCall call = new WebserviceCall(name,webservice);
+		UserSessionHandler.getController().getCompleteFormView().addWebserviceCall(call);
+		return call;
+	}
+
+	public void removeWebserviceCall(WebserviceCall call) {
+		UserSessionHandler.getController().getCompleteFormView().removeWebserviceCall(call);
+	}
+
+	public Webservice findWebservice(String webserviceName) throws WebserviceNotFoundException {
+		return webserviceDao.findWebservice(webserviceName);
 	}
 }

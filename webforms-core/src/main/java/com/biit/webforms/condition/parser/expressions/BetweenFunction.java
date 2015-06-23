@@ -22,13 +22,11 @@ public class BetweenFunction extends Expression {
 
 	@Override
 	public Expression flatten() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Expression negate() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

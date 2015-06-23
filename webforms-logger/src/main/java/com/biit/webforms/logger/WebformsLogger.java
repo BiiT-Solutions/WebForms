@@ -57,4 +57,15 @@ public class WebformsLogger extends BiitLogger {
 		String error = getStackTrace(throwable);
 		errorMessageNotification(logger,className, error);
 	}
+	
+	/**
+	 * Log a error message. If enabled, also can send an email to the administrator to
+	 * alert of the error.
+	 * 
+	 * @param className
+	 * @param throwable
+	 */
+	public static void errorMessage(String className, String message) {
+		errorMessageNotification(logger,className, message);
+	}
 }

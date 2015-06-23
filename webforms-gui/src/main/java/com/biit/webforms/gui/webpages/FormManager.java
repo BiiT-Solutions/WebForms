@@ -351,7 +351,7 @@ public class FormManager extends SecuredWebPage {
 		CompleteFormView form = (CompleteFormView) loadCompleteForm(getSelectedForm());
 
 		// Xforms only can use valid forms.
-		ValidateFormComplete validator = new ValidateFormComplete();
+		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController().getAllWebservices());
 		validator.setStopOnFail(true);
 
 		ValidateReport report = new ValidateReport();
@@ -373,7 +373,7 @@ public class FormManager extends SecuredWebPage {
 				@Override
 				public InputStream getInputStream() {
 					try {
-						return new XFormsSimpleFormExporter(completeFormView).generateXFormsLanguage();
+						return new XFormsSimpleFormExporter(completeFormView,UserSessionHandler.getController().getAllWebservices()).generateXFormsLanguage();
 					} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
 							| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException
 							| UnsupportedEncodingException e) {
@@ -452,7 +452,7 @@ public class FormManager extends SecuredWebPage {
 	private void exportXsd() {
 		CompleteFormView completeFormView = loadCompleteForm(getSelectedForm());
 
-		ValidateFormComplete validator = new ValidateFormComplete();
+		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController().getAllWebservices());
 		validator.setStopOnFail(true);
 
 		ValidateReport report = new ValidateReport();
@@ -830,6 +830,7 @@ public class FormManager extends SecuredWebPage {
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);
 			bottomMenu.getEditFlowButton().setEnabled(rowNotNullAndForm);
 			bottomMenu.getValidateForm().setEnabled(rowNotNullAndForm);
+			bottomMenu.getEditWebserviceCall().setEnabled(rowNotNullAndForm);
 			bottomMenu.getCompareStructureButton().setEnabled(rowNotNullAndForm);
 
 		} catch (IOException | AuthenticationRequired e) {
@@ -840,6 +841,8 @@ public class FormManager extends SecuredWebPage {
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(false);
 			bottomMenu.getEditFlowButton().setEnabled(false);
+			bottomMenu.getValidateForm().setEnabled(false);
+			bottomMenu.getEditWebserviceCall().setEnabled(false);
 		}
 	}
 }

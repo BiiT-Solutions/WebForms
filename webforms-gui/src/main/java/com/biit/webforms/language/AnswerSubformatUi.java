@@ -43,12 +43,12 @@ public enum AnswerSubformatUi {
 	;
 
 	private final AnswerSubformat subformat;
-	private final LanguageCodes translationCode;
+	private final LanguageCodes languageCode;
 	private final LanguageCodes inputprompt;
 
 	private AnswerSubformatUi(AnswerSubformat subformat, LanguageCodes translationCode, LanguageCodes inputprompt) {
 		this.subformat = subformat;
-		this.translationCode = translationCode;
+		this.languageCode = translationCode;
 		this.inputprompt = inputprompt;
 	}
 
@@ -56,8 +56,8 @@ public enum AnswerSubformatUi {
 		return subformat;
 	}
 
-	public LanguageCodes getTranslationCode() {
-		return translationCode;
+	public LanguageCodes getLanguageCode() {
+		return languageCode;
 	}
 
 	public static AnswerSubformatUi get(AnswerSubformat subformat) {

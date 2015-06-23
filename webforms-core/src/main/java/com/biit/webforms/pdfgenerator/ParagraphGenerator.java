@@ -72,7 +72,6 @@ public class ParagraphGenerator {
 	}
 
 	public static Paragraph generateAnswerFormatParagraph(Question object) {
-		// TODO string text
 		return new Paragraph("(" + object.getAnswerFormat().toString() + ")", PdfFont.SMALL_FONT.getFont());
 	}
 

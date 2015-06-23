@@ -1,0 +1,145 @@
+/*
+   Category			: webforms-element webforms-category
+   Group			: webforms-element webforms-group
+   RepeatableGroup		: webforms-element webforms-repeatablegroup
+   Question			: webforms-element webforms-question (webforms-help)
+   Answer			: webforms-element webforms-answer
+   Subanswers			: webforms-element subanswer-parent
+				  webforms-element subanswer-child
+   Horizontal Radio-button	: webforms-element fr-radio-horizontal webforms-answer
+   Info-text			: webforms-element webforms-infotext
+ */
+
+/* Header: off
+   -----------
+
+
+.navbar {
+  display: none !important;
+}
+*/
+.fr-form-description {
+  display: none !important;
+}
+
+/* Elements
+   --------
+ */
+
+.webforms-element, .webforms-element .xforms-label {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+/* Element: Info-text
+   -----------------
+ */
+
+.webforms-element .webforms-infotext > .xforms-label {
+  font-style: italic;
+  color: #555;
+}
+
+/* Element: Question
+   -----------------
+ */
+
+.webforms-element .webforms-question {
+  display: block;
+  padding: 5px 0px 5px 0px;
+}
+
+.webforms-help > .xforms-label {
+  display: inline;
+}
+
+.webforms-help > .xforms-help {
+  margin-left: -15px;
+}
+
+/* Element: Horizontal Radio-button
+   --------------------------------
+ */
+
+.webforms-element .fr-radio-horizontal > .xforms-label {
+  display: block !important;
+}
+
+.webforms-element .fr-radio-horizontal .webforms-answer label.radio {
+  display: inline;
+  float: none;
+  position: relative;
+}
+
+.webforms-element .fr-radio-horizontal .webforms-answer label.radio input[type="radio"] {
+  position: absolute;
+}
+
+/* Element: Subanswers
+   -------------------
+ */
+
+.webforms-element .subanswer-parent > label {
+  font-style: italic;
+}
+
+.webforms-element .subanswer-parent > label > input {
+  display: none;
+}
+
+.webforms-element .subanswer-child > label {
+  margin-left: 15px;
+}
+
+
+/* Element: custom wizard
+   -------------------
+ */
+ 
+.category-show-disabled {
+	display: none;
+}
+
+.category-button-disabled{
+	pointer-events: none;
+}
+
+.category-button-disabled a{
+	color: #C0C0C0 ;
+}
+
+.webforms-list-no-bullets {
+	list-style-type: none;
+	margin: 0 0 0 0 !important;
+}
+
+.categories-menu{
+	float: left;
+	width: 200px;
+	text-align: center;
+	margin-top: 25px;
+}
+
+.webforms-category-components{
+	margin-left: 200px;
+	width: auto;
+	vertical-align: top;
+	position: relative;
+}
+
+.webforms-list-no-bullets-element{
+	margin: 5px;
+}
+
+.webforms-list-no-bullets-element-selected{
+	background-color: gainsboro;
+}
+
+.fr-body{
+	display: inline-block !important;
+	width: 100%;
+}
+
+.orbeon .xbl-fr-section .fr-section-content{
+	display: inline-block;
+	width: 96%;
+}

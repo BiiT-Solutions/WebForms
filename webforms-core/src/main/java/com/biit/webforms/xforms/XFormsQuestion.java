@@ -1,6 +1,8 @@
 package com.biit.webforms.xforms;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import com.biit.form.entity.BaseQuestion;
@@ -21,6 +23,9 @@ import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputErrors;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -32,8 +37,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	private static final String CSS_CLASS_QUESTION = "webforms-question";
 	private static final String CSS_CLASS_QUESTION_HELP = "webforms-help";
 
-	public XFormsQuestion(XFormsHelper xFormsHelper, BaseQuestion question) throws NotValidTreeObjectException,
-			NotValidChildException {
+	public XFormsQuestion(XFormsHelper xFormsHelper, BaseQuestion question) throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, question);
 	}
 
@@ -55,19 +59,85 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	@Override
-	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
-			StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"").append(getBindingName())
-				.append("\" ");
+	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
+		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"").append(getBindingName()).append("\" ");
 		// Reference must be always to a name and not to a complete xpath, if
 		// the xpath is used, in a loop all repeated
 		// questions would always have the same answers selected.
 		binding.append("ref=\"").append(getName()).append("\" ");
 		getXFormsType(binding);
 		isMandatory(binding);
-		getConstraints(binding);
+		isReadOnly(binding);
 		getRelevantStructure(binding);
-		binding.append(" />");
+		if (!hasConstrainsts()) {
+			binding.append(" />");
+		} else {
+			binding.append(" >");
+			getConstraints(binding);
+			binding.append("</xf:bind>");
+		}
+	}
+
+	private boolean hasConstrainsts() {
+		return hasSubtypeConstraint() || hasWebserviceValidation();
+	}
+
+	private boolean hasWebserviceValidation() {
+		Set<WebserviceCallInputLink> inputLinks = getXFormsHelper().getWebserviceCallInputLinks(getSource());
+		if (inputLinks != null) {
+			for (WebserviceCallInputLink inputLink : inputLinks) {
+				if (!inputLink.getValidErrors().isEmpty()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns constraint
+	 * 
+	 * @return
+	 */
+	private boolean hasSubtypeConstraint() {
+		if(!(getSource() instanceof Question) || ((Question) getSource()).getAnswerSubformat() == null){
+			return false;
+		}
+
+		switch (((Question) getSource()).getAnswerSubformat()) {
+		case PHONE:
+		case POSTAL_CODE:
+		case BSN:
+		case IBAN:
+		case DATE_FUTURE:
+		case DATE_PAST:
+		case DATE_BIRTHDAY:
+			return true;
+		case DATE_PERIOD:
+			// This type will never arrive here -no constraint-
+			return false;
+		case TEXT:
+		case DATE:
+		case EMAIL:
+		case NUMBER:
+		case FLOAT:
+			// No constraint, type handles restriction.
+			return false;
+		case AMOUNT:
+			// Not used type
+			return false;
+		}
+		return false;
+	}
+
+	private void isReadOnly(StringBuilder binding) {
+		WebserviceCallOutputLink link = getXFormsHelper().getWebserviceCallOutputLink(getSource());
+		if (link != null && !link.isEditable()) {
+			binding.append("readonly=\"true()\" ");
+		} else {
+			binding.append("readonly=\"false()\" ");
+		}
 	}
 
 	protected void isMandatory(StringBuilder binding) {
@@ -77,55 +147,159 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * Some dates have constraints.
+	 * Get all the constraints.
 	 * 
 	 * @return
 	 */
-	protected void getConstraints(StringBuilder contraints) {
-		if (((Question) getSource()).getAnswerFormat() != null) {
-			// adjust-date-to-timezone is used to remove timestamp
-			// "If $timezone is the empty sequence, returns an xs:date without a timezone."
-			// So you can write:
-			// adjust-date-to-timezone(current-date(), ())"
-			if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_PAST)) {
-				contraints.append(" constraint=\"string-length("
-						+ getXFormsHelper().getXFormsObject(getSource()).getXPath()
-						+ "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ())\" ");
-			} else if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE)) {
-				contraints.append(" constraint=\"string-length("
-						+ getXFormsHelper().getXFormsObject(getSource()).getXPath()
-						+ "/text())=0 or . &gt;= adjust-date-to-timezone(current-date(), ())\" ");
-			} else if (((Question) getSource()).getAnswerSubformat().equals(AnswerSubformat.DATE_BIRTHDAY)) {
-				contraints
-						.append(" constraint=\"string-length("
-								+ getXFormsHelper().getXFormsObject(getSource()).getXPath()
-								+ "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ()) and (year-from-date(current-date()) - year-from-date(.) &lt;= ")
-						.append(MAX_YEARS_BIRTHDAY).append(")\" ");
-			}
+	protected void getConstraints(StringBuilder constraints) {
+		if (hasSubtypeConstraint()) {
+			getTypeConstraints(constraints);
 		}
+		if (hasWebserviceValidation()) {
+			getWebserviceConstraints(constraints);
+		}
+	}
+
+	private List<WebserviceCallInputErrors> getWebserviceCallInputErrors() {
+		List<WebserviceCallInputErrors> callInputErrors = new ArrayList<>();
+		Set<WebserviceCallInputLink> inputLinks = getXFormsHelper().getWebserviceCallInputLinks(getSource());
+
+		for (WebserviceCallInputLink inputLink : inputLinks) {
+			callInputErrors.addAll(inputLink.getValidErrors());
+		}
+		Collections.sort(callInputErrors);
+		
+		return callInputErrors;
+	}
+
+	private void getWebserviceConstraints(StringBuilder constraints) {
+		List<WebserviceCallInputErrors> webserviceValidations = getWebserviceCallInputErrors();
+
+		for (int i = 0; i < webserviceValidations.size(); i++) {
+			String webserviceValidatorInstance = getWebserviceValidatorInstance(webserviceValidations.get(i).getWebserviceCallInput());
+			constraints.append("<xf:constraint id=\"webservice-constraint-"+ getXFormsHelper().getUniqueName(getSource()) +"-" + i + "-validation\" ");
+			constraints.append("value=\"instance('" + webserviceValidatorInstance + "')"+webserviceValidations.get(i).getWebserviceCallInput().getValidationXpath()+" != '");
+			constraints.append(webserviceValidations.get(i).getErrorCode());
+			constraints.append("'\"/>");
+		}
+	}
+
+	private String getWebserviceValidatorInstance(WebserviceCallInputLink webserviceCallInputLink) {
+		return webserviceCallInputLink.getWebserviceCall().getName() + "-" + webserviceCallInputLink.getWebservicePort() + "-instance";
+	}
+
+	private void getTypeConstraints(StringBuilder constraints) {
+		if (((Question) getSource()).getAnswerSubformat() == null) {
+			// Avoid corrupt data.
+			return;
+		}
+
+		// We define constraint as subtype-constraint-[unique name]
+		constraints.append("<xf:constraint id=\"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation\" ");
+		constraints.append("value=\"");
+		// Add condition depending on answer subformat.
+
+		// Aditional notes:
+		// adjust-date-to-timezone is used to remove timestamp
+		// "If $timezone is the empty sequence, returns an xs:date without a timezone."
+		// So you can write:
+		// adjust-date-to-timezone(current-date(), ())"
+
+		String sourceXpath = getXFormsHelper().getXFormsObject(getSource()).getXPath();
+
+		switch (((Question) getSource()).getAnswerSubformat()) {
+		case PHONE:
+			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPhone()).append("$')");
+			break;
+		case POSTAL_CODE:
+			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPostalCode()).append("$')");
+			break;
+		case BSN:
+			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexBsn()).append("$')");
+			break;
+		case IBAN:
+			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexIban()).append("$')");
+			break;
+		case DATE_FUTURE:
+			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &gt;= adjust-date-to-timezone(current-date(), ())");
+			break;
+		case DATE_PAST:
+			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ())");
+			break;
+		case DATE_BIRTHDAY:
+			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ()) ");
+			constraints.append("and (year-from-date(current-date()) - year-from-date(.) &lt;= ");
+			constraints.append(MAX_YEARS_BIRTHDAY).append(")");
+			break;
+		case DATE_PERIOD:
+			// Do nothing this type will never arrive here
+			break;
+		case TEXT:
+		case DATE:
+		case EMAIL:
+		case NUMBER:
+		case FLOAT:
+			// No constraint, type handles restriction.
+			break;
+		case AMOUNT:
+			// Not used type
+			break;
+		}
+		constraints.append("\"/>");
+
 	}
 
 	@Override
 	protected String getAlert() {
-		if (getSource() instanceof Question) {
-			if (((Question) getSource()).getAnswerFormat() != null) {
-				switch (((Question) getSource()).getAnswerFormat()) {
-				case DATE:
-					switch (((Question) getSource()).getAnswerSubformat()) {
-					case DATE_FUTURE:
-						return "<alert><![CDATA[Date must be at the future!]]></alert>";
-					case DATE_PAST:
-					case DATE_BIRTHDAY:
-						return "<alert><![CDATA[Date must be at the past!]]></alert>";
-					default:
-						break;
-					}
-				default:
-					break;
-				}
+		StringBuilder sb = new StringBuilder();
+		if (getSource() instanceof Question && ((Question) getSource()).getAnswerSubformat()!=null) {
+			switch (((Question) getSource()).getAnswerSubformat()) {
+			case DATE_FUTURE:
+				sb.append("<alert><![CDATA[Date must be at the future!]]></alert>");
+				break;
+			case DATE_PAST:
+			case DATE_BIRTHDAY:
+				sb.append("<alert><![CDATA[Date must be at the past!]]></alert>");
+				break;
+			case BSN:
+				sb.append("<alert><![CDATA[BSN format is not correct!]]></alert>");
+				break;
+			case IBAN:
+				sb.append("<alert><![CDATA[IBAN format is not correct!]]></alert>");
+				break;
+			case PHONE:
+				sb.append("<alert><![CDATA[Phone number format is not correct!]]></alert>");
+				break;
+			case POSTAL_CODE:
+				sb.append("<alert><![CDATA[Postal code format is not correct!]]></alert>");
+				break;
+			case TEXT:
+			case DATE:
+			case EMAIL:
+			case NUMBER:
+			case FLOAT:
+			case AMOUNT:
+			case DATE_PERIOD:
+				sb.append("<alert><![CDATA[Missing or incorrect value]]></alert>");
+				break;
 			}
 		}
-		return "<alert/>";
+		
+		if(hasWebserviceValidation()){
+			List<WebserviceCallInputErrors> webserviceValidations = getWebserviceCallInputErrors();
+			for(WebserviceCallInputErrors inputError: webserviceValidations){
+				sb.append("<alert><![CDATA[");
+				sb.append(inputError.getErrorMessage());
+				sb.append("]]></alert>");
+			}
+		}		
+		
+		String alert = sb.toString();
+		if(!alert.isEmpty()){
+			return alert;
+		}else{
+			return "<alert/>";
+		}
 	}
 
 	/**
@@ -138,39 +312,12 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		if (((Question) getSource()).getAnswerFormat() != null) {
 			switch (((Question) getSource()).getAnswerFormat()) {
 			case TEXT:
-				switch (((Question) getSource()).getAnswerSubformat()) {
-				case EMAIL:
+				if (((Question) getSource()).getAnswerSubformat() == AnswerSubformat.EMAIL) {
 					type.append(" type=\"xf:email\" ");
-					break;
-				case PHONE:
-					type.append(" constraint=\". = '' or matches(., '^")
-							.append(WebformsConfigurationReader.getInstance().getRegexPhone()).append("')\" ");
-					break;
-				case IBAN:
-					type.append(" constraint=\". = '' or matches(., '^")
-							.append(WebformsConfigurationReader.getInstance().getRegexIban()).append("')\" ");
-					break;
-				case BSN:
-					type.append(" constraint=\". = '' or matches(., '")
-							.append(WebformsConfigurationReader.getInstance().getRegexBsn()).append("')\" ");
-					break;
-				case TEXT:
-				default:
-					break;
 				}
 				break;
 			case DATE:
-				switch (((Question) getSource()).getAnswerSubformat()) {
-				case DATE:
-				case DATE_PAST:
-				case DATE_FUTURE:
-				case DATE_PERIOD:
-				case DATE_BIRTHDAY:
-					type.append(" type=\"xf:date\" ");
-					break;
-				default:
-					break;
-				}
+				type.append(" type=\"xf:date\" ");
 				break;
 			case NUMBER:
 				switch (((Question) getSource()).getAnswerSubformat()) {
@@ -184,9 +331,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 					break;
 				}
 				break;
-			case POSTAL_CODE:
-				type.append(" constraint=\". = '' or matches(., '^")
-						.append(WebformsConfigurationReader.getInstance().getRegexPostalCode()).append("')\" ");
+			default:
 				break;
 			}
 		}
@@ -207,18 +352,33 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * Creates a static element that does not depends on the value of other element.
+	 * Creates a static element that does not depends on the value of other
+	 * element.
 	 * 
 	 * @return
 	 * @throws InvalidFlowInForm
 	 */
 	private String createElementBody() {
 		StringBuilder section = new StringBuilder();
-		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName()
-				+ "\" class=\"" + getCssClass() + "\" bind=\"" + getBindingId() + "\">");
+		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName() + "\" class=\""
+				+ getCssClass() + "\" bind=\"" + getBindingId() + "\">");
 		section.append(getBodyLabel());
 		section.append(getBodyHint());
-		section.append(getBodyAlert());
+		
+		//Add subtype constraint
+		if(hasSubtypeConstraint()){
+			section.append(getAlert(1,"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation"));
+		}else{
+			section.append(getAlert(1,null));
+		}
+		//Add webservice alerts
+		if(hasWebserviceValidation()){
+			List<WebserviceCallInputErrors> webserviceValidations = getWebserviceCallInputErrors();
+			for (int i = 0; i < webserviceValidations.size(); i++) {
+				section.append(getAlert(i+2,"webservice-constraint-"+ getXFormsHelper().getUniqueName(getSource()) +"-" + i + "-validation"));
+			}
+		}
+		
 		section.append(getBodyHelp());
 		createElementAnswersItems(section);
 		section.append("</xf:" + getElementFormDefinition() + " >");
@@ -226,7 +386,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * XForms has input, output and selectable elements. This method translates an element to the correct one.
+	 * XForms has input, output and selectable elements. This method translates
+	 * an element to the correct one.
 	 * 
 	 * @param element
 	 * @return
@@ -248,7 +409,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * XForms has input, output and selectable elements. This method translates an element to the correct one.
+	 * XForms has input, output and selectable elements. This method translates
+	 * an element to the correct one.
 	 * 
 	 * @param element
 	 * @return
@@ -285,13 +447,12 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 				row.append("<xf:item><xf:label>[Select...]</xf:label><xf:value/></xf:item>");
 			}
 
-			
 			// Only one itemset for elements without subanswers.
 			boolean simpleElementsAdded = false;
 			for (XFormsObject<? extends TreeObject> answer : getChildren()) {
-				if (answer.getSource() instanceof DynamicAnswer){
+				if (answer.getSource() instanceof DynamicAnswer) {
 					answer.getSectionBody(row);
-				}else{
+				} else {
 					if (!answer.getChildren().isEmpty() || !simpleElementsAdded) {
 						answer.getSectionBody(row);
 						if (answer.getChildren().isEmpty()) {
@@ -304,7 +465,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * Some elements needs to insert HTML text. Adds the tags to allow html code in the element.
+	 * Some elements needs to insert HTML text. Adds the tags to allow html code
+	 * in the element.
 	 * 
 	 * @param element
 	 * @return
@@ -334,7 +496,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * Creates a new computed go to next element Flow. Type normal, condition = '' -> true
+	 * Creates a new computed go to next element Flow. Type normal, condition =
+	 * '' -> true
 	 * 
 	 * @param origin
 	 * @param destiny
@@ -359,7 +522,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	protected String getCalculateStructure(String flow) {
 		String parsedFlow = flow.replace("$", "../$");
 		// Calculate set readonly as true by default.
-		return " calculate=\"if(" + parsedFlow + ") then . else ''\" readonly=\"false\"";
+		return " calculate=\"if(" + parsedFlow + ") then . else ''\"";
 	}
 
 	/**
@@ -382,9 +545,9 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	@Override
-	protected String getVisibilityStructure()  {
+	protected String getVisibilityStructure() {
 		String section = "<" + getUniqueName() + ">";
-	    section += "false";
+		section += "false";
 		section += "</" + getUniqueName() + ">";
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
 			section += child.getVisibilityStructure();

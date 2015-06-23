@@ -11,6 +11,7 @@
 				<include name="blockLink" />
 				<include name="persistForm" />
 				<include name="formReference" />
+				<include name="webserviceDefinitionJsonTest" />
 			</run>
 		</groups>
 		<classes>
@@ -22,6 +23,7 @@
 			<class name="com.biit.webforms.persistence.BlockLinkTests" />
 			<class name="com.biit.webforms.persistence.PersistForm" />
 			<class name="com.biit.webforms.persistence.FormReference" />
+			<class name="com.biit.webforms.persistence.WebserviceDefinitionJsonTest" />
 		</classes>
 	</test>
 </suite>

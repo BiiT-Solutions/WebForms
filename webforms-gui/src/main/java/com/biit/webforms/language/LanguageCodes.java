@@ -565,7 +565,64 @@ public enum LanguageCodes implements ILanguageCode {
 	NULL_VALUE_SEARCH_DYNAMIC_REFERENCE("null.value.search.dynamic.reference"), 
 	DYNAMIC_ANSWER_LABEL("dynamic.answer.label"), 
 	
-	ERROR_DYNAMIC_ANSWER_DEPENDENCY("error.dynamic.answer.dependency"),	
+	ERROR_DYNAMIC_ANSWER_DEPENDENCY("error.dynamic.answer.dependency"), 
+	
+	CAPTION_EDIT_WEBSERVICE_CALL("caption.edit.webservice.call"),
+	TOOLTIP_EDIT_WEBSERVICE_CALL("tooltip.edit.webservice.call"), 
+	
+	WEBSERVICE_CALL_TABLE_NAME("webservice.call.table.name"), 
+	CAPTION_WEBSERVICE_CALL_NAME("caption.webservice.call.name"), 
+	CAPTION_WEBSERVICE_NAME("caption.webservice.name"), 
+	CAPTION_WEBSERVICE_CALL_TRIGGER("caption.webservice.call.trigger"), 
+	
+	CAPTION_ADD_WEBSERVICE_CALL("caption.add.webservice.call"), 
+	TOOLTIP_ADD_WEBSERVICE_CALL("tooltip.add.webservice.call"), 
+	CAPTION_REMOVE_WEBSERVICE_CALL("caption.remove.webservice.call"), 
+	TOOLTIP_REMOVE_WEBSERVICE_CALL("tooltip.remove.webservice.call"), 
+	
+	WEBSERVICES_TABLE_NAME("webservices.table.name"), 
+	WEBSERVICES_TABLE_DESCRIPTION("webservices.table.description"), 
+	WEBSERVICES_TABLE_URL("webservices.table.url"), 
+	
+	PORT_TABLE_NAME("port.table.name"), 
+	PORT_TABLE_FORM_ELEMENT("port.table.form.element"), 
+	
+	CAPTION_EDIT_WEBSERVICE_LINK("caption.edit.webservice.link"), 
+	TOOLTIP_EDIT_WEBSERVICE_LINK("tooltip.edit.webservice.link"), 
+	CAPTION_REMOVE_WEBSERVICE_LINK("caption.remove.webservice.link"), 
+	TOOLTIP_REMOVE_WEBSERVICE_LINK("caption.remove.webservice.link"), 
+	
+	TABLE_OUTPUT_LINK_IS_EDITABLE("table.output.link.is.editable"), 
+	IS_EDITABLE("is.editable"), 
+	IS_NOT_EDITABLE("is.not.editable"), 
+	
+	CAPTION_SELECT_FORM_ELEMENT("caption.select.form.element"), 
+	CAPTION_IS_EDITABLE("caption.is.editable"), 
+	
+	CAPTION_WEBSERVICE_CALL_INPUT_LINK("caption.webservice.call.input.link"),
+	CAPTION_WEBSERVICE_CALL_OUTPUT_LINK("caption.webservice.call.output.link"),
+	CAPTION_WEBSERVICE_CALL_VALIDATION_LINK("caption.webservice.call.validation.link"), 
+	
+	WINDOW_EDIT_INPUT_LINK("window.edit.input.link"),
+	WINDOW_EDIT_OUTPUT_LINK("window.edit.output.link"), 
+	
+	TABLE_VALIDATION_LINK_ERROR_CODE("table.validation.link.error.code"), 
+	TABLE_VALIDATION_LINK_MESSAGE("table.validation.link.message"), 
+	
+	CAPTION_VALIDATION_LINK_ERROR_MESSAGE("caption.validation.link.error.message"),
+	CAPTION_WINDOW_EDIT_VALIDATION_LINK("caption.window.edit.validation.link"), 
+	
+	PORT_TABLE_ELEMENT_TYPE("caption.port.table.element.type"), 
+	PORT_TABLE_ELEMENT_FORMAT("caption.port.table.element.format"), 
+	PORT_TABLE_ELEMENT_SUBFORMAT("caption.port.table.element.subformat"), 
+	
+	WEBSERVICE_CALL_CORRUPTION("webservice.call.corruption"), 
+	WEBSERVICE_CALL_INCOMPATIBLE_FIELD("webservice.call.incompatible.field"), 
+	WEBSERVICE_CALL_INPUT_AFTER_TRIGGER("webservice.call.input.after.trigger"), 
+	WEBSERVICE_CALL_INPUT_NULL("webservice.call.input.null"), 
+	WEBSERVICE_CALL_OUTPUT_AFTER_TRIGGER("webservice.call.output.after.trigger"), 
+	WEBSERVICE_CALL_REFERENCES_UNEXISTING_WEBSERVICE("webservice.call.references.unexisting.webservice"),
+	WEBSERVICE_CALL_TRIGGER_NULL("webservice.call.trigger.null"),
 	
 	;
 
