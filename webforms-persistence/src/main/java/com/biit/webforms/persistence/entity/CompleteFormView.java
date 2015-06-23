@@ -18,6 +18,7 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidParentException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
@@ -347,11 +348,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	public ComputedFlowView getComputedFlowsView() {
 		LinkedHashSet<TreeObject> allBaseQuestions = new LinkedHashSet<>();
 		if (form.getFormReference() != null) {
-			allBaseQuestions.addAll(form.getFormReference().getAllChildrenInHierarchy(BaseQuestion.class));
+			allBaseQuestions.addAll(form.getFormReference().getAllNotHiddenChildrenInHierarchy(BaseQuestion.class));
 		}
-		allBaseQuestions.addAll(getAllChildrenInHierarchy(BaseQuestion.class));
-		// Remove all hidden elements.
-		allBaseQuestions.removeAll(form.getAllElementsToHide());
+		allBaseQuestions.addAll(getAllNotHiddenChildrenInHierarchy(BaseQuestion.class));
 		ComputedFlowView computedView = new ComputedFlowView();
 
 		if (!allBaseQuestions.isEmpty()) {
@@ -556,6 +555,28 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			return getForm().getFormReference();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
+		if (getForm() != null) {
+			if (element != null
+					&& (getForm().getFormReference() != null && !getForm().getFormReference()
+							.getAllInnerStorableObjects().contains(element)) && (getBlockReference(element) != null)) {
+				throw new ElementCannotBeRemovedException("Element '" + element
+						+ "' does not exists in the form.");
+			}
+			return getForm().hideElement(element);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean showElement(TreeObject element) {
+		if (getForm() != null) {
+			return getForm().showElement(element);
+		}
+		return false;
 	}
 
 	@Override

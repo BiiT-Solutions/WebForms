@@ -215,12 +215,6 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 * @throws ElementCannotBeRemovedException
 	 */
 	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
-		if (element != null
-				&& ((formReference != null && !formReference.getAllInnerStorableObjects().contains(element)) || (element
-						.getAncestor(Block.class)) != null)) {
-			throw new ElementCannotBeRemovedException("Element '" + element
-					+ "' does not exists in the Building block.");
-		}
 		// If parent is hidden, do not hide this element.
 		boolean toHide = true;
 		for (TreeObject ancestor : element.getAncestors()) {
@@ -242,11 +236,16 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 * @return true if the element has change its state to not hidden.
 	 */
 	public boolean showElement(TreeObject element) {
+		boolean showed = false;
 		if (elementsToHide.contains(element)) {
 			elementsToHide.remove(element);
-			return true;
+			showed = true;
 		}
-		return false;
+		//Show also any child. 
+		for (TreeObject child : element.getChildren()) {
+			showElement(child);
+		}
+		return showed;
 	}
 
 	/**

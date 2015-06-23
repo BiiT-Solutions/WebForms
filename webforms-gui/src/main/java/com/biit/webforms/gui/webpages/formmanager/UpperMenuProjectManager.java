@@ -262,4 +262,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	public IconButton getRemoveForm() {
 		return removeForm;
 	}
+
+	public IconButton getWebformReference() {
+		return webformReference;
+	}
 }

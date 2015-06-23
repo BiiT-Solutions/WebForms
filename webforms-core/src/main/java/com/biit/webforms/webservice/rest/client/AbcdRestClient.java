@@ -132,7 +132,7 @@ public class AbcdRestClient {
 	private static String get(boolean ssl, String target, String path, String requestType, String... parameters) {
 		String responseString = null;
 		WebformsLogger.debug(AbcdRestClient.class.getName(), "Calling rest service '" + target + "/" + path
-				+ "' and parameters " + parameters);
+				+ "' and parameters " + Arrays.toString(parameters));
 
 		HttpAuthenticationFeature authenticationFeature = HttpAuthenticationFeature.basic(WebformsConfigurationReader
 				.getInstance().getAbcdRestServiceUser(), WebformsConfigurationReader.getInstance()

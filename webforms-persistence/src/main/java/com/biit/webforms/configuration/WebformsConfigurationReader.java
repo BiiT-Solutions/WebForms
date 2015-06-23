@@ -32,7 +32,8 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String ID_XML_BASE_ADDRESS = "xmlBaseAddress";
 	private static final String ID_BUILDING_BLOCK_LINKS_VISIBLE = "button.link.block.visible";
 	private static final String ID_XFORMS_MULTIPLE_FILES_VISIBLE = "button.xforms.multiple.visible";
-
+	private static final String ID_XFORMS_CUSTOM_WIZARD_BUTTON = "buttons.xforms.custom.wizard";
+	
 	private static final String DEFAULT_REGEX_EMAIL = "[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]+(\\.[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]|[a-zA-Z!#$%&'*+\\-/=?^_`{|}~])*@[a-zA-Z0-9](\\.[a-zA-Z0-9-]|[a-zA-Z0-9-])*[a-zA-Z0-9]";
 	private static final String DEFAULT_REGEX_AMOUNT = "[0-9]+\\.[0-9]*€";
 	private static final String DEFAULT_REGEX_BIRTHDAY = "([0-9]{1,2}[-/]){1,2}[0-9]{4}";
@@ -52,6 +53,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_XML_BASE_ADDRESS = "http://dev.biit-solutions.com/";
 	private static final String DEFAULT_BUILDING_BLOCK_LINKS_VISIBLE = "true";
 	private static final String DEFAULT_XFORMS_MULTIPLE_FILES_VISIBLE = "false";
+	private static final String DEFAULT_XFORMS_CUSTOM_WIZARD_BUTTON = "false";
 
 	// XForms
 	private static final String ID_XFORMS_USER = "orbeonUser";
@@ -115,6 +117,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		addProperty(ID_XFORMS_DATABASE, DEFAULT_XFORMS_DATABASE);
 		addProperty(ID_XFORMS_DATABASE_HOST, DEFAULT_XFORMS_DATABASE_HOST);
 		addProperty(ID_XFORMS_FORM_RUNNER, DEFAULT_XFORMS_FORM_RUNNER);
+		addProperty(ID_XFORMS_CUSTOM_WIZARD_BUTTON, DEFAULT_XFORMS_CUSTOM_WIZARD_BUTTON);
 
 		addProperty(ABCD_REST_SERVICE_USER, DEFAULT_ABCD_REST_SERVICE_USER);
 		addProperty(ABCD_REST_SERVICE_PASSWORD, DEFAULT_ABCD_REST_SERVICE_PASSWORD);
@@ -285,7 +288,11 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		return getPropertyLogException(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
 	}
 	
-	public boolean isXFormsToMultipleFilesEnabled(){
+	public boolean isXFormsToMultipleFilesEnabled() {
 		return Boolean.parseBoolean(getPropertyLogException(ID_XFORMS_MULTIPLE_FILES_VISIBLE));
+	}
+	
+	public boolean isXFormsCustomWizardEnabled(){
+		return Boolean.parseBoolean(getPropertyLogException(ID_XFORMS_CUSTOM_WIZARD_BUTTON));
 	}
 }

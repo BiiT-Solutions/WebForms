@@ -8,6 +8,7 @@ import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
+import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
 import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.ExpectedTokenNotFound;
 import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
@@ -34,6 +35,17 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 		if (!flow.isOthers()) {
 			assertTrue(isConditionValid(flow), new InvalidFlowCondition(flow));
 			validateFlowConditionQuestionAreAllMandatory(flow);
+			validateAnswersOfSelect(flow);
+		}
+	}
+
+	private void validateAnswersOfSelect(Flow flow) {
+		for (Token token : flow.getCondition()) {
+			if (token instanceof TokenWithQuestion) {
+				if (((TokenWithQuestion) token).getQuestion().getAnswerType().isChildrenAllowed()) {
+					assertTrue(token instanceof TokenComparationAnswer, new InvalidFlowCondition(flow));
+				}
+			}
 		}
 	}
 
@@ -56,7 +68,6 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 	}
 
 	private boolean isConditionValid(Flow flow) {
-		// Translation
 		try {
 			WebformsParser parser = new WebformsParser(flow.getCondition().iterator());
 			parser.parseCompleteExpression();
