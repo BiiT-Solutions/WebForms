@@ -52,7 +52,7 @@ public class XmlExporter {
 
 	private void initializeCounters() throws BadFormedExpressions {
 		for (Flow flow : computedFlows.getFlows()) {
-			counters.put(flow, new Integer(0));
+			counters.put(flow, Integer.valueOf(0));
 			compiledDomains.put(flow, getDomain(flow));
 		}
 	}
