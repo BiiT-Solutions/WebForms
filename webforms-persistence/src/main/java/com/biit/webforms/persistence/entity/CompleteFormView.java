@@ -554,6 +554,12 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	@Override
 	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
 		if (getForm() != null) {
+			if (element != null
+					&& (getForm().getFormReference() != null && !getForm().getFormReference()
+							.getAllInnerStorableObjects().contains(element)) && (getBlockReference(element) != null)) {
+				throw new ElementCannotBeRemovedException("Element '" + element
+						+ "' does not exists in the form.");
+			}
 			return getForm().hideElement(element);
 		}
 		return false;
@@ -562,7 +568,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	@Override
 	public boolean showElement(TreeObject element) {
 		if (getForm() != null) {
-			return super.showElement(element);
+			return getForm().showElement(element);
 		}
 		return false;
 	}

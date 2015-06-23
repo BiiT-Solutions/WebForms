@@ -428,67 +428,7 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				TreeObject row = table.getSelectedRow();
-				try {
-					BlockReference blockReference = UserSessionHandler.getController().getCompleteFormView()
-							.getBlockReference(row);
-					// Do not hide an element of a form reference if it is in use in any external flow.
-					if (UserSessionHandler.getController().existDefinedFlowToReferencedElementOrItsChildren(row)) {
-						MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
-								LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
-						// Do not remove an element of a block if it is in use in any external flow of the block.
-					} else if (blockReference != null
-							&& UserSessionHandler.getController().existExternalFlowToReferencedElementOrItsChildren(
-									row, blockReference)) {
-						MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
-								LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
-					} else {
-						// It is not an element or it is a form reference element.
-						if (row.isHiddenElement()) {
-							if (UserSessionHandler.getController().getCompleteFormView().showElement(row)) {
-								row.setHiddenElement(false);
-								if (blockReference != null) {
-									WebformsLogger.info(this.getClass().getName(), "User '"
-											+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '"
-											+ row + "' of block '" + blockReference + "'.");
-								} else {
-									WebformsLogger.info(this.getClass().getName(), "User '"
-											+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '"
-											+ row + "'.");
-								}
-								UserSessionHandler.getController().setUnsavedFormChanges(true);
-							} else {
-								MessageManager
-										.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
-							}
-						} else {
-							try {
-								if (UserSessionHandler.getController().getCompleteFormView().hideElement(row)) {
-									row.setHiddenElement(true);
-									if (blockReference != null) {
-										WebformsLogger
-												.info(this.getClass().getName(), "User '"
-														+ UserSessionHandler.getUser().getEmailAddress()
-														+ "' has hide element '" + row + "' of block '"
-														+ blockReference + "'.");
-									} else {
-										WebformsLogger.info(this.getClass().getName(), "User '"
-												+ UserSessionHandler.getUser().getEmailAddress()
-												+ "' has hide element '" + row + "'.");
-									}
-									UserSessionHandler.getController().setUnsavedFormChanges(true);
-								}
-							} catch (ElementCannotBeRemovedException e) {
-								WebformsLogger.errorMessage(this.getClass().getName(), e);
-							}
-						}
-						upperMenu.updateHideButton(row.isHiddenElement());
-						table.updateRow(row);
-					}
-				} catch (ReadOnlyException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-				}
+				showOrHideElement(table.getSelectedRow());
 			}
 		});
 
@@ -570,6 +510,73 @@ public class Designer extends SecuredWebPage {
 		return upperMenu;
 	}
 
+	private void showOrHideElement(TreeObject element) {
+		try {
+			BlockReference blockReference = UserSessionHandler.getController().getCompleteFormView()
+					.getBlockReference(element);
+			// Do not hide an element of a form reference if it is in use in any external flow.
+			if (UserSessionHandler.getController().existDefinedFlowToReferencedElementOrItsChildren(element)) {
+				MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
+						LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
+				// Do not remove an element of a block if it is in use in any external flow of the block.
+			} else if (blockReference != null
+					&& UserSessionHandler.getController().existExternalFlowToReferencedElementOrItsChildren(element,
+							blockReference)) {
+				MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
+						LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
+			} else {
+				// It is not an element or it is a form reference element.
+				if (element.isHiddenElement()) {
+					if (UserSessionHandler.getController().getCompleteFormView().showElement(element)) {
+						element.setHiddenElement(false);
+						if (blockReference != null) {
+							WebformsLogger.info(this.getClass().getName(), "User '"
+									+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '" + element
+									+ "' of block '" + blockReference + "'.");
+						} else {
+							WebformsLogger.info(this.getClass().getName(), "User '"
+									+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '" + element
+									+ "'.");
+						}
+						UserSessionHandler.getController().setUnsavedFormChanges(true);
+					} else {
+						MessageManager.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
+					}
+				} else {
+					try {
+						if (UserSessionHandler.getController().getCompleteFormView().hideElement(element)) {
+							element.setHiddenElement(true);
+							if (blockReference != null) {
+								WebformsLogger.info(this.getClass().getName(), "User '"
+										+ UserSessionHandler.getUser().getEmailAddress() + "' has hide element '"
+										+ element + "' of block '" + blockReference + "'.");
+							} else {
+								WebformsLogger.info(this.getClass().getName(), "User '"
+										+ UserSessionHandler.getUser().getEmailAddress() + "' has hide element '"
+										+ element + "'.");
+							}
+							UserSessionHandler.getController().setUnsavedFormChanges(true);
+						}
+					} catch (ElementCannotBeRemovedException e) {
+						WebformsLogger.errorMessage(this.getClass().getName(), e);
+					}
+				}
+				upperMenu.updateHideButton(element.isHiddenElement());
+				updateRowAndItsChildren(element);
+			}
+		} catch (ReadOnlyException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+		}
+	}
+
+	private void updateRowAndItsChildren(TreeObject row) {
+		table.updateRow(row);
+		for (TreeObject child : row.getChildren()) {
+			updateRowAndItsChildren(child);
+		}
+	}
+
 	private void finishForm() {
 		new WindowProceedAction(LanguageCodes.TEXT_PROCEED_FORM_CLOSE, new AcceptActionListener() {
 			@Override
@@ -600,12 +607,12 @@ public class Designer extends SecuredWebPage {
 			boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
 			boolean formHasLinkedForm = UserSessionHandler.getController().getFormInUse().getFormReference() != null;
 			boolean rowIsNull = (selectedElement == null);
-			boolean rowIsForm = (selectedElement!= null && selectedElement instanceof Form);
+			boolean rowIsForm = (selectedElement != null && selectedElement instanceof Form);
 			boolean rowIsElementReference = (selectedElement != null && selectedElement.isReadOnly());
-			
-			boolean rowIsBlockReferenceCategory = rowIsElementReference && (selectedElement instanceof BaseCategory)
-					&& UserSessionHandler.getController().getCompleteFormView()
-					.getBlockReference(selectedElement) != null;
+
+			boolean rowIsBlockReferenceCategory = rowIsElementReference
+					&& (selectedElement instanceof BaseCategory)
+					&& UserSessionHandler.getController().getCompleteFormView().getBlockReference(selectedElement) != null;
 			boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
 					UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 			boolean canStoreBlock = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
