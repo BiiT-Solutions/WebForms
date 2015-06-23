@@ -8,7 +8,7 @@ public class TreeTableSimpleViewAbcdForm extends TreeTableBaseForm<SimpleFormVie
 	private static final long serialVersionUID = 2299045917723812839L;
 
 	public TreeTableSimpleViewAbcdForm(TreeTableProvider<SimpleFormView> dataProvider) {
-		super(dataProvider);
+		super(dataProvider, null);
 	}
 
 }

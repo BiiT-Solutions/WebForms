@@ -40,6 +40,7 @@ import com.biit.webforms.gui.exceptions.BadAbcdLink;
 import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.gui.exceptions.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.gui.exceptions.NotValidAbcdForm;
+import com.biit.webforms.gui.webpages.formmanager.IconProviderFormLinked;
 import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
 import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
 import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderBaseFormMetadataJson;
@@ -105,7 +106,7 @@ public class FormManager extends SecuredWebPage {
 		setUpperMenu(upperMenu);
 		setBottomMenu(bottomMenu);
 
-		formTable = new TreeTableFormVersion(UserSessionHandler.getController().getTreeTableFormsProvider());
+		formTable = new TreeTableFormVersion(UserSessionHandler.getController().getTreeTableFormsProvider(), new IconProviderFormLinked());
 		formTable.setImmediate(true);
 		formTable.setSizeFull();
 		formTable.addValueChangeListener(new ValueChangeListener() {
