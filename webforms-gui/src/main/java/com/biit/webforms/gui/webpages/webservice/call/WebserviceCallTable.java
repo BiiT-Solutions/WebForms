@@ -19,6 +19,21 @@ public class WebserviceCallTable extends Table{
 	public WebserviceCallTable() {
 		addContainerProperty(Property.NAME, String.class, "",LanguageCodes.WEBSERVICE_CALL_TABLE_NAME.translation(),null,Align.LEFT);
 		addContainerProperty(Property.TRIGGER, String.class, "",LanguageCodes.CAPTION_WEBSERVICE_CALL_TRIGGER.translation(),null,Align.LEFT);
+		setCellStyleGenerator(new CellStyleGenerator() {
+			private static final long serialVersionUID = -4599536268716190030L;
+
+			@Override
+			public String getStyle(Table source, Object itemId, Object propertyId) {
+				String styles = "";
+				if (itemId instanceof WebserviceCall) {
+					if (((WebserviceCall) itemId).isReadOnly()) {
+						styles += "tree-cell-disabled ";
+					}
+				}
+				return styles;
+
+			}
+		});
 	}
 
 	public void addRows(Set<WebserviceCall> calls) {
