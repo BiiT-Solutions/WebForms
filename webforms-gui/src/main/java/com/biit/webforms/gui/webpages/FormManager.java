@@ -806,6 +806,9 @@ public class FormManager extends SecuredWebPage {
 					rowNotNull && canCreateNewVersion && selectedForm.isLastVersion()
 							&& !selectedForm.getStatus().equals(FormWorkStatus.DESIGN));
 
+			upperMenu.getWebformReference().setEnabled(
+					rowNotNullAndForm && (((SimpleFormView) row).getFormReferenceId() == null));
+
 			upperMenu.setEnabledImportAbcd(canCreateForms);
 			upperMenu.setEnabledLinkAbcd(rowNotNullAndForm && canLinkVersion);
 
