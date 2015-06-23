@@ -86,7 +86,7 @@ public class SystemField extends WebformsBaseQuestion {
 
 	@Override
 	public AnswerSubformat getAnswerSubformat() {
-		return null;
+		return AnswerSubformat.TEXT;
 	}
 
 	@Override

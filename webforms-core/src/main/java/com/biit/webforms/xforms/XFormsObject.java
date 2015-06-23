@@ -639,7 +639,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 							alreadyCheckedQuestions.add(((TokenWithQuestion) token).getQuestion());
 						} else {
 							// No token added: remove previous AND or OR.
-							if (TokenUtils.isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
+							if (othersVisibility.size() > 1
+									&& TokenUtils.isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
 								othersVisibility.remove(othersVisibility.size() - 1);
 							}
 						}

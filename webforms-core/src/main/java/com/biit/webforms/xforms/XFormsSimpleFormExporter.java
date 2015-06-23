@@ -18,6 +18,7 @@ import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
@@ -36,8 +37,7 @@ import com.biit.webforms.xml.XpathToXml;
  * The obtained string will have different sections: <br>
  * - Metadata. Different information about the form and xforms language.<br>
  * - Model. The basic structure of the form. <br>
- * - Binding. Used to link the model with some behavior of the component, such
- * as relevance.<br>
+ * - Binding. Used to link the model with some behavior of the component, such as relevance.<br>
  * - Resources. Defines the visualization for each component: label, hint, help. <br>
  * - Templates. This is for loops only <br>
  * - Body. Relation all previous data. <br>
@@ -46,7 +46,8 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	private Set<Webservice> webservices;
 
-	public XFormsSimpleFormExporter(Form form, Set<Webservice> webservices) throws NotValidTreeObjectException, NotValidChildException {
+	public XFormsSimpleFormExporter(Form form, Set<Webservice> webservices) throws NotValidTreeObjectException,
+			NotValidChildException {
 		super(form);
 		this.webservices = new HashSet<>();
 		for (Webservice webservice : webservices) {
@@ -65,8 +66,8 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	 * @throws PostCodeRuleSyntaxError
 	 * @throws DateRuleSyntaxError
 	 */
-	public InputStream generateXFormsLanguage() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError, UnsupportedEncodingException {
+	public InputStream generateXFormsLanguage() throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError, UnsupportedEncodingException {
 		String xforms = generateXFormsForm();
 		try {
 			xforms = XmlUtils.format(xforms);
@@ -81,13 +82,15 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		}
 	}
 
-	private String generateXFormsForm() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
+	private String generateXFormsForm() throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		StringBuilder xforms = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-		xforms.append("<xh:html xmlns:xh=\"http://www.w3.org/1999/xhtml\" " + "xmlns:xf=\"http://www.w3.org/2002/xforms\" ");
+		xforms.append("<xh:html xmlns:xh=\"http://www.w3.org/1999/xhtml\" "
+				+ "xmlns:xf=\"http://www.w3.org/2002/xforms\" ");
 		xforms.append("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
 		xforms.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
-		xforms.append("xmlns:ev=\"http://www.w3.org/2001/xml-events\" " + "xmlns:xi=\"http://www.w3.org/2001/XInclude\" ");
+		xforms.append("xmlns:ev=\"http://www.w3.org/2001/xml-events\" "
+				+ "xmlns:xi=\"http://www.w3.org/2001/XInclude\" ");
 		xforms.append("xmlns:xxi=\"http://orbeon.org/oxf/xml/xinclude\" ");
 		xforms.append("xmlns:xxf=\"http://orbeon.org/oxf/xml/xforms\" xmlns:exf=\"http://www.exforms.org/exf/1-0\" ");
 		xforms.append("xmlns:fr=\"http://orbeon.org/oxf/xml/form-runner\" xmlns:saxon=\"http://saxon.sf.net/\" ");
@@ -150,20 +153,20 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		body.append("xmlns:dataModel=\"java:org.orbeon.oxf.fb.DataModel\" ");
 		body.append("xmlns:oxf=\"http://www.orbeon.com/oxf/processors\" ");
 		body.append("xmlns:p=\"http://www.orbeon.com/oxf/pipeline\" >");
-		
+
 		if (WebformsConfigurationReader.getInstance().isXFormsCustomWizardEnabled()) {
 			setCategoriesMenu(body);
 			body.append("<xh:div class=\"webforms-category-components\" id=\"webforms-category-components\">");
 		}
-		
+
 		body.append(getBodySection(xFormsObject));
-		
+
 		if (WebformsConfigurationReader.getInstance().isXFormsCustomWizardEnabled()) {
 			body.append("</xh:div>");
 			// Script that manages the previous/next buttons of the runner
 			body.append("<script type=\"text/javascript\" src=\"/orbeon/forms/assets/categories-menu.js\"/>");
 		}
-		
+
 		body.append("</fr:body>");
 		if (WebformsConfigurationReader.getInstance().isXFormsCustomWizardEnabled()) {
 			createFormRunnerButtons(body);
@@ -308,10 +311,12 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	private void addWebserviceCallEvent(WebserviceCall call, Webservice webservice, StringBuilder events) {
 		events.append("<xf:action id=\"webservice-call-" + getXFormsHelper().getUniqueName(call) + "-binding\">");
 		events.append("<xf:action ev:event=\"xforms-value-changed xforms-enabled\" ev:observer=\""
-				+ getXFormsHelper().getXFormsObject(call.getFormElementTrigger()).getSectionControlName() + "\" if=\"true()\">");
+				+ getXFormsHelper().getXFormsObject(call.getFormElementTrigger()).getSectionControlName()
+				+ "\" if=\"true()\">");
 		events.append("<xf:send submission=\"" + getWebserviceName(call, webservice) + "\"/>");
 		events.append("</xf:action>");
-		events.append("<xf:action ev:event=\"xforms-submit\" ev:observer=\"" + getWebserviceName(call, webservice) + "\">");
+		events.append("<xf:action ev:event=\"xforms-submit\" ev:observer=\"" + getWebserviceName(call, webservice)
+				+ "\">");
 		events.append("<xf:var name=\"request-instance-name\" value=\"'" + getWebserviceInstance(call, webservice)
 				+ "'\" as=\"xs:string\"/>");
 		events.append("<xf:insert ref=\"instance('fr-service-request-instance')\" origin=\"saxon:parse(instance($request-instance-name))\"/>");
@@ -320,7 +325,8 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		// For each input we need to copy values
 		for (WebserviceCallInputLink inputLink : call.getInputLinks()) {
 			events.append("<xf:action class=\"fr-set-service-value-action\">");
-			events.append("<xf:var name=\"control-name\" value=\"'" + getXFormsHelper().getUniqueName(inputLink.getFormElement()) + "'\"/>");
+			events.append("<xf:var name=\"control-name\" value=\"'"
+					+ getXFormsHelper().getUniqueName(inputLink.getFormElement()) + "'\"/>");
 			events.append("<xf:var name=\"path\" value=\"" + webservice.findInputPort(inputLink).getXpath() + "\"/>");
 			events.append("</xf:action>");
 		}
@@ -333,14 +339,16 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 				+ "\" context=\"instance('fr-service-response-instance')\">");
 		for (WebserviceCallOutputLink outputLink : call.getOutputLinks()) {
 			events.append("<xf:action class=\"fr-set-control-value-action\">");
-			events.append("<xf:var name=\"control-name\" value=\"'" + getXFormsHelper().getUniqueName(outputLink.getFormElement())
-					+ "'\"/>");
-			events.append("<xf:var name=\"control-value\" value=\"" + webservice.findOutputPort(outputLink).getXpath() + "\"/>");
+			events.append("<xf:var name=\"control-name\" value=\"'"
+					+ getXFormsHelper().getUniqueName(outputLink.getFormElement()) + "'\"/>");
+			events.append("<xf:var name=\"control-value\" value=\"" + webservice.findOutputPort(outputLink).getXpath()
+					+ "\"/>");
 			events.append("</xf:action>");
 		}
 		for (WebserviceCallInputLink inputLink : call.getInputLinks()) {
 			if (inputLink.getValidationXpath() != null) {
-				events.append("<xf:insert ref=\"instance('" + getXFormsHelper().getUniqueName(call) + "-" + inputLink.getWebservicePort()
+				events.append("<xf:insert ref=\"instance('" + getXFormsHelper().getUniqueName(call) + "-"
+						+ inputLink.getWebservicePort()
 						+ "-instance')\" origin=\"instance('fr-service-response-instance')\"/>");
 			}
 		}
@@ -357,8 +365,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	}
 
 	/**
-	 * Adds webservice submission which holds the webservice configuration
-	 * values.
+	 * Adds webservice submission which holds the webservice configuration values.
 	 * 
 	 * @param call
 	 * 
@@ -374,8 +381,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	}
 
 	/**
-	 * ADds webservice instance which contains the empty xml structure that will
-	 * be sent to the webservice.
+	 * ADds webservice instance which contains the empty xml structure that will be sent to the webservice.
 	 * 
 	 * @param call
 	 * 
@@ -401,8 +407,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	}
 
 	/**
-	 * Create the events needed to hide an element that depends on a previous
-	 * element visibility.
+	 * Create the events needed to hide an element that depends on a previous element visibility.
 	 * 
 	 * @param events
 	 */
@@ -427,22 +432,27 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	private void addVisibilityObservers(StringBuilder events) {
 		for (TreeObject question : getForm().getAllNotHiddenChildrenInHierarchy(BaseQuestion.class)) {
-			// Element visibility.
-			events.append("<!-- Change the visibility status for '" + question + "'. -->");
-			String elementName = getXFormsHelper().getUniqueName(question);
-			String controlName = getXFormsHelper().getXFormsObject(question).getSectionControlName();
-			events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + controlName + "\" ref=\"instance('visible')/" + elementName
-					+ "\" value=\"'true'\"/>");
-			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + controlName + "\" ref=\"instance('visible')/"
-					+ elementName + "\" value=\"'false'\"/>");
+			// System Fields are always hidden!!
+			if (!(question instanceof SystemField)) {
+				// Element visibility.
+				events.append("<!-- Change the visibility status for '" + question + "'. -->");
+				String elementName = getXFormsHelper().getUniqueName(question);
+				String controlName = getXFormsHelper().getXFormsObject(question).getSectionControlName();
+				events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + controlName
+						+ "\" ref=\"instance('visible')/" + elementName + "\" value=\"'true'\"/>");
+				events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + controlName
+						+ "\" ref=\"instance('visible')/" + elementName + "\" value=\"'false'\"/>");
 
-			// Category visibility.
-			events.append("<!-- Update category showed elements count for '" + question.getName() + "'. -->");
-			String catId = getXFormsHelper().getUniqueName(question.getAncestor(Category.class));
-			events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + controlName + "\" ref=\"instance('visible')/" + catId
-					+ "\" value=\"instance('visible')/" + catId + " + 1\"/>");
-			events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + controlName + "\" ref=\"instance('visible')/" + catId
-					+ "\" value=\"instance('visible')/" + catId + " - 1\"/>");
+				// Category visibility.
+				events.append("<!-- Update category showed elements count for '" + question.getName() + "'. -->");
+				String catId = getXFormsHelper().getUniqueName(question.getAncestor(Category.class));
+				events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + controlName
+						+ "\" ref=\"instance('visible')/" + catId + "\" value=\"instance('visible')/" + catId
+						+ " + 1\"/>");
+				events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + controlName
+						+ "\" ref=\"instance('visible')/" + catId + "\" value=\"instance('visible')/" + catId
+						+ " - 1\"/>");
+			}
 		}
 	}
 
@@ -520,8 +530,8 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	 *            ignored in this case.
 	 */
 	@Override
-	protected String getElementBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException, InvalidDateException,
-			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getElementBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		StringBuilder binding = new StringBuilder();
 		// Add hidden email field.
 		binding.append(XFormsHiddenEmailField.getBinding());
@@ -534,8 +544,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	}
 
 	/**
-	 * Creates the model section of XForms. But also adds the webservice
-	 * validation members
+	 * Creates the model section of XForms. But also adds the webservice validation members
 	 * 
 	 * @param form
 	 * @return
@@ -547,8 +556,8 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 		for (WebserviceCall call : getForm().getWebserviceCalls()) {
 			for (WebserviceCallInputLink inputLink : call.getInputLinks()) {
-				text.append("<xf:instance id=\"" + getXFormsHelper().getUniqueName(call) + "-" + inputLink.getWebservicePort()
-						+ "-instance\">");
+				text.append("<xf:instance id=\"" + getXFormsHelper().getUniqueName(call) + "-"
+						+ inputLink.getWebservicePort() + "-instance\">");
 				text.append("<valid/>");
 				text.append("</xf:instance>");
 			}

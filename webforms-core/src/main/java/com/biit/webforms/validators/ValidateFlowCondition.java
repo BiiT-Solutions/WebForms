@@ -3,6 +3,7 @@ package com.biit.webforms.validators;
 import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.persistence.entity.Flow;
+import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
@@ -52,16 +53,20 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 	private void validateFlowConditionQuestionAreAllMandatory(Flow flow) {
 		for (Token token : flow.getCondition()) {
 			if (token instanceof TokenComparationAnswer) {
-				assertTrue(((TokenComparationAnswer) token).getQuestion().isMandatory(),
+				assertTrue(((TokenComparationAnswer) token).getQuestion() instanceof SystemField
+						|| ((TokenComparationAnswer) token).getQuestion().isMandatory(),
 						new ConditionWithNotMandatoryQuestion(((TokenComparationAnswer) token).getQuestion(), flow));
 			} else if (token instanceof TokenComparationValue) {
-				assertTrue(((TokenComparationValue) token).getQuestion().isMandatory(),
+				assertTrue(((TokenComparationValue) token).getQuestion() instanceof SystemField
+						|| ((TokenComparationValue) token).getQuestion().isMandatory(),
 						new ConditionWithNotMandatoryQuestion(((TokenComparationValue) token).getQuestion(), flow));
 			} else if (token instanceof TokenIn) {
-				assertTrue(((TokenIn) token).getQuestion().isMandatory(), new ConditionWithNotMandatoryQuestion(
+				assertTrue(((TokenIn) token).getQuestion() instanceof SystemField
+						|| ((TokenIn) token).getQuestion().isMandatory(), new ConditionWithNotMandatoryQuestion(
 						((TokenIn) token).getQuestion(), flow));
 			} else if (token instanceof TokenBetween) {
-				assertTrue(((TokenBetween) token).getQuestion().isMandatory(), new ConditionWithNotMandatoryQuestion(
+				assertTrue(((TokenBetween) token).getQuestion() instanceof SystemField
+						|| ((TokenBetween) token).getQuestion().isMandatory(), new ConditionWithNotMandatoryQuestion(
 						((TokenBetween) token).getQuestion(), flow));
 			}
 		}
