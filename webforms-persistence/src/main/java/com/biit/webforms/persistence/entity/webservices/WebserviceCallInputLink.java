@@ -65,7 +65,7 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 			WebserviceCallInputLink link = (WebserviceCallInputLink) object;
 			
 			setValidationXpath(link.getValidationXpath());
-			for(WebserviceCallInputErrors error: getErrors()){
+			for(WebserviceCallInputErrors error: link.getErrors()){
 				addWebserviceCallInputError(new WebserviceCallInputErrors(error.getErrorCode(), error.getErrorMessage()));
 			}
 		} else {

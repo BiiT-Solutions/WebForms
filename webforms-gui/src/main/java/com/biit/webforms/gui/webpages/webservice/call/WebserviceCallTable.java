@@ -11,11 +11,14 @@ public class WebserviceCallTable extends Table{
 	private static final long serialVersionUID = 6695070714351142950L;
 	
 	enum Property{
-		NAME;
+		NAME,
+		TRIGGER,
+		;
 	}
 
 	public WebserviceCallTable() {
 		addContainerProperty(Property.NAME, String.class, "",LanguageCodes.WEBSERVICE_CALL_TABLE_NAME.translation(),null,Align.LEFT);
+		addContainerProperty(Property.TRIGGER, String.class, "",LanguageCodes.CAPTION_WEBSERVICE_CALL_TRIGGER.translation(),null,Align.LEFT);
 	}
 
 	public void addRows(Set<WebserviceCall> calls) {
@@ -32,6 +35,7 @@ public class WebserviceCallTable extends Table{
 	@SuppressWarnings("unchecked")
 	public void updateRow(Item item, WebserviceCall call){
 		item.getItemProperty(Property.NAME).setValue(call.getName());
+		item.getItemProperty(Property.TRIGGER).setValue(call.getFormElementTrigger().getPathName());
 	}
 	
 	public void sortByName() {

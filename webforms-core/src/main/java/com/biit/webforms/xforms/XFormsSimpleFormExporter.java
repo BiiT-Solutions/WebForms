@@ -203,32 +203,13 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	protected String getEventsDefinitions(XFormsObject<?> xFormsObject) {
 		StringBuilder events = new StringBuilder();
 		addVisibilityEvents(events);
-		addWebservices(events);
 		addWebserviceCallEvents(events);
 		return events.toString();
 	}
 
-	private void addWebservices(StringBuilder events) {
-		for (Webservice webservice : getUsedWebservices()) {
-			addWebserviceSubmission(webservice, events);
-			addWebserviceInstance(webservice, events);
-		}
-	}
-	
-	
-	private Set<Webservice> getUsedWebservices() {
-		Set<Webservice> usedWebservices = new HashSet<>();
-		for(Webservice webservice: webservices){
-			if(getForm().usesWebservice(webservice)){
-				usedWebservices.add(webservice);
-			}
-		}
-		return usedWebservices;
-	}
-
 	private Webservice getWebservice(WebserviceCall call) {
-		for(Webservice webservice: webservices){
-			if(Objects.equals(webservice.getName(),call.getWebserviceName())){
+		for (Webservice webservice : webservices) {
+			if (Objects.equals(webservice.getName(), call.getWebserviceName())) {
 				return webservice;
 			}
 		}
@@ -241,48 +222,64 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	 * @param events
 	 */
 	private void addWebserviceCallEvents(StringBuilder events) {
-		events.append("<!-- Webservice calls -->");
 		for (WebserviceCall call : getForm().getWebserviceCalls()) {
-			addWebserviceCallEvent(call,getWebservice(call),events);
+			events.append("<!-- Webservice call " + getXFormsHelper().getUniqueName(call) + " -->");
+			Webservice webservice = getWebservice(call);
+			addWebserviceSubmission(call, webservice, events);
+			addWebserviceInstance(call, webservice, events);
+			addWebserviceCallEvent(call, webservice, events);
 		}
 	}
-	
+
 	private void addWebserviceCallEvent(WebserviceCall call, Webservice webservice, StringBuilder events) {
-		events.append("<xf:action id=\"webservice-call-"+call.getName()+"-binding\">");
-		events.append("<xf:action ev:event=\"xforms-value-changed xforms-enabled\" ev:observer=\""+getXFormsHelper().getXFormsObject(call.getFormElementTrigger()).getSectionControlName()+"\" if=\"true()\">");
-		events.append("<xf:send submission=\""+webservice.getName()+"-submission\"/>");
+		events.append("<xf:action id=\"webservice-call-" + getXFormsHelper().getUniqueName(call) + "-binding\">");
+		events.append("<xf:action ev:event=\"xforms-value-changed xforms-enabled\" ev:observer=\""
+				+ getXFormsHelper().getXFormsObject(call.getFormElementTrigger()).getSectionControlName() + "\" if=\"true()\">");
+		events.append("<xf:send submission=\"" + getWebserviceName(call, webservice) + "\"/>");
 		events.append("</xf:action>");
-		events.append("<xf:action ev:event=\"xforms-submit\" ev:observer=\""+webservice.getName()+"-submission\">");
-		events.append("<xf:var name=\"request-instance-name\" value=\"'"+webservice.getName()+"-instance'\" as=\"xs:string\"/>");
+		events.append("<xf:action ev:event=\"xforms-submit\" ev:observer=\"" + getWebserviceName(call, webservice) + "\">");
+		events.append("<xf:var name=\"request-instance-name\" value=\"'" + getWebserviceInstance(call, webservice)
+				+ "'\" as=\"xs:string\"/>");
 		events.append("<xf:insert ref=\"instance('fr-service-request-instance')\" origin=\"saxon:parse(instance($request-instance-name))\"/>");
 		events.append("<xf:action context=\"instance('fr-service-request-instance')\">");
-		
-		//For each input we need to copy values
-		for(WebserviceCallInputLink inputLink: call.getInputLinks()){
+
+		// For each input we need to copy values
+		for (WebserviceCallInputLink inputLink : call.getInputLinks()) {
 			events.append("<xf:action class=\"fr-set-service-value-action\">");
-			events.append("<xf:var name=\"control-name\" value=\"'"+getXFormsHelper().getUniqueName(inputLink.getFormElement())+"'\"/>");
-			events.append("<xf:var name=\"path\" value=\""+webservice.findInputPort(inputLink).getXpath()+"\"/>");
+			events.append("<xf:var name=\"control-name\" value=\"'" + getXFormsHelper().getUniqueName(inputLink.getFormElement()) + "'\"/>");
+			events.append("<xf:var name=\"path\" value=\"" + webservice.findInputPort(inputLink).getXpath() + "\"/>");
 			events.append("</xf:action>");
 		}
-                
+
 		events.append("</xf:action>");
 		events.append("</xf:action>");
 
-		//Response actions
-		events.append("<xf:action ev:event=\"xforms-submit-done\" ev:observer=\""+webservice.getName()+"-submission\" context=\"instance('fr-service-response-instance')\">");
-		for(WebserviceCallOutputLink outputLink: call.getOutputLinks()){
+		// Response actions
+		events.append("<xf:action ev:event=\"xforms-submit-done\" ev:observer=\"" + getWebserviceName(call, webservice)
+				+ "\" context=\"instance('fr-service-response-instance')\">");
+		for (WebserviceCallOutputLink outputLink : call.getOutputLinks()) {
 			events.append("<xf:action class=\"fr-set-control-value-action\">");
-			events.append("<xf:var name=\"control-name\" value=\"'"+getXFormsHelper().getUniqueName(outputLink.getFormElement())+"'\"/>");
-			events.append("<xf:var name=\"control-value\" value=\""+webservice.findOutputPort(outputLink).getXpath()+"\"/>");
-       		events.append("</xf:action>");
+			events.append("<xf:var name=\"control-name\" value=\"'" + getXFormsHelper().getUniqueName(outputLink.getFormElement())
+					+ "'\"/>");
+			events.append("<xf:var name=\"control-value\" value=\"" + webservice.findOutputPort(outputLink).getXpath() + "\"/>");
+			events.append("</xf:action>");
 		}
-		for(WebserviceCallInputLink inputLink: call.getInputLinks()){
-			if(inputLink.getValidationXpath()!=null){
-				events.append("<xf:insert ref=\"instance('"+call.getName()+"-"+inputLink.getWebservicePort()+"-instance')\" origin=\"instance('fr-service-response-instance')\"/>");
+		for (WebserviceCallInputLink inputLink : call.getInputLinks()) {
+			if (inputLink.getValidationXpath() != null) {
+				events.append("<xf:insert ref=\"instance('" + getXFormsHelper().getUniqueName(call) + "-" + inputLink.getWebservicePort()
+						+ "-instance')\" origin=\"instance('fr-service-response-instance')\"/>");
 			}
 		}
 		events.append("</xf:action>");
 		events.append("</xf:action>");
+	}
+
+	private String getWebserviceInstance(WebserviceCall call, Webservice webservice) {
+		return getXFormsHelper().getUniqueName(call) + "-" + webservice.getName() + "-instance";
+	}
+
+	private String getWebserviceName(WebserviceCall call, Webservice webservice) {
+		return getXFormsHelper().getUniqueName(call) + "-" + webservice.getName() + "-submission";
 	}
 
 	/**
@@ -290,12 +287,14 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	 * values.
 	 * 
 	 * @param call
+	 * 
+	 * @param call
 	 * @param events
 	 */
-	private void addWebserviceSubmission(Webservice webservice, StringBuilder events) {
+	private void addWebserviceSubmission(WebserviceCall call, Webservice webservice, StringBuilder events) {
 		events.append("<xf:submission id=\""
-				+ webservice.getName()
-				+ "-submission\" class=\"fr-service\" ref=\"instance('fr-service-request-instance')\" resource=\""
+				+ getWebserviceName(call, webservice)
+				+ "\" class=\"fr-service\" ref=\"instance('fr-service-request-instance')\" resource=\""
 				+ webservice.getUrl()
 				+ "\" method=\"post\" serialization=\"application/xml\" mediatype=\"application/xml\" replace=\"instance\" instance=\"fr-service-response-instance\"/>");
 	}
@@ -304,11 +303,14 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	 * ADds webservice instance which contains the empty xml structure that will
 	 * be sent to the webservice.
 	 * 
+	 * @param call
+	 * 
 	 * @param webservice
 	 * @param events
 	 */
-	private void addWebserviceInstance(Webservice webservice, StringBuilder events) {
-		events.append("<xf:instance id=\""+webservice.getName()+"-instance\" class=\"fr-service\" xxf:exclude-result-prefixes=\"#all\">");
+	private void addWebserviceInstance(WebserviceCall call, Webservice webservice, StringBuilder events) {
+		events.append("<xf:instance id=\"" + getWebserviceInstance(call, webservice)
+				+ "\" class=\"fr-service\" xxf:exclude-result-prefixes=\"#all\">");
 		events.append("<body xmlns:secure=\"java:org.orbeon.oxf.util.SecureUtils\" xmlns:frf=\"java:org.orbeon.oxf.fr.FormRunner\" xmlns:p=\"http://www.orbeon.com/oxf/pipeline\" xmlns:fbf=\"java:org.orbeon.oxf.fb.FormBuilder\">");
 		events.append(generateCodifiedXml(webservice));
 		events.append("</body>");
@@ -317,8 +319,8 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	private String generateCodifiedXml(Webservice webservice) {
 		XpathToXml conversor = new XpathToXml();
-		
-		for(WebserviceValidatedPort inputPort: webservice.getInputPorts()){
+
+		for (WebserviceValidatedPort inputPort : webservice.getInputPorts()) {
 			conversor.addXpath(inputPort.getXpath());
 		}
 		return conversor.generateCodifiedXml();
@@ -389,7 +391,8 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	}
 
 	/**
-	 * Creates the model section of XForms. But also adds the webservice validation members
+	 * Creates the model section of XForms. But also adds the webservice
+	 * validation members
 	 * 
 	 * @param form
 	 * @return
@@ -398,10 +401,11 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	@Override
 	protected String getModelInstance() {
 		StringBuilder text = new StringBuilder(super.getModelInstance());
-		
-		for(WebserviceCall call: getForm().getWebserviceCalls()){
-			for(WebserviceCallInputLink inputLink: call.getInputLinks()){
-				text.append("<xf:instance id=\""+call.getName()+"-"+inputLink.getWebservicePort()+"-instance\">");
+
+		for (WebserviceCall call : getForm().getWebserviceCalls()) {
+			for (WebserviceCallInputLink inputLink : call.getInputLinks()) {
+				text.append("<xf:instance id=\"" + getXFormsHelper().getUniqueName(call) + "-" + inputLink.getWebservicePort()
+						+ "-instance\">");
 				text.append("<valid/>");
 				text.append("</xf:instance>");
 			}

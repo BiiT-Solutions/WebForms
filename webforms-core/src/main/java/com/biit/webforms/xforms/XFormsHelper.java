@@ -40,6 +40,9 @@ class XFormsHelper {
 	private Set<String> usedControlNames;
 	private HashMap<BaseQuestion, WebserviceCallOutputLink> webserviceOuput;
 	private HashMap<BaseQuestion, Set<WebserviceCallInputLink>> webserviceInputs;
+	private Set<String> usedCallNames;
+	
+	private HashMap<WebserviceCall, String> callNames;
 
 	protected XFormsHelper(Form form) {
 		questions = new ArrayList<>();
@@ -55,6 +58,8 @@ class XFormsHelper {
 		flowsByDestiny = new HashMap<>();
 		webserviceOuput = new HashMap<>();
 		webserviceInputs = new HashMap<>();
+		callNames = new HashMap<>();
+		usedCallNames = new HashSet<>();
 
 		// Set questions in order.
 		LinkedHashSet<TreeObject> allBaseQuestions = form.getAllNotHiddenChildrenInHierarchy(BaseQuestion.class);
@@ -288,6 +293,23 @@ class XFormsHelper {
 			}
 		}
 		return controlNames.get(treeObject);
+	}
+	
+	public String getUniqueName(WebserviceCall call){
+		if (callNames.get(call) == null) {
+			if (!usedCallNames.contains(call.getName())) {
+				callNames.put(call, call.getName());
+				usedCallNames.add(call.getName());
+			} else {
+				int i = 2;
+				while (usedCallNames.contains(call.getName() + "-" + i)) {
+					i++;
+				}
+				callNames.put(call, call.getName() + "-" + i);
+				usedCallNames.add(call.getName() + "-" + i);
+			}
+		}
+		return callNames.get(call);
 	}
 
 	public Set<Flow> getDefaultFlows() {
