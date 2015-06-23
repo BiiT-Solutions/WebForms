@@ -5,6 +5,7 @@ import com.biit.form.entity.BaseGroup;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -51,14 +52,17 @@ public class XFormsCategory extends XFormsGroup {
 		}
 		binding.append("</xf:bind>");
 	}
-	
+
 	/**
 	 * Groups are represented as sections.
 	 */
 	@Override
 	protected void getSectionBody(StringBuilder body) {
 		body.append("<fr:section id=\"").append(getSectionControlName());
-		body.append("\" class=\"").append(getCssClass()).append(getCSSDisplayConditionRule());
+		body.append("\" class=\"").append(getCssClass());
+		if (WebformsConfigurationReader.getInstance().isXFormsCustomWizardEnabled()) {
+			body.append(getCSSDisplayConditionRule());
+		}
 		body.append("\" bind=\"").append(getBindingId()).append("\">");
 		body.append(getBodyLabel());
 		body.append(getBodyHint());
@@ -69,8 +73,10 @@ public class XFormsCategory extends XFormsGroup {
 		}
 		body.append("</fr:section>");
 	}
-	
-	private String getCSSDisplayConditionRule(){
-		return " {if((instance('category-menu-button-active')/"+getUniqueName()+"='true') and (instance('show-category')/"+getUniqueName()+"='true')) then '' else 'category-show-disabled'}";
+
+	private String getCSSDisplayConditionRule() {
+		return " {if((instance('category-menu-button-active')/" + getUniqueName()
+				+ "='true') and (instance('show-category')/" + getUniqueName()
+				+ "='true')) then '' else 'category-show-disabled'}";
 	}
 }

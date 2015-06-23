@@ -11,6 +11,7 @@ import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
@@ -136,14 +137,24 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		body.append("xmlns:dataModel=\"java:org.orbeon.oxf.fb.DataModel\" ");
 		body.append("xmlns:oxf=\"http://www.orbeon.com/oxf/processors\" ");
 		body.append("xmlns:p=\"http://www.orbeon.com/oxf/pipeline\" >");
-		setCategoriesMenu(body);
-		body.append("<xh:div class=\"webforms-category-components\" id=\"webforms-category-components\">");
+		
+		if (WebformsConfigurationReader.getInstance().isXFormsCustomWizardEnabled()) {
+			setCategoriesMenu(body);
+			body.append("<xh:div class=\"webforms-category-components\" id=\"webforms-category-components\">");
+		}
+		
 		body.append(getBodySection(xFormsObject));
-		body.append("</xh:div>");
-		// Script that manages the previous/next buttons of the runner
-		body.append("<script type=\"text/javascript\" src=\"/orbeon/forms/assets/categories-menu.js\"/>");
+		
+		if (WebformsConfigurationReader.getInstance().isXFormsCustomWizardEnabled()) {
+			body.append("</xh:div>");
+			// Script that manages the previous/next buttons of the runner
+			body.append("<script type=\"text/javascript\" src=\"/orbeon/forms/assets/categories-menu.js\"/>");
+		}
+		
 		body.append("</fr:body>");
-		createFormRunnerButtons(body);
+		if (WebformsConfigurationReader.getInstance().isXFormsCustomWizardEnabled()) {
+			createFormRunnerButtons(body);
+		}
 		body.append("</fr:view>");
 		body.append("</xh:body>");
 		return body.toString();
@@ -250,7 +261,9 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	protected String getEventsDefinitions(XFormsObject<?> xFormsObject) {
 		StringBuilder events = new StringBuilder();
 		addVisibilityEvents(events);
-		addCategoryMenuEvents(events);
+		if (WebformsConfigurationReader.getInstance().isXFormsCustomWizardEnabled()) {
+			addCategoryMenuEvents(events);
+		}
 		return events.toString();
 	}
 
@@ -349,7 +362,8 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		for (XFormsCategory category : getXFormsCategories()) {
 			events.append(category.getUniqueName() + "-control ");
 		}
-		events.deleteCharAt(events.length()-1).append("\"> <xf:load resource=\"javascript:enableDisablePreviousNextButtons()\"/>");
+		events.deleteCharAt(events.length() - 1).append(
+				"\"> <xf:load resource=\"javascript:enableDisablePreviousNextButtons()\"/>");
 		events.append("</xf:action>");
 
 		for (XFormsCategory category : getXFormsCategories()) {
