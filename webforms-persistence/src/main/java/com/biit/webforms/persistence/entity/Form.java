@@ -99,7 +99,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
 	private Set<Flow> rules;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
 	private Set<WebserviceCall> webserviceCalls;
 
@@ -241,7 +241,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 			elementsToHide.remove(element);
 			showed = true;
 		}
-		//Show also any child. 
+		// Show also any child.
 		for (TreeObject child : element.getChildren()) {
 			showElement(child);
 		}
@@ -361,27 +361,26 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 
 		copy.updateDynamicAnswers();
-		
 
 		return copy;
 	}
 
 	private void updateWebserviceCallReferences() {
 		HashMap<String, BaseQuestion> references = new HashMap<String, BaseQuestion>();
-		for(TreeObject object: this.getAll(BaseQuestion.class)){
-			references.put(object.getComparationId(), (BaseQuestion) object);
+		for (TreeObject object : this.getAll(BaseQuestion.class)) {
+			references.put(object.getOriginalReference(), (BaseQuestion) object);
 		}
-		for(WebserviceCall call: getWebserviceCalls()){
+		for (WebserviceCall call : getWebserviceCalls()) {
 			call.updateReferences(references);
 		}
 	}
 
 	private void webserviceCalls(Form form) throws NotValidStorableObjectException {
-		 for(WebserviceCall call: form.getWebserviceCalls()){
-			 WebserviceCall copy = new WebserviceCall();
-			 copy.copyData(call);
-			 addWebserviceCall(copy);
-		 }
+		for (WebserviceCall call : form.getWebserviceCalls()) {
+			WebserviceCall copy = new WebserviceCall();
+			copy.copyData(call);
+			addWebserviceCall(copy);
+		}
 	}
 
 	private void updateDynamicAnswers() {
@@ -703,7 +702,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		for (Flow rule : getFlows()) {
 			rule.resetIds();
 		}
-		for(WebserviceCall call: getWebserviceCalls()){
+		for (WebserviceCall call : getWebserviceCalls()) {
 			call.resetIds();
 		}
 	}
@@ -961,6 +960,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 		Form form = (Form) objectToMove.getAncestor(Form.class);
 		form.updateRuleReferences();
+		form.updateDynamicAnswers();
+		form.updateWebserviceCallReferences();
 		return newInstanceOfObjectToMove;
 	}
 
@@ -997,25 +998,25 @@ public class Form extends BaseForm implements IWebformsFormView {
 		}
 		return super.compareTo(arg0);
 	}
-	
-	public Set<WebserviceCall> getWebserviceCalls(){
+
+	public Set<WebserviceCall> getWebserviceCalls() {
 		return webserviceCalls;
 	}
-	
-	public void addWebserviceCall(WebserviceCall webservviceCall){
+
+	public void addWebserviceCall(WebserviceCall webservviceCall) {
 		webserviceCalls.add(webservviceCall);
 		webservviceCall.setForm(this);
 	}
-	
+
 	public void addWebserviceCalls(Set<WebserviceCall> webserviceCalls) {
-		for(WebserviceCall call: webserviceCalls){
+		for (WebserviceCall call : webserviceCalls) {
 			addWebserviceCall(call);
 		}
 	}
 
 	public boolean usesWebservice(Webservice webservice) {
-		for(WebserviceCall call: getWebserviceCalls()){
-			if(Objects.equals(call.getWebserviceName(),webservice.getName())){
+		for (WebserviceCall call : getWebserviceCalls()) {
+			if (Objects.equals(call.getWebserviceName(), webservice.getName())) {
 				return true;
 			}
 		}

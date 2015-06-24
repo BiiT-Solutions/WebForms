@@ -156,7 +156,7 @@ public class WebserviceCall extends StorableObject {
 
 	public void updateReferences(HashMap<String, BaseQuestion> references) {
 		if (getFormElementTrigger() != null) {
-			setFormElementTrigger((Question) references.get(getFormElementTrigger().getComparationId()));
+			setFormElementTrigger((Question) references.get(getFormElementTrigger().getOriginalReference()));
 		}
 		for (WebserviceCallLink link : getInputLinks()) {
 			link.updateReferences(references);

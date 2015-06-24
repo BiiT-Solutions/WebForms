@@ -91,7 +91,7 @@ public abstract class WebserviceCallLink extends StorableObject {
 
 	public void updateReferences(HashMap<String, BaseQuestion> references) {
 		if (getFormElement() != null) {
-			setFormElement(references.get(getFormElement().getComparationId()));
+			setFormElement(references.get(getFormElement().getOriginalReference()));
 		}
 	}
 
