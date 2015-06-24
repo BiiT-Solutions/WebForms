@@ -322,7 +322,7 @@
         ID bigint not null auto_increment,
         errorCode varchar(255),
         errorMessage varchar(255),
-        webserviceCallInput_ID bigint not null,
+        webserviceCallInputLink_ID bigint not null,
         primary key (ID)
     );
 
@@ -530,14 +530,9 @@
         references webservice_call (ID);
 
     alter table webservice_call_input_link_errors 
-        add constraint FK_tab4uwlftutunr7f2dmays0v8 
-        foreign key (webserviceCallInput_ID) 
+        add constraint FK_d10983vqvyeh4v32lxya3ego5 
+        foreign key (webserviceCallInputLink_ID) 
         references webservice_call_input_link (ID);
-
-    alter table webservice_call_input_link_errors 
-        add constraint FK_kkh7ildmbyq4iqj566ovuhi2 
-        foreign key (ID) 
-        references webservice_call_input_link_errors (ID);
 
     alter table webservice_call_output_link 
         add constraint FK_6xdyavaobw5ajkh22m3wpl63d 

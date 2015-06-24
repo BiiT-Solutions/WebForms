@@ -12,26 +12,26 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "webservice_call_input_link_errors")
-public class WebserviceCallInputErrors implements Serializable, Comparable<WebserviceCallInputErrors>{
+public class WebserviceCallInputLinkErrors implements Serializable, Comparable<WebserviceCallInputLinkErrors> {
 	private static final long serialVersionUID = -939386770345155248L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID", unique = true, nullable = false)
 	private Long id;
-	
+
 	@ManyToOne(optional = false)
-	private WebserviceCallInputLink webserviceCallInput;
+	private WebserviceCallInputLink webserviceCallInputLink;
 
 	private String errorCode;
 
 	private String errorMessage;
-	
-	protected WebserviceCallInputErrors(){
+
+	protected WebserviceCallInputLinkErrors() {
 		super();
 	}
 
-	public WebserviceCallInputErrors(String errorCode , String errorMessage) {
+	public WebserviceCallInputLinkErrors(String errorCode, String errorMessage) {
 		super();
 		setErrorCode(errorCode);
 		setErrorMessage(errorMessage);
@@ -57,19 +57,19 @@ public class WebserviceCallInputErrors implements Serializable, Comparable<Webse
 		return (errorCode != null && errorMessage != null && !errorCode.isEmpty() && !errorMessage.isEmpty());
 	}
 
-	public WebserviceCallInputLink getWebserviceCallInput() {
-		return webserviceCallInput;
+	public WebserviceCallInputLink getWebserviceCallInputLink() {
+		return webserviceCallInputLink;
 	}
 
-	public void setWebserviceCallInput(WebserviceCallInputLink webserviceCallInput) {
-		this.webserviceCallInput = webserviceCallInput;
+	public void setWebserviceCallInputLink(WebserviceCallInputLink webserviceCallInput) {
+		this.webserviceCallInputLink = webserviceCallInput;
 	}
 
 	@Override
-	public int compareTo(WebserviceCallInputErrors arg0) {
-		if(arg0 ==null){
+	public int compareTo(WebserviceCallInputLinkErrors arg0) {
+		if (arg0 == null) {
 			return 1;
-		}else{
+		} else {
 			return this.getErrorCode().compareTo(arg0.getErrorCode());
 		}
 	}
