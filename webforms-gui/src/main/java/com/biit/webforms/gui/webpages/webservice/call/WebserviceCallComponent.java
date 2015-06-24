@@ -1,10 +1,12 @@
 package com.biit.webforms.gui.webpages.webservice.call;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.biit.form.entity.BaseQuestion;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -15,6 +17,9 @@ import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFo
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
+import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
@@ -54,7 +59,7 @@ public class WebserviceCallComponent extends CustomComponent {
 
 	private WebserviceCall webserviceCall;
 	private Webservice webservice;
-	
+
 	private final List<IWebserviceCallLinkValueChange> listeners;
 
 	public WebserviceCallComponent() {
@@ -68,7 +73,8 @@ public class WebserviceCallComponent extends CustomComponent {
 
 		webserviceCallName = new TextField();
 		webserviceName = new TextField();
-		webserviceCallTrigger = new SearchFormElementField();
+		webserviceCallTrigger = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
+		webserviceCallTrigger.setSelectableFilter(Question.class);
 
 		inputValueChangeListener = new ValueChangeListener() {
 			private static final long serialVersionUID = -6889903544916406512L;
@@ -117,10 +123,10 @@ public class WebserviceCallComponent extends CustomComponent {
 		webserviceCallTrigger.setCaption(LanguageCodes.CAPTION_WEBSERVICE_CALL_TRIGGER.translation());
 		webserviceCallTrigger.setWidth(FULL);
 		webserviceCallTrigger.addValueChangeListener(new SearchFormElementChanged() {
-			
+
 			@Override
 			public void currentElement(Object object) {
-				if(webserviceCall!=null){
+				if (webserviceCall != null) {
 					webserviceCall.setFormElementTrigger((Question) object);
 				}
 			}
@@ -132,12 +138,12 @@ public class WebserviceCallComponent extends CustomComponent {
 		names.setSpacing(true);
 		names.addComponent(webserviceCallName);
 		names.addComponent(webserviceName);
-		
+
 		FormLayout trigger = new FormLayout();
 		trigger.setWidth(FULL);
 		trigger.setHeightUndefined();
 		trigger.setSpacing(true);
-		trigger.addComponent(webserviceCallTrigger);		
+		trigger.addComponent(webserviceCallTrigger);
 
 		HorizontalLayout webserviceCallData = new HorizontalLayout();
 		webserviceCallData.setWidth(FULL);
@@ -153,13 +159,13 @@ public class WebserviceCallComponent extends CustomComponent {
 
 		inputTable.setCaption(LanguageCodes.CAPTION_WEBSERVICE_CALL_INPUT_LINK.translation());
 		outputTable.setCaption(LanguageCodes.CAPTION_WEBSERVICE_CALL_OUTPUT_LINK.translation());
-		
+
 		inputTable.addItemClickListener(new ItemClickListener() {
 			private static final long serialVersionUID = -5668566958376219563L;
 
 			@Override
 			public void itemClick(ItemClickEvent event) {
-				if(event.isDoubleClick()){
+				if (event.isDoubleClick()) {
 					Object itemId = event.getItemId();
 					inputTable.setValue(itemId);
 					editSelectedLink();
@@ -171,7 +177,7 @@ public class WebserviceCallComponent extends CustomComponent {
 
 			@Override
 			public void itemClick(ItemClickEvent event) {
-				if(event.isDoubleClick()){
+				if (event.isDoubleClick()) {
 					Object itemId = event.getItemId();
 					outputTable.setValue(itemId);
 					editSelectedLink();
@@ -220,8 +226,8 @@ public class WebserviceCallComponent extends CustomComponent {
 		} else {
 			webserviceCallName.setValue(webserviceCall.getName());
 			webserviceName.setValue(webservice.getName());
-			inputTable.addRows(getAllInputLinks(),new HashSet<WebservicePort>(webservice.getInputPorts()));
-			outputTable.addRows(getAllOutputLinks(),webservice.getOutputPorts());
+			inputTable.addRows(getAllInputLinks(), new HashSet<WebservicePort>(webservice.getInputPorts()));
+			outputTable.addRows(getAllOutputLinks(), webservice.getOutputPorts());
 			webserviceCallTrigger.setTreeObject(webserviceCall.getFormElementTrigger());
 
 			inputTable.sortByName();
@@ -232,8 +238,7 @@ public class WebserviceCallComponent extends CustomComponent {
 	}
 
 	/**
-	 * Get a set of output call links with new elements for all not used ports
-	 * and the already existing ones.
+	 * Get a set of output call links with new elements for all not used ports and the already existing ones.
 	 * 
 	 * @return
 	 */
@@ -316,28 +321,27 @@ public class WebserviceCallComponent extends CustomComponent {
 	}
 
 	public void editSelectedLink() {
-		//Check read only.
+		// Check read only.
 		if (UserSessionHandler.getController().getFormInUse() != null
 				&& !WebformsAuthorizationService.getInstance().isFormEditable(
 						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
 			return;
 		}
-		
-		
+
 		WebserviceCallLink selected = getSelectedLink();
 		if (selected instanceof WebserviceCallInputLink) {
-			editInputLink((WebserviceCallInputLink) selected,webservice.getInputPort(selected.getWebservicePort()));
+			editInputLink((WebserviceCallInputLink) selected, webservice.getInputPort(selected.getWebservicePort()));
 			return;
 		}
 		if (selected instanceof WebserviceCallOutputLink) {
-			editOutputLink((WebserviceCallOutputLink) selected,webservice.getOutputPort(selected.getWebservicePort()));
+			editOutputLink((WebserviceCallOutputLink) selected, webservice.getOutputPort(selected.getWebservicePort()));
 			return;
 		}
 	}
 
 	private void editOutputLink(final WebserviceCallOutputLink link, WebservicePort port) {
 		WindowEditOutputLink window = new WindowEditOutputLink();
-		window.setValue(link,port);
+		window.setValue(link, port);
 		window.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
@@ -355,7 +359,7 @@ public class WebserviceCallComponent extends CustomComponent {
 
 	private void editInputLink(final WebserviceCallInputLink link, WebserviceValidatedPort port) {
 		WindowEditInputLink window = new WindowEditInputLink();
-		window.setValue(link,port);
+		window.setValue(link, port);
 		window.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
@@ -364,28 +368,50 @@ public class WebserviceCallComponent extends CustomComponent {
 				windowLink.updateValue();
 
 				webserviceCall.addInputLink(link);
+				if (isLastInputLink(link) && (link.getFormElement() instanceof Question)) {
+					if (webserviceCallTrigger.getTreeObject() == null) {
+						webserviceCallTrigger.setTreeObject(link.getFormElement());
+					}
+				}
 				updateUiLinkInformation(link);
 				window.close();
 			}
 		});
 		window.showCentered();
 	}
-	
-	public void addListener(IWebserviceCallLinkValueChange listener){
+
+	/**
+	 * Checks if the selected link is the last one.
+	 * 
+	 * @param link
+	 * @return
+	 */
+	private boolean isLastInputLink(WebserviceCallInputLink link) {
+		Set<WebserviceCallInputLink> inputLinks = webserviceCall.getInputLinks();
+		List<BaseQuestion> questions = new ArrayList<>();
+		for (WebserviceCallInputLink inputLink : inputLinks) {
+			questions.add(inputLink.getFormElement());
+		}
+		// Order question.
+		Collections.sort(questions);
+		return questions.get(questions.size() - 1).equals(link.getFormElement());
+	}
+
+	public void addListener(IWebserviceCallLinkValueChange listener) {
 		listeners.add(listener);
 	}
-	
-	public void fireListenerValueChange(WebserviceCallLink link){
-		for(IWebserviceCallLinkValueChange listener: listeners){
+
+	public void fireListenerValueChange(WebserviceCallLink link) {
+		for (IWebserviceCallLinkValueChange listener : listeners) {
 			listener.valueChange(link);
 		}
 	}
 
 	public void select(WebserviceCallLink link) {
-		if(link!=null){
-			if(link instanceof WebserviceCallInputLink){
+		if (link != null) {
+			if (link instanceof WebserviceCallInputLink) {
 				inputTable.setValue(link);
-			}else if(link instanceof WebserviceCallOutputLink){
+			} else if (link instanceof WebserviceCallOutputLink) {
 				outputTable.setValue(link);
 			}
 		}

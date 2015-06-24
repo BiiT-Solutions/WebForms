@@ -130,6 +130,10 @@ public class WebserviceCall extends StorableObject {
 		this.form = form;
 	}
 
+	/**
+	 * Question that run the web service. 
+	 * @return
+	 */
 	public Question getFormElementTrigger() {
 		return formElementTrigger;
 	}
