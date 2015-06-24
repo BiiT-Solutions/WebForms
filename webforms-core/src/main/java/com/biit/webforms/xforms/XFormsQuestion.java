@@ -23,7 +23,7 @@ import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOrigin
 import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputErrors;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
@@ -160,8 +160,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		}
 	}
 
-	private List<WebserviceCallInputErrors> getWebserviceCallInputErrors() {
-		List<WebserviceCallInputErrors> callInputErrors = new ArrayList<>();
+	private List<WebserviceCallInputLinkErrors> getWebserviceCallInputErrors() {
+		List<WebserviceCallInputLinkErrors> callInputErrors = new ArrayList<>();
 		Set<WebserviceCallInputLink> inputLinks = getXFormsHelper().getWebserviceCallInputLinks(getSource());
 
 		for (WebserviceCallInputLink inputLink : inputLinks) {
@@ -173,12 +173,12 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	private void getWebserviceConstraints(StringBuilder constraints) {
-		List<WebserviceCallInputErrors> webserviceValidations = getWebserviceCallInputErrors();
+		List<WebserviceCallInputLinkErrors> webserviceValidations = getWebserviceCallInputErrors();
 
 		for (int i = 0; i < webserviceValidations.size(); i++) {
-			String webserviceValidatorInstance = getWebserviceValidatorInstance(webserviceValidations.get(i).getWebserviceCallInput());
+			String webserviceValidatorInstance = getWebserviceValidatorInstance(webserviceValidations.get(i).getWebserviceCallInputLink());
 			constraints.append("<xf:constraint id=\"webservice-constraint-"+ getXFormsHelper().getUniqueName(getSource()) +"-" + i + "-validation\" ");
-			constraints.append("value=\"instance('" + webserviceValidatorInstance + "')"+webserviceValidations.get(i).getWebserviceCallInput().getValidationXpath()+" != '");
+			constraints.append("value=\"instance('" + webserviceValidatorInstance + "')"+webserviceValidations.get(i).getWebserviceCallInputLink().getValidationXpath()+" != '");
 			constraints.append(webserviceValidations.get(i).getErrorCode());
 			constraints.append("'\"/>");
 		}
@@ -286,8 +286,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		}
 		
 		if(hasWebserviceValidation()){
-			List<WebserviceCallInputErrors> webserviceValidations = getWebserviceCallInputErrors();
-			for(WebserviceCallInputErrors inputError: webserviceValidations){
+			List<WebserviceCallInputLinkErrors> webserviceValidations = getWebserviceCallInputErrors();
+			for(WebserviceCallInputLinkErrors inputError: webserviceValidations){
 				sb.append("<alert><![CDATA[");
 				sb.append(inputError.getErrorMessage());
 				sb.append("]]></alert>");
@@ -373,7 +373,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		}
 		//Add webservice alerts
 		if(hasWebserviceValidation()){
-			List<WebserviceCallInputErrors> webserviceValidations = getWebserviceCallInputErrors();
+			List<WebserviceCallInputLinkErrors> webserviceValidations = getWebserviceCallInputErrors();
 			for (int i = 0; i < webserviceValidations.size(); i++) {
 				section.append(getAlert(i+2,"webservice-constraint-"+ getXFormsHelper().getUniqueName(getSource()) +"-" + i + "-validation"));
 			}

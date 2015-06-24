@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputErrors;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
 import com.biit.webforms.webservices.WebservicePort;
@@ -69,7 +69,7 @@ public class WindowEditInputLink extends WindowEditLink{
 			errorValues.put(field.getCaption(),field.getValue());
 		}
 		WebserviceCallInputLink link = (WebserviceCallInputLink) getLink();
-		for(WebserviceCallInputErrors error: link.getErrors()){
+		for(WebserviceCallInputLinkErrors error: link.getErrors()){
 			error.setErrorMessage(errorValues.get(error.getErrorCode()));
 		}
 	}
@@ -79,17 +79,17 @@ public class WindowEditInputLink extends WindowEditLink{
 		super.setValue(value,port);
 		WebserviceCallInputLink link = (WebserviceCallInputLink) value;
 		
-		List<WebserviceCallInputErrors> orderedErrors = new ArrayList<>();
+		List<WebserviceCallInputLinkErrors> orderedErrors = new ArrayList<>();
 		orderedErrors.addAll(link.getErrors());
-		Collections.sort(orderedErrors, new Comparator<WebserviceCallInputErrors>() {
+		Collections.sort(orderedErrors, new Comparator<WebserviceCallInputLinkErrors>() {
 
 			@Override
-			public int compare(WebserviceCallInputErrors o1, WebserviceCallInputErrors o2) {
+			public int compare(WebserviceCallInputLinkErrors o1, WebserviceCallInputLinkErrors o2) {
 				return o1.getErrorCode().compareTo(o2.getErrorCode());
 			}
 		});		
 		
-		for(WebserviceCallInputErrors error: orderedErrors){
+		for(WebserviceCallInputLinkErrors error: orderedErrors){
 			TextField newField = new TextField();
 			newField.setCaption(error.getErrorCode());
 			newField.setValue(error.getErrorMessage());
