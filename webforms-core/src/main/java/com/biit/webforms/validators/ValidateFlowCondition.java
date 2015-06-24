@@ -44,7 +44,8 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 		for (Token token : flow.getCondition()) {
 			if (token instanceof TokenWithQuestion) {
 				if (((TokenWithQuestion) token).getQuestion().getAnswerType().isChildrenAllowed()) {
-					assertTrue(token instanceof TokenComparationAnswer, new InvalidFlowCondition(flow));
+					assertTrue(token instanceof TokenComparationAnswer || token instanceof TokenIn,
+							new InvalidFlowCondition(flow));
 				}
 			}
 		}
