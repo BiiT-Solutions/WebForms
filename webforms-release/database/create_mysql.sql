@@ -519,11 +519,6 @@
         foreign key (reference_ID) 
         references tree_questions (ID);
 
-    alter table webservice_call 
-        add constraint FK_2xn7e1m6tonvvq55wg2uelswf 
-        foreign key (formElementTrigger_ID) 
-        references tree_questions (ID);
-
     alter table webservice_call_input_link 
         add constraint FK_gh8lglngvsku2hb11oki042l 
         foreign key (webserviceCall_ID) 

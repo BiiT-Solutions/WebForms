@@ -18,28 +18,28 @@ import com.biit.webforms.webservices.WebservicePort;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class WebserviceCallLink extends StorableObject{
+public abstract class WebserviceCallLink extends StorableObject {
 	private static final long serialVersionUID = -4009426512262917423L;
 
 	private static final int WEBSERVICE_PORT_MAX_LENGTH = 250;
-	
-	@Column(length=WEBSERVICE_PORT_MAX_LENGTH)
+
+	@Column(length = WEBSERVICE_PORT_MAX_LENGTH)
 	private String webservicePort;
-	
-	@ManyToOne(optional = true, fetch=FetchType.EAGER)
+
+	@ManyToOne(optional = true, fetch = FetchType.EAGER)
 	private BaseQuestion formElement;
 
 	protected WebserviceCallLink() {
 		super();
 		setWebservicePort("");
 	}
-	
-	public WebserviceCallLink(WebservicePort port){
+
+	public WebserviceCallLink(WebservicePort port) {
 		super();
 		setWebservicePort(port.getName());
 
 	}
-	
+
 	@Override
 	public Set<StorableObject> getAllInnerStorableObjects() {
 		return new HashSet<StorableObject>();
@@ -47,15 +47,16 @@ public abstract class WebserviceCallLink extends StorableObject{
 
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		if(object instanceof WebserviceCallLink){
+		if (object instanceof WebserviceCallLink) {
 			copyBasicInfo(object);
 			WebserviceCallLink link = (WebserviceCallLink) object;
-			if(link.getWebservicePort()!=null){
+			if (link.getWebservicePort() != null) {
 				setWebservicePort(link.getWebservicePort());
 			}
 			setFormElement(link.getFormElement());
-		}else{
-			throw new NotValidStorableObjectException("Element of class '"+object.getClass().getName()+"' is not compatible with '"+WebserviceCallLink.class.getName()+"'");
+		} else {
+			throw new NotValidStorableObjectException("Element of class '" + object.getClass().getName()
+					+ "' is not compatible with '" + WebserviceCallLink.class.getName() + "'");
 		}
 	}
 
@@ -66,8 +67,8 @@ public abstract class WebserviceCallLink extends StorableObject{
 	public void setFormElement(BaseQuestion formElement) {
 		this.formElement = formElement;
 	}
-	
-	public void clear(){
+
+	public void clear() {
 		setWebservicePort(null);
 		setFormElement(null);
 	}
@@ -83,15 +84,15 @@ public abstract class WebserviceCallLink extends StorableObject{
 	public abstract WebserviceCallLink generateCopy() throws NotValidStorableObjectException;
 
 	public abstract void setWebserviceCall(WebserviceCall webserviceCall);
-	
+
 	public abstract WebserviceCall getWebserviceCall();
 
 	public abstract void remove();
 
 	public void updateReferences(HashMap<String, BaseQuestion> references) {
-		if(getFormElement()!=null){
+		if (getFormElement() != null) {
 			setFormElement(references.get(getFormElement().getComparationId()));
 		}
 	}
-	
+
 }
