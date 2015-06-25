@@ -47,7 +47,7 @@ public class WebservicesTests extends WebFormsTester {
 		
 		getWebservicePage().save();
 		
-		getWebservicePage().selectTrigger(2);
+		getWebservicePage().selectTrigger(3);
 		getWebservicePage().save();
 
 		logOut();
