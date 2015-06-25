@@ -25,7 +25,7 @@ public class ExporterDotCategoryAddedElements extends ExporterDotCategory {
 			setShapeColor(NEW_SHAPE_COLOR);
 			setFontColor(NEW_FONT_COLOR);
 		} else {
-			if (oldVersion.isContentEqual(category)) {
+			if (oldVersion.isContentEqual(category) && oldVersion.hasSameChildren(category)) {
 				setFillColor(DEFAULT_FILL_COLOR);
 				setShapeColor(DEFAULT_SHAPE_COLOR);
 				setFontColor(DEFAULT_FONT_COLOR);
@@ -46,7 +46,7 @@ public class ExporterDotCategoryAddedElements extends ExporterDotCategory {
 			// Retrive child in other form if exists.
 			TreeObject oldVersionChild = null;
 			if (oldVersion != null) {
-				//Search for the children. Can be moved. 
+				// Search for the children. Can be moved.
 				oldVersionChild = oldVersion.getAncestor(Form.class).getChildByOriginalReference(
 						child.getOriginalReference());
 			}

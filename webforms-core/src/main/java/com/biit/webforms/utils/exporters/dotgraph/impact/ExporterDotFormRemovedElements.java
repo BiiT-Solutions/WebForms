@@ -63,10 +63,7 @@ public class ExporterDotFormRemovedElements extends ExporterDotForm {
 			oldDestiny = newVersion.getChildByOriginalReference(rule.getDestiny().getOriginalReference());
 		}
 		Set<Flow> flows = newVersion.getFlows(oldOrigin, oldDestiny);
-		System.out.println("oldOrigin: " + oldOrigin);
-		System.out.println("oldDestiny: " + oldDestiny);
-		System.out.println("Flow: " + flows);
-
+		
 		if (!flows.isEmpty()) {
 			// Flows found with same origin/destiny.
 			for (Flow flow : flows) {

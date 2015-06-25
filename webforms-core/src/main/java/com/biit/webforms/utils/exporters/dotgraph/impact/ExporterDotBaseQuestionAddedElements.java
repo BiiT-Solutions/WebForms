@@ -27,7 +27,8 @@ public class ExporterDotBaseQuestionAddedElements extends ExporterDotBaseQuestio
 			if ((oldVersion instanceof Question && baseQuestion instanceof Question)
 					|| (oldVersion instanceof Text && baseQuestion instanceof Text)
 					|| (oldVersion instanceof SystemField && baseQuestion instanceof SystemField)) {
-				if (oldVersion.isContentEqual(baseQuestion)) {
+				if (oldVersion.isContentEqual(baseQuestion) 
+						&& oldVersion.hasSameChildren(baseQuestion)) {
 					setFillColor(DEFAULT_FILL_COLOR);
 					setShapeColor(DEFAULT_SHAPE_COLOR);
 					setFontColor(DEFAULT_FONT_COLOR);

@@ -24,7 +24,7 @@ public class ExporterDotGroupAddedElements extends ExporterDotGroup {
 			setShapeColor(NEW_SHAPE_COLOR);
 			setFontColor(NEW_FONT_COLOR);
 		} else {
-			if (oldVersion.isContentEqual(group)) {
+			if (oldVersion.isContentEqual(group) && oldVersion.hasSameChildren(group)) {
 				setFillColor(DEFAULT_FILL_COLOR);
 				setShapeColor(DEFAULT_SHAPE_COLOR);
 				setFontColor(DEFAULT_FONT_COLOR);
