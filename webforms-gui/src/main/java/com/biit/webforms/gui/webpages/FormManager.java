@@ -106,7 +106,8 @@ public class FormManager extends SecuredWebPage {
 		setUpperMenu(upperMenu);
 		setBottomMenu(bottomMenu);
 
-		formTable = new TreeTableFormVersion(UserSessionHandler.getController().getTreeTableFormsProvider(), new IconProviderFormLinked());
+		formTable = new TreeTableFormVersion(UserSessionHandler.getController().getTreeTableFormsProvider(),
+				new IconProviderFormLinked());
 		formTable.setImmediate(true);
 		formTable.setSizeFull();
 		formTable.addValueChangeListener(new ValueChangeListener() {
@@ -351,7 +352,8 @@ public class FormManager extends SecuredWebPage {
 		CompleteFormView form = (CompleteFormView) loadCompleteForm(getSelectedForm());
 
 		// Xforms only can use valid forms.
-		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController().getAllWebservices());
+		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController()
+				.getAllWebservices());
 		validator.setStopOnFail(true);
 
 		ValidateReport report = new ValidateReport();
@@ -368,70 +370,90 @@ public class FormManager extends SecuredWebPage {
 	private void downloadXForms() {
 		final CompleteFormView completeFormView = loadAndValidateForm();
 		if (completeFormView != null) {
-			WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
+			// Orbeon fails if a form has no categories.
+			if (!completeFormView.getChildren().isEmpty()) {
+				WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
 
-				@Override
-				public InputStream getInputStream() {
-					try {
-						return new XFormsSimpleFormExporter(completeFormView,UserSessionHandler.getController().getAllWebservices()).generateXFormsLanguage();
-					} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
-							| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException
-							| UnsupportedEncodingException e) {
-						MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-						WebformsLogger.errorMessage(this.getClass().getName(), e);
-						return null;
+					@Override
+					public InputStream getInputStream() {
+						try {
+							return new XFormsSimpleFormExporter(completeFormView, UserSessionHandler.getController()
+									.getAllWebservices()).generateXFormsLanguage();
+						} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
+								| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException
+								| UnsupportedEncodingException e) {
+							MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+							WebformsLogger.errorMessage(this.getClass().getName(), e);
+							return null;
+						}
 					}
-				}
-			});
-			window.setIndeterminate(true);
-			window.setFilename(completeFormView.getLabel() + ".txt");
-			window.showCentered();
+				});
+				window.setIndeterminate(true);
+				window.setFilename(completeFormView.getLabel() + ".txt");
+				window.showCentered();
+			} else {
+				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS,
+						LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
+			}
 		}
 	}
 
 	private void downloadXFormsMultiple() {
 		final Form form = loadAndValidateForm();
 		if (form != null) {
-			WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
+			// Orbeon fails if a form has no categories.
+			if (!form.getChildren().isEmpty()) {
+				WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
 
-				@Override
-				public InputStream getInputStream() {
-					try {
-						List<String> xmlFiles = new ArrayList<>();
-						List<String> xmlFileNames = new ArrayList<>();
-						XFormsMultiplesFormsExporter formExporter = new XFormsMultiplesFormsExporter(form);
-						xmlFiles.add(formExporter.getInitialInstancePage());
-						xmlFileNames.add("initial-instance.xml");
-						xmlFiles.add(formExporter.getCategoriesFlowPage());
-						xmlFileNames.add("page-flow.xml");
-						xmlFiles.addAll(formExporter.getAllcategoryModelPages());
-						xmlFileNames.addAll(formExporter.getAllCategoriesFileNames());
+					@Override
+					public InputStream getInputStream() {
+						try {
+							List<String> xmlFiles = new ArrayList<>();
+							List<String> xmlFileNames = new ArrayList<>();
+							XFormsMultiplesFormsExporter formExporter = new XFormsMultiplesFormsExporter(form);
+							xmlFiles.add(formExporter.getInitialInstancePage());
+							xmlFileNames.add("initial-instance.xml");
+							xmlFiles.add(formExporter.getCategoriesFlowPage());
+							xmlFileNames.add("page-flow.xml");
+							xmlFiles.addAll(formExporter.getAllcategoryModelPages());
+							xmlFileNames.addAll(formExporter.getAllCategoriesFileNames());
 
-						byte[] zipFile = ZipTools.zipFiles(xmlFiles, xmlFileNames, formExporter.getOrbeonAppFolder());
+							byte[] zipFile = ZipTools.zipFiles(xmlFiles, xmlFileNames,
+									formExporter.getOrbeonAppFolder());
 
-						return new ByteArrayInputStream(zipFile);
-					} catch (IOException | NotValidTreeObjectException | NotValidChildException
-							| NotExistingDynamicFieldException | InvalidDateException | StringRuleSyntaxError
-							| PostCodeRuleSyntaxError e) {
-						MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-						WebformsLogger.errorMessage(this.getClass().getName(), e);
-						return null;
+							return new ByteArrayInputStream(zipFile);
+						} catch (IOException | NotValidTreeObjectException | NotValidChildException
+								| NotExistingDynamicFieldException | InvalidDateException | StringRuleSyntaxError
+								| PostCodeRuleSyntaxError e) {
+							MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+							WebformsLogger.errorMessage(this.getClass().getName(), e);
+							return null;
+						}
 					}
-				}
-			});
-			window.setIndeterminate(true);
-			window.setFilename(form.getLabel() + ".zip");
-			window.showCentered();
+				});
+				window.setIndeterminate(true);
+				window.setFilename(form.getLabel() + ".zip");
+				window.showCentered();
+			} else {
+				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS,
+						LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
+			}
 		}
 	}
 
 	private void publishXForms() {
 		Form form = loadAndValidateForm();
 		if (form != null) {
-			Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
-					UserSessionHandler.getUser(), form.getOrganizationId());
-			if (OrbeonUtils.saveFormInOrbeon(form, organization, false)) {
-				MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
+			// Orbeon fails if a form has no categories.
+			if (!form.getChildren().isEmpty()) {
+				Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
+						UserSessionHandler.getUser(), form.getOrganizationId());
+				if (OrbeonUtils.saveFormInOrbeon(form, organization, false)) {
+					MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
+				}
+			} else {
+				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS,
+						LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
 			}
 		}
 	}
@@ -439,12 +461,18 @@ public class FormManager extends SecuredWebPage {
 	private void previewXForms() {
 		Form form = loadAndValidateForm();
 		if (form != null) {
-			Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
-					UserSessionHandler.getUser(), form.getOrganizationId());
-			if (!OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization, true)) {
-				// If xforms is not generated, close the popup.
-				// ((OrbeonPreviewFrame)
-				// upperMenu.getOpener().getUI()).closePopUp();
+			// Orbeon fails if a form has no categories.
+			if (!form.getChildren().isEmpty()) {
+				Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
+						UserSessionHandler.getUser(), form.getOrganizationId());
+				if (!OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization, true)) {
+					// If xforms is not generated, close the popup.
+					// ((OrbeonPreviewFrame)
+					// upperMenu.getOpener().getUI()).closePopUp();
+				}
+			} else {
+				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS,
+						LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
 			}
 		}
 	}
@@ -452,7 +480,8 @@ public class FormManager extends SecuredWebPage {
 	private void exportXsd() {
 		CompleteFormView completeFormView = loadCompleteForm(getSelectedForm());
 
-		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController().getAllWebservices());
+		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController()
+				.getAllWebservices());
 		validator.setStopOnFail(true);
 
 		ValidateReport report = new ValidateReport();
