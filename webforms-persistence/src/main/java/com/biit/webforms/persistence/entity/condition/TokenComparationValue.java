@@ -105,7 +105,7 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 	public String toString() {
 		String referenceString = null;
 		if (getQuestion() != null) {
-			referenceString = getQuestion().getPathName();
+			referenceString = getQuestion().getName();
 		}
 
 		if (subformat == AnswerSubformat.DATE_PERIOD) {

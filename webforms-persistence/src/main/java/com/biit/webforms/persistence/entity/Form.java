@@ -513,7 +513,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		Set<Flow> selectedFlows = new HashSet<Flow>();
 		for (Flow flow : getFlows()) {
 			if (flow.getOrigin().getOriginalReference().equals(origin.getOriginalReference())
-					&& ((flow.getDestiny() != null && flow.getDestiny().getOriginalReference()
+					&& ((flow.getDestiny() != null && destiny!=null && flow.getDestiny().getOriginalReference()
 							.equals(destiny.getOriginalReference())) || (flow.getDestiny() == null && destiny == null))) {
 				selectedFlows.add(flow);
 			}

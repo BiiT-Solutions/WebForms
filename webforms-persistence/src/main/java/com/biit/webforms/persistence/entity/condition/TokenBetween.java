@@ -97,7 +97,7 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 	public String toString() {
 		String referenceString = null;
 		if (getQuestion() != null) {
-			referenceString = getQuestion().getPathName();
+			referenceString = getQuestion().getName();
 			if (subformat == AnswerSubformat.DATE_PERIOD) {
 				referenceString += " (" + datePeriodUnit + ")";
 			}

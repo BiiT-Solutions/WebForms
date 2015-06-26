@@ -39,7 +39,7 @@ public class ExporterDotCategoryRemovedElements extends ExporterDotCategory {
 		String clusterChilds = new String();
 
 		for (TreeObject child : category.getChildren()) {
-			// Retrive child in other form if exists.
+			// Retrieve child in other form if exists.
 			TreeObject newVersionChild = null;
 			// Search for the children. Can be moved.
 			newVersionChild = newVersionForm.getChildByOriginalReference(child.getOriginalReference());
