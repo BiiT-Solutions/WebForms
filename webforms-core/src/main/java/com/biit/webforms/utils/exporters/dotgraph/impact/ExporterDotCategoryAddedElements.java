@@ -4,6 +4,7 @@ import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.utils.exporters.dotgraph.ExporterDotCategory;
 
@@ -45,7 +46,9 @@ public class ExporterDotCategoryAddedElements extends ExporterDotCategory {
 			// Retrive child in other form if exists.
 			TreeObject oldVersionChild = null;
 			if (oldVersion != null) {
-				oldVersionChild = oldVersion.getChild(child.getName());
+				//Search for the children. Can be moved. 
+				oldVersionChild = oldVersion.getAncestor(Form.class).getChildByOriginalReference(
+						child.getOriginalReference());
 			}
 
 			if (child instanceof Group) {

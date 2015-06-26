@@ -4,17 +4,20 @@ import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.utils.exporters.dotgraph.ExporterDotCategory;
 
 public class ExporterDotCategoryRemovedElements extends ExporterDotCategory {
 
 	private Category newVersionCategory = null;
+	private Form newVersionForm = null;
 
-	public ExporterDotCategoryRemovedElements(TreeObject newVersionCategory) {
+	public ExporterDotCategoryRemovedElements(TreeObject newVersionCategory, Form newVersionForm) {
 		if (newVersionCategory != null && newVersionCategory instanceof Category) {
 			this.newVersionCategory = (Category) newVersionCategory;
 		}
+		this.newVersionForm = newVersionForm;
 	}
 
 	@Override
@@ -38,12 +41,11 @@ public class ExporterDotCategoryRemovedElements extends ExporterDotCategory {
 		for (TreeObject child : category.getChildren()) {
 			// Retrive child in other form if exists.
 			TreeObject newVersionChild = null;
-			if (newVersionCategory != null) {
-				newVersionChild = newVersionCategory.getChild(child.getName());
-			}
+			// Search for the children. Can be moved.
+			newVersionChild = newVersionForm.getChildByOriginalReference(child.getOriginalReference());
 
 			if (child instanceof Group) {
-				clusterChilds += (new ExporterDotGroupRemovedElements(newVersionChild))
+				clusterChilds += (new ExporterDotGroupRemovedElements(newVersionChild, newVersionForm))
 						.generateDotNodeList((Group) child);
 				continue;
 			}

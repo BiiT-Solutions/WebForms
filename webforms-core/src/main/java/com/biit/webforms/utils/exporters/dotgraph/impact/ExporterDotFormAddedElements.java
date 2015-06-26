@@ -33,18 +33,19 @@ public class ExporterDotFormAddedElements extends ExporterDotForm {
 		String dotFlow = new String();
 		ComputedFlowView computedRuleView = form.getComputedFlowsView();
 		if (computedRuleView.getFirstElement() != null) {
-			dotFlow += "\tstart -> " + getDotId(computedRuleView.getFirstElement()) + "[color=" + getLinkColor(computedRuleView.getFirstElement().isReadOnly())
-					+ "];\n";
+			dotFlow += "\tstart -> " + getDotId(computedRuleView.getFirstElement()) + "[color="
+					+ getLinkColor(computedRuleView.getFirstElement().isReadOnly()) + "];\n";
 		}
 		for (Flow rule : computedRuleView.getFlows()) {
 			if (rule.isGenerated()) {
+				// Default rules. Ignore.
 				setLinkColor(DEFAULT_LINK_COLOR);
 			} else {
 				if (checkIfRuleOriginOrDestinyIsNewElement(rule)) {
 					setLinkColor(NEW_LINK_COLOR);
 				} else {
 					if (!checkIfEqualFlowExisted(rule)) {
-						setLinkColor(NEW_LINK_COLOR);
+						setLinkColor(MODIFIED_LINK_COLOR);
 					} else {
 						setLinkColor(DEFAULT_LINK_COLOR);
 					}
@@ -63,18 +64,18 @@ public class ExporterDotFormAddedElements extends ExporterDotForm {
 	 * @return
 	 */
 	private boolean checkIfEqualFlowExisted(Flow rule) {
-		//Get origin and destiny in old version
-		TreeObject oldOrigin = oldVersion.getChild(rule.getOrigin().getPath());
+		// Get origin and destiny in old version
+		TreeObject oldOrigin = oldVersion.getChildByOriginalReference(rule.getOrigin().getOriginalReference());
 		TreeObject oldDestiny = null;
-		if(rule.getDestiny()!=null){
-			oldDestiny = oldVersion.getChild(rule.getDestiny().getPath());
-		}	
+		if (rule.getDestiny() != null) {
+			oldDestiny = oldVersion.getChildByOriginalReference(rule.getDestiny().getOriginalReference());
+		}
 		Set<Flow> flows = oldVersion.getFlows(oldOrigin, oldDestiny);
-		
+
 		if (!flows.isEmpty()) {
 			// Flows found with same origin/destiny.
 			for (Flow flow : flows) {
-				if(flow.isOthers() && rule.isOthers()){
+				if (flow.isOthers() && rule.isOthers()) {
 					return true;
 				}
 				if (flow.getConditionString().equals(rule.getConditionString())) {
@@ -86,19 +87,20 @@ public class ExporterDotFormAddedElements extends ExporterDotForm {
 	}
 
 	/**
-	 * Check if origin or destiny are not found in the new version. If origin or
-	 * destiny node are not found, then the rule is considered as new.
+	 * Check if origin or destiny are not found in the new version. If origin or destiny node are not found, then the
+	 * rule is considered as new.
 	 * 
 	 * @param rule
 	 * @return
 	 */
 	private boolean checkIfRuleOriginOrDestinyIsNewElement(Flow rule) {
-		TreeObject oldVersionOrigin = oldVersion.getChild(rule.getOrigin().getPath());
+		TreeObject oldVersionOrigin = oldVersion.getChildByOriginalReference(rule.getOrigin().getOriginalReference());
 		if (oldVersionOrigin == null) {
 			return true;
 		}
 		if (rule.getDestiny() != null) {
-			TreeObject oldVersionDestiny = oldVersion.getChild(rule.getOrigin().getPath());
+			TreeObject oldVersionDestiny = oldVersion.getChildByOriginalReference(rule.getDestiny()
+					.getOriginalReference());
 			if (oldVersionDestiny == null) {
 				return true;
 			}

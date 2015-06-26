@@ -1,12 +1,10 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -20,6 +18,7 @@ import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
+import com.biit.webforms.utils.ZipTools;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -61,7 +60,15 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 					byte[] addedAndUpdatedElementsFile = GraphvizApp.generateImageImpactAnalysisAddedElements(
 							loadForm(getSelectedVersion()), loadForm(form), ImgType.PDF);
 
-					byte[] zipFile = zipFiles(removedElementsFile, addedAndUpdatedElementsFile);
+					//Zip files
+					List<byte[]> filesInBytes = new ArrayList<>();
+					List<String> fileNames = new ArrayList<>();
+					filesInBytes.add(removedElementsFile);
+					fileNames.add(getRemovedElementsFileName());
+					filesInBytes.add(addedAndUpdatedElementsFile);
+					fileNames.add(getAddedUpdatedElementsFileName());
+
+					byte[] zipFile = ZipTools.zipFilesInByte(filesInBytes, fileNames, null);
 
 					return new ByteArrayInputStream(zipFile);
 				} catch (IOException | InterruptedException e) {
@@ -73,25 +80,6 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 		downloader.setIndeterminate(true);
 		downloader.setFilename(getFilename());
 		downloader.showCentered();
-	}
-
-	private byte[] zipFiles(byte[] removedElementsFile, byte[] addedAndUpdatedElementsFile) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ZipOutputStream zos = new ZipOutputStream(baos);
-
-		addFileToZip(zos, removedElementsFile, getRemovedElementsFileName());
-		addFileToZip(zos, addedAndUpdatedElementsFile, getAddedUpdatedElementsFileName());
-
-		zos.closeEntry();
-		zos.close();
-		return baos.toByteArray();
-	}
-
-	private void addFileToZip(ZipOutputStream zos, byte[] data, String name) throws IOException {
-		ZipEntry entry = new ZipEntry(name);
-		entry.setSize(data.length);
-		zos.putNextEntry(entry);
-		zos.write(data);
 	}
 
 	private String getFilename() {
@@ -144,7 +132,7 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 	}
 
 	private void setLabel(IWebformsFormView form) {
-		formNameLabel.setValue(LanguageCodes.IMPACT_ANALYSIS_TEXT.translation() + " '" + form.getLabel()+"'.");
+		formNameLabel.setValue(LanguageCodes.IMPACT_ANALYSIS_TEXT.translation() + " '" + form.getLabel() + "'.");
 	}
 
 	public void setForm(IWebformsFormView form) {
