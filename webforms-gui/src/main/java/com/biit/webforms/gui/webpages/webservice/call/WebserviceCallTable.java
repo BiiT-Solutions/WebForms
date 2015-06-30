@@ -50,7 +50,9 @@ public class WebserviceCallTable extends Table{
 	@SuppressWarnings("unchecked")
 	public void updateRow(Item item, WebserviceCall call){
 		item.getItemProperty(Property.NAME).setValue(call.getName());
-		item.getItemProperty(Property.TRIGGER).setValue(call.getFormElementTrigger().getPathName());
+		if(call.getFormElementTrigger()!=null){
+			item.getItemProperty(Property.TRIGGER).setValue(call.getFormElementTrigger().getPathName());
+		}
 	}
 	
 	public void sortByName() {
