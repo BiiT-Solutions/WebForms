@@ -13,6 +13,7 @@ import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel.NotAcceptedActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.webpages.webservice.call.IWebserviceCallLinkValueChange;
@@ -37,15 +38,15 @@ public class WebserviceCallEditor extends SecuredWebPage {
 	private static final long serialVersionUID = 2762557506974832944L;
 	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
 			Arrays.asList(WebformsActivity.READ));
-	
+
 	private UpperMenu upperMenu;
 	private final WebserviceCallTable webserviceCallTable;
 	private final WebserviceCallComponent webserviceCallComponent;
 	private WebserviceCallLink selectedWebserviceCallLink;
-	
+
 	public WebserviceCallEditor() {
 		super();
-		webserviceCallTable= new WebserviceCallTable();
+		webserviceCallTable = new WebserviceCallTable();
 		webserviceCallComponent = new WebserviceCallComponent();
 	}
 
@@ -56,18 +57,18 @@ public class WebserviceCallEditor extends SecuredWebPage {
 						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
-		
+
 		setCentralPanelAsWorkingArea();
 		upperMenu = createUpperMenu();
 		setUpperMenu(upperMenu);
-		
+
 		setBottomMenu(new FormEditBottomMenu());
-		
+
 		HorizontalLayout rootLayout = new HorizontalLayout();
 		rootLayout.setSizeFull();
 		rootLayout.setSpacing(true);
 		rootLayout.setMargin(true);
-		
+
 		webserviceCallTable.setSizeFull();
 		webserviceCallTable.setSelectable(true);
 		webserviceCallTable.addValueChangeListener(new ValueChangeListener() {
@@ -79,11 +80,10 @@ public class WebserviceCallEditor extends SecuredWebPage {
 				updateWebserviceCallConfigComponent();
 			}
 		});
-		
 
 		webserviceCallComponent.setSizeFull();
 		webserviceCallComponent.addListener(new IWebserviceCallLinkValueChange() {
-			
+
 			@Override
 			public void valueChange(WebserviceCallLink link) {
 				selectedWebserviceCallLink = link;
@@ -95,39 +95,40 @@ public class WebserviceCallEditor extends SecuredWebPage {
 		rootLayout.addComponent(webserviceCallComponent);
 		rootLayout.setExpandRatio(webserviceCallTable, 0.2f);
 		rootLayout.setExpandRatio(webserviceCallComponent, 0.8f);
-		
+
 		getWorkingArea().addComponent(rootLayout);
-		
+
 		updateUpperMenu();
 		updateWebserviceCallTable();
 		updateWebserviceCallConfigComponent();
 		selectFirstTableItem();
 	}
-	
+
 	/**
 	 * Select first table item if any.
 	 */
 	private void selectFirstTableItem() {
-		if(!webserviceCallTable.getItemIds().isEmpty()){
+		if (!webserviceCallTable.getItemIds().isEmpty()) {
 			webserviceCallTable.setValue(webserviceCallTable.getItemIds().iterator().next());
 		}
 	}
 
-	private void updateWebserviceCallConfigComponent(){
-		webserviceCallComponent.setValue((WebserviceCall)webserviceCallTable.getValue());
-		webserviceCallComponent.setEnabled((WebserviceCall)webserviceCallTable.getValue()!=null && !((WebserviceCall)webserviceCallTable.getValue()).isReadOnly());
+	private void updateWebserviceCallConfigComponent() {
+		webserviceCallComponent.setValue((WebserviceCall) webserviceCallTable.getValue());
+		webserviceCallComponent.setEnabled((WebserviceCall) webserviceCallTable.getValue() != null
+				&& !((WebserviceCall) webserviceCallTable.getValue()).isReadOnly());
 		if (UserSessionHandler.getController().getFormInUse() != null
 				&& !WebformsAuthorizationService.getInstance().isFormEditable(
 						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
 			webserviceCallComponent.setSelectable(false);
-		}else{
+		} else {
 			webserviceCallComponent.setSelectable(true);
 		}
 	}
 
 	private UpperMenu createUpperMenu() {
 		final UpperMenu upperMenu = new UpperMenu();
-		
+
 		upperMenu.getSaveButton().addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 7091738197213563730L;
 
@@ -168,7 +169,7 @@ public class WebserviceCallEditor extends SecuredWebPage {
 				cleanSelectedLink();
 			}
 		});
-		
+
 		return upperMenu;
 	}
 
@@ -183,20 +184,27 @@ public class WebserviceCallEditor extends SecuredWebPage {
 	protected void removeWebserviceCall() {
 		UserSessionHandler.getController().removeWebserviceCall((WebserviceCall) webserviceCallTable.getValue());
 		webserviceCallTable.removeItem(webserviceCallTable.getValue());
-		webserviceCallTable.setValue(null);		
+		webserviceCallTable.setValue(null);
 	}
 
 	protected void addNewWebserviceCall() {
 		WindowWebservices window = new WindowWebservices();
 		window.addAcceptActionListener(new AcceptActionListener() {
-			
+
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				WindowWebservices windowWebservices = (WindowWebservices) window;
-				WebserviceCall call = UserSessionHandler.getController().generateNewWebserviceCall(windowWebservices.getName(),windowWebservices.getWebservice());
+				WebserviceCall call = UserSessionHandler.getController().generateNewWebserviceCall(
+						windowWebservices.getName(), windowWebservices.getWebservice());
 				updateWebserviceCallTable();
 				window.close();
 				webserviceCallTable.setValue(call);
+			}
+		});
+		window.addNotAcceptedActionListener(new NotAcceptedActionListener() {
+			@Override
+			public void notAcceptedAction(WindowAcceptCancel window) {
+				MessageManager.showError(LanguageCodes.WEBSERVICE_ERROR_MESSAGE_NAME_NOT_FILLED);
 			}
 		});
 		window.showCentered();
@@ -224,28 +232,28 @@ public class WebserviceCallEditor extends SecuredWebPage {
 		return activityPermissions;
 	}
 
-	private void updateWebserviceCallTable(){
+	private void updateWebserviceCallTable() {
 		WebserviceCall selectedCall = (WebserviceCall) webserviceCallTable.getValue();
 		WebserviceCallLink selectedLink = selectedWebserviceCallLink;
-		
+
 		webserviceCallTable.setValue(null);
 		webserviceCallTable.removeAllItems();
 		Set<WebserviceCall> calls = UserSessionHandler.getController().getCompleteFormView().getWebserviceCalls();
 		webserviceCallTable.addRows(calls);
-		if(selectedCall!=null){
-			for(WebserviceCall call: calls){
-				if(selectedCall.getComparationId().equals(call.getComparationId())){
+		if (selectedCall != null) {
+			for (WebserviceCall call : calls) {
+				if (selectedCall.getComparationId().equals(call.getComparationId())) {
 					webserviceCallTable.setValue(call);
-					if(selectedLink!=null){
-						if(selectedLink instanceof WebserviceCallInputLink){
-							for(WebserviceCallInputLink link: call.getInputLinks()){
-								if(link.getComparationId().equals(selectedLink.getComparationId())){
+					if (selectedLink != null) {
+						if (selectedLink instanceof WebserviceCallInputLink) {
+							for (WebserviceCallInputLink link : call.getInputLinks()) {
+								if (link.getComparationId().equals(selectedLink.getComparationId())) {
 									webserviceCallComponent.select(link);
 								}
 							}
-						}else if(selectedLink instanceof WebserviceCallOutputLink){
-							for(WebserviceCallOutputLink link: call.getOutputLinks()){
-								if(link.getComparationId().equals(selectedLink.getComparationId())){
+						} else if (selectedLink instanceof WebserviceCallOutputLink) {
+							for (WebserviceCallOutputLink link : call.getOutputLinks()) {
+								if (link.getComparationId().equals(selectedLink.getComparationId())) {
 									webserviceCallComponent.select(link);
 								}
 							}
@@ -268,11 +276,10 @@ public class WebserviceCallEditor extends SecuredWebPage {
 			upperMenu.getRemoveWebserviceLink().setEnabled(false);
 			return;
 		}
-		
-		boolean webserviceCallSelected = webserviceCallTable.getValue()!=null;
+
+		boolean webserviceCallSelected = webserviceCallTable.getValue() != null;
 		upperMenu.getRemoveWebserviceCall().setEnabled(webserviceCallSelected);
-		upperMenu.getEditWebserviceLink().setEnabled(webserviceCallSelected&&selectedWebserviceCallLink!=null);
-		upperMenu.getRemoveWebserviceLink().setEnabled(webserviceCallSelected&&selectedWebserviceCallLink!=null);
+		upperMenu.getEditWebserviceLink().setEnabled(webserviceCallSelected && selectedWebserviceCallLink != null);
+		upperMenu.getRemoveWebserviceLink().setEnabled(webserviceCallSelected && selectedWebserviceCallLink != null);
 	}
 }
-

@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.common.components;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
@@ -19,14 +19,19 @@ import com.vaadin.ui.Window;
 public class WindowAcceptCancel extends Window {
 
 	private static final long serialVersionUID = 8796193085149771811L;
-	private List<AcceptActionListener> acceptListeners;
-	private List<CancelActionListener> cancelListeners;
+	private Set<AcceptActionListener> acceptListeners;
+	private Set<NotAcceptedActionListener> notAcceptedListeners;
+	private Set<CancelActionListener> cancelListeners;
 	protected IconButton acceptButton;
 	protected IconButton cancelButton;
 	private Component contentComponent;
 
 	public interface AcceptActionListener {
 		public void acceptAction(WindowAcceptCancel window);
+	}
+
+	public interface NotAcceptedActionListener {
+		public void notAcceptedAction(WindowAcceptCancel window);
 	}
 
 	public interface CancelActionListener {
@@ -37,15 +42,17 @@ public class WindowAcceptCancel extends Window {
 		super();
 		setId(this.getClass().getName());
 		setModal(true);
-		acceptListeners = new ArrayList<WindowAcceptCancel.AcceptActionListener>();
-		cancelListeners = new ArrayList<WindowAcceptCancel.CancelActionListener>();
+		acceptListeners = new HashSet<AcceptActionListener>();
+		cancelListeners = new HashSet<CancelActionListener>();
+		notAcceptedListeners = new HashSet<NotAcceptedActionListener>();
 	}
 
 	public WindowAcceptCancel(Component content) {
 		super("", content);
 		setId(this.getClass().getName());
-		acceptListeners = new ArrayList<WindowAcceptCancel.AcceptActionListener>();
-		cancelListeners = new ArrayList<WindowAcceptCancel.CancelActionListener>();
+		acceptListeners = new HashSet<WindowAcceptCancel.AcceptActionListener>();
+		cancelListeners = new HashSet<WindowAcceptCancel.CancelActionListener>();
+		notAcceptedListeners = new HashSet<NotAcceptedActionListener>();
 	}
 
 	@Override
@@ -71,6 +78,8 @@ public class WindowAcceptCancel extends Window {
 					public void buttonClick(ClickEvent event) {
 						if (acceptAction()) {
 							fireAcceptActionListeners();
+						} else {
+							fireNotAcceptedActionListeners();
 						}
 					}
 				});
@@ -150,6 +159,10 @@ public class WindowAcceptCancel extends Window {
 		acceptListeners.add(listener);
 	}
 
+	public void addNotAcceptedActionListener(NotAcceptedActionListener listener) {
+		notAcceptedListeners.add(listener);
+	}
+
 	public void removeAcceptActionListener(AcceptActionListener listener) {
 		acceptListeners.remove(listener);
 	}
@@ -168,6 +181,12 @@ public class WindowAcceptCancel extends Window {
 		}
 	}
 
+	private void fireNotAcceptedActionListeners() {
+		for (NotAcceptedActionListener listener : notAcceptedListeners) {
+			listener.notAcceptedAction(this);
+		}
+	}
+
 	private void fireCancelActionListeners() {
 		for (CancelActionListener listener : cancelListeners) {
 			listener.cancelAction(this);
@@ -181,21 +200,20 @@ public class WindowAcceptCancel extends Window {
 	}
 
 	/**
-	 * This function will be called before firing the accept listeners and can
-	 * be overriden by child classes. By default we accept the accept action and
-	 * fire listener. This can be changed to reject the action if the user has
-	 * generated incorrect data returning false.
+	 * This function will be called before firing the accept listeners and can be overriden by child classes. By default
+	 * we accept the accept action and fire listener. This can be changed to reject the action if the user has generated
+	 * incorrect data returning false.
 	 */
 	protected boolean acceptAction() {
 		// DO nothing
 		return true;
 	}
-	
-	protected IconButton getAcceptButton(){
+
+	protected IconButton getAcceptButton() {
 		return acceptButton;
 	}
-	
-	protected IconButton getCancelButton(){
+
+	protected IconButton getCancelButton() {
 		return cancelButton;
 	}
 }

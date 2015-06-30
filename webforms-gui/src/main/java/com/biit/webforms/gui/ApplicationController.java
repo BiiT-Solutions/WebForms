@@ -942,6 +942,8 @@ public class ApplicationController {
 			Block blockToInsert = (Block) block.getAncestor(Block.class);
 			Block copiedBlock = (Block) blockToInsert.generateFormCopiedSimplification(block);
 			copiedBlock.resetIds();
+			// We need different original Ids if we insert the same building block several times in the same form.
+			copiedBlock.resetOriginalIds();
 
 			TreeObject insertedCategory = copiedBlock.getChildren().get(0);
 
@@ -1183,8 +1185,8 @@ public class ApplicationController {
 	 * @param value
 	 * @return
 	 */
-	public Token createTokenComparationValue(TokenTypes type, WebformsBaseQuestion question, AnswerSubformat valueAnswerSubformat,
-			DatePeriodUnit datePeriodUnit, String value) {
+	public Token createTokenComparationValue(TokenTypes type, WebformsBaseQuestion question,
+			AnswerSubformat valueAnswerSubformat, DatePeriodUnit datePeriodUnit, String value) {
 		Token token = TokenComparationValue.getToken(type, question, valueAnswerSubformat, datePeriodUnit, value);
 		token.setCreatedBy(UserSessionHandler.getUser());
 		token.setUpdatedBy(UserSessionHandler.getUser());
@@ -1633,7 +1635,7 @@ public class ApplicationController {
 	}
 
 	public WebserviceCall generateNewWebserviceCall(String name, Webservice webservice) {
-		WebserviceCall call = new WebserviceCall(name,webservice);
+		WebserviceCall call = new WebserviceCall(name, webservice);
 		UserSessionHandler.getController().getCompleteFormView().addWebserviceCall(call);
 		return call;
 	}

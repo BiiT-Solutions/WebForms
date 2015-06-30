@@ -624,7 +624,12 @@ public enum LanguageCodes implements ILanguageCode {
 	WEBSERVICE_CALL_REFERENCES_UNEXISTING_WEBSERVICE("webservice.call.references.unexisting.webservice"),
 	WEBSERVICE_CALL_TRIGGER_NULL("webservice.call.trigger.null"), 
 	
+	WEBSERVICE_ERROR_MESSAGE_NAME_NOT_FILLED("webservice.error.message.fields.are.not.filled.correctly"),
+	
 	ERROR_TREE_OBJECT_WEBSERVICE_CALL_DEPENDENCY("error.tree.object.webservice.call.dependency"),
+	
+	ERROR_INVALID_FORM_FOR_XFORMS("error.invalid.form.for.xforms"),
+	ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION("error.invalid.form.for.xforms.description"),
 	
 	;
 
