@@ -90,11 +90,22 @@
   margin-left: 15px;
 }
 
+.webforms-element .subanswer-parent > label {
+  font-style: italic;
+}
+
+.webforms-element .subanswer-parent > label > input {
+  display: none;
+}
+
+.webforms-element .subanswer-child > label {
+  margin-left: 15px;
+}
 
 /* Element: custom wizard
    -------------------
  */
- 
+
 .category-show-disabled {
 	display: none;
 }
@@ -130,6 +141,11 @@
 	margin: 5px;
 }
 
+.webforms-list-no-bullets-element a{
+	text-decoration: none;
+
+}
+
 .webforms-list-no-bullets-element-selected{
 	background-color: gainsboro;
 }
@@ -142,4 +158,47 @@
 .orbeon .xbl-fr-section .fr-section-content{
 	display: inline-block;
 	width: 96%;
+}
+
+/* Element: Orbeon ERROR style Override
+   -------------------
+ */
+
+.orbeon .fr-view .xbl-fr-error-summary .fr-error-summary-body {
+    background-color: #f5f5f5;
+    border: 2px solid #cc3333;
+    border-radius: 6px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+    margin-bottom: 10px;
+    padding: 10;
+}
+
+
+.orbeon .fr-view .xbl-fr-error-summary .fr-level-error .fr-error-title {
+    background-color: #f5f5f5;
+    color: #cc3333;
+}
+
+.orbeon .fr-view .xbl-fr-error-summary .fr-error-title {
+    --- border-top-left-radius: 4px;
+    --- border-top-right-radius: 4px;
+    --- color: white;
+    padding: 5px 10px;
+}
+
+.orbeon .xbl-fr-error-summary .fr-error-title {
+    box-sizing: border-box;
+    margin: 0;
+    width: auto;
+}
+
+.orbeon legend {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: -moz-use-text-color -moz-use-text-color #e5e5e5;
+    border-image: none;
+    border-width: 0 0 1px;
+    border-style: none;
 }

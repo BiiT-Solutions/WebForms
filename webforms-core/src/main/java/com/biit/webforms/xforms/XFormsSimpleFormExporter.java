@@ -165,8 +165,10 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 			body.append("</xh:div>");
 			// Script that manages the previous/next buttons of the runner
 			body.append("<script type=\"text/javascript\" src=\"/orbeon/forms/assets/categories-menu.js\"/>");
+			
 		}
-
+		// Script that manages the error position in the form runner
+		body.append("<script type=\"text/javascript\" src=\"/orbeon/forms/assets/error-position-manager.js\"/>");
 		body.append("</fr:body>");
 		if (WebformsConfigurationReader.getInstance().isXFormsCustomWizardEnabled()) {
 			createFormRunnerButtons(body);
