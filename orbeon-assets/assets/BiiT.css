@@ -95,6 +95,18 @@
    -------------------
  */
  
+.webforms-element .subanswer-parent > label {
+  font-style: italic;
+}
+
+.webforms-element .subanswer-parent > label > input {
+  display: none;
+}
+
+.webforms-element .subanswer-child > label {
+  margin-left: 15px;
+}
+
 .category-show-disabled {
 	display: none;
 }
@@ -130,6 +142,11 @@
 	margin: 5px;
 }
 
+.webforms-list-no-bullets-element a{
+	text-decoration: none;
+
+}
+
 .webforms-list-no-bullets-element-selected{
 	background-color: gainsboro;
 }
@@ -138,6 +155,7 @@
 	display: inline-block !important;
 	width: 100%;
 }
+
 
 .orbeon .xbl-fr-section .fr-section-content{
 	display: inline-block;
