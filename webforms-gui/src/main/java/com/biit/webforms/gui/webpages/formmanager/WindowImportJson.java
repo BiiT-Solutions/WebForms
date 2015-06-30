@@ -128,33 +128,31 @@ public class WindowImportJson extends WindowAcceptCancel {
 		setModal(true);
 		setWidth(WINDOW_WIDTH);
 		setHeight(WINDOW_HEIGHT);
-		addAcceptActionListener(new AcceptActionListener() {
-
-			@Override
-			public void acceptAction(WindowAcceptCancel window) {
-				try {
-					UserSessionHandler.getController().importFormFromJson(
-							textArea.getValue(),
-							textField.getValue(),
-							((Organization) organizationField.getValue())
-									.getOrganizationId());
-					window.close();
-				} catch (UnexpectedDatabaseException e) {
-					MessageManager
-							.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-				} catch (FormWithSameNameException e) {
-					MessageManager
-							.showError(LanguageCodes.ERROR_FORM_ALREADY_EXISTS);
-				} catch (FieldTooLongException e) {
-					MessageManager
-					.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
-				} catch (ElementCannotBePersistedException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
-							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
-					WebformsLogger.errorMessage(this.getClass().getName(), e);
-				}
-			}
-		});
 	}
-
+	
+	protected boolean acceptAction() {
+		try {
+			UserSessionHandler.getController().importFormFromJson(
+					textArea.getValue(),
+					textField.getValue(),
+					((Organization) organizationField.getValue())
+							.getOrganizationId());
+			return true;
+		} catch (UnexpectedDatabaseException e) {
+			MessageManager
+					.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+		} catch (FormWithSameNameException e) {
+			MessageManager
+					.showError(LanguageCodes.ERROR_FORM_ALREADY_EXISTS);
+		} catch (FieldTooLongException e) {
+			MessageManager
+			.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
+		} catch (ElementCannotBePersistedException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
+					LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+		return false;
+	}
+	
 }

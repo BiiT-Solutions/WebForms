@@ -15,6 +15,7 @@ public class FormSerializer extends BaseFormSerializer<Form> {
 
 		jsonObject.add("description", context.serialize(src.getDescription()));
 		jsonObject.add("flows", context.serialize(src.getFlows()));
+		jsonObject.add("webserviceCalls", context.serialize(src.getWebserviceCalls()));
 
 		return jsonObject;
 	}

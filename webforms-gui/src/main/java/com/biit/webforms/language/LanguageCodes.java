@@ -629,7 +629,8 @@ public enum LanguageCodes implements ILanguageCode {
 	ERROR_TREE_OBJECT_WEBSERVICE_CALL_DEPENDENCY("error.tree.object.webservice.call.dependency"),
 	
 	ERROR_INVALID_FORM_FOR_XFORMS("error.invalid.form.for.xforms"),
-	ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION("error.invalid.form.for.xforms.description"),
+	ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION("error.invalid.form.for.xforms.description"), 
+	WARNING_WRONG_WEBSERVICE_CONFIGURATION("warning.wrong.webservice.configuration"),
 	
 	;
 

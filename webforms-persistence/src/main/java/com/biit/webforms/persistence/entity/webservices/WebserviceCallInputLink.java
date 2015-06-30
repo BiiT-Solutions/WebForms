@@ -27,7 +27,7 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 
 	private String validationXpath;
 
-	protected WebserviceCallInputLink() {
+	public WebserviceCallInputLink() {
 		super();
 		errors = new HashSet<>();
 	}
@@ -121,4 +121,12 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 			error.resetIds();
 		}
 	}
+	
+	public void setErrors(Set<WebserviceCallInputLinkErrors> errors) {
+		this.errors.clear();
+		for(WebserviceCallInputLinkErrors error: errors){
+			addWebserviceCallInputError(error);
+		}
+	}
+	
 }

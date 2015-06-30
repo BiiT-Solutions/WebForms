@@ -112,7 +112,10 @@ public class WebserviceCall extends StorableObject {
 	}
 
 	public void setInputLinks(Set<WebserviceCallInputLink> inputLinks) {
-		this.inputLinks = inputLinks;
+		this.inputLinks.clear();
+		for(WebserviceCallInputLink link: inputLinks){
+			addInputLink(link);
+		}
 	}
 
 	public Set<WebserviceCallOutputLink> getOutputLinks() {
@@ -120,7 +123,10 @@ public class WebserviceCall extends StorableObject {
 	}
 
 	public void setOutputLinks(Set<WebserviceCallOutputLink> outputLinks) {
-		this.outputLinks = outputLinks;
+		this.outputLinks.clear();
+		for(WebserviceCallOutputLink link: outputLinks){
+			addOutputLink(link);
+		}
 	}
 
 	public Form getForm() {

@@ -20,7 +20,7 @@ public class WebserviceCallOutputLink extends WebserviceCallLink {
 	
 	private boolean isEditable;
 	
-	protected WebserviceCallOutputLink() {
+	public WebserviceCallOutputLink() {
 		super();
 		setEditable(EDITABLE_DEFAULT_VALUE);
 	}

@@ -329,6 +329,7 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
+				window.close();
 				formTable.refreshTableData();
 			}
 		});
