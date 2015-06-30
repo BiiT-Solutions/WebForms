@@ -37,9 +37,9 @@ public class XFormsPersistence {
 	public static String formatFormName(IWebformsFormView form, Organization organization, boolean preview) {
 		if (preview) {
 			return PREVIEW_PREFIX + form.getLabel().replace(" ", "_") + "_v" + form.getVersion() + "_"
-					+ organization.getName();
+					+ organization.getName().replace(" ", "_");
 		} else {
-			return form.getLabel().replace(" ", "_") + "_v" + form.getVersion() + "_" + organization.getName();
+			return form.getLabel().replace(" ", "_") + "_v" + form.getVersion() + "_" + organization.getName().replace(" ", "_");
 		}
 	}
 

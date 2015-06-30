@@ -19,9 +19,9 @@ public class ExporterDotBaseQuestionRemovedElements extends ExporterDotBaseQuest
 
 	@Override
 	public String generateDotNodeList(BaseQuestion baseQuestion) {
-		if (newVersion != null && !newVersion.isHiddenElement()
+		if (newVersion != null
 				&& ((newVersion instanceof Question && baseQuestion instanceof Question)
-						|| (newVersion instanceof Text && baseQuestion instanceof Text)
+						|| (newVersion instanceof Text && baseQuestion instanceof Text) 
 						|| (newVersion instanceof SystemField && baseQuestion instanceof SystemField))) {
 			setFillColor(DEFAULT_FILL_COLOR);
 			setShapeColor(DEFAULT_SHAPE_COLOR);

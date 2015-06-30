@@ -103,7 +103,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 	public String toString() {
 		String referenceString = null;
 		if (getQuestion() != null) {
-			referenceString = getQuestion().getPathName();
+			referenceString = getQuestion().getName();
 		}
 		String answerString = null;
 		if (values != null) {

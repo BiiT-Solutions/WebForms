@@ -35,7 +35,7 @@ public class WebserviceCall extends StorableObject {
 	private String webserviceName;
 
 	@ManyToOne(optional = true)
-	private Question formElementTrigger;
+	private BaseQuestion formElementTrigger;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "webserviceCall")
 	private Set<WebserviceCallInputLink> inputLinks;
@@ -75,13 +75,14 @@ public class WebserviceCall extends StorableObject {
 			copyLinkData(inputLinks, call.getInputLinks());
 			copyLinkData(outputLinks, call.getOutputLinks());
 		} else {
-			throw new NotValidStorableObjectException("Element of class '" + object.getClass().getName() + "' is not compatible with '"
-					+ WebserviceCall.class.getName() + "'");
+			throw new NotValidStorableObjectException("Element of class '" + object.getClass().getName()
+					+ "' is not compatible with '" + WebserviceCall.class.getName() + "'");
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends WebserviceCallLink> void copyLinkData(Set<T> destiny, Set<T> source) throws NotValidStorableObjectException {
+	private <T extends WebserviceCallLink> void copyLinkData(Set<T> destiny, Set<T> source)
+			throws NotValidStorableObjectException {
 		destiny.clear();
 		for (WebserviceCallLink link : source) {
 			T temp = (T) link.generateCopy();
@@ -131,14 +132,15 @@ public class WebserviceCall extends StorableObject {
 	}
 
 	/**
-	 * Question that run the web service. 
+	 * Question that run the web service.
+	 * 
 	 * @return
 	 */
-	public Question getFormElementTrigger() {
+	public BaseQuestion getFormElementTrigger() {
 		return formElementTrigger;
 	}
 
-	public void setFormElementTrigger(Question formElementTrigger) {
+	public void setFormElementTrigger(BaseQuestion formElementTrigger) {
 		this.formElementTrigger = formElementTrigger;
 	}
 
@@ -154,7 +156,7 @@ public class WebserviceCall extends StorableObject {
 
 	public void updateReferences(HashMap<String, BaseQuestion> references) {
 		if (getFormElementTrigger() != null) {
-			setFormElementTrigger((Question) references.get(getFormElementTrigger().getComparationId()));
+			setFormElementTrigger((Question) references.get(getFormElementTrigger().getOriginalReference()));
 		}
 		for (WebserviceCallLink link : getInputLinks()) {
 			link.updateReferences(references);

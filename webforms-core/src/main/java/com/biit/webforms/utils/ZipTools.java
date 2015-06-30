@@ -46,6 +46,17 @@ public class ZipTools {
 	public static byte[] zipFiles(List<String> filesToZip, List<String> fileNames, String directory)
 			throws IOException, IllegalArgumentException {
 
+		List<byte[]> filesInBytes = new ArrayList<>();
+
+		for (int i = 0; i < filesToZip.size(); i++) {
+			filesInBytes.add(filesToZip.get(i).getBytes(Charset.forName("UTF-8")));
+		}
+
+		return zipFilesInByte(filesInBytes, fileNames, directory);
+	}
+
+	public static byte[] zipFilesInByte(List<byte[]> filesToZip, List<String> fileNames, String directory)
+			throws IOException, IllegalArgumentException {
 		if (filesToZip == null || fileNames == null || filesToZip.size() < fileNames.size()) {
 			throw new IllegalArgumentException("The number of files and the number of file's names must be the same!");
 		}
@@ -54,7 +65,7 @@ public class ZipTools {
 		ZipOutputStream zos = new ZipOutputStream(baos);
 
 		for (int i = 0; i < filesToZip.size(); i++) {
-			addFileToZip(zos, filesToZip.get(i).getBytes(Charset.forName("UTF-8")), fileNames.get(i), directory);
+			addFileToZip(zos, filesToZip.get(i), fileNames.get(i), directory);
 		}
 
 		zos.closeEntry();
