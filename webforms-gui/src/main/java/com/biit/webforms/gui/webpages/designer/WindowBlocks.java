@@ -42,13 +42,19 @@ public class WindowBlocks extends WindowAcceptCancel {
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				// Only a type of elements can be selected.
-				if (selectableElements != null) {
-					for (Class<? extends TreeObject> allowedClass : selectableElements) {
-						if (getSelectedBlock() != null && allowedClass.isInstance(getSelectedBlock())) {
-							getAcceptButton().setEnabled(true);
-						} else {
-							getAcceptButton().setEnabled(false);
+				if(getSelectedBlock()==null){
+					getAcceptButton().setEnabled(false);
+				}else{				
+					if (selectableElements != null) {
+						for (Class<? extends TreeObject> allowedClass : selectableElements) {
+							if (allowedClass.isInstance(getSelectedBlock())) {
+								getAcceptButton().setEnabled(true);
+							} else {
+								getAcceptButton().setEnabled(false);
+							}
 						}
+					}else{
+						getAcceptButton().setEnabled(true);
 					}
 				}
 			}

@@ -782,12 +782,16 @@ public class Designer extends SecuredWebPage {
 			public void acceptAction(WindowAcceptCancel window) {
 				// Insert block in form
 				try {
-					TreeObject insertedElement = UserSessionHandler.getController().insertBlock(
-							windowBlocks.getSelectedBlock());
-					clearAndUpdateFormTable();
-					table.expand(insertedElement);
-					table.setValue(insertedElement);
-					window.close();
+					if(windowBlocks.getSelectedBlock()!=null){
+						TreeObject insertedElement = UserSessionHandler.getController().insertBlock(
+								windowBlocks.getSelectedBlock());
+						clearAndUpdateFormTable();
+						table.expand(insertedElement);
+						table.setValue(insertedElement);
+						window.close();
+					}else{
+						MessageManager.showError(LanguageCodes.ERROR_SELECT_BLOCK);
+					}
 				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
 							LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
