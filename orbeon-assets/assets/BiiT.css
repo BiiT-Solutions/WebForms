@@ -12,12 +12,12 @@
 
 /* Header: off
    -----------
-
+*/
 
 .navbar {
   display: none !important;
 }
-*/
+
 .fr-form-description {
   display: none !important;
 }
@@ -180,9 +180,6 @@
 }
 
 .orbeon .fr-view .xbl-fr-error-summary .fr-error-title {
-    --- border-top-left-radius: 4px;
-    --- border-top-right-radius: 4px;
-    --- color: white;
     padding: 5px 10px;
 }
 
@@ -201,4 +198,8 @@
     border-image: none;
     border-width: 0 0 1px;
     border-style: none;
+}
+
+.orbeon .fr-view .xbl-fr-error-summary table {
+    margin: 2px 2px 15px;
 }

@@ -1,3 +1,10 @@
+The locations to deploy the files are different depending on the scope that you want for such files
+	WEB-INF/resources/forms/assets: scripts for all forms
+	WEB-INF/resources/forms/APP/assets: scripts for app name APP
+	WEB-INF/resources/forms/APP/FORM/assets: scripts for app name APP and form name FORM
+
+
+THIS CONFIGURATION AFFECTS ALL THE ORBEON FORMS DEPLOYED IN THE SAME SERVER
 The folder '/assets' must be in the folder '/WEB-INF/resources/forms/' of the orbeon war.
 
 The following line must be in the 'properties-local-xml' file of the orbeon '/WEB-INF/resources/config/' folder
