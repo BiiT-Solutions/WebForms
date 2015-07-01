@@ -27,6 +27,10 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenInValue;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -65,6 +69,10 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 		gsonBuilder.registerTypeAdapter(TokenComparationValue.class, new TokenComparationValueDeserializer(element));
 		gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInDeserializer(element));
 		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueDeserializer(element));
+		gsonBuilder.registerTypeAdapter(WebserviceCall.class, new WebserviceCallDeserializer(element));
+		gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputDeserializer(element));
+		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class, new WebserviceCallInputErrorsDeserializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkDeserializer(element));
 		Gson gson = gsonBuilder.create();
 
 		element.setComparationId(parseString("comparationId", jobject, context));
@@ -108,6 +116,15 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 			element.addFlows(flows);
 		}
 
+		// Deserializes Webservice calls
+		Type callListType = new  TypeToken<HashSet<WebserviceCall>>() {
+		}.getType();
+		JsonElement callsJson = jobject.get("webserviceCalls");
+		
+		if (callsJson != null) {
+			Set<WebserviceCall> calls = gson.fromJson(callsJson, callListType);
+			element.addWebserviceCalls(calls);
+		}
 	}
 
 	public static TreeObject parseTreeObjectPath(String name, Form form, JsonObject jobject,

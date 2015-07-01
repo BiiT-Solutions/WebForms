@@ -58,6 +58,9 @@ import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToFormException;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.serialization.AnswerSerializer;
 import com.biit.webforms.serialization.BaseRepeatableGroupSerializer;
 import com.biit.webforms.serialization.DynamicAnswerSerializer;
@@ -73,6 +76,10 @@ import com.biit.webforms.serialization.TokenInSerializer;
 import com.biit.webforms.serialization.TokenInValueSerializer;
 import com.biit.webforms.serialization.TokenSerializer;
 import com.biit.webforms.serialization.TreeObjectSerializer;
+import com.biit.webforms.serialization.WebserviceCallInputLinkErrorsSerializer;
+import com.biit.webforms.serialization.WebserviceCallInputLinkSerializer;
+import com.biit.webforms.serialization.WebserviceCallOutputLinkSerializer;
+import com.biit.webforms.serialization.WebserviceCallSerializer;
 import com.biit.webforms.webservices.Webservice;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -787,6 +794,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 		gsonBuilder.registerTypeAdapter(TokenComparationValue.class, new TokenComparationValueSerializer());
 		gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInSerializer());
 		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCall.class, new WebserviceCallSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputLinkSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class, new WebserviceCallInputLinkErrorsSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkSerializer());
 		Gson gson = gsonBuilder.create();
 
 		return gson.toJson(this);
@@ -1022,5 +1033,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 			}
 		}
 		return false;
+	}
+
+	public void removeWebserviceCall(WebserviceCall call) {
+		webserviceCalls.remove(call);
+		call.setForm(null);
 	}
 }
