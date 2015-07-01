@@ -11,3 +11,8 @@ The following line must be in the 'properties-local-xml' file of the orbeon '/WE
 	<!-- Set the css to use -->
 	<property as="xs:string" name="oxf.fr.css.custom.uri.*.*"  value="/forms/assets/BiiT.css"/>
 Also the wizard style must be deactivated for the categories menu to work. 
+
+
+TASK #38: Change Orbeon Label of repetable groups
+Only need to edit the properties locale and add the line:
+	<property as="xs:string"  name="oxf.fr.resource.*.*.en.components.grid.insert-below" value='Add new record'/>
