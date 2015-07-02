@@ -59,15 +59,15 @@ public abstract class TokenWithQuestion extends Token {
 
 	@Override
 	public boolean isContentEqual(Token token) {
-		if (!(token instanceof TokenWithQuestion)) {
-			return false;
-		}
-		if (super.isContentEqual(token)) {
-			if (!getQuestion().getPathName().equals(((TokenWithQuestion) token).getQuestion().getPathName())) {
-				return false;
+		if (token instanceof TokenWithQuestion) {
+			if (super.isContentEqual(token)) {
+				if (!getQuestion().getPathName().equals(((TokenWithQuestion) token).getQuestion().getPathName())) {
+					return false;
+				}
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 }

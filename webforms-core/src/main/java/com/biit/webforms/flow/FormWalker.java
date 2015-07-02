@@ -13,6 +13,7 @@ import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.condition.Token;
 
 public class FormWalker {
 
@@ -24,8 +25,7 @@ public class FormWalker {
 	 * @param destiny
 	 * @return
 	 */
-	public static Set<List<BaseQuestion>> getAllPathsFromOriginToDestiny(Form form, BaseQuestion origin,
-			BaseQuestion destiny) {
+	public static Set<List<BaseQuestion>> getAllPathsFromOriginToDestiny(Form form, BaseQuestion origin, BaseQuestion destiny) {
 		if (origin == null || destiny == null) {
 			return new HashSet<List<BaseQuestion>>();
 		}
@@ -118,8 +118,7 @@ public class FormWalker {
 				// Path found. Return true.
 				return true;
 			}
-			if (questionToExplore != null
-					&& (questionToExplore.compareTo(destiny) > 0 || questionToExplore.equals(questionToAvoid))) {
+			if (questionToExplore != null && (questionToExplore.compareTo(destiny) > 0 || questionToExplore.equals(questionToAvoid))) {
 				// This question is after destiny question. No Path can exist.
 				// Or
 				// This question is the question to avoid.
@@ -169,7 +168,8 @@ public class FormWalker {
 				return true;
 			}
 			if (questionsToExplore != null && questionToExplore.compareTo(destiny) > 0) {
-				// This question is after destiny question. No Path can exist. Ignore
+				// This question is after destiny question. No Path can exist.
+				// Ignore
 				continue;
 			}
 
@@ -188,6 +188,52 @@ public class FormWalker {
 			}
 		}
 
+		return false;
+	}
+
+	public static boolean existsPathWithoutThisToken(Form form, BaseQuestion end, Token token) {
+		// This algorithm walks the graph from end to beginning. If it reaches a
+		// flow with the same token ignores the path. If the algorithm reaches
+		// the beginning
+		// of the form then a path without this token exists.
+
+		ComputedFlowView computedFlowView = form.getComputedFlowsView();
+		BaseQuestion origin = (BaseQuestion) computedFlowView.getFirstElement();
+
+		// Initialice with end question.
+		Set<BaseQuestion> exploredQuestions = new HashSet<>();
+		Stack<BaseQuestion> questionsToExplore = new Stack<>();
+		questionsToExplore.add(end);
+
+		while (!questionsToExplore.isEmpty()) {
+			BaseQuestion questionToExplore = questionsToExplore.pop();
+			// This question has already been explored.
+			if (exploredQuestions.contains(questionToExplore)) {
+				continue;
+			}else{
+				//Mark as explored
+				exploredQuestions.add(questionToExplore);
+			}
+
+			// Question to explore is the origin of the form. Then a path
+			// without token exists.
+			if (questionToExplore.equals(origin)) {
+				return true;
+			}
+
+			for(Flow flow : computedFlowView.getFlowsByDestiny(questionToExplore)){
+				if(flow.isOthers() || flow.getCondition().isEmpty() || flow.getCondition().size()>1){
+					questionsToExplore.push(flow.getOrigin());
+				}else{
+					if(!flow.getCondition().get(0).isContentEqual(token)){
+						questionsToExplore.push(flow.getOrigin());
+					}else{
+						System.out.println("KIWIIIII "+token+" "+flow.getCondition().get(0));
+					}
+					//Is the same token ignore and don't put in questions to explore stack.
+				}
+			}
+		}
 		return false;
 	}
 

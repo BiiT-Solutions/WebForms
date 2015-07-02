@@ -1,13 +1,8 @@
 package com.biit.webforms.validators;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
 import com.biit.form.entity.BaseQuestion;
-import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.SimpleValidator;
-import com.biit.webforms.computed.ComputedFlowView;
+import com.biit.webforms.flow.FormWalker;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
@@ -19,13 +14,9 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
  * translated as NOT(A=1) and therefore D will be shown if A=2 but C not.
  */
 public class ValidateUselessConditions extends SimpleValidator<Flow> {
-	private HashMap<TreeObject, Integer> questionIndex;
-	private ComputedFlowView computedFlowView;
 
 	public ValidateUselessConditions() {
 		super(Flow.class);
-		questionIndex = null;
-		computedFlowView = null;
 	}
 
 	@Override
@@ -44,45 +35,12 @@ public class ValidateUselessConditions extends SimpleValidator<Flow> {
 					}
 				}
 				if (question != null) {
-					Set<List<Flow>> paths = flow.getForm().getAllFlowsFromOriginToDestiny(question, flow.getOrigin(),
-							getQuestionIndex(flow), getComputedFlowView(flow));
-					for (List<Flow> path : paths) {
-						for (Flow pathFlow : path) {
-							for (Token tokenPath : pathFlow.getCondition()) {
-								if (isEquals(tokenPath, token)) {
-									assertTrue(false, new FlowConditionIsUseless(flow, token));
-								}
-							}
-						}
+					// Now let's check if there is a path from origin to this element without a flow condition with only this token.
+					if(!FormWalker.existsPathWithoutThisToken(flow.getForm(),flow.getOrigin(),token)){
+						assertTrue(false, new FlowConditionIsUseless(flow, token));
 					}
-					// Only check one time for all tokens.
-					break;
 				}
 			}
 		}
-	}
-
-	/**
-	 * Ensures that the form's question order is only calculated once.
-	 * 
-	 * @param flow
-	 * @return
-	 */
-	private HashMap<TreeObject, Integer> getQuestionIndex(Flow flow) {
-		if (questionIndex == null && flow != null) {
-			questionIndex = flow.getForm().getQuestionsInOrder();
-		}
-		return questionIndex;
-	}
-
-	private ComputedFlowView getComputedFlowView(Flow flow) {
-		if (computedFlowView == null) {
-			computedFlowView = flow.getForm().getComputedFlowsView();
-		}
-		return computedFlowView;
-	}
-
-	private boolean isEquals(Token token1, Token token2) {
-		return token1.isContentEqual(token2);
 	}
 }
