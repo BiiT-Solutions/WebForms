@@ -227,8 +227,6 @@ public class FormWalker {
 				}else{
 					if(!flow.getCondition().get(0).isContentEqual(token)){
 						questionsToExplore.push(flow.getOrigin());
-					}else{
-						System.out.println("KIWIIIII "+token+" "+flow.getCondition().get(0));
 					}
 					//Is the same token ignore and don't put in questions to explore stack.
 				}
