@@ -15,9 +15,16 @@ import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.condition.Token;
 
+/**
+ * This class is a helper class with static methods that walk through the flow
+ * graph and retrieve the desired information for each case.
+ *
+ */
 public class FormWalker {
 
 	/**
+	 * Returns a set with all the paths from a origin node to a destiny node.
+	 * 
 	 * If origin or destiny is null returns an empty list.
 	 * 
 	 * @param form
@@ -76,6 +83,19 @@ public class FormWalker {
 		return exploredQuestions.get(selectedElements.get(selectedElements.size() - 1));
 	}
 
+	/**
+	 * This function returns true if all paths form origin from destiny pass
+	 * through a determined question by @requiredQuestion
+	 * 
+	 * This function requires to get all the paths between two nodes which makes
+	 * this function expensive.
+	 * 
+	 * @param form
+	 * @param origin
+	 * @param destiny
+	 * @param requiredQuestion
+	 * @return
+	 */
 	public static boolean allPathsFromOriginToDestinyPassThrough(Form form, BaseQuestion origin, BaseQuestion destiny,
 			BaseQuestion requiredQuestion) {
 
@@ -91,6 +111,19 @@ public class FormWalker {
 		return true;
 	}
 
+	/**
+	 * This function returns true if any path doesn't pass through a determined
+	 * question by @questionToAvoid
+	 * 
+	 * This function uses a lazy approach. When a path passes through the
+	 * question to avoid returns as false directly.
+	 * 
+	 * @param form
+	 * @param origin
+	 * @param destiny
+	 * @param questionToAvoid
+	 * @return
+	 */
 	public static boolean anyPathFromOriginDoesntPassThrough(Form form, BaseQuestion origin, BaseQuestion destiny,
 			BaseQuestion questionToAvoid) {
 		ComputedFlowView computedFlowView = form.getComputedFlowsView();
@@ -143,6 +176,17 @@ public class FormWalker {
 		return false;
 	}
 
+	/**
+	 * This function tries to find a path between two elements. This function
+	 * uses a lazy approach. When a node reached outside the bounds of the
+	 * beginning-end is discarded and at the first occurrence of getting to the end
+	 * question the function is terminated with true.
+	 * 
+	 * @param form
+	 * @param origin
+	 * @param destiny
+	 * @return
+	 */
 	public static boolean findPath(Form form, BaseQuestion origin, BaseQuestion destiny) {
 
 		ComputedFlowView computedFlowView = form.getComputedFlowsView();
@@ -191,6 +235,13 @@ public class FormWalker {
 		return false;
 	}
 
+	/**
+	 * This function returs true if a path can be found form end to the beginning of the form
+	 * @param form
+	 * @param end
+	 * @param token
+	 * @return
+	 */
 	public static boolean existsPathWithoutThisToken(Form form, BaseQuestion end, Token token) {
 		// This algorithm walks the graph from end to beginning. If it reaches a
 		// flow with the same token ignores the path. If the algorithm reaches
@@ -210,8 +261,8 @@ public class FormWalker {
 			// This question has already been explored.
 			if (exploredQuestions.contains(questionToExplore)) {
 				continue;
-			}else{
-				//Mark as explored
+			} else {
+				// Mark as explored
 				exploredQuestions.add(questionToExplore);
 			}
 
@@ -221,14 +272,15 @@ public class FormWalker {
 				return true;
 			}
 
-			for(Flow flow : computedFlowView.getFlowsByDestiny(questionToExplore)){
-				if(flow.isOthers() || flow.getCondition().isEmpty() || flow.getCondition().size()>1){
+			for (Flow flow : computedFlowView.getFlowsByDestiny(questionToExplore)) {
+				if (flow.isOthers() || flow.getCondition().isEmpty() || flow.getCondition().size() > 1) {
 					questionsToExplore.push(flow.getOrigin());
-				}else{
-					if(!flow.getCondition().get(0).isContentEqual(token)){
+				} else {
+					if (!flow.getCondition().get(0).isContentEqual(token)) {
 						questionsToExplore.push(flow.getOrigin());
 					}
-					//Is the same token ignore and don't put in questions to explore stack.
+					// Is the same token ignore and don't put in questions to
+					// explore stack.
 				}
 			}
 		}

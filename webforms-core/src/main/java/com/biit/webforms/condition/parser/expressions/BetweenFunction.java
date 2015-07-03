@@ -6,6 +6,10 @@ import java.util.List;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.utils.parser.Expression;
 
+/**
+ * Expression that encapsulates a token of type between
+ *
+ */
 public class BetweenFunction extends Expression {
 
 	private Token token;

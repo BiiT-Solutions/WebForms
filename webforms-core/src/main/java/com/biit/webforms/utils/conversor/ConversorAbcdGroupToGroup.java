@@ -7,6 +7,12 @@ import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.logger.WebformsLogger;
 
+/**
+ * Conversor from abcd groups to webforms groups.
+ * 
+ * A group only has base question elements.
+ *
+ */
 public class ConversorAbcdGroupToGroup extends ConversorTreeObject<Group, com.biit.webforms.persistence.entity.Group> {
 
 	private ConversorAbcdQuestionToQuestion conversorQuestion = new ConversorAbcdQuestionToQuestion();

@@ -8,6 +8,10 @@ import java.io.InputStream;
 
 import com.lowagie.text.DocumentException;
 
+/**
+ * Class with utility methods
+ *
+ */
 public class FormGeneratorPdf {
 
 	public static InputStream generatePdf(DocumentGenerator generator) throws IOException, DocumentException {

@@ -14,6 +14,11 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 
+/**
+ * Class to compare two different versions of the same form. It deduces which
+ * elements have been added or removed from the oldest version.
+ *
+ */
 public class FormComparation {
 
 	private Set<Category> addedCategories;
@@ -81,10 +86,10 @@ public class FormComparation {
 		for (TreeObject newBaseQuestion : newBaseQuestions) {
 			if (oldForm.getChild(newBaseQuestion.getPathName()) != null) {
 				TreeObject oldBaseQuestion = oldForm.getChild(newBaseQuestion.getPathName());
-				if((oldBaseQuestion instanceof Question && newBaseQuestion instanceof Question)
+				if ((oldBaseQuestion instanceof Question && newBaseQuestion instanceof Question)
 						|| (oldBaseQuestion instanceof Text && newBaseQuestion instanceof Text)
-						|| (oldBaseQuestion instanceof SystemField && newBaseQuestion instanceof SystemField)){
-					if(!oldBaseQuestion.isContentEqual(newBaseQuestion)){
+						|| (oldBaseQuestion instanceof SystemField && newBaseQuestion instanceof SystemField)) {
+					if (!oldBaseQuestion.isContentEqual(newBaseQuestion)) {
 						updatedBaseQuestions.add((BaseQuestion) newBaseQuestion);
 						markParentsAsUpdated(newBaseQuestion);
 					}
@@ -150,11 +155,11 @@ public class FormComparation {
 	}
 
 	private void markParentsAsUpdated(TreeObject element) {
-		if(!(element.getParent() instanceof Form)){
-			if(element.getParent() instanceof Category){
+		if (!(element.getParent() instanceof Form)) {
+			if (element.getParent() instanceof Category) {
 				updatedCategories.add((Category) element.getParent());
-			}else{
-				if(element.getParent() instanceof Group){
+			} else {
+				if (element.getParent() instanceof Group) {
 					updatedGroups.add((Group) element.getParent());
 				}
 			}

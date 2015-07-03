@@ -14,8 +14,6 @@ import com.biit.webforms.utils.parser.ITokenType;
 /**
  * Expressions [EXPR] and [EXPR]
  * 
- * @author joriz_000
- * 
  */
 public class BinaryOperator extends Expression implements WebformsExpression {
 

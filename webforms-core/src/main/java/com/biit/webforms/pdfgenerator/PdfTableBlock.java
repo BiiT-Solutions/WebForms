@@ -6,6 +6,11 @@ import java.util.List;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.lowagie.text.pdf.PdfPCell;
 
+/**
+ * Container to handle the composition of row and col elements to ensure they
+ * are always a consistent block.
+ *
+ */
 public class PdfTableBlock implements IPdfTableBlock {
 
 	private int numberCols;
@@ -20,14 +25,14 @@ public class PdfTableBlock implements IPdfTableBlock {
 	}
 
 	public void insertRow(PdfRow row) throws BadBlockException {
-		if (!row.isWellFormatted() || (row.getNumberCols() != getRemainingCols()) || (row.getNumberRows()>getRemainingRows())) {
+		if (!row.isWellFormatted() || (row.getNumberCols() != getRemainingCols()) || (row.getNumberRows() > getRemainingRows())) {
 			throw new BadBlockException();
 		}
 		tableBlocks.add(row);
 	}
 
 	public void insertCol(PdfCol col) throws BadBlockException {
-		if (!col.isWellFormatted() || (col.getNumberRows() != getRemainingRows()) || (col.getNumberCols()>getRemainingCols())) {
+		if (!col.isWellFormatted() || (col.getNumberRows() != getRemainingRows()) || (col.getNumberCols() > getRemainingCols())) {
 			throw new BadBlockException();
 		}
 		tableBlocks.add(col);
@@ -69,7 +74,7 @@ public class PdfTableBlock implements IPdfTableBlock {
 	@Override
 	public List<PdfPCell> getCells() {
 		List<PdfPCell> cells = new ArrayList<PdfPCell>();
-		for(IPdfTableBlock block: tableBlocks){
+		for (IPdfTableBlock block : tableBlocks) {
 			cells.addAll(block.getCells());
 		}
 		return cells;

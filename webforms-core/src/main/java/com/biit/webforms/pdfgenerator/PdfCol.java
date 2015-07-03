@@ -7,48 +7,55 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.lowagie.text.pdf.PdfPCell;
 
-public class PdfCol implements IPdfTableBlock{
-	
+/**
+ * Definition of elements that can occupy several elements in a column.
+ *
+ */
+public class PdfCol implements IPdfTableBlock {
+
 	private int numberRows;
 	private int numberCols;
 
 	private List<PdfPCell> cells;
 
-	public PdfCol(int numberRows,int numberCols) {
+	public PdfCol(int numberRows, int numberCols) {
 		this.numberRows = numberRows;
 		this.numberCols = numberCols;
 		cells = new ArrayList<PdfPCell>();
 	}
 
 	public void setCell(PdfPCell cell) throws BadBlockException {
-		if(cell.getRowspan()!=numberRows || cell.getColspan() !=numberCols){
+		if (cell.getRowspan() != numberRows || cell.getColspan() != numberCols) {
 			throw new BadBlockException();
-		}else{
+		} else {
 			cells.clear();
 			cells.add(cell);
 		}
 	}
-	
-	public boolean isWellFormatted(){
-		return (!cells.isEmpty()) && cells.get(0).getRowspan()==numberRows && cells.get(0).getColspan() ==numberCols;
+
+	@Override
+	public boolean isWellFormatted() {
+		return (!cells.isEmpty()) && cells.get(0).getRowspan() == numberRows && cells.get(0).getColspan() == numberCols;
 	}
 
+	@Override
 	public int getNumberRows() {
 		return numberRows;
 	}
 
+	@Override
 	public int getNumberCols() {
 		return numberCols;
 	}
-	
+
 	@Override
 	public List<PdfPCell> getCells() {
 		return cells;
 	}
-	
-	public static PdfCol generateWhiteCol(int numberRows,int numberCols){
+
+	public static PdfCol generateWhiteCol(int numberRows, int numberCols) {
 		PdfCol col = new PdfCol(numberRows, numberCols);
-		PdfPCell cell= new PdfPCell();
+		PdfPCell cell = new PdfPCell();
 		cell.setRowspan(numberRows);
 		cell.setColspan(numberCols);
 		try {
@@ -57,6 +64,6 @@ public class PdfCol implements IPdfTableBlock{
 			// Impossible
 			WebformsLogger.errorMessage(PdfCol.class.getName(), e);
 		}
-		return col;		
+		return col;
 	}
 }

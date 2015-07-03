@@ -5,6 +5,10 @@ import com.biit.form.entity.TreeObject;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Group;
 
+/**
+ * Exporter to dot graph code for form groups.
+ *
+ */
 public class ExporterDotGroup extends ExporterDot<Group> {
 	private final static String BOX_STYLE = "dashed";
 	private final static String LOOP_BOX_STYLE = "dotted";
@@ -53,8 +57,8 @@ public class ExporterDotGroup extends ExporterDot<Group> {
 				clusterChilds += (new ExporterDotBaseQuestion()).generateDotNodeList((BaseQuestion) child);
 				continue;
 			}
-			WebformsLogger.severe(this.getClass().getName(), "Has ignored an element of type: "
-					+ child.getClass().getName() + " '" + child + "'");
+			WebformsLogger.severe(this.getClass().getName(), "Has ignored an element of type: " + child.getClass().getName() + " '" + child
+					+ "'");
 		}
 		return clusterChilds;
 	}

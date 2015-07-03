@@ -31,6 +31,9 @@ public class WebformsBasicAuthorizationService extends AuthorizationService {
 
 	};
 
+	/**
+	 * Basic activities to manage building blocks
+	 */
 	private static final WebformsActivity[] MANAGE_BUILDING_BLOCKS = {
 
 	WebformsActivity.BUILDING_BLOCK_EDITING,
@@ -39,12 +42,18 @@ public class WebformsBasicAuthorizationService extends AuthorizationService {
 
 	};
 
+	/**
+	 * Extra activities for building blocks 
+	 */
 	private static final WebformsActivity[] BUILDING_BLOCKS_EXTRA_PERMISSIONS = {
 
 	WebformsActivity.BLOCK_REMOVE
 
 	};
 
+	/**
+	 * Extra activities to manage forms
+	 */
 	private static final WebformsActivity[] MANAGE_FORMS = {
 
 	WebformsActivity.FORM_EDITING,
@@ -57,6 +66,9 @@ public class WebformsBasicAuthorizationService extends AuthorizationService {
 
 	};
 
+	/**
+	 * Activities that only administrator user can do. Import/Export Json, remove 
+	 */
 	private static final WebformsActivity[] FORMS_ADMINISTRATOR_EXTRA_PERMISSIONS = {
 	
 	WebformsActivity.IMPORT_JSON,

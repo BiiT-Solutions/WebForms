@@ -13,12 +13,16 @@ import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.parselets.InfixParselet;
 
+/**
+ * Parselet that implements the parsing of elements when a comparation is
+ * present in a list of tokens.
+ *
+ */
 public class ComparationParselet implements InfixParselet {
 
 	@Override
 	public Expression parse(Parser parser, Expression left, Token token) throws ParseException, ExpectedTokenNotFound,
-			NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException,
-			EmptyParenthesisException {
+			NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException, EmptyParenthesisException {
 		Expression right = parser.parseExpression(Precedence.CONDITIONAL - 1);
 
 		return new Comparation(left, token.getType(), right);

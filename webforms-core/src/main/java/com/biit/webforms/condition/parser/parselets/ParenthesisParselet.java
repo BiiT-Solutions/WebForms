@@ -12,19 +12,23 @@ import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.parselets.PrefixParselet;
 
+/**
+ * Parselet that implements the parsing of elements when a parenthesis is found
+ * in a list of tokens
+ *
+ */
 public class ParenthesisParselet implements PrefixParselet {
 
 	@Override
-	public Expression parse(Parser parser, Token token) throws ParseException, ExpectedTokenNotFound,
-			NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException,
-			EmptyParenthesisException {
+	public Expression parse(Parser parser, Token token) throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
+			IncompleteBinaryOperatorException, MissingParenthesisException, EmptyParenthesisException {
 		if (parser.lookAhead(0) == null) {
 			throw new MissingParenthesisException(token);
 		}
 		if (parser.lookAhead(0).getType() == TokenTypes.RIGHT_PAR) {
 			throw new EmptyParenthesisException(token);
 		}
-		
+
 		Expression expression = parser.parseExpression();
 
 		try {

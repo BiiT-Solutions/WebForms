@@ -7,6 +7,11 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.utils.exporters.dotgraph.ExporterDotGroup;
 
+/**
+ * Exporter to dot graph for group elements in the added elements of the impact
+ * analysis.
+ *
+ */
 public class ExporterDotGroupAddedElements extends ExporterDotGroup {
 
 	private Group oldVersion = null;
@@ -45,23 +50,20 @@ public class ExporterDotGroupAddedElements extends ExporterDotGroup {
 			// Retrive child in other form if exists.
 			TreeObject oldVersionChild = null;
 			if (oldVersion != null) {
-				//Search for the children. Can be moved. 
-				oldVersionChild = oldVersion.getAncestor(Form.class).getChildByOriginalReference(
-						child.getOriginalReference());
+				// Search for the children. Can be moved.
+				oldVersionChild = oldVersion.getAncestor(Form.class).getChildByOriginalReference(child.getOriginalReference());
 			}
 
 			if (child instanceof Group) {
-				clusterChilds += (new ExporterDotGroupAddedElements(oldVersionChild))
-						.generateDotNodeList((Group) child);
+				clusterChilds += (new ExporterDotGroupAddedElements(oldVersionChild)).generateDotNodeList((Group) child);
 				continue;
 			}
 			if (child instanceof BaseQuestion) {
-				clusterChilds += (new ExporterDotBaseQuestionAddedElements(oldVersionChild))
-						.generateDotNodeList((BaseQuestion) child);
+				clusterChilds += (new ExporterDotBaseQuestionAddedElements(oldVersionChild)).generateDotNodeList((BaseQuestion) child);
 				continue;
 			}
-			WebformsLogger.severe(this.getClass().getName(), "Has ignored an element of type: "
-					+ child.getClass().getName() + " '" + child + "'");
+			WebformsLogger.severe(this.getClass().getName(), "Has ignored an element of type: " + child.getClass().getName() + " '" + child
+					+ "'");
 		}
 		return clusterChilds;
 	}

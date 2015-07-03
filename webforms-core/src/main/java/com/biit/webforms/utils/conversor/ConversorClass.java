@@ -1,5 +1,11 @@
 package com.biit.webforms.utils.conversor;
 
+/**
+ * Conversor abstract class Which is derived by all conversors..
+ *
+ * @param <O>
+ * @param <D>
+ */
 public abstract class ConversorClass<O,D> implements Conversor<O, D> {
 
 	public D convert(O origin){

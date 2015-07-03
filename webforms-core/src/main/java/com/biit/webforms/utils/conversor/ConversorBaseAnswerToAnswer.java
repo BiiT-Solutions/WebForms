@@ -7,6 +7,10 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
 
+/**
+ * Conversor of answers from abcd to webforms.
+ *
+ */
 public class ConversorBaseAnswerToAnswer extends ConversorTreeObject<BaseAnswer, Answer> {
 
 	@Override

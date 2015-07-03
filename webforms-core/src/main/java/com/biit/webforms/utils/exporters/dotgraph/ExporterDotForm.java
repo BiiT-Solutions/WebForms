@@ -6,6 +6,10 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Flow;
 
+/**
+ * Dot graph code exporter for forms.
+ *
+ */
 public class ExporterDotForm extends ExporterDotFormBasic<Form> {
 
 	@Override

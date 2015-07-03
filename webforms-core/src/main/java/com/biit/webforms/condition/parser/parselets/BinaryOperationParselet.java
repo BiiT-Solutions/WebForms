@@ -12,6 +12,10 @@ import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.parselets.InfixParselet;
 
+/**
+ * Parselet that implements the parsing of binary elements in a expression
+ * a + b ,  Q1 AND Q2 
+ */
 public class BinaryOperationParselet implements InfixParselet {
 
 	private final int precedence;

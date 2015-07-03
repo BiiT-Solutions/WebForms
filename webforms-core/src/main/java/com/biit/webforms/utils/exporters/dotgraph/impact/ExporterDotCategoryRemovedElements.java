@@ -8,6 +8,11 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.utils.exporters.dotgraph.ExporterDotCategory;
 
+/**
+ * Exporter to dot graph code for categories in added elements diagram in the
+ * impact analysis.
+ *
+ */
 public class ExporterDotCategoryRemovedElements extends ExporterDotCategory {
 
 	private Category newVersionCategory = null;

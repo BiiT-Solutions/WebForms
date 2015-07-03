@@ -8,6 +8,10 @@ import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.utils.parser.Expression;
 import com.biit.webforms.utils.parser.ITokenType;
 
+/**
+ * Expression that holds a comparation where [LEFT] eq/ne [RIGHT]
+ *
+ */
 public class Comparation extends Expression {
 
 	private Expression left;

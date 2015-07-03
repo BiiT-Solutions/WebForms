@@ -1,6 +1,5 @@
 package com.biit.webforms.condition.parser;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import com.biit.webforms.condition.parser.parselets.BetweenParselet;
@@ -13,13 +12,16 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.utils.parser.Parser;
 
+/**
+ * Extended PRATT parser class for webforms condition expressions. 
+ *
+ */
 public class WebformsParser extends Parser {
 
-	public WebformsParser(Token token) {
-		super(Arrays.asList(new Token[] { token }).iterator());
-		configure();
-	}
-
+	/**
+	 * Initialize the parser with a list of tokens to parse.
+	 * @param tokens
+	 */
 	public WebformsParser(Iterator<Token> tokens) {
 		super(tokens);
 		configure();

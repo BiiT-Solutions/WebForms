@@ -14,6 +14,11 @@ import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.lowagie.text.pdf.PdfWriter;
 
+/**
+ * This class generates PdfTableBlock from different kinds of elements in the
+ * form
+ *
+ */
 public class PdfBlockGenerator {
 
 	private static final int DESCRIPTION_BLOC_ROW = 1;
@@ -40,7 +45,7 @@ public class PdfBlockGenerator {
 				for (TreeObject child : question.getChildren()) {
 					// They are all answers
 					block.insertRow(PdfRowGenerator.generateAnnexAnswer((BaseAnswer) child));
-					for(TreeObject subChild: child.getChildren()){
+					for (TreeObject subChild : child.getChildren()) {
 						block.insertRow(PdfRowGenerator.generateAnnexAnswer((BaseAnswer) subChild));
 					}
 				}
@@ -80,8 +85,7 @@ public class PdfBlockGenerator {
 		return blocks;
 	}
 
-	public static PdfTableBlock generateFormQuestionElement(PdfWriter writer, Question question)
-			throws BadBlockException {
+	public static PdfTableBlock generateFormQuestionElement(PdfWriter writer, Question question) throws BadBlockException {
 		switch (question.getAnswerType()) {
 		case MULTIPLE_SELECTION:
 			return generateMultipleSelectionBlock(writer, question);
@@ -102,8 +106,7 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	private static PdfTableBlock generateSingleSelectionBlock(PdfWriter writer, Question question)
-			throws BadBlockException {
+	private static PdfTableBlock generateSingleSelectionBlock(PdfWriter writer, Question question) throws BadBlockException {
 
 		List<PdfRow> rows = PdfRowGenerator.generateRadioFieldRows(writer, question);
 
@@ -122,8 +125,7 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	private static PdfTableBlock generateSingleSelectionListBlock(PdfWriter writer, Question question)
-			throws BadBlockException {
+	private static PdfTableBlock generateSingleSelectionListBlock(PdfWriter writer, Question question) throws BadBlockException {
 		PdfRow row = PdfRowGenerator.generateSelectionListRow(writer, question, FORM_LIST_ROW, FORM_LIST_COL);
 
 		int numberRows = row.getNumberRows();
@@ -133,8 +135,7 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	private static PdfTableBlock generateMultipleSelectionBlock(PdfWriter writer, Question question)
-			throws BadBlockException {
+	private static PdfTableBlock generateMultipleSelectionBlock(PdfWriter writer, Question question) throws BadBlockException {
 		List<PdfRow> rows = PdfRowGenerator.generateCheckFieldRows(writer, question);
 
 		int numberRows = getRowSizeOfRows(rows);
@@ -152,8 +153,7 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	public static List<PdfTableBlock> generateFormQuestionTableBlocks(PdfWriter writer, Question question)
-			throws BadBlockException {
+	public static List<PdfTableBlock> generateFormQuestionTableBlocks(PdfWriter writer, Question question) throws BadBlockException {
 		List<PdfTableBlock> tableBlocks = new ArrayList<PdfTableBlock>();
 
 		tableBlocks.add(generateFormQuestionElement(writer, question));

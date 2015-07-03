@@ -8,6 +8,12 @@ import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.logger.WebformsLogger;
 
+/**
+ * Conversor from Abcd categories to Webforms Categories.
+ * 
+ * A category has base question and groups as childs
+ *
+ */
 public class ConversorAbcdCategoryToCategory extends
 		ConversorTreeObject<Category, com.biit.webforms.persistence.entity.Category> {
 

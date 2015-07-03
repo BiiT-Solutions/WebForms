@@ -6,6 +6,11 @@ import com.biit.webforms.computed.FilteredForm;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
 
+/**
+ * Specialization of the form exporter that removes all the elements that do not
+ * pass the filter Otherwise works exactly as the DotGraph Form exporter.
+ *
+ */
 public class ExporterDotFilteredForm extends ExporterDotFormBasic<FilteredForm> {
 
 	@Override
@@ -43,8 +48,7 @@ public class ExporterDotFilteredForm extends ExporterDotFormBasic<FilteredForm> 
 		String dotFlow = new String();
 		ComputedFlowView computedRuleView = structure.getFlows();
 		if (structure.hasStartAsDependency() && computedRuleView.getFirstElement() != null) {
-			dotFlow += "\tstart -> " + getDotId(computedRuleView.getFirstElement()) + "[color=" + getLinkColor(false)
-					+ "];\n";
+			dotFlow += "\tstart -> " + getDotId(computedRuleView.getFirstElement()) + "[color=" + getLinkColor(false) + "];\n";
 		}
 		for (Flow rule : structure.getFilteredFlows()) {
 			dotFlow += generateDotRule(rule);

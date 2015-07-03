@@ -8,6 +8,10 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 
+/**
+ * Dot graph exporter for base questions.
+ *
+ */
 public class ExporterDotBaseQuestion extends ExporterDot<BaseQuestion> {
 
 	@Override
@@ -29,7 +33,11 @@ public class ExporterDotBaseQuestion extends ExporterDot<BaseQuestion> {
 		return null;
 	}
 
-	// TODO translations!
+	/**
+	 * Returns the code with the title of the question.
+	 * @param baseQuestion
+	 * @return
+	 */
 	private String getDotName(BaseQuestion baseQuestion) {
 		if (baseQuestion instanceof Question) {
 			Question question = (Question) baseQuestion;

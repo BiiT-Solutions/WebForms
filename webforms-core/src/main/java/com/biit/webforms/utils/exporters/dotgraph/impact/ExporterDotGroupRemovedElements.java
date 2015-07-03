@@ -7,6 +7,11 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.utils.exporters.dotgraph.ExporterDotGroup;
 
+/**
+ * Exporter to dot graph code for groups in the removed elements graph of the
+ * impact analysis
+ *
+ */
 public class ExporterDotGroupRemovedElements extends ExporterDotGroup {
 
 	private Group newVersion = null;
@@ -44,17 +49,15 @@ public class ExporterDotGroupRemovedElements extends ExporterDotGroup {
 			newVersionChild = newVersionForm.getChildByOriginalReference(child.getOriginalReference());
 
 			if (child instanceof Group) {
-				clusterChilds += (new ExporterDotGroupRemovedElements(newVersionChild, newVersionForm))
-						.generateDotNodeList((Group) child);
+				clusterChilds += (new ExporterDotGroupRemovedElements(newVersionChild, newVersionForm)).generateDotNodeList((Group) child);
 				continue;
 			}
 			if (child instanceof BaseQuestion) {
-				clusterChilds += (new ExporterDotBaseQuestionRemovedElements(newVersionChild))
-						.generateDotNodeList((BaseQuestion) child);
+				clusterChilds += (new ExporterDotBaseQuestionRemovedElements(newVersionChild)).generateDotNodeList((BaseQuestion) child);
 				continue;
 			}
-			WebformsLogger.severe(this.getClass().getName(), "Has ignored an element of type: "
-					+ child.getClass().getName() + " '" + child + "'");
+			WebformsLogger.severe(this.getClass().getName(), "Has ignored an element of type: " + child.getClass().getName() + " '" + child
+					+ "'");
 		}
 		return clusterChilds;
 	}

@@ -12,6 +12,10 @@ import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.parselets.PrefixParselet;
 
+/**
+ * Generates InFunction expression when In token is detected.
+ *
+ */
 public class InParselet implements PrefixParselet{
 
 	@Override

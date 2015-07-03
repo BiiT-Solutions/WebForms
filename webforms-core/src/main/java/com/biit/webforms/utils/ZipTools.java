@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * Utility class with methods to access and create zip files.
+ *
+ */
 public class ZipTools {
 
 	/**

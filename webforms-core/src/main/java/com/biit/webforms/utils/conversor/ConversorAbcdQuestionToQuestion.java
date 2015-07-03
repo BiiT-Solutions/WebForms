@@ -8,8 +8,14 @@ import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.logger.WebformsLogger;
 
-public class ConversorAbcdQuestionToQuestion extends
-		ConversorTreeObject<Question, com.biit.webforms.persistence.entity.Question> {
+/**
+ * Conversion from Abcd question to Webforms question. Not all types of abcd
+ * questions are compatibles with webforms questions. To determine a compatible
+ * type and format use the appropiate conversors. The subformat is decided by
+ * default from the answer format if it applies.
+ *
+ */
+public class ConversorAbcdQuestionToQuestion extends ConversorTreeObject<Question, com.biit.webforms.persistence.entity.Question> {
 
 	private ConversorAnswerTypeAbcdToAnswerType conversorAnswerType = new ConversorAnswerTypeAbcdToAnswerType();
 	private ConversorAnswerFormatAbcdToAnswerFormat conversorAnswerFormat = new ConversorAnswerFormatAbcdToAnswerFormat();
@@ -30,7 +36,7 @@ public class ConversorAbcdQuestionToQuestion extends
 		try {
 			destiny.setAnswerFormat(conversorAnswerFormat.convert(origin.getAnswerFormat()));
 		} catch (InvalidAnswerFormatException e) {
-			//Controlled by ABCD.
+			// Controlled by ABCD.
 		}
 
 		// Convert and assign children

@@ -11,7 +11,6 @@ import com.lowagie.text.DocumentException;
 
 /**
  * Generator for Form Description.
- * @author joriz_000
  *
  */
 public class FormDescriptionGenerator extends DocumentGenerator{

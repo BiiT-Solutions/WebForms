@@ -13,6 +13,10 @@ import com.lowagie.text.pdf.PdfPCellEvent;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.RadioCheckField;
 
+/**
+ * Generator for a check field in the pdf. 
+ *
+ */
 public class FormCheckField implements PdfPCellEvent {
 	private static final float SIZE = 16.0f;
 	private PdfWriter writer;

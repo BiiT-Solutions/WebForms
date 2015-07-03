@@ -8,6 +8,11 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfPageEvent;
 import com.lowagie.text.pdf.PdfWriter;
 
+/**
+ * This class serves to generate a pdf document. Stores the default
+ * configuration of the pdf page.
+ *
+ */
 public abstract class DocumentGenerator {
 	private final static float MARGIN_LEFT = 50;
 	private final static float MARGIN_RIGHT = 50;
@@ -18,7 +23,7 @@ public abstract class DocumentGenerator {
 	private final static String DEFAULT_DOCUMENT_SUBJECT = "Form document PDF";
 	private final static String DOCUMENT_AUTHOR = "BiiT";
 	private final static String DOCUMENT_CREATOR = "BiiT";
-	
+
 	private PdfPageEvent pageEvent;
 	private PdfWriter writer;
 
@@ -32,14 +37,14 @@ public abstract class DocumentGenerator {
 	protected static Document generateDocument() {
 		return new Document(PageSize.A4, MARGIN_LEFT, MARGIN_RIGHT, MARGIN_TOP, MARGIN_BOTTON);
 	}
-	
+
 	protected abstract void generateDocumentContent(Document document) throws DocumentException;
-	
-	public void setPageEvent(PdfPageEvent event){
-		this.pageEvent=event;
+
+	public void setPageEvent(PdfPageEvent event) {
+		this.pageEvent = event;
 	}
-	
-	public final byte[] generate() throws DocumentException{
+
+	public final byte[] generate() throws DocumentException {
 		Document document = generateDocument();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		writer = PdfWriter.getInstance(document, baos);
@@ -47,22 +52,22 @@ public abstract class DocumentGenerator {
 		if (writer == null) {
 			return null;
 		}
-		
-		if(pageEvent!=null){
+
+		if (pageEvent != null) {
 			writer.setPageEvent(pageEvent);
 		}
-		
+
 		document.open();
 		addMetaData(document);
-		
+
 		generateDocumentContent(document);
-		
+
 		document.close();
 		writer = null;
 		return baos.toByteArray();
 	}
-	
-	public PdfWriter getWriter(){
+
+	public PdfWriter getWriter() {
 		return writer;
 	}
 }

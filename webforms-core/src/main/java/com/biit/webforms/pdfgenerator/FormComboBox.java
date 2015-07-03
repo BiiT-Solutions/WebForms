@@ -15,6 +15,10 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.TextField;
 
+/**
+ * Generator for combo box list.
+ *
+ */
 class FormComboBox extends FormTextField {
 
 	private List<TreeObject> options;

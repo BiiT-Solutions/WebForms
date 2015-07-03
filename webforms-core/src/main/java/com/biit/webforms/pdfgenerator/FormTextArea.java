@@ -10,6 +10,10 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.TextField;
 
+/**
+ * Generator for text area. All text areas are defined with the same height.
+ *
+ */
 class FormTextArea extends FormTextField {
 	private static final Integer MAX_HEIGHT = 45;
 
@@ -31,9 +35,9 @@ class FormTextArea extends FormTextField {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	protected Integer getHeight(){
+	protected Integer getHeight() {
 		return MAX_HEIGHT;
 	}
 }

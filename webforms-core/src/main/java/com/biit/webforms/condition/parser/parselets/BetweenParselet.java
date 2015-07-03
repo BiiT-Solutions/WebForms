@@ -12,12 +12,16 @@ import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.parselets.PrefixParselet;
 
+/**
+ * This parserlet implements how to parse a between token found in list of
+ * tokens.
+ *
+ */
 public class BetweenParselet implements PrefixParselet {
 
 	@Override
-	public Expression parse(Parser parser, Token token) throws ParseException, ExpectedTokenNotFound,
-			NoMoreTokensException, IncompleteBinaryOperatorException, MissingParenthesisException,
-			EmptyParenthesisException {
+	public Expression parse(Parser parser, Token token) throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
+			IncompleteBinaryOperatorException, MissingParenthesisException, EmptyParenthesisException {
 		return new BetweenFunction(token);
 	}
 

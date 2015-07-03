@@ -11,6 +11,11 @@ import com.biit.webforms.utils.math.domain.IDomain;
 import com.biit.webforms.utils.parser.Expression;
 import com.biit.webforms.utils.parser.ITokenType;
 
+/**
+ * Expression for unary operations. In this moment the only unary operation is
+ * NOT[EXPR]
+ *
+ */
 public class UnaryOperator extends Expression implements WebformsExpression {
 
 	private boolean prefix;
@@ -93,6 +98,6 @@ public class UnaryOperator extends Expression implements WebformsExpression {
 
 	@Override
 	public boolean checkBlockByMinTerms(Form form, BaseQuestion element) {
-		return ((WebformsExpression)expression).checkBlockByMinTerms(form, element);
+		return ((WebformsExpression) expression).checkBlockByMinTerms(form, element);
 	}
 }

@@ -12,6 +12,9 @@ import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.parselets.PrefixParselet;
 
+/**
+ * Parselet that implements the parsing of clustered comparations in a expression
+ */
 public class ComparationClusterParselet implements PrefixParselet {
 
 	@Override

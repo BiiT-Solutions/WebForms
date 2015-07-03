@@ -14,6 +14,11 @@ import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
+/**
+ * iText page event class. This formats the page to have a header and a footer
+ * with page count and titles.
+ *
+ */
 public class FormPageEvent extends PdfPageEventHelper {
 	String header;
 	PdfTemplate total;
@@ -30,10 +35,10 @@ public class FormPageEvent extends PdfPageEventHelper {
 	@Override
 	public void onEndPage(PdfWriter writer, Document document) {
 		PdfPTable table = new PdfPTable(3);
-		
+
 		int pageNumber = writer.getPageNumber();
-		
-		if(pageNumber>1){
+
+		if (pageNumber > 1) {
 			try {
 				table.setWidths(new int[] { 24, 24, 2 });
 				table.setTotalWidth(527);
@@ -55,8 +60,7 @@ public class FormPageEvent extends PdfPageEventHelper {
 
 	@Override
 	public void onCloseDocument(PdfWriter writer, Document document) {
-		ColumnText.showTextAligned(total, Element.ALIGN_LEFT, new Phrase(String.valueOf(writer.getPageNumber() - 1)),
-				2, 2, 0);
+		ColumnText.showTextAligned(total, Element.ALIGN_LEFT, new Phrase(String.valueOf(writer.getPageNumber() - 1)), 2, 2, 0);
 	}
 
 }

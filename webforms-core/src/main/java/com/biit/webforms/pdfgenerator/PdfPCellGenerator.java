@@ -8,6 +8,10 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfWriter;
 
+/**
+ * Utility class to generate PdfPCells from different elements of the form.
+ *
+ */
 public class PdfPCellGenerator {
 
 	private final static int BORDER = Rectangle.NO_BORDER;
@@ -27,9 +31,9 @@ public class PdfPCellGenerator {
 	public static PdfPCell generateInputFieldCell(PdfWriter writer, Question question) {
 		PdfPCell cell = new PdfPCell();
 		cell.setBorder(BORDER);
-		if(question.getAnswerType() == AnswerType.INPUT){
+		if (question.getAnswerType() == AnswerType.INPUT) {
 			cell.setCellEvent(new FormTextField(writer, question.getComparationId()));
-		}else{
+		} else {
 			FormTextArea textArea = new FormTextArea(writer, question.getComparationId());
 			cell.setCellEvent(textArea);
 			cell.setFixedHeight(textArea.getHeight());
@@ -43,7 +47,7 @@ public class PdfPCellGenerator {
 		return nameCell;
 	}
 
-	public static PdfPCell generateText(String text,int span) {
+	public static PdfPCell generateText(String text, int span) {
 		PdfPCell labelCell = new PdfPCell(new Phrase(text));
 		labelCell.setBorder(BORDER);
 		return labelCell;

@@ -4,6 +4,10 @@ import java.util.List;
 
 import com.biit.webforms.persistence.entity.condition.Token;
 
+/**
+ * Interface for all expression recognized by the PRATT parser. 
+ *
+ */
 public abstract class Expression {
 
 	public abstract void getString(StringBuilder builder);

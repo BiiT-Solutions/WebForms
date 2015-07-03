@@ -6,6 +6,11 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Group;
 
+/**
+ * Dot graph exporter for categories. A category encloses with a rectangle the
+ * elements inside it.
+ *
+ */
 public class ExporterDotCategory extends ExporterDot<Category> {
 	private final static String BOX_STYLE = "bold";
 
@@ -47,8 +52,8 @@ public class ExporterDotCategory extends ExporterDot<Category> {
 				clusterChilds += (new ExporterDotBaseQuestion()).generateDotNodeList((BaseQuestion) child);
 				continue;
 			}
-			WebformsLogger.severe(this.getClass().getName(), "Has ignored an element of type: "
-					+ child.getClass().getName() + " '" + child + "'");
+			WebformsLogger.severe(this.getClass().getName(), "Has ignored an element of type: " + child.getClass().getName() + " '" + child
+					+ "'");
 		}
 		return clusterChilds;
 	}

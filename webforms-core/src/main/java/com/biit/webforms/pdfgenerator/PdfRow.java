@@ -6,6 +6,10 @@ import java.util.List;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.lowagie.text.pdf.PdfPCell;
 
+/**
+ * Definition of elements that can occupy several elements in a row
+ *
+ */
 public class PdfRow implements IPdfTableBlock{
 
 	private int numberRows;

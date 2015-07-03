@@ -6,14 +6,18 @@ import java.util.List;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.utils.parser.Expression;
 
-public class InFunction  extends Expression {
+/**
+ * Expression that holds a In token function. Q in [A, A2, A3]
+ *
+ */
+public class InFunction extends Expression {
 
 	private Token token;
-	
+
 	public InFunction(Token token) {
 		this.token = token;
 	}
-	
+
 	@Override
 	public void getString(StringBuilder builder) {
 		builder.append(token.toString());

@@ -9,6 +9,11 @@ import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.exporters.dotgraph.ExporterDotForm;
 
+/**
+ * Exporter to dot graph for form elements in the removed elements of the impact
+ * analysis.
+ *
+ */
 public class ExporterDotFormRemovedElements extends ExporterDotForm {
 
 	private Form newVersion;
@@ -21,8 +26,8 @@ public class ExporterDotFormRemovedElements extends ExporterDotForm {
 	public String generateDotNodeChilds(Form oldVersion) {
 		String dotNodes = new String();
 		for (TreeObject child : oldVersion.getChildren()) {
-			dotNodes += (new ExporterDotCategoryRemovedElements(newVersion.getChildByOriginalReference(child
-					.getOriginalReference()), newVersion)).generateDotNodeList((Category) child);
+			dotNodes += (new ExporterDotCategoryRemovedElements(newVersion.getChildByOriginalReference(child.getOriginalReference()),
+					newVersion)).generateDotNodeList((Category) child);
 		}
 		return dotNodes;
 	}
@@ -63,7 +68,7 @@ public class ExporterDotFormRemovedElements extends ExporterDotForm {
 			oldDestiny = newVersion.getChildByOriginalReference(rule.getDestiny().getOriginalReference());
 		}
 		Set<Flow> flows = newVersion.getFlows(oldOrigin, oldDestiny);
-		
+
 		if (!flows.isEmpty()) {
 			// Flows found with same origin/destiny.
 			for (Flow flow : flows) {
@@ -79,14 +84,12 @@ public class ExporterDotFormRemovedElements extends ExporterDotForm {
 	}
 
 	private boolean checkIfOriginOrDestinyAreDeleted(Flow rule) {
-		TreeObject ruleOriginInSecondVersion = newVersion.getChildByOriginalReference(rule.getOrigin()
-				.getOriginalReference());
+		TreeObject ruleOriginInSecondVersion = newVersion.getChildByOriginalReference(rule.getOrigin().getOriginalReference());
 		if (ruleOriginInSecondVersion == null) {
 			return true;
 		} else {
 			if (rule.getDestiny() != null) {
-				TreeObject ruleDestinyInSecondVersion = newVersion.getChildByOriginalReference(rule.getDestiny()
-						.getOriginalReference());
+				TreeObject ruleDestinyInSecondVersion = newVersion.getChildByOriginalReference(rule.getDestiny().getOriginalReference());
 				if (ruleDestinyInSecondVersion == null) {
 					return true;
 				}

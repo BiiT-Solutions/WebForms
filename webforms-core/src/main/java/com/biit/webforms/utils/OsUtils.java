@@ -11,6 +11,10 @@ import java.util.Properties;
 import com.biit.webforms.utils.exceptions.ExecutableCanNotBeExecuted;
 import com.biit.webforms.utils.exceptions.PathToExecutableNotFound;
 
+/**
+ * Helper class for several Operative system file related issues.
+ *
+ */
 public class OsUtils {
 
 	private static String OS = System.getProperty("os.name").toLowerCase();

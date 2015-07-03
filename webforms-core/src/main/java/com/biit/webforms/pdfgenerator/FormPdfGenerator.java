@@ -14,6 +14,11 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfPTable;
 
+/**
+ * iText pdf generator for the form design data. It contains all the functions
+ * to generate the general sections of a form.
+ * 
+ */
 public class FormPdfGenerator extends DocumentGenerator {
 
 	private Form form;
@@ -33,8 +38,7 @@ public class FormPdfGenerator extends DocumentGenerator {
 
 		ParagraphGenerator.generateAndAddFormTitle(document, form.getLabel(), PdfAlign.ALIGN_CENTER);
 		String updateDate = DateManager.convertDateToString(form.getUpdateTime());
-		ParagraphGenerator.generateAndAddSubtitle(document, "Version: " + form.getVersion() + " - " + updateDate,
-				PdfAlign.ALIGN_CENTER);
+		ParagraphGenerator.generateAndAddSubtitle(document, "Version: " + form.getVersion() + " - " + updateDate, PdfAlign.ALIGN_CENTER);
 
 		for (TreeObject child : form.getChildren()) {
 			if (!child.isHiddenElement()) {
@@ -50,6 +54,7 @@ public class FormPdfGenerator extends DocumentGenerator {
 	}
 
 	private void generateAndAddTreeObject(Document document, TreeObject object) throws DocumentException {
+		// Determine the type of element anf generate with the appropiate class.
 		if (!object.isHiddenElement()) {
 			if (object instanceof Category) {
 				generateAndAddCategory(document, (Category) object);
@@ -60,7 +65,7 @@ public class FormPdfGenerator extends DocumentGenerator {
 			} else if (object instanceof Text) {
 				generateAndAddText(document, (Text) object);
 			} else if (object instanceof SystemField) {
-				// Not added to PDF.
+				// System fields are not added to PDF. Only in the annex table.
 			} else {
 				throw new DocumentException("Structure not recognized");
 			}

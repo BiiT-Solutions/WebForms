@@ -1,5 +1,9 @@
 package com.biit.webforms.security;
 
+/**
+ * Liferay roles that can be translated to activities.
+ *
+ */
 public enum WebformsRoles {
 	
 	/* empty role */

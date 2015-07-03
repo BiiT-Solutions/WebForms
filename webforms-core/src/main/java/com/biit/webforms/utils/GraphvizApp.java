@@ -16,6 +16,10 @@ import com.biit.webforms.utils.exporters.dotgraph.ExporterDotForm;
 import com.biit.webforms.utils.exporters.dotgraph.impact.ExporterDotFormAddedElements;
 import com.biit.webforms.utils.exporters.dotgraph.impact.ExporterDotFormRemovedElements;
 
+/**
+ * Helper class to generate the graphviz
+ *
+ */
 public class GraphvizApp {
 
 	/* Official variable name but it's not usually set */
@@ -47,7 +51,7 @@ public class GraphvizApp {
 		if (applicationPath == null) {
 
 			applicationPath = WebformsConfigurationReader.getInstance().getGraphvizBinPath();
-			
+
 			if (applicationPath != null) {
 				return;
 			}
@@ -70,8 +74,7 @@ public class GraphvizApp {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	private static byte[] generateImageFromDotCode(String dotCode, ImgType imgType) throws IOException,
-			InterruptedException {
+	private static byte[] generateImageFromDotCode(String dotCode, ImgType imgType) throws IOException, InterruptedException {
 		byte[] img_stream = null;
 
 		try {
@@ -82,8 +85,7 @@ public class GraphvizApp {
 			File imgTemp = File.createTempFile("dotImage_", "." + imgType.getType());
 
 			// Execution of Graphviz
-			String[] args = { applicationPath, "-T" + imgType.getType(), dotTemp.getAbsolutePath(), "-o",
-					imgTemp.getAbsolutePath() };
+			String[] args = { applicationPath, "-T" + imgType.getType(), dotTemp.getAbsolutePath(), "-o", imgTemp.getAbsolutePath() };
 			OsUtils.execSynchronic(args);
 
 			// Pass data to byte[]
@@ -95,12 +97,10 @@ public class GraphvizApp {
 
 			// Delete both files.
 			if (dotTemp.delete() == false) {
-				WebformsLogger.warning(GraphvizApp.class.getName(), dotTemp.getAbsolutePath()
-						+ " could not be deleted.");
+				WebformsLogger.warning(GraphvizApp.class.getName(), dotTemp.getAbsolutePath() + " could not be deleted.");
 			}
 			if (imgTemp.delete() == false) {
-				WebformsLogger.warning(GraphvizApp.class.getName(), imgTemp.getAbsolutePath()
-						+ " could not be deleted.");
+				WebformsLogger.warning(GraphvizApp.class.getName(), imgTemp.getAbsolutePath() + " could not be deleted.");
 			}
 		} catch (ExecutableCanNotBeExecuted e) {
 			WebformsLogger.severe(GraphvizApp.class.getName(), "Executable can't be executed.");
@@ -124,8 +124,7 @@ public class GraphvizApp {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static byte[] generateImage(Form form, TreeObject filter, ImgType imgType) throws IOException,
-			InterruptedException {
+	public static byte[] generateImage(Form form, TreeObject filter, ImgType imgType) throws IOException, InterruptedException {
 		// Generate DotCode
 		String dotCode = null;
 		if (filter == null) {
@@ -140,8 +139,20 @@ public class GraphvizApp {
 		return generateImageFromDotCode(dotCode, imgType);
 	}
 
-	public static byte[] generateImageImpactAnalysisRemovedElements(Form formOldVersion, Form formNewVersion,
-			ImgType imgType) throws IOException, InterruptedException {
+	/**
+	 * Generates the dot graph image for the impact analysis. This function only
+	 * generates the version that shows the elements added to the form between
+	 * versions.
+	 * 
+	 * @param formOldVersion
+	 * @param formNewVersion
+	 * @param imgType
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public static byte[] generateImageImpactAnalysisRemovedElements(Form formOldVersion, Form formNewVersion, ImgType imgType)
+			throws IOException, InterruptedException {
 		// Generate DotCode
 		String dotCode = null;
 		ExporterDotFormRemovedElements exporter = new ExporterDotFormRemovedElements(formNewVersion);
@@ -151,8 +162,20 @@ public class GraphvizApp {
 		return generateImageFromDotCode(dotCode, imgType);
 	}
 
-	public static byte[] generateImageImpactAnalysisAddedElements(Form formOldVersion, Form formNewVersion,
-			ImgType imgType) throws IOException, InterruptedException {
+	/**
+	 * Generate the dot graph image for the impact analysis. This function only
+	 * generates the version that shows the elements removed to the form between
+	 * versions.
+	 * 
+	 * @param formOldVersion
+	 * @param formNewVersion
+	 * @param imgType
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public static byte[] generateImageImpactAnalysisAddedElements(Form formOldVersion, Form formNewVersion, ImgType imgType)
+			throws IOException, InterruptedException {
 		// Generate DotCode
 		String dotCode = null;
 		ExporterDotFormAddedElements exporter = new ExporterDotFormAddedElements(formOldVersion);

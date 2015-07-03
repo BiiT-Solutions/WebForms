@@ -9,6 +9,11 @@ import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.exporters.dotgraph.ExporterDotForm;
 
+/**
+ * Exporter to dot graph code for forms in the added elements graph of the
+ * impact analysis.
+ *
+ */
 public class ExporterDotFormAddedElements extends ExporterDotForm {
 
 	private Form oldVersion;
@@ -21,8 +26,7 @@ public class ExporterDotFormAddedElements extends ExporterDotForm {
 	public String generateDotNodeChilds(Form form) {
 		String dotNodes = new String();
 		for (TreeObject child : form.getChildren()) {
-			dotNodes += (new ExporterDotCategoryAddedElements(oldVersion.getChild(child.getPath())))
-					.generateDotNodeList((Category) child);
+			dotNodes += (new ExporterDotCategoryAddedElements(oldVersion.getChild(child.getPath()))).generateDotNodeList((Category) child);
 
 		}
 		return dotNodes;
@@ -87,8 +91,8 @@ public class ExporterDotFormAddedElements extends ExporterDotForm {
 	}
 
 	/**
-	 * Check if origin or destiny are not found in the new version. If origin or destiny node are not found, then the
-	 * rule is considered as new.
+	 * Check if origin or destiny are not found in the new version. If origin or
+	 * destiny node are not found, then the rule is considered as new.
 	 * 
 	 * @param rule
 	 * @return
@@ -99,8 +103,7 @@ public class ExporterDotFormAddedElements extends ExporterDotForm {
 			return true;
 		}
 		if (rule.getDestiny() != null) {
-			TreeObject oldVersionDestiny = oldVersion.getChildByOriginalReference(rule.getDestiny()
-					.getOriginalReference());
+			TreeObject oldVersionDestiny = oldVersion.getChildByOriginalReference(rule.getDestiny().getOriginalReference());
 			if (oldVersionDestiny == null) {
 				return true;
 			}

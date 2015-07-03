@@ -6,6 +6,10 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfPTable;
 
+/**
+ * Utility method to generate the form annex pdf.
+ *
+ */
 public class AnnexGenerator {
 
 	public static void generateAndAdd(Document document, TreeObject treeObject) throws DocumentException {

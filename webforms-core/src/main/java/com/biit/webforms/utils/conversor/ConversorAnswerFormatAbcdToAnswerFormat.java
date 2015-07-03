@@ -3,6 +3,10 @@ package com.biit.webforms.utils.conversor;
 import com.biit.abcd.persistence.entity.AnswerFormat;
 import com.biit.webforms.logger.WebformsLogger;
 
+/**
+ * Conversor for Answer formats from ABCD to Webforms.
+ *
+ */
 public class ConversorAnswerFormatAbcdToAnswerFormat implements
 		Conversor<AnswerFormat, com.biit.webforms.enumerations.AnswerFormat> {
 

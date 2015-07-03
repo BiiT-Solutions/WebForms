@@ -8,6 +8,12 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.logger.WebformsLogger;
 
+/**
+ * Conversor from Abcd Form to Webforms form.
+ * 
+ * Both forms only have categories as childs.
+ *
+ */
 public class ConversorAbcdFormToForm extends ConversorTreeObject<Form, com.biit.webforms.persistence.entity.Form> {
 
 	private ConversorAbcdCategoryToCategory conversorCategory = new ConversorAbcdCategoryToCategory();

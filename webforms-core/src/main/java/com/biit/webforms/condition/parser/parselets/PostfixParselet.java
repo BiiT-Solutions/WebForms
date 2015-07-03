@@ -7,6 +7,10 @@ import com.biit.webforms.utils.parser.Parser;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.utils.parser.parselets.InfixParselet;
 
+/**
+ * Parselet to generate postfix elements in the PRATT parser. 
+ *
+ */
 public class PostfixParselet implements InfixParselet {
 	private final int precedence;
 

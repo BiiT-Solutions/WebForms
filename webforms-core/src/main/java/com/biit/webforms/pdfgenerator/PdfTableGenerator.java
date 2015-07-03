@@ -15,16 +15,19 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
+/**
+ * Utility class to generate pdfptables depending on form elements.
+ *
+ */
 public class PdfTableGenerator {
 
-	private final static float[] textColumnRatios = { 1.0f};
-	private final static float[] formColumnRatios = { 0.5f, 0.5f};
+	private final static float[] textColumnRatios = { 1.0f };
+	private final static float[] formColumnRatios = { 0.5f, 0.5f };
 	private final static float[] annexFormColumnRatios = { 0.5f, 0.165f, 0.165f, 0.17f };
 	private final static int BORDER = Rectangle.NO_BORDER;
 	private static final float QUESTION_TABLE_PADDING = 20;
 
-	public static PdfPTable generateTable(float relativeWidths[], List<PdfTableBlock> tableBlocks)
-			throws BadBlockException {
+	public static PdfPTable generateTable(float relativeWidths[], List<PdfTableBlock> tableBlocks) throws BadBlockException {
 		PdfPTable table = new PdfPTable(relativeWidths);
 		table.setSplitRows(false);
 
@@ -43,8 +46,7 @@ public class PdfTableGenerator {
 		return table;
 	}
 
-	public static void generate(Document document, float relativeWidths[], List<PdfTableBlock> tableBlocks)
-			throws DocumentException {
+	public static void generate(Document document, float relativeWidths[], List<PdfTableBlock> tableBlocks) throws DocumentException {
 		PdfPTable elementTable = new PdfPTable(relativeWidths);
 		elementTable.setSplitRows(false);
 
@@ -69,12 +71,12 @@ public class PdfTableGenerator {
 		return table;
 	}
 
-	public static PdfPTable generateQuestionTable(PdfWriter writer, Question question) throws BadBlockException{	
-		PdfPTable questionTable = generateTable(formColumnRatios,PdfBlockGenerator.generateFormQuestionTableBlocks(writer,question));
+	public static PdfPTable generateQuestionTable(PdfWriter writer, Question question) throws BadBlockException {
+		PdfPTable questionTable = generateTable(formColumnRatios, PdfBlockGenerator.generateFormQuestionTableBlocks(writer, question));
 		questionTable.getDefaultCell().setBorder(BORDER);
 		questionTable.setKeepTogether(true);
 		questionTable.setSpacingAfter(QUESTION_TABLE_PADDING);
-		
+
 		return questionTable;
 	}
 
@@ -82,8 +84,8 @@ public class PdfTableGenerator {
 		PdfTableBlock block = PdfBlockGenerator.generateTextBlocks(text);
 		List<PdfTableBlock> blocks = new ArrayList<PdfTableBlock>();
 		blocks.add(block);
-		
-		PdfPTable questionTable = generateTable(textColumnRatios,blocks);
+
+		PdfPTable questionTable = generateTable(textColumnRatios, blocks);
 		questionTable.getDefaultCell().setBorder(BORDER);
 		questionTable.setKeepTogether(true);
 		questionTable.setSpacingAfter(QUESTION_TABLE_PADDING);

@@ -8,22 +8,20 @@ import com.biit.liferay.security.IActivity;
  */
 public enum WebformsActivity implements IActivity {
 	READ("Read"),
-	// Edit or create BB
+
 	BUILDING_BLOCK_EDITING("BuildingBlockEditing"),
 
 	BUILDING_BLOCK_FLOW_EDITING("BuildingBlockFLowEditing"),
 
 	BUILDING_BLOCK_ADD_FROM_FORM("BuildingBlockAdd"),
-	// Edit or create F
+
 	FORM_EDITING("FormEditing"),
-	// Edit flow
+
 	FORM_FLOW_EDITING("FormFlowEditing"),
 
 	FORM_STATUS_UPGRADE("FormStatusUpgrade"),
 
 	FORM_STATUS_DOWNGRADE("FormStatusDowngrade"),
-
-	// FORM_CHANGE_GROUP("ChangeFormGroup"),
 
 	FORM_NEW_VERSION("CreateNewFormVersion"),
 
@@ -46,6 +44,7 @@ public enum WebformsActivity implements IActivity {
 	IMPORT_JSON("ImportJson"),
 	
 	EXPORT_JSON("ExportJson"),
+	
 	;
 
 	private String tag;

@@ -16,6 +16,11 @@ import com.biit.webforms.utils.math.domain.QuestionAnswerDomain;
 import com.biit.webforms.utils.math.domain.range.QuestionValueDomain;
 import com.biit.webforms.utils.parser.Expression;
 
+/**
+ * Expression that holds a QuestionAnswer / QuestionValue token. It represents a
+ * comparation in a single element.
+ *
+ */
 public class ComparationCluster extends Expression implements WebformsExpression {
 
 	private Token token;
@@ -58,13 +63,6 @@ public class ComparationCluster extends Expression implements WebformsExpression
 		}
 		return retrieved;
 	}
-
-	// @Override
-	// public FlowDomain getDomain() {
-	// FlowDomain flowDomain = new FlowDomain();
-	// flowDomain.put(token);
-	// return flowDomain;
-	// }
 
 	@Override
 	public IDomain getDomain() {

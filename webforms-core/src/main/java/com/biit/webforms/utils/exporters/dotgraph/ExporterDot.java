@@ -1,5 +1,10 @@
 package com.biit.webforms.utils.exporters.dotgraph;
 
+/**
+ * Generic class to export dot graph code.
+ *
+ * @param <T>
+ */
 public abstract class ExporterDot<T> {
 
 	private final static String GREY = "#808080";
@@ -40,18 +45,47 @@ public abstract class ExporterDot<T> {
 	protected String sizeLimit = "23.30,33.10";
 	protected String smallFontSize = "8";
 
+	/**
+	 * Return the string version of the dot graph code for a T structure.
+	 * 
+	 * @param structure
+	 * @return
+	 */
 	public abstract String export(T structure);
 
+	/**
+	 * Generates the list of nodes for a T structure.
+	 * @param structure
+	 * @return
+	 */
 	public abstract String generateDotNodeList(T structure);
 
+	/**
+	 * Generates the flow between nodes.
+	 * @param structure
+	 * @return
+	 */
 	public abstract String generateDotNodeFlow(T structure);
 
+	/**
+	 * Generate the nodes enclosed in a element.
+	 * @param structure
+	 * @return
+	 */
 	public abstract String generateDotNodeChilds(T structure);
 
+	/**
+	 * Limit sizes of the drawing
+	 * @return
+	 */
 	public String getSizeLimit() {
 		return sizeLimit;
 	}
 
+	/**
+	 * Set the limits of the drawing
+	 * @param sizeLimit
+	 */
 	public void setSizeLimit(String sizeLimit) {
 		this.sizeLimit = sizeLimit;
 	}

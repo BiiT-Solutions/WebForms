@@ -7,6 +7,11 @@ import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.utils.exporters.dotgraph.ExporterDotBaseQuestion;
 
+/**
+ * Exporter to dot graph code for baseQuestions in the "added elements" diagram
+ * of the impact analysis
+ *
+ */
 public class ExporterDotBaseQuestionAddedElements extends ExporterDotBaseQuestion {
 
 	private BaseQuestion oldVersion;
@@ -27,8 +32,7 @@ public class ExporterDotBaseQuestionAddedElements extends ExporterDotBaseQuestio
 			if ((oldVersion instanceof Question && baseQuestion instanceof Question)
 					|| (oldVersion instanceof Text && baseQuestion instanceof Text)
 					|| (oldVersion instanceof SystemField && baseQuestion instanceof SystemField)) {
-				if (oldVersion.isContentEqual(baseQuestion) 
-						&& oldVersion.hasSameChildren(baseQuestion)) {
+				if (oldVersion.isContentEqual(baseQuestion) && oldVersion.hasSameChildren(baseQuestion)) {
 					setFillColor(DEFAULT_FILL_COLOR);
 					setShapeColor(DEFAULT_SHAPE_COLOR);
 					setFontColor(DEFAULT_FONT_COLOR);
