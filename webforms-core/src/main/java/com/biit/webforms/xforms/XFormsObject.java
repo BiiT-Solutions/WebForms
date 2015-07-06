@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.BaseRepeatableGroup;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -410,13 +411,20 @@ public abstract class XFormsObject<T extends TreeObject> {
 		} else if (token instanceof TokenOthersMustBeAnswered) {
 			// Others ensure that question is answered with a string-length() or checks that is not visible with the
 			// event.
-			visibility
-					.append("(string-length(")
-					.append(getXFormsHelper().getXFormsObject(((TokenOthersMustBeAnswered) token).getQuestion())
-							.getXPath())
-					.append("/text()) &gt; 0 or instance('visible')/"
-							+ getXFormsHelper().getUniqueName(((TokenOthersMustBeAnswered) token).getQuestion())
-							+ " = 'false')");
+			visibility.append("(string-length(").append(getXPath(((TokenOthersMustBeAnswered) token).getQuestion()))
+					.append("/text()) &gt; 0 ");
+			if (!isInRepeatableGroup(((TokenOthersMustBeAnswered) token).getQuestion())) {
+				// Checks that is not visible.
+				visibility.append("or instance('visible')/"
+						+ getXFormsHelper().getUniqueName(((TokenOthersMustBeAnswered) token).getQuestion())
+						+ " = 'false'");
+			} else {
+				// Repeatable groups cannot use events. Copy relevant rule.
+				visibility.append(" or not("
+						+ getXFormsHelper().getVisibilityOfElement(((TokenOthersMustBeAnswered) token).getQuestion())
+						+ ")");
+			}
+			visibility.append(")");
 		} else if (token instanceof TokenInheritRelevant) {
 			// Uses same visibility that this element.
 			visibility.append("instance('visible')/"
@@ -425,6 +433,21 @@ public abstract class XFormsObject<T extends TreeObject> {
 		} else {
 			// An operator 'and', 'or', ...
 			visibility.append(token.getType().getOrbeonRepresentation());
+		}
+	}
+
+	/**
+	 * Returns XPath expression except for repeatable groups that cause troubles in Orbeon. In this case the Orbeon
+	 * variable is returned.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	private String getXPath(BaseQuestion element) {
+		if (isInRepeatableGroup(element)) {
+			return "$" + element.getName();
+		} else {
+			return getXFormsHelper().getXFormsObject(element).getXPath();
 		}
 	}
 
@@ -441,14 +464,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 		if (token.getType().equals(TokenTypes.NE)) {
 			// Not Equals is true if the answer is empty! Avoid it.
 			if (token.getQuestion().isMandatory()) {
-				visibility.append("(string-length("
-						+ getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath()
+				visibility.append("(string-length(" + getXPath(((TokenComparationAnswer) token).getQuestion())
 						+ "/text()) &gt; 0 and ");
 			}
 			visibility.append("not(");
 		}
-		visibility.append("contains(concat(").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
-				.append(", ' '), concat('").append(token.getAnswer().getName()).append("', ' '))");
+		visibility.append("contains(concat(").append(getXPath(token.getQuestion())).append(", ' '), concat('")
+				.append(token.getAnswer().getName()).append("', ' '))");
 		if (token.getType().equals(TokenTypes.NE)) {
 			visibility.append(")");
 			if (token.getQuestion().isMandatory()) {
@@ -467,11 +489,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 	private void getBasicSelectionVisibility(StringBuilder visibility, TokenComparationAnswer token) {
 		// Not Equals is true if the answer is empty! Avoid it.
 		if (token.getQuestion().isMandatory() && token.getType().equals(TokenTypes.NE)) {
-			visibility.append("(string-length("
-					+ getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath()
+			visibility.append("(string-length(" + getXPath(((TokenComparationAnswer) token).getQuestion())
 					+ "/text()) &gt; 0 and ");
 		}
-		visibility.append(getXFormsHelper().getXFormsObject(((TokenComparationAnswer) token).getQuestion()).getXPath());
+		visibility.append(getXPath(((TokenComparationAnswer) token).getQuestion()));
 		visibility.append(token.getType().getOrbeonRepresentation());
 		visibility.append("'").append(((TokenComparationAnswer) token).getAnswer()).append("'");
 		if (token.getQuestion().isMandatory() && token.getType().equals(TokenTypes.NE)) {
@@ -492,14 +513,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 		if (token.getQuestion().getAnswerFormat() != null) {
 			switch (token.getQuestion().getAnswerFormat()) {
 			case NUMBER:
-				visibility.append("number(").append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath())
-						.append(")");
+				visibility.append("number(").append(getXPath(token.getQuestion())).append(")");
 				visibility.append(" ").append(token.getType().getOrbeonRepresentation()).append(" ");
 				visibility.append(token.getValue());
 				break;
 			case TEXT:
 			case POSTAL_CODE:
-				visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath());
+				visibility.append(getXPath(token.getQuestion()));
 				visibility.append(" ").append(token.getType().getOrbeonRepresentation());
 				visibility.append(" '").append(token.getValue()).append("'");
 				break;
@@ -517,8 +537,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 						date = formatter.parse(token.getValue());
 						// Compare it as string. Less problems with null dates. $dateField/text() ge '2015-05-27'
 						formatter.applyPattern(XPATH_DATE_FORMAT);
-						visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append(
-								"/text() ");
+						visibility.append(getXPath(token.getQuestion())).append("/text() ");
 						visibility.append(token.getType().getOrbeonRepresentation());
 						visibility.append(" '").append(formatter.format(date)).append("'");
 					} catch (ParseException e) {
@@ -554,13 +573,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// adjust-date-to-timezone is used to remove timestamp
 			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
-			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append("/text() ");
+			visibility.append(getXPath(token.getQuestion())).append("/text() ");
 			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
 			visibility.append(" format-date(adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
 					.append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
 					.append("'), '" + DATE_FORMAT + "')");
 		} else {
-			visibility.append(getXFormsHelper().getXFormsObject(token.getQuestion()).getXPath()).append("/text() ");
+			visibility.append(getXPath(token.getQuestion())).append("/text() ");
 			visibility.append(token.getType().getOrbeonRepresentation()).append(
 					" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
 			visibility.append(xPathOperation).append("('P").append(token.getValue())
@@ -758,21 +777,19 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Obtains the previous element visibility. Can be an event if the previous element is a question, a copy of the
-	 * relevant rule if the previous one is a system field.
+	 * relevant rule if the previous one is a system field or if the element is inside a repeatable group.
 	 * 
 	 * @param flow
 	 * @return
 	 */
 	private List<Token> getPreviousVisibility(BaseQuestion element) {
-		List<Token> previousVisibility = null;
 		// If it is first element.
 		if (getXFormsHelper().getFlowsWithDestiny(element).isEmpty()) {
 			// No visibility rules defined.
-			previousVisibility = new ArrayList<>();
+			return new ArrayList<>();
 		} else {
-			// not first element, inherited relevant rule
-			previousVisibility = new ArrayList<>();
-			// Inherit must skip all hidden elements by default, as system fields.
+			// Not first element, inherited relevant rule. Inherit must skip all hidden elements by default, as system
+			// fields.
 			BaseQuestion origin = element;
 			while (isAlwaysHiddenElement(origin)) {
 				Set<Flow> previousFlow = getXFormsHelper().getFlowsWithDestiny(origin);
@@ -786,16 +803,43 @@ public abstract class XFormsObject<T extends TreeObject> {
 				}
 			}
 			if (!isAlwaysHiddenElement(origin)) {
-				// Event visibility from previous element
-				previousVisibility.add(new TokenInheritRelevant(origin));
+				if (!isInRepeatableGroup(origin)) {
+					// Event visibility from previous element
+					List<Token> previousVisibility = new ArrayList<>();
+					previousVisibility.add(new TokenInheritRelevant(origin));
+					return previousVisibility;
+				} else {
+					return getXFormsHelper().getVisibilityOfQuestionAsToken(origin);
+				}
 			} else {
 				// Copy relevant rule. Due to visibility of the previous element is always false.
-				previousVisibility = getXFormsHelper().getVisibilityOfQuestionAsToken(origin);
+				return getXFormsHelper().getVisibilityOfQuestionAsToken(origin);
 			}
 		}
-		return previousVisibility;
 	}
 
+	/**
+	 * Orbeon has some limitations in elements inside a repeatable group. We need to detect them.
+	 * 
+	 * @param element
+	 * @return
+	 */
+	private boolean isInRepeatableGroup(BaseQuestion element) {
+		List<TreeObject> parentGroups = element.getAncestors(BaseRepeatableGroup.class, false);
+		for (TreeObject group : parentGroups) {
+			if (((BaseRepeatableGroup) group).isRepeatable()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Some extra fields are always hidden and must skip standard relevant rules.
+	 * 
+	 * @param element
+	 * @return
+	 */
 	private boolean isAlwaysHiddenElement(BaseQuestion element) {
 		if (element == null) {
 			return false;
