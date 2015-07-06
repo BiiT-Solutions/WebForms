@@ -8,6 +8,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+/**
+ * Gson library serializer for the extra version form metadata
+ *
+ */
 public class BaseFormMetadataSerializer implements JsonSerializer<BaseFormMetadata> {
 
 	@Override
