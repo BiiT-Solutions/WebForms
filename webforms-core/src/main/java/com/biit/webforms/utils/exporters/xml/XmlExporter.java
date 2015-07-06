@@ -35,6 +35,16 @@ import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.xml.XmlUtils;
 
+/**
+ * This class generates a random compatible xml result data for a predetermined
+ * form. This random generation doesn't store anything on memory. It doesn't
+ * remember already produced combinations. It only marks the number of times
+ * that an element has appeared on the XML results. That information is later
+ * used to decide which path of he form use. That way we balance the results
+ * instead of a full random generator that would create a lot of repeated
+ * results.
+ *
+ */
 public class XmlExporter {
 
 	private static Random random = new Random();
@@ -99,10 +109,9 @@ public class XmlExporter {
 		String xmlBaseAddress = WebformsConfigurationReader.getInstance().getXmlBaseAddress();
 
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		sb.append("<" + form.getLabelWithouthSpaces() + " xmlns=\"" + xmlBaseAddress + ""
-				+ form.getLabelWithouthSpaces()
-				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"" + xmlBaseAddress
-				+ " schema.xsd" + form.getLabelWithouthSpaces() + "\">");
+		sb.append("<" + form.getLabelWithouthSpaces() + " xmlns=\"" + xmlBaseAddress + "" + form.getLabelWithouthSpaces()
+				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"" + xmlBaseAddress + " schema.xsd"
+				+ form.getLabelWithouthSpaces() + "\">");
 		for (Flow flow : path) {
 			if (flow.getOrigin() instanceof Text || flow.getOrigin() instanceof SystemField) {
 				continue;
@@ -125,8 +134,7 @@ public class XmlExporter {
 		}
 	}
 
-	private void generateQuestion(StringBuilder sb, WebformsBaseQuestion question,
-			HashMap<WebformsBaseQuestion, String> valuesOfPath) {
+	private void generateQuestion(StringBuilder sb, WebformsBaseQuestion question, HashMap<WebformsBaseQuestion, String> valuesOfPath) {
 		sb.append("<" + question.getName() + ">");
 		if (valuesOfPath.containsKey(question)) {
 			sb.append(valuesOfPath.get(question));
@@ -198,7 +206,8 @@ public class XmlExporter {
 				sb.append(answers.get(random.nextInt(answers.size())).getName());
 			}
 		} else {
-			// If it's a random question with dynamic answers we just use a random text
+			// If it's a random question with dynamic answers we just use a
+			// random text
 			sb.append("dynamic answer");
 		}
 	}

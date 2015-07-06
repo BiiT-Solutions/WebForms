@@ -62,6 +62,13 @@ public class FormComparation {
 		searchUpdatedElements(oldForm, newForm);
 	}
 
+	/**
+	 * Search for categories, group and base question that are maintained in the
+	 * same hierarchy path between versions but their content has been changed
+	 * 
+	 * @param oldForm
+	 * @param newForm
+	 */
 	private void searchUpdatedElements(Form oldForm, Form newForm) {
 		LinkedHashSet<TreeObject> newCategories = newForm.getAllChildrenInHierarchy(Category.class);
 		for (TreeObject newCategory : newCategories) {
@@ -98,6 +105,14 @@ public class FormComparation {
 		}
 	}
 
+	/**
+	 * Search for categories, groups and base questions that are present on the
+	 * current form version but they don't exist with the same hierarchy
+	 * position in the old form version.
+	 * 
+	 * @param oldForm
+	 * @param newForm
+	 */
 	private void searchNewElements(Form oldForm, Form newForm) {
 		LinkedHashSet<TreeObject> newCategories = newForm.getAllChildrenInHierarchy(Category.class);
 		for (TreeObject newCategory : newCategories) {
@@ -126,6 +141,13 @@ public class FormComparation {
 		}
 	}
 
+	/**
+	 * Search for categories, groups and baseQuestions that don't appear on the
+	 * same hierarchy position as in the old version.
+	 * 
+	 * @param oldForm
+	 * @param newForm
+	 */
 	private void searchRemovedElements(Form oldForm, Form newForm) {
 		LinkedHashSet<TreeObject> oldCategories = oldForm.getAllChildrenInHierarchy(Category.class);
 		for (TreeObject oldCategory : oldCategories) {
@@ -154,6 +176,12 @@ public class FormComparation {
 		}
 	}
 
+	/**
+	 * Propagates the updated status to paren elements of updated elements
+	 * answer -> question -> group -> category
+	 * 
+	 * @param element
+	 */
 	private void markParentsAsUpdated(TreeObject element) {
 		if (!(element.getParent() instanceof Form)) {
 			if (element.getParent() instanceof Category) {
