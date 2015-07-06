@@ -18,7 +18,7 @@ public class XmlGenerationTest {
 	public void testXmlGeneration() throws IOException, ElementWithoutNextElement, TooMuchIterationsWhileGeneratingPath, BadFormedExpressions {
 		//Form form = loadForm("De Haagse Passage.json");
 		Form form = loadForm("test_xml.json");
-		XmlExporter exporter = new XmlExporter(new CompleteFormView(form));
+		RandomXmlFormResultExporter exporter = new RandomXmlFormResultExporter(new CompleteFormView(form));
 		exporter.generate(10);
 	}
 

@@ -45,7 +45,7 @@ import com.biit.webforms.xml.XmlUtils;
  * results.
  *
  */
-public class XmlExporter {
+public class RandomXmlFormResultExporter {
 
 	private static Random random = new Random();
 	private final Form form;
@@ -53,7 +53,7 @@ public class XmlExporter {
 	private final HashMap<Flow, Integer> counters;
 	private final HashMap<Flow, IDomain> compiledDomains;
 
-	public XmlExporter(Form form) throws BadFormedExpressions {
+	public RandomXmlFormResultExporter(Form form) throws BadFormedExpressions {
 		this.form = form;
 		this.computedFlows = form.getComputedFlowsView();
 		this.counters = new HashMap<>();

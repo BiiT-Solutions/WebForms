@@ -15,7 +15,7 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.ZipTools;
-import com.biit.webforms.utils.exporters.xml.XmlExporter;
+import com.biit.webforms.utils.exporters.xml.RandomXmlFormResultExporter;
 import com.biit.webforms.utils.exporters.xml.exceptions.ElementWithoutNextElement;
 import com.biit.webforms.utils.exporters.xml.exceptions.TooMuchIterationsWhileGeneratingPath;
 import com.biit.webforms.utils.math.domain.exceptions.BadFormedExpressions;
@@ -89,7 +89,7 @@ public class WindowGenerateXml extends WindowAcceptCancel {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					XmlExporter exporter = new XmlExporter(form);
+					RandomXmlFormResultExporter exporter = new RandomXmlFormResultExporter(form);
 					List<String> xmlFiles = exporter.generate(stepper.getValue());
 
 					byte[] zipFile = ZipTools.zipFiles(xmlFiles);					
