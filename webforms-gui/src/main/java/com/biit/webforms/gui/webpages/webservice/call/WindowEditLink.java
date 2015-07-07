@@ -19,8 +19,9 @@ import com.vaadin.ui.FormLayout;
 public class WindowEditLink extends WindowAcceptCancel {
 	private static final long serialVersionUID = -8577100119556278102L;
 
-	private static final String WINDOW_WIDTH = "300px";
+	private static final String WINDOW_WIDTH = "500px";
 	private static final String WINDOW_HEIGHT = "200px";
+	private static final String SEARCH_FORM_ELEMENT_WIDTH = "400px";
 
 	private WebserviceCallLink link;
 	private final FormLayout rootLayout;
@@ -38,7 +39,7 @@ public class WindowEditLink extends WindowAcceptCancel {
 
 	protected Component generateContent() {
 		searchFormElement.setCaption(LanguageCodes.CAPTION_SELECT_FORM_ELEMENT.translation());
-		searchFormElement.setWidth("100%");
+		searchFormElement.setWidth(SEARCH_FORM_ELEMENT_WIDTH);
 		searchFormElement.setSelectableFilter(SystemField.class, Question.class);
 		searchFormElement.addValueChangeListener(new SearchFormElementChanged() {
 
