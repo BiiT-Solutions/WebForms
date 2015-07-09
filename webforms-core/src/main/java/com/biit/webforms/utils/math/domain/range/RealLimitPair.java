@@ -2,8 +2,12 @@ package com.biit.webforms.utils.math.domain.range;
 
 import com.biit.webforms.utils.math.domain.Closure;
 
-public class RealLimitPair<T extends Comparable<T>> implements
-		Comparable<RealLimitPair<T>> {
+/**
+ * A pair of real limit elements generates a range of real numbers
+ *
+ * @param <T>
+ */
+public class RealLimitPair<T extends Comparable<T>> implements Comparable<RealLimitPair<T>> {
 
 	private final RealLimit<T> left;
 	private final RealLimit<T> right;
@@ -18,19 +22,16 @@ public class RealLimitPair<T extends Comparable<T>> implements
 		this.right = right;
 	}
 
-	private boolean overlap(RealLimitPair<T> first, RealLimitPair<T> second,
-			boolean strict) {
+	private boolean overlap(RealLimitPair<T> first, RealLimitPair<T> second, boolean strict) {
 		if (first.getRight().compareTo(second.getLeft()) < 0) {
 			return false;
 		}
-		if (first.getRight().compareTo(second.getLeft()) == 0
-				&& first.getRight().getClosure() == Closure.EXCLUSIVE
+		if (first.getRight().compareTo(second.getLeft()) == 0 && first.getRight().getClosure() == Closure.EXCLUSIVE
 				&& second.getLeft().getClosure() == Closure.EXCLUSIVE) {
 			return false;
 		}
 		if (strict && first.getRight().compareTo(second.getLeft()) == 0) {
-			if (first.getRight().getClosure() == Closure.INCLUSIVE
-					&& second.getLeft().getClosure() == Closure.INCLUSIVE) {
+			if (first.getRight().getClosure() == Closure.INCLUSIVE && second.getLeft().getClosure() == Closure.INCLUSIVE) {
 				return true;
 			} else {
 				return false;
@@ -45,8 +46,7 @@ public class RealLimitPair<T extends Comparable<T>> implements
 	 * @param second
 	 * @return
 	 */
-	public RealLimitPair<T> unionOrdered(RealLimitPair<T> first,
-			RealLimitPair<T> second) {
+	public RealLimitPair<T> unionOrdered(RealLimitPair<T> first, RealLimitPair<T> second) {
 		if (overlap(first, second, false)) {
 			RealLimit<T> newLeft;
 			RealLimit<T> newRight;
@@ -61,8 +61,7 @@ public class RealLimitPair<T extends Comparable<T>> implements
 			if (first.getRight().compareTo(second.getRight()) <= 0) {
 				// second, right is the greatest limit.
 				newRight = second.getRight();
-				if (first.getRight().compareTo(second.getRight()) == 0
-						&& first.getRight().getClosure() == Closure.INCLUSIVE) {
+				if (first.getRight().compareTo(second.getRight()) == 0 && first.getRight().getClosure() == Closure.INCLUSIVE) {
 					newRight = first.getRight();
 				}
 			} else {
@@ -74,8 +73,7 @@ public class RealLimitPair<T extends Comparable<T>> implements
 		return null;
 	}
 
-	public RealLimitPair<T> intersectionOrdered(RealLimitPair<T> first,
-			RealLimitPair<T> second) {
+	public RealLimitPair<T> intersectionOrdered(RealLimitPair<T> first, RealLimitPair<T> second) {
 		if (overlap(first, second, true)) {
 			RealLimit<T> newLeft;
 			RealLimit<T> newRight;
@@ -84,8 +82,7 @@ public class RealLimitPair<T extends Comparable<T>> implements
 				newLeft = first.getLeft();
 			} else {
 				newLeft = second.getLeft();
-				if (first.getLeft().compareTo(second.getLeft()) == 0
-						&& first.getLeft().getClosure() == Closure.EXCLUSIVE) {
+				if (first.getLeft().compareTo(second.getLeft()) == 0 && first.getLeft().getClosure() == Closure.EXCLUSIVE) {
 					newLeft = first.getLeft();
 				}
 			}
@@ -94,8 +91,7 @@ public class RealLimitPair<T extends Comparable<T>> implements
 				newRight = first.getRight();
 			} else {
 				newRight = second.getRight();
-				if (first.getRight().compareTo(second.getRight()) == 0
-						&& first.getRight().getClosure() == Closure.EXCLUSIVE) {
+				if (first.getRight().compareTo(second.getRight()) == 0 && first.getRight().getClosure() == Closure.EXCLUSIVE) {
 					newRight = first.getRight();
 				}
 			}

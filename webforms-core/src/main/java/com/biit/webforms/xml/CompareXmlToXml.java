@@ -16,14 +16,20 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * Class employed to compare to xml files node to node. It returs true if all
+ * child elements of a node of xml file appear also on the second file and no
+ * extra nodes have been added.
+ *
+ */
 public class CompareXmlToXml {
 
 	private Document xmlDocument1;
 	private Document xmlDocument2;
 	private String cause;
 
-	public CompareXmlToXml(ByteArrayOutputStream file1Content, ByteArrayOutputStream file2Content)
-			throws ParserConfigurationException, SAXException, IOException {
+	public CompareXmlToXml(ByteArrayOutputStream file1Content, ByteArrayOutputStream file2Content) throws ParserConfigurationException,
+			SAXException, IOException {
 
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -46,8 +52,7 @@ public class CompareXmlToXml {
 
 	private boolean comparate(Element element1, Element element2) {
 		if (!element1.getNodeName().equals(element2.getNodeName())) {
-			cause += "Node '" + element1.getNodeName() + "' is different to node '" + element2.getNodeName() + "'"
-					+ System.lineSeparator();
+			cause += "Node '" + element1.getNodeName() + "' is different to node '" + element2.getNodeName() + "'" + System.lineSeparator();
 			return false;
 		}
 
@@ -63,8 +68,7 @@ public class CompareXmlToXml {
 				}
 				if (element1.getFirstChild() != null && element2.getFirstChild() != null) {
 					if (!element1.getFirstChild().getNodeValue().equals(element2.getFirstChild().getNodeValue())) {
-						cause += "Values of node '" + element1.getNodeName() + "' is different."
-								+ System.lineSeparator();
+						cause += "Values of node '" + element1.getNodeName() + "' is different." + System.lineSeparator();
 						return false;
 					}
 				}
@@ -78,8 +82,8 @@ public class CompareXmlToXml {
 				return true;
 			}
 		} else {
-			cause += "Node '" + element1.getNodeName() + "' childs don't match '" + printNames(childElements1)
-					+ "' and '" + printNames(childElements2) + "'" + System.lineSeparator();
+			cause += "Node '" + element1.getNodeName() + "' childs don't match '" + printNames(childElements1) + "' and '"
+					+ printNames(childElements2) + "'" + System.lineSeparator();
 			return false;
 		}
 	}

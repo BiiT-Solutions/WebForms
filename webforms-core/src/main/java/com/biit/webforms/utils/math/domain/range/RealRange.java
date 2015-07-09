@@ -12,7 +12,8 @@ import com.biit.webforms.utils.math.domain.Closure;
 import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
 
 /**
- * This class defines a range of real numbers. Basic mathematic operations are
+ * This class defines a range of real numbers with the union of several
+ * {@link RealLimitPair} that define ranges. Basic mathematic operations are
  * supported.
  * 
  */
@@ -116,12 +117,11 @@ public abstract class RealRange<T extends Comparable<T>> {
 				accum = allPairs.get(i);
 				continue;
 			}
-			
+
 			RealLimitPair<T> nextAccum = accum.union(allPairs.get(i));
 			if (isDiscrete() && nextAccum == null) {
 				// Try to make an union for discretes
-				if (accum.getRight().getClosure() == Closure.INCLUSIVE
-						&& allPairs.get(i).getLeft().getClosure() == Closure.INCLUSIVE) {
+				if (accum.getRight().getClosure() == Closure.INCLUSIVE && allPairs.get(i).getLeft().getClosure() == Closure.INCLUSIVE) {
 					T nextValue = getNextDiscreteValue(accum.getRight().getLimit());
 					if (nextValue.compareTo(allPairs.get(i).getLeft().getLimit()) == 0) {
 						nextAccum = accum.discreteUnion(allPairs.get(i));
@@ -190,14 +190,12 @@ public abstract class RealRange<T extends Comparable<T>> {
 			}
 
 			for (int i = 1; i < limits.size(); i++) {
-				inverseRanges.add(new RealLimitPair<T>(limits.get(i - 1).getRight().inverse(), limits.get(i).getLeft()
-						.inverse()));
+				inverseRanges.add(new RealLimitPair<T>(limits.get(i - 1).getRight().inverse(), limits.get(i).getLeft().inverse()));
 			}
 
 			int maxRange = limits.size() - 1;
 			if (completeDomain.getRight().compareTo(limits.get(maxRange).getRight()) > 0) {
-				inverseRanges.add(new RealLimitPair<T>(limits.get(maxRange).getRight().inverse(), completeDomain
-						.getRight()));
+				inverseRanges.add(new RealLimitPair<T>(limits.get(maxRange).getRight().inverse(), completeDomain.getRight()));
 			}
 
 			return createNewRealRange(inverseRanges);
@@ -284,7 +282,7 @@ public abstract class RealRange<T extends Comparable<T>> {
 	}
 
 	public T generateRandomValue() {
-		if(limits.size()==1){
+		if (limits.size() == 1) {
 			return generateRandomValue(limits.get(0));
 		}
 		int randomNum = random.nextInt(limits.size());
