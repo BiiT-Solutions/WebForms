@@ -10,6 +10,11 @@ import java.util.Set;
 
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 
+/**
+ * Domain formed by a set of different domains. Its a join of different domains
+ * of any type.
+ *
+ */
 public abstract class DomainSet implements IDomain {
 
 	protected static Random random = new Random();
@@ -185,7 +190,8 @@ public abstract class DomainSet implements IDomain {
 				// The union has the domain add the union of both.
 				union.add(union.getDomainQuestion(domainB.getQuestion()).union(domainB));
 			} else {
-				// The union has the domain inside of another group, just add it as an or
+				// The union has the domain inside of another group, just add it
+				// as an or
 				union.add(domainB);
 			}
 		}

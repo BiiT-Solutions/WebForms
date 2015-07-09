@@ -8,6 +8,10 @@ import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.logger.WebformsLogger;
 
+/**
+ * Utilities to parse values from string data.
+ *
+ */
 public class ParseValueUtils {
 
 	public static Long parseDate(String value) {

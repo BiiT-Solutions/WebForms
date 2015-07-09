@@ -12,19 +12,11 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
-import com.biit.webforms.enumerations.FlowType;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
-import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
+import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
@@ -176,16 +168,11 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		List<WebserviceCallInputLinkErrors> webserviceValidations = getWebserviceCallInputErrors();
 
 		for (int i = 0; i < webserviceValidations.size(); i++) {
-			String webserviceValidatorInstance = getWebserviceValidatorInstance(webserviceValidations.get(i).getWebserviceCallInputLink());
 			constraints.append("<xf:constraint id=\"webservice-constraint-"+ getXFormsHelper().getUniqueName(getSource()) +"-" + i + "-validation\" ");
-			constraints.append("value=\"instance('" + webserviceValidatorInstance + "')"+webserviceValidations.get(i).getWebserviceCallInputLink().getValidationXpath()+" != '");
+			constraints.append("value=\"$"+getXFormsHelper().getWebserviceValidationField(getSource()).getUniqueName()+" != '");
 			constraints.append(webserviceValidations.get(i).getErrorCode());
 			constraints.append("'\"/>");
 		}
-	}
-
-	private String getWebserviceValidatorInstance(WebserviceCallInputLink webserviceCallInputLink) {
-		return webserviceCallInputLink.getWebserviceCall().getName() + "-" + webserviceCallInputLink.getWebservicePort() + "-instance";
 	}
 
 	private void getTypeConstraints(StringBuilder constraints) {
@@ -493,24 +480,6 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		}
 		// Other elements uses the previous element visibility.
 		return getXFormsHelper().getVisibilityOfElement(getXFormsHelper().getPreviousBaseQuestion(getSource()));
-	}
-
-	/**
-	 * Creates a new computed go to next element Flow. Type normal, condition =
-	 * '' -> true
-	 * 
-	 * @param origin
-	 * @param destiny
-	 */
-	public static void addNewNextElementFlow(BaseQuestion origin, BaseQuestion destiny) {
-		Flow flow = new Flow();
-		try {
-			flow.setContent(origin, FlowType.NORMAL, destiny, false, new ArrayList<Token>());
-		} catch (BadFlowContentException | FlowWithoutSourceException | FlowSameOriginAndDestinyException
-				| FlowDestinyIsBeforeOriginException | FlowWithoutDestinyException e) {
-			// Impossible
-			WebformsLogger.errorMessage(XFormsQuestion.class.getName(), e);
-		}
 	}
 
 	@Override

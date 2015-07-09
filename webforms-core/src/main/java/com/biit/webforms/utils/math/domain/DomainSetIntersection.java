@@ -7,10 +7,14 @@ import java.util.List;
 
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 
+/**
+ * Specification of the set of domains. In this specification the result is the
+ * logic intersection (AND) of the different domains.
+ *
+ */
 public class DomainSetIntersection extends DomainSet {
 
-	public DomainSetIntersection(HashMap<WebformsBaseQuestion, IDomainQuestion> domainQuestions,
-			HashSet<DomainSet> domainSet) {
+	public DomainSetIntersection(HashMap<WebformsBaseQuestion, IDomainQuestion> domainQuestions, HashSet<DomainSet> domainSet) {
 		super(domainQuestions, domainSet);
 	}
 
