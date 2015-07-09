@@ -10,9 +10,16 @@ The folder '/assets' must be in the folder '/WEB-INF/resources/forms/' of the or
 The following line must be in the 'properties-local-xml' file of the orbeon '/WEB-INF/resources/config/' folder
 	<!-- Set the css to use -->
 	<property as="xs:string" name="oxf.fr.css.custom.uri.*.*"  value="/forms/assets/BiiT.css"/>
-Also the wizard style must be deactivated for the categories menu to work. 
 
+¡¡¡¡ IMPORTANT !!!!
+The wizard style must be deactivated for the categories menu to work. 
+You MUST comment or delete the following lines if they exist:
+	<!-- Configure wizard layout -->
+	<property as="xs:string" name="oxf.fr.detail.view.appearance.*.*" value="wizard"/>
+	<property as="xs:string" name="oxf.fr.detail.buttons.*.*" value="wizard-prev wizard-next submit"/>
 
 TASK #38: Change Orbeon Label of repetable groups
 Only need to edit the properties locale and add the line:
 	<property as="xs:string"  name="oxf.fr.resource.*.*.en.components.grid.insert-below" value='Add new record'/>
+	
+
