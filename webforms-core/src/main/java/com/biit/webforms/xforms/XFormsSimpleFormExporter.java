@@ -347,13 +347,16 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 					+ "\"/>");
 			events.append("</xf:action>");
 		}
+		
 		for (WebserviceCallInputLink inputLink : call.getInputLinks()) {
-			if (inputLink.getValidationXpath() != null) {
-				events.append("<xf:insert ref=\"instance('" + getXFormsHelper().getUniqueName(call) + "-"
-						+ inputLink.getWebservicePort()
-						+ "-instance')\" origin=\"instance('fr-service-response-instance')\"/>");
-			}
+			events.append("<xf:action class=\"fr-set-control-value-action\">");
+			events.append("<xf:var name=\"control-name\" value=\"'"
+					+ getXFormsHelper().getWebserviceValidationField(inputLink.getFormElement()).getUniqueName() + "'\"/>");
+			events.append("<xf:var name=\"control-value\" value=\"" + inputLink.getValidationXpath()
+					+ "\"/>");
+			events.append("</xf:action>");
 		}
+
 		events.append("</xf:action>");
 		events.append("</xf:action>");
 	}
@@ -555,16 +558,6 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	@Override
 	protected String getModelInstance() {
 		StringBuilder text = new StringBuilder(super.getModelInstance());
-
-		for (WebserviceCall call : getForm().getWebserviceCalls()) {
-			for (WebserviceCallInputLink inputLink : call.getInputLinks()) {
-				text.append("<xf:instance id=\"" + getXFormsHelper().getUniqueName(call) + "-"
-						+ inputLink.getWebservicePort() + "-instance\">");
-				text.append("<valid/>");
-				text.append("</xf:instance>");
-			}
-		}
-
 		return text.toString();
 	}
 }

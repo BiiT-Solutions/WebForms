@@ -9,7 +9,10 @@ import java.util.Set;
 
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
+import com.biit.form.exceptions.NotValidChildException;
+import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
@@ -41,6 +44,7 @@ class XFormsHelper {
 	private HashMap<BaseQuestion, WebserviceCallOutputLink> webserviceOuput;
 	private HashMap<BaseQuestion, Set<WebserviceCallInputLink>> webserviceInputs;
 	private Set<String> usedCallNames;
+	private HashMap<BaseQuestion, XformsWebserviceValidationField> webserviceValidationField;
 	
 	private HashMap<WebserviceCall, String> callNames;
 
@@ -60,6 +64,7 @@ class XFormsHelper {
 		webserviceInputs = new HashMap<>();
 		callNames = new HashMap<>();
 		usedCallNames = new HashSet<>();
+		webserviceValidationField = new HashMap<>();
 
 		// Set questions in order.
 		LinkedHashSet<TreeObject> allBaseQuestions = form.getAllNotHiddenChildrenInHierarchy(BaseQuestion.class);
@@ -84,6 +89,7 @@ class XFormsHelper {
 			}
 		}
 		
+		// Set all webservice inputs classified for question
 		for(WebserviceCall call: form.getWebserviceCalls()){
 			for(WebserviceCallOutputLink link: call.getOutputLinks()){
 				webserviceOuput.put(link.getFormElement(), link);
@@ -93,6 +99,12 @@ class XFormsHelper {
 					webserviceInputs.put(link.getFormElement(), new HashSet<WebserviceCallInputLink>());
 				}
 				webserviceInputs.get(link.getFormElement()).add(link);
+				try {
+					webserviceValidationField.put(link.getFormElement(), new XformsWebserviceValidationField(this, link.getFormElement()));
+				} catch (NotValidTreeObjectException | NotValidChildException e) {
+					// This should never happen.
+					WebformsLogger.errorMessage(this.getClass().getName(), e);
+				}
 			}
 		}
 	}
@@ -314,6 +326,10 @@ class XFormsHelper {
 
 	public Set<Flow> getDefaultFlows() {
 		return defaultFlows;
+	}
+
+	public XformsWebserviceValidationField getWebserviceValidationField(BaseQuestion formElement) {
+		return webserviceValidationField.get(formElement);
 	}
 
 }

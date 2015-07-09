@@ -87,6 +87,11 @@ public abstract class XFormsObject<T extends TreeObject> {
 				} else if (child instanceof SystemField) {
 					newChild = new XFormsSystemField(xFormsHelper, (SystemField) child);
 				} else {
+					//Add webservice validation field if applies.
+					if(hasWebserviceValidation((BaseQuestion) child)){
+						addWebserviceValidationField((BaseQuestion) child);
+					}					
+					
 					newChild = new XFormsQuestion(xFormsHelper, (BaseQuestion) child);
 				}
 				xFormsHelper.addXFormsQuestion((XFormsQuestion) newChild);
@@ -105,6 +110,17 @@ public abstract class XFormsObject<T extends TreeObject> {
 		} catch (NotValidTreeObjectException e) {
 			throw new NotValidChildException("Inserted child '" + child + "' is not valid. ");
 		}
+	}
+
+	private void addWebserviceValidationField(BaseQuestion child) throws NotValidTreeObjectException, NotValidChildException {
+		//Webservice validation
+		XformsWebserviceValidationField webformsValidation = xFormsHelper.getWebserviceValidationField(child);
+		webformsValidation.setParent(this);
+		children.add(webformsValidation);		
+	}
+
+	private boolean hasWebserviceValidation(BaseQuestion child) {
+		return xFormsHelper.getWebserviceCallInputLinks(child)!=null && !xFormsHelper.getWebserviceCallInputLinks(child).isEmpty(); 
 	}
 
 	protected T getSource() {
@@ -601,6 +617,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 		// Get all visibility rule as tokens.
 		List<Token> visibilityAsToken = getRelevantByFlowsAsTokens(flows);
 		if (visibilityAsToken.isEmpty()) {
+			// Store for future reuse.
+			getXFormsHelper().addVisibilityOfQuestionAsToken(getSource(), visibilityAsToken);
 			return "";
 		}
 		// Simplify the visibility expression
