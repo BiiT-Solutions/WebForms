@@ -1,5 +1,8 @@
 package com.biit.webforms.utils.math.domain;
 
+/**
+ * Enum definition to represent closures of ranges [ ( {}
+ */
 public enum Closure {
 
 	INCLUSIVE, 

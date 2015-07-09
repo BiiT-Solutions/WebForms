@@ -7,6 +7,11 @@ import java.util.List;
 
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 
+/**
+ * Specification of the set of domains. In this specification the result is the
+ * logic union (OR) of the different domains.
+ *
+ */
 public class DomainSetUnion extends DomainSet {
 
 	public DomainSetUnion(HashMap<WebformsBaseQuestion, IDomainQuestion> inverseDomainQuestions,

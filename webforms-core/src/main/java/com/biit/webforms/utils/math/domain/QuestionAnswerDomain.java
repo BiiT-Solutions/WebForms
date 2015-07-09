@@ -13,6 +13,12 @@ import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.utils.math.domain.exceptions.DifferentDomainQuestionOperationException;
 import com.biit.webforms.utils.math.domain.exceptions.IncompatibleDomainException;
 
+/**
+ * Domain for questions with answers. The complete domain is formed by all the
+ * possible answers of a question. In case of subanswers the domain is formed by
+ * all possible final answers (All subanswer or answers without children)
+ *
+ */
 public class QuestionAnswerDomain implements IDomainQuestion {
 
 	private final WebformsBaseQuestion question;
@@ -84,7 +90,8 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	}
 
 	/**
-	 * Returns a QuestionAnswerDomain with the inverse of the current domain value.
+	 * Returns a QuestionAnswerDomain with the inverse of the current domain
+	 * value.
 	 * 
 	 * @return
 	 */
@@ -121,8 +128,9 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	}
 
 	/**
-	 * Joins two QuestionAnswerDomains and returns a new QuestionAnswerDomain with the result of the operation. If the
-	 * domains are not compatible (Not the same question) a null value is returned.
+	 * Joins two QuestionAnswerDomains and returns a new QuestionAnswerDomain
+	 * with the result of the operation. If the domains are not compatible (Not
+	 * the same question) a null value is returned.
 	 * 
 	 * @param domain
 	 * @return
@@ -157,8 +165,9 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	}
 
 	/**
-	 * Intersects two QuestionAnswerDomains and returs a new QuestionAnswerDomain with the result of the operation. If
-	 * the domains are not compatible (Not the same question) a null value is returned.
+	 * Intersects two QuestionAnswerDomains and returs a new
+	 * QuestionAnswerDomain with the result of the operation. If the domains are
+	 * not compatible (Not the same question) a null value is returned.
 	 * 
 	 * @param domain
 	 * @return
