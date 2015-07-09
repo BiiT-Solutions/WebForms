@@ -7,6 +7,10 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.theme.ThemeIcons;
 import com.vaadin.ui.Button.ClickListener;
 
+/**
+ * Upper menu of block Manager webpage.
+ *
+ */
 public class UpperMenuBlockManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = 6951880828390670219L;
 
