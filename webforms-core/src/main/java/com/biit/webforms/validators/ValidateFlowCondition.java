@@ -41,7 +41,7 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 	}
 
 	private void validateAnswersOfSelect(Flow flow) {
-		for (Token token : flow.getCondition()) {
+		for (Token token : flow.getComputedCondition()) {
 			if (token instanceof TokenWithQuestion) {
 				if (((TokenWithQuestion) token).getQuestion().getAnswerType().isChildrenAllowed()) {
 					assertTrue(token instanceof TokenComparationAnswer || token instanceof TokenIn,
@@ -52,7 +52,7 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 	}
 
 	private void validateFlowConditionQuestionAreAllMandatory(Flow flow) {
-		for (Token token : flow.getCondition()) {
+		for (Token token : flow.getComputedCondition()) {
 			if (token instanceof TokenComparationAnswer) {
 				assertTrue(((TokenComparationAnswer) token).getQuestion() instanceof SystemField
 						|| ((TokenComparationAnswer) token).getQuestion().isMandatory(),
@@ -75,7 +75,7 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 
 	private boolean isConditionValid(Flow flow) {
 		try {
-			WebformsParser parser = new WebformsParser(flow.getCondition().iterator());
+			WebformsParser parser = new WebformsParser(flow.getComputedCondition().iterator());
 			parser.parseCompleteExpression();
 			return true;
 		} catch (ParseException | ExpectedTokenNotFound | NoMoreTokensException | IncompleteBinaryOperatorException

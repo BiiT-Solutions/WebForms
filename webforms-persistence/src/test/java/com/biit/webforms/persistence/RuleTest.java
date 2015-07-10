@@ -78,7 +78,7 @@ public class RuleTest extends AbstractTransactionalTestNGSpringContextTests {
 		Assert.assertTrue(!dbForm.getFlows().isEmpty());
 
 		Flow dbRule = dbForm.getFlows().iterator().next();
-		Assert.assertTrue(!dbRule.getCondition().isEmpty());
+		Assert.assertTrue(!dbRule.getComputedCondition().isEmpty());
 
 		// Check that removing rule doesn't make disappear anything else.
 		Assert.assertTrue(dbForm.getAll(Question.class).size() == 2);

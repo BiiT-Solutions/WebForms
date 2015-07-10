@@ -29,7 +29,7 @@ public class ValidateFlowSubformat extends SimpleValidator<Flow> {
 	}
 
 	private TokenComparationValue getInvalidToken(Flow flow) {
-		for (Token token : flow.getCondition()) {
+		for (Token token : flow.getComputedCondition()) {
 			if (token instanceof TokenComparationValue) {
 				if (((TokenComparationValue) token).getQuestion()
 						.getAnswerType().equals(AnswerType.INPUT)) {

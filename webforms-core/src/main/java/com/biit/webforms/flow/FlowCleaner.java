@@ -75,7 +75,7 @@ public class FlowCleaner {
 			if ((flow != null) && (flow.getDestiny() != null) && (nextQuestion != null)) {
 				if (!flow.isReadOnly() && flow.getDestiny().equals(nextQuestion)) {
 					// Has no condition.
-					if (flow.getCondition() == null || flow.getCondition().isEmpty()) {
+					if (flow.getComputedCondition() == null || flow.getComputedCondition().isEmpty()) {
 						form.removeRule(flow);
 						uselessFlowRemoved.add(flow);
 					}

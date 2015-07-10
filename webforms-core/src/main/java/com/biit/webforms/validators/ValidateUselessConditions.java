@@ -28,8 +28,8 @@ public class ValidateUselessConditions extends SimpleValidator<Flow> {
 
 	@Override
 	protected void validateImplementation(Flow flow) {
-		if (!flow.getCondition().isEmpty() && !flow.isOthers()) {
-			for (Token token : flow.getCondition()) {
+		if (!flow.getComputedCondition().isEmpty() && !flow.isOthers()) {
+			for (Token token : flow.getComputedCondition()) {
 				BaseQuestion question = null;
 				// Condition is not the source of the flow.
 				if (token instanceof TokenComparationValue) {

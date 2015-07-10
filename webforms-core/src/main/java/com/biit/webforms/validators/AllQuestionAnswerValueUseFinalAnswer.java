@@ -24,7 +24,7 @@ public class AllQuestionAnswerValueUseFinalAnswer extends SimpleValidator<Flow> 
 	@Override
 	protected void validateImplementation(Flow flow) {
 		if (!flow.isOthers()) {
-			Iterator<Token> itr = flow.getCondition().iterator();
+			Iterator<Token> itr = flow.getComputedCondition().iterator();
 
 			while (itr.hasNext()) {
 				Token token = itr.next();

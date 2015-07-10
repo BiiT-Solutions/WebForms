@@ -711,7 +711,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 				// If condition is empty, inherit the relevance of the previous element. Others also has empty
 				// condition.
-			} else if (flow.getCondition().isEmpty()) {
+			} else if (flow.getComputedCondition().isEmpty()) {
 				// Get previous visibility.
 				List<Token> previousVisibility = getPreviousVisibility(flow.getOrigin());
 
