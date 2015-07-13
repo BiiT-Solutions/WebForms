@@ -1282,13 +1282,6 @@ public class ApplicationController {
 			List<Token> condition) throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
 			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException {
 		logInfoStart("updateFlowContent", flow, origin, flowType, destiny, others, condition);
-
-		
-		System.out.println("origin: " + origin);
-		System.out.println("flowType: " + flowType);
-		System.out.println("destiny: " + destiny);
-		System.out.println("others: " + others);
-		System.out.println("condition: " + condition);
 		flow.setContent(origin, flowType, destiny, others, condition);
 
 		if (flow.getCreatedBy() == null) {
@@ -1299,7 +1292,6 @@ public class ApplicationController {
 		flow.setUpdatedBy(getUser());
 		setUnsavedFormChanges(true);
 
-		System.out.println("contains?? " + getFormInUse().containsFlow(flow));
 		if (!getFormInUse().containsFlow(flow)) {
 			addFlowToForm(flow, getCompleteFormView());
 		}

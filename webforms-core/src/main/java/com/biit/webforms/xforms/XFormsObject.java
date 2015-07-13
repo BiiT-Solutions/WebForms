@@ -248,7 +248,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 		if (flow != null && flow.length() > 0) {
 			getFlowRule(relevant);
 			relevant.append(" relevant=\"").append(flow).append("\"");
-			relevant.append(getCalculateStructure(flow));
+			//Calculate now is handle by events. 
+			//relevant.append(getCalculateStructure(flow));
 		}
 	}
 
