@@ -5,6 +5,10 @@ import java.util.List;
 import com.biit.webforms.utils.math.domain.Closure;
 import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
 
+/**
+ * Real range definition for postal codes.
+ *
+ */
 public class RealRangePostalCode extends RealRange<PostalCode> {
 	
 	public RealRangePostalCode() {

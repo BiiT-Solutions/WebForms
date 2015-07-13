@@ -23,7 +23,7 @@ public class FlowSerializer extends StorableObjectSerializer<Flow>{
 		//If is a others flow, getCondition returns the negation of the sum of all other conditions.
 		//While the condition inner value is null.
 		if(!src.isOthers()){
-			jsonObject.add("condition", context.serialize(src.getCondition()));
+			jsonObject.add("condition", context.serialize(src.getComputedCondition()));
 		}
 
 		return jsonObject;

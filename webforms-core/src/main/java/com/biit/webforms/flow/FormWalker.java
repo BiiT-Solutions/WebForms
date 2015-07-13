@@ -273,10 +273,10 @@ public class FormWalker {
 			}
 
 			for (Flow flow : computedFlowView.getFlowsByDestiny(questionToExplore)) {
-				if (flow.isOthers() || flow.getCondition().isEmpty() || flow.getCondition().size() > 1) {
+				if (flow.isOthers() || flow.getComputedCondition().isEmpty() || flow.getComputedCondition().size() > 1) {
 					questionsToExplore.push(flow.getOrigin());
 				} else {
-					if (!flow.getCondition().get(0).isContentEqual(token)) {
+					if (!flow.getComputedCondition().get(0).isContentEqual(token)) {
 						questionsToExplore.push(flow.getOrigin());
 					}
 					// Is the same token ignore and don't put in questions to

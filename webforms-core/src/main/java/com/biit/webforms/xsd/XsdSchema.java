@@ -1,5 +1,9 @@
 package com.biit.webforms.xsd;
 
+/**
+ * Basic node for the schema definition.
+ *
+ */
 public class XsdSchema extends XsdNodeWithChilds {
 	private final static String XML_SCHEMA_TAG = "xs:schema";
 	private final static String XMLNS_XS = "xmlns:xs";

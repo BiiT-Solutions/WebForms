@@ -164,7 +164,7 @@ public class Flow extends StorableObject {
 	public String getConditionString() {
 		StringBuilder sb = new StringBuilder();
 
-		Iterator<Token> itr = getCondition().iterator();
+		Iterator<Token> itr = getComputedCondition().iterator();
 
 		while (itr.hasNext()) {
 			sb.append(itr.next());
@@ -179,7 +179,7 @@ public class Flow extends StorableObject {
 	public String getConditionStringWithFormat() {
 		StringBuilder sb = new StringBuilder();
 
-		Iterator<Token> itr = getCondition().iterator();
+		Iterator<Token> itr = getComputedCondition().iterator();
 
 		while (itr.hasNext()) {
 			Token next = itr.next();
@@ -251,7 +251,7 @@ public class Flow extends StorableObject {
 		HashSet<StorableObject> innerStorableObjects = new HashSet<StorableObject>();
 
 		if (!isOthers()) {
-			for (Token token : getCondition()) {
+			for (Token token : getComputedCondition()) {
 				innerStorableObjects.add(token);
 				innerStorableObjects.addAll(token.getAllInnerStorableObjects());
 			}
@@ -268,7 +268,12 @@ public class Flow extends StorableObject {
 		return form;
 	}
 
-	public List<Token> getCondition() {
+	/**
+	 * Return condition that can computed. For example others is translated to Tokens.
+	 * 
+	 * @return
+	 */
+	public List<Token> getComputedCondition() {
 		if (isOthers() && getForm() != null) {
 			List<Token> otherCondition = new ArrayList<>();
 
@@ -309,7 +314,7 @@ public class Flow extends StorableObject {
 	 * @return
 	 */
 	public List<Token> getConditionSimpleTokens() {
-		List<Token> allTokens = getCondition();
+		List<Token> allTokens = getComputedCondition();
 		List<Token> simplifiedTokens = new ArrayList<Token>();
 
 		for (Token token : allTokens) {
@@ -326,7 +331,8 @@ public class Flow extends StorableObject {
 	public void setCondition(List<Token> condition) {
 		this.condition.clear();
 		this.condition.addAll(condition);
-		for (Token token : getCondition()) {
+		// We only copy the real conditions tokens, we cannot use getCondition();
+		for (Token token : condition) {
 			token.setFlow(this);
 		}
 	}
@@ -352,7 +358,7 @@ public class Flow extends StorableObject {
 		if (getDestiny() != null) {
 			setDestiny((BaseQuestion) mappedElements.get(getDestiny().getOriginalReference()));
 		}
-		for (Token token : getCondition()) {
+		for (Token token : getComputedCondition()) {
 			token.updateReferences(mappedElements);
 		}
 	}
@@ -360,7 +366,7 @@ public class Flow extends StorableObject {
 	@Override
 	public void resetIds() {
 		super.resetIds();
-		for (Token token : getCondition()) {
+		for (Token token : getComputedCondition()) {
 			token.resetIds();
 		}
 	}
@@ -473,17 +479,17 @@ public class Flow extends StorableObject {
 			return false;
 		}
 
-		if ((getCondition() != null && flow.getCondition() == null)
-				|| (getCondition() == null && flow.getCondition() != null)) {
+		if ((getComputedCondition() != null && flow.getComputedCondition() == null)
+				|| (getComputedCondition() == null && flow.getComputedCondition() != null)) {
 			return false;
 		}
 
-		if (getCondition() != null && flow.getCondition() != null) {
-			if (getCondition().size() != flow.getCondition().size()) {
+		if (getComputedCondition() != null && flow.getComputedCondition() != null) {
+			if (getComputedCondition().size() != flow.getComputedCondition().size()) {
 				return false;
 			}
-			for (int i = 0; i < getCondition().size(); i++) {
-				if (!getCondition().get(i).isContentEqual(flow.getCondition().get(i))) {
+			for (int i = 0; i < getComputedCondition().size(); i++) {
+				if (!getComputedCondition().get(i).isContentEqual(flow.getComputedCondition().get(i))) {
 					return false;
 				}
 			}
@@ -511,7 +517,7 @@ public class Flow extends StorableObject {
 	@Override
 	public void resetUserTimestampInfo(Long userId) {
 		super.resetUserTimestampInfo(userId);
-		for (Token token : getCondition()) {
+		for (Token token : getComputedCondition()) {
 			token.resetUserTimestampInfo(userId);
 		}
 	}

@@ -29,7 +29,7 @@ public class ValidateEmptyFlows extends SimpleValidator<Form> {
 			Set<Flow> flows = computedFlowView.getFlowsByOrigin(baseQuestion);
 			if (flows != null) {
 				for (Flow flow : flows) {
-					assertTrue(!(flow.getCondition().isEmpty() && flows.size() > 1), new EmptyFlowIsNotAlone(flow));
+					assertTrue(!(flow.getComputedCondition().isEmpty() && flows.size() > 1), new EmptyFlowIsNotAlone(flow));
 				}
 			}
 		}

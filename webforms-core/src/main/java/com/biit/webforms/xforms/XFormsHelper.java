@@ -213,7 +213,7 @@ class XFormsHelper {
 	public Set<TreeObject> getSourceOfRelevance(Flow flow) {
 		Set<TreeObject> sources = new HashSet<>();
 		// Has a condition, the flow does not inherit relevance rule.
-		if (!flow.getCondition().isEmpty()) {
+		if (!flow.getComputedCondition().isEmpty()) {
 			sources.add(flow.getOrigin());
 			return sources;
 		}

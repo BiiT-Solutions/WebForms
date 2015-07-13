@@ -5,8 +5,12 @@ import java.util.List;
 import com.biit.webforms.utils.math.domain.Closure;
 import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
 
-public class RealRangeLong extends RealRange<Long>{
-	
+/**
+ * Concrete type for a Real range specialized for Long elements (dates)
+ *
+ */
+public class RealRangeLong extends RealRange<Long> {
+
 	public RealRangeLong() {
 		super();
 	}
@@ -18,13 +22,12 @@ public class RealRangeLong extends RealRange<Long>{
 	public RealRangeLong(List<RealLimitPair<Long>> limits) {
 		super(limits);
 	}
-	
+
 	public RealRangeLong(RealLimitPair<Long> first, RealLimitPair<Long> second) {
 		super(first, second);
 	}
 
-	public RealRangeLong(Closure leftClosure, Long left, Long right, Closure rightClosure)
-			throws LimitInsertionException {
+	public RealRangeLong(Closure leftClosure, Long left, Long right, Closure rightClosure) throws LimitInsertionException {
 		super(leftClosure, left, right, rightClosure);
 	}
 
@@ -61,15 +64,16 @@ public class RealRangeLong extends RealRange<Long>{
 
 	@Override
 	protected Long getNextDiscreteValue(Long value) {
-		return value+1;
+		return value + 1;
 	}
 
 	@Override
 	public Long generateRandomValue(RealLimitPair<Long> range) {
-		if(range.getLeft().getLimit().equals(range.getRight().getLimit())){
+		if (range.getLeft().getLimit().equals(range.getRight().getLimit())) {
 			return range.getLeft().getLimit();
 		}
-		long randomNum = (random.nextInt(Integer.MAX_VALUE) % (range.getRight().getLimit() - range.getLeft().getLimit())+ range.getLeft().getLimit());
+		long randomNum = (random.nextInt(Integer.MAX_VALUE) % (range.getRight().getLimit() - range.getLeft().getLimit()) + range.getLeft()
+				.getLimit());
 		return randomNum;
 	}
 

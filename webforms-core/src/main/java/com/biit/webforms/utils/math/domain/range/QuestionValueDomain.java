@@ -11,6 +11,11 @@ import com.biit.webforms.utils.math.domain.IDomain;
 import com.biit.webforms.utils.math.domain.IDomainQuestion;
 import com.biit.webforms.utils.math.domain.ParseValueUtils;
 
+/**
+ * Generic domain holder for different types of question - numeric value.
+ *
+ * @param <T>
+ */
 public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQuestion {
 
 	private final WebformsBaseQuestion question;

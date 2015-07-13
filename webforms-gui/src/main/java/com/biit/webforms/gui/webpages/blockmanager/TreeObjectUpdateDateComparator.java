@@ -4,7 +4,10 @@ import java.util.Comparator;
 
 import com.biit.webforms.persistence.entity.Form;
 
-
+/**
+ * Comparator for form derived objects that orders the elements by update date.
+ *
+ */
 public class TreeObjectUpdateDateComparator implements Comparator<Form> {
 
 	@Override

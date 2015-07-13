@@ -5,6 +5,10 @@ import java.util.List;
 import com.biit.webforms.utils.math.domain.Closure;
 import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
 
+/**
+ * Specialization of real ranges with integer elements.
+ *
+ */
 public class RealRangeInteger extends RealRange<Integer> {
 
 	public RealRangeInteger() {

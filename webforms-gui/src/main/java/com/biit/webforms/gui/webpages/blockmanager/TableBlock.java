@@ -26,6 +26,10 @@ import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Table;
 
+/**
+ * Specialized table for block elements.
+ *
+ */
 public class TableBlock extends Table {
 
 	private static final long serialVersionUID = 2995535101037124681L;
@@ -48,14 +52,12 @@ public class TableBlock extends Table {
 	private void initializeBlockTable() {
 		List<SimpleBlockView> blocks = new ArrayList<>();
 
-		Set<Organization> userOrganizations = WebformsBasicAuthorizationService.getInstance()
-				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
+		Set<Organization> userOrganizations = WebformsBasicAuthorizationService.getInstance().getUserOrganizationsWhereIsAuthorized(
+				UserSessionHandler.getUser(), WebformsActivity.READ);
 		try {
 			for (Organization organization : userOrganizations) {
 				blocks.addAll(simpleBlockDao.getAll(organization.getOrganizationId()));
 			}
-
-			// Collections.sort(blocks, new SimpleBlockViewUpdateDateComparator());
 
 			for (SimpleBlockView block : blocks) {
 				addRow(block);
@@ -64,8 +66,7 @@ public class TableBlock extends Table {
 			defaultSort();
 		} catch (Exception e) {
 			e.printStackTrace();
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
 	}
 
@@ -75,8 +76,8 @@ public class TableBlock extends Table {
 			Item item = addItem(block);
 			item.getItemProperty(TreeTableBlockProperties.BLOCK_LABEL).setValue(block.getLabel());
 
-			Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
-					UserSessionHandler.getUser(), block.getOrganizationId());
+			Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(UserSessionHandler.getUser(),
+					block.getOrganizationId());
 			if (organization != null) {
 				item.getItemProperty(TreeTableBlockProperties.ORGANIZATION).setValue(organization.getName());
 			}
@@ -110,7 +111,8 @@ public class TableBlock extends Table {
 	}
 
 	/**
-	 * This function returns an string with read only if the form can't be edited by the user
+	 * This function returns an string with read only if the form can't be
+	 * edited by the user
 	 * 
 	 * @param form
 	 * @return

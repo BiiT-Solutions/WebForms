@@ -9,6 +9,10 @@ import java.util.Map.Entry;
 import com.biit.webforms.xml.XmlNodeProducer;
 import com.biit.webforms.xml.XmlParam;
 
+/**
+ * Abstract class to define Xsd nodes with children
+ *
+ */
 public abstract class XsdNodeWithChilds extends XmlNodeProducer {
 
 	private static final String PARAMETER_NAME = "name";

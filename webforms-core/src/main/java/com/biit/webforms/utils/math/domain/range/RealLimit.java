@@ -2,6 +2,11 @@ package com.biit.webforms.utils.math.domain.range;
 
 import com.biit.webforms.utils.math.domain.Closure;
 
+/**
+ * Limits for real number ranges.
+ *
+ * @param <T>
+ */
 public class RealLimit<T extends Comparable<T>> implements Comparable<RealLimit<T>> {
 
 	private final T limit;

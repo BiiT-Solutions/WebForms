@@ -103,6 +103,10 @@ import com.liferay.portal.model.User;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
+/**
+ * User Session data handler.
+ *
+ */
 public class ApplicationController {
 	private User user;
 
@@ -162,6 +166,20 @@ public class ApplicationController {
 		return newform;
 	}
 
+	/**
+	 * Imports a form serialized in json with formLabel as name in
+	 * organizacionId organization. If database contains a form with the same
+	 * label a {@link ElementCannotBePersistedException} exception is trown.
+	 * 
+	 * @param json
+	 * @param formLabel
+	 * @param organizationId
+	 * @return
+	 * @throws FormWithSameNameException
+	 * @throws UnexpectedDatabaseException
+	 * @throws FieldTooLongException
+	 * @throws ElementCannotBePersistedException
+	 */
 	public Form importFormFromJson(String json, String formLabel, Long organizationId) throws FormWithSameNameException,
 			UnexpectedDatabaseException, FieldTooLongException, ElementCannotBePersistedException {
 		// Check if database contains a form with the same name.
@@ -187,13 +205,13 @@ public class ApplicationController {
 			newForm.removeWebserviceCall(call);
 		}
 
-		//Reset ids before persisting buf after removing incorrect webservices.
+		// Reset ids before persisting buf after removing incorrect webservices.
 		newForm.resetIds();
 		formDao.makePersistent(newForm);
 		if (!webservicesToRemove.isEmpty()) {
 			MessageManager.showWarning(LanguageCodes.WARNING_WRONG_WEBSERVICE_CONFIGURATION);
 		}
-		
+
 		return formInUse;
 	}
 
@@ -257,6 +275,20 @@ public class ApplicationController {
 		return newform;
 	}
 
+	/**
+	 * Crates a new form block element with blockName in organizationId. If
+	 * another block exists with the same name in the same organization a
+	 * {@link ElementCannotBePersistedException} is thrown.
+	 * 
+	 * @param blockName
+	 * @param organizationId
+	 * @return
+	 * @throws CharacterNotAllowedException
+	 * @throws FieldTooLongException
+	 * @throws FormWithSameNameException
+	 * @throws UnexpectedDatabaseException
+	 * @throws ElementCannotBePersistedException
+	 */
 	public Block createBlock(String blockName, Long organizationId) throws CharacterNotAllowedException, FieldTooLongException,
 			FormWithSameNameException, UnexpectedDatabaseException, ElementCannotBePersistedException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' createBlock " + blockName);
@@ -420,6 +452,18 @@ public class ApplicationController {
 		return newForm;
 	}
 
+	/**
+	 * Generates a copy of the current form data and stores with the version
+	 * number increased.
+	 * 
+	 * @param form
+	 * @return
+	 * @throws NewVersionWithoutFinalDesignException
+	 * @throws NotValidStorableObjectException
+	 * @throws CharacterNotAllowedException
+	 * @throws UnexpectedDatabaseException
+	 * @throws ElementCannotBePersistedException
+	 */
 	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException, NotValidStorableObjectException,
 			CharacterNotAllowedException, UnexpectedDatabaseException, ElementCannotBePersistedException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' createNewFormVersion " + form);
@@ -448,6 +492,15 @@ public class ApplicationController {
 		return newFormVersion;
 	}
 
+	/**
+	 * Modifies current form description with text.
+	 * 
+	 * @param form
+	 * @param text
+	 * @throws FieldTooLongException
+	 * @throws UnexpectedDatabaseException
+	 * @throws ElementCannotBePersistedException
+	 */
 	public void changeFormDescription(Form form, String text) throws FieldTooLongException, UnexpectedDatabaseException,
 			ElementCannotBePersistedException {
 		WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' changeFormDescription " + form
@@ -522,6 +575,9 @@ public class ApplicationController {
 		return getUser() != null ? getUser().getEmailAddress() : "";
 	}
 
+	/**
+	 * Clear memory of current form.
+	 */
 	public void clearFormInUse() {
 		if (formInUse != null) {
 			WebformsLogger.info(ApplicationController.class.getName(), "User '" + getUserEmailAddress() + "' clearFormInUse");
@@ -569,6 +625,14 @@ public class ApplicationController {
 		return (Question) insertTreeObject(Question.class, parent, "Question");
 	}
 
+	/**
+	 * Adds a dynamic question to parent element.
+	 * 
+	 * @param parent
+	 * @return
+	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
+	 */
 	public DynamicAnswer addNewDynamicQuestion(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
 		DynamicAnswer answer = (DynamicAnswer) insertTreeObject(DynamicAnswer.class, parent, "Dynamic");
@@ -766,6 +830,14 @@ public class ApplicationController {
 		cleanFormReference(formInUse.getId());
 	}
 
+	/**
+	 * Performs a transactional save operation of the form.
+	 * 
+	 * @param form
+	 * @return
+	 * @throws UnexpectedDatabaseException
+	 * @throws ElementCannotBePersistedException
+	 */
 	@Transactional
 	public Form saveForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		Form mergedForm = form;
@@ -805,6 +877,13 @@ public class ApplicationController {
 		}
 	}
 
+	/**
+	 * Mark form as finished
+	 * 
+	 * @param form
+	 * @throws UnexpectedDatabaseException
+	 * @throws ElementCannotBePersistedException
+	 */
 	public void finishForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
 		logInfoStart("finishForm", form);
 		form.setStatus(FormWorkStatus.FINAL_DESIGN);
@@ -813,6 +892,19 @@ public class ApplicationController {
 		saveForm(form);
 	}
 
+	/**
+	 * Generate a building block from element and save it with blockLabel name
+	 * in organization organizationId.
+	 * 
+	 * @param element
+	 * @param blockLabel
+	 * @param organizationId
+	 * @throws FieldTooLongException
+	 * @throws FormWithSameNameException
+	 * @throws UnexpectedDatabaseException
+	 * @throws ElementCannotBeRemovedException
+	 * @throws ElementCannotBePersistedException
+	 */
 	public void saveAsBlock(TreeObject element, String blockLabel, Long organizationId) throws FieldTooLongException,
 			FormWithSameNameException, UnexpectedDatabaseException, ElementCannotBeRemovedException, ElementCannotBePersistedException {
 		logInfoStart("saveAsBlock ", element, blockLabel, organizationId);
@@ -842,6 +934,13 @@ public class ApplicationController {
 		}
 	}
 
+	/**
+	 * Update form metadata.
+	 * 
+	 * @param form
+	 * @param label
+	 * @param description
+	 */
 	public void updateForm(Form form, String label, String description) {
 		try {
 			if (!form.getLabel().equals(label) || !form.getDescription().equals(description)) {
@@ -857,6 +956,14 @@ public class ApplicationController {
 		}
 	}
 
+	/**
+	 * Update Answer data
+	 * 
+	 * @param answer
+	 * @param value
+	 * @param label
+	 * @param description
+	 */
 	public void updateAnswer(Answer answer, String value, String label, String description) {
 		try {
 			if (!answer.getLabel().equals(label) || !answer.getDescription().equals(description) || !answer.getValue().equals(value)) {
@@ -873,6 +980,13 @@ public class ApplicationController {
 		}
 	}
 
+	/**
+	 * Update category data.
+	 * 
+	 * @param category
+	 * @param name
+	 * @param label
+	 */
 	public void updateCategory(Category category, String name, String label) {
 		try {
 			if (!category.getName().equals(name) || !category.getLabel().equals(label)) {
@@ -888,6 +1002,14 @@ public class ApplicationController {
 		}
 	}
 
+	/**
+	 * Update group data.
+	 * 
+	 * @param group
+	 * @param name
+	 * @param label
+	 * @param repeatable
+	 */
 	public void updateGroup(Group group, String name, String label, boolean repeatable) {
 		try {
 			if (!group.getName().equals(name) || !group.getLabel().equals(label) || group.isRepeatable() != repeatable) {
@@ -904,6 +1026,19 @@ public class ApplicationController {
 		}
 	}
 
+	/**
+	 * Update question data.
+	 * 
+	 * @param question
+	 * @param name
+	 * @param label
+	 * @param description
+	 * @param mandatory
+	 * @param answerType
+	 * @param answerFormat
+	 * @param answerSubformat
+	 * @param horizontal
+	 */
 	public void updateQuestion(Question question, String name, String label, String description, boolean mandatory, AnswerType answerType,
 			AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal) {
 		try {
@@ -1148,6 +1283,12 @@ public class ApplicationController {
 			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException {
 		logInfoStart("updateFlowContent", flow, origin, flowType, destiny, others, condition);
 
+		
+		System.out.println("origin: " + origin);
+		System.out.println("flowType: " + flowType);
+		System.out.println("destiny: " + destiny);
+		System.out.println("others: " + others);
+		System.out.println("condition: " + condition);
 		flow.setContent(origin, flowType, destiny, others, condition);
 
 		if (flow.getCreatedBy() == null) {
@@ -1158,6 +1299,7 @@ public class ApplicationController {
 		flow.setUpdatedBy(getUser());
 		setUnsavedFormChanges(true);
 
+		System.out.println("contains?? " + getFormInUse().containsFlow(flow));
 		if (!getFormInUse().containsFlow(flow)) {
 			addFlowToForm(flow, getCompleteFormView());
 		}
@@ -1296,6 +1438,11 @@ public class ApplicationController {
 		return blockDao;
 	}
 
+	/**
+	 * Get table data provider to fill manager table data (Abcd form).
+	 * 
+	 * @return
+	 */
 	public TreeTableProvider<com.biit.abcd.persistence.entity.Form> getTreeTableAbcdFormsProvider() {
 		TreeTableProvider<com.biit.abcd.persistence.entity.Form> provider = new TreeTableProvider<com.biit.abcd.persistence.entity.Form>() {
 
@@ -1314,6 +1461,11 @@ public class ApplicationController {
 		return provider;
 	}
 
+	/**
+	 * Get table data provider to fill manager table data (Webforms form)
+	 * 
+	 * @return
+	 */
 	public TreeTableProvider<com.biit.webforms.persistence.entity.SimpleFormView> getTreeTableFormsProvider() {
 		TreeTableProvider<com.biit.webforms.persistence.entity.SimpleFormView> provider = new TreeTableProvider<com.biit.webforms.persistence.entity.SimpleFormView>() {
 
@@ -1356,6 +1508,13 @@ public class ApplicationController {
 		return provider;
 	}
 
+	/**
+	 * Validate compatibility between a webforms form and a abcd form.
+	 * 
+	 * @param currentForm
+	 * @param abcdSimpleForm
+	 * @throws BadAbcdLink
+	 */
 	public void validateCompatibility(Form currentForm, IBaseFormView abcdSimpleForm) throws BadAbcdLink {
 		com.biit.abcd.persistence.entity.Form abcdForm = getFormFromAbcdById(abcdSimpleForm.getId());
 		ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(currentForm);
@@ -1367,6 +1526,14 @@ public class ApplicationController {
 		}
 	}
 
+	/**
+	 * Return a simplified version with the abcd form metadata for a determinate
+	 * label and organizationId.
+	 * 
+	 * @param label
+	 * @param organizationId
+	 * @return
+	 */
 	public List<com.biit.abcd.persistence.entity.SimpleFormView> getAllSimpleFormViewsFromAbcdByLabelAndOrganization(String label,
 			Long organizationId) {
 		return AbcdRestClient.getSimpleFormViewsFromAbcdByLabelAndOrganization(WebformsConfigurationReader.getInstance()
@@ -1375,24 +1542,49 @@ public class ApplicationController {
 				organizationId);
 	}
 
+	/**
+	 * Return a simplified version with the abcd form metadata for current user
+	 * 
+	 * @return
+	 */
 	public List<com.biit.abcd.persistence.entity.SimpleFormView> getAllSimpleFormViewsFromAbcdForCurrentUser() {
 		return AbcdRestClient.getSimpleFormViewsFromAbcdByUserEmail(WebformsConfigurationReader.getInstance().getAbcdRestServiceUrl(),
 				WebformsConfigurationReader.getInstance().getAbcdRestServiceAllSimpleFormViewsPath(), UserSessionHandler.getUser()
 						.getEmailAddress());
 	}
 
+	/**
+	 * Returns the abcd form data with formId as id.
+	 * 
+	 * @param formId
+	 * @return
+	 */
 	public com.biit.abcd.persistence.entity.Form getFormFromAbcdById(Long formId) {
 		return AbcdRestClient.getFormFromAbcdById(WebformsConfigurationReader.getInstance().getAbcdRestServiceUrl(),
 				WebformsConfigurationReader.getInstance().getAbcdRestServiceCompleteFormByIdPath(), UserSessionHandler.getUser()
 						.getEmailAddress(), formId);
 	}
 
+	/**
+	 * Returns all the abcd forms by organization.
+	 * 
+	 * @param organizationId
+	 * @return
+	 */
 	public List<com.biit.abcd.persistence.entity.Form> getFormsFromAbcdByOrganization(Long organizationId) {
 		return AbcdRestClient.getFormsFromAbcdByOrganization(WebformsConfigurationReader.getInstance().getAbcdRestServiceUrl(),
 				WebformsConfigurationReader.getInstance().getAbcdRestServiceCompleteFormsByOrganizationPath(), UserSessionHandler.getUser()
 						.getEmailAddress(), organizationId);
 	}
 
+	/**
+	 * Returns a specific abcd form by label, organization and version.
+	 * 
+	 * @param formLabel
+	 * @param formOrganization
+	 * @param formVersion
+	 * @return
+	 */
 	public com.biit.abcd.persistence.entity.Form getFormFromAbcdByLabelOrganizationAndVersion(String formLabel, Long formOrganization,
 			Integer formVersion) {
 		return AbcdRestClient.getFormFromAbcdByLabelOrganizationAndVersion(WebformsConfigurationReader.getInstance()
@@ -1452,6 +1644,14 @@ public class ApplicationController {
 		return blockDao.get(blockView.getId());
 	}
 
+	/**
+	 * Returns all simplified versions of a webforms form by label and
+	 * organization.
+	 * 
+	 * @param label
+	 * @param organizationId
+	 * @return
+	 */
 	public List<com.biit.webforms.persistence.entity.SimpleFormView> getSimpleFormVersionsWebforms(String label, Long organizationId) {
 		List<com.biit.webforms.persistence.entity.SimpleFormView> filteredForms = new ArrayList<>();
 		List<com.biit.webforms.persistence.entity.SimpleFormView> forms = simpleFormDaoWebforms.getAll();
@@ -1464,6 +1664,15 @@ public class ApplicationController {
 		return filteredForms;
 	}
 
+	/**
+	 * Modifies status of a form Normal users can change to production status
+	 * but to downgrade the status the user needs the downgrade permission.
+	 * 
+	 * @param formView
+	 * @param value
+	 * @throws NotEnoughRightsToChangeStatusException
+	 * @throws ElementCannotBePersistedException
+	 */
 	public void changeFormStatus(IWebformsFormView formView, FormWorkStatus value) throws NotEnoughRightsToChangeStatusException,
 			ElementCannotBePersistedException {
 		// Can downgrade
@@ -1588,7 +1797,7 @@ public class ApplicationController {
 			} else if (flow.getDestiny().equals(element)) {
 				return true;
 			}
-			for (Token token : flow.getCondition()) {
+			for (Token token : flow.getComputedCondition()) {
 				if (token instanceof TokenWithQuestion) {
 					if (((TokenWithQuestion) token).getQuestion().equals(element)) {
 						return true;
@@ -1627,6 +1836,13 @@ public class ApplicationController {
 		return linkedSimpleAbcdForms;
 	}
 
+	/**
+	 * Removes form from db with formId as id.
+	 * 
+	 * @param formId
+	 * @throws ElementCannotBeRemovedException
+	 * @throws FormIsUsedAsReferenceException
+	 */
 	public void removeForm(Long formId) throws ElementCannotBeRemovedException, FormIsUsedAsReferenceException {
 		Form selectedForm;
 		if (formId != null) {

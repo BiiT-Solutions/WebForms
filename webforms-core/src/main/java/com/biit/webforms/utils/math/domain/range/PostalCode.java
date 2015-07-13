@@ -2,6 +2,11 @@ package com.biit.webforms.utils.math.domain.range;
 
 import java.util.Random;
 
+/**
+ * Ranges definition for postal codes This code should be more generic to
+ * support more definitions of postal codes.
+ *
+ */
 public class PostalCode implements Comparable<PostalCode> {
 
 	public static final String MIN_VALUE_STRING = "0000AA";
@@ -66,9 +71,9 @@ public class PostalCode implements Comparable<PostalCode> {
 		PostalCode newPostalCode = new PostalCode(nextPostalCode);
 		return newPostalCode;
 	}
-	
-	public static PostalCode random(){
-		return random(MIN_VALUE,MAX_VALUE);
+
+	public static PostalCode random() {
+		return random(MIN_VALUE, MAX_VALUE);
 	}
 
 	public static PostalCode random(PostalCode limit, PostalCode limit2) {
@@ -83,7 +88,6 @@ public class PostalCode implements Comparable<PostalCode> {
 		int secondChar1Int = limit.getSecondChar();
 		int secondChar2Int = limit2.getSecondChar();
 
-		
 		int randomInt = (random.nextInt(Integer.MAX_VALUE) % (limit2Int - limit1Int)) + limit1Int;
 		int randomFirstChar = (random.nextInt(Integer.MAX_VALUE) % (fistChar1Int - fistChar2Int)) + fistChar1Int;
 		int randomSecondChar = (random.nextInt(Integer.MAX_VALUE) % (secondChar1Int - secondChar2Int)) + secondChar1Int;

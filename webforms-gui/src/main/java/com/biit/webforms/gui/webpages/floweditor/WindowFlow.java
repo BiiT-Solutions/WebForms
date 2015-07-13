@@ -118,7 +118,7 @@ public class WindowFlow extends WindowAcceptCancel {
 		searchDestiny.setTreeObject(rule.getDestiny());
 		others.setValue(rule.isOthers());
 		if (!rule.isOthers()) {
-			for (Token token : rule.getCondition()) {
+			for (Token token : rule.getComputedCondition()) {
 				conditionEditor.addToken(token);
 			}
 		}
