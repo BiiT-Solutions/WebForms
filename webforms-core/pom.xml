@@ -16,7 +16,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>webforms-persistence</artifactId>
+			<artifactId>webforms-parser</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>

@@ -12,6 +12,7 @@
 	<modules>
 		<module>webforms-logger</module>
 		<module>webforms-persistence</module>
+		<module>webforms-parser</module>
 		<module>webforms-core</module>
 		<module>webforms-gui</module>
 		<module>webforms-integration-test</module>
