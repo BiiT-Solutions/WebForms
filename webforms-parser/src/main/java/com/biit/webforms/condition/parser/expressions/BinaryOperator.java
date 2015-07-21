@@ -1,0 +1,109 @@
+package com.biit.webforms.condition.parser.expressions;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.biit.form.entity.BaseQuestion;
+import com.biit.webforms.enumerations.TokenTypes;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.condition.Token;
+import com.biit.webforms.utils.math.domain.IDomain;
+import com.biit.webforms.utils.parser.Expression;
+import com.biit.webforms.utils.parser.ITokenType;
+
+/**
+ * Expressions [EXPR] and [EXPR]
+ * 
+ */
+public class BinaryOperator extends Expression implements WebformsExpression {
+
+	private Expression left;
+	private TokenTypes type;
+	private Expression right;
+
+	public BinaryOperator(Expression left, ITokenType type, Expression right) {
+		this.left = left;
+		this.type = (TokenTypes) type;
+		this.right = right;
+	}
+
+	@Override
+	public void getString(StringBuilder builder) {
+		builder.append("(");
+		left.getString(builder);
+		builder.append(" ").append(type).append(" ");
+		right.getString(builder);
+		builder.append(")");
+	}
+
+	@Override
+	public Expression flatten() {
+		// This can't be flattened. We pass the flattening to each part.
+		return new BinaryOperator(left.flatten(), type, right.flatten());
+	}
+
+	@Override
+	public Expression negate() {
+		if (type == TokenTypes.AND) {
+			return new BinaryOperator(left.negate(), TokenTypes.OR, right.negate());
+		}
+		if (type == TokenTypes.OR) {
+			return new BinaryOperator(left.negate(), TokenTypes.AND, right.negate());
+		}
+		throw new RuntimeException("unexpected");
+	}
+
+	@Override
+	public List<Expression> getAll(Class<?> arg0) {
+		List<Expression> retrieved = new ArrayList<Expression>();
+		if (arg0.isInstance(this)) {
+			retrieved.add(this);
+		}
+		retrieved.addAll(left.getAll(arg0));
+		retrieved.addAll(right.getAll(arg0));
+		return retrieved;
+	}
+
+	@Override
+	public List<Token> getAllTokens(Class<? extends Token> arg0) {
+		List<Token> retrieved = new ArrayList<Token>();
+
+		retrieved.addAll(left.getAllTokens(arg0));
+		retrieved.addAll(right.getAllTokens(arg0));
+
+		return retrieved;
+	}
+
+	@Override
+	public IDomain getDomain() {
+		IDomain leftDomain = ((WebformsExpression) left).getDomain();
+		IDomain rightDomain = ((WebformsExpression) right).getDomain(); 
+
+		if (type == TokenTypes.AND) {
+			return leftDomain.intersect(rightDomain);
+		} else {
+			return leftDomain.union(rightDomain);
+		}
+	}
+
+	@Override
+	public boolean checkBlockByMinTerms(Form form, BaseQuestion element) {
+		boolean leftResult = ((WebformsExpression) left).checkBlockByMinTerms(form, element);
+		boolean rightResult = ((WebformsExpression) right).checkBlockByMinTerms(form, element);
+		
+		if (type == TokenTypes.AND) {
+			return leftResult && rightResult;
+		} else {
+			return leftResult || rightResult;
+		}
+	}
+
+	@Override
+	public boolean evaluate() {
+		if (type == TokenTypes.AND) {
+			return ((WebformsExpression) left).evaluate() && ((WebformsExpression) right).evaluate();
+		}else{
+			return ((WebformsExpression) left).evaluate() || ((WebformsExpression) right).evaluate();
+		}
+	}
+}
