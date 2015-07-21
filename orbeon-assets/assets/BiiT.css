@@ -113,6 +113,10 @@
         display: inline;
 }
 
+.fr-mode-pdf .category-show-disabled {
+	display: inline;
+}
+
 .category-button-disabled{
 	pointer-events: none;
 }

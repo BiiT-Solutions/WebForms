@@ -165,7 +165,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 			body.append("</xh:div>");
 			// Script that manages the previous/next buttons of the runner
 			body.append("<script type=\"text/javascript\" src=\"/orbeon/forms/assets/categories-menu.js\"/>");
-			
+
 		}
 		// Script that manages the error position in the form runner
 		body.append("<script type=\"text/javascript\" src=\"/orbeon/forms/assets/error-position-manager.js\"/>");
@@ -347,13 +347,13 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 					+ "\"/>");
 			events.append("</xf:action>");
 		}
-		
+
 		for (WebserviceCallInputLink inputLink : call.getInputLinks()) {
 			events.append("<xf:action class=\"fr-set-control-value-action\">");
 			events.append("<xf:var name=\"control-name\" value=\"'"
-					+ getXFormsHelper().getWebserviceValidationField(inputLink.getFormElement()).getUniqueName() + "'\"/>");
-			events.append("<xf:var name=\"control-value\" value=\"" + inputLink.getValidationXpath()
-					+ "\"/>");
+					+ getXFormsHelper().getWebserviceValidationField(inputLink.getFormElement()).getUniqueName()
+					+ "'\"/>");
+			events.append("<xf:var name=\"control-value\" value=\"" + inputLink.getValidationXpath() + "\"/>");
 			events.append("</xf:action>");
 		}
 
@@ -457,6 +457,10 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 				events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + controlName
 						+ "\" ref=\"instance('visible')/" + catId + "\" value=\"instance('visible')/" + catId
 						+ " - 1\"/>");
+
+				// Reset value if is hidden.
+				events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" + controlName
+						+ "\" ref=\"instance('fr-form-instance')/" + question.getPathName() + "\" value=\"''\"/>");
 			}
 		}
 	}
