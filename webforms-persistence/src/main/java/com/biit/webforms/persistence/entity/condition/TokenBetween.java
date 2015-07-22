@@ -173,4 +173,9 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean evaluate() {
+		throw new UnsupportedOperationException();
+	}
 }
