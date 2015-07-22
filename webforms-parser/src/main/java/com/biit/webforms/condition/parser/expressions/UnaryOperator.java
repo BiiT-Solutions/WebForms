@@ -100,4 +100,12 @@ public class UnaryOperator extends Expression implements WebformsExpression {
 	public boolean checkBlockByMinTerms(Form form, BaseQuestion element) {
 		return ((WebformsExpression) expression).checkBlockByMinTerms(form, element);
 	}
+
+	@Override
+	public boolean evaluate() {
+		if (type == TokenTypes.NOT){
+			return !((WebformsExpression) expression).evaluate();
+		}
+		return ((WebformsExpression) expression).evaluate();
+	}
 }

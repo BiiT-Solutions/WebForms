@@ -20,8 +20,8 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 public class TokenComparationValue extends TokenWithQuestion implements ITokenQuestion {
 	private static final long serialVersionUID = 8580195041605107217L;
 
-	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.LT,
-			TokenTypes.GT, TokenTypes.LE, TokenTypes.GE };
+	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.LT, TokenTypes.GT, TokenTypes.LE,
+			TokenTypes.GE };
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -31,6 +31,9 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 	private DatePeriodUnit datePeriodUnit;
 
 	private String value;
+
+	// Evaluation value is false by default
+	private transient boolean evaluationValue = false;
 
 	public TokenComparationValue() {
 		super();
@@ -45,8 +48,8 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		return tokenTypes;
 	}
 
-	public void setContent(WebformsBaseQuestion reference, TokenTypes tokenType, AnswerSubformat subformat,
-			DatePeriodUnit datePeriodUnit, String value) throws NotValidTokenType {
+	public void setContent(WebformsBaseQuestion reference, TokenTypes tokenType, AnswerSubformat subformat, DatePeriodUnit datePeriodUnit,
+			String value) throws NotValidTokenType {
 		setType(tokenType);
 		setQuestion(reference);
 		this.subformat = subformat;
@@ -59,8 +62,8 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		setContent(getQuestion(), tokenType, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getToken(TokenTypes tokenType, WebformsBaseQuestion reference,
-			AnswerSubformat subformat, DatePeriodUnit datePeriodUnit, String value) {
+	public static TokenComparationValue getToken(TokenTypes tokenType, WebformsBaseQuestion reference, AnswerSubformat subformat,
+			DatePeriodUnit datePeriodUnit, String value) {
 		try {
 			TokenComparationValue token = new TokenComparationValue();
 			token.setContent(reference, tokenType, subformat, datePeriodUnit, value);
@@ -122,8 +125,7 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		}
 
 		if (subformat == AnswerSubformat.DATE_PERIOD) {
-			return referenceString + " (" + localizedDatePeriodUnit + ")" + getType()
-					+ value.substring(0, value.length());
+			return referenceString + " (" + localizedDatePeriodUnit + ")" + getType() + value.substring(0, value.length());
 		}
 
 		return referenceString + getType() + value;
@@ -210,4 +212,74 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		}
 		return false;
 	}
+
+	@Override
+	public boolean evaluate() {
+		return evaluationValue;
+	}
+
+	public void evaluate(String value) {
+		evaluationValue = false;
+		switch (getQuestion().getAnswerFormat()) {
+		case DATE:
+			evaluationValue = evaluateAsDate(value);
+			break;
+		case NUMBER:
+			evaluationValue = evaluateAsNumber(value);
+			break;
+		case POSTAL_CODE:
+			evaluationValue = evaluateAsPostalCode(value);
+			break;
+		case TEXT:
+			// No rules for text.
+			break;
+		}
+	}
+
+	private boolean evaluateAsPostalCode(String value) {
+		switch (getType()) {
+		case LT:
+			return (this.value.compareTo(value) < 0);
+		case LE:
+			return (this.value.compareTo(value) <= 0);
+		case GT:
+			return (this.value.compareTo(value) > 0);
+		case GE:
+			return (this.value.compareTo(value) >= 0);
+		case EQ:
+			return (this.value.compareTo(value) == 0);
+		case NE:
+			return (this.value.compareTo(value) != 0);
+		default:
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private boolean evaluateAsNumber(String value) {
+		double tokenValue = Double.parseDouble(this.value);
+		double evaluationValue = Double.parseDouble(value);
+
+		switch (getType()) {
+		case LT:
+			return evaluationValue < tokenValue;
+		case LE:
+			return evaluationValue <= tokenValue;
+		case GT:
+			return evaluationValue > tokenValue;
+		case GE:
+			return evaluationValue >= tokenValue;
+		case EQ:
+			return evaluationValue == tokenValue;
+		case NE:
+			return evaluationValue != tokenValue;
+		default:
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private boolean evaluateAsDate(String value) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

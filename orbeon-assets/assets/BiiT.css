@@ -105,9 +105,12 @@
 /* Element: custom wizard
    -------------------
  */
-
 .category-show-disabled {
-	display: none;
+        display: none;
+}
+
+.fr-mode-pdf .category-show-disabled {
+        display: inline;
 }
 
 .fr-mode-pdf .category-show-disabled {

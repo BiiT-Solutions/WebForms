@@ -197,4 +197,9 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 			value.resetUserTimestampInfo(userId);
 		}
 	}
+	
+	@Override
+	public boolean evaluate() {
+		throw new UnsupportedOperationException();
+	}
 }

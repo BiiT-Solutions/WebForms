@@ -6,4 +6,6 @@ public interface ITokenQuestion {
 
 	public WebformsBaseQuestion getQuestion();
 
+	public boolean evaluate();
+
 }

@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity.condition;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,6 +23,9 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 	private static final long serialVersionUID = 2099093205161281219L;
 
 	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE };
+	
+	//Evaluation value is false by default
+	private transient boolean evaluationValue = false;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Answer answer;
@@ -154,5 +158,20 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean evaluate() {
+		return evaluationValue;
+	}
+
+	public void evaluate(List<String> answers) {
+		evaluationValue = false;
+		for(String answer: answers){
+			if(this.answer.getName().equals(answer)){
+				evaluationValue = true;
+				return;
+			}
+		}
 	}
 }

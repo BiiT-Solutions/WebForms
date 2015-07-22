@@ -28,5 +28,11 @@ public interface WebformsExpression {
 	 * @return
 	 */
 	public boolean checkBlockByMinTerms(Form form, BaseQuestion element);
+	
+	/**
+	 * Evaluate logic
+	 * @return
+	 */
+	public boolean evaluate();
 
 }

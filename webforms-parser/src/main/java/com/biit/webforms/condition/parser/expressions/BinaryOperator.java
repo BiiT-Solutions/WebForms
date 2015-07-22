@@ -97,4 +97,13 @@ public class BinaryOperator extends Expression implements WebformsExpression {
 			return leftResult || rightResult;
 		}
 	}
+
+	@Override
+	public boolean evaluate() {
+		if (type == TokenTypes.AND) {
+			return ((WebformsExpression) left).evaluate() && ((WebformsExpression) right).evaluate();
+		}else{
+			return ((WebformsExpression) left).evaluate() || ((WebformsExpression) right).evaluate();
+		}
+	}
 }
