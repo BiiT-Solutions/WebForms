@@ -7,13 +7,13 @@ import java.util.Set;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.usermanager.entity.IGroup;
+import com.biit.usermanager.entity.IRole;
 import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.IAuthenticationService;
 import com.biit.usermanager.security.IAuthorizationService;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.usermanager.security.exceptions.UserManagementException;
-import com.liferay.portal.model.Role;
 
 public interface ISecurityService {
 
@@ -30,7 +30,7 @@ public interface ISecurityService {
 	boolean isUserAuthorizedInAnyOrganization(IUser<Long> user, IActivity activity) throws IOException,
 			AuthenticationRequired;
 
-	Set<IActivity> getActivitiesOfRoles(List<Role> roles);
+	Set<IActivity> getActivitiesOfRoles(List<IRole<Long>> roles);
 
 	IAuthorizationService<Long, Long, Long> getAuthorizationService();
 

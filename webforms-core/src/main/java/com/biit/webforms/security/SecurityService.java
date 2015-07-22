@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.usermanager.entity.IGroup;
+import com.biit.usermanager.entity.IRole;
 import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.IAuthenticationService;
@@ -23,7 +24,6 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.SimpleBlockView;
-import com.liferay.portal.model.Role;
 
 @Component
 public class SecurityService implements ISecurityService {
@@ -39,9 +39,9 @@ public class SecurityService implements ISecurityService {
 	}
 
 	@Override
-	public Set<IActivity> getActivitiesOfRoles(List<Role> roles) {
+	public Set<IActivity> getActivitiesOfRoles(List<IRole<Long>> roles) {
 		Set<IActivity> activities = new HashSet<>();
-		for (Role role : roles) {
+		for (IRole<Long> role : roles) {
 			activities.addAll(getAuthorizationService().getRoleActivities(role));
 		}
 		return activities;
