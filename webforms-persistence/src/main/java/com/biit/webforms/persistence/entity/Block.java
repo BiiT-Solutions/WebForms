@@ -9,8 +9,8 @@ import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.persistence.entity.exceptions.OnlyOneChildIsAllowedException;
-import com.liferay.portal.model.User;
 
 @Entity
 @Table(name = "tree_blocks")
@@ -29,7 +29,7 @@ public class Block extends Form implements IWebformsBlockView {
 		return DEFAULT_LABEL;
 	}
 
-	public Block(String name, User user, Long organizationId) throws FieldTooLongException,
+	public Block(String name, IUser<Long> user, Long organizationId) throws FieldTooLongException,
 			CharacterNotAllowedException {
 		super(name, user, organizationId);
 	}

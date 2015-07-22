@@ -1,7 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.BaseQuestion;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.gui.components.utils.FilterByTreeObjectOrderLess;
@@ -21,11 +20,11 @@ public class PropertiesDynamicAnswer extends StorableObjectProperties<DynamicAns
 	private static final String WIDTH = "300px";
 
 	private SearchFormElementField search;
-	
+
 	public PropertiesDynamicAnswer() {
 		super(DynamicAnswer.class);
 	}
-	
+
 	@Override
 	protected void initElement() {
 		search = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
@@ -34,24 +33,24 @@ public class PropertiesDynamicAnswer extends StorableObjectProperties<DynamicAns
 		search.setCaption(LanguageCodes.CAPTION_SEARCH_DYNAMIC_REFERENCE.translation());
 		search.setWidth(WIDTH);
 		search.addValueChangeListener(new SearchFormElementChanged() {
-			
+
 			@Override
 			public void currentElement(Object object) {
 				getInstance().setReference((Question) object);
 				updateElement();
 			}
 		});
-		
+
 		VerticalLayout rootLayout = new VerticalLayout();
 		rootLayout.setWidth(null);
 		rootLayout.setHeight(null);
 		rootLayout.addComponent(search);
 		rootLayout.setMargin(new MarginInfo(true, false, true, false));
-				
-		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
+
+		boolean canEdit = getWebformsSecurityService().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		rootLayout.setEnabled(canEdit);
-		
+
 		addTab(rootLayout, LanguageCodes.CAPTION_PROPERTIES_DYNAMIC_QUESTION.translation(), true);
 
 		super.initElement();
@@ -60,10 +59,10 @@ public class PropertiesDynamicAnswer extends StorableObjectProperties<DynamicAns
 	@Override
 	protected void initValues() {
 		super.initValues();
-		
+
 		search.setTreeObject(getInstance().getReference());
 		search.setEnabled(!getInstance().isReadOnly());
-		
+
 		FilterByTreeObjectOrderLess filter = new FilterByTreeObjectOrderLess();
 		filter.setFilterSeed(getInstance().getParent());
 		search.addFilter(filter);

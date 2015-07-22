@@ -6,11 +6,10 @@ import java.util.jar.Manifest;
 
 import javax.servlet.ServletContext;
 
-import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
-import com.biit.liferay.access.exceptions.WebServiceAccessError;
-import com.biit.liferay.security.exceptions.InvalidCredentialsException;
-import com.biit.security.exceptions.PBKDF2EncryptorException;
+import com.biit.usermanager.entity.IUser;
+import com.biit.usermanager.security.exceptions.AuthenticationRequired;
+import com.biit.usermanager.security.exceptions.InvalidCredentialsException;
+import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WebPageComponent;
@@ -19,7 +18,6 @@ import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.liferay.portal.model.User;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -70,7 +68,7 @@ public class Login extends WebPageComponent {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// Nothing to do. Autologin managed by ApplicationUI. 
+		// Nothing to do. Autologin managed by ApplicationUI.
 		ApplicationUi.autologin();
 	}
 
@@ -103,7 +101,7 @@ public class Login extends WebPageComponent {
 				// form
 				if (target == passwordField) {
 					try {
-						User user = UserSessionHandler.getUser((String) usernameField.getValue(),
+						IUser<Long> user = UserSessionHandler.getUser((String) usernameField.getValue(),
 								(String) passwordField.getValue());
 						if (user != null) {
 							ApplicationUi.navigateTo(WebMap.getMainPage());
@@ -114,12 +112,9 @@ public class Login extends WebPageComponent {
 								new Object[] { (String) usernameField.getValue() })));
 						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
 								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_TRYAGAIN);
-					} catch (IOException | WebServiceAccessError | NotConnectedToWebServiceException e) {
+					} catch (UserManagementException e) {
 						WebformsLogger.errorMessage(this.getClass().getName(), e);
 						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
-								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
-					} catch (PBKDF2EncryptorException e) {
-						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_ENCRYPTINGPASSWORD,
 								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
 					}
 				}
@@ -137,7 +132,7 @@ public class Login extends WebPageComponent {
 					@Override
 					public void buttonClick(ClickEvent event) {
 						try {
-							User user = UserSessionHandler.getUser((String) usernameField.getValue(),
+							IUser<Long> user = UserSessionHandler.getUser((String) usernameField.getValue(),
 									(String) passwordField.getValue());
 							if (user != null) {
 								ApplicationUi.navigateTo(WebMap.getMainPage());
@@ -149,13 +144,9 @@ public class Login extends WebPageComponent {
 							MessageManager.showError(
 									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
 									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_TRYAGAIN);
-						} catch (IOException | WebServiceAccessError | NotConnectedToWebServiceException e) {
+						} catch (UserManagementException e) {
 							WebformsLogger.errorMessage(this.getClass().getName(), e);
 							MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
-									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
-						} catch (PBKDF2EncryptorException e) {
-							MessageManager.showError(
-									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_ENCRYPTINGPASSWORD,
 									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
 						}
 					}

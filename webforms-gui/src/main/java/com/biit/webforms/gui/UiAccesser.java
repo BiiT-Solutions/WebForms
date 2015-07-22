@@ -8,9 +8,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.biit.form.entity.IBaseFormView;
+import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
-import com.liferay.portal.model.User;
 
 public class UiAccesser {
 	static ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -19,7 +19,7 @@ public class UiAccesser {
 		void receiveBroadcast(String message);
 	}
 
-	private static HashMap<String, User> formsInUse = new HashMap<String, User>();
+	private static HashMap<String, IUser<Long>> formsInUse = new HashMap<String, IUser<Long>>();
 
 	private static LinkedList<BroadcastListener> listeners = new LinkedList<BroadcastListener>();
 	private static List<ApplicationController> controllers = new ArrayList<ApplicationController>();
@@ -51,7 +51,7 @@ public class UiAccesser {
 			});
 	}
 
-	public static synchronized boolean isUserUserUsingForm(User user, IBaseFormView form) {
+	public static synchronized boolean isUserUserUsingForm(IUser<Long> user, IBaseFormView form) {
 		if (form != null) {
 			return formsInUse.get(form.getComparationId()) != null
 					&& formsInUse.get(form.getComparationId()).equals(user);
@@ -59,11 +59,11 @@ public class UiAccesser {
 		return false;
 	}
 
-	public static synchronized User getUserUsingForm(IBaseFormView form) {
+	public static synchronized IUser<Long> getUserUsingForm(IBaseFormView form) {
 		return formsInUse.get(form.getComparationId());
 	}
 
-	public static synchronized void lockForm(Form form, User user) {
+	public static synchronized void lockForm(Form form, IUser<Long> user) {
 		if (form == null || user == null) {
 			return;
 		}
@@ -75,7 +75,7 @@ public class UiAccesser {
 		}
 	}
 
-	public static synchronized void releaseForm(Form form, User user) {
+	public static synchronized void releaseForm(Form form, IUser<Long> user) {
 		WebformsLogger.info(UiAccesser.class.getName(), "User '" + user.getEmailAddress() + "' has released '" + form
 				+ "'");
 		// If form is still locked and the user is who lock the form.

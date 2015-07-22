@@ -1,31 +1,26 @@
 package com.biit.webforms.gui;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.http.client.ClientProtocolException;
-
-import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
-import com.biit.liferay.access.exceptions.WebServiceAccessError;
-import com.biit.liferay.security.AuthenticationService;
-import com.biit.liferay.security.exceptions.InvalidCredentialsException;
-import com.biit.security.exceptions.PBKDF2EncryptorException;
+import com.biit.usermanager.entity.IUser;
+import com.biit.usermanager.security.IAuthenticationService;
+import com.biit.usermanager.security.exceptions.AuthenticationRequired;
+import com.biit.usermanager.security.exceptions.InvalidCredentialsException;
+import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.liferay.portal.model.User;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.UI;
 
 public class UserSessionHandler {
 	private static final String DEFAULT_SUFIX = "-sessionhandler";
-	private User user = null;
+	private IUser<Long> user = null;
 	private ApplicationController controller = null;
 	// User Id --> List<UI> (A user can have different browsers opened in the same machine)
 	private static HashMap<Long, Set<UI>> usersSession = new HashMap<>();
@@ -34,8 +29,10 @@ public class UserSessionHandler {
 	// User Id --> Last Page visited
 	private static HashMap<Long, WebMap> userLastPage = new HashMap<>();
 
+	private static IAuthenticationService<Long, Long> authenticationService;
+
 	/**
-	 * Initializes the {@link UserSessionHandler} for the given {@link Application}
+	 * Initializes the {@link UserSessionHandler} for the given
 	 * 
 	 * @param ui
 	 */
@@ -46,13 +43,15 @@ public class UserSessionHandler {
 		new UserSessionHandler(ui);
 	}
 
-	public static void checkOnlyOneSession(User user, UI ui, String ip) {
-		if (usersSession.get(user.getUserId()) != null) {
-			if (ip == null || !ip.equals(usersIp.get(user.getUserId()))) {
-				for (UI userUI : usersSession.get(user.getUserId())) {
+	public static void checkOnlyOneSession(IUser<Long> user, UI ui, String ip) {
+		if (usersSession.get(user.getId()) != null) {
+			if (ip == null || !ip.equals(usersIp.get(user.getId()))) {
+				for (UI userUI : usersSession.get(user.getId())) {
 					try {
-						WebformsLogger.info(UserSessionHandler.class.getName(),
-								"Closing session for user '" + user.getEmailAddress() + "', IP '" + usersIp.get(user.getUserId()) + "'.");
+						WebformsLogger.info(
+								UserSessionHandler.class.getName(),
+								"Closing session for user '" + user.getEmailAddress() + "', IP '"
+										+ usersIp.get(user.getId()) + "'.");
 						userUI.getPage().setLocation("./VAADIN/logout.html");
 						userUI.close();
 					} catch (Exception e) {
@@ -62,11 +61,11 @@ public class UserSessionHandler {
 				MessageManager.showWarning(LanguageCodes.INFO_USER_SESSION_EXPIRED);
 			}
 		}
-		if (usersSession.get(user.getUserId()) == null) {
-			usersSession.put(user.getUserId(), new HashSet<UI>());
+		if (usersSession.get(user.getId()) == null) {
+			usersSession.put(user.getId(), new HashSet<UI>());
 		}
-		usersSession.get(user.getUserId()).add(ui);
-		usersIp.put(user.getUserId(), ip);
+		usersSession.get(user.getId()).add(ui);
+		usersIp.put(user.getId(), ip);
 	}
 
 	/**
@@ -98,7 +97,7 @@ public class UserSessionHandler {
 	 * 
 	 * @param user
 	 */
-	public static void setUser(User user) {
+	public static void setUser(IUser<Long> user) {
 		UserSessionHandler session = getCurrent();
 		session.user = user;
 		session.controller.setUser(user);
@@ -109,7 +108,7 @@ public class UserSessionHandler {
 	 * 
 	 * @return The currently inlogged user
 	 */
-	public static User getUser() {
+	public static IUser<Long> getUser() {
 		UserSessionHandler session = getCurrent();
 		return session.user;
 	}
@@ -119,7 +118,7 @@ public class UserSessionHandler {
 	 * 
 	 * @param user
 	 */
-	public static void login(User user) {
+	public static void login(IUser<Long> user) {
 		setUser(user);
 	}
 
@@ -128,9 +127,9 @@ public class UserSessionHandler {
 	 */
 	public static void logout() {
 		if (getUser() != null) {
-			usersSession.remove(getUser().getUserId());
-			usersIp.remove(getUser().getUserId());
-			userLastPage.remove(getUser().getUserId());
+			usersSession.remove(getUser().getId());
+			usersIp.remove(getUser().getId());
+			userLastPage.remove(getUser().getId());
 		}
 		setUser(null);
 	}
@@ -139,29 +138,28 @@ public class UserSessionHandler {
 		return getCurrent().controller;
 	}
 
-	public static WebMap getUserLastPage(User user) {
-		return userLastPage.get(user.getUserId());
+	public static WebMap getUserLastPage(IUser<Long> user) {
+		return userLastPage.get(user.getId());
 	}
 
 	public static void setUserLastPage(WebMap page) {
 		setUserLastPage(getUser(), page);
 	}
 
-	public static void setUserLastPage(User user, WebMap page) {
+	public static void setUserLastPage(IUser<Long> user, WebMap page) {
 		if (user != null) {
 			if (!WebMap.getMainPage().equals(page) && !WebMap.getLoginPage().equals(page)) {
-				userLastPage.put(user.getUserId(), page);
+				userLastPage.put(user.getId(), page);
 			} else {
-				userLastPage.remove(user.getUserId());
+				userLastPage.remove(user.getId());
 			}
 		}
 	}
 
-	public static User getUser(String userMail, String password) throws JsonParseException, JsonMappingException,
-			ClientProtocolException, InvalidCredentialsException, NotConnectedToWebServiceException,
-			PBKDF2EncryptorException, IOException, AuthenticationRequired, WebServiceAccessError {
+	public static IUser<Long> getUser(String userMail, String password) throws UserManagementException,
+			AuthenticationRequired, InvalidCredentialsException {
 		// Try to log in the user when the button is clicked
-		User user = AuthenticationService.getInstance().authenticate(userMail, password);
+		IUser<Long> user = getAuthenticationService().authenticate(userMail, password);
 
 		if (user != null) {
 			WebBrowser browser = (WebBrowser) UI.getCurrent().getPage().getWebBrowser();
@@ -186,5 +184,19 @@ public class UserSessionHandler {
 			UserSessionHandler.checkOnlyOneSession(user, UI.getCurrent(), browser.getAddress());
 		}
 		return user;
+	}
+
+	/**
+	 * Autowired not working correctly in this version of Vaadin. Use the helper if needed in a static method.
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private static IAuthenticationService<Long, Long> getAuthenticationService() {
+		if (authenticationService == null) {
+			SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+			authenticationService = (IAuthenticationService<Long, Long>) helper.getBean("authenticationService");
+		}
+		return authenticationService;
 	}
 }

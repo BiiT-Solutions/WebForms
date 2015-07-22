@@ -1,17 +1,13 @@
 package com.biit.webforms.gui;
 
-import java.io.IOException;
-
-import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.liferay.access.exceptions.NotConnectedToWebServiceException;
-import com.biit.liferay.access.exceptions.WebServiceAccessError;
-import com.biit.liferay.security.exceptions.InvalidCredentialsException;
-import com.biit.security.exceptions.PBKDF2EncryptorException;
+import com.biit.usermanager.entity.IUser;
+import com.biit.usermanager.security.exceptions.AuthenticationRequired;
+import com.biit.usermanager.security.exceptions.InvalidCredentialsException;
+import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.logger.WebformsLogger;
-import com.liferay.portal.model.User;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
@@ -76,7 +72,7 @@ public class ApplicationUi extends UI {
 			WebformsLogger.info(ApplicationUi.class.getName(), "Autologin with user '" + userEmail
 					+ "' and password with length of " + password.length());
 			try {
-				User user = UserSessionHandler.getUser(userEmail, password);
+				IUser<Long> user = UserSessionHandler.getUser(userEmail, password);
 				if (user != null) {
 					// Try to go to the last page and last form if user has no logged out.
 					if (UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()) != null
@@ -86,8 +82,7 @@ public class ApplicationUi extends UI {
 						navigateTo(WebMap.getMainPage());
 					}
 				}
-			} catch (InvalidCredentialsException | NotConnectedToWebServiceException | PBKDF2EncryptorException
-					| IOException | AuthenticationRequired | WebServiceAccessError e) {
+			} catch (UserManagementException | AuthenticationRequired | InvalidCredentialsException e) {
 				WebformsLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
 						+ "' failed! Wrong user or password.");
 			}

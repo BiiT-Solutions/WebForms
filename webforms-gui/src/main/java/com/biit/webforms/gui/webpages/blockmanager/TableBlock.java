@@ -4,24 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.biit.abcd.liferay.LiferayServiceAccess;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
+import com.biit.usermanager.entity.IGroup;
+import com.biit.usermanager.entity.IUser;
 import com.biit.utils.date.DateManager;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.ServerTranslate;
-import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.ISimpleBlockViewDao;
 import com.biit.webforms.persistence.entity.IWebformsBlockView;
 import com.biit.webforms.persistence.entity.SimpleBlockView;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.User;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Table;
@@ -36,6 +35,8 @@ public class TableBlock extends Table {
 
 	private ISimpleBlockViewDao simpleBlockDao;
 
+	private IWebformsSecurityService webformsSecurityService;
+
 	enum TreeTableBlockProperties {
 		BLOCK_LABEL, ORGANIZATION, ACCESS, USED_BY, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
 	};
@@ -44,6 +45,7 @@ public class TableBlock extends Table {
 		// Add Vaadin conext to Spring, and get beans for DAOs.
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		simpleBlockDao = (ISimpleBlockViewDao) helper.getBean("simpleBlockViewDao");
+		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 
 		initContainerProperties();
 		initializeBlockTable();
@@ -52,11 +54,11 @@ public class TableBlock extends Table {
 	private void initializeBlockTable() {
 		List<SimpleBlockView> blocks = new ArrayList<>();
 
-		Set<Organization> userOrganizations = WebformsBasicAuthorizationService.getInstance().getUserOrganizationsWhereIsAuthorized(
+		Set<IGroup<Long>> userOrganizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(
 				UserSessionHandler.getUser(), WebformsActivity.READ);
 		try {
-			for (Organization organization : userOrganizations) {
-				blocks.addAll(simpleBlockDao.getAll(organization.getOrganizationId()));
+			for (IGroup<Long> organization : userOrganizations) {
+				blocks.addAll(simpleBlockDao.getAll(organization.getId()));
 			}
 
 			for (SimpleBlockView block : blocks) {
@@ -66,7 +68,8 @@ public class TableBlock extends Table {
 			defaultSort();
 		} catch (Exception e) {
 			e.printStackTrace();
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
+					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
 	}
 
@@ -76,15 +79,15 @@ public class TableBlock extends Table {
 			Item item = addItem(block);
 			item.getItemProperty(TreeTableBlockProperties.BLOCK_LABEL).setValue(block.getLabel());
 
-			Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(UserSessionHandler.getUser(),
+			IGroup<Long> organization = webformsSecurityService.getOrganization(UserSessionHandler.getUser(),
 					block.getOrganizationId());
 			if (organization != null) {
-				item.getItemProperty(TreeTableBlockProperties.ORGANIZATION).setValue(organization.getName());
+				item.getItemProperty(TreeTableBlockProperties.ORGANIZATION).setValue(organization.getUniqueName());
 			}
 
 			item.getItemProperty(TreeTableBlockProperties.ACCESS).setValue(getFormPermissionsTag(block));
 
-			User userOfForm = UiAccesser.getUserUsingForm(block);
+			IUser<Long> userOfForm = UiAccesser.getUserUsingForm(block);
 			if (userOfForm != null) {
 				item.getItemProperty(TreeTableBlockProperties.USED_BY).setValue(userOfForm.getEmailAddress());
 			} else {
@@ -111,8 +114,7 @@ public class TableBlock extends Table {
 	}
 
 	/**
-	 * This function returns an string with read only if the form can't be
-	 * edited by the user
+	 * This function returns an string with read only if the form can't be edited by the user
 	 * 
 	 * @param form
 	 * @return
@@ -120,7 +122,7 @@ public class TableBlock extends Table {
 	private String getFormPermissionsTag(SimpleBlockView form) {
 		String permissions = "";
 
-		if (WebformsAuthorizationService.getInstance().isFormReadOnly(form, UserSessionHandler.getUser())) {
+		if (webformsSecurityService.isFormReadOnly(form, UserSessionHandler.getUser())) {
 			permissions = LanguageCodes.CAPTION_READ_ONLY.translation();
 		}
 		return permissions;

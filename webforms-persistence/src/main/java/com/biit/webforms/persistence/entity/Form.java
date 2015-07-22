@@ -46,6 +46,7 @@ import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
@@ -83,7 +84,6 @@ import com.biit.webforms.serialization.WebserviceCallSerializer;
 import com.biit.webforms.webservices.Webservice;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.liferay.portal.model.User;
 
 @Entity
 @Table(name = "tree_forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "label", "version",
@@ -141,7 +141,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		elementsToHide = new HashSet<>();
 	}
 
-	public Form(String label, User user, Long organizationId) throws FieldTooLongException,
+	public Form(String label, IUser<Long> user, Long organizationId) throws FieldTooLongException,
 			CharacterNotAllowedException {
 		super(label);
 		status = FormWorkStatus.DESIGN;
@@ -301,8 +301,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return newVersion;
 	}
 
-	public Form createNewVersion(User user) throws NotValidStorableObjectException, CharacterNotAllowedException {
-		return createNewVersion(user.getUserId());
+	public Form createNewVersion(IUser<Long> user) throws NotValidStorableObjectException, CharacterNotAllowedException {
+		return createNewVersion(user.getId());
 	}
 
 	/**

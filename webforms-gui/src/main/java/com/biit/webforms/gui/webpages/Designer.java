@@ -15,13 +15,12 @@ import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
-import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.usermanager.security.IActivity;
+import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
@@ -63,7 +62,6 @@ import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
 import com.biit.webforms.persistence.entity.exceptions.WebserviceDependencyExistException;
 import com.biit.webforms.security.WebformsActivity;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -123,8 +121,8 @@ public class Designer extends SecuredWebPage {
 	@Override
 	protected void initContent() {
 		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !WebformsAuthorizationService.getInstance().isFormEditable(
-						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+				&& !getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
+						UserSessionHandler.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
@@ -405,8 +403,9 @@ public class Designer extends SecuredWebPage {
 								} else if (e instanceof DependencyExistException) {
 									MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
 								} else if (e instanceof WebserviceDependencyExistException) {
-									MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_WEBSERVICE_CALL_DEPENDENCY);
-								} else{
+									MessageManager
+											.showError(LanguageCodes.ERROR_TREE_OBJECT_WEBSERVICE_CALL_DEPENDENCY);
+								} else {
 									MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 									WebformsLogger.errorMessage(this.getClass().getName(), e);
 								}
@@ -616,9 +615,9 @@ public class Designer extends SecuredWebPage {
 			boolean rowIsBlockReferenceCategory = rowIsElementReference
 					&& (selectedElement instanceof BaseCategory)
 					&& UserSessionHandler.getController().getCompleteFormView().getBlockReference(selectedElement) != null;
-			boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+			boolean canEdit = getWebformsSecurityService().isFormEditable(
 					UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
-			boolean canStoreBlock = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+			boolean canStoreBlock = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
 			boolean selectedRowIsAnswer = (table.getSelectedRow() != null)
 					&& (table.getSelectedRow() instanceof Answer);
@@ -740,7 +739,7 @@ public class Designer extends SecuredWebPage {
 				}
 				try {
 					UserSessionHandler.getController().saveAsBlock(table.getSelectedRow(), newBlockWindow.getValue(),
-							newBlockWindow.getOrganization().getOrganizationId());
+							newBlockWindow.getOrganization().getId());
 					newBlockWindow.close();
 
 					if (UserSessionHandler.getController().getFormInUse() instanceof Block) {
@@ -782,14 +781,14 @@ public class Designer extends SecuredWebPage {
 			public void acceptAction(WindowAcceptCancel window) {
 				// Insert block in form
 				try {
-					if(windowBlocks.getSelectedBlock()!=null){
+					if (windowBlocks.getSelectedBlock() != null) {
 						TreeObject insertedElement = UserSessionHandler.getController().insertBlock(
 								windowBlocks.getSelectedBlock());
 						clearAndUpdateFormTable();
 						table.expand(insertedElement);
 						table.setValue(insertedElement);
 						window.close();
-					}else{
+					} else {
 						MessageManager.showError(LanguageCodes.ERROR_SELECT_BLOCK);
 					}
 				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
@@ -939,7 +938,7 @@ public class Designer extends SecuredWebPage {
 	public boolean isBlockLinkedByFormInUse(Block block) {
 		List<SimpleFormView> forms = simpleFormViewDao.getFormsThatUse(block);
 		for (SimpleFormView form : forms) {
-			if (WebformsAuthorizationService.getInstance().isFormInUse(form)) {
+			if (getWebformsSecurityService().isFormInUse(form)) {
 				return true;
 			}
 		}

@@ -7,12 +7,12 @@ import java.util.List;
 
 import com.biit.abcd.core.SpringContextHelper;
 import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.usermanager.security.IActivity;
+import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -32,7 +32,6 @@ import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.IWebformsBlockView;
 import com.biit.webforms.persistence.entity.SimpleBlockView;
 import com.biit.webforms.security.WebformsActivity;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.VaadinServlet;
@@ -89,15 +88,15 @@ public class BlockManager extends SecuredWebPage {
 			IWebformsBlockView block = getSelectedBlock();
 
 			boolean blockNotNull = block != null;
-			boolean canCreateBlocks = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+			boolean canCreateBlocks = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(
 					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_EDITING);
 
 			upperMenu.getNewBlock().setEnabled(canCreateBlocks);
 
 			upperMenu.getRemoveBlock().setEnabled(
 					blockNotNull
-							&& WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
-									UserSessionHandler.getUser(), block, WebformsActivity.BLOCK_REMOVE));
+							&& getWebformsSecurityService().isAuthorizedActivity(UserSessionHandler.getUser(), block,
+									WebformsActivity.BLOCK_REMOVE));
 
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(blockNotNull);
@@ -215,7 +214,7 @@ public class BlockManager extends SecuredWebPage {
 				try {
 					if (newBlockWindow.getOrganization() != null) {
 						Block newBlock = UserSessionHandler.getController().createBlock(newBlockWindow.getValue(),
-								newBlockWindow.getOrganization().getOrganizationId());
+								newBlockWindow.getOrganization().getId());
 						addBlockToTable(newBlock);
 						newBlockWindow.close();
 					}

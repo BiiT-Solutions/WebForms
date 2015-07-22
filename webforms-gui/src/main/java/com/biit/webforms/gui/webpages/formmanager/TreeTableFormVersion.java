@@ -2,6 +2,8 @@ package com.biit.webforms.gui.webpages.formmanager;
 
 import com.biit.form.entity.IBaseFormView;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
+import com.biit.usermanager.entity.IGroup;
+import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.UserSessionHandler;
@@ -13,29 +15,34 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.CancelActionLi
 import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.exceptions.NotEnoughRightsToChangeStatusException;
 import com.biit.webforms.language.FormWorkStatusUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.SimpleFormView;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.User;
 import com.vaadin.data.Item;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 
 public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	private static final long serialVersionUID = -7776688515497328826L;
 
+	private IWebformsSecurityService webformsSecurityService;
+
 	enum TreeTableFormVersionProperties {
 		ACCESS, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
 	};
 
-	public TreeTableFormVersion(TreeTableProvider<SimpleFormView> formProvider, IconProviderFormLinked iconProviderFormLinked) {
+	public TreeTableFormVersion(TreeTableProvider<SimpleFormView> formProvider,
+			IconProviderFormLinked iconProviderFormLinked) {
 		super(formProvider, iconProviderFormLinked);
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 		configureContainerProperties();
 		setImmediate(true);
 	}
@@ -94,7 +101,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(
 				getFormPermissionsTag((SimpleFormView) form));
 
-		User userOfForm = UiAccesser.getUserUsingForm((IWebformsFormView) form);
+		IUser<Long> userOfForm = UiAccesser.getUserUsingForm((IWebformsFormView) form);
 		if (userOfForm != null) {
 			item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue(userOfForm.getEmailAddress());
 		} else {
@@ -110,11 +117,11 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 				((IWebformsFormView) form).getLinkedFormLabel());
 
 		if (((IWebformsFormView) form).getLinkedFormOrganizationId() != null) {
-			Organization linkedOrganization = WebformsBasicAuthorizationService.getInstance().getOrganization(
-					UserSessionHandler.getUser(), ((IWebformsFormView) form).getLinkedFormOrganizationId());
+			IGroup<Long> linkedOrganization = webformsSecurityService.getOrganization(UserSessionHandler.getUser(),
+					((IWebformsFormView) form).getLinkedFormOrganizationId());
 			if (linkedOrganization != null) {
 				item.getItemProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION).setValue(
-						linkedOrganization.getName());
+						linkedOrganization.getUniqueName());
 			}
 		}
 
@@ -135,8 +142,8 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		statusComboBox.setWidth("100%");
 		statusComboBox.setImmediate(true);
 
-		boolean userCanUpgradeStatus = WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(
-				UserSessionHandler.getUser(), form, WebformsActivity.FORM_STATUS_DOWNGRADE);
+		boolean userCanUpgradeStatus = webformsSecurityService.isAuthorizedActivity(UserSessionHandler.getUser(), form,
+				WebformsActivity.FORM_STATUS_DOWNGRADE);
 
 		statusComboBox.setEnabled(userCanUpgradeStatus);
 		statusComboBox.addValueChangeListener(new ValueChangeListener() {
@@ -216,7 +223,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 			return LanguageCodes.CAPTION_IN_USE.translation();
 		}
 
-		if (!WebformsBasicAuthorizationService.getInstance().isAuthorizedToForm(form, UserSessionHandler.getUser())
+		if (!webformsSecurityService.isAuthorizedToForm(form, UserSessionHandler.getUser())
 				&& form.getStatus().equals(FormWorkStatus.DESIGN)) {
 			return LanguageCodes.CAPTION_READ_ONLY.translation();
 		}

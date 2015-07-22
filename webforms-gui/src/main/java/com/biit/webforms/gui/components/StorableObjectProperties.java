@@ -1,12 +1,15 @@
 package com.biit.webforms.gui.components;
 
+import com.biit.abcd.liferay.LiferayServiceAccess;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.PropertiesForClassComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
-import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
+import com.biit.webforms.security.IWebformsSecurityService;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 
@@ -16,8 +19,12 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 
 	private T instance;
 
+	private IWebformsSecurityService webformsSecurityService;
+
 	public StorableObjectProperties(Class<? extends T> type) {
 		super(type);
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 		initElement();
 	}
 
@@ -61,11 +68,11 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	protected void initValues() {
 		String valueCreatedBy = "";
 		String valueUpdatedBy = "";
-		
-		if(getInstance()==null){
+
+		if (getInstance() == null) {
 			return;
 		}
-		
+
 		try {
 			valueCreatedBy = getInstance().getCreatedBy() == null ? "" : LiferayServiceAccess.getInstance()
 					.getUserById(getInstance().getCreatedBy()).getEmailAddress();
@@ -112,6 +119,10 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 
 	protected void setInstance(T instance) {
 		this.instance = instance;
+	}
+
+	public IWebformsSecurityService getWebformsSecurityService() {
+		return webformsSecurityService;
 	}
 
 }

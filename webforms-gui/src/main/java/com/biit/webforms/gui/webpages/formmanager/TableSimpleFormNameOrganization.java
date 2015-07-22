@@ -1,15 +1,19 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
 import com.biit.form.entity.IBaseFormView;
+import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
-import com.liferay.portal.model.Organization;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.data.Item;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Table;
 
 public class TableSimpleFormNameOrganization extends Table {
 	private static final long serialVersionUID = 8482204549675894932L;
+
+	private IWebformsSecurityService webformsSecurityService;
 
 	enum Properties {
 		FORM_NAME, FORM_ORGANIZATION,
@@ -17,7 +21,8 @@ public class TableSimpleFormNameOrganization extends Table {
 
 	public TableSimpleFormNameOrganization() {
 		super();
-
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 		configureDataSource();
 	}
 
@@ -38,10 +43,10 @@ public class TableSimpleFormNameOrganization extends Table {
 		Item item = getItem(form);
 		item.getItemProperty(Properties.FORM_NAME).setValue(form.getLabel());
 
-		Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
-				UserSessionHandler.getUser(), form.getOrganizationId());
+		IGroup<Long> organization = webformsSecurityService.getOrganization(UserSessionHandler.getUser(),
+				form.getOrganizationId());
 		if (organization != null) {
-			item.getItemProperty(Properties.FORM_ORGANIZATION).setValue(organization.getName());
+			item.getItemProperty(Properties.FORM_ORGANIZATION).setValue(organization.getUniqueName());
 		}
 	}
 }

@@ -1,8 +1,6 @@
 package com.biit.webforms.gui.components;
 
-import java.io.IOException;
-
-import com.biit.liferay.access.exceptions.AuthenticationRequired;
+import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
@@ -13,12 +11,14 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.biit.webforms.theme.ThemeIcons;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -31,8 +31,12 @@ public class UpperMenuWebforms extends UpperMenu {
 	private boolean confirmationNeeded;
 	private IconButton logoutButton;
 
+	private IWebformsSecurityService webformsSecurityService;
+
 	public UpperMenuWebforms() {
 		super();
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 		confirmationNeeded = false;
 		addRightIcons();
 	}
@@ -117,14 +121,14 @@ public class UpperMenuWebforms extends UpperMenu {
 				});
 		// Clear cache for admin users.
 		try {
-			if (WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-					WebformsActivity.EVICT_CACHE)) {
+			if (webformsSecurityService
+					.isAuthorizedActivity(UserSessionHandler.getUser(), WebformsActivity.EVICT_CACHE)) {
 				clearCacheButton.setVisible(true);
 				clearCacheButton.setWidth("100%");
 			} else {
 				clearCacheButton.setVisible(false);
 			}
-		} catch (IOException | AuthenticationRequired e) {
+		} catch (UserManagementException e) {
 			clearCacheButton.setVisible(false);
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -166,5 +170,9 @@ public class UpperMenuWebforms extends UpperMenu {
 
 	public void hideLogoutButton(boolean hide) {
 		hideButton(settingsButton, logoutButton, !hide);
+	}
+
+	public IWebformsSecurityService getWebformsSecurityService() {
+		return webformsSecurityService;
 	}
 }

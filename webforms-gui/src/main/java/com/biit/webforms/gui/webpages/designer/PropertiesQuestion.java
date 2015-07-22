@@ -1,7 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.TreeObject;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
@@ -128,7 +127,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		commonProperties.addComponent(horizontal);
 		commonProperties.addComponent(mandatory);
 
-		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
+		boolean canEdit = getWebformsSecurityService().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
@@ -171,20 +170,20 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		label.setValue(getInstance().getLabel());
 		label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
 		label.setEnabled(!getInstance().isReadOnly());
-		
+
 		description.setValue(getInstance().getDescription());
 		description.setEnabled(!getInstance().isReadOnly());
-		
+
 		mandatory.setValue(getInstance().isMandatory());
 		mandatory.setEnabled(!getInstance().isReadOnly());
-		
+
 		answerTypeComboBox.setValue(getInstance().getAnswerType());
 		answerTypeComboBox.setEnabled(!getInstance().isReadOnly());
-		
-		//AnswerFormat enabled is controlled in other part of the code. 
-		answerFormat.setValue(getInstance().getAnswerFormat());		
+
+		// AnswerFormat enabled is controlled in other part of the code.
+		answerFormat.setValue(getInstance().getAnswerFormat());
 		answerSubformat.setValue(getInstance().getAnswerSubformat());
-		
+
 		horizontal.setValue(getInstance().isHorizontal());
 		horizontal.setEnabled(getInstance().getAnswerType().isHorizontalEnabled() && !getInstance().isReadOnly());
 	}
