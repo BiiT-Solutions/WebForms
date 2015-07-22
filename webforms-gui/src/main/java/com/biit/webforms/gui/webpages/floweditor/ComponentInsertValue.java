@@ -19,6 +19,7 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
+import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.validator.NullValidator;
@@ -41,7 +42,6 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class ComponentInsertValue extends CustomComponent {
 	private static final long serialVersionUID = -5236675580401960488L;
-	private static final String DATE_FORMAT = "dd/MM/yyyy";
 	private static final String FULL = "100%";
 	private static final String EXPAND = null;
 	private static final String COMPONENT_ID = "com.biit.webforms.gui.webpages.floweditor.ComponentInsertValue";
@@ -196,7 +196,7 @@ public class ComponentInsertValue extends CustomComponent {
 			return null;
 		} else {
 			if (value instanceof DateField) {
-				return new SimpleDateFormat(DATE_FORMAT).format(((Date) value.getValue()));
+				return new SimpleDateFormat(TokenComparationValue.DATE_FORMAT).format(((Date) value.getValue()));
 			} else {
 				return value.getValue().toString();
 			}
