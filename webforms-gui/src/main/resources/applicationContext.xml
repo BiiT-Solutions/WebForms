@@ -177,10 +177,10 @@
 	<bean id="authenticationService" class="com.biit.liferay.security.AuthenticationService" />	
 	<bean id="authorizationService" class="com.biit.liferay.security.AuthorizationService">
 		<property name="roleActivities">
-			<bean id="roleActivities" class="com.biit.abcd.security.RoleActivities" />
+			<bean id="roleActivities" class="com.biit.webforms.security.RoleActivities" />
 		</property>
 	</bean>
-	<bean id="webformsSecurityService" class = "com.biit.abcd.security.WebformsSecurityService" >
+	<bean id="webformsSecurityService" class = "com.biit.webforms.security.WebformsSecurityService" >
 		<property name="authenticationService" ref="authenticationService" />
 		<property name="authorizationService" ref="authorizationService" />
 	</bean>

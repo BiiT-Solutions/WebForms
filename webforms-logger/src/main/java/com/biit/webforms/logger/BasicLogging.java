@@ -17,7 +17,7 @@ public class BasicLogging extends AbstractLogging {
 	 * Following is the definition for a pointcut to select all the methods available. So advice will be called for all
 	 * the methods.
 	 */
-	@Pointcut("execution(* com.biit..*(..))")
+	@Pointcut("execution(* com.biit.persistence..*(..))")
 	private void selectAll() {
 	}
 	

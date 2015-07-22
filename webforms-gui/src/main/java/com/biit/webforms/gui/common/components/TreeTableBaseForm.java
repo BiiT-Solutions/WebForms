@@ -301,4 +301,8 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 
 		return cell;
 	}
+
+	public IWebformsSecurityService getWebformsSecurityService() {
+		return webformsSecurityService;
+	}
 }
