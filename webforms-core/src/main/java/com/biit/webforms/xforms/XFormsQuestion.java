@@ -40,6 +40,16 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		}
 		return "";
 	}
+	
+	@Override
+	protected String getDefinition() {
+		String section = "<" + getName() + ">";
+		if(getSource() instanceof Question){
+			section += ((Question)getSource()).getDefaultValue();
+		}
+		section += "</" + getName() + ">";
+		return section;
+	}
 
 	@Override
 	public String getHelp() {
