@@ -1,5 +1,12 @@
 package com.biit.webforms.persistence.entity.condition;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,6 +26,8 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 @Table(name = "token_comparation_value")
 public class TokenComparationValue extends TokenWithQuestion implements ITokenQuestion {
 	private static final long serialVersionUID = 8580195041605107217L;
+	// Date format used to store in database
+	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
 	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.LT, TokenTypes.GT, TokenTypes.LE,
 			TokenTypes.GE };
@@ -222,7 +231,11 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		evaluationValue = false;
 		switch (getQuestion().getAnswerFormat()) {
 		case DATE:
-			evaluationValue = evaluateAsDate(value);
+			if (subformat == AnswerSubformat.DATE_PERIOD) {
+				evaluationValue = evaluateAsDatePeriod(value);
+			} else {
+				evaluationValue = evaluateAsDate(value);
+			}
 			break;
 		case NUMBER:
 			evaluationValue = evaluateAsNumber(value);
@@ -247,9 +260,9 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		case GE:
 			return (this.value.compareTo(value) >= 0);
 		case EQ:
-			return (this.value.compareTo(value) == 0);
+			return Objects.equals(this.value, value);
 		case NE:
-			return (this.value.compareTo(value) != 0);
+			return !Objects.equals(this.value, value);
 		default:
 			throw new UnsupportedOperationException();
 		}
@@ -278,8 +291,81 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 	}
 
 	private boolean evaluateAsDate(String value) {
-		// TODO Auto-generated method stub
-		return false;
+		DateFormat format = new SimpleDateFormat(TokenComparationValue.DATE_FORMAT);
+		try {
+			Date condition = format.parse(getValue());
+			Date userInput = format.parse(value);
+
+			switch (getType()) {
+			case LT:
+				return (condition.compareTo(userInput) < 0);
+			case LE:
+				return (condition.compareTo(userInput) <= 0);
+			case GT:
+				return (condition.compareTo(userInput) > 0);
+			case GE:
+				return (condition.compareTo(userInput) >= 0);
+			case EQ:
+				return Objects.equals(condition, userInput);
+			case NE:
+				return !Objects.equals(condition, userInput);
+			default:
+				throw new UnsupportedOperationException();
+			}
+		} catch (ParseException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			return false;
+		}
+
 	}
 
+	private boolean evaluateAsDatePeriod(String value) {
+		DateFormat format = new SimpleDateFormat(TokenComparationValue.DATE_FORMAT);
+		try {
+			Date userInput = format.parse(value);
+			int delta = Integer.parseInt(getValue());
+
+			Calendar calendar = Calendar.getInstance();
+
+			int deltaSign = 0;
+			if (subformat == AnswerSubformat.DATE_FUTURE) {
+				// Date in the future
+				deltaSign = 1;
+			} else {
+				// Date in the past
+				deltaSign = -1;
+			}
+			switch (datePeriodUnit) {
+			case DAY:
+				calendar.add(Calendar.DAY_OF_MONTH, deltaSign * delta);
+				break;
+			case MONTH:
+				calendar.add(Calendar.MONTH, deltaSign * delta);
+				break;
+			case YEAR:
+				calendar.add(Calendar.YEAR, deltaSign * delta);
+				break;
+			}
+
+			switch (getType()) {
+			case LT:
+				return (calendar.getTime().compareTo(userInput) < 0);
+			case LE:
+				return (calendar.getTime().compareTo(userInput) <= 0);
+			case GT:
+				return (calendar.getTime().compareTo(userInput) > 0);
+			case GE:
+				return (calendar.getTime().compareTo(userInput) >= 0);
+			case EQ:
+				return Objects.equals(calendar.getTime(), userInput);
+			case NE:
+				return !Objects.equals(calendar.getTime(), userInput);
+			default:
+				throw new UnsupportedOperationException();
+			}
+		} catch (ParseException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			return false;
+		}
+	}
 }

@@ -31,7 +31,6 @@ import com.vaadin.ui.TextField;
 
 public class WindowTokenOperationValue extends WindowAcceptCancel {
 	private static final long serialVersionUID = 697691525922280194L;
-	private static final String DATE_FORMAT = "dd/MM/yyyy";
 	private static final String WIDTH = "650px";
 	private static final String HEIGHT = "250px";
 	private static final Object DEFAULT_DATE_PERIOD_UNIT = DatePeriodUnit.YEAR;
@@ -158,7 +157,7 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 			return null;
 		} else {
 			if (value instanceof DateField) {
-				return new SimpleDateFormat(DATE_FORMAT).format(((Date) value.getValue()));
+				return new SimpleDateFormat(TokenComparationValue.DATE_FORMAT).format(((Date) value.getValue()));
 			} else {
 				return value.getValue().toString();
 			}
@@ -223,7 +222,7 @@ public class WindowTokenOperationValue extends WindowAcceptCancel {
 		if (value instanceof TextField) {
 			((TextField) value).setValue(token.getValue());
 		} else {
-			DateFormat format = new SimpleDateFormat(DATE_FORMAT);
+			DateFormat format = new SimpleDateFormat(TokenComparationValue.DATE_FORMAT);
 			try {
 				((DateField) value).setValue(format.parse(token.getValue()));
 			} catch (ReadOnlyException | ConversionException | ParseException e) {
