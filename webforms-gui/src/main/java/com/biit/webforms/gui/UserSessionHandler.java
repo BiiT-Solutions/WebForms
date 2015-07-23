@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.biit.usermanager.entity.IUser;
-import com.biit.usermanager.security.IAuthenticationService;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.usermanager.security.exceptions.InvalidCredentialsException;
 import com.biit.usermanager.security.exceptions.UserManagementException;
@@ -14,6 +13,7 @@ import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.UI;
@@ -29,7 +29,7 @@ public class UserSessionHandler {
 	// User Id --> Last Page visited
 	private static HashMap<Long, WebMap> userLastPage = new HashMap<>();
 
-	private static IAuthenticationService<Long, Long> authenticationService;
+	private static IWebformsSecurityService webformsSecurityService;
 
 	/**
 	 * Initializes the {@link UserSessionHandler} for the given
@@ -159,7 +159,7 @@ public class UserSessionHandler {
 	public static IUser<Long> getUser(String userMail, String password) throws UserManagementException,
 			AuthenticationRequired, InvalidCredentialsException {
 		// Try to log in the user when the button is clicked
-		IUser<Long> user = getAuthenticationService().authenticate(userMail, password);
+		IUser<Long> user = getAuthenticationService().getAuthenticationService().authenticate(userMail, password);
 
 		if (user != null) {
 			WebBrowser browser = (WebBrowser) UI.getCurrent().getPage().getWebBrowser();
@@ -191,12 +191,11 @@ public class UserSessionHandler {
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	private static IAuthenticationService<Long, Long> getAuthenticationService() {
-		if (authenticationService == null) {
+	private static IWebformsSecurityService getAuthenticationService() {
+		if (webformsSecurityService == null) {
 			SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-			authenticationService = (IAuthenticationService<Long, Long>) helper.getBean("authenticationService");
+			webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 		}
-		return authenticationService;
+		return webformsSecurityService;
 	}
 }
