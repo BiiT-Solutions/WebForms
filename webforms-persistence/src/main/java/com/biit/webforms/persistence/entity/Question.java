@@ -31,6 +31,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatExc
 public class Question extends WebformsBaseQuestion implements FlowConditionScript {
 	private static final long serialVersionUID = -7243001035969348318L;
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
+	public static final int MAX_DEFAULT_VALUE = 100;
 	public static final boolean DEFAULT_HORIZONTAL = false;
 	public static final boolean DEFAULT_MANDATORY = true;
 
@@ -46,6 +47,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	private AnswerFormat answerFormat;
 	@Enumerated(EnumType.STRING)
 	private AnswerSubformat answerSubformat;
+	
+	@Column(length = MAX_DEFAULT_VALUE)
+	private String defaultValue;
 
 	public Question() {
 		super();
@@ -55,6 +59,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		answerType = AnswerType.INPUT;
 		answerFormat = AnswerFormat.TEXT;
 		answerSubformat = AnswerSubformat.TEXT;
+		defaultValue = new String();
 	}
 
 	public Question(String name) throws FieldTooLongException, CharacterNotAllowedException {
@@ -65,6 +70,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		answerType = AnswerType.INPUT;
 		answerFormat = AnswerFormat.TEXT;
 		answerSubformat = AnswerSubformat.TEXT;
+		defaultValue = new String();
 	}
 
 	public AnswerType getAnswerType() {
@@ -421,4 +427,16 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		}
 		return false;
 	}
+
+	public String getDefaultValue() {
+		if(defaultValue==null){
+			defaultValue = new String();
+		}
+		return defaultValue;
+	}
+
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+	
 }
