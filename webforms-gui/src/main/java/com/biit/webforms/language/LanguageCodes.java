@@ -632,7 +632,9 @@ public enum LanguageCodes implements ILanguageCode {
 	ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION("error.invalid.form.for.xforms.description"), 
 	WARNING_WRONG_WEBSERVICE_CONFIGURATION("warning.wrong.webservice.configuration"), 
 	
-	ERROR_SELECT_BLOCK("error.select.block"),
+	ERROR_SELECT_BLOCK("error.select.block"), 
+	
+	CAPTION_DEFAULT_VALUE("caption.default.value"),
 	
 	;
 

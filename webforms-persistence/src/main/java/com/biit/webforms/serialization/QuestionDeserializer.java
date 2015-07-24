@@ -32,6 +32,7 @@ public class QuestionDeserializer extends TreeObjectDeserializer<Question> {
 		element.setMandatory(parseBoolean("mandatory", jobject, context));
 		element.setHorizontal(parseBoolean("horizontal", jobject, context));
 		element.setDescription(parseString("description", jobject, context));
+		element.setDefaultValue(parseString("defaultValue", jobject, context));
 
 		super.deserialize(json, context, element);
 	}

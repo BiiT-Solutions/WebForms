@@ -27,6 +27,8 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	private TextArea label;
 
 	private TextArea description;
+	
+	private TextArea defaultValue;
 
 	private CheckBox mandatory;
 
@@ -58,6 +60,10 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
 		description.setWidth(WIDTH);
 		description.setMaxLength(Question.MAX_DESCRIPTION_LENGTH);
+		
+		defaultValue = new TextArea(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
+		defaultValue.setWidth(WIDTH);
+		defaultValue.setMaxLength(Question.MAX_DEFAULT_VALUE);
 
 		answerTypeComboBox = new ComboBox(LanguageCodes.CAPTION_ANSWER_TYPE.translation());
 		answerTypeComboBox.setWidth(WIDTH);
@@ -86,6 +92,14 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 					mandatory.setValue(selectedType.getDefaultMandatory());
 					mandatory.setEnabled(selectedType.isMandatoryEnabled());
 				}
+				
+				// If default value is gonna be disabled, enable it again and empty
+				if (!selectedType.isDefaultValueEnabled()){
+					defaultValue.setEnabled(true);
+					defaultValue.setValue("");
+				}
+				defaultValue.setEnabled(selectedType.isDefaultValueEnabled());
+				
 			}
 		});
 
@@ -124,6 +138,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		commonProperties.addComponent(answerTypeComboBox);
 		commonProperties.addComponent(answerFormat);
 		commonProperties.addComponent(answerSubformat);
+		commonProperties.addComponent(defaultValue);
 		commonProperties.addComponent(horizontal);
 		commonProperties.addComponent(mandatory);
 
@@ -186,6 +201,10 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 		horizontal.setValue(getInstance().isHorizontal());
 		horizontal.setEnabled(getInstance().getAnswerType().isHorizontalEnabled() && !getInstance().isReadOnly());
+
+		defaultValue.setEnabled(true);
+		defaultValue.setValue(getInstance().getDefaultValue());
+		defaultValue.setEnabled(getInstance().getAnswerType().isDefaultValueEnabled());
 	}
 
 	@Override
@@ -197,16 +216,20 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	public void updateElement() {
 		String tempName = getInstance().getName();
 		String tempLabel = getInstance().getLabel();
+		String tempDefaultValue = defaultValue.getValue();
 		if (name.isValid()) {
 			tempName = name.getValue();
 		}
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
+		if (!((AnswerType)answerTypeComboBox.getValue()).isDefaultValueEnabled()){
+			tempDefaultValue = "";
+		}
 		UserSessionHandler.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(),
 				mandatory.getValue(), (AnswerType) answerTypeComboBox.getValue(),
 				(AnswerFormat) answerFormat.getValue(), (AnswerSubformat) answerSubformat.getValue(),
-				horizontal.getValue());
+				horizontal.getValue(),tempDefaultValue);
 
 		super.updateElement();
 	}

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.hibernate.exception.ConstraintViolationException;
@@ -1050,9 +1051,10 @@ public class ApplicationController {
 	 * @param answerFormat
 	 * @param answerSubformat
 	 * @param horizontal
+	 * @param defaultValue 
 	 */
-	public void updateQuestion(Question question, String name, String label, String description, boolean mandatory,
-			AnswerType answerType, AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal) {
+	public void updateQuestion(Question question, String name, String label, String description, boolean mandatory, AnswerType answerType,
+			AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, String defaultValue) {
 		try {
 			if (!question.getLabel().equals(label)
 					|| !question.getDescription().equals(description)
@@ -1061,7 +1063,8 @@ public class ApplicationController {
 					|| (question.getAnswerType() != null && !question.getAnswerType().equals(answerType))
 					|| (question.getAnswerFormat() != null && !question.getAnswerFormat().equals(answerFormat))
 					|| (question.getAnswerSubformat() != null && !question.getAnswerSubformat().equals(answerSubformat))
-					|| question.isHorizontal() != horizontal) {
+					|| question.isHorizontal() != horizontal
+					|| !Objects.equals(question.getDefaultValue(),defaultValue)){
 				setUnsavedFormChanges(true);
 				question.setName(name);
 				question.setLabel(label);
@@ -1073,8 +1076,9 @@ public class ApplicationController {
 				question.setHorizontal(horizontal);
 				question.setUpdatedBy(UserSessionHandler.getUser());
 				question.setUpdateTime();
-				logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat,
-						answerSubformat, horizontal);
+				question.setDefaultValue(defaultValue);
+				logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat, answerSubformat,
+						horizontal);
 			}
 		} catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException
 				| InvalidAnswerSubformatException e) {
