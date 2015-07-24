@@ -1,6 +1,8 @@
 package com.biit.webforms.persistence.entity;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.biit.form.entity.TreeObject;
@@ -47,9 +50,14 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	private AnswerFormat answerFormat;
 	@Enumerated(EnumType.STRING)
 	private AnswerSubformat answerSubformat;
-	
+
 	@Column(length = MAX_DEFAULT_VALUE)
-	private String defaultValue;
+	private String defaultValueString;
+
+	@ManyToOne(optional=true)
+	private Answer defaultValueAnswer;
+
+	private Timestamp defaultValueTime;
 
 	public Question() {
 		super();
@@ -59,7 +67,6 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		answerType = AnswerType.INPUT;
 		answerFormat = AnswerFormat.TEXT;
 		answerSubformat = AnswerSubformat.TEXT;
-		defaultValue = new String();
 	}
 
 	public Question(String name) throws FieldTooLongException, CharacterNotAllowedException {
@@ -70,7 +77,6 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		answerType = AnswerType.INPUT;
 		answerFormat = AnswerFormat.TEXT;
 		answerSubformat = AnswerSubformat.TEXT;
-		defaultValue = new String();
 	}
 
 	public AnswerType getAnswerType() {
@@ -78,7 +84,8 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	}
 
 	/**
-	 * This setter sets AnswerType and sets the answer format to the default answer format for a type.
+	 * This setter sets AnswerType and sets the answer format to the default
+	 * answer format for a type.
 	 * 
 	 * @param answerType
 	 */
@@ -116,7 +123,8 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	}
 
 	/**
-	 * Setter of answer format. Sets the answer format and sets the default answer subformat.
+	 * Setter of answer format. Sets the answer format and sets the default
+	 * answer subformat.
 	 * 
 	 * @param answerFormat
 	 * @throws InvalidAnswerFormatException
@@ -135,8 +143,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		if (answerFormat != null) {
 			// Answer subform is not valid for answerSubformat, change it.
 			if (answerSubformat == null
-					|| (answerSubformat.getAnswerFormat() != null && !answerSubformat.getAnswerFormat().equals(
-							answerFormat))) {
+					|| (answerSubformat.getAnswerFormat() != null && !answerSubformat.getAnswerFormat().equals(answerFormat))) {
 				this.answerSubformat = answerFormat.getDefaultSubformat();
 			}
 		} else {
@@ -151,12 +158,11 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	public void setAnswerSubformat(AnswerSubformat answerSubformat) throws InvalidAnswerSubformatException {
 		if (answerFormat == null && answerSubformat != null) {
-			throw new InvalidAnswerSubformatException(
-					"Answer subformat can't be defined if the question doesn't have any format.");
+			throw new InvalidAnswerSubformatException("Answer subformat can't be defined if the question doesn't have any format.");
 		}
 		if (answerFormat != null && answerSubformat != null && !answerFormat.isSubformat(answerSubformat)) {
-			throw new InvalidAnswerSubformatException("Answer subformat " + answerSubformat
-					+ " is not compatible with answer format " + answerFormat);
+			throw new InvalidAnswerSubformatException("Answer subformat " + answerSubformat + " is not compatible with answer format "
+					+ answerFormat);
 		}
 		if (answerFormat != null && answerSubformat == null) {
 			this.answerSubformat = answerFormat.getDefaultSubformat();
@@ -190,6 +196,12 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			}
 			setMandatory(question.isMandatory());
 			setHorizontal(question.isHorizontal());
+			
+			setDefaultValueString(question.getDefaultValueString());
+			setDefaultValueTime(question.getDefaultValueTime());
+			if(question.getDefaultValueAnswer()!=null){
+				setDefaultValueAnswer(getAnswer(question.getDefaultValueAnswer().getValue()));
+			}
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy");
 		}
@@ -319,20 +331,16 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE);").append(System.lineSeparator());
 				break;
 			case DATE_BIRTHDAY:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_BIRTHDAY);")
-						.append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_BIRTHDAY);").append(System.lineSeparator());
 				break;
 			case DATE_FUTURE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_FUTURE);")
-						.append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_FUTURE);").append(System.lineSeparator());
 				break;
 			case DATE_PAST:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PAST);")
-						.append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PAST);").append(System.lineSeparator());
 				break;
 			case DATE_PERIOD:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PERIOD);")
-						.append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PERIOD);").append(System.lineSeparator());
 				break;
 			case EMAIL:
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.EMAIL);").append(System.lineSeparator());
@@ -350,8 +358,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.PHONE);").append(System.lineSeparator());
 				break;
 			case POSTAL_CODE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSTAL_CODE);")
-						.append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSTAL_CODE);").append(System.lineSeparator());
 				break;
 			case TEXT:
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.TEXT);").append(System.lineSeparator());
@@ -362,12 +369,10 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			sb.append(idName).append(".setAnswerType(AnswerType.MULTIPLE_SELECTION);").append(System.lineSeparator());
 			break;
 		case SINGLE_SELECTION_LIST:
-			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_LIST);")
-					.append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_LIST);").append(System.lineSeparator());
 			break;
 		case SINGLE_SELECTION_RADIO:
-			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_RADIO);")
-					.append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_RADIO);").append(System.lineSeparator());
 			break;
 		case TEXT_AREA:
 			sb.append(idName).append(".setAnswerType(AnswerType.TEXT_AREA);").append(System.lineSeparator());
@@ -390,8 +395,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			int tempCounter = currentCounter + 1;
 			currentCounter = ((Answer) child).exportToJavaCode(sb, currentCounter + 1);
 			sb.append("//ques").append(System.lineSeparator());
-			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");")
-					.append(System.lineSeparator());
+			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
 		}
 
 		return currentCounter;
@@ -428,15 +432,78 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		return false;
 	}
 
-	public String getDefaultValue() {
-		if(defaultValue==null){
-			defaultValue = new String();
-		}
-		return defaultValue;
+	public String getDefaultValueString() {
+		return defaultValueString;
 	}
 
-	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
+	public void setDefaultValueString(String defaultValueString) {
+		this.defaultValueString = defaultValueString;
 	}
-	
+
+	public Answer getDefaultValueAnswer() {
+		return defaultValueAnswer;
+	}
+
+	public void setDefaultValueAnswer(Answer defaultValueAnswer) {
+		this.defaultValueAnswer = defaultValueAnswer;
+	}
+
+	public Timestamp getDefaultValueTime() {
+		return defaultValueTime;
+	}
+
+	public void setDefaultValueTime(Timestamp defaultValueTime) {
+		this.defaultValueTime = defaultValueTime;
+	}
+
+	/**
+	 * Returns the default value as string. If no default value is defined
+	 * returns empty string.
+	 * 
+	 * @return
+	 */
+	public String getDefaultValue() {
+		if (getDefaultValueString() != null) {
+			return getDefaultValueString();
+		}
+		if (getDefaultValueAnswer() != null) {
+			return getDefaultValueAnswer().toString();
+		}
+		if (getDefaultValueTime() != null) {
+			return getDefaultValueTime().toString();
+		}
+		return "";
+	}
+
+	public void setDefaultValue(Object defaultValue) {
+		if(defaultValue == null){
+			setDefaultValueString(null);
+			setDefaultValueTime(null);
+			setDefaultValueAnswer(null);
+		}
+		if(defaultValue instanceof String){
+			setDefaultValueString((String) defaultValue);
+			setDefaultValueTime(null);
+			setDefaultValueAnswer(null);
+			return;
+		}
+		if(defaultValue instanceof Timestamp){
+			setDefaultValueString(null);
+			setDefaultValueTime((Timestamp) defaultValue);
+			setDefaultValueAnswer(null);
+			return;
+		}
+		if(defaultValue instanceof Date){
+			setDefaultValueString(null);
+			setDefaultValueTime(new Timestamp(((Date)defaultValue).getTime()));
+			setDefaultValueAnswer(null);
+			return;
+		}
+		if(defaultValue instanceof Answer){
+			setDefaultValueString(null);
+			setDefaultValueTime(null);
+			setDefaultValueAnswer((Answer) defaultValue);
+			return;
+		}
+	}
 }

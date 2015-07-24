@@ -1,5 +1,7 @@
 package com.biit.webforms.gui.webpages.designer;
 
+import java.util.Date;
+
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.enumerations.AnswerFormat;
@@ -11,11 +13,13 @@ import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.AnswerTypeUi;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Question;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -28,8 +32,10 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	private TextArea label;
 
 	private TextArea description;
-	
-	private TextArea defaultValue;
+
+	private TextArea defaultValueString;
+	private DateField defaultValueDate;
+	private ComboBox defaultValueAnswer;
 
 	private CheckBox mandatory;
 
@@ -61,10 +67,16 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
 		description.setWidth(WIDTH);
 		description.setMaxLength(Question.MAX_DESCRIPTION_LENGTH);
-		
-		defaultValue = new TextArea(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
-		defaultValue.setWidth(WIDTH);
-		defaultValue.setMaxLength(Question.MAX_DEFAULT_VALUE);
+
+		defaultValueString = new TextArea(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
+		defaultValueString.setWidth(WIDTH);
+		defaultValueString.setMaxLength(Question.MAX_DEFAULT_VALUE);
+
+		defaultValueDate = new DateField(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
+		defaultValueDate.setWidth(WIDTH);
+
+		defaultValueAnswer = new ComboBox(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
+		defaultValueAnswer.setWidth(WIDTH);
 
 		answerTypeComboBox = new ComboBox(LanguageCodes.CAPTION_ANSWER_TYPE.translation());
 		answerTypeComboBox.setWidth(WIDTH);
@@ -93,14 +105,30 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 					mandatory.setValue(selectedType.getDefaultMandatory());
 					mandatory.setEnabled(selectedType.isMandatoryEnabled());
 				}
-				
-				// If default value is gonna be disabled, enable it again and empty
-				if (!selectedType.isDefaultValueEnabled()){
-					defaultValue.setEnabled(true);
-					defaultValue.setValue("");
+
+				switch (selectedType) {
+				case INPUT:
+					defaultValueAnswer.setVisible(false);
+					defaultValueAnswer.setValue(null);
+					break;
+				case TEXT_AREA:
+					defaultValueString.setVisible(true);
+					defaultValueDate.setVisible(false);
+					defaultValueDate.setValue(null);
+					defaultValueAnswer.setVisible(false);
+					defaultValueAnswer.setValue(null);
+					break;
+				case SINGLE_SELECTION_LIST:
+				case SINGLE_SELECTION_RADIO:
+				case MULTIPLE_SELECTION:
+					defaultValueString.setVisible(false);
+					defaultValueString.setValue("");
+					defaultValueDate.setVisible(false);
+					defaultValueDate.setValue(null);
+					refreshDefaultValueAnswerValues();
+					defaultValueAnswer.setVisible(true);
+					break;
 				}
-				defaultValue.setEnabled(selectedType.isDefaultValueEnabled());
-				
 			}
 		});
 
@@ -116,6 +144,21 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
+				if (answerFormat.getValue() != null) {
+					AnswerFormat selectedFormat = (AnswerFormat) answerFormat.getValue();
+					switch (selectedFormat) {
+					case DATE:
+						defaultValueString.setVisible(false);
+						defaultValueString.setValue("");
+						defaultValueDate.setVisible(true);
+						break;
+					default:
+						defaultValueString.setVisible(true);
+						defaultValueDate.setVisible(false);
+						defaultValueDate.setValue(null);
+						break;
+					}
+				}
 				refreshAnswerSubformatOptions();
 			}
 		});
@@ -139,17 +182,28 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		commonProperties.addComponent(answerTypeComboBox);
 		commonProperties.addComponent(answerFormat);
 		commonProperties.addComponent(answerSubformat);
-		commonProperties.addComponent(defaultValue);
+		commonProperties.addComponent(defaultValueString);
+		commonProperties.addComponent(defaultValueDate);
+		commonProperties.addComponent(defaultValueAnswer);
 		commonProperties.addComponent(horizontal);
 		commonProperties.addComponent(mandatory);
 
-		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(UserSessionHandler.getController().getFormInUse(),
+				UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_QUESTION.translation(), true);
 
 		super.initElement();
+	}
+
+	protected void refreshDefaultValueAnswerValues() {
+		defaultValueAnswer.removeAllItems();
+		for (Answer answer : getInstance().getFinalAnswers()) {
+			defaultValueAnswer.addItem(answer);
+			defaultValueAnswer.setItemCaption(answer, answer.getLabel());
+		}
+		defaultValueAnswer.setValue(getInstance().getDefaultValueAnswer());
 	}
 
 	protected void refreshAnswerSubformatOptions() {
@@ -186,26 +240,35 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		label.setValue(getInstance().getLabel());
 		label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
 		label.setEnabled(!getInstance().isReadOnly());
-		
+
 		description.setValue(getInstance().getDescription());
 		description.setEnabled(!getInstance().isReadOnly());
-		
+
 		mandatory.setValue(getInstance().isMandatory());
 		mandatory.setEnabled(!getInstance().isReadOnly());
-		
+
 		answerTypeComboBox.setValue(getInstance().getAnswerType());
 		answerTypeComboBox.setEnabled(!getInstance().isReadOnly());
-		
-		//AnswerFormat enabled is controlled in other part of the code. 
-		answerFormat.setValue(getInstance().getAnswerFormat());		
+
+		// AnswerFormat enabled is controlled in other part of the code.
+		answerFormat.setValue(getInstance().getAnswerFormat());
 		answerSubformat.setValue(getInstance().getAnswerSubformat());
-		
+
 		horizontal.setValue(getInstance().isHorizontal());
 		horizontal.setEnabled(getInstance().getAnswerType().isHorizontalEnabled() && !getInstance().isReadOnly());
 
-		defaultValue.setEnabled(true);
-		defaultValue.setValue(getInstance().getDefaultValue());
-		defaultValue.setEnabled(getInstance().getAnswerType().isDefaultValueEnabled());
+		if (getInstance().getDefaultValueString() != null) {
+			defaultValueString.setValue(getInstance().getDefaultValueString());
+		} else {
+			defaultValueString.setValue("");
+		}
+		if (getInstance().getDefaultValueTime() != null) {
+			defaultValueDate.setValue(new Date(getInstance().getDefaultValueTime().getTime()));
+		} else {
+			defaultValueDate.setValue(null);
+		}
+		defaultValueAnswer.setValue(getInstance().getDefaultValueAnswer());
+
 	}
 
 	@Override
@@ -217,20 +280,26 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 	public void updateElement() {
 		String tempName = getInstance().getName();
 		String tempLabel = getInstance().getLabel();
-		String tempDefaultValue = defaultValue.getValue();
+		Object tempDefaultValue = null;
 		if (name.isValid()) {
 			tempName = name.getValue();
 		}
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		if (!((AnswerType)answerTypeComboBox.getValue()).isDefaultValueEnabled()){
-			tempDefaultValue = "";
+		if(defaultValueString.getValue()!=null && !defaultValueString.getValue().isEmpty()){
+			tempDefaultValue = defaultValueString.getValue();
 		}
-		UserSessionHandler.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(),
-				mandatory.getValue(), (AnswerType) answerTypeComboBox.getValue(),
-				(AnswerFormat) answerFormat.getValue(), (AnswerSubformat) answerSubformat.getValue(),
-				horizontal.getValue(),tempDefaultValue);
+		if (tempDefaultValue == null) {
+			tempDefaultValue = defaultValueDate.getValue();
+		}
+		if (tempDefaultValue == null) {
+			tempDefaultValue = defaultValueAnswer.getValue();
+		}
+
+		UserSessionHandler.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(), mandatory.getValue(),
+				(AnswerType) answerTypeComboBox.getValue(), (AnswerFormat) answerFormat.getValue(),
+				(AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue);
 
 		super.updateElement();
 	}

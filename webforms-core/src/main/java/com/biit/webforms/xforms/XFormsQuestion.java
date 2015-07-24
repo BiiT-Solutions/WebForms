@@ -1,5 +1,6 @@
 package com.biit.webforms.xforms;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +46,12 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	protected String getDefinition() {
 		String section = "<" + getName() + ">";
 		if(getSource() instanceof Question){
-			section += ((Question)getSource()).getDefaultValue();
+			if(((Question)getSource()).getDefaultValueTime()!=null){
+				SimpleDateFormat formatter = new SimpleDateFormat(XFormsObject.XPATH_DATE_FORMAT);
+				section += formatter.format(((Question)getSource()).getDefaultValueTime());
+			}else{
+				section += ((Question)getSource()).getDefaultValue();
+			}
 		}
 		section += "</" + getName() + ">";
 		return section;

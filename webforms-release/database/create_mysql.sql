@@ -253,9 +253,12 @@
         answerFormat varchar(255),
         answerSubformat varchar(255),
         answerType varchar(255),
+        defaultValueString varchar(100),
+        defaultValueTime datetime,
         description varchar(10000),
         horizontal bit not null,
         mandatory bit not null,
+        defaultValueAnswer_ID bigint,
         primary key (ID)
     );
 
@@ -518,6 +521,11 @@
         add constraint FK_1focp8yixjr3i902hvvklx3wi 
         foreign key (reference_ID) 
         references tree_questions (ID);
+
+    alter table tree_questions 
+        add constraint FK_b7pgk7nxqs4ru44km5ues8jn0 
+        foreign key (defaultValueAnswer_ID) 
+        references tree_answers (ID);
 
     alter table webservice_call_input_link 
         add constraint FK_gh8lglngvsku2hb11oki042l 
