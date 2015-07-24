@@ -8,10 +8,9 @@ import java.util.Set;
 
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
-import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.usermanager.security.IActivity;
 import com.biit.webforms.flow.FlowCleaner;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
@@ -87,7 +86,7 @@ public class FlowEditor extends SecuredWebPage {
 		zoomSliderValueChangeListener = new ZoomSliderValueChangeListener();
 
 		if (UserSessionHandler.getController().getCompleteFormView() != null
-				&& !WebformsAuthorizationService.getInstance().isFormEditable(
+				&& !getWebformsSecurityService().isFormEditable(
 						UserSessionHandler.getController().getCompleteFormView(), UserSessionHandler.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
@@ -220,9 +219,9 @@ public class FlowEditor extends SecuredWebPage {
 		for (Object itemId : itemIds) {
 			selectedNew = itemId != null && itemId.equals(tableFlows.getNewFlowId());
 		}
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = getWebformsSecurityService().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
-		
+
 		Object selectedRow = null;
 		if (somethingSelected) {
 			selectedRow = itemIds.iterator().next();
@@ -507,7 +506,7 @@ public class FlowEditor extends SecuredWebPage {
 	 * This method opens the new flow window
 	 */
 	private void addNewFlowAction() {
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = getWebformsSecurityService().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		if (canEdit) {
 			createFlowWindow(new Flow());
@@ -520,7 +519,7 @@ public class FlowEditor extends SecuredWebPage {
 	 * @param flow
 	 */
 	private void editFlowAction(Flow flow) {
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = getWebformsSecurityService().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		if (canEdit) {
 			createFlowWindow(flow);

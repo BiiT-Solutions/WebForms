@@ -2,7 +2,7 @@ package com.biit.webforms.gui.webpages.formmanager;
 
 import java.io.IOException;
 
-import com.biit.liferay.access.exceptions.AuthenticationRequired;
+import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
@@ -12,7 +12,6 @@ import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.WebformsActivity;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.xforms.XFormsSimpleFormExporter;
 import com.vaadin.server.BrowserWindowOpener;
@@ -44,9 +43,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		boolean enableExportJson = false;
 		boolean enableImportJson = false;
 		try {
-			enableExportJson = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+			enableExportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(
 					UserSessionHandler.getUser(), WebformsActivity.EXPORT_JSON);
-			enableImportJson = WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(
+			enableImportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(
 					UserSessionHandler.getUser(), WebformsActivity.IMPORT_JSON);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

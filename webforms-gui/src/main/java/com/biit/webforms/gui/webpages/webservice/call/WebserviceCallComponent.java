@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 import com.biit.form.entity.BaseQuestion;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.language.LanguageCodes;
@@ -25,6 +25,7 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.webservices.Webservice;
 import com.biit.webforms.webservices.WebservicePort;
 import com.biit.webforms.webservices.WebserviceValidatedPort;
@@ -32,6 +33,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -62,7 +64,11 @@ public class WebserviceCallComponent extends CustomComponent {
 
 	private final List<IWebserviceCallLinkValueChange> listeners;
 
+	private IWebformsSecurityService webformsSecurityService;
+
 	public WebserviceCallComponent() {
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 		listeners = new ArrayList<>();
 		setStyleName(CLASSNAME);
 		rootLayout = new VerticalLayout();
@@ -323,8 +329,8 @@ public class WebserviceCallComponent extends CustomComponent {
 	public void editSelectedLink() {
 		// Check read only.
 		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !WebformsAuthorizationService.getInstance().isFormEditable(
-						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+				&& !webformsSecurityService.isFormEditable(UserSessionHandler.getController().getFormInUse(),
+						UserSessionHandler.getUser())) {
 			return;
 		}
 

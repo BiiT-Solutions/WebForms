@@ -1,20 +1,21 @@
 package com.biit.webforms.gui.components;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.liferay.security.IActivity;
+import com.biit.usermanager.entity.IGroup;
+import com.biit.usermanager.security.IActivity;
+import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
-import com.liferay.portal.model.Organization;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -30,8 +31,12 @@ public class WindowNameGroup extends WindowAcceptCancel {
 	private ComboBox organizationField;
 	private IActivity[] exclusivePermissionFilter;
 
+	private IWebformsSecurityService webformsSecurityService;
+
 	public WindowNameGroup(String inputFieldCaption, String groupCaption, IActivity[] exclusivePermissionFilter) {
 		super();
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 		this.exclusivePermissionFilter = exclusivePermissionFilter;
 		setContent(generateContent(inputFieldCaption, groupCaption));
 		setResizable(false);
@@ -50,16 +55,17 @@ public class WindowNameGroup extends WindowAcceptCancel {
 		return textField.getValue();
 	}
 
-	public Organization getOrganization() {
-		return (Organization) organizationField.getValue();
+	@SuppressWarnings("unchecked")
+	public IGroup<Long> getOrganization() {
+		return (IGroup<Long>) organizationField.getValue();
 	}
 
 	private Component generateContent(String inputFieldCaption, String groupCaption) {
 		textField = new TextField(inputFieldCaption);
 		textField.focus();
 		textField.setWidth("100%");
-		//textField.addValidator(new ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
-		//textField.addValidator(new ValidatorTreeObjectNameLength());
+		// textField.addValidator(new ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
+		// textField.addValidator(new ValidatorTreeObjectNameLength());
 
 		textField.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = 4953347262492851075L;
@@ -74,32 +80,32 @@ public class WindowNameGroup extends WindowAcceptCancel {
 		organizationField.setNullSelectionAllowed(false);
 		organizationField.setWidth("100%");
 		try {
-			Set<Organization> organizations = WebformsBasicAuthorizationService.getInstance().getUserOrganizations(
-					UserSessionHandler.getUser());
-			Iterator<Organization> itr = organizations.iterator();
+			Set<IGroup<Long>> organizations = webformsSecurityService
+					.getUserOrganizations(UserSessionHandler.getUser());
+			Iterator<IGroup<Long>> itr = organizations.iterator();
 			while (itr.hasNext()) {
-				Organization organization = itr.next();
+				IGroup<Long> organization = itr.next();
 				for (IActivity activity : exclusivePermissionFilter) {
 					// If the user doesn't comply to all activities in the filter in the group, then exit
-					if (!WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-							organization, activity)) {
+					if (!webformsSecurityService.isAuthorizedActivity(UserSessionHandler.getUser(), organization,
+							activity)) {
 						itr.remove();
 						break;
 					}
 				}
 			}
-			for (Organization organization : organizations) {
+			for (IGroup<Long> organization : organizations) {
 				organizationField.addItem(organization);
-				organizationField.setItemCaption(organization, organization.getName());
+				organizationField.setItemCaption(organization, organization.getUniqueName());
 			}
 			if (!organizations.isEmpty()) {
-				Iterator<Organization> organizationsIterator = organizations.iterator();
+				Iterator<IGroup<Long>> organizationsIterator = organizations.iterator();
 				organizationField.setValue(organizationsIterator.next());
 			}
 			if (organizations.size() <= 1) {
 				organizationField.setEnabled(false);
 			}
-		} catch (IOException | AuthenticationRequired e) {
+		} catch (UserManagementException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 		}
@@ -120,8 +126,8 @@ public class WindowNameGroup extends WindowAcceptCancel {
 	public void setValue(String value) {
 		textField.setValue(value);
 	}
-	
-	public boolean isValid(){
+
+	public boolean isValid() {
 		return textField.isValid();
 	}
 }

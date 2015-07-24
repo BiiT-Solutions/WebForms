@@ -5,10 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import com.biit.liferay.security.IActivity;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
+import com.biit.usermanager.security.IActivity;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -53,8 +52,8 @@ public class WebserviceCallEditor extends SecuredWebPage {
 	@Override
 	protected void initContent() {
 		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !WebformsAuthorizationService.getInstance().isFormEditable(
-						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+				&& !getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
+						UserSessionHandler.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
@@ -118,8 +117,8 @@ public class WebserviceCallEditor extends SecuredWebPage {
 		webserviceCallComponent.setEnabled((WebserviceCall) webserviceCallTable.getValue() != null
 				&& !((WebserviceCall) webserviceCallTable.getValue()).isReadOnly());
 		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !WebformsAuthorizationService.getInstance().isFormEditable(
-						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+				&& !getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
+						UserSessionHandler.getUser())) {
 			webserviceCallComponent.setSelectable(false);
 		} else {
 			webserviceCallComponent.setSelectable(true);
@@ -267,8 +266,8 @@ public class WebserviceCallEditor extends SecuredWebPage {
 
 	private void updateUpperMenu() {
 		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !WebformsAuthorizationService.getInstance().isFormEditable(
-						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+				&& !getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
+						UserSessionHandler.getUser())) {
 			upperMenu.getSaveButton().setEnabled(false);
 			upperMenu.getAddWebserviceCall().setEnabled(false);
 			upperMenu.getRemoveWebserviceCall().setEnabled(false);

@@ -3,7 +3,6 @@ package com.biit.webforms.gui.webpages.designer;
 import java.util.Date;
 
 import com.biit.form.entity.TreeObject;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
@@ -188,8 +187,8 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		commonProperties.addComponent(horizontal);
 		commonProperties.addComponent(mandatory);
 
-		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(UserSessionHandler.getController().getFormInUse(),
-				UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isElementEditable(
+				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_QUESTION.translation(), true);

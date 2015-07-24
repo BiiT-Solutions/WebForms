@@ -5,19 +5,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.biit.abcd.liferay.LiferayServiceAccess;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
+import com.biit.usermanager.entity.IGroup;
 import com.biit.utils.date.DateManager;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.ServerTranslate;
-import com.biit.webforms.gui.common.utils.LiferayServiceAccess;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
-import com.liferay.portal.model.Organization;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.data.Item;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
 
@@ -31,6 +33,8 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 
 	private IconProvider<IBaseFormView> iconProvider;
 
+	private IWebformsSecurityService webformsSecurityService;
+
 	protected enum TreeTableBaseFormProperties {
 		FORM_LABEL, VERSION, ORGANIZATION, CREATED_BY, CREATION_DATE, MODIFIED_BY, MODIFICATION_DATE;
 	};
@@ -39,8 +43,11 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 
 	public TreeTableBaseForm(TreeTableProvider<T> dataProvider, IconProvider<IBaseFormView> iconProvider) {
 		super();
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
+
 		this.dataProvider = dataProvider;
-		
+
 		if (iconProvider == null) {
 			this.iconProvider = new IconProviderFormDefault();
 		} else {
@@ -133,10 +140,10 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 
 		item.getItemProperty(TreeTableBaseFormProperties.VERSION).setValue(form.getVersion() + "");
 
-		Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
-				UserSessionHandler.getUser(), form.getOrganizationId());
+		IGroup<Long> organization = webformsSecurityService.getOrganization(UserSessionHandler.getUser(),
+				form.getOrganizationId());
 		if (organization != null) {
-			item.getItemProperty(TreeTableBaseFormProperties.ORGANIZATION).setValue(organization.getName());
+			item.getItemProperty(TreeTableBaseFormProperties.ORGANIZATION).setValue(organization.getUniqueName());
 		}
 
 		try {
@@ -293,5 +300,9 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		cell.registerTouchCallBack(this, element);
 
 		return cell;
+	}
+
+	public IWebformsSecurityService getWebformsSecurityService() {
+		return webformsSecurityService;
 	}
 }

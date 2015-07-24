@@ -3,24 +3,34 @@ package com.biit.webforms.gui.common.components;
 import java.io.IOException;
 import java.util.List;
 
-import com.biit.liferay.access.exceptions.AuthenticationRequired;
-import com.biit.liferay.security.IActivity;
+import com.biit.usermanager.entity.IUser;
+import com.biit.usermanager.security.IActivity;
+import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
-import com.liferay.portal.model.User;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.VaadinServlet;
 
 /**
  * Before entering to the web page, the system checks user permissions to allow the access or redirect to another page.
  */
 public abstract class SecuredWebPage extends WebPage {
 	private static final long serialVersionUID = -8522793320122921164L;
+
+	private IWebformsSecurityService webformsSecurityService;
+
+	public SecuredWebPage() {
+		super();
+		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
+	}
 
 	public void securedEnter(ViewChangeEvent event) {
 		initContent();
@@ -38,16 +48,16 @@ public abstract class SecuredWebPage extends WebPage {
 	public final void enter(ViewChangeEvent event) {
 		// Check if the user is logged in. If not, redirect to main page.
 		try {
-			User user = UserSessionHandler.getUser();
+			IUser<Long> user = UserSessionHandler.getUser();
 			if (user == null) {
-				WebformsLogger.debug(this.getClass().getName(), "Unknown user is trying to access a secure webpage without login. Redirected to Login page.");
+				WebformsLogger.debug(this.getClass().getName(),
+						"Unknown user is trying to access a secure webpage without login. Redirected to Login page.");
 				ApplicationUi.navigateTo(WebMap.getLoginPage());
 			} else {
 				try {
 					if (accessAuthorizationsRequired() != null && !accessAuthorizationsRequired().isEmpty()) {
 						for (IActivity activity : accessAuthorizationsRequired()) {
-							if (!WebformsBasicAuthorizationService.getInstance().isUserAuthorizedInAnyOrganization(user,
-									activity)) {
+							if (!getWebformsSecurityService().isUserAuthorizedInAnyOrganization(user, activity)) {
 								WebformsLogger.debug(this.getClass().getName(), "User: "
 										+ UserSessionHandler.getUser().getEmailAddress()
 										+ " tried to access application without appropiate roles.");
@@ -72,7 +82,7 @@ public abstract class SecuredWebPage extends WebPage {
 			// unrelated and unintelligible, so we catch the exception, log it
 			// and go to the login page.
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			//MessageManager.showError(CommonComponentsLanguageCodes.ERROR_UNEXPECTED_ERROR);
+			// MessageManager.showError(CommonComponentsLanguageCodes.ERROR_UNEXPECTED_ERROR);
 			ApplicationUi.navigateTo(WebMap.getErrorPage());
 		}
 	}
@@ -83,5 +93,9 @@ public abstract class SecuredWebPage extends WebPage {
 	 * @return
 	 */
 	public abstract List<IActivity> accessAuthorizationsRequired();
+
+	public IWebformsSecurityService getWebformsSecurityService() {
+		return webformsSecurityService;
+	}
 
 }

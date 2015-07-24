@@ -1,8 +1,6 @@
 package com.biit.webforms.gui.components;
 
-import java.io.IOException;
-
-import com.biit.liferay.access.exceptions.AuthenticationRequired;
+import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.IconButton;
@@ -17,8 +15,8 @@ import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -35,6 +33,8 @@ public class WindowSettings extends Window {
 
 	private IFormDao formDao;
 
+	private IWebformsSecurityService webformsSecurityService;
+
 	public WindowSettings() {
 		setClosable(true);
 		setResizable(false);
@@ -48,6 +48,7 @@ public class WindowSettings extends Window {
 
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		formDao = (IFormDao) helper.getBean("webformsFormDao");
+		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 	}
 
 	private Component generateContent() {
@@ -70,8 +71,8 @@ public class WindowSettings extends Window {
 
 		// Clear cache for admin users.
 		try {
-			if (WebformsBasicAuthorizationService.getInstance().isAuthorizedActivity(UserSessionHandler.getUser(),
-					WebformsActivity.EVICT_CACHE)) {
+			if (webformsSecurityService
+					.isAuthorizedActivity(UserSessionHandler.getUser(), WebformsActivity.EVICT_CACHE)) {
 				Button clearCacheButton = new Button(
 						ServerTranslate.translate(LanguageCodes.CAPTION_SETTINGS_CLEAR_CACHE), new ClickListener() {
 							private static final long serialVersionUID = -1121572145945309858L;
@@ -81,10 +82,10 @@ public class WindowSettings extends Window {
 								new WindowProceedAction(LanguageCodes.WARNING_CLEAR_CACHE, new AcceptActionListener() {
 									@Override
 									public void acceptAction(WindowAcceptCancel window) {
-										//Remove database cache.
+										// Remove database cache.
 										formDao.evictAllCache();
-										//Reset Liferay Users pool.
-										WebformsBasicAuthorizationService.getInstance().reset();
+										// Reset Liferay Users pool.
+										webformsSecurityService.reset();
 										ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
 										WebformsLogger.info(this.getClass().getName(), "User '"
 												+ UserSessionHandler.getUser().getEmailAddress()
@@ -98,7 +99,7 @@ public class WindowSettings extends Window {
 				clearCacheButton.setWidth("100%");
 				rootLayout.addComponent(clearCacheButton);
 			}
-		} catch (IOException | AuthenticationRequired e) {
+		} catch (UserManagementException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 
