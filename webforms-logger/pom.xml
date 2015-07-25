@@ -10,8 +10,8 @@
 	<parent>
 		<groupId>com.biit</groupId>
 		<artifactId>webforms</artifactId>
-		<version>2.7.24-SNAPSHOT</version>
-	</parent>
+		<version>2.8.1-SNAPSHOT</version>
+	</parent> 
 
 	<dependencies>
 		<!-- log4j -->

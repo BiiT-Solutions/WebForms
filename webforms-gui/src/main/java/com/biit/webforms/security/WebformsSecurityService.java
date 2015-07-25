@@ -1,29 +1,24 @@
-package com.biit.webforms.authentication;
+package com.biit.webforms.security;
 
 import com.biit.form.entity.IBaseFormView;
+import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
-import com.liferay.portal.model.User;
 
-public class WebformsAuthorizationService extends WebformsBasicAuthorizationService {
+public class WebformsSecurityService extends SecurityService implements IWebformsSecurityService {
 
-	private static WebformsAuthorizationService instance = new WebformsAuthorizationService();
-
-	public WebformsAuthorizationService() {
+	public WebformsSecurityService() {
 		super();
 	}
 
-	public static WebformsAuthorizationService getInstance() {
-		return instance;
-	}
-
-	public boolean isFormEditable(IBaseFormView form, User user) {
+	@Override
+	public boolean isFormEditable(IBaseFormView form, IUser<Long> user) {
 		boolean userLockedForm = UiAccesser.isUserUserUsingForm(user, form);
 		return userLockedForm && isAuthorizedToForm(form, user);
 	}
 
-	public boolean isElementEditable(IBaseFormView form, User user) {
+	@Override
+	public boolean isElementEditable(IBaseFormView form, IUser<Long> user) {
 		boolean isLinkedForm = false;
 		if (form instanceof Form) {
 			isLinkedForm = ((Form) form).getFormReference() != null;
@@ -31,12 +26,14 @@ public class WebformsAuthorizationService extends WebformsBasicAuthorizationServ
 		return isFormEditable(form, user) && !isLinkedForm;
 	}
 
-	public boolean isFormReadOnly(IBaseFormView form, User user) {
+	@Override
+	public boolean isFormReadOnly(IBaseFormView form, IUser<Long> user) {
 		boolean formIsInUse = UiAccesser.getUserUsingForm(form) != null;
 		return (!formIsInUse && !isAuthorizedToForm(form, user))
 				|| (formIsInUse && UiAccesser.getUserUsingForm(form) != user);
 	}
 
+	@Override
 	public boolean isFormInUse(IBaseFormView form) {
 		return UiAccesser.getUserUsingForm(form) != null;
 	}

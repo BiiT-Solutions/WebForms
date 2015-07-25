@@ -20,6 +20,13 @@ public class QuestionSerializer extends TreeObjectSerializer<Question>{
 		jsonObject.add("mandatory", context.serialize(src.isMandatory()));
 		jsonObject.add("horizontal", context.serialize(src.isHorizontal()));
 		jsonObject.add("description", context.serialize(src.getDescription()));
+		jsonObject.add("defaultValueString", context.serialize(src.getDefaultValueString()));
+		if(src.getDefaultValueAnswer()!=null){
+			jsonObject.add("defaultValueAnswer", context.serialize(src.getDefaultValueAnswer().getValue()));
+		}else{
+			jsonObject.add("defaultValueAnswer", context.serialize(null));
+		}
+		jsonObject.add("defaultValueTime", context.serialize(src.getDefaultValueTime()));
 
 		return jsonObject;
 	}

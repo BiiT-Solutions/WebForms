@@ -1,7 +1,6 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.TreeObject;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
@@ -39,7 +38,7 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
 
-		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
+		boolean canEdit = getWebformsSecurityService().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
@@ -57,7 +56,7 @@ public class PropertiesCategory extends StorableObjectProperties<Category> {
 		name.addValidator(new ValidatorTreeObjectNameLength());
 		name.setValue(getInstance().getName());
 		name.setEnabled(!getInstance().isReadOnly());
-		
+
 		label.setValue(getInstance().getLabel());
 		label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
 		label.setEnabled(!getInstance().isReadOnly());

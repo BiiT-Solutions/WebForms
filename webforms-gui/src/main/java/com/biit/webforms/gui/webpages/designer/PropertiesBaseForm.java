@@ -2,7 +2,6 @@ package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.BaseForm;
 import com.biit.form.entity.TreeObject;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
@@ -63,7 +62,7 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 		commonProperties.addComponent(referenceLabel);
 		commonProperties.addComponent(referenceVersion);
 
-		boolean canEdit = WebformsAuthorizationService.getInstance().isFormEditable(
+		boolean canEdit = getWebformsSecurityService().isFormEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 

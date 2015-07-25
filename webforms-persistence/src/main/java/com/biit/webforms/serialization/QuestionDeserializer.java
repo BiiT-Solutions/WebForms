@@ -32,8 +32,16 @@ public class QuestionDeserializer extends TreeObjectDeserializer<Question> {
 		element.setMandatory(parseBoolean("mandatory", jobject, context));
 		element.setHorizontal(parseBoolean("horizontal", jobject, context));
 		element.setDescription(parseString("description", jobject, context));
+		
+		element.setDefaultValueString(parseString("defaultValueString", jobject, context));
+		element.setDefaultValueTime(parseTimestamp("defaultValueTime", jobject, context));
+		String answerValue = parseString("defaultValueAnswer", jobject, context);
 
 		super.deserialize(json, context, element);
+		
+		if(answerValue!=null && !answerValue.isEmpty()){
+			element.setDefaultValueAnswer(element.getAnswer(answerValue));
+		}
 	}
 
 	public static AnswerType parseAnswerType(String name, JsonObject jobject, JsonDeserializationContext context) {

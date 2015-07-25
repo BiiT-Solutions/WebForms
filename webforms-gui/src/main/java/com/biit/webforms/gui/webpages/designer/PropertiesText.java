@@ -2,7 +2,6 @@ package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.webforms.authentication.WebformsAuthorizationService;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
@@ -15,7 +14,7 @@ import com.vaadin.ui.TextField;
 public class PropertiesText extends StorableObjectProperties<Text> {
 	private static final long serialVersionUID = 3545367878977339439L;
 	private static final String WIDTH = "200px";
-	
+
 	private TextField name;
 
 	private TextArea description;
@@ -35,7 +34,7 @@ public class PropertiesText extends StorableObjectProperties<Text> {
 		name = new TextField(LanguageCodes.CAPTION_TECHNICAL_NAME.translation());
 		name.setWidth(WIDTH);
 		name.setRequired(true);
-		
+
 		description = new TextArea(LanguageCodes.CAPTION_TEXT.translation());
 		description.setWidth(WIDTH);
 
@@ -44,8 +43,8 @@ public class PropertiesText extends StorableObjectProperties<Text> {
 		commonProperties.setHeight(null);
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(description);
-		
-		boolean canEdit = WebformsAuthorizationService.getInstance().isElementEditable(
+
+		boolean canEdit = getWebformsSecurityService().isElementEditable(
 				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
@@ -57,13 +56,13 @@ public class PropertiesText extends StorableObjectProperties<Text> {
 	@Override
 	protected void initValues() {
 		super.initValues();
-		
+
 		name.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
 		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(getInstance()));
 		name.addValidator(new ValidatorTreeObjectNameLength());
 		name.setValue(getInstance().getName());
 		name.setEnabled(!getInstance().isReadOnly());
-		
+
 		description.setValue(getInstance().getDescription());
 		description.setEnabled(!getInstance().isReadOnly());
 	}
@@ -71,7 +70,7 @@ public class PropertiesText extends StorableObjectProperties<Text> {
 	@Override
 	public void updateElement() {
 		try {
-			if(name.isValid()){
+			if (name.isValid()) {
 				getInstance().setName(name.getValue());
 			}
 			getInstance().setDescription(description.getValue());

@@ -7,14 +7,14 @@ import java.sql.SQLException;
 
 import net.sf.ehcache.util.FindBugsSuppressWarnings;
 
+import com.biit.usermanager.entity.IGroup;
+import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.xforms.exceptions.AccessNotAllowed;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedKeyException;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedXFormException;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.User;
 import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 
 public class XFormsPersistence {
@@ -34,12 +34,13 @@ public class XFormsPersistence {
 	 * @param preview
 	 * @return
 	 */
-	public static String formatFormName(IWebformsFormView form, Organization organization, boolean preview) {
+	public static String formatFormName(IWebformsFormView form, IGroup<Long> organization, boolean preview) {
 		if (preview) {
 			return PREVIEW_PREFIX + form.getLabel().replace(" ", "_") + "_v" + form.getVersion() + "_"
-					+ organization.getName().replace(" ", "_");
+					+ organization.getUniqueName().replace(" ", "_");
 		} else {
-			return form.getLabel().replace(" ", "_") + "_v" + form.getVersion() + "_" + organization.getName().replace(" ", "_");
+			return form.getLabel().replace(" ", "_") + "_v" + form.getVersion() + "_"
+					+ organization.getUniqueName().replace(" ", "_");
 		}
 	}
 
@@ -89,7 +90,7 @@ public class XFormsPersistence {
 		} catch (SQLException ex) {
 			switch (ex.getErrorCode()) {
 			case 1044:
-				throw new AccessNotAllowed("User or password is wrong. Check your configuration file. ");
+				throw new AccessNotAllowed("IUser<Long> or password is wrong. Check your configuration file. ");
 			default:
 				WebformsLogger.errorMessage(this.getClass().getName(), ex);
 				throw ex;
@@ -98,7 +99,7 @@ public class XFormsPersistence {
 	}
 
 	@FindBugsSuppressWarnings("SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING")
-	public void deleteForm(Form form, Organization organization, boolean preview) {
+	public void deleteForm(Form form, IGroup<Long> organization, boolean preview) {
 		if (form != null && connection != null) {
 			try (PreparedStatement stmt = connection.prepareStatement("DELETE FROM orbeon_form_definition WHERE app='"
 					+ APP_NAME + "' and form='" + formatFormName(form, organization, preview) + "' and form_version="
@@ -120,7 +121,7 @@ public class XFormsPersistence {
 		}
 	}
 
-	public void storeForm(Form form, User user, Organization organization, String xmlData, boolean preview)
+	public void storeForm(Form form, IUser<Long> user, IGroup<Long> organization, String xmlData, boolean preview)
 			throws SQLException, DuplicatedXFormException {
 		if (connection != null) {
 			// String xmldata = new XFormsExporter(form).generateXFormsLanguage();
@@ -164,7 +165,7 @@ public class XFormsPersistence {
 		}
 	}
 
-	private String getFormMetadata(Form form, Organization organization) {
+	private String getFormMetadata(Form form, IGroup<Long> organization) {
 		return "<metadata xmlns:sql=\"http://orbeon.org/oxf/xml/sql\" xmlns:fr=\"http://orbeon.org/oxf/xml/form-runner\" xmlns:ev=\"http://www.w3.org/2001/xml-events\" xmlns:xxf=\"http://orbeon.org/oxf/xml/xforms\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xh=\"http://www.w3.org/1999/xhtml\" xmlns:exf=\"http://www.exforms.org/exf/1-0\" xmlns:saxon=\"http://saxon.sf.net/\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:fb=\"http://orbeon.org/oxf/xml/form-builder\" xmlns:xxi=\"http://orbeon.org/oxf/xml/xinclude\" xmlns:xi=\"http://www.w3.org/2001/XInclude\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xf=\"http://www.w3.org/2002/xforms\">"
 				+ "<application-name>"
 				+ APP_NAME

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.biit.form.entity.TreeObject;
+import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
@@ -15,9 +16,8 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
-import com.biit.webforms.security.WebformsBasicAuthorizationService;
-import com.liferay.portal.model.Organization;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
 
@@ -26,6 +26,8 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 	private static final long serialVersionUID = 2428935033753125285L;
 
 	private IBlockDao blockDao;
+
+	private IWebformsSecurityService webformsSecurityService;
 
 	private enum BlockTreeTableProperties {
 		ORGANIZATION,
@@ -36,6 +38,7 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 		// Add Vaadin context to Spring, and get beans for DAOs.
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		blockDao = (IBlockDao) helper.getBean("blockDao");
+		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 
 		addContainerProperty(BlockTreeTableProperties.ORGANIZATION, String.class, null,
 				LanguageCodes.CAPTION_ORGANIZATION.translation(), null, Align.LEFT);
@@ -44,12 +47,12 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 	}
 
 	private void initializeBlockTable() {
-		Set<Organization> organizations = WebformsBasicAuthorizationService.getInstance()
-				.getUserOrganizationsWhereIsAuthorized(UserSessionHandler.getUser(), WebformsActivity.READ);
+		Set<IGroup<Long>> organizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(
+				UserSessionHandler.getUser(), WebformsActivity.READ);
 		List<Block> blocks = new ArrayList<>();
 		try {
-			for (Organization organization : organizations) {
-				blocks.addAll(blockDao.getAll(organization.getOrganizationId()));
+			for (IGroup<Long> organization : organizations) {
+				blocks.addAll(blockDao.getAll(organization.getId()));
 			}
 			Collections.sort(blocks, new TreeObjectUpdateDateComparator());
 
@@ -72,10 +75,10 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 		if (item != null) {
 			if (element instanceof Form) {
 				Long organizationId = ((Form) element).getOrganizationId();
-				Organization organization = WebformsBasicAuthorizationService.getInstance().getOrganization(
-						UserSessionHandler.getUser(), organizationId);
+				IGroup<Long> organization = webformsSecurityService.getOrganization(UserSessionHandler.getUser(),
+						organizationId);
 				if (organization != null) {
-					item.getItemProperty(BlockTreeTableProperties.ORGANIZATION).setValue(organization.getName());
+					item.getItemProperty(BlockTreeTableProperties.ORGANIZATION).setValue(organization.getUniqueName());
 				}
 			}
 		}

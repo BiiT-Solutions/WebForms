@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -20,7 +21,6 @@ import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
-import com.liferay.portal.model.Organization;
 import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 
 public class OrbeonUtils {
@@ -30,7 +30,7 @@ public class OrbeonUtils {
 	 * 
 	 * @param form
 	 */
-	public static boolean saveFormInOrbeon(Form form, Organization organization, boolean preview) {
+	public static boolean saveFormInOrbeon(Form form, IGroup<Long> organization, boolean preview) {
 		// Save it.
 		XFormsPersistence xformsConnection = new XFormsPersistence();
 		try {
@@ -77,7 +77,8 @@ public class OrbeonUtils {
 	public static String getXFormsData(Form form) throws NotValidTreeObjectException, NotValidChildException,
 			IOException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
-		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form,UserSessionHandler.getController().getAllWebservices());
+		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form, UserSessionHandler.getController()
+				.getAllWebservices());
 		BufferedInputStream in = new BufferedInputStream(xformExporter.generateXFormsLanguage());
 		byte[] contents = new byte[1024];
 
