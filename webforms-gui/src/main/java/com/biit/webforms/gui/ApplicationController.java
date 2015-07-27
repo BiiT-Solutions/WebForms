@@ -1054,7 +1054,7 @@ public class ApplicationController {
 	 * @param defaultValue 
 	 */
 	public void updateQuestion(Question question, String name, String label, String description, boolean mandatory, AnswerType answerType,
-			AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, String defaultValue) {
+			AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue) {
 		try {
 			if (!question.getLabel().equals(label)
 					|| !question.getDescription().equals(description)
@@ -1064,7 +1064,9 @@ public class ApplicationController {
 					|| (question.getAnswerFormat() != null && !question.getAnswerFormat().equals(answerFormat))
 					|| (question.getAnswerSubformat() != null && !question.getAnswerSubformat().equals(answerSubformat))
 					|| question.isHorizontal() != horizontal
-					|| !Objects.equals(question.getDefaultValue(),defaultValue)){
+					|| (defaultValue==null && question.getDefaultValue()!="")
+					|| (defaultValue!=null && !Objects.equals(question.getDefaultValue(),defaultValue.toString()))
+					){
 				setUnsavedFormChanges(true);
 				question.setName(name);
 				question.setLabel(label);
