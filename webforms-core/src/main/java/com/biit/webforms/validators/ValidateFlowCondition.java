@@ -43,7 +43,7 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 
 	private void validateAnswersOfSelect(Flow flow) {
 		for (Token token : flow.getComputedCondition()) {
-			if (token instanceof TokenWithQuestion) {
+			if (token instanceof TokenWithQuestion && ((TokenWithQuestion) token).getQuestion() != null) {
 				if (((TokenWithQuestion) token).getQuestion().getAnswerType().isChildrenAllowed()) {
 					assertTrue(token instanceof TokenComparationAnswer || token instanceof TokenIn,
 							new InvalidFlowCondition(flow));
@@ -54,7 +54,6 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 
 	private void validateFlowConditionQuestionAreAllMandatory(Flow flow) {
 		for (Token token : flow.getComputedCondition()) {
-
 			if (token instanceof TokenWithQuestion && ((TokenWithQuestion) token).getQuestion() != null) {
 				if (token instanceof TokenComparationAnswer) {
 					assertTrue(((TokenComparationAnswer) token).getQuestion() instanceof SystemField
@@ -70,15 +69,15 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 							((TokenIn) token).getQuestion(), flow));
 				} else if (token instanceof TokenBetween) {
 					assertTrue(((TokenBetween) token).getQuestion() instanceof SystemField
-							|| ((TokenBetween) token).getQuestion().isMandatory(), new ConditionWithNotMandatoryQuestion(
-							((TokenBetween) token).getQuestion(), flow));
+							|| ((TokenBetween) token).getQuestion().isMandatory(),
+							new ConditionWithNotMandatoryQuestion(((TokenBetween) token).getQuestion(), flow));
 				}
 			}
 		}
 	}
 
 	private boolean hasNullValues(Flow flow) {
-		for (Token token : flow.getCondition()) {
+		for (Token token : flow.getComputedCondition()) {
 			if (token instanceof TokenWithQuestion) {
 				if (((TokenWithQuestion) token).getQuestion() == null) {
 					return true;
