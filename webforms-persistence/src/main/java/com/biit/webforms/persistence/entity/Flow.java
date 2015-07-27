@@ -398,14 +398,15 @@ public class Flow extends StorableObject {
 	public boolean isDependent(Answer answer) {
 		for (Token token : condition) {
 			if (token instanceof TokenComparationAnswer) {
-				if (((TokenComparationAnswer) token).getAnswer().equals(answer)) {
+				if (((TokenComparationAnswer) token).getAnswer() != null
+						&& ((TokenComparationAnswer) token).getAnswer().equals(answer)) {
 					return true;
 				}
 				continue;
 			}
 			if (token instanceof TokenIn) {
 				for (TokenInValue inValue : ((TokenIn) token).getValues()) {
-					if (inValue.getAnswerValue().equals(answer)) {
+					if (inValue.getAnswerValue() != null && inValue.getAnswerValue().equals(answer)) {
 						return true;
 					}
 				}
@@ -422,25 +423,28 @@ public class Flow extends StorableObject {
 
 		for (Token token : condition) {
 			if (token instanceof TokenComparationAnswer) {
-				if (((TokenComparationAnswer) token).getQuestion().equals(question)) {
+				if (((TokenComparationAnswer) token).getQuestion() != null
+						&& ((TokenComparationAnswer) token).getQuestion().equals(question)) {
 					return true;
 				}
 				continue;
 			}
 			if (token instanceof TokenComparationValue) {
-				if (((TokenComparationValue) token).getQuestion().equals(question)) {
+				if (((TokenComparationValue) token).getQuestion() != null
+						&& ((TokenComparationValue) token).getQuestion().equals(question)) {
 					return true;
 				}
 				continue;
 			}
 			if (token instanceof TokenBetween) {
-				if (((TokenBetween) token).getQuestion().equals(question)) {
+				if (((TokenBetween) token).getQuestion() != null
+						&& ((TokenBetween) token).getQuestion().equals(question)) {
 					return true;
 				}
 				continue;
 			}
 			if (token instanceof TokenIn) {
-				if (((TokenIn) token).getQuestion().equals(question)) {
+				if (((TokenIn) token).getQuestion() != null && ((TokenIn) token).getQuestion().equals(question)) {
 					return true;
 				}
 				continue;
