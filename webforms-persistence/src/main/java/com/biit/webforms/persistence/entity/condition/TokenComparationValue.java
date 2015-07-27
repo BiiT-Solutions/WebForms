@@ -42,7 +42,7 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 	private String value;
 
 	// Evaluation value is false by default
-	private transient boolean evaluationValue = false;
+	private transient Boolean evaluationValue = null;
 
 	public TokenComparationValue() {
 		super();
@@ -223,12 +223,17 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		return evaluationValue;
 	}
 
 	public void evaluate(String value) {
-		evaluationValue = false;
+		if(value == null || value.isEmpty()){
+			evaluationValue = null;
+			return;
+		}
+		
+		evaluationValue = false;		
 		switch (getQuestion().getAnswerFormat()) {
 		case DATE:
 			if (subformat == AnswerSubformat.DATE_PERIOD) {

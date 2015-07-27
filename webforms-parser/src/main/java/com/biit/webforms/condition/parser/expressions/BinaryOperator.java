@@ -77,7 +77,7 @@ public class BinaryOperator extends Expression implements WebformsExpression {
 	@Override
 	public IDomain getDomain() {
 		IDomain leftDomain = ((WebformsExpression) left).getDomain();
-		IDomain rightDomain = ((WebformsExpression) right).getDomain(); 
+		IDomain rightDomain = ((WebformsExpression) right).getDomain();
 
 		if (type == TokenTypes.AND) {
 			return leftDomain.intersect(rightDomain);
@@ -90,7 +90,7 @@ public class BinaryOperator extends Expression implements WebformsExpression {
 	public boolean checkBlockByMinTerms(Form form, BaseQuestion element) {
 		boolean leftResult = ((WebformsExpression) left).checkBlockByMinTerms(form, element);
 		boolean rightResult = ((WebformsExpression) right).checkBlockByMinTerms(form, element);
-		
+
 		if (type == TokenTypes.AND) {
 			return leftResult && rightResult;
 		} else {
@@ -99,11 +99,13 @@ public class BinaryOperator extends Expression implements WebformsExpression {
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
+		Boolean leftValue = ((WebformsExpression) left).evaluate();
+		Boolean rightValue = ((WebformsExpression) right).evaluate();
 		if (type == TokenTypes.AND) {
-			return ((WebformsExpression) left).evaluate() && ((WebformsExpression) right).evaluate();
-		}else{
-			return ((WebformsExpression) left).evaluate() || ((WebformsExpression) right).evaluate();
+			return leftValue != null && rightValue != null && leftValue && rightValue;
+		} else {
+			return (leftValue != null && leftValue) || (rightValue != null && rightValue);
 		}
 	}
 }

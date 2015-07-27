@@ -25,7 +25,7 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE };
 	
 	//Evaluation value is false by default
-	private transient boolean evaluationValue = false;
+	private transient Boolean evaluationValue = null;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Answer answer;
@@ -161,11 +161,16 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 	}
 
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		return evaluationValue;
 	}
 
 	public void evaluate(List<String> answers) {
+		if(answers==null){
+			evaluationValue = null;
+			return;
+		}
+		
 		evaluationValue = false;
 		for(String answer: answers){
 			if(this.answer.getName().equals(answer)){

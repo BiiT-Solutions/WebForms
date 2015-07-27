@@ -102,10 +102,15 @@ public class UnaryOperator extends Expression implements WebformsExpression {
 	}
 
 	@Override
-	public boolean evaluate() {
-		if (type == TokenTypes.NOT){
-			return !((WebformsExpression) expression).evaluate();
+	public Boolean evaluate() {
+		Boolean value = ((WebformsExpression) expression).evaluate();
+		if(value == null){
+			return null;
 		}
-		return ((WebformsExpression) expression).evaluate();
+		
+		if (type == TokenTypes.NOT){
+			return !value;
+		}
+		return value;
 	}
 }

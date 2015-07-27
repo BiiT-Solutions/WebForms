@@ -33,6 +33,6 @@ public interface WebformsExpression {
 	 * Evaluate logic
 	 * @return
 	 */
-	public boolean evaluate();
+	public Boolean evaluate();
 
 }

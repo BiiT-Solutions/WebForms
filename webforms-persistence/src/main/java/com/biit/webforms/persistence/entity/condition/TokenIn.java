@@ -199,7 +199,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 	}
 	
 	@Override
-	public boolean evaluate() {
+	public Boolean evaluate() {
 		throw new UnsupportedOperationException();
 	}
 }
