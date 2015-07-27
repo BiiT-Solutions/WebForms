@@ -35,6 +35,7 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 	protected void validateImplementation(Flow flow) {
 		if (!flow.isOthers()) {
 			assertTrue(isConditionValid(flow), new InvalidFlowCondition(flow));
+			assertFalse(hasNullValues(flow), new InvalidFlowCondition(flow));
 			validateFlowConditionQuestionAreAllMandatory(flow);
 			validateAnswersOfSelect(flow);
 		}
@@ -53,24 +54,38 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 
 	private void validateFlowConditionQuestionAreAllMandatory(Flow flow) {
 		for (Token token : flow.getComputedCondition()) {
-			if (token instanceof TokenComparationAnswer) {
-				assertTrue(((TokenComparationAnswer) token).getQuestion() instanceof SystemField
-						|| ((TokenComparationAnswer) token).getQuestion().isMandatory(),
-						new ConditionWithNotMandatoryQuestion(((TokenComparationAnswer) token).getQuestion(), flow));
-			} else if (token instanceof TokenComparationValue) {
-				assertTrue(((TokenComparationValue) token).getQuestion() instanceof SystemField
-						|| ((TokenComparationValue) token).getQuestion().isMandatory(),
-						new ConditionWithNotMandatoryQuestion(((TokenComparationValue) token).getQuestion(), flow));
-			} else if (token instanceof TokenIn) {
-				assertTrue(((TokenIn) token).getQuestion() instanceof SystemField
-						|| ((TokenIn) token).getQuestion().isMandatory(), new ConditionWithNotMandatoryQuestion(
-						((TokenIn) token).getQuestion(), flow));
-			} else if (token instanceof TokenBetween) {
-				assertTrue(((TokenBetween) token).getQuestion() instanceof SystemField
-						|| ((TokenBetween) token).getQuestion().isMandatory(), new ConditionWithNotMandatoryQuestion(
-						((TokenBetween) token).getQuestion(), flow));
+
+			if (token instanceof TokenWithQuestion && ((TokenWithQuestion) token).getQuestion() != null) {
+				if (token instanceof TokenComparationAnswer) {
+					assertTrue(((TokenComparationAnswer) token).getQuestion() instanceof SystemField
+							|| ((TokenComparationAnswer) token).getQuestion().isMandatory(),
+							new ConditionWithNotMandatoryQuestion(((TokenComparationAnswer) token).getQuestion(), flow));
+				} else if (token instanceof TokenComparationValue) {
+					assertTrue(((TokenComparationValue) token).getQuestion() instanceof SystemField
+							|| ((TokenComparationValue) token).getQuestion().isMandatory(),
+							new ConditionWithNotMandatoryQuestion(((TokenComparationValue) token).getQuestion(), flow));
+				} else if (token instanceof TokenIn) {
+					assertTrue(((TokenIn) token).getQuestion() instanceof SystemField
+							|| ((TokenIn) token).getQuestion().isMandatory(), new ConditionWithNotMandatoryQuestion(
+							((TokenIn) token).getQuestion(), flow));
+				} else if (token instanceof TokenBetween) {
+					assertTrue(((TokenBetween) token).getQuestion() instanceof SystemField
+							|| ((TokenBetween) token).getQuestion().isMandatory(), new ConditionWithNotMandatoryQuestion(
+							((TokenBetween) token).getQuestion(), flow));
+				}
 			}
 		}
+	}
+
+	private boolean hasNullValues(Flow flow) {
+		for (Token token : flow.getCondition()) {
+			if (token instanceof TokenWithQuestion) {
+				if (((TokenWithQuestion) token).getQuestion() == null) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private boolean isConditionValid(Flow flow) {

@@ -69,11 +69,11 @@ public class WindowTokenOperationAnswer extends WindowAcceptCancel {
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				if(event.getProperty().getValue()==null || !(event.getProperty().getValue() instanceof Answer)){
+				if (event.getProperty().getValue() == null || !(event.getProperty().getValue() instanceof Answer)) {
 					getAcceptButton().setEnabled(false);
-				}else{
-					Answer answer = (Answer)event.getProperty().getValue();
-					getAcceptButton().setEnabled(answer.getChildren()==null || answer.getChildren().isEmpty());
+				} else {
+					Answer answer = (Answer) event.getProperty().getValue();
+					getAcceptButton().setEnabled(answer.getChildren() == null || answer.getChildren().isEmpty());
 				}
 			}
 		});
@@ -101,17 +101,21 @@ public class WindowTokenOperationAnswer extends WindowAcceptCancel {
 	}
 
 	private void update() {
-		treeElementLabel.setValue(token.getQuestion().getName());
-		// Set label
-		addTokenType(TokenTypes.EQ);
-		addTokenType(TokenTypes.NE);
+		if (token.getQuestion() != null) {
+			treeElementLabel.setValue(token.getQuestion().getName());
+			// Set label
+			addTokenType(TokenTypes.EQ);
+			addTokenType(TokenTypes.NE);
 
-		operator.setValue(token.getType());
+			operator.setValue(token.getType());
 
-		for (TreeObject child : token.getQuestion().getChildren()) {
-			addAnswerElement((Answer) child);
+			for (TreeObject child : token.getQuestion().getChildren()) {
+				addAnswerElement((Answer) child);
+			}
+			if (token.getAnswer() != null) {
+				answer.setValue(token.getAnswer());
+			}
 		}
-		answer.setValue(token.getAnswer());
 	}
 
 	private void addAnswerElement(Answer answerElement) {
