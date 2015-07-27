@@ -1731,7 +1731,11 @@ public class ApplicationController {
 			return false;
 		}
 		List<TreeObject> elements = new ArrayList<>();
-		elements.add(element);
+		if (element instanceof BaseQuestion) {
+			elements.add(element);
+		} else {
+			elements.addAll(new ArrayList<>(element.getAllChildrenInHierarchy(BaseQuestion.class)));
+		}
 		return blockDao.getFormFlowsCountUsingElement(elements) > 0;
 	}
 

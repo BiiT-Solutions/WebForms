@@ -7,9 +7,11 @@ import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.gui.common.components.StatusLabel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.floweditor.TokenDisplay.ValidationListener;
 import com.biit.webforms.gui.webpages.floweditor.listeners.InsertTokenListener;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenDoubleClickListener;
+import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
@@ -215,9 +217,13 @@ public class ConditionEditor extends CustomComponent {
 			public void acceptAction(WindowAcceptCancel window) {
 				try {
 					WindowTokenOperationAnswer thisWindow = (WindowTokenOperationAnswer) window;
-					((TokenComparationAnswer) tokenComponent.getToken()).setContent(thisWindow.getOperator(),
-							thisWindow.getAnswer());
-					tokenComponent.refresh();
+					if (thisWindow.getOperator() == null || thisWindow.getAnswer() == null) {
+						MessageManager.showError(LanguageCodes.ERROR_INVALID_CONDITION);
+					} else {
+						((TokenComparationAnswer) tokenComponent.getToken()).setContent(thisWindow.getOperator(),
+								thisWindow.getAnswer());
+						tokenComponent.refresh();
+					}
 				} catch (NotValidTokenType e) {
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
 				}

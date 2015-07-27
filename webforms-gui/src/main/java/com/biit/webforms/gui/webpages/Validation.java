@@ -438,9 +438,13 @@ public class Validation extends SecuredWebPage {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_FLOW_BLOCKED_IN_QUESTION,
 						new Object[] { ((FlowBlockedInQuestion) report).getElement().getPathName() }));
 			} else if (report instanceof TokenUsesNonFinalAnswer) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_TOKEN_USES_NON_FINAL_ANSWER,
-						new Object[] { ((TokenUsesNonFinalAnswer) report).getFlow(),
-								((TokenUsesNonFinalAnswer) report).getToken().getAnswer().getPathAnswerValue() }));
+				text.append(ServerTranslate.translate(
+						LanguageCodes.VALIDATION_TOKEN_USES_NON_FINAL_ANSWER,
+						new Object[] {
+								((TokenUsesNonFinalAnswer) report).getFlow(),
+								((TokenUsesNonFinalAnswer) report).getToken().getAnswer() != null ? ((TokenUsesNonFinalAnswer) report)
+										.getToken().getAnswer().getPathAnswerValue()
+										: "null" }));
 			} else if (report instanceof OthersOrphanAt) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_OTHERS_ORPHAN,
 						new Object[] { ((OthersOrphanAt) report).getOrigin().getPathName() }));

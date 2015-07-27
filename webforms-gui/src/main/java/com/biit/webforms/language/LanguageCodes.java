@@ -551,6 +551,8 @@ public enum LanguageCodes implements ILanguageCode {
 	ERROR_ELEMENT_CANNOT_BE_SAVED("error.element.cannot.be.saved"),
 	ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION("error.element.cannot.be.saved.description"), 
 	
+	ERROR_INVALID_CONDITION("error.invalid.condition"),
+	
 	PAGE_NOT_FOUND("page.not.found"),
 	PAGE_ERROR("page.error"), 
 	
