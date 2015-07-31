@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.biit.abcd.liferay.LiferayServiceAccess;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.usermanager.entity.IGroup;
@@ -96,7 +95,7 @@ public class TableBlock extends Table {
 
 			try {
 				item.getItemProperty(TreeTableBlockProperties.CREATED_BY).setValue(
-						LiferayServiceAccess.getInstance().getUserById(block.getCreatedBy()).getEmailAddress());
+						webformsSecurityService.getUserById(block.getCreatedBy()).getEmailAddress());
 			} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException e) {
 				item.getItemProperty(TreeTableBlockProperties.CREATED_BY).setValue("");
 			}
@@ -104,7 +103,7 @@ public class TableBlock extends Table {
 					(DateManager.convertDateToString(block.getCreationTime())));
 			try {
 				item.getItemProperty(TreeTableBlockProperties.MODIFIED_BY).setValue(
-						LiferayServiceAccess.getInstance().getUserById(block.getUpdatedBy()).getEmailAddress());
+						webformsSecurityService.getUserById(block.getUpdatedBy()).getEmailAddress());
 			} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException e) {
 				item.getItemProperty(TreeTableBlockProperties.MODIFIED_BY).setValue("");
 			}

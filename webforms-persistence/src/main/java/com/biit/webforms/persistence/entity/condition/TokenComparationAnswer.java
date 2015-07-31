@@ -23,8 +23,8 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 	private static final long serialVersionUID = 2099093205161281219L;
 
 	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE };
-	
-	//Evaluation value is false by default
+
+	// Evaluation value is false by default
 	private transient Boolean evaluationValue = null;
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -166,14 +166,14 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 	}
 
 	public void evaluate(List<String> answers) {
-		if(answers==null){
+		if (answers == null) {
 			evaluationValue = null;
 			return;
 		}
-		
+
 		evaluationValue = false;
-		for(String answer: answers){
-			if(this.answer.getName().equals(answer)){
+		for (String answer : answers) {
+			if (this.answer.getName().equals(answer)) {
 				evaluationValue = true;
 				return;
 			}

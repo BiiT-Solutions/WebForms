@@ -1,6 +1,5 @@
 package com.biit.webforms.gui.components;
 
-import com.biit.abcd.liferay.LiferayServiceAccess;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.webforms.gui.UserSessionHandler;
@@ -74,14 +73,14 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		}
 
 		try {
-			valueCreatedBy = getInstance().getCreatedBy() == null ? "" : LiferayServiceAccess.getInstance()
+			valueCreatedBy = getInstance().getCreatedBy() == null ? "" : webformsSecurityService
 					.getUserById(getInstance().getCreatedBy()).getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
 			valueCreatedBy = getInstance().getCreatedBy() + "";
 		}
 
 		try {
-			valueUpdatedBy = getInstance().getUpdatedBy() == null ? "" : LiferayServiceAccess.getInstance()
+			valueUpdatedBy = getInstance().getUpdatedBy() == null ? "" : webformsSecurityService
 					.getUserById(getInstance().getUpdatedBy()).getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
 			valueUpdatedBy = getInstance().getUpdatedBy() + "";

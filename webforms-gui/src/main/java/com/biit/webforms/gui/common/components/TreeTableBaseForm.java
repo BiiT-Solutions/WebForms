@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import com.biit.abcd.liferay.LiferayServiceAccess;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
@@ -148,7 +147,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 
 		try {
 			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue(
-					LiferayServiceAccess.getInstance().getUserById(form.getCreatedBy()).getEmailAddress());
+					webformsSecurityService.getUserById(form.getCreatedBy()).getEmailAddress());
 		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException | NullPointerException e) {
 			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue("");
 		}
@@ -156,7 +155,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 				(DateManager.convertDateToString(form.getCreationTime())));
 		try {
 			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue(
-					LiferayServiceAccess.getInstance().getUserById(form.getUpdatedBy()).getEmailAddress());
+					webformsSecurityService.getUserById(form.getUpdatedBy()).getEmailAddress());
 		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException | NullPointerException e) {
 			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue("");
 		}
