@@ -386,7 +386,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	}
 
 	/**
-	 * ADds webservice instance which contains the empty xml structure that will be sent to the webservice.
+	 * Adds webservice instance which contains the empty xml structure that will be sent to the webservice.
 	 * 
 	 * @param call
 	 * 
@@ -422,7 +422,6 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	}
 
 	private void addVisibilityStructure(StringBuilder events) {
-
 		events.append("<!-- Keep track of visible/hidden status -->");
 		events.append("<xf:instance id=\"visible\">");
 		events.append("<var>");
