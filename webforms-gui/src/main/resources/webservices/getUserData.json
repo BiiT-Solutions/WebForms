@@ -1,0 +1,59 @@
+{
+  "name": "getUserData",
+  "description": "Gets currently logged in user data",
+  "protocol": "http",
+  "host": "localhost",
+  "port": "8081",
+  "path": "rest/getUser",
+  "inputPorts": [
+    {
+      "errorCodes": [
+        "not exist",
+        "not valid"
+      ],
+      "name": "bsn",
+      "xpath": "/bsn",
+      "validationXpath": "/valid",
+      "type": "INPUT",
+      "format": "TEXT",
+      "subformat": "BSN"
+    }
+  ],
+  "outputPorts": [
+    {
+      "name": "name",
+      "xpath": "/PersonalInfo/name",
+      "type": "INPUT",
+      "format": "TEXT",
+      "subformat": "TEXT"
+    },
+    {
+      "name": "surname",
+      "xpath": "/PersonalInfo/surname",
+      "type": "INPUT",
+      "format": "TEXT",
+      "subformat": "TEXT"
+    },
+     {
+      "name": "street",
+      "xpath": "/PersonalInfo/Street",
+      "type": "INPUT",
+      "format": "TEXT",
+      "subformat": "TEXT"
+    },
+    {
+      "name": "streetNumber",
+      "xpath": "/PersonalInfo/StreetNumber",
+      "type": "INPUT",
+      "format": "NUMBER",
+      "subformat": "NUMBER"
+    },
+    {
+      "name": "postCode",
+      "xpath": "/PersonalInfo/PostalCode",
+      "type": "INPUT",
+      "format": "POSTAL_CODE",
+      "subformat": "POSTAL_CODE"
+    }
+  ]
+}

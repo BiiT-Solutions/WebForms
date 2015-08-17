@@ -16,7 +16,7 @@
 		<webforms.root>${basedir}/..</webforms.root>
 		<destination-file>${project.parent.artifactId}</destination-file>
 		<temporal-folder>tmp</temporal-folder>
-		<war-file.source>../webforms-gui/target/</war-file.source>
+		<war-file.source>../${project.parent.artifactId}-gui/target/</war-file.source>
 		<documentation.source>./documentation</documentation.source>
 		<documentation.destination>./${temporal-folder}/documentation</documentation.destination>
 	</properties>
