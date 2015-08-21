@@ -66,7 +66,7 @@
 		<gson.version>2.3.1</gson.version>
 		<stepper.version>2.2.0</stepper.version>
 		<maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
-		<vaadin-testbench.version>4.0.1</vaadin-testbench.version>
+		<vaadin-testbench.version>4.0.3</vaadin-testbench.version>
 		<maven-site-plugin.version>3.4</maven-site-plugin.version>
 		<findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
 		<mybatis.version>3.2.8</mybatis.version>
