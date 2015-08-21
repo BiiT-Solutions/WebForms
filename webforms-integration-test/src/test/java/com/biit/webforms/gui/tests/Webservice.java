@@ -49,9 +49,9 @@ public class Webservice extends VaadinGuiWebpage {
 		return getButtonElement(ADD_BUTTON_CAPTION);
 	}
 
-	public void addWebserviceCall(String name) {
+	public void addWebserviceCall(String name, int row) {
 		getAddCallButton().click();
-		getAddWebserviceCall().createNewWebserviceCall(name);
+		getAddWebserviceCall().createNewWebserviceCall(name, row);
 	}
 
 	@Override
@@ -83,23 +83,23 @@ public class Webservice extends VaadinGuiWebpage {
 	public void editOutputField(int row) {
 		$(TableElement.class).caption(OUTPUT_FIELD_CAPTION).first().getCell(row, 0).doubleClick();
 	}
-	
-	public void editInputField(int port, int formElement){
+
+	public void editInputField(int port, int formElement) {
 		editInputField(port);
 		editInputField.editFormElement();
 		selectFormElementWindow.selectFormElement(formElement);
 		editInputField.clickAccept();
 	}
-	
-	public void editOutputField(int port, int formElement, boolean editable){
+
+	public void editOutputField(int port, int formElement, boolean editable) {
 		editOutputField(port);
 		editOutputField.editFormElement();
 		selectFormElementWindow.selectFormElement(formElement);
 		editOutputField.setEditableValue(editable);
 		editOutputField.clickAccept();
 	}
-	
-	public void selectTrigger(int row){
+
+	public void selectTrigger(int row) {
 		$(PanelElement.class).$(HorizontalLayoutElement.class).$$(HorizontalLayoutElement.class).first().click();
 		selectFormElementWindow.selectFormElement(row);
 	}

@@ -7,24 +7,24 @@ import com.biit.webforms.webservices.Webservice;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
 
-public class TableWebservices extends Table{
+public class TableWebservices extends Table {
 	private static final long serialVersionUID = -1963941412534840971L;
-	
-	enum Properties{
-		NAME,
-		DESCRIPTION,
-		URL
+
+	enum Properties {
+		NAME, DESCRIPTION, URL
 	}
 
 	public TableWebservices() {
 		super();
-		
-		addContainerProperty(Properties.NAME,String.class,"",LanguageCodes.WEBSERVICES_TABLE_NAME.translation(),null,Align.LEFT);
-		addContainerProperty(Properties.DESCRIPTION,String.class,"",LanguageCodes.WEBSERVICES_TABLE_DESCRIPTION.translation(),null,Align.LEFT);
+
+		addContainerProperty(Properties.NAME, String.class, "", LanguageCodes.WEBSERVICES_TABLE_NAME.translation(),
+				null, Align.LEFT);
+		addContainerProperty(Properties.DESCRIPTION, String.class, "",
+				LanguageCodes.WEBSERVICES_TABLE_DESCRIPTION.translation(), null, Align.LEFT);
 	}
 
 	public void addRows(Set<Webservice> webservices) {
-		for(Webservice webservice : webservices){
+		for (Webservice webservice : webservices) {
 			addRow(webservice);
 		}
 	}
@@ -39,8 +39,8 @@ public class TableWebservices extends Table{
 		item.getItemProperty(Properties.NAME).setValue(webservice.getName());
 		item.getItemProperty(Properties.DESCRIPTION).setValue(webservice.getDescription());
 	}
-	
+
 	public void sortByName() {
-		sort(new Object[]{Properties.NAME}, new boolean[]{true});
+		sort(new Object[] { Properties.NAME }, new boolean[] { true });
 	}
 }
