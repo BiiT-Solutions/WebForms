@@ -120,9 +120,8 @@ public class Designer extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
-		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
-						UserSessionHandler.getUser())) {
+		if (UserSessionHandler.getController().getFormInUse() != null && !getWebformsSecurityService()
+				.isFormEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
@@ -264,8 +263,8 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
-					Group newGroup = UserSessionHandler.getController().addNewGroup(
-							selectedRow.getAncestorThatAccepts(Group.class));
+					Group newGroup = UserSessionHandler.getController()
+							.addNewGroup(selectedRow.getAncestorThatAccepts(Group.class));
 					table.addRow(newGroup, newGroup.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_GROUP_NOT_INSERTED);
@@ -283,8 +282,8 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					Question newQuestion;
-					newQuestion = UserSessionHandler.getController().addNewQuestion(
-							selectedRow.getAncestorThatAccepts(Question.class));
+					newQuestion = UserSessionHandler.getController()
+							.addNewQuestion(selectedRow.getAncestorThatAccepts(Question.class));
 					table.addRow(newQuestion, newQuestion.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_QUESTION_NOT_INSERTED);
@@ -301,8 +300,8 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					SystemField newField;
-					newField = UserSessionHandler.getController().addNewSystemField(
-							selectedRow.getAncestorThatAccepts(SystemField.class));
+					newField = UserSessionHandler.getController()
+							.addNewSystemField(selectedRow.getAncestorThatAccepts(SystemField.class));
 					table.addRow(newField, newField.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_SYSTEM_FIELD_NOT_INSERTED);
@@ -319,8 +318,8 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					Text newText;
-					newText = UserSessionHandler.getController().addNewText(
-							selectedRow.getAncestorThatAccepts(Text.class));
+					newText = UserSessionHandler.getController()
+							.addNewText(selectedRow.getAncestorThatAccepts(Text.class));
 					table.addRow(newText, newText.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_TEXT_NOT_INSERTED);
@@ -381,11 +380,13 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				// Do not remove any element of a block if a form that is linking it is in use.
+				// Do not remove any element of a block if a form that is
+				// linking it is in use.
 				if (!(UserSessionHandler.getController().getFormInUse() instanceof Block)
 						|| !isBlockLinkedByFormInUse((Block) UserSessionHandler.getController().getFormInUse())) {
 					TreeObject row = table.getSelectedRow();
-					// Do not remove an element of a block if is in use in any flow.
+					// Do not remove an element of a block if is in use in any
+					// flow.
 					try {
 						if ((UserSessionHandler.getController().getFormInUse() instanceof Block)
 								&& UserSessionHandler.getController().existFormThatUseElementInFlow(row)) {
@@ -442,7 +443,8 @@ public class Designer extends SecuredWebPage {
 				TreeObject row = table.getSelectedRow();
 				try {
 					UserSessionHandler.getController().moveUp(row);
-					// Remove collapse state listeners, redraw row and recover the original collapse state and
+					// Remove collapse state listeners, redraw row and recover
+					// the original collapse state and
 					// listeners.
 					removeCollapseStateListeners();
 					table.redrawRow(table.getParentRowItem(row));
@@ -462,7 +464,8 @@ public class Designer extends SecuredWebPage {
 				TreeObject row = table.getSelectedRow();
 				try {
 					UserSessionHandler.getController().moveDown(row);
-					// Remove collapse state listeners, redraw row and recover the original collapse state and
+					// Remove collapse state listeners, redraw row and recover
+					// the original collapse state and
 					// listeners.
 					removeCollapseStateListeners();
 					table.redrawRow(table.getParentRowItem(row));
@@ -498,8 +501,8 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
-					DynamicAnswer newDynamicQuestion = UserSessionHandler.getController().addNewDynamicQuestion(
-							selectedRow.getAncestorThatAccepts(DynamicAnswer.class));
+					DynamicAnswer newDynamicQuestion = UserSessionHandler.getController()
+							.addNewDynamicQuestion(selectedRow.getAncestorThatAccepts(DynamicAnswer.class));
 					table.addRow(newDynamicQuestion, newDynamicQuestion.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
@@ -516,14 +519,15 @@ public class Designer extends SecuredWebPage {
 		try {
 			BlockReference blockReference = UserSessionHandler.getController().getCompleteFormView()
 					.getBlockReference(element);
-			// Do not hide an element of a form reference if it is in use in any external flow.
+			// Do not hide an element of a form reference if it is in use in any
+			// external flow.
 			if (UserSessionHandler.getController().existDefinedFlowToReferencedElementOrItsChildren(element)) {
 				MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
 						LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
-				// Do not remove an element of a block if it is in use in any external flow of the block.
-			} else if (blockReference != null
-					&& UserSessionHandler.getController().existExternalFlowToReferencedElementOrItsChildren(element,
-							blockReference)) {
+				// Do not remove an element of a block if it is in use in any
+				// external flow of the block.
+			} else if (blockReference != null && UserSessionHandler.getController()
+					.existExternalFlowToReferencedElementOrItsChildren(element, blockReference)) {
 				MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
 						LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
 			} else {
@@ -532,13 +536,13 @@ public class Designer extends SecuredWebPage {
 					if (UserSessionHandler.getController().getCompleteFormView().showElement(element)) {
 						element.setHiddenElement(false);
 						if (blockReference != null) {
-							WebformsLogger.info(this.getClass().getName(), "User '"
-									+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '" + element
-									+ "' of block '" + blockReference + "'.");
+							WebformsLogger.info(this.getClass().getName(),
+									"User '" + UserSessionHandler.getUser().getEmailAddress() + "' has show element '"
+											+ element + "' of block '" + blockReference + "'.");
 						} else {
-							WebformsLogger.info(this.getClass().getName(), "User '"
-									+ UserSessionHandler.getUser().getEmailAddress() + "' has show element '" + element
-									+ "'.");
+							WebformsLogger.info(this.getClass().getName(),
+									"User '" + UserSessionHandler.getUser().getEmailAddress() + "' has show element '"
+											+ element + "'.");
 						}
 						UserSessionHandler.getController().setUnsavedFormChanges(true);
 					} else {
@@ -549,13 +553,14 @@ public class Designer extends SecuredWebPage {
 						if (UserSessionHandler.getController().getCompleteFormView().hideElement(element)) {
 							element.setHiddenElement(true);
 							if (blockReference != null) {
-								WebformsLogger.info(this.getClass().getName(), "User '"
-										+ UserSessionHandler.getUser().getEmailAddress() + "' has hide element '"
-										+ element + "' of block '" + blockReference + "'.");
+								WebformsLogger.info(this.getClass().getName(),
+										"User '" + UserSessionHandler.getUser().getEmailAddress()
+												+ "' has hide element '" + element + "' of block '" + blockReference
+												+ "'.");
 							} else {
-								WebformsLogger.info(this.getClass().getName(), "User '"
-										+ UserSessionHandler.getUser().getEmailAddress() + "' has hide element '"
-										+ element + "'.");
+								WebformsLogger.info(this.getClass().getName(),
+										"User '" + UserSessionHandler.getUser().getEmailAddress()
+												+ "' has hide element '" + element + "'.");
 							}
 							UserSessionHandler.getController().setUnsavedFormChanges(true);
 						}
@@ -605,98 +610,91 @@ public class Designer extends SecuredWebPage {
 		TreeObject selectedElement = table.getSelectedRow();
 
 		try {
-			boolean formIsBlock = getCurrentForm() instanceof Block;
-			boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
-			boolean formHasLinkedForm = UserSessionHandler.getController().getFormInUse().getFormReference() != null;
-			boolean rowIsNull = (selectedElement == null);
-			boolean rowIsForm = (selectedElement != null && selectedElement instanceof Form);
-			boolean rowIsElementReference = (selectedElement != null && selectedElement.isReadOnly());
+			if (UserSessionHandler.getController().getFormInUse() != null) {
+				boolean formIsBlock = getCurrentForm() instanceof Block;
+				boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
+				boolean formHasLinkedForm;
+				formHasLinkedForm = UserSessionHandler.getController().getFormInUse().getFormReference() != null;
+				boolean rowIsNull = (selectedElement == null);
+				boolean rowIsForm = (selectedElement != null && selectedElement instanceof Form);
+				boolean rowIsElementReference = (selectedElement != null && selectedElement.isReadOnly());
 
-			boolean rowIsBlockReferenceCategory = rowIsElementReference
-					&& (selectedElement instanceof BaseCategory)
-					&& UserSessionHandler.getController().getCompleteFormView().getBlockReference(selectedElement) != null;
-			boolean canEdit = getWebformsSecurityService().isFormEditable(
-					UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
-			boolean canStoreBlock = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(
-					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
-			boolean selectedRowIsAnswer = (table.getSelectedRow() != null)
-					&& (table.getSelectedRow() instanceof Answer);
-			boolean isHidden = selectedElement != null && selectedElement.isHiddenElement();
+				boolean rowIsBlockReferenceCategory = rowIsElementReference && (selectedElement instanceof BaseCategory)
+						&& UserSessionHandler.getController().getCompleteFormView()
+								.getBlockReference(selectedElement) != null;
+				boolean canEdit = getWebformsSecurityService().isFormEditable(
+						UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+				boolean canStoreBlock = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(
+						UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
+				boolean selectedRowIsAnswer = (table.getSelectedRow() != null)
+						&& (table.getSelectedRow() instanceof Answer);
+				boolean isHidden = selectedElement != null && selectedElement.isHiddenElement();
 
-			upperMenu.getSaveButton().setEnabled(canEdit);
-			upperMenu.getBlockMenu().setEnabled(canEdit && !formHasLinkedForm);
-			upperMenu.getOtherElementsMenu().setEnabled(canEdit && !formHasLinkedForm);
-			upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock && !rowIsForm);
-			upperMenu.getInsertBlockButton().setEnabled(canEdit && !formHasLinkedForm);
-			upperMenu.getInsertBlockButton().setVisible(!formIsBlock && !formHasLinkedForm);
-			upperMenu.getNewCategoryButton().setEnabled(
-					canEdit && (formIsBlockAndNoCategories || (!formIsBlock)) && !rowIsElementReference
-							&& !formHasLinkedForm);
-			upperMenu.getNewGroupButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(Group.class) && !rowIsElementReference && !formHasLinkedForm);
-			upperMenu.getNewQuestionButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(Question.class) && !rowIsElementReference
-							&& !formHasLinkedForm);
-			upperMenu.getNewSystemFieldButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(SystemField.class) && !rowIsElementReference
-							&& !formHasLinkedForm);
-			upperMenu.getNewTextButton().setEnabled(
-					canEdit && selectedRowHierarchyAllows(Text.class) && !rowIsElementReference && !formHasLinkedForm);
-			upperMenu.getNewAnswerButton()
-					.setEnabled(
-							canEdit && selectedRowHierarchyAllows(Answer.class) && !rowIsElementReference
-									&& !formHasLinkedForm);
-			upperMenu.getNewDynamicAnswer().setEnabled(
-					canEdit && selectedRowHierarchyAllows(DynamicAnswer.class) && !rowIsElementReference
-							&& !formHasLinkedForm);
-			upperMenu.getNewSubanswerButton()
-					.setEnabled(
-							canEdit
-									&& !formHasLinkedForm
-									&& !rowIsElementReference
-									&& selectedRowIsAnswer
-									&& selectedRowHierarchyAllows(Answer.class)
-									&& (isParentQuestionOfType(table.getSelectedRow(),
-											AnswerType.SINGLE_SELECTION_RADIO) || isParentQuestionOfType(
-											table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
-			upperMenu.getMoveButton().setEnabled(
-					canEdit && !rowIsNull && !rowIsForm && !rowIsElementReference && !formHasLinkedForm);
-			upperMenu.getDeleteButton().setEnabled(
-					canEdit && !rowIsNull && !rowIsForm && !formHasLinkedForm
-							&& (!rowIsElementReference || selectedElement instanceof Category));
-			upperMenu.getUpButton().setEnabled(
-					canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory)
-							&& !formHasLinkedForm);
-			upperMenu.getDownButton().setEnabled(
-					canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory)
-							&& !formHasLinkedForm);
-			upperMenu.getFinish().setVisible(!formIsBlock);
-			upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
-			upperMenu.getDeleteButton().setVisible(!rowIsElementReference || rowIsBlockReferenceCategory);
-			upperMenu.updateHideButton(isHidden);
-			upperMenu.getHideButton().setVisible(!upperMenu.getDeleteButton().isVisible());
-			upperMenu.getHideButton().setEnabled(rowIsElementReference && !rowIsBlockReferenceCategory && canEdit);
-			upperMenu.getOtherElementsMenu().setEnabled(
-					upperMenu.getNewSubanswerButton().isEnabled() || upperMenu.getNewTextButton().isEnabled()
-							|| upperMenu.getNewSystemFieldButton().isEnabled());
+				upperMenu.getSaveButton().setEnabled(canEdit);
+				upperMenu.getBlockMenu().setEnabled(canEdit && !formHasLinkedForm);
+				upperMenu.getOtherElementsMenu().setEnabled(canEdit && !formHasLinkedForm);
+				upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock && !rowIsForm);
+				upperMenu.getInsertBlockButton().setEnabled(canEdit && !formHasLinkedForm);
+				upperMenu.getInsertBlockButton().setVisible(!formIsBlock && !formHasLinkedForm);
+				upperMenu.getNewCategoryButton().setEnabled(canEdit && (formIsBlockAndNoCategories || (!formIsBlock))
+						&& !rowIsElementReference && !formHasLinkedForm);
+				upperMenu.getNewGroupButton().setEnabled(canEdit && selectedRowHierarchyAllows(Group.class)
+						&& !rowIsElementReference && !formHasLinkedForm);
+				upperMenu.getNewQuestionButton().setEnabled(canEdit && selectedRowHierarchyAllows(Question.class)
+						&& !rowIsElementReference && !formHasLinkedForm);
+				upperMenu.getNewSystemFieldButton().setEnabled(canEdit && selectedRowHierarchyAllows(SystemField.class)
+						&& !rowIsElementReference && !formHasLinkedForm);
+				upperMenu.getNewTextButton().setEnabled(canEdit && selectedRowHierarchyAllows(Text.class)
+						&& !rowIsElementReference && !formHasLinkedForm);
+				upperMenu.getNewAnswerButton().setEnabled(canEdit && selectedRowHierarchyAllows(Answer.class)
+						&& !rowIsElementReference && !formHasLinkedForm);
+				upperMenu.getNewDynamicAnswer().setEnabled(canEdit && selectedRowHierarchyAllows(DynamicAnswer.class)
+						&& !rowIsElementReference && !formHasLinkedForm);
+				upperMenu.getNewSubanswerButton().setEnabled(canEdit && !formHasLinkedForm && !rowIsElementReference
+						&& selectedRowIsAnswer && selectedRowHierarchyAllows(Answer.class)
+						&& (isParentQuestionOfType(table.getSelectedRow(), AnswerType.SINGLE_SELECTION_RADIO)
+								|| isParentQuestionOfType(table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
+				upperMenu.getMoveButton().setEnabled(
+						canEdit && !rowIsNull && !rowIsForm && !rowIsElementReference && !formHasLinkedForm);
+				upperMenu.getDeleteButton().setEnabled(canEdit && !rowIsNull && !rowIsForm && !formHasLinkedForm
+						&& (!rowIsElementReference || selectedElement instanceof Category));
+				upperMenu.getUpButton().setEnabled(canEdit && !rowIsNull && !rowIsForm
+						&& (!rowIsElementReference || rowIsBlockReferenceCategory) && !formHasLinkedForm);
+				upperMenu.getDownButton().setEnabled(canEdit && !rowIsNull && !rowIsForm
+						&& (!rowIsElementReference || rowIsBlockReferenceCategory) && !formHasLinkedForm);
+				upperMenu.getFinish().setVisible(!formIsBlock);
+				upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
+				upperMenu.getDeleteButton().setVisible(!rowIsElementReference || rowIsBlockReferenceCategory);
+				upperMenu.updateHideButton(isHidden);
+				upperMenu.getHideButton().setVisible(!upperMenu.getDeleteButton().isVisible());
+				upperMenu.getHideButton().setEnabled(rowIsElementReference && !rowIsBlockReferenceCategory && canEdit);
+				upperMenu.getOtherElementsMenu().setEnabled(upperMenu.getNewSubanswerButton().isEnabled()
+						|| upperMenu.getNewTextButton().isEnabled() || upperMenu.getNewSystemFieldButton().isEnabled());
+			} else {
+				disableMenu();
+			}
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			// Disable everything as a security measure.
-			upperMenu.getSaveButton().setEnabled(false);
-			upperMenu.getSaveAsBlockButton().setEnabled(false);
-			upperMenu.getInsertBlockButton().setEnabled(false);
-			upperMenu.getNewCategoryButton().setEnabled(false);
-			upperMenu.getNewGroupButton().setEnabled(false);
-			upperMenu.getNewQuestionButton().setEnabled(false);
-			upperMenu.getNewSystemFieldButton().setEnabled(false);
-			upperMenu.getNewTextButton().setEnabled(false);
-			upperMenu.getNewAnswerButton().setEnabled(false);
-			upperMenu.getMoveButton().setEnabled(false);
-			upperMenu.getDeleteButton().setEnabled(false);
-			upperMenu.getUpButton().setEnabled(false);
-			upperMenu.getDownButton().setEnabled(false);
-			upperMenu.getFinish().setEnabled(false);
+			disableMenu();
 		}
+	}
+
+	private void disableMenu() {
+		upperMenu.getSaveButton().setEnabled(false);
+		upperMenu.getSaveAsBlockButton().setEnabled(false);
+		upperMenu.getInsertBlockButton().setEnabled(false);
+		upperMenu.getNewCategoryButton().setEnabled(false);
+		upperMenu.getNewGroupButton().setEnabled(false);
+		upperMenu.getNewQuestionButton().setEnabled(false);
+		upperMenu.getNewSystemFieldButton().setEnabled(false);
+		upperMenu.getNewTextButton().setEnabled(false);
+		upperMenu.getNewAnswerButton().setEnabled(false);
+		upperMenu.getMoveButton().setEnabled(false);
+		upperMenu.getDeleteButton().setEnabled(false);
+		upperMenu.getUpButton().setEnabled(false);
+		upperMenu.getDownButton().setEnabled(false);
+		upperMenu.getFinish().setEnabled(false);
 	}
 
 	private boolean selectedRowHierarchyAllows(Class<? extends TreeObject> cls) {
@@ -782,8 +780,8 @@ public class Designer extends SecuredWebPage {
 				// Insert block in form
 				try {
 					if (windowBlocks.getSelectedBlock() != null) {
-						TreeObject insertedElement = UserSessionHandler.getController().insertBlock(
-								windowBlocks.getSelectedBlock());
+						TreeObject insertedElement = UserSessionHandler.getController()
+								.insertBlock(windowBlocks.getSelectedBlock());
 						clearAndUpdateFormTable();
 						table.expand(insertedElement);
 						table.setValue(insertedElement);
@@ -815,8 +813,8 @@ public class Designer extends SecuredWebPage {
 			public void acceptAction(WindowAcceptCancel window) {
 				// Insert block in form
 				try {
-					TreeObject linkedElement = UserSessionHandler.getController().linkBlock(
-							windowBlocks.getSelectedBlock());
+					TreeObject linkedElement = UserSessionHandler.getController()
+							.linkBlock(windowBlocks.getSelectedBlock());
 					clearAndUpdateFormTable();
 					table.expand(linkedElement);
 					table.setValue(linkedElement);
@@ -887,8 +885,8 @@ public class Designer extends SecuredWebPage {
 	}
 
 	protected void saveCollapsedTableState() {
-		UserSessionHandler.getController().setCollapsedStatus(
-				table.getCollapsedStatus(UserSessionHandler.getController().getFormInUse()));
+		UserSessionHandler.getController()
+				.setCollapsedStatus(table.getCollapsedStatus(UserSessionHandler.getController().getFormInUse()));
 	}
 
 	private void removeCollapseStateListeners() {
@@ -904,8 +902,8 @@ public class Designer extends SecuredWebPage {
 	private void retrieveCollapsedTableState() {
 		removeCollapseStateListeners();
 		if (UserSessionHandler.getController().getCollapsedStatus() != null) {
-			table.setCollapsedStatus(UserSessionHandler.getController().getFormInUse(), UserSessionHandler
-					.getController().getCollapsedStatus());
+			table.setCollapsedStatus(UserSessionHandler.getController().getFormInUse(),
+					UserSessionHandler.getController().getCollapsedStatus());
 		}
 		addCollapseStateListeners();
 
@@ -917,7 +915,8 @@ public class Designer extends SecuredWebPage {
 		table.setValue(null);
 		table.removeAllItems();
 
-		// Remove collapsed state listeners, load the new tree and recover the old state and the update state listeners.
+		// Remove collapsed state listeners, load the new tree and recover the
+		// old state and the update state listeners.
 		removeCollapseStateListeners();
 		table.loadTreeObject(getCurrentForm(), null);
 		retrieveCollapsedTableState();
