@@ -80,6 +80,7 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 		element.setUpdateTime(parseTimestamp("updateTime", jobject, context));
 		element.setCreatedBy(parseLong("createdBy", jobject, context));
 		element.setUpdatedBy(parseLong("updatedBy", jobject, context));
+		element.setVersion(parseInteger("version", jobject, context));
 
 		try {
 			element.setLabel(parseString("label", jobject, context));
