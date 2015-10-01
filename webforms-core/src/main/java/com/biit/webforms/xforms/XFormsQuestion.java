@@ -41,16 +41,16 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		}
 		return "";
 	}
-	
+
 	@Override
 	protected String getDefinition() {
 		String section = "<" + getName() + ">";
-		if(getSource() instanceof Question){
-			if(((Question)getSource()).getDefaultValueTime()!=null){
+		if (getSource() instanceof Question) {
+			if (((Question) getSource()).getDefaultValueTime() != null) {
 				SimpleDateFormat formatter = new SimpleDateFormat(XFormsObject.XPATH_DATE_FORMAT);
-				section += formatter.format(((Question)getSource()).getDefaultValueTime());
-			}else{
-				section += ((Question)getSource()).getDefaultValue();
+				section += formatter.format(((Question) getSource()).getDefaultValueTime());
+			} else {
+				section += ((Question) getSource()).getDefaultValue();
 			}
 		}
 		section += "</" + getName() + ">";
@@ -67,8 +67,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	@Override
-	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
+	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"").append(getBindingName()).append("\" ");
 		// Reference must be always to a name and not to a complete xpath, if
 		// the xpath is used, in a loop all repeated
@@ -109,7 +108,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 * @return
 	 */
 	private boolean hasSubtypeConstraint() {
-		if(!(getSource() instanceof Question) || ((Question) getSource()).getAnswerSubformat() == null){
+		if (!(getSource() instanceof Question) || ((Question) getSource()).getAnswerSubformat() == null) {
 			return false;
 		}
 
@@ -141,10 +140,16 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 	private void isReadOnly(StringBuilder binding) {
 		WebserviceCallOutputLink link = getXFormsHelper().getWebserviceCallOutputLink(getSource());
-		if (link != null && !link.isEditable()) {
+		if ((link != null && !link.isEditable())) {
 			binding.append("readonly=\"true()\" ");
 		} else {
-			binding.append("readonly=\"false()\" ");
+			// Orbeon $fr-mode indicates form modes "new", "edit", and "view".
+			// Disable the edition of the question if it is not a new form.
+			if (((Question) getSource()).isEditionDisabled()) {
+				binding.append("readonly=\"$fr-mode != 'new'\" ");
+			} else {
+				binding.append("readonly=\"false()\" ");
+			}
 		}
 	}
 
@@ -176,7 +181,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			callInputErrors.addAll(inputLink.getValidErrors());
 		}
 		Collections.sort(callInputErrors);
-		
+
 		return callInputErrors;
 	}
 
@@ -184,8 +189,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		List<WebserviceCallInputLinkErrors> webserviceValidations = getWebserviceCallInputErrors();
 
 		for (int i = 0; i < webserviceValidations.size(); i++) {
-			constraints.append("<xf:constraint id=\"webservice-constraint-"+ getXFormsHelper().getUniqueName(getSource()) +"-" + i + "-validation\" ");
-			constraints.append("value=\"$"+getXFormsHelper().getWebserviceValidationField(getSource()).getUniqueName()+" != '");
+			constraints.append("<xf:constraint id=\"webservice-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-" + i + "-validation\" ");
+			constraints.append("value=\"$" + getXFormsHelper().getWebserviceValidationField(getSource()).getUniqueName() + " != '");
 			constraints.append(webserviceValidations.get(i).getErrorCode());
 			constraints.append("'\"/>");
 		}
@@ -255,7 +260,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	@Override
 	protected String getAlert() {
 		StringBuilder sb = new StringBuilder();
-		if (getSource() instanceof Question && ((Question) getSource()).getAnswerSubformat()!=null) {
+		if (getSource() instanceof Question && ((Question) getSource()).getAnswerSubformat() != null) {
 			switch (((Question) getSource()).getAnswerSubformat()) {
 			case DATE_FUTURE:
 				sb.append("<alert><![CDATA[Date must be at the future!]]></alert>");
@@ -287,20 +292,20 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 				break;
 			}
 		}
-		
-		if(hasWebserviceValidation()){
+
+		if (hasWebserviceValidation()) {
 			List<WebserviceCallInputLinkErrors> webserviceValidations = getWebserviceCallInputErrors();
-			for(WebserviceCallInputLinkErrors inputError: webserviceValidations){
+			for (WebserviceCallInputLinkErrors inputError : webserviceValidations) {
 				sb.append("<alert><![CDATA[");
 				sb.append(inputError.getErrorMessage());
 				sb.append("]]></alert>");
 			}
-		}		
-		
+		}
+
 		String alert = sb.toString();
-		if(!alert.isEmpty()){
+		if (!alert.isEmpty()) {
 			return alert;
-		}else{
+		} else {
 			return "<alert/>";
 		}
 	}
@@ -363,25 +368,25 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 */
 	private String createElementBody() {
 		StringBuilder section = new StringBuilder();
-		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName() + "\" class=\""
-				+ getCssClass() + "\" bind=\"" + getBindingId() + "\">");
+		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName() + "\" class=\"" + getCssClass()
+				+ "\" bind=\"" + getBindingId() + "\">");
 		section.append(getBodyLabel());
 		section.append(getBodyHint());
-		
-		//Add subtype constraint
-		if(hasSubtypeConstraint()){
-			section.append(getAlert(1,"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation"));
-		}else{
-			section.append(getAlert(1,null));
+
+		// Add subtype constraint
+		if (hasSubtypeConstraint()) {
+			section.append(getAlert(1, "subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation"));
+		} else {
+			section.append(getAlert(1, null));
 		}
-		//Add webservice alerts
-		if(hasWebserviceValidation()){
+		// Add webservice alerts
+		if (hasWebserviceValidation()) {
 			List<WebserviceCallInputLinkErrors> webserviceValidations = getWebserviceCallInputErrors();
 			for (int i = 0; i < webserviceValidations.size(); i++) {
-				section.append(getAlert(i+2,"webservice-constraint-"+ getXFormsHelper().getUniqueName(getSource()) +"-" + i + "-validation"));
+				section.append(getAlert(i + 2, "webservice-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-" + i + "-validation"));
 			}
 		}
-		
+
 		section.append(getBodyHelp());
 		createElementAnswersItems(section);
 		section.append("</xf:" + getElementFormDefinition() + " >");
@@ -522,8 +527,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		if (getSource() instanceof Question && ((Question) getSource()).isHorizontal()) {
 			classList += " " + CSS_CLASS_RADIO_BUTTON_HORIZONTAL;
 		}
-		if (getSource() instanceof Question && ((Question) getSource()).getDescription() != null
-				&& ((Question) getSource()).getDescription().length() > 0) {
+		if (getSource() instanceof Question && ((Question) getSource()).getDescription() != null && ((Question) getSource()).getDescription().length() > 0) {
 			classList += " " + CSS_CLASS_QUESTION_HELP;
 		}
 		return classList;

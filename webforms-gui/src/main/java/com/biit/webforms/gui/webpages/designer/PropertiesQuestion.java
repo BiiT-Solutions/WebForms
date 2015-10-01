@@ -46,6 +46,9 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 	private CheckBox horizontal;
 
+	// Disable the field if orbeon is in edition mode.
+	private CheckBox disableEdition;
+
 	public PropertiesQuestion() {
 		super(Question.class);
 	}
@@ -172,6 +175,9 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 		mandatory = new CheckBox(LanguageCodes.CAPTION_MANDATORY.translation());
 
+		disableEdition = new CheckBox(LanguageCodes.CAPTION_DISABLE_EDITION.translation());
+		disableEdition.setDescription(LanguageCodes.CAPTION_DISABLE_EDITION_TOOLTIP.translation());
+
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
 		commonProperties.setHeight(null);
@@ -186,9 +192,9 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		commonProperties.addComponent(defaultValueAnswer);
 		commonProperties.addComponent(horizontal);
 		commonProperties.addComponent(mandatory);
+		commonProperties.addComponent(disableEdition);
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isElementEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_QUESTION.translation(), true);
@@ -267,7 +273,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 			defaultValueDate.setValue(null);
 		}
 		defaultValueAnswer.setValue(getInstance().getDefaultValueAnswer());
-
+		disableEdition.setValue(getInstance().isEditionDisabled());
 	}
 
 	@Override
@@ -286,7 +292,7 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		if(defaultValueString.getValue()!=null && !defaultValueString.getValue().isEmpty()){
+		if (defaultValueString.getValue() != null && !defaultValueString.getValue().isEmpty()) {
 			tempDefaultValue = defaultValueString.getValue();
 		}
 		if (tempDefaultValue == null) {
@@ -297,8 +303,8 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 		}
 
 		UserSessionHandler.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(), mandatory.getValue(),
-				(AnswerType) answerTypeComboBox.getValue(), (AnswerFormat) answerFormat.getValue(),
-				(AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue);
+				(AnswerType) answerTypeComboBox.getValue(), (AnswerFormat) answerFormat.getValue(), (AnswerSubformat) answerSubformat.getValue(),
+				horizontal.getValue(), tempDefaultValue, disableEdition.getValue());
 
 		super.updateElement();
 	}
