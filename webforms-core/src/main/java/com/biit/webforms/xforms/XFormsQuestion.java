@@ -145,7 +145,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		} else {
 			// Orbeon $fr-mode indicates form modes "new", "edit", and "view".
 			// Disable the edition of the question if it is not a new form.
-			if (((Question) getSource()).isEditionDisabled()) {
+			if (getSource() instanceof Question && ((Question) getSource()).isEditionDisabled()) {
 				binding.append("readonly=\"$fr-mode != 'new'\" ");
 			} else {
 				binding.append("readonly=\"false()\" ");
