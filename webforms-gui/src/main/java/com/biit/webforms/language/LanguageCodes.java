@@ -227,6 +227,8 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_ANSWER_FORMAT("caption.answer.format"),
 	CAPTION_ANSWER_SUBFORMAT("caption.answer.subformat"),
 	CAPTION_HORIZONTAL("caption.horizontal"),
+	CAPTION_DISABLE_EDITION("caption.disable.edition"),
+	CAPTION_DISABLE_EDITION_TOOLTIP("caption.disable.edition.tooltip"),
 	CAPTION_REPETABLE("caption.repetable"),
 	CAPTION_TEXT("caption.text"),
 	CAPTION_VERSION("caption.version"),

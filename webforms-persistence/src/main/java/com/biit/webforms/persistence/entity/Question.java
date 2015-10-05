@@ -54,8 +54,10 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	@Column(length = MAX_DEFAULT_VALUE)
 	private String defaultValueString;
 
-	@ManyToOne(optional=true)
+	@ManyToOne(optional = true)
 	private Answer defaultValueAnswer;
+
+	private boolean editionDisabled;
 
 	private Timestamp defaultValueTime;
 
@@ -142,8 +144,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		this.answerFormat = answerFormat;
 		if (answerFormat != null) {
 			// Answer subform is not valid for answerSubformat, change it.
-			if (answerSubformat == null
-					|| (answerSubformat.getAnswerFormat() != null && !answerSubformat.getAnswerFormat().equals(answerFormat))) {
+			if (answerSubformat == null || (answerSubformat.getAnswerFormat() != null && !answerSubformat.getAnswerFormat().equals(answerFormat))) {
 				this.answerSubformat = answerFormat.getDefaultSubformat();
 			}
 		} else {
@@ -161,8 +162,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			throw new InvalidAnswerSubformatException("Answer subformat can't be defined if the question doesn't have any format.");
 		}
 		if (answerFormat != null && answerSubformat != null && !answerFormat.isSubformat(answerSubformat)) {
-			throw new InvalidAnswerSubformatException("Answer subformat " + answerSubformat + " is not compatible with answer format "
-					+ answerFormat);
+			throw new InvalidAnswerSubformatException("Answer subformat " + answerSubformat + " is not compatible with answer format " + answerFormat);
 		}
 		if (answerFormat != null && answerSubformat == null) {
 			this.answerSubformat = answerFormat.getDefaultSubformat();
@@ -196,10 +196,10 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			}
 			setMandatory(question.isMandatory());
 			setHorizontal(question.isHorizontal());
-			
+
 			setDefaultValueString(question.getDefaultValueString());
 			setDefaultValueTime(question.getDefaultValueTime());
-			if(question.getDefaultValueAnswer()!=null){
+			if (question.getDefaultValueAnswer() != null) {
 				setDefaultValueAnswer(getAnswer(question.getDefaultValueAnswer().getValue()));
 			}
 		} else {
@@ -476,34 +476,42 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	}
 
 	public void setDefaultValue(Object defaultValue) {
-		if(defaultValue == null){
+		if (defaultValue == null) {
 			setDefaultValueString(null);
 			setDefaultValueTime(null);
 			setDefaultValueAnswer(null);
 		}
-		if(defaultValue instanceof String){
+		if (defaultValue instanceof String) {
 			setDefaultValueString((String) defaultValue);
 			setDefaultValueTime(null);
 			setDefaultValueAnswer(null);
 			return;
 		}
-		if(defaultValue instanceof Timestamp){
+		if (defaultValue instanceof Timestamp) {
 			setDefaultValueString(null);
 			setDefaultValueTime((Timestamp) defaultValue);
 			setDefaultValueAnswer(null);
 			return;
 		}
-		if(defaultValue instanceof Date){
+		if (defaultValue instanceof Date) {
 			setDefaultValueString(null);
-			setDefaultValueTime(new Timestamp(((Date)defaultValue).getTime()));
+			setDefaultValueTime(new Timestamp(((Date) defaultValue).getTime()));
 			setDefaultValueAnswer(null);
 			return;
 		}
-		if(defaultValue instanceof Answer){
+		if (defaultValue instanceof Answer) {
 			setDefaultValueString(null);
 			setDefaultValueTime(null);
 			setDefaultValueAnswer((Answer) defaultValue);
 			return;
 		}
+	}
+
+	public boolean isEditionDisabled() {
+		return editionDisabled;
+	}
+
+	public void setEditionDisabled(boolean editionDisabled) {
+		this.editionDisabled = editionDisabled;
 	}
 }
