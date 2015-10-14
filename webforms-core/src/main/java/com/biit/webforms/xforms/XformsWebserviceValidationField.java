@@ -14,8 +14,8 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
  */
 public class XformsWebserviceValidationField extends XFormsQuestion {
 
-	public XformsWebserviceValidationField(XFormsHelper xFormsHelper, BaseQuestion question) throws NotValidTreeObjectException,
-			NotValidChildException {
+	public XformsWebserviceValidationField(XFormsHelper xFormsHelper, BaseQuestion question)
+			throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, new WebserviceValidationField(question));
 	}
 
@@ -23,7 +23,7 @@ public class XformsWebserviceValidationField extends XFormsQuestion {
 	 * A validation field doesn't use alers.
 	 */
 	@Override
-	protected String getAlert() {
+	protected String getAlert(OrbeonLanguage language) {
 		return "";
 	}
 
@@ -66,7 +66,8 @@ public class XformsWebserviceValidationField extends XFormsQuestion {
 	}
 
 	@Override
-	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getDefaultVisibility()
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// TODO
 		return "";
 	}
@@ -98,7 +99,7 @@ public class XformsWebserviceValidationField extends XFormsQuestion {
 	 * Validation field doesn't require help.
 	 */
 	@Override
-	public String getHelp() {
+	public String getHelp(OrbeonLanguage language) {
 		return "";
 	}
 
@@ -114,7 +115,8 @@ public class XformsWebserviceValidationField extends XFormsQuestion {
 	 * Relevant structure false
 	 */
 	@Override
-	protected void getRelevantStructure(StringBuilder relevant) throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected void getRelevantStructure(StringBuilder relevant)
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		relevant.append(" relevant=\"false()\"");
 	}
 }

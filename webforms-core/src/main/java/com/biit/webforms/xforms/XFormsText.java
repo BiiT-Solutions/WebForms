@@ -22,12 +22,12 @@ public class XFormsText extends XFormsQuestion {
 	}
 
 	@Override
-	public String getHelp() {
+	public String getHelp(OrbeonLanguage language) {
 		return "";
 	}
 
 	@Override
-	protected String getLabel() {
+	protected String getLabel(OrbeonLanguage language) {
 		if (((Text) getSource()).getDescription().length() > 0) {
 			return "<label><![CDATA[" + ((Text) getSource()).getDescription() + "]]></label>";
 		}

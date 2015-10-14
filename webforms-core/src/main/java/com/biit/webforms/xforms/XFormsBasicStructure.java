@@ -2,12 +2,15 @@ package com.biit.webforms.xforms;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.utils.date.DateManager;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.xforms.exceptions.DateRuleSyntaxError;
@@ -68,8 +71,9 @@ public abstract class XFormsBasicStructure {
 	}
 
 	/**
-	 * Contains instance data associated with the model element. It is used to supply initial values for forms controls,
-	 * or to provide additional data to be submitted with the form.
+	 * Contains instance data associated with the model element. It is used to
+	 * supply initial values for forms controls, or to provide additional data
+	 * to be submitted with the form.
 	 * 
 	 * @return
 	 * @throws InvalidFlowInForm
@@ -113,8 +117,8 @@ public abstract class XFormsBasicStructure {
 		}
 	}
 
-	protected XFormsCategory createXFormsCategory(Category category) throws NotValidTreeObjectException,
-			NotValidChildException {
+	protected XFormsCategory createXFormsCategory(Category category)
+			throws NotValidTreeObjectException, NotValidChildException {
 		return new XFormsCategory(getXFormsHelper(), category);
 	}
 
@@ -161,7 +165,8 @@ public abstract class XFormsBasicStructure {
 		header.append("<xh:title>" + getForm().getLabel() + "</xh:title>");
 		header.append("<xf:model id=\"fr-form-model\" xxf:expose-xpath-types=\"true\">");
 		header.append(getInput());
-		header.append("<xf:instance xxf:readonly=\"true\" id=\"fr-form-metadata\" xxf:exclude-result-prefixes=\"#all\">");
+		header.append(
+				"<xf:instance xxf:readonly=\"true\" id=\"fr-form-metadata\" xxf:exclude-result-prefixes=\"#all\">");
 		header.append(getMetaData(getForm()));
 		header.append("</xf:instance>");
 		header.append(getModelInstance());
@@ -221,7 +226,8 @@ public abstract class XFormsBasicStructure {
 	}
 
 	/**
-	 * Get the element biding from an element. If the element is null gets the binding for all elements of the form.
+	 * Get the element biding from an element. If the element is null gets the
+	 * binding for all elements of the form.
 	 * 
 	 * @param xformsObject
 	 * @return
@@ -250,18 +256,36 @@ public abstract class XFormsBasicStructure {
 	 * @throws NotExistingDynamicFieldException
 	 */
 	private String getResources(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException {
-		StringBuilder resource = new StringBuilder("<xf:instance id=\"fr-form-resources\" xxf:readonly=\"false\">");
+		StringBuilder resource = new StringBuilder("<xf:instance id=\"fr-form-resources\" xxf:readonly=\"false\" xxf:exclude-result-prefixes=\"#all\">");
 		resource.append("<resources>");
-		resource.append("<resource xml:lang=\"en\">");
+		//For each language
+		for (OrbeonLanguage language : getEnabledLanguages()) {
+			resource.append("<resource xml:lang=\"" + language.getAbbreviature() + "\">");
 
-		// Add resources
-		resource.append(getElementResources(xformsObject));
+			// Add resources
+			resource.append(getElementResources(xformsObject, language));
 
-		resource.append("</resource>");
+			resource.append("</resource>");
+		}
 		resource.append("</resources>");
 		resource.append("</xf:instance>");
 
 		return resource.toString();
+	}
+
+	private Set<OrbeonLanguage> getEnabledLanguages() {
+		Set<OrbeonLanguage> availableLanguages = new HashSet<>();
+		for (String language : WebformsConfigurationReader.getInstance().getOrbeonAvailableLanguages()) {
+			OrbeonLanguage orbeonLanguage = OrbeonLanguage.get(language);
+			if (orbeonLanguage != null) {
+				availableLanguages.add(orbeonLanguage);
+			}
+		}
+		// At least, english.
+		if (availableLanguages.isEmpty()) {
+			availableLanguages.add(OrbeonLanguage.ENGLISH);
+		}
+		return availableLanguages;
 	}
 
 	/**
@@ -271,7 +295,8 @@ public abstract class XFormsBasicStructure {
 	 * @return
 	 * @throws NotExistingDynamicFieldException
 	 */
-	protected abstract String getElementResources(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException;
+	protected abstract String getElementResources(XFormsObject<?> xformsObject, OrbeonLanguage language)
+			throws NotExistingDynamicFieldException;
 
 	/**
 	 * Creates the body section of the XForm.

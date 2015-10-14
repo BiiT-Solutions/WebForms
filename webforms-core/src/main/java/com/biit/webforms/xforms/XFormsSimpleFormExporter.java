@@ -249,13 +249,13 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	 *            is ignored.
 	 */
 	@Override
-	protected String getElementResources(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException {
+	protected String getElementResources(XFormsObject<?> xformsObject, OrbeonLanguage language) throws NotExistingDynamicFieldException {
 		StringBuilder resource = new StringBuilder();
 		// Add hidden email field.
 		resource.append(XFormsHiddenEmailField.getResources());
 
 		for (XFormsCategory category : getXFormsCategories()) {
-			resource.append(category.getResources());
+			resource.append(category.getResources(language));
 		}
 		return resource.toString();
 	}

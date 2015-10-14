@@ -52,8 +52,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	private XFormsObject<? extends TreeObject> parent;
 
-	public XFormsObject(XFormsHelper xFormsHelper, T treeObject) throws NotValidTreeObjectException,
-			NotValidChildException {
+	public XFormsObject(XFormsHelper xFormsHelper, T treeObject)
+			throws NotValidTreeObjectException, NotValidChildException {
 		setSource(treeObject);
 		this.xFormsHelper = xFormsHelper;
 		children = new ArrayList<>();
@@ -87,11 +87,11 @@ public abstract class XFormsObject<T extends TreeObject> {
 				} else if (child instanceof SystemField) {
 					newChild = new XFormsSystemField(xFormsHelper, (SystemField) child);
 				} else {
-					//Add webservice validation field if applies.
-					if(hasWebserviceValidation((BaseQuestion) child)){
+					// Add webservice validation field if applies.
+					if (hasWebserviceValidation((BaseQuestion) child)) {
 						addWebserviceValidationField((BaseQuestion) child);
-					}					
-					
+					}
+
 					newChild = new XFormsQuestion(xFormsHelper, (BaseQuestion) child);
 				}
 				xFormsHelper.addXFormsQuestion((XFormsQuestion) newChild);
@@ -112,22 +112,24 @@ public abstract class XFormsObject<T extends TreeObject> {
 		}
 	}
 
-	private void addWebserviceValidationField(BaseQuestion child) throws NotValidTreeObjectException, NotValidChildException {
-		//Webservice validation
+	private void addWebserviceValidationField(BaseQuestion child)
+			throws NotValidTreeObjectException, NotValidChildException {
+		// Webservice validation
 		XformsWebserviceValidationField webformsValidation = xFormsHelper.getWebserviceValidationField(child);
 		webformsValidation.setParent(this);
-		children.add(webformsValidation);		
+		children.add(webformsValidation);
 	}
 
 	private boolean hasWebserviceValidation(BaseQuestion child) {
-		return xFormsHelper.getWebserviceCallInputLinks(child)!=null && !xFormsHelper.getWebserviceCallInputLinks(child).isEmpty(); 
+		return xFormsHelper.getWebserviceCallInputLinks(child) != null
+				&& !xFormsHelper.getWebserviceCallInputLinks(child).isEmpty();
 	}
 
 	protected T getSource() {
 		return source;
 	}
 
-	protected String getAlert() {
+	protected String getAlert(OrbeonLanguage language) {
 		return "<alert/>";
 	}
 
@@ -142,7 +144,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	protected String getXPath() {
 		if (getParent() != null) {
 			if (getParent() instanceof XFormsRepeatableGroup) {
-				// Repeatable groups are composed by a section + iterator. We need both elements in the XPath.
+				// Repeatable groups are composed by a section + iterator. We
+				// need both elements in the XPath.
 				return getParent().getXPath() + "/" + ((XFormsRepeatableGroup) getParent()).getIteratorControlName()
 						+ "/" + getName();
 			} else {
@@ -229,27 +232,27 @@ public abstract class XFormsObject<T extends TreeObject> {
 		return getXFormsHelper().getUniqueName(getSource());
 	}
 
-	protected String getHelp() {
+	protected String getHelp(OrbeonLanguage language) {
 		// Avoid empty help windows.
 		return "";
 	}
 
-	protected String getLabel() {
+	protected String getLabel(OrbeonLanguage language) {
 		return "<label><![CDATA[" + getSource().getLabel() + "]]></label>";
 	}
 
-	protected String getHint() {
+	protected String getHint(OrbeonLanguage language) {
 		return "<hint/>";
 	}
 
-	protected void getRelevantStructure(StringBuilder relevant) throws InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
+	protected void getRelevantStructure(StringBuilder relevant)
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		String flow = getAllFlowsVisibility();
 		if (flow != null && flow.length() > 0) {
 			getFlowRule(relevant);
 			relevant.append(" relevant=\"").append(flow).append("\"");
-			//Calculate now is handle by events. 
-			//relevant.append(getCalculateStructure(flow));
+			// Calculate now is handle by events.
+			// relevant.append(getCalculateStructure(flow));
 		}
 	}
 
@@ -274,8 +277,9 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Calculate is used to clean up the value of the element if the previous element value is changed. Then all relvant
-	 * rules of next elements are forced to recalculate.
+	 * Calculate is used to clean up the value of the element if the previous
+	 * element value is changed. Then all relvant rules of next elements are
+	 * forced to recalculate.
 	 * 
 	 * @param flow
 	 * @return
@@ -290,8 +294,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws StringRuleSyntaxError
 	 * @throws PostCodeRuleSyntaxError
 	 */
-	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
+	protected String getAllFlowsVisibility()
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// Load stored visibility if exists.
 		if (getXFormsHelper().getVisibilityOfElement(getSource()) != null) {
 			return getXFormsHelper().getVisibilityOfElement(getSource());
@@ -306,26 +310,27 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Is the default visibility of an element. For Categories is the visibility of the first question, for questions,
-	 * is the visibility of the previous question and for the first question is always true.
+	 * Is the default visibility of an element. For Categories is the visibility
+	 * of the first question, for questions, is the visibility of the previous
+	 * question and for the first question is always true.
 	 * 
 	 * @return
 	 * @throws InvalidDateException
 	 * @throws StringRuleSyntaxError
 	 * @throws PostCodeRuleSyntaxError
 	 */
-	protected abstract String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError;
+	protected abstract String getDefaultVisibility()
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError;
 
-	protected String getResources() throws NotExistingDynamicFieldException {
+	protected String getResources(OrbeonLanguage language) throws NotExistingDynamicFieldException {
 		String resource = "<" + getName() + ">";
-		resource += getLabel();
-		resource += getHint();
-		resource += getAlert();
-		resource += getHelp();
+		resource += getLabel(language);
+		resource += getHint(language);
+		resource += getAlert(language);
+		resource += getHelp(language);
 
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
-			resource += child.getResources();
+			resource += child.getResources(language);
 		}
 
 		resource += "</" + getName() + ">";
@@ -385,8 +390,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Returns a linkedHashSet with all the children in the current hierarchy that are instance of the filter type in
-	 * appearance order.
+	 * Returns a linkedHashSet with all the children in the current hierarchy
+	 * that are instance of the filter type in appearance order.
 	 * 
 	 * @param filter
 	 * @return
@@ -426,7 +431,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 			visibility.append("instance('visible')/"
 					+ getXFormsHelper().getUniqueName(((TokenAnswerNeeded) token).getQuestion()) + " != 'false'");
 		} else if (token instanceof TokenOthersMustBeAnswered) {
-			// Others ensure that question is answered with a string-length() or checks that is not visible with the
+			// Others ensure that question is answered with a string-length() or
+			// checks that is not visible with the
 			// event.
 			visibility.append("(string-length(").append(getXPath(((TokenOthersMustBeAnswered) token).getQuestion()))
 					.append("/text()) &gt; 0 ");
@@ -454,8 +460,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Returns XPath expression except for repeatable groups that cause troubles in Orbeon. In this case the Orbeon
-	 * variable is returned.
+	 * Returns XPath expression except for repeatable groups that cause troubles
+	 * in Orbeon. In this case the Orbeon variable is returned.
 	 * 
 	 * @param element
 	 * @return
@@ -469,9 +475,10 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Checkbox answer is returned as an unique string with all selected options divided by spaces. We need 'contains'
-	 * XForms method to know if the answer is selected or not. But a 'contains' can fail if an element is a substring of
-	 * other element, then we add space to delimiter substrings.
+	 * Checkbox answer is returned as an unique string with all selected options
+	 * divided by spaces. We need 'contains' XForms method to know if the answer
+	 * is selected or not. But a 'contains' can fail if an element is a
+	 * substring of other element, then we add space to delimiter substrings.
 	 * 
 	 * @param token
 	 * @return
@@ -497,8 +504,9 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Visibility for a token that is a component that allows to select an answer to the user. Selectable elements that
-	 * are not a multicheckbox use standard $control-name='answer' string.
+	 * Visibility for a token that is a component that allows to select an
+	 * answer to the user. Selectable elements that are not a multicheckbox use
+	 * standard $control-name='answer' string.
 	 * 
 	 * @param token
 	 * @return
@@ -552,7 +560,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 					Date date;
 					try {
 						date = formatter.parse(token.getValue());
-						// Compare it as string. Less problems with null dates. $dateField/text() ge '2015-05-27'
+						// Compare it as string. Less problems with null dates.
+						// $dateField/text() ge '2015-05-27'
 						formatter.applyPattern(XPATH_DATE_FORMAT);
 						visibility.append(getXPath(token.getQuestion())).append("/text() ");
 						visibility.append(token.getType().getOrbeonRepresentation());
@@ -588,7 +597,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 		// Symbols for '>', '<' are the opposite in the orbeon operator.
 		if (!token.getQuestion().getAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE)) {
 			// adjust-date-to-timezone is used to remove timestamp
-			// "If $timezone is the empty sequence, returns an xs:date without a timezone." So you can write:
+			// "If $timezone is the empty sequence, returns an xs:date without a
+			// timezone." So you can write:
 			// adjust-date-to-timezone(current-date(), ())"
 			visibility.append(getXPath(token.getQuestion())).append("/text() ");
 			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
@@ -597,8 +607,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 					.append("'), '" + DATE_FORMAT + "')");
 		} else {
 			visibility.append(getXPath(token.getQuestion())).append("/text() ");
-			visibility.append(token.getType().getOrbeonRepresentation()).append(
-					" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
+			visibility.append(token.getType().getOrbeonRepresentation())
+					.append(" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
 			visibility.append(xPathOperation).append("('P").append(token.getValue())
 					.append(token.getDatePeriodUnit().getAbbreviature()).append("'), '" + DATE_FORMAT + "')");
 		}
@@ -660,11 +670,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 		for (Flow flow : flows) {
 			List<Token> flowvisibility = flow.getConditionSimpleTokens();
 
-			// Others must assure that the question is answered if it is mandatory. Otherwise without answering the
+			// Others must assure that the question is answered if it is
+			// mandatory. Otherwise without answering the
 			// question the others is always true.
 			if (flow.isOthers()) {
 				List<Token> othersVisibility = new ArrayList<>();
-				// Others needs that all the conditions are answered if mandatory.
+				// Others needs that all the conditions are answered if
+				// mandatory.
 				// Only must check one time by flow.
 				Set<WebformsBaseQuestion> alreadyCheckedQuestions = new HashSet<>();
 				for (Token token : flowvisibility) {
@@ -672,18 +684,19 @@ public abstract class XFormsObject<T extends TreeObject> {
 						// Condition must be answered if mandatory
 						if ((((TokenWithQuestion) token).getQuestion()).isMandatory()
 								&& !alreadyCheckedQuestions.contains(((TokenWithQuestion) token).getQuestion())) {
-							othersVisibility.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token)
-									.getQuestion()));
+							othersVisibility
+									.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token).getQuestion()));
 							alreadyCheckedQuestions.add(((TokenWithQuestion) token).getQuestion());
 						} else {
 							// No token added: remove previous AND or OR.
-							if (othersVisibility.size() > 1
-									&& TokenUtils.isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
+							if (othersVisibility.size() > 1 && TokenUtils
+									.isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
 								othersVisibility.remove(othersVisibility.size() - 1);
 							}
 						}
 					} else if (TokenUtils.isLogicalOperator(token)) {
-						// If are multiple conditions, we need to add also the and/or conjunction
+						// If are multiple conditions, we need to add also the
+						// and/or conjunction
 						othersVisibility.add(token.generateCopy());
 					}
 				}
@@ -710,7 +723,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 					flowvisibility.add(Token.getRigthParenthesisToken());
 				}
 
-				// If condition is empty, inherit the relevance of the previous element. Others also has empty
+				// If condition is empty, inherit the relevance of the previous
+				// element. Others also has empty
 				// condition.
 			} else if (flow.getComputedCondition().isEmpty()) {
 				// Get previous visibility.
@@ -728,7 +742,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 						flowvisibility.add(Token.getAndToken());
 					}
 
-					// Add parenthesis if needed. Needed only if does not starts with a parenthesis or starts with one
+					// Add parenthesis if needed. Needed only if does not starts
+					// with a parenthesis or starts with one
 					// and the closing one is not the last one.
 					boolean addParenthesis = TokenUtils.needsEnclosingParenthesis(previousVisibility);
 					if (addParenthesis) {
@@ -740,7 +755,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 					}
 				}
 			} else {
-				// Some rules must pass through a specific question despite condition is from previous question. We can
+				// Some rules must pass through a specific question despite
+				// condition is from previous question. We can
 				// detect if origin of the flow is not in the condition.
 				boolean originUsedInCondition = false;
 				for (Token token : flowvisibility) {
@@ -795,8 +811,9 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Obtains the previous element visibility. Can be an event if the previous element is a question, a copy of the
-	 * relevant rule if the previous one is a system field or if the element is inside a repeatable group.
+	 * Obtains the previous element visibility. Can be an event if the previous
+	 * element is a question, a copy of the relevant rule if the previous one is
+	 * a system field or if the element is inside a repeatable group.
 	 * 
 	 * @param flow
 	 * @return
@@ -807,13 +824,15 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// No visibility rules defined.
 			return new ArrayList<>();
 		} else {
-			// Not first element, inherited relevant rule. Inherit must skip all hidden elements by default, as system
+			// Not first element, inherited relevant rule. Inherit must skip all
+			// hidden elements by default, as system
 			// fields.
 			BaseQuestion origin = element;
 			while (isAlwaysHiddenElement(origin)) {
 				Set<Flow> previousFlow = getXFormsHelper().getFlowsWithDestiny(origin);
 				if (previousFlow.size() > 1) {
-					// If the system field has a complex flow, we cannot use events but inherit the relevant
+					// If the system field has a complex flow, we cannot use
+					// events but inherit the relevant
 					// rule.
 					break;
 				} else {
@@ -831,14 +850,16 @@ public abstract class XFormsObject<T extends TreeObject> {
 					return getXFormsHelper().getVisibilityOfQuestionAsToken(origin);
 				}
 			} else {
-				// Copy relevant rule. Due to visibility of the previous element is always false.
+				// Copy relevant rule. Due to visibility of the previous element
+				// is always false.
 				return getXFormsHelper().getVisibilityOfQuestionAsToken(origin);
 			}
 		}
 	}
 
 	/**
-	 * Orbeon has some limitations in elements inside a repeatable group. We need to detect them.
+	 * Orbeon has some limitations in elements inside a repeatable group. We
+	 * need to detect them.
 	 * 
 	 * @param element
 	 * @return
@@ -854,7 +875,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Some extra fields are always hidden and must skip standard relevant rules.
+	 * Some extra fields are always hidden and must skip standard relevant
+	 * rules.
 	 * 
 	 * @param element
 	 * @return
@@ -884,7 +906,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Returns the opposite value used in Orbeon. Note: <= the opposite is >=. The equals is maintained.
+	 * Returns the opposite value used in Orbeon. Note: <= the opposite is >=.
+	 * The equals is maintained.
 	 * 
 	 * @return
 	 */

@@ -17,8 +17,8 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 	private static final String CSS_CLASS_ANSWER = "webforms-answer";
 
-	public XFormsDynamicAnswer(XFormsHelper xFormsHelper, DynamicAnswer treeObject) throws NotValidTreeObjectException,
-			NotValidChildException {
+	public XFormsDynamicAnswer(XFormsHelper xFormsHelper, DynamicAnswer treeObject)
+			throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, treeObject);
 	}
 
@@ -28,7 +28,8 @@ public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 	}
 
 	@Override
-	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getDefaultVisibility()
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		return null;
 	}
 
@@ -114,7 +115,7 @@ public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 	 * Dynamic Answers don't have resources.
 	 */
 	@Override
-	protected String getResources() throws NotExistingDynamicFieldException {
+	protected String getResources(OrbeonLanguage language) throws NotExistingDynamicFieldException {
 		return "";
 	}
 
@@ -124,8 +125,8 @@ public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 	}
 
 	/**
-	 * Defines the structure of the element in the body part of the XForms. For answers with subanswers, add the needed
-	 * CSS class.
+	 * Defines the structure of the element in the body part of the XForms. For
+	 * answers with subanswers, add the needed CSS class.
 	 * 
 	 * @param treeObject
 	 * @return

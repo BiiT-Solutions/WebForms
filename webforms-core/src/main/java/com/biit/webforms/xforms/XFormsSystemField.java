@@ -16,8 +16,8 @@ public class XFormsSystemField extends XFormsQuestion {
 
 	private static final String CSS_CLASS_SYSTEMFIELD = "webforms-systemfield";
 
-	public XFormsSystemField(XFormsHelper xFormsHelper, SystemField systemField) throws NotValidTreeObjectException,
-			NotValidChildException {
+	public XFormsSystemField(XFormsHelper xFormsHelper, SystemField systemField)
+			throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, systemField);
 	}
 
@@ -40,11 +40,12 @@ public class XFormsSystemField extends XFormsQuestion {
 	}
 
 	/**
-	 * System Fields has not any calculated value or flowRule field. And are always hidden.
+	 * System Fields has not any calculated value or flowRule field. And are
+	 * always hidden.
 	 */
 	@Override
-	protected void getRelevantStructure(StringBuilder relevant) throws InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
+	protected void getRelevantStructure(StringBuilder relevant)
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		relevant.append(" relevant=\"false\"");
 	}
 
@@ -53,7 +54,7 @@ public class XFormsSystemField extends XFormsQuestion {
 	}
 
 	@Override
-	protected String getLabel() {
+	protected String getLabel(OrbeonLanguage language) {
 		return "<label><![CDATA[" + ((SystemField) getSource()).getFieldName() + "]]></label>";
 	}
 
@@ -63,7 +64,7 @@ public class XFormsSystemField extends XFormsQuestion {
 	}
 
 	@Override
-	public String getHelp() {
+	public String getHelp(OrbeonLanguage language) {
 		return "";
 	}
 
@@ -103,7 +104,7 @@ public class XFormsSystemField extends XFormsQuestion {
 	}
 
 	@Override
-	protected String getHint() {
+	protected String getHint(OrbeonLanguage language) {
 		return "";
 	}
 
@@ -111,9 +112,10 @@ public class XFormsSystemField extends XFormsQuestion {
 	 * System fields always are hidden.
 	 */
 	@Override
-	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-		// Visibility of SystemFields is always false, but next elements must not inherit this false value or the flow
+	protected String getAllFlowsVisibility()
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		// Visibility of SystemFields is always false, but next elements must
+		// not inherit this false value or the flow
 		// will be broken.
 		getXFormsHelper().addVisibilityOfElement(getSource(), super.getAllFlowsVisibility());
 		return "false";

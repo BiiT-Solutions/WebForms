@@ -20,8 +20,8 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	private final static String SUBANSWER_CSS_CLASS = "subanswer-child";
 	private static final String CSS_CLASS_ANSWER = "webforms-answer";
 
-	public XFormsAnswer(XFormsHelper xFormsHelper, Answer answer) throws NotValidTreeObjectException,
-			NotValidChildException {
+	public XFormsAnswer(XFormsHelper xFormsHelper, Answer answer)
+			throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, answer);
 	}
 
@@ -80,7 +80,7 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	}
 
 	@Override
-	protected String getHint() {
+	protected String getHint(OrbeonLanguage language) {
 		if (((Answer) getSource()).getDescription() != null && ((Answer) getSource()).getDescription().length() > 0) {
 			return "<hint><![CDATA[" + ((Answer) getSource()).getDescription() + "]]></hint>";
 		}
@@ -91,9 +91,9 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	 * Answers has a special definition inside a question.
 	 */
 	@Override
-	protected String getResources() throws NotExistingDynamicFieldException {
+	protected String getResources(OrbeonLanguage language) throws NotExistingDynamicFieldException {
 		return getResource("item", getSource().getChildren().isEmpty() ? null
-				: ((BaseQuestion) getSource().getParent()).getAnswerWithSubanswersIndex(getSource()));
+				: ((BaseQuestion) getSource().getParent()).getAnswerWithSubanswersIndex(getSource()), language);
 	}
 
 	/**
@@ -106,16 +106,17 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	 * @return
 	 * @throws NotExistingDynamicFieldException
 	 */
-	private String getResource(String prefix, Integer index) throws NotExistingDynamicFieldException {
+	private String getResource(String prefix, Integer index, OrbeonLanguage language)
+			throws NotExistingDynamicFieldException {
 		String resource = "<" + prefix + (index != null ? index.toString() : "") + ">";
 
-		resource += getLabel();
-		resource += getHint();
+		resource += getLabel(language);
+		resource += getHint(language);
 		resource += getValue();
 
 		// Add subanswers also.
 		for (XFormsObject<?> child : getChildren()) {
-			resource += ((XFormsAnswer) child).getResource("subitem", index);
+			resource += ((XFormsAnswer) child).getResource("subitem", index, language);
 		}
 
 		resource += "</" + prefix + (index != null ? index.toString() : "") + ">";
@@ -123,13 +124,14 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	}
 
 	@Override
-	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
+	protected String getAllFlowsVisibility()
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		return null;
 	}
 
 	@Override
-	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getDefaultVisibility()
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		return null;
 	}
 
@@ -144,8 +146,8 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	}
 
 	/**
-	 * Defines the structure of the element in the body part of the XForms. For answers with subanswers, add the needed
-	 * CSS class.
+	 * Defines the structure of the element in the body part of the XForms. For
+	 * answers with subanswers, add the needed CSS class.
 	 * 
 	 * @param treeObject
 	 * @return
@@ -163,7 +165,8 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	}
 
 	/**
-	 * Some elements needs to insert HTML text. Adds the tags to allow html code in the element.
+	 * Some elements needs to insert HTML text. Adds the tags to allow html code
+	 * in the element.
 	 * 
 	 * @param element
 	 * @return

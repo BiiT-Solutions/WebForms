@@ -13,9 +13,11 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 import com.biit.webforms.xml.XmlUtils;
 
 /**
- * Export the form in XForms language using each category as an independent file to be use with Orbeon. <br>
+ * Export the form in XForms language using each category as an independent file
+ * to be use with Orbeon. <br>
  * Can create different strings: <br>
- * - initial instance. Basic structure of the form and the default values of the fields.<br>
+ * - initial instance. Basic structure of the form and the default values of the
+ * fields.<br>
  * - Page Flow. Relationship among all files. <br>
  * - StepN-categoryName. A category exported in an independent file. .<br>
  */
@@ -75,7 +77,8 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	public String getCategoryModelPage(XFormsCategory xFormsCategory) throws NotExistingDynamicFieldException,
 			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		StringBuilder text = new StringBuilder();
-		text.append("<xh:html xmlns:xh=\"http://www.w3.org/1999/xhtml\" xmlns:xf=\"http://www.w3.org/2002/xforms\" xmlns:xxf=\"http://orbeon.org/oxf/xml/xforms\" xmlns:ev=\"http://www.w3.org/2001/xml-events\" xmlns:fr=\"http://orbeon.org/oxf/xml/form-runner\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">");
+		text.append(
+				"<xh:html xmlns:xh=\"http://www.w3.org/1999/xhtml\" xmlns:xf=\"http://www.w3.org/2002/xforms\" xmlns:xxf=\"http://orbeon.org/oxf/xml/xforms\" xmlns:ev=\"http://www.w3.org/2001/xml-events\" xmlns:fr=\"http://orbeon.org/oxf/xml/form-runner\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">");
 		text.append(getHeader(xFormsCategory));
 		text.append(getBody(xFormsCategory));
 		text.append("</xh:html>");
@@ -168,7 +171,8 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	 * Creates the resources for current category.
 	 */
 	@Override
-	protected String getElementResources(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException {
+	protected String getElementResources(XFormsObject<?> xformsObject, OrbeonLanguage language)
+			throws NotExistingDynamicFieldException {
 		StringBuilder resource = new StringBuilder();
 
 		// Add hidden email field in first category.
@@ -176,7 +180,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 			resource.append(XFormsHiddenEmailField.getResources());
 		}
 
-		resource.append(xformsObject.getResources());
+		resource.append(xformsObject.getResources(language));
 
 		return resource.toString();
 	}
@@ -284,10 +288,11 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 		if (xFormsObject instanceof XFormsCategory) {
 			XFormsCategory xFormsCategory = (XFormsCategory) xFormsObject;
 			// Only last category
-			if (xFormsCategory.getSource().getParent().getChildren().indexOf(xFormsCategory.getSource()) == getXFormsCategories()
-					.size() - 1) {
+			if (xFormsCategory.getSource().getParent().getChildren()
+					.indexOf(xFormsCategory.getSource()) == getXFormsCategories().size() - 1) {
 				events.append("<xf:submission id=\"submit-form\" method=\"put\" resource=\"\" replace=\"none\" >");
-				events.append("<xf:message ev:event=\"xforms-submit-error\" level=\"modal\">An error occurred while saving!</xf:message>");
+				events.append(
+						"<xf:message ev:event=\"xforms-submit-error\" level=\"modal\">An error occurred while saving!</xf:message>");
 				events.append("</xf:submission>");
 			}
 		}
@@ -301,7 +306,8 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	 */
 	private void getSkipEmptyCategoryEvents(StringBuilder events, XFormsObject<?> xFormsObject) {
 		events.append("<!-- Keep track of enabled/disabled status -->");
-		events.append("<xf:instance id=\"totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName() + "\">");
+		events.append(
+				"<xf:instance id=\"totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName() + "\">");
 		events.append("<value>0</value>");
 		events.append("</xf:instance>");
 		events.append("<!-- Update for each element -->");
@@ -309,15 +315,19 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 			events.append("<xf:setvalue event=\"xforms-enabled\" observer=\"" + xFormQuestion.getSectionControlName()
 					+ "\" ref=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
 					+ "')\" value=\"instance('totalVisibleElements') + 1\"/>");
-			// events.append("<xf:setvalue event=\"xforms-disabled\" observer=\"" +
+			// events.append("<xf:setvalue event=\"xforms-disabled\"
+			// observer=\"" +
 			// xFormQuestion.getSectionControlName()
-			// + "\" ref=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
-			// + "')\" value=\"instance('totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName()
+			// + "\" ref=\"instance('totalVisibleElements-" +
+			// xFormsObject.getSource().getSimpleAsciiName()
+			// + "')\" value=\"instance('totalVisibleElements-" +
+			// xFormsObject.getSource().getSimpleAsciiName()
 			// + "') - 1\"/>");
 		}
 		events.append("<!-- Redirect to next page -->");
-		events.append("<xf:send ev:event=\"xforms-ready\" submission=\"next-submission\" if=\"instance('totalVisibleElements-"
-				+ xFormsObject.getSource().getSimpleAsciiName() + "') = 0\"/>");
+		events.append(
+				"<xf:send ev:event=\"xforms-ready\" submission=\"next-submission\" if=\"instance('totalVisibleElements-"
+						+ xFormsObject.getSource().getSimpleAsciiName() + "') = 0\"/>");
 	}
 
 	@Override

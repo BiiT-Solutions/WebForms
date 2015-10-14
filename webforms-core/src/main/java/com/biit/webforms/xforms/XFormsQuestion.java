@@ -30,7 +30,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	private static final String CSS_CLASS_QUESTION = "webforms-question";
 	private static final String CSS_CLASS_QUESTION_HELP = "webforms-help";
 
-	public XFormsQuestion(XFormsHelper xFormsHelper, BaseQuestion question) throws NotValidTreeObjectException, NotValidChildException {
+	public XFormsQuestion(XFormsHelper xFormsHelper, BaseQuestion question)
+			throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, question);
 	}
 
@@ -58,7 +59,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	@Override
-	public String getHelp() {
+	public String getHelp(OrbeonLanguage language) {
 		// Avoid empty help windows.
 		if (((Question) getSource()).getDescription().length() > 0) {
 			return "<help><![CDATA[" + ((Question) getSource()).getDescription() + "]]></help>";
@@ -67,8 +68,10 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	@Override
-	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"").append(getBindingName()).append("\" ");
+	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"").append(getBindingName())
+				.append("\" ");
 		// Reference must be always to a name and not to a complete xpath, if
 		// the xpath is used, in a loop all repeated
 		// questions would always have the same answers selected.
@@ -189,8 +192,10 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		List<WebserviceCallInputLinkErrors> webserviceValidations = getWebserviceCallInputErrors();
 
 		for (int i = 0; i < webserviceValidations.size(); i++) {
-			constraints.append("<xf:constraint id=\"webservice-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-" + i + "-validation\" ");
-			constraints.append("value=\"$" + getXFormsHelper().getWebserviceValidationField(getSource()).getUniqueName() + " != '");
+			constraints.append("<xf:constraint id=\"webservice-constraint-"
+					+ getXFormsHelper().getUniqueName(getSource()) + "-" + i + "-validation\" ");
+			constraints.append("value=\"$" + getXFormsHelper().getWebserviceValidationField(getSource()).getUniqueName()
+					+ " != '");
 			constraints.append(webserviceValidations.get(i).getErrorCode());
 			constraints.append("'\"/>");
 		}
@@ -203,13 +208,15 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		}
 
 		// We define constraint as subtype-constraint-[unique name]
-		constraints.append("<xf:constraint id=\"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation\" ");
+		constraints.append("<xf:constraint id=\"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource())
+				+ "-validation\" ");
 		constraints.append("value=\"");
 		// Add condition depending on answer subformat.
 
 		// Aditional notes:
 		// adjust-date-to-timezone is used to remove timestamp
-		// "If $timezone is the empty sequence, returns an xs:date without a timezone."
+		// "If $timezone is the empty sequence, returns an xs:date without a
+		// timezone."
 		// So you can write:
 		// adjust-date-to-timezone(current-date(), ())"
 
@@ -217,25 +224,32 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 		switch (((Question) getSource()).getAnswerSubformat()) {
 		case PHONE:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPhone()).append("$')");
+			constraints.append(". = '' or matches(., '^")
+					.append(WebformsConfigurationReader.getInstance().getRegexPhone()).append("$')");
 			break;
 		case POSTAL_CODE:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPostalCode()).append("$')");
+			constraints.append(". = '' or matches(., '^")
+					.append(WebformsConfigurationReader.getInstance().getRegexPostalCode()).append("$')");
 			break;
 		case BSN:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexBsn()).append("$')");
+			constraints.append(". = '' or matches(., '^")
+					.append(WebformsConfigurationReader.getInstance().getRegexBsn()).append("$')");
 			break;
 		case IBAN:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexIban()).append("$')");
+			constraints.append(". = '' or matches(., '^")
+					.append(WebformsConfigurationReader.getInstance().getRegexIban()).append("$')");
 			break;
 		case DATE_FUTURE:
-			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &gt;= adjust-date-to-timezone(current-date(), ())");
+			constraints.append("string-length(" + sourceXpath
+					+ "/text())=0 or . &gt;= adjust-date-to-timezone(current-date(), ())");
 			break;
 		case DATE_PAST:
-			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ())");
+			constraints.append("string-length(" + sourceXpath
+					+ "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ())");
 			break;
 		case DATE_BIRTHDAY:
-			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ()) ");
+			constraints.append("string-length(" + sourceXpath
+					+ "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ()) ");
 			constraints.append("and (year-from-date(current-date()) - year-from-date(.) &lt;= ");
 			constraints.append(MAX_YEARS_BIRTHDAY).append(")");
 			break;
@@ -258,28 +272,29 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	@Override
-	protected String getAlert() {
+	protected String getAlert(OrbeonLanguage language) {
 		StringBuilder sb = new StringBuilder();
 		if (getSource() instanceof Question && ((Question) getSource()).getAnswerSubformat() != null) {
+			String alert = "";
 			switch (((Question) getSource()).getAnswerSubformat()) {
 			case DATE_FUTURE:
-				sb.append("<alert><![CDATA[Date must be at the future!]]></alert>");
+				alert = OrbeonLanguageManager.getInstance().getAlertDateFuture(language);
 				break;
 			case DATE_PAST:
 			case DATE_BIRTHDAY:
-				sb.append("<alert><![CDATA[Date must be at the past!]]></alert>");
+				alert = OrbeonLanguageManager.getInstance().getAlertDatePast(language);
 				break;
 			case BSN:
-				sb.append("<alert><![CDATA[BSN format is not correct!]]></alert>");
+				alert = OrbeonLanguageManager.getInstance().getAlertBsn(language);
 				break;
 			case IBAN:
-				sb.append("<alert><![CDATA[IBAN format is not correct!]]></alert>");
+				alert = OrbeonLanguageManager.getInstance().getAlertIban(language);
 				break;
 			case PHONE:
-				sb.append("<alert><![CDATA[Phone number format is not correct!]]></alert>");
+				alert = OrbeonLanguageManager.getInstance().getAlertPhone(language);
 				break;
 			case POSTAL_CODE:
-				sb.append("<alert><![CDATA[Postal code format is not correct!]]></alert>");
+				alert = OrbeonLanguageManager.getInstance().getAlertPostalCode(language);
 				break;
 			case TEXT:
 			case DATE:
@@ -288,9 +303,10 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			case FLOAT:
 			case AMOUNT:
 			case DATE_PERIOD:
-				sb.append("<alert><![CDATA[Missing or incorrect value]]></alert>");
+				alert = OrbeonLanguageManager.getInstance().getAlertDefault(language);
 				break;
 			}
+			sb.append("<alert><![CDATA[" + alert + "]]></alert>");
 		}
 
 		if (hasWebserviceValidation()) {
@@ -368,22 +384,25 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 */
 	private String createElementBody() {
 		StringBuilder section = new StringBuilder();
-		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName() + "\" class=\"" + getCssClass()
-				+ "\" bind=\"" + getBindingId() + "\">");
+		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName()
+				+ "\" class=\"" + getCssClass() + "\" bind=\"" + getBindingId() + "\">");
 		section.append(getBodyLabel());
 		section.append(getBodyHint());
 
+		section.append(getAlert(null, null));
+		int alertsAdded = 1;
 		// Add subtype constraint
 		if (hasSubtypeConstraint()) {
-			section.append(getAlert(1, "subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation"));
-		} else {
-			section.append(getAlert(1, null));
+			section.append(getAlert(alertsAdded,
+					"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation"));
+			alertsAdded++;
 		}
 		// Add webservice alerts
 		if (hasWebserviceValidation()) {
 			List<WebserviceCallInputLinkErrors> webserviceValidations = getWebserviceCallInputErrors();
 			for (int i = 0; i < webserviceValidations.size(); i++) {
-				section.append(getAlert(i + 2, "webservice-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-" + i + "-validation"));
+				section.append(getAlert(i + alertsAdded, "webservice-constraint-"
+						+ getXFormsHelper().getUniqueName(getSource()) + "-" + i + "-validation"));
 			}
 		}
 
@@ -489,12 +508,13 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	@Override
-	protected String getHint() {
+	protected String getHint(OrbeonLanguage language) {
 		return "<hint/>";
 	}
 
 	@Override
-	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getDefaultVisibility()
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// First element always visible.
 		if (getXFormsHelper().isFirstQuestion(getSource())) {
 			return "";
@@ -527,7 +547,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		if (getSource() instanceof Question && ((Question) getSource()).isHorizontal()) {
 			classList += " " + CSS_CLASS_RADIO_BUTTON_HORIZONTAL;
 		}
-		if (getSource() instanceof Question && ((Question) getSource()).getDescription() != null && ((Question) getSource()).getDescription().length() > 0) {
+		if (getSource() instanceof Question && ((Question) getSource()).getDescription() != null
+				&& ((Question) getSource()).getDescription().length() > 0) {
 			classList += " " + CSS_CLASS_QUESTION_HELP;
 		}
 		return classList;

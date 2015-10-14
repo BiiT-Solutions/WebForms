@@ -10,7 +10,7 @@ import com.biit.webforms.logger.WebformsLogger;
 
 public class WebformsConfigurationReader extends ConfigurationReader {
 
-	private static final String DATABASE_CONFIG_FILE = "settings.conf";
+	private static final String CONFIG_FILE = "settings.conf";
 	private static final String WEBFORMS_SYSTEM_VARIABLE_CONFIG = "WEBFORMS_CONFIG";
 
 	private static final String ID_REGEX_EMAIL = "regexEmail";
@@ -33,7 +33,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String ID_BUILDING_BLOCK_LINKS_VISIBLE = "button.link.block.visible";
 	private static final String ID_XFORMS_MULTIPLE_FILES_VISIBLE = "button.xforms.multiple.visible";
 	private static final String ID_XFORMS_CUSTOM_WIZARD_BUTTON = "buttons.xforms.custom.wizard";
-	
+
 	private static final String DEFAULT_REGEX_EMAIL = "[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]+(\\.[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]|[a-zA-Z!#$%&'*+\\-/=?^_`{|}~])*@[a-zA-Z0-9](\\.[a-zA-Z0-9-]|[a-zA-Z0-9-])*[a-zA-Z0-9]";
 	private static final String DEFAULT_REGEX_AMOUNT = "[0-9]+\\.[0-9]*€";
 	private static final String DEFAULT_REGEX_BIRTHDAY = "([0-9]{1,2}[-/]){1,2}[0-9]{4}";
@@ -56,17 +56,19 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_XFORMS_CUSTOM_WIZARD_BUTTON = "false";
 
 	// XForms
-	private static final String ID_XFORMS_USER = "orbeonUser";
-	private static final String ID_XFORMS_PASSWORD = "orbeonPassword";
-	private static final String ID_XFORMS_DATABASE = "orbeonDatabase";
-	private static final String ID_XFORMS_DATABASE_HOST = "orbeonDatabaseHost";
-	private static final String ID_XFORMS_FORM_RUNNER = "orbeonFormRunnerUrl";
+	private static final String ID_XFORMS_USER = "orbeon.user";
+	private static final String ID_XFORMS_PASSWORD = "orbeon.password";
+	private static final String ID_XFORMS_DATABASE = "orbeon.database";
+	private static final String ID_XFORMS_DATABASE_HOST = "orbeon.database.host";
+	private static final String ID_XFORMS_FORM_RUNNER = "orbeon.form.runner.url";
+	private static final String ID_XFORMS_AVAILABLE_LANGUAGES = "orbeon.enabled.languages";
 
 	private static final String DEFAULT_XFORMS_USER = "user";
 	private static final String DEFAULT_XFORMS_PASSWORD = "pass";
 	private static final String DEFAULT_XFORMS_DATABASE = "orbeon";
 	private static final String DEFAULT_XFORMS_DATABASE_HOST = "localhost";
 	private static final String DEFAULT_XFORMS_FORM_RUNNER = "http://127.0.0.1:8080/orbeon/fr";
+	private static final String DEFAULT_XFORMS_AVAILABLE_LANGUAGES = "en";
 
 	// Abcd Rest service
 	private static final String ABCD_REST_SERVICE_USER = "abcd.rest.user";
@@ -118,6 +120,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		addProperty(ID_XFORMS_DATABASE_HOST, DEFAULT_XFORMS_DATABASE_HOST);
 		addProperty(ID_XFORMS_FORM_RUNNER, DEFAULT_XFORMS_FORM_RUNNER);
 		addProperty(ID_XFORMS_CUSTOM_WIZARD_BUTTON, DEFAULT_XFORMS_CUSTOM_WIZARD_BUTTON);
+		addProperty(ID_XFORMS_AVAILABLE_LANGUAGES, DEFAULT_XFORMS_AVAILABLE_LANGUAGES);
 
 		addProperty(ABCD_REST_SERVICE_USER, DEFAULT_ABCD_REST_SERVICE_USER);
 		addProperty(ABCD_REST_SERVICE_PASSWORD, DEFAULT_ABCD_REST_SERVICE_PASSWORD);
@@ -130,9 +133,8 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		addProperty(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION,
 				DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
 
-		addPropertiesSource(new PropertiesSourceFile(DATABASE_CONFIG_FILE));
-		addPropertiesSource(new SystemVariablePropertiesSourceFile(WEBFORMS_SYSTEM_VARIABLE_CONFIG,
-				DATABASE_CONFIG_FILE));
+		addPropertiesSource(new PropertiesSourceFile(CONFIG_FILE));
+		addPropertiesSource(new SystemVariablePropertiesSourceFile(WEBFORMS_SYSTEM_VARIABLE_CONFIG, CONFIG_FILE));
 
 		readConfigurations();
 	}
@@ -283,16 +285,21 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	public String getAbcdRestServiceCompleteFormByLabelFormAndOrganizationPath() {
 		return getPropertyLogException(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION);
 	}
-	
+
 	public String getAbcdRestServiceCompleteFormsByOrganizationPath() {
 		return getPropertyLogException(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
 	}
-	
+
 	public boolean isXFormsToMultipleFilesEnabled() {
 		return Boolean.parseBoolean(getPropertyLogException(ID_XFORMS_MULTIPLE_FILES_VISIBLE));
 	}
-	
-	public boolean isXFormsCustomWizardEnabled(){
+
+	public boolean isXFormsCustomWizardEnabled() {
 		return Boolean.parseBoolean(getPropertyLogException(ID_XFORMS_CUSTOM_WIZARD_BUTTON));
+	}
+
+	public String[] getOrbeonAvailableLanguages() {
+		String languages = getPropertyLogException(ID_XFORMS_AVAILABLE_LANGUAGES);
+		return languages.replace(" ", "").split(",");
 	}
 }

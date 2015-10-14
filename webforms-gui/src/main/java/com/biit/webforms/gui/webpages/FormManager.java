@@ -388,7 +388,7 @@ public class FormManager extends SecuredWebPage {
 					}
 				});
 				window.setIndeterminate(true);
-				window.setFilename(completeFormView.getLabel() + ".txt");
+				window.setFilename(completeFormView.getLabel() + ".xml");
 				window.showCentered();
 			} else {
 				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS,
