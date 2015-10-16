@@ -102,6 +102,7 @@ public abstract class XFormsBasicStructure {
 		metadata.append("<form-name>" + formatFormName(form) + "</form-name>");
 		metadata.append("<title xml:lang=\"en\">" + form.getLabel() + "</title>");
 		metadata.append("<description xml:lang=\"en\">" + createFormDescription(form) + "</description>");
+		metadata.append("<singleton>false</singleton>");
 
 		metadata.append("</metadata>");
 
