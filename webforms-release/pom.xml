@@ -72,6 +72,10 @@
 										<copy todir="${temporal-folder}/files/" overwrite="true">
 											<fileset dir="./files" includes="**/*" />
 										</copy>
+										<!-- copy license files -->
+										<copy todir="${temporal-folder}/license/" overwrite="true">
+											<fileset dir="./license" includes="**/*" />
+										</copy>
 										<!-- create the final file -->
 										<zip basedir="${temporal-folder}/" destfile="../${destination-file}-${project.version}.zip" />
 									</target>
