@@ -9,7 +9,7 @@ public class RedundantLogicReport extends Report {
 	private TreeObject element;
 
 	public RedundantLogicReport(TreeObject element) {
-		super(ReportLevel.ERROR, generateReport(element));
+		super(ReportLevel.WARNING, generateReport(element));
 		this.element = element;
 	}
 
