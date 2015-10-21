@@ -292,6 +292,8 @@ public enum LanguageCodes implements ILanguageCode {
 	WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY("warning.description.origin.included.in.destiny"), 
 	WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME("warning.description.repeated.category.name"),
 	WARNING_REMOVE_ELEMENT("warning.element.remove"),
+	WARNING_FORM_VALIDATION("warning.form.validation"),
+	WARNING_FORM_VALIDATION_BODY("warning.form.validation.body"),
 	
 	//Flow
 	TABLE_RULE_TITLE_ORIGIN("table.rule.title.origin"),

@@ -362,8 +362,10 @@ public class TestFlowDomain {
 
 		ValidateReport report = new ValidateReport();
 		ValidateLogic validator = new ValidateLogic();
-		Assert.assertFalse(validator.validate(form, report));
-
+		//Is valid
+		Assert.assertTrue(validator.validate(form, report));
+		//But has redundant flow.
+		Assert.assertTrue(report.hasWarnings());
 	}
 
 	@Test(dependsOnMethods = { "testJson30" }/* , expectedExceptions = { IncompleteLogic.class } */)
