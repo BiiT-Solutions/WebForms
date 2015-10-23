@@ -10,4 +10,6 @@ The Program contains open source and other free download components as identifie
 
 - Jersey (CDDL 1.1 and GNU GPL v2): https://jersey.java.net
 
+- Graphviz (Eclipse Public License - v 1.0): http://www.graphviz.org/
+
 Third party license  terms and other third party-required notices are in different files.  
