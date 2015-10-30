@@ -7,20 +7,24 @@ import com.biit.webforms.gui.common.components.PropertiesForClassComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
+import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
 public abstract class StorableObjectProperties<T extends StorableObject> extends PropertiesForClassComponent<T> {
 	private static final long serialVersionUID = -1986275953105055523L;
-	protected TextField createdByField, creationTimeField, updatedByField, updateTimeField;
+	private TextField createdByField, creationTimeField, updatedByField, updateTimeField;
+	private TextField image, imageWidth, imageHeight;
+	private Panel imagePreview;
 
 	private T instance;
 
 	private IWebformsSecurityService webformsSecurityService;
 
-	public StorableObjectProperties(Class<? extends T> type) {
+	protected StorableObjectProperties(Class<? extends T> type) {
 		super(type);
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
@@ -33,6 +37,11 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	 * @param element
 	 */
 	protected void initElement() {
+		createCommonProperties();
+		createImageProperties();
+	}
+
+	private void createCommonProperties() {
 		createdByField = new TextField(
 				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_CREATED_BY));
 		createdByField.setEnabled(false);
@@ -59,12 +68,35 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 				false);
 	}
 
+	private void createImageProperties() {
+		image = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_FILE));
+		imageWidth = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_WIDTH));
+		imageHeight = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_HEIGHT));
+
+		FormLayout imageProperties = new FormLayout();
+		imageProperties.setWidth(null);
+		imageProperties.setHeight(null);
+		imageProperties.addComponent(image);
+		imageProperties.addComponent(imageWidth);
+		imageProperties.addComponent(imageHeight);
+
+		addTab(imageProperties, ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_TITLE), false);
+	}
+
+	private void initPreviewImagePanel() {
+	}
+
 	/**
 	 * This method needs to be overwritten
 	 * 
 	 * @param element
 	 */
 	protected void initValues() {
+		initCommonValues();
+		initImageValues();
+	}
+
+	private void initCommonValues() {
 		String valueCreatedBy = "";
 		String valueUpdatedBy = "";
 
@@ -73,27 +105,31 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		}
 
 		try {
-			valueCreatedBy = getInstance().getCreatedBy() == null ? "" : webformsSecurityService
-					.getUserById(getInstance().getCreatedBy()).getEmailAddress();
+			valueCreatedBy = getInstance().getCreatedBy() == null ? ""
+					: webformsSecurityService.getUserById(getInstance().getCreatedBy()).getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
 			valueCreatedBy = getInstance().getCreatedBy() + "";
 		}
 
 		try {
-			valueUpdatedBy = getInstance().getUpdatedBy() == null ? "" : webformsSecurityService
-					.getUserById(getInstance().getUpdatedBy()).getEmailAddress();
+			valueUpdatedBy = getInstance().getUpdatedBy() == null ? ""
+					: webformsSecurityService.getUserById(getInstance().getUpdatedBy()).getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
 			valueUpdatedBy = getInstance().getUpdatedBy() + "";
 		}
 
-		String valueCreationTime = getInstance().getCreationTime() == null ? "" : getInstance().getCreationTime()
-				.toString();
+		String valueCreationTime = getInstance().getCreationTime() == null ? ""
+				: getInstance().getCreationTime().toString();
 		String valueUpdatedTime = getInstance().getUpdateTime() == null ? "" : getInstance().getUpdateTime().toString();
 
 		createdByField.setValue(valueCreatedBy);
 		creationTimeField.setValue(valueCreationTime);
 		updatedByField.setValue(valueUpdatedBy);
 		updateTimeField.setValue(valueUpdatedTime);
+	}
+
+	private void initImageValues() {
+
 	}
 
 	@Override

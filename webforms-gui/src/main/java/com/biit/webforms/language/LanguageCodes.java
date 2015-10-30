@@ -242,6 +242,11 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_PROPERTIES_FORM("caption.properties.form"),
 	CAPTION_PROPERTIES_SYSTEM_FIELD("caption.properties.system.field"),
 	CAPTION_PROPERTIES_DYNAMIC_QUESTION("caption.properties.dynamic.question"),
+	CAPTION_PROPERITES_IMAGE_FILE("caption.properties.image.file"),
+	CAPTION_PROPERITES_IMAGE_WIDTH("caption.properties.image.width"),
+	CAPTION_PROPERITES_IMAGE_HEIGHT("caption.properties.image.height"),
+	CAPTION_PROPERTIES_IMAGE_TITLE("caption.properties.image.title"),
+	CAPTION_PROPERTIES_IMAGE_PREVIEW("caption.properties.image.preview"),
 	CAPTION_SAVE_AS_BLOCK("caption.save.as.block"),
 	CAPTION_INSERT_NEW_BLOCK("caption.insert.new.block"),
 	CAPTION_LINK_BLOCK("caption.link.block"),
@@ -641,6 +646,8 @@ public enum LanguageCodes implements ILanguageCode {
 	ERROR_SELECT_BLOCK("error.select.block"), 
 	
 	CAPTION_DEFAULT_VALUE("caption.default.value"),
+	
+	IMAGE_NOT_CREATED_TEXT("image.not.created"),
 	
 	;
 
