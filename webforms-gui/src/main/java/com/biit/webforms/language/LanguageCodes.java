@@ -648,6 +648,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_DEFAULT_VALUE("caption.default.value"),
 	
 	IMAGE_NOT_CREATED_TEXT("image.not.created"),
+	IMAGE_NOT_EXISTING_TEXT("image.not.existing"),
 	
 	;
 
