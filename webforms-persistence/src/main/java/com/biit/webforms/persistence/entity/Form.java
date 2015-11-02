@@ -86,15 +86,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @Entity
-@Table(name = "tree_forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "label", "version",
-		"organizationId" }) })
+@Table(name = "tree_forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "label", "version", "organizationId" }) })
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
 		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
 @Cacheable(true)
-public class Form extends BaseForm implements IWebformsFormView {
+public class Form extends BaseForm implements IWebformsFormView, ElementWithImage {
 	private static final long serialVersionUID = 5220239269341014315L;
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
-			Arrays.asList(BaseCategory.class, BlockReference.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(BaseCategory.class,
+			BlockReference.class));
 
 	public static final int MAX_DESCRIPTION_LENGTH = 30000;
 
@@ -113,8 +112,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	private String linkedFormLabel;
 
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "linked_form_versions", joinColumns = @JoinColumn(name = "formId"), uniqueConstraints = @UniqueConstraint(columnNames = {
-			"formId", "linkedFormVersions" }))
+	@CollectionTable(name = "linked_form_versions", joinColumns = @JoinColumn(name = "formId"), uniqueConstraints = @UniqueConstraint(columnNames = { "formId",
+			"linkedFormVersions" }))
 	private Set<Integer> linkedFormVersions;
 
 	private Long linkedFormOrganizationId;
@@ -141,8 +140,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		elementsToHide = new HashSet<>();
 	}
 
-	public Form(String label, IUser<Long> user, Long organizationId) throws FieldTooLongException,
-			CharacterNotAllowedException {
+	public Form(String label, IUser<Long> user, Long organizationId) throws FieldTooLongException, CharacterNotAllowedException {
 		super(label);
 		status = FormWorkStatus.DESIGN;
 		description = new String();
@@ -201,7 +199,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * Returns all elements that the user has selected to hide and the elements that are children of this elements.
+	 * Returns all elements that the user has selected to hide and the elements
+	 * that are children of this elements.
 	 * 
 	 * @return
 	 */
@@ -273,8 +272,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 			// destiny and is not in the list.
 			if (discard) {
 				if (!mappedElements.containsKey(copiedRule.getOrigin().getComparationId())
-						|| (copiedRule.getDestiny() != null && !mappedElements.containsKey(copiedRule.getDestiny()
-								.getComparationId()))) {
+						|| (copiedRule.getDestiny() != null && !mappedElements.containsKey(copiedRule.getDestiny().getComparationId()))) {
 					continue;
 				}
 			}
@@ -306,8 +304,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * Equals by comparationId and class. Comparation by class has been removed to allow the comparation with
-	 * CompleteFormView.
+	 * Equals by comparationId and class. Comparation by class has been removed
+	 * to allow the comparation with CompleteFormView.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -354,8 +352,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 * Overriden version of generate Copy to generate a copy of the flow rules.
 	 */
 	@Override
-	public TreeObject generateCopy(boolean copyParentHierarchy, boolean copyChilds)
-			throws NotValidStorableObjectException, CharacterNotAllowedException {
+	public TreeObject generateCopy(boolean copyParentHierarchy, boolean copyChilds) throws NotValidStorableObjectException, CharacterNotAllowedException {
 		Form copy = (Form) super.generateCopy(copyParentHierarchy, copyChilds);
 
 		if (copyChilds) {
@@ -436,8 +433,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 * @throws NotValidTreeObjectException
 	 * @throws CharacterNotAllowedException
 	 */
-	public Form generateFormCopiedSimplification(TreeObject seed) throws NotValidStorableObjectException,
-			CharacterNotAllowedException {
+	public Form generateFormCopiedSimplification(TreeObject seed) throws NotValidStorableObjectException, CharacterNotAllowedException {
 		TreeObject copiedSeed = seed.generateCopy(true, true);
 		Form formSeed = (Form) copiedSeed.getAncestor(Form.class);
 
@@ -464,8 +460,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
-	 * goes to the next element)
+	 * This method creates a ComputeRuleView with all the current rules and the
+	 * implicit rules (question without rule goes to the next element)
 	 * 
 	 * @return
 	 */
@@ -482,8 +478,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 
 			for (int i = 0; i < numQuestions; i++) {
 				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
-					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i],
-							(BaseQuestion) baseQuestions[i + 1]);
+					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i], (BaseQuestion) baseQuestions[i + 1]);
 				}
 			}
 			if (computedView.getFlowsByOrigin((BaseQuestion) baseQuestions[numQuestions]) == null) {
@@ -520,8 +515,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 		Set<Flow> selectedFlows = new HashSet<Flow>();
 		for (Flow flow : getFlows()) {
 			if (flow.getOrigin().getOriginalReference().equals(origin.getOriginalReference())
-					&& ((flow.getDestiny() != null && destiny!=null && flow.getDestiny().getOriginalReference()
-							.equals(destiny.getOriginalReference())) || (flow.getDestiny() == null && destiny == null))) {
+					&& ((flow.getDestiny() != null && destiny != null && flow.getDestiny().getOriginalReference().equals(destiny.getOriginalReference())) || (flow
+							.getDestiny() == null && destiny == null))) {
 				selectedFlows.add(flow);
 			}
 		}
@@ -595,8 +590,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 			parentList.add(parent);
 		}
 		if (!parentList.get(parentList.size() - 1).equals(this)) {
-			throw new ReferenceNotPertainsToFormException("TreeObject: '" + element + "' doesn't belong to '" + this
-					+ "'");
+			throw new ReferenceNotPertainsToFormException("TreeObject: '" + element + "' doesn't belong to '" + this + "'");
 		}
 
 		String reference = "<" + element.getName() + ">";
@@ -738,9 +732,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * This is the only function that has to be used to link forms. This controls that the linked element and versions
-	 * are present at the same time or not when modifying data. It is assumed that all linked forms have the same name
-	 * and organization.
+	 * This is the only function that has to be used to link forms. This
+	 * controls that the linked element and versions are present at the same
+	 * time or not when modifying data. It is assumed that all linked forms have
+	 * the same name and organization.
 	 * 
 	 * @param linkedForms
 	 */
@@ -807,19 +802,19 @@ public class Form extends BaseForm implements IWebformsFormView {
 		updateRuleReferences(getFlows());
 	}
 
-	public Set<List<Flow>> getAllFlowsFromOriginToDestiny(BaseQuestion origin, BaseQuestion destiny,
-			HashMap<TreeObject, Integer> questionIndex, ComputedFlowView computedFlowsView) {
+	public Set<List<Flow>> getAllFlowsFromOriginToDestiny(BaseQuestion origin, BaseQuestion destiny, HashMap<TreeObject, Integer> questionIndex,
+			ComputedFlowView computedFlowsView) {
 		Set<List<Flow>> availablePaths = new HashSet<List<Flow>>();
 		Set<Flow> flowsTo = computedFlowsView.getFlowsByDestiny(destiny);
 		for (Flow flow : flowsTo) {
-			// Flows that comes from question hat are previous to the origin, can be discarded.
+			// Flows that comes from question hat are previous to the origin,
+			// can be discarded.
 			if (questionIndex.get(flow.getOrigin()) < questionIndex.get(origin)) {
 				continue;
 			}
 			// Add recursively all the paths.
 			List<Flow> path = new ArrayList<>();
-			Set<List<Flow>> parentAvailablePaths = getAllFlowsFromOriginToDestiny(origin, flow.getOrigin(),
-					questionIndex, computedFlowsView);
+			Set<List<Flow>> parentAvailablePaths = getAllFlowsFromOriginToDestiny(origin, flow.getOrigin(), questionIndex, computedFlowsView);
 			for (List<Flow> incomingPaths : parentAvailablePaths) {
 				path.addAll(incomingPaths);
 				path.add(flow);
@@ -873,7 +868,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * For some cases, i.e. using Springcache we need to initialize all sets (disabling the Lazy loading).
+	 * For some cases, i.e. using Springcache we need to initialize all sets
+	 * (disabling the Lazy loading).
 	 * 
 	 * @param elements
 	 */
@@ -896,7 +892,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * Get index of child. If the element is a category of a LinkedBuildingBlock try to find it in the Block References.
+	 * Get index of child. If the element is a category of a LinkedBuildingBlock
+	 * try to find it in the Block References.
 	 * 
 	 * @param child
 	 * @return
@@ -963,8 +960,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 * @throws NotValidChildException
 	 * @throws ElementIsReadOnly
 	 */
-	public static synchronized TreeObject move(TreeObject objectToMove, TreeObject toParent)
-			throws ChildrenNotFoundException, NotValidChildException, ElementIsReadOnly {
+	public static synchronized TreeObject move(TreeObject objectToMove, TreeObject toParent) throws ChildrenNotFoundException, NotValidChildException,
+			ElementIsReadOnly {
 		if (!Objects.equals(objectToMove.getAncestor(Form.class), toParent.getAncestor(Form.class))) {
 			throw new NotValidChildException("Root form for each element is different");
 		}
@@ -1003,8 +1000,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 			// Form reference always in first place.
 			return 1;
 		}
-		if (arg0 instanceof Form && ((Form) arg0).getFormReference() != null
-				&& ((Form) arg0).getFormReference().equals(this)) {
+		if (arg0 instanceof Form && ((Form) arg0).getFormReference() != null && ((Form) arg0).getFormReference().equals(this)) {
 			return -1;
 
 		}

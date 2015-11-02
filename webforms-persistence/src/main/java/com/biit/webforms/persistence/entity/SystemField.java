@@ -54,14 +54,14 @@ public class SystemField extends WebformsBaseQuestion {
 
 		sb.append("SystemField ").append(idName).append("  = new SystemField();").append(System.lineSeparator());
 		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
-		sb.append(idName).append(".setFieldName(\"").append(this.getFieldName()).append("\");")
-				.append(System.lineSeparator());
+		sb.append(idName).append(".setFieldName(\"").append(this.getFieldName()).append("\");").append(System.lineSeparator());
 
 		return counter;
 	}
 
 	/**
-	 * Compares the content of treeObject - Needs to be an instance of SystemField
+	 * Compares the content of treeObject - Needs to be an instance of
+	 * SystemField
 	 * 
 	 * @param treeObject
 	 * @return

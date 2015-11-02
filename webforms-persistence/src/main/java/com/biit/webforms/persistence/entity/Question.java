@@ -31,7 +31,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatExc
 @Entity
 @Table(name = "tree_questions")
 @Cacheable(true)
-public class Question extends WebformsBaseQuestion implements FlowConditionScript {
+public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithImage {
 	private static final long serialVersionUID = -7243001035969348318L;
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 	public static final int MAX_DEFAULT_VALUE = 100;

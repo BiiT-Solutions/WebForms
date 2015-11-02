@@ -21,10 +21,10 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 @Entity
 @Table(name = "tree_categories")
 @Cacheable(true)
-public class Category extends BaseCategory {
+public class Category extends BaseCategory implements ElementWithImage {
 	private static final long serialVersionUID = 7418748035993485582L;
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
-			Arrays.asList(BaseQuestion.class, BaseRepeatableGroup.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(BaseQuestion.class,
+			BaseRepeatableGroup.class));
 
 	public Category() {
 		super();
@@ -73,8 +73,7 @@ public class Category extends BaseCategory {
 			}
 
 			sb.append("//cat").append(System.lineSeparator());
-			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");")
-					.append(System.lineSeparator());
+			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
 		}
 		return currentCounter;
 	}
@@ -85,7 +84,7 @@ public class Category extends BaseCategory {
 	 * @param category
 	 * @return
 	 */
-	
+
 	@Override
 	public boolean isContentEqual(TreeObject treeObject) {
 		if (treeObject instanceof Category) {
