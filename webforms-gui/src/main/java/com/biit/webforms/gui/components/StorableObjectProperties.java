@@ -64,7 +64,6 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	 */
 	protected void initValues() {
 		initCommonValues();
-		initImageValues();
 	}
 
 	private void initCommonValues() {
@@ -94,10 +93,6 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		creationTimeField.setValue(valueCreationTime);
 		updatedByField.setValue(valueUpdatedBy);
 		updateTimeField.setValue(valueUpdatedTime);
-	}
-
-	private void initImageValues() {
-		// TODO
 	}
 
 	@Override

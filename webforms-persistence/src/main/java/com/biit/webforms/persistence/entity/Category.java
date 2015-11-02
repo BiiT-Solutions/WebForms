@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.biit.form.entity.BaseCategory;
@@ -25,6 +27,9 @@ public class Category extends BaseCategory implements ElementWithImage {
 	private static final long serialVersionUID = 7418748035993485582L;
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(BaseQuestion.class,
 			BaseRepeatableGroup.class));
+
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectImage image;
 
 	public Category() {
 		super();
@@ -91,5 +96,15 @@ public class Category extends BaseCategory implements ElementWithImage {
 			return super.isContentEqual(treeObject);
 		}
 		return false;
+	}
+
+	@Override
+	public void setImage(TreeObjectImage image) {
+		this.image = image;
+	}
+
+	@Override
+	public TreeObjectImage getImage() {
+		return image;
 	}
 }

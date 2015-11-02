@@ -18,9 +18,11 @@ import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.gui.webpages.designer.ImagePreview;
+import com.biit.webforms.gui.webpages.designer.ValidatorInteger;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.ElementWithImage;
+import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -71,6 +73,21 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		imageMemoryOutputStream = new ByteArrayOutputStream(10240);
 	}
 
+	@Override
+	protected void initValues() {
+		super.initValues();
+		initImageValues();
+	}
+
+	private void initImageValues() {
+		TreeObjectImage image = getInstance().getImage();
+		if (image != null) {
+			imageWidth.setValue(image.getWidth() + "");
+			imageHeight.setValue(image.getHeight() + "");
+			imageFile.setValue(image.getFileName());
+		}
+	}
+
 	private void createImageProperties() {
 		status = new Label(LanguageCodes.FILE_UPLOAD_CAPTION.translation());
 		ImageReceiver receiver = new ImageReceiver();
@@ -78,7 +95,9 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		imageFile = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_FILE));
 		imageFile.setEnabled(false);
 		imageWidth = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_WIDTH));
+		imageWidth.addValidator(new ValidatorInteger());
 		imageHeight = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_HEIGHT));
+		imageWidth.addValidator(new ValidatorInteger());
 
 		FormLayout imageProperties = new FormLayout();
 		imageProperties.setWidth(null);
@@ -300,7 +319,16 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		getInstance().setUpdateTime();
 
 		if (imageUpdated) {
-
+			TreeObjectImage image = new TreeObjectImage();
+			image.setCreatedBy(UserSessionHandler.getUser().getId());
+			image.setWidth(Integer.parseInt(imageWidth.getValue()));
+			image.setHeight(Integer.parseInt(imageHeight.getValue()));
+			image.setFileName(imageFile.getValue());
+			imageMemoryOutputStream.reset();
+			System.out.println(imageMemoryOutputStream.toByteArray().length);
+			image.setData(imageMemoryOutputStream.toByteArray());
+			getInstance().setImage(image);
+			imageUpdated = false;
 		}
 
 		firePropertyUpdateListener(getInstance());

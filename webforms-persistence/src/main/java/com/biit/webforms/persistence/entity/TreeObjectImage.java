@@ -14,13 +14,14 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 @Entity
 @Table(name = "images")
 @Cacheable(true)
-public class Image extends StorableObject {
+public class TreeObjectImage extends StorableObject {
 	private static final long serialVersionUID = 1072375747626406485L;
+	private String fileName;
 	private int width;
 	private int height;
 	private byte[] data;
 
-	public Image() {
+	public TreeObjectImage() {
 
 	}
 
@@ -55,14 +56,22 @@ public class Image extends StorableObject {
 
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		if (object instanceof Image) {
+		if (object instanceof TreeObjectImage) {
 			copyBasicInfo(object);
-			this.setWidth(((Image) object).getWidth());
-			this.setHeight(((Image) object).getHeight());
-			setData(Arrays.copyOf(((Image) object).getData(), ((Image) object).getData().length));
+			this.setWidth(((TreeObjectImage) object).getWidth());
+			this.setHeight(((TreeObjectImage) object).getHeight());
+			setData(Arrays.copyOf(((TreeObjectImage) object).getData(), ((TreeObjectImage) object).getData().length));
 		} else {
 			throw new NotValidStorableObjectException("Copy data for Images only supports the same type copy");
 		}
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 }

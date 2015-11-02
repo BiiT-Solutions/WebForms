@@ -26,6 +26,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -128,6 +129,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "tree_forms_references_hidden_elements")
 	private Set<TreeObject> elementsToHide;
+
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectImage image;
 
 	public Form() {
 		super();
@@ -1034,5 +1038,15 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 	public void removeWebserviceCall(WebserviceCall call) {
 		webserviceCalls.remove(call);
 		call.setForm(null);
+	}
+
+	@Override
+	public void setImage(TreeObjectImage image) {
+		this.image = image;
+	}
+
+	@Override
+	public TreeObjectImage getImage() {
+		return image;
 	}
 }

@@ -10,7 +10,7 @@ public class ValidatorTreeObjectNameLength implements Validator {
 
 	@Override
 	public void validate(Object value) throws InvalidValueException {
-		if(value!=null && ((String)value).length() > MAX_LENGTH){
+		if (value != null && ((String) value).length() > MAX_LENGTH) {
 			throw new InvalidValueException(LanguageCodes.CAPTION_NAME_TOO_LARGE.translation());
 		}
 	}

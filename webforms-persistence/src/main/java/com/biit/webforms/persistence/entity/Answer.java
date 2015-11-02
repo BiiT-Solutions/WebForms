@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.biit.form.entity.BaseAnswer;
@@ -20,10 +22,11 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.FlowConditionScript;
 
 /**
- * Answer is a class that contains the information of a defined and possible answer to a multiple choice question.
+ * Answer is a class that contains the information of a defined and possible
+ * answer to a multiple choice question.
  * 
- * -Has the next properties: name (value for client purposes, the method get/set name and value affect the same
- * parameter)
+ * -Has the next properties: name (value for client purposes, the method get/set
+ * name and value affect the same parameter)
  * 
  * -label
  * 
@@ -36,12 +39,14 @@ import com.biit.webforms.computed.FlowConditionScript;
 @Cacheable(true)
 public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithImage {
 	private static final long serialVersionUID = 7614678800982506178L;
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<Class<? extends TreeObject>>(
-			Arrays.asList(Answer.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(Answer.class));
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 
 	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
 	private String description;
+
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectImage image;
 
 	public Answer() {
 		super();
@@ -109,7 +114,8 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
 	}
 
 	/**
-	 * Checks if this answer is a subanswer by looking if it has a parent and if it has if is an answer.
+	 * Checks if this answer is a subanswer by looking if it has a parent and if
+	 * it has if is an answer.
 	 * 
 	 * @return
 	 */
@@ -164,5 +170,15 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
 				throw new DependencyExistException("Flow '" + flow + "' depends of element '" + this + "'");
 			}
 		}
+	}
+
+	@Override
+	public void setImage(TreeObjectImage image) {
+		this.image = image;
+	}
+
+	@Override
+	public TreeObjectImage getImage() {
+		return image;
 	}
 }

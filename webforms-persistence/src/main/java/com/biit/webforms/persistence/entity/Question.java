@@ -7,11 +7,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.biit.form.entity.TreeObject;
@@ -60,6 +62,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	private boolean editionDisabled;
 
 	private Timestamp defaultValueTime;
+
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectImage image;
 
 	public Question() {
 		super();
@@ -513,5 +518,15 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	public void setEditionDisabled(boolean editionDisabled) {
 		this.editionDisabled = editionDisabled;
+	}
+
+	@Override
+	public void setImage(TreeObjectImage image) {
+		this.image = image;
+	}
+
+	@Override
+	public TreeObjectImage getImage() {
+		return image;
 	}
 }
