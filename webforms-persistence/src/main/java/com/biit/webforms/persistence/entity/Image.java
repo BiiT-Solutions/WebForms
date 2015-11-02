@@ -1,8 +1,68 @@
 package com.biit.webforms.persistence.entity;
 
-public class Image {
-	
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Cacheable;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+
+@Entity
+@Table(name = "images")
+@Cacheable(true)
+public class Image extends StorableObject {
+	private static final long serialVersionUID = 1072375747626406485L;
 	private int width;
 	private int height;
+	private byte[] data;
+
+	public Image() {
+
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public byte[] getData() {
+		return data;
+	}
+
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+
+	@Override
+	public Set<StorableObject> getAllInnerStorableObjects() {
+		return new HashSet<>();
+	}
+
+	@Override
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
+		if (object instanceof Image) {
+			copyBasicInfo(object);
+			this.setWidth(((Image) object).getWidth());
+			this.setHeight(((Image) object).getHeight());
+			setData(Arrays.copyOf(((Image) object).getData(), ((Image) object).getData().length));
+		} else {
+			throw new NotValidStorableObjectException("Copy data for Images only supports the same type copy");
+		}
+	}
 
 }

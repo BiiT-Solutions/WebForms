@@ -1,7 +1,11 @@
 package com.biit.webforms.gui.components;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.entity.StorableObject;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.PropertiesForClassComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
@@ -10,15 +14,33 @@ import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.Upload.FailedEvent;
+import com.vaadin.ui.Upload.FinishedEvent;
+import com.vaadin.ui.Upload.Receiver;
+import com.vaadin.ui.Upload.StartedEvent;
+import com.vaadin.ui.Upload.SucceededEvent;
+import com.vaadin.ui.VerticalLayout;
 
 public abstract class StorableObjectProperties<T extends StorableObject> extends PropertiesForClassComponent<T> {
 	private static final long serialVersionUID = -1986275953105055523L;
 	private TextField createdByField, creationTimeField, updatedByField, updateTimeField;
 	private TextField image, imageWidth, imageHeight;
 	private Panel imagePreview;
+	// Image uploader
+	private ProgressBar progressIndicator = new ProgressBar();
+	private MyReceiver receiver = new MyReceiver();
+	private HorizontalLayout progressLayout = new HorizontalLayout();
+	private Upload upload = new Upload(null, receiver);
 
 	private T instance;
 
@@ -42,17 +64,13 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	}
 
 	private void createCommonProperties() {
-		createdByField = new TextField(
-				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_CREATED_BY));
+		createdByField = new TextField(ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_CREATED_BY));
 		createdByField.setEnabled(false);
-		creationTimeField = new TextField(
-				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_CREATION_TIME));
+		creationTimeField = new TextField(ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_CREATION_TIME));
 		creationTimeField.setEnabled(false);
-		updatedByField = new TextField(
-				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_UPDATED_BY));
+		updatedByField = new TextField(ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_UPDATED_BY));
 		updatedByField.setEnabled(false);
-		updateTimeField = new TextField(
-				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_UPDATE_TIME));
+		updateTimeField = new TextField(ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_UPDATE_TIME));
 		updateTimeField.setEnabled(false);
 
 		FormLayout commonProperties = new FormLayout();
@@ -63,24 +81,119 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		commonProperties.addComponent(updatedByField);
 		commonProperties.addComponent(updateTimeField);
 
-		addTab(commonProperties,
-				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_COMMON_FORM_CAPTION),
-				false);
+		addTab(commonProperties, ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_COMMON_FORM_CAPTION), false);
 	}
 
 	private void createImageProperties() {
 		image = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_FILE));
+		image.setEnabled(false);
 		imageWidth = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_WIDTH));
 		imageHeight = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_HEIGHT));
 
 		FormLayout imageProperties = new FormLayout();
 		imageProperties.setWidth(null);
 		imageProperties.setHeight(null);
+		imageProperties.addComponent(createUploader(LanguageCodes.FILE_UPLOAD_BUTTON_SELECT.translation()));
 		imageProperties.addComponent(image);
 		imageProperties.addComponent(imageWidth);
 		imageProperties.addComponent(imageHeight);
 
-		addTab(imageProperties, ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_TITLE), false);
+		if (WebformsConfigurationReader.getInstance().isImagesEnabled()) {
+			addTab(imageProperties, ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_TITLE), false);
+		}
+	}
+
+	private VerticalLayout createUploader(String currentUploadButtonText) {
+		VerticalLayout layout = new VerticalLayout();
+		layout.setSpacing(true);
+
+		// Slow down the upload
+		receiver.setSlow(true);
+
+		final Label status = new Label(LanguageCodes.FILE_UPLOAD_CAPTION.translation());
+
+		layout.addComponent(status);
+		layout.addComponent(upload);
+		layout.addComponent(progressLayout);
+
+		// Make uploading start immediately when file is selected
+		upload.setImmediate(true);
+		upload.setButtonCaption(currentUploadButtonText);
+
+		progressLayout.setSpacing(true);
+		progressLayout.setVisible(false);
+		progressLayout.addComponent(progressIndicator);
+		progressLayout.setComponentAlignment(progressIndicator, Alignment.MIDDLE_LEFT);
+
+		final Button cancelProcessing = new Button(LanguageCodes.FILE_UPLOAD_BUTTON_CANCEL.translation());
+		cancelProcessing.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = -391325312676441110L;
+
+			public void buttonClick(ClickEvent event) {
+				upload.interruptUpload();
+			}
+		});
+		// cancelProcessing.setStyleName("small");
+		progressLayout.addComponent(cancelProcessing);
+
+		/**
+		 * Add needed listener for the upload component: start, progress,
+		 * finish, success, fail
+		 */
+		upload.addStartedListener(new Upload.StartedListener() {
+			private static final long serialVersionUID = 7986347617060943929L;
+
+			public void uploadStarted(StartedEvent event) {
+				// This method gets called immediately after upload is started
+				upload.setVisible(false);
+				progressLayout.setVisible(true);
+				progressIndicator.setValue(0f);
+				status.setValue(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_UPLOADING, new Object[] { event.getFilename() }));
+			}
+		});
+
+		upload.addProgressListener(new Upload.ProgressListener() {
+			private static final long serialVersionUID = -1930623560474608086L;
+
+			public void updateProgress(long readBytes, long contentLength) {
+				// This method gets called several times during the update
+				progressIndicator.setValue(new Float(readBytes / (float) contentLength));
+			}
+
+		});
+
+		upload.addSucceededListener(new Upload.SucceededListener() {
+			private static final long serialVersionUID = 3256522293823783914L;
+
+			public void uploadSucceeded(SucceededEvent event) {
+				// This method gets called when the upload finished successfully
+				status.setValue(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_SUCCESS, new Object[] { event.getFilename() }));
+				upload.setButtonCaption(LanguageCodes.FILE_UPLOAD_BUTTON_UPDATE.translation());
+				image.setValue(event.getFilename());
+			}
+		});
+
+		upload.addFailedListener(new Upload.FailedListener() {
+			private static final long serialVersionUID = -4554278465897865471L;
+
+			public void uploadFailed(FailedEvent event) {
+				// This method gets called when the upload failed
+				status.setValue(LanguageCodes.FILE_UPLOAD_ERROR.translation());
+			}
+		});
+
+		upload.addFinishedListener(new Upload.FinishedListener() {
+			private static final long serialVersionUID = 4101238722584584073L;
+
+			public void uploadFinished(FinishedEvent event) {
+				// This method gets called always when the upload finished,
+				// either succeeding or failing
+				progressLayout.setVisible(false);
+				upload.setVisible(true);
+				// upload.setCaption("");
+			}
+		});
+		return layout;
 	}
 
 	private void initPreviewImagePanel() {
@@ -105,21 +218,18 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		}
 
 		try {
-			valueCreatedBy = getInstance().getCreatedBy() == null ? ""
-					: webformsSecurityService.getUserById(getInstance().getCreatedBy()).getEmailAddress();
+			valueCreatedBy = getInstance().getCreatedBy() == null ? "" : webformsSecurityService.getUserById(getInstance().getCreatedBy()).getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
 			valueCreatedBy = getInstance().getCreatedBy() + "";
 		}
 
 		try {
-			valueUpdatedBy = getInstance().getUpdatedBy() == null ? ""
-					: webformsSecurityService.getUserById(getInstance().getUpdatedBy()).getEmailAddress();
+			valueUpdatedBy = getInstance().getUpdatedBy() == null ? "" : webformsSecurityService.getUserById(getInstance().getUpdatedBy()).getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
 			valueUpdatedBy = getInstance().getUpdatedBy() + "";
 		}
 
-		String valueCreationTime = getInstance().getCreationTime() == null ? ""
-				: getInstance().getCreationTime().toString();
+		String valueCreationTime = getInstance().getCreationTime() == null ? "" : getInstance().getCreationTime().toString();
 		String valueUpdatedTime = getInstance().getUpdateTime() == null ? "" : getInstance().getUpdateTime().toString();
 
 		createdByField.setValue(valueCreatedBy);
@@ -158,6 +268,46 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 
 	public IWebformsSecurityService getWebformsSecurityService() {
 		return webformsSecurityService;
+	}
+
+	public static class MyReceiver implements Receiver {
+
+		private String fileName;
+		private String mtype;
+		private boolean sleep;
+		private int total = 0;
+
+		public OutputStream receiveUpload(String filename, String mimetype) {
+			fileName = filename;
+			mtype = mimetype;
+			return new OutputStream() {
+				@Override
+				public void write(int b) throws IOException {
+					total++;
+					if (sleep && total % 10000 == 0) {
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			};
+		}
+
+		public String getFileName() {
+			return fileName;
+		}
+
+		public String getMimeType() {
+			return mtype;
+		}
+
+		public void setSlow(boolean value) {
+			sleep = value;
+		}
+
 	}
 
 }

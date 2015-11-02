@@ -1,4 +1,4 @@
-package com.biit.webforms.gui.image;
+package com.biit.webforms.utils.images;
 
 import java.awt.Color;
 import java.awt.Graphics;

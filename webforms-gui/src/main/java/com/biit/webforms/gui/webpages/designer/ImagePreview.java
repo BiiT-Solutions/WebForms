@@ -4,9 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import com.biit.webforms.gui.common.components.ImagePanel;
-import com.biit.webforms.gui.image.ImageTools;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.utils.images.ImageTools;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
 

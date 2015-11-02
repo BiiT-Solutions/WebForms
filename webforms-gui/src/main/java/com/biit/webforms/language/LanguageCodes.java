@@ -650,6 +650,16 @@ public enum LanguageCodes implements ILanguageCode {
 	IMAGE_NOT_CREATED_TEXT("image.not.created"),
 	IMAGE_NOT_EXISTING_TEXT("image.not.existing"),
 	
+	FILE_UPLOAD_CAPTION("file.upload.caption"),
+	FILE_UPLOAD_UPLOADING("file.upload.uploading"),
+	FILE_UPLOAD_SUCCESS("file.upload.success"),
+	FILE_UPLOAD_DELETE("file.upload.deleted"),
+	FILE_UPLOAD_CANCEL("file.upload.cancel"),
+	FILE_UPLOAD_ERROR("file.upload.error"),	
+	FILE_UPLOAD_BUTTON_SELECT("file.upload.button.select"),
+	FILE_UPLOAD_BUTTON_CANCEL("file.upload.button.cancel"),
+	FILE_UPLOAD_BUTTON_UPDATE("file.upload.button.update"),
+	FILE_UPLOAD_BUTTON_DELETE("file.upload.button.delete"),
 	;
 
 	private String value;
