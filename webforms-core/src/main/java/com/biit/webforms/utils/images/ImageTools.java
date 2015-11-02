@@ -29,7 +29,7 @@ public class ImageTools {
 		drawable.setColor(Color.WHITE);
 		drawable.fillRect(0, 0, (int) width, height);
 		drawable.setColor(Color.black);
-		drawable.drawString("Image cannot be created.", width / 2 - 75, height / 2);
+		drawable.drawString("Image cannot be created. ", width / 2 - 75, height / 2);
 
 		try {
 			// Write the image to a buffer.

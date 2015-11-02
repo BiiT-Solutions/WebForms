@@ -112,8 +112,10 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 
 		imagePreview = new ImagePreview(1f);
 		imagePreview.setWidth("200px");
+		imagePreview.setVisible(false);
 		// imagePreview.setHeight("200px");
 		imageProperties.addComponent(imagePreview);
+		updatePreviewImagePanel();
 
 		if (WebformsConfigurationReader.getInstance().isImagesEnabled()) {
 			addTab(imageProperties, ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_TITLE), false);
@@ -181,6 +183,8 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 					MessageManager.showError(LanguageCodes.FILE_UPLOAD_INVALID.translation(), LanguageCodes.FILE_UPLOAD_INVALID_DESCRIPTION.translation() + " "
 							+ allowedMimeTypes);
 					upload.interruptUpload();
+					imagePreview.setStreamSource(null);
+					imageFile.setValue("");
 				}
 			}
 		});
@@ -207,6 +211,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 				upload.setButtonCaption(LanguageCodes.FILE_UPLOAD_BUTTON_UPDATE.translation());
 				imageFile.setValue(event.getFilename());
 				updatePreviewImagePanel();
+				imagePreview.setVisible(true);
 			}
 		});
 
@@ -216,6 +221,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 			public void uploadFailed(FailedEvent event) {
 				// This method gets called when the upload failed
 				status.setValue(LanguageCodes.FILE_UPLOAD_ERROR.translation());
+				imagePreview.setVisible(false);
 			}
 		});
 
@@ -315,6 +321,8 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 				}
 			};
 			imagePreview.setStreamSource(source);
+		} else {
+			imagePreview.setStreamSource(null);
 		}
 	}
 

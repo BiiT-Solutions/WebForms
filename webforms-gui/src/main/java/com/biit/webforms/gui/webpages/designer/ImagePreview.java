@@ -41,6 +41,7 @@ public class ImagePreview extends ImagePanel {
 				defaultImage = new ByteArrayInputStream(ImageTools.createDefaultImage((int) getWidth(), (int) getHeight(),
 						LanguageCodes.IMAGE_NOT_EXISTING_TEXT.translation()));
 			}
+			defaultImage.reset();
 			return defaultImage;
 
 		}
