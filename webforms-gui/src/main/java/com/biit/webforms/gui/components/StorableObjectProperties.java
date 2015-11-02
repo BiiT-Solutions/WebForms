@@ -1,11 +1,15 @@
 package com.biit.webforms.gui.components;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.entity.StorableObject;
@@ -18,12 +22,14 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.designer.ImagePreview;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -42,9 +48,11 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	private static final long serialVersionUID = -1986275953105055523L;
 	private static final List<String> allowedMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp", "image/gif");
 	private static final int MAX_DISPLAY_FILE_NAME_LENGTH = 12;
+	private static final String STATUS_STYLE = "status_field";
 	private TextField createdByField, creationTimeField, updatedByField, updateTimeField;
 	private TextField imageFile, imageWidth, imageHeight;
 	private ImagePreview imagePreview;
+	private Button deleteImageButton;
 	// Image uploader
 	private ProgressBar progressIndicator = new ProgressBar();
 	private ImageReceiver receiver = new ImageReceiver();
@@ -57,6 +65,8 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 
 	private IWebformsSecurityService webformsSecurityService;
 	final Embedded image = new Embedded("Uploaded Image");
+
+	final Label status = new Label(LanguageCodes.FILE_UPLOAD_CAPTION.translation());
 
 	protected StorableObjectProperties(Class<? extends T> type) {
 		super(type);
@@ -117,9 +127,32 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		imageProperties.addComponent(imagePreview);
 		updatePreviewImagePanel();
 
+		// Delete button
+		deleteImageButton = new Button(LanguageCodes.COMMON_CAPTION_DELETE.translation());
+		imageProperties.addComponent(deleteImageButton);
+		deleteImageButton.setVisible(false);
+		deleteImageButton.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = -391325312676441110L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				cancelImage();
+				status.setValue(LanguageCodes.FILE_DELETED.translation());
+			}
+		});
+
 		if (WebformsConfigurationReader.getInstance().isImagesEnabled()) {
 			addTab(imageProperties, ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_TITLE), false);
 		}
+	}
+
+	private void cancelImage() {
+		imagePreview.setStreamSource(null);
+		imagePreview.setVisible(false);
+		deleteImageButton.setVisible(false);
+		imageFile.setValue("");
+		imageHeight.setValue("");
+		imageWidth.setValue("");
 	}
 
 	private VerticalLayout createUploader(String currentUploadButtonText) {
@@ -127,7 +160,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		VerticalLayout layout = new VerticalLayout();
 		layout.setSpacing(true);
 
-		final Label status = new Label(LanguageCodes.FILE_UPLOAD_CAPTION.translation());
+		status.addStyleName(STATUS_STYLE);
 
 		layout.addComponent(status);
 		layout.addComponent(upload);
@@ -183,8 +216,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 					MessageManager.showError(LanguageCodes.FILE_UPLOAD_INVALID.translation(), LanguageCodes.FILE_UPLOAD_INVALID_DESCRIPTION.translation() + " "
 							+ allowedMimeTypes);
 					upload.interruptUpload();
-					imagePreview.setStreamSource(null);
-					imageFile.setValue("");
+					cancelImage();
 				}
 			}
 		});
@@ -212,6 +244,8 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 				imageFile.setValue(event.getFilename());
 				updatePreviewImagePanel();
 				imagePreview.setVisible(true);
+				deleteImageButton.setVisible(true);
+
 			}
 		});
 
@@ -222,6 +256,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 				// This method gets called when the upload failed
 				status.setValue(LanguageCodes.FILE_UPLOAD_ERROR.translation());
 				imagePreview.setVisible(false);
+				deleteImageButton.setVisible(false);
 			}
 		});
 
@@ -236,6 +271,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 				// upload.setCaption("");
 			}
 		});
+
 		return layout;
 	}
 
@@ -321,6 +357,16 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 				}
 			};
 			imagePreview.setStreamSource(source);
+			BufferedImage bimg;
+			try {
+				bimg = ImageIO.read(source.getStream());
+				if (bimg != null) {
+					imageWidth.setValue(bimg.getWidth() + "");
+					imageHeight.setValue(bimg.getHeight() + "");
+				}
+			} catch (IOException e) {
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
 		} else {
 			imagePreview.setStreamSource(null);
 		}
