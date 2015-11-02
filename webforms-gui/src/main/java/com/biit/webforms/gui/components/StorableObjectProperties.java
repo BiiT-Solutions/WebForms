@@ -41,6 +41,7 @@ import com.vaadin.ui.VerticalLayout;
 public abstract class StorableObjectProperties<T extends StorableObject> extends PropertiesForClassComponent<T> {
 	private static final long serialVersionUID = -1986275953105055523L;
 	private static final List<String> allowedMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp", "image/gif");
+	private static final int MAX_DISPLAY_FILE_NAME_LENGTH = 12;
 	private TextField createdByField, creationTimeField, updatedByField, updateTimeField;
 	private TextField imageFile, imageWidth, imageHeight;
 	private ImagePreview imagePreview;
@@ -199,7 +200,10 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 
 			public void uploadSucceeded(SucceededEvent event) {
 				// This method gets called when the upload finished successfully
-				status.setValue(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_SUCCESS, new Object[] { event.getFilename() }));
+				status.setValue(ServerTranslate.translate(
+						LanguageCodes.FILE_UPLOAD_SUCCESS,
+						new Object[] { event.getFilename().length() < MAX_DISPLAY_FILE_NAME_LENGTH ? event.getFilename() : event.getFilename().substring(0,
+								MAX_DISPLAY_FILE_NAME_LENGTH) }));
 				upload.setButtonCaption(LanguageCodes.FILE_UPLOAD_BUTTON_UPDATE.translation());
 				imageFile.setValue(event.getFilename());
 				updatePreviewImagePanel();
