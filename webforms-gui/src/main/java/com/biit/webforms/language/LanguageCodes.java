@@ -660,6 +660,8 @@ public enum LanguageCodes implements ILanguageCode {
 	FILE_UPLOAD_BUTTON_CANCEL("file.upload.button.cancel"),
 	FILE_UPLOAD_BUTTON_UPDATE("file.upload.button.update"),
 	FILE_UPLOAD_BUTTON_DELETE("file.upload.button.delete"),
+	FILE_UPLOAD_INVALID("file.upload.invalid"),
+	FILE_UPLOAD_INVALID_DESCRIPTION("file.upload.invalid.description"),
 	;
 
 	private String value;

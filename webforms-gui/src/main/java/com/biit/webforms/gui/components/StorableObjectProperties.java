@@ -1,7 +1,11 @@
 package com.biit.webforms.gui.components;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.entity.StorableObject;
@@ -10,17 +14,20 @@ import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.PropertiesForClassComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
+import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
+import com.biit.webforms.gui.webpages.designer.ImagePreview;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.security.IWebformsSecurityService;
+import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
@@ -33,18 +40,22 @@ import com.vaadin.ui.VerticalLayout;
 
 public abstract class StorableObjectProperties<T extends StorableObject> extends PropertiesForClassComponent<T> {
 	private static final long serialVersionUID = -1986275953105055523L;
+	private static final List<String> allowedMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp", "image/gif");
 	private TextField createdByField, creationTimeField, updatedByField, updateTimeField;
-	private TextField image, imageWidth, imageHeight;
-	private Panel imagePreview;
+	private TextField imageFile, imageWidth, imageHeight;
+	private ImagePreview imagePreview;
 	// Image uploader
 	private ProgressBar progressIndicator = new ProgressBar();
-	private MyReceiver receiver = new MyReceiver();
+	private ImageReceiver receiver = new ImageReceiver();
 	private HorizontalLayout progressLayout = new HorizontalLayout();
-	private Upload upload = new Upload(null, receiver);
+	private Upload upload;
+	// Put upload in this memory buffer that grows automatically
+	final ByteArrayOutputStream imageMemoryOutputStream = new ByteArrayOutputStream(10240);
 
 	private T instance;
 
 	private IWebformsSecurityService webformsSecurityService;
+	final Embedded image = new Embedded("Uploaded Image");
 
 	protected StorableObjectProperties(Class<? extends T> type) {
 		super(type);
@@ -85,8 +96,8 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	}
 
 	private void createImageProperties() {
-		image = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_FILE));
-		image.setEnabled(false);
+		imageFile = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_FILE));
+		imageFile.setEnabled(false);
 		imageWidth = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_WIDTH));
 		imageHeight = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_HEIGHT));
 
@@ -94,9 +105,14 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		imageProperties.setWidth(null);
 		imageProperties.setHeight(null);
 		imageProperties.addComponent(createUploader(LanguageCodes.FILE_UPLOAD_BUTTON_SELECT.translation()));
-		imageProperties.addComponent(image);
+		imageProperties.addComponent(imageFile);
 		imageProperties.addComponent(imageWidth);
 		imageProperties.addComponent(imageHeight);
+
+		imagePreview = new ImagePreview(1f);
+		imagePreview.setWidth("200px");
+		// imagePreview.setHeight("200px");
+		imageProperties.addComponent(imagePreview);
 
 		if (WebformsConfigurationReader.getInstance().isImagesEnabled()) {
 			addTab(imageProperties, ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_TITLE), false);
@@ -104,11 +120,9 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	}
 
 	private VerticalLayout createUploader(String currentUploadButtonText) {
+		upload = new Upload(null, receiver);
 		VerticalLayout layout = new VerticalLayout();
 		layout.setSpacing(true);
-
-		// Slow down the upload
-		receiver.setSlow(true);
 
 		final Label status = new Label(LanguageCodes.FILE_UPLOAD_CAPTION.translation());
 
@@ -131,6 +145,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 
 			public void buttonClick(ClickEvent event) {
 				upload.interruptUpload();
+				imagePreview.setStreamSource(null);
 			}
 		});
 		// cancelProcessing.setStyleName("small");
@@ -144,11 +159,28 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 			private static final long serialVersionUID = 7986347617060943929L;
 
 			public void uploadStarted(StartedEvent event) {
-				// This method gets called immediately after upload is started
-				upload.setVisible(false);
-				progressLayout.setVisible(true);
-				progressIndicator.setValue(0f);
-				status.setValue(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_UPLOADING, new Object[] { event.getFilename() }));
+				// Check correct files.
+				String contentType = event.getMIMEType();
+				boolean allowed = false;
+				for (int i = 0; i < allowedMimeTypes.size(); i++) {
+					if (contentType.equalsIgnoreCase(allowedMimeTypes.get(i))) {
+						allowed = true;
+						break;
+					}
+				}
+
+				if (allowed) {
+					// This method gets called immediately after upload is
+					// started
+					upload.setVisible(false);
+					progressLayout.setVisible(true);
+					progressIndicator.setValue(0f);
+					status.setValue(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_UPLOADING, new Object[] { event.getFilename() }));
+				} else {
+					MessageManager.showError(LanguageCodes.FILE_UPLOAD_INVALID.translation(), LanguageCodes.FILE_UPLOAD_INVALID_DESCRIPTION.translation() + " "
+							+ allowedMimeTypes);
+					upload.interruptUpload();
+				}
 			}
 		});
 
@@ -169,7 +201,8 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 				// This method gets called when the upload finished successfully
 				status.setValue(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_SUCCESS, new Object[] { event.getFilename() }));
 				upload.setButtonCaption(LanguageCodes.FILE_UPLOAD_BUTTON_UPDATE.translation());
-				image.setValue(event.getFilename());
+				imageFile.setValue(event.getFilename());
+				updatePreviewImagePanel();
 			}
 		});
 
@@ -194,9 +227,6 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 			}
 		});
 		return layout;
-	}
-
-	private void initPreviewImagePanel() {
 	}
 
 	/**
@@ -270,30 +300,30 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		return webformsSecurityService;
 	}
 
-	public static class MyReceiver implements Receiver {
+	private void updatePreviewImagePanel() {
+		if (imageMemoryOutputStream != null) {
+			// Display the image in the feedback component
+			StreamSource source = new StreamSource() {
+				private static final long serialVersionUID = -4905654404647215809L;
 
+				public InputStream getStream() {
+					return new ByteArrayInputStream(imageMemoryOutputStream.toByteArray());
+				}
+			};
+			imagePreview.setStreamSource(source);
+		}
+	}
+
+	public class ImageReceiver implements Receiver {
+		private static final long serialVersionUID = 6939666378311756261L;
 		private String fileName;
 		private String mtype;
-		private boolean sleep;
-		private int total = 0;
 
 		public OutputStream receiveUpload(String filename, String mimetype) {
 			fileName = filename;
 			mtype = mimetype;
-			return new OutputStream() {
-				@Override
-				public void write(int b) throws IOException {
-					total++;
-					if (sleep && total % 10000 == 0) {
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-			};
+			imageMemoryOutputStream.reset(); // If re-uploading
+			return imageMemoryOutputStream;
 		}
 
 		public String getFileName() {
@@ -303,11 +333,6 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		public String getMimeType() {
 			return mtype;
 		}
-
-		public void setSlow(boolean value) {
-			sleep = value;
-		}
-
 	}
 
 }

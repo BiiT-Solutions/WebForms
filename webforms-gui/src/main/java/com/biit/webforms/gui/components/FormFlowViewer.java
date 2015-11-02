@@ -29,6 +29,7 @@ public class FormFlowViewer extends ImagePanel {
 	private static ByteArrayInputStream defaultImage = null;
 	private ImgType imgType;
 	private TreeObject filter;
+	private Form form;
 
 	public FormFlowViewer(GraphvizApp.ImgType imgType, float resize) {
 		super(resize);
@@ -77,16 +78,15 @@ public class FormFlowViewer extends ImagePanel {
 				}
 				return inputStream;
 			} catch (IOException ioe) {
-				MessageManager.showError(LanguageCodes.GRAPHVIZ_EXEC_NOT_FOUND,
-						LanguageCodes.GRAPHVIZ_EXEC_NOT_FOUND_DESCRIPTION);
+				MessageManager.showError(LanguageCodes.GRAPHVIZ_EXEC_NOT_FOUND, LanguageCodes.GRAPHVIZ_EXEC_NOT_FOUND_DESCRIPTION);
 				WebformsLogger.errorMessage(this.getClass().getName(), ioe);
 			} catch (Exception e) {
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
 
 			if (defaultImage == null) {
-				defaultImage = new ByteArrayInputStream(ImageTools.createDefaultImage((int) getWidth(),
-						(int) getHeight(), LanguageCodes.IMAGE_NOT_CREATED_TEXT.translation()));
+				defaultImage = new ByteArrayInputStream(ImageTools.createDefaultImage((int) getWidth(), (int) getHeight(),
+						LanguageCodes.IMAGE_NOT_CREATED_TEXT.translation()));
 			}
 			return defaultImage;
 		}
@@ -98,6 +98,14 @@ public class FormFlowViewer extends ImagePanel {
 		this.filter = filter;
 
 		redraw();
+	}
+
+	public Form getForm() {
+		return form;
+	}
+
+	protected void setForm(Form form) {
+		this.form = form;
 	}
 
 }

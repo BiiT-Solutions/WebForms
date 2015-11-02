@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import com.biit.webforms.gui.components.ZoomChangedListener;
-import com.biit.webforms.persistence.entity.Form;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.StreamResource;
@@ -32,7 +31,6 @@ public abstract class ImagePanel extends Panel {
 	private double resize = MIN_AUGMENT;
 	private StreamResource.StreamSource imagesource;
 	private HorizontalLayout imageLayout;
-	private Form form;
 	private List<ZoomChangedListener> listeners;
 
 	public ImagePanel(float resize) {
@@ -94,7 +92,7 @@ public abstract class ImagePanel extends Panel {
 		// Time stamp is used on image to force a reload on the client
 		// browser.
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-		return form.getLabel() + "_" + df.format(new Date());
+		return "image_" + df.format(new Date());
 	}
 
 	protected abstract StreamResource.StreamSource getImage();
@@ -118,7 +116,7 @@ public abstract class ImagePanel extends Panel {
 	/**
 	 * setter
 	 */
-	private void setResize(double resizePercentage) {
+	protected void setResize(double resizePercentage) {
 		resizePercentage = Math.max(resizePercentage, MIN_AUGMENT);
 		resizePercentage = Math.min(resizePercentage, MAX_AUGMENT);
 		this.resize = resizePercentage;
@@ -162,8 +160,8 @@ public abstract class ImagePanel extends Panel {
 				setScrollTop(positionY);
 			}
 		});
-		JavaScript.getCurrent().execute("getElementAndZoom(document.getElementById('" + this.getId()
-				+ "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
+		JavaScript.getCurrent().execute(
+				"getElementAndZoom(document.getElementById('" + this.getId() + "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
 	}
 
 	private void zoomInOut(final int x, final int y, final double resizeFactor) {
@@ -210,8 +208,8 @@ public abstract class ImagePanel extends Panel {
 				setScrollTop(positionY);
 			}
 		});
-		JavaScript.getCurrent().execute("getElementAndZoom(document.getElementById('" + this.getId()
-				+ "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
+		JavaScript.getCurrent().execute(
+				"getElementAndZoom(document.getElementById('" + this.getId() + "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
 	}
 
 	private void addImage() {
@@ -225,13 +223,4 @@ public abstract class ImagePanel extends Panel {
 
 		image.markAsDirty();
 	}
-
-	public Form getForm() {
-		return form;
-	}
-
-	protected void setForm(Form form) {
-		this.form = form;
-	}
-
 }
