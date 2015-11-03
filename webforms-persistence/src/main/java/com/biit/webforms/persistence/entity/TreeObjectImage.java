@@ -1,18 +1,26 @@
 package com.biit.webforms.persistence.entity;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import org.springframework.util.Base64Utils;
+
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.logger.WebformsLogger;
 
 @Entity
 @Table(name = "images")
@@ -108,6 +116,9 @@ public class TreeObjectImage extends StorableObject {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
 		if (this == obj)
 			return true;
 		if (getClass() != obj.getClass())
@@ -127,8 +138,34 @@ public class TreeObjectImage extends StorableObject {
 		return true;
 	}
 
-	// public String toBase64() {
-	// return Base64.encode(getData());
-	// }
+	/**
+	 * Gets the image in base64
+	 * 
+	 * @return
+	 */
+	public byte[] toBase64() {
+		return Base64Utils.encode(getData());
+	}
+
+	/**
+	 * sets the image from base64
+	 */
+	public void fromBase64(String data) {
+		setData(Base64Utils.decode(data.getBytes()));
+	}
+
+	public void setDefaultHeightAndWeight() {
+		InputStream in = new ByteArrayInputStream(getData());
+		try {
+			BufferedImage bimg = ImageIO.read(in);
+			if (bimg != null) {
+				// Disable field to disable events to be launched.
+				setWidth(bimg.getWidth());
+				setHeight(bimg.getHeight());
+			}
+		} catch (IOException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+	}
 
 }

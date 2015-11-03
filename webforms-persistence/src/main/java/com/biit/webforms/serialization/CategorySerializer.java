@@ -2,18 +2,17 @@ package com.biit.webforms.serialization;
 
 import java.lang.reflect.Type;
 
-import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.Category;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 
-public class AnswerSerializer extends TreeObjectSerializer<Answer> {
+public class CategorySerializer extends TreeObjectSerializer<Category> {
 
 	@Override
-	public JsonElement serialize(Answer src, Type typeOfSrc, JsonSerializationContext context) {
+	public JsonElement serialize(Category src, Type typeOfSrc, JsonSerializationContext context) {
 		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
 
-		jsonObject.add("description", context.serialize(src.getDescription()));
 		if (src.getImage() != null) {
 			jsonObject.add("image", context.serialize(src.getImage()));
 		} else {
@@ -22,5 +21,4 @@ public class AnswerSerializer extends TreeObjectSerializer<Answer> {
 
 		return jsonObject;
 	}
-
 }

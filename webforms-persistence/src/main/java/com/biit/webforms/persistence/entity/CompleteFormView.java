@@ -36,6 +36,7 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkE
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.serialization.AnswerSerializer;
 import com.biit.webforms.serialization.BaseRepeatableGroupSerializer;
+import com.biit.webforms.serialization.CategoryDeserializer;
 import com.biit.webforms.serialization.DynamicAnswerSerializer;
 import com.biit.webforms.serialization.FormSerializer;
 import com.biit.webforms.serialization.QuestionSerializer;
@@ -47,7 +48,7 @@ import com.biit.webforms.serialization.TokenComparationValueSerializer;
 import com.biit.webforms.serialization.TokenInSerializer;
 import com.biit.webforms.serialization.TokenInValueSerializer;
 import com.biit.webforms.serialization.TokenSerializer;
-import com.biit.webforms.serialization.TreeObjectSerializer;
+import com.biit.webforms.serialization.TreeObjectImageSerializer;
 import com.biit.webforms.serialization.WebserviceCallInputLinkErrorsSerializer;
 import com.biit.webforms.serialization.WebserviceCallInputLinkSerializer;
 import com.biit.webforms.serialization.WebserviceCallOutputLinkSerializer;
@@ -537,7 +538,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		gsonBuilder.setPrettyPrinting();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
 		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
-		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectSerializer<Category>());
+		gsonBuilder.registerTypeAdapter(Category.class, new CategoryDeserializer());
 		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
 		gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
@@ -555,6 +556,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputLinkSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class, new WebserviceCallInputLinkErrorsSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkSerializer());
+		gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageSerializer());
 		Gson gson = gsonBuilder.create();
 
 		CompleteFormView form = new CompleteFormView();

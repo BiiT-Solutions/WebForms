@@ -21,6 +21,7 @@ import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
@@ -55,7 +56,7 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 		// Redirects to proper deserializers.
 		gsonBuilder.registerTypeAdapter(StorableObject.class, new StorableObjectDeserializer<StorableObject>());
 		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
-		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectDeserializer<Category>(Category.class));
+		gsonBuilder.registerTypeAdapter(Category.class, new CategoryDeserializer());
 		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupDeserializer<Group>(Group.class));
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionDeserializer());
 		gsonBuilder.registerTypeAdapter(Text.class, new TextDeserializer());
@@ -73,6 +74,7 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 		gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputDeserializer(element));
 		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class, new WebserviceCallInputErrorsDeserializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkDeserializer(element));
+		gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageDeserializer());
 		Gson gson = gsonBuilder.create();
 
 		element.setComparationId(parseString("comparationId", jobject, context));
@@ -118,18 +120,19 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 		}
 
 		// Deserializes Webservice calls
-		Type callListType = new  TypeToken<HashSet<WebserviceCall>>() {
+		Type callListType = new TypeToken<HashSet<WebserviceCall>>() {
 		}.getType();
 		JsonElement callsJson = jobject.get("webserviceCalls");
-		
+
 		if (callsJson != null) {
 			Set<WebserviceCall> calls = gson.fromJson(callsJson, callListType);
 			element.addWebserviceCalls(calls);
 		}
+
+		element.setImage((TreeObjectImage) context.deserialize(jobject.get("image"), TreeObjectImage.class));
 	}
 
-	public static TreeObject parseTreeObjectPath(String name, Form form, JsonObject jobject,
-			JsonDeserializationContext context) {
+	public static TreeObject parseTreeObjectPath(String name, Form form, JsonObject jobject, JsonDeserializationContext context) {
 		// Deserializes reference by searching on the form.
 		Type listType = new TypeToken<List<String>>() {
 		}.getType();

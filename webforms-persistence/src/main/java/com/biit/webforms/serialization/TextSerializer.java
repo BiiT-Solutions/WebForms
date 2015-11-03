@@ -14,6 +14,11 @@ public class TextSerializer extends TreeObjectSerializer<Text> {
 		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
 
 		jsonObject.add("description", context.serialize(src.getDescription()));
+		if (src.getImage() != null) {
+			jsonObject.add("image", context.serialize(src.getImage()));
+		} else {
+			jsonObject.add("image", context.serialize(null));
+		}
 
 		return jsonObject;
 	}
