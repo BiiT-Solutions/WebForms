@@ -55,7 +55,6 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 	private ByteArrayOutputStream imageMemoryOutputStream;
 
 	private Label status;
-	private boolean imageUpdated = false;
 
 	protected StorableObjectPropertiesWithImages(Class<? extends T> type) {
 		super(type);
@@ -85,6 +84,13 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 			imageWidth.setValue(image.getWidth() + "");
 			imageHeight.setValue(image.getHeight() + "");
 			imageFile.setValue(image.getFileName());
+
+			imageMemoryOutputStream = image.getStream();
+			updatePreviewImagePanel();
+
+			// Enable image area
+			imagePreview.setVisible(true);
+			deleteImageButton.setVisible(true);
 		}
 	}
 
@@ -124,6 +130,7 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 			@Override
 			public void buttonClick(ClickEvent event) {
 				cancelImage();
+				updateImageValue();
 				status.setValue(LanguageCodes.FILE_DELETED.translation());
 			}
 		});
@@ -137,10 +144,15 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		imagePreview.setStreamSource(null);
 		imagePreview.setVisible(false);
 		deleteImageButton.setVisible(false);
+		// Disable field to disable events to be launched.
+		imageWidth.setEnabled(false);
+		imageHeight.setEnabled(false);
 		imageFile.setValue("");
 		imageHeight.setValue("");
 		imageWidth.setValue("");
-		imageUpdated = true;
+		// Disable field to disable events to be launched.
+		imageWidth.setEnabled(true);
+		imageHeight.setEnabled(true);
 	}
 
 	private VerticalLayout createUploader(String currentUploadButtonText, ImageReceiver receiver) {
@@ -233,10 +245,10 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 								MAX_DISPLAY_FILE_NAME_LENGTH) }));
 				upload.setButtonCaption(LanguageCodes.FILE_UPLOAD_BUTTON_UPDATE.translation());
 				imageFile.setValue(event.getFilename());
-				updatePreviewImagePanel();
 				imagePreview.setVisible(true);
 				deleteImageButton.setVisible(true);
-				imageUpdated = true;
+				updatePreviewImagePanel();
+				updateImageValue();
 			}
 		});
 
@@ -302,8 +314,13 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 			try {
 				bimg = ImageIO.read(source.getStream());
 				if (bimg != null) {
+					// Disable field to disable events to be launched.
+					imageWidth.setEnabled(false);
+					imageHeight.setEnabled(false);
 					imageWidth.setValue(bimg.getWidth() + "");
 					imageHeight.setValue(bimg.getHeight() + "");
+					imageWidth.setEnabled(true);
+					imageHeight.setEnabled(true);
 				}
 			} catch (IOException e) {
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -317,21 +334,27 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 	public void updateElement() {
 		getInstance().setUpdatedBy(UserSessionHandler.getUser());
 		getInstance().setUpdateTime();
-
-		if (imageUpdated) {
-			TreeObjectImage image = new TreeObjectImage();
-			image.setCreatedBy(UserSessionHandler.getUser().getId());
-			image.setWidth(Integer.parseInt(imageWidth.getValue()));
-			image.setHeight(Integer.parseInt(imageHeight.getValue()));
-			image.setFileName(imageFile.getValue());
-			imageMemoryOutputStream.reset();
-			System.out.println(imageMemoryOutputStream.toByteArray().length);
-			image.setData(imageMemoryOutputStream.toByteArray());
-			getInstance().setImage(image);
-			imageUpdated = false;
-		}
-
 		firePropertyUpdateListener(getInstance());
+	}
+
+	/**
+	 * Sets the image to the instance.
+	 */
+	private void updateImageValue() {
+		TreeObjectImage image = new TreeObjectImage();
+		image.setCreatedBy(UserSessionHandler.getUser().getId());
+		try {
+			image.setWidth(Integer.parseInt(imageWidth.getValue()));
+		} catch (NumberFormatException e) {
+		}
+		try {
+			image.setHeight(Integer.parseInt(imageHeight.getValue()));
+		} catch (NumberFormatException e) {
+		}
+		image.setFileName(imageFile.getValue());
+		// imageMemoryOutputStream.reset();
+		image.setStream(imageMemoryOutputStream);
+		getInstance().setImage(image);
 	}
 
 }

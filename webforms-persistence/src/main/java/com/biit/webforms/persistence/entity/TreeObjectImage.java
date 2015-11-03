@@ -1,11 +1,14 @@
 package com.biit.webforms.persistence.entity;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import com.biit.persistence.entity.StorableObject;
@@ -15,10 +18,14 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 @Table(name = "images")
 @Cacheable(true)
 public class TreeObjectImage extends StorableObject {
+	public static final int MAX_IMAGE_LENGTH = 1024 * 1024 * 10;
 	private static final long serialVersionUID = 1072375747626406485L;
 	private String fileName;
 	private int width;
 	private int height;
+
+	@Lob
+	@Column(length = MAX_IMAGE_LENGTH)
 	private byte[] data;
 
 	public TreeObjectImage() {
@@ -72,6 +79,16 @@ public class TreeObjectImage extends StorableObject {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public ByteArrayOutputStream getStream() {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(getData().length);
+		baos.write(getData(), 0, getData().length);
+		return baos;
+	}
+
+	public void setStream(ByteArrayOutputStream baos) {
+		setData(baos.toByteArray());
 	}
 
 }

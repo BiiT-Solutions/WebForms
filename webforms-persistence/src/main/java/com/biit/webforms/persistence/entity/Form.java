@@ -130,7 +130,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 	@JoinTable(name = "tree_forms_references_hidden_elements")
 	private Set<TreeObject> elementsToHide;
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private TreeObjectImage image;
 
 	public Form() {

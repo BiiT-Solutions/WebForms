@@ -74,6 +74,8 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 		if (form.getCreationTime() == null) {
 			form.setCreationTime();
 		}
+		System.out.println(" -------- IMAGE ---------");
+		System.out.println(form.getImage());
 		return super.makePersistent(form);
 	}
 
