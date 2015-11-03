@@ -143,6 +143,8 @@ public enum ThemeIcons implements IThemeIcon {
 	EDIT_WEBSERVICE_PORT("webservice.edit.svg"),
 	REMOVE_WEBSERVICE_PORT("webservice.clear.svg"), 
 	
+	IMAGE("image.svg"),
+	
 	;
 
 	private String value;

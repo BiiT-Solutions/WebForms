@@ -41,7 +41,7 @@ import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.gui.exceptions.LinkCanOnlyBePerformedOnWholeBlock;
 import com.biit.webforms.gui.exceptions.SameOriginAndDestinationException;
 import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
-import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectHidden;
+import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectExtraInformation;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
 import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.designer.WindowBlocks;
@@ -133,7 +133,7 @@ public class Designer extends SecuredWebPage {
 		table.setPageLength(0);
 		table.setHiddenElementShown(true);
 		table.setIconProvider(new IconProviderTreeObjectWebforms());
-		table.setStatusIconProvider(new IconProviderTreeObjectHidden());
+		table.setStatusIconProvider(new IconProviderTreeObjectExtraInformation());
 		table.setSizeFull();
 		table.setSelectable(true);
 		table.loadTreeObject(getCurrentForm(), null);

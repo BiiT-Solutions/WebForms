@@ -153,6 +153,7 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		// Disable field to disable events to be launched.
 		imageWidth.setEnabled(true);
 		imageHeight.setEnabled(true);
+		getInstance().setImage(null);
 	}
 
 	private VerticalLayout createUploader(String currentUploadButtonText, ImageReceiver receiver) {
