@@ -216,8 +216,16 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 					progressIndicator.setValue(0f);
 					status.setValue(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_UPLOADING, new Object[] { event.getFilename() }));
 				} else {
-					MessageManager.showError(LanguageCodes.FILE_UPLOAD_INVALID.translation(), LanguageCodes.FILE_UPLOAD_INVALID_DESCRIPTION.translation() + " "
-							+ allowedMimeTypes);
+					MessageManager.showError(LanguageCodes.FILE_UPLOAD_INVALID.translation(), LanguageCodes.FILE_UPLOAD_INVALID_DESCRIPTION_TYPE.translation()
+							+ " " + allowedMimeTypes);
+					upload.interruptUpload();
+					cancelImage();
+				}
+
+				// Check correct length
+				if (event.getContentLength() > TreeObjectImage.MAX_IMAGE_LENGTH) {
+					MessageManager.showError(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_INVALID),
+							ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_INVALID_DESCRIPTION_SIZE, new Object[] { TreeObjectImage.MAX_IMAGE_LENGTH }));
 					upload.interruptUpload();
 					cancelImage();
 				}
