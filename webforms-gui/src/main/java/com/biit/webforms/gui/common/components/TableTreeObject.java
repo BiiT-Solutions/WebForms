@@ -32,6 +32,7 @@ public class TableTreeObject extends TreeTable {
 	private static final long serialVersionUID = -6949123334668973540L;
 	private IconProvider<TreeObject> iconProvider = new IconProviderTreeObjectDefault();
 	private IconProvider<TreeObject> statusIconProvider = new IconProviderTreeObjectDefault();
+	private IconProvider<TreeObject> imageIconProvider = new IconProviderTreeObjectImageDefault();
 
 	// Stores the complete Form view equivalences.
 	private Map<String, TreeObject> rootElements;
@@ -286,7 +287,7 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	protected Object createElementWithIcon(final TreeObject element) {
-		ComponentCellTreeObject cell = new ComponentCellTreeObject(getIconProvider(), getStatusIconProvider());
+		ComponentCellTreeObject cell = new ComponentCellTreeObject(getIconProvider(), getStatusIconProvider(), getImageIconProvider());
 		cell.update(element);
 		cell.registerTouchCallBack(this, element);
 
@@ -396,5 +397,13 @@ public class TableTreeObject extends TreeTable {
 
 	public void setHiddenElementShown(boolean hiddenElementShown) {
 		this.hiddenElementShown = hiddenElementShown;
+	}
+
+	public IconProvider<TreeObject> getImageIconProvider() {
+		return imageIconProvider;
+	}
+
+	public void setImageIconProvider(IconProvider<TreeObject> imageIconProvider) {
+		this.imageIconProvider = imageIconProvider;
 	}
 }
