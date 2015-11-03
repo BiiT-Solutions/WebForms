@@ -56,7 +56,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * This class is a wrapper of a Form class that translates any block reference to a list of its elements.
+ * This class is a wrapper of a Form class that translates any block reference
+ * to a list of its elements.
  */
 public class CompleteFormView extends Form implements IWebformsFormView {
 	private static final long serialVersionUID = -426480388117580446L;
@@ -74,8 +75,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	/**
-	 * Returns all children, replacing the block reference for the elements of the block. If a child is hidden also is
-	 * returned with the flag hidden as true.
+	 * Returns all children, replacing the block reference for the elements of
+	 * the block. If a child is hidden also is returned with the flag hidden as
+	 * true.
 	 */
 	@Override
 	public List<TreeObject> getChildren() {
@@ -126,8 +128,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	/**
-	 * Returns all children, replacing the block reference for the elements of the block and skipping the hidden
-	 * elements.
+	 * Returns all children, replacing the block reference for the elements of
+	 * the block and skipping the hidden elements.
 	 */
 	@Override
 	public List<TreeObject> getAllNotHiddenChildren() {
@@ -141,7 +143,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	/**
-	 * Set the elements selected by the user in a Block Reference and its children as hidden.
+	 * Set the elements selected by the user in a Block Reference and its
+	 * children as hidden.
 	 * 
 	 * @param block
 	 * @param linkedChild
@@ -327,7 +330,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	/**
-	 * Not allowed rules are the rules that comes from linked block and end in another linked block.
+	 * Not allowed rules are the rules that comes from linked block and end in
+	 * another linked block.
 	 * 
 	 * @param rule
 	 * @throws FlowNotAllowedException
@@ -339,8 +343,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			BlockReference blockReferenceOfDestination = getBlockReference(rule.getDestiny());
 
 			// Flows in the same linked block are not allowed.
-			if (blockReferenceOfSource != null && blockReferenceOfDestination != null
-					&& blockReferenceOfSource.equals(blockReferenceOfDestination)) {
+			if (blockReferenceOfSource != null && blockReferenceOfDestination != null && blockReferenceOfSource.equals(blockReferenceOfDestination)) {
 				throw new FlowNotAllowedException("Flows in the same linked block are not allowed.");
 			}
 
@@ -349,8 +352,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
-	 * goes to the next element). Skip the hidden elements.
+	 * This method creates a ComputeRuleView with all the current rules and the
+	 * implicit rules (question without rule goes to the next element). Skip the
+	 * hidden elements.
 	 * 
 	 * @return
 	 */
@@ -372,8 +376,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 
 			for (int i = 0; i < numQuestions; i++) {
 				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
-					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i],
-							(BaseQuestion) baseQuestions[i + 1]);
+					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i], (BaseQuestion) baseQuestions[i + 1]);
 				}
 			}
 			if (computedView.getFlowsByOrigin((BaseQuestion) baseQuestions[numQuestions]) == null) {
@@ -509,8 +512,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		createCopyOfBlocks();
 	}
 
-	public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException,
-			ElementIsReadOnly {
+	public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException, ElementIsReadOnly {
 		// Check if it is inside a linked block.
 		BlockReference blockReference = getBlockReference(element);
 		if (blockReference == null) {
@@ -576,9 +578,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	@Override
 	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
 		if (getForm() != null) {
-			if (element != null
-					&& (getForm().getFormReference() != null && !getForm().getFormReference()
-							.getAllInnerStorableObjects().contains(element)) && (getBlockReference(element) != null)) {
+			if (element != null && (getForm().getFormReference() != null && !getForm().getFormReference().getAllInnerStorableObjects().contains(element))
+					&& (getBlockReference(element) != null)) {
 				throw new ElementCannotBeRemovedException("Element '" + element + "' does not exists in the form.");
 			}
 			return getForm().hideElement(element);
@@ -645,6 +646,21 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	public void removeWebserviceCall(WebserviceCall call) {
 		if (form != null) {
 			form.getWebserviceCalls().remove(call);
+		}
+	}
+
+	@Override
+	public TreeObjectImage getImage() {
+		if (form == null) {
+			return null;
+		}
+		return form.getImage();
+	}
+
+	@Override
+	public void setImage(TreeObjectImage image) {
+		if (form != null) {
+			form.setImage(image);
 		}
 	}
 
