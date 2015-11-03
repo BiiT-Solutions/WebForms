@@ -130,7 +130,7 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 			@Override
 			public void buttonClick(ClickEvent event) {
 				cancelImage();
-				updateImageValue();
+				//updateImageValue();
 				status.setValue(LanguageCodes.FILE_DELETED.translation());
 			}
 		});
@@ -153,6 +153,7 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		// Disable field to disable events to be launched.
 		imageWidth.setEnabled(true);
 		imageHeight.setEnabled(true);
+		imageMemoryOutputStream = null;
 		getInstance().setImage(null);
 	}
 
