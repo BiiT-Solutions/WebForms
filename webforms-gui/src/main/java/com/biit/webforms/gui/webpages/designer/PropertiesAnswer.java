@@ -80,7 +80,7 @@ public class PropertiesAnswer extends StorableObjectPropertiesWithImages<Answer>
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		UserSessionHandler.getController().updateAnswer(getInstance(), tempValue, tempLabel, description.getValue());
+		UserSessionHandler.getController().updateAnswer(getInstance(), tempValue, tempLabel, description.getValue(), getImage());
 
 		super.updateElement();
 	}

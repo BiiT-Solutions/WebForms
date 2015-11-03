@@ -154,7 +154,7 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		// Disable field to disable events to be launched.
 		imageWidth.setEnabled(true);
 		imageHeight.setEnabled(true);
-		getInstance().setImage(null);
+		// getInstance().setImage(null);
 	}
 
 	private VerticalLayout createUploader(String currentUploadButtonText, ImageReceiver receiver) {
@@ -258,7 +258,7 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 				imagePreview.setVisible(true);
 				deleteImageButton.setVisible(true);
 				updatePreviewImagePanel();
-				updateImageValue();
+				// updateImageValue();
 				updateElement();
 			}
 		});
@@ -350,10 +350,21 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		firePropertyUpdateListener(getInstance());
 	}
 
-	/**
-	 * Sets the image to the instance.
-	 */
-	private void updateImageValue() {
+	public TreeObjectImage getImage() {
+		Integer width = null;
+		Integer height = null;
+		try {
+			width = Integer.parseInt(imageWidth.getValue());
+		} catch (NumberFormatException e) {
+		}
+		try {
+			height = Integer.parseInt(imageHeight.getValue());
+		} catch (NumberFormatException e) {
+		}
+
+		if (width == null || height == null || width.equals(0) || height.equals(0)) {
+			return null;
+		}
 		TreeObjectImage image = new TreeObjectImage();
 		image.setCreatedBy(UserSessionHandler.getUser().getId());
 		try {
@@ -367,7 +378,7 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		image.setFileName(imageFile.getValue());
 		// imageMemoryOutputStream.reset();
 		image.setStream(imageMemoryOutputStream);
-		getInstance().setImage(image);
+		return image;
 	}
 
 }

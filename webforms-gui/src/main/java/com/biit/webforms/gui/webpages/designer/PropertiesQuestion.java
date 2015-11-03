@@ -304,9 +304,8 @@ public class PropertiesQuestion extends StorableObjectPropertiesWithImages<Quest
 
 		UserSessionHandler.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(), mandatory.getValue(),
 				(AnswerType) answerTypeComboBox.getValue(), (AnswerFormat) answerFormat.getValue(), (AnswerSubformat) answerSubformat.getValue(),
-				horizontal.getValue(), tempDefaultValue, disableEdition.getValue());
+				horizontal.getValue(), tempDefaultValue, disableEdition.getValue(), getImage());
 
 		super.updateElement();
 	}
-
 }

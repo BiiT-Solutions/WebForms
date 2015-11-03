@@ -91,4 +91,44 @@ public class TreeObjectImage extends StorableObject {
 		setData(baos.toByteArray());
 	}
 
+	@Override
+	public String toString() {
+		return getFileName();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = Arrays.hashCode(data);
+		result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
+		result = prime * result + height;
+		result = prime * result + width;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (getClass() != obj.getClass())
+			return false;
+		TreeObjectImage other = (TreeObjectImage) obj;
+		if (!Arrays.equals(data, other.data))
+			return false;
+		if (fileName == null) {
+			if (other.fileName != null)
+				return false;
+		} else if (!fileName.equals(other.fileName))
+			return false;
+		if (height != other.height)
+			return false;
+		if (width != other.width)
+			return false;
+		return true;
+	}
+
+	// public String toBase64() {
+	// return Base64.encode(getData());
+	// }
+
 }

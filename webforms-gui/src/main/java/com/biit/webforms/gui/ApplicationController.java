@@ -76,6 +76,7 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
@@ -931,15 +932,16 @@ public class ApplicationController {
 	 * @param label
 	 * @param description
 	 */
-	public void updateForm(Form form, String label, String description) {
+	public void updateForm(Form form, String label, String description, TreeObjectImage image) {
 		try {
-			if (!form.getLabel().equals(label) || !form.getDescription().equals(description)) {
+			if (!form.getLabel().equals(label) || !form.getDescription().equals(description) || !Objects.equals(form.getImage(), image)) {
 				setUnsavedFormChanges(true);
 				form.setDescription(description);
 				form.setLabel(label);
 				form.setUpdatedBy(UserSessionHandler.getUser());
 				form.setUpdateTime();
-				logInfoStart("updateForm", form, label, description);
+				form.setImage(image);
+				logInfoStart("updateForm", form, label, description, image != null ? image.getFileName() : null);
 			}
 		} catch (FieldTooLongException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -954,16 +956,18 @@ public class ApplicationController {
 	 * @param label
 	 * @param description
 	 */
-	public void updateAnswer(Answer answer, String value, String label, String description) {
+	public void updateAnswer(Answer answer, String value, String label, String description, TreeObjectImage image) {
 		try {
-			if (!answer.getLabel().equals(label) || !answer.getDescription().equals(description) || !answer.getValue().equals(value)) {
+			if (!answer.getLabel().equals(label) || !answer.getDescription().equals(description) || !answer.getValue().equals(value)
+					|| !Objects.equals(answer.getImage(), image)) {
 				setUnsavedFormChanges(true);
 				answer.setValue(value);
 				answer.setLabel(label);
 				answer.setDescription(description);
 				answer.setUpdatedBy(UserSessionHandler.getUser());
 				answer.setUpdateTime();
-				logInfoStart("updateAnswer", answer, value, label, description);
+				answer.setImage(image);
+				logInfoStart("updateAnswer", answer, value, label, description, image != null ? image.getFileName() : null);
 			}
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -977,15 +981,16 @@ public class ApplicationController {
 	 * @param name
 	 * @param label
 	 */
-	public void updateCategory(Category category, String name, String label) {
+	public void updateCategory(Category category, String name, String label, TreeObjectImage image) {
 		try {
-			if (!category.getName().equals(name) || !category.getLabel().equals(label)) {
+			if (!category.getName().equals(name) || !category.getLabel().equals(label) || !Objects.equals(category.getImage(), image)) {
 				setUnsavedFormChanges(true);
 				category.setName(name);
 				category.setLabel(label);
 				category.setUpdatedBy(UserSessionHandler.getUser());
 				category.setUpdateTime();
-				logInfoStart("updateCategory", category, name, label);
+				category.setImage(image);
+				logInfoStart("updateCategory", category, name, label, image != null ? image.getFileName() : null);
 			}
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -1031,7 +1036,7 @@ public class ApplicationController {
 	 * @param defaultValue
 	 */
 	public void updateQuestion(Question question, String name, String label, String description, boolean mandatory, AnswerType answerType,
-			AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled) {
+			AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled, TreeObjectImage image) {
 		try {
 			if (!question.getLabel().equals(label) || !question.getDescription().equals(description) || !question.getName().equals(name)
 					|| question.isMandatory() != mandatory || (question.getAnswerType() != null && !question.getAnswerType().equals(answerType))
@@ -1039,7 +1044,7 @@ public class ApplicationController {
 					|| (question.getAnswerSubformat() != null && !question.getAnswerSubformat().equals(answerSubformat))
 					|| question.isHorizontal() != horizontal || (defaultValue == null && question.getDefaultValue() != "")
 					|| (defaultValue != null && !Objects.equals(question.getDefaultValue(), defaultValue.toString()))
-					|| (question.isEditionDisabled() != editionDisabled)) {
+					|| (question.isEditionDisabled() != editionDisabled) || !Objects.equals(question.getImage(), image)) {
 				setUnsavedFormChanges(true);
 				question.setName(name);
 				question.setLabel(label);
@@ -1053,7 +1058,9 @@ public class ApplicationController {
 				question.setUpdateTime();
 				question.setDefaultValue(defaultValue);
 				question.setEditionDisabled(editionDisabled);
-				logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat, answerSubformat, horizontal);
+				question.setImage(image);
+				logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat, answerSubformat, horizontal,
+						image != null ? image.getFileName() : null);
 			}
 		} catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException | InvalidAnswerSubformatException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

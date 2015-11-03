@@ -71,7 +71,7 @@ public class PropertiesCategory extends StorableObjectPropertiesWithImages<Categ
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		UserSessionHandler.getController().updateCategory(getInstance(), tempName, tempLabel);
+		UserSessionHandler.getController().updateCategory(getInstance(), tempName, tempLabel, getImage());
 
 		super.updateElement();
 	}
