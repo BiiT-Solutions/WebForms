@@ -130,8 +130,9 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 			@Override
 			public void buttonClick(ClickEvent event) {
 				cancelImage();
-				//updateImageValue();
+				// updateImageValue();
 				status.setValue(LanguageCodes.FILE_DELETED.translation());
+				updateElement();
 			}
 		});
 
@@ -153,7 +154,6 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		// Disable field to disable events to be launched.
 		imageWidth.setEnabled(true);
 		imageHeight.setEnabled(true);
-		imageMemoryOutputStream = null;
 		getInstance().setImage(null);
 	}
 
@@ -259,6 +259,7 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 				deleteImageButton.setVisible(true);
 				updatePreviewImagePanel();
 				updateImageValue();
+				updateElement();
 			}
 		});
 
@@ -296,7 +297,9 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		public OutputStream receiveUpload(String filename, String mimetype) {
 			fileName = filename;
 			mtype = mimetype;
-			imageMemoryOutputStream.reset(); // If re-uploading
+			if (imageMemoryOutputStream != null) {
+				imageMemoryOutputStream.reset(); // If re-uploading
+			}
 			return imageMemoryOutputStream;
 		}
 
