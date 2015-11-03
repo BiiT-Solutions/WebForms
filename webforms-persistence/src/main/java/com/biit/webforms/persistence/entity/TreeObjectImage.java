@@ -143,15 +143,15 @@ public class TreeObjectImage extends StorableObject {
 	 * 
 	 * @return
 	 */
-	public byte[] toBase64() {
-		return Base64Utils.encode(getData());
+	public String toBase64() {
+		return Base64Utils.encodeToString(getData());
 	}
 
 	/**
 	 * sets the image from base64
 	 */
 	public void fromBase64(String data) {
-		setData(Base64Utils.decode(data.getBytes()));
+		setData(Base64Utils.decodeFromString(data));
 	}
 
 	public void setDefaultHeightAndWeight() {
