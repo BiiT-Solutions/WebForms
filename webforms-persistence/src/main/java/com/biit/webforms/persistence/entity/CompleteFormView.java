@@ -36,7 +36,7 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkE
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.serialization.AnswerSerializer;
 import com.biit.webforms.serialization.BaseRepeatableGroupSerializer;
-import com.biit.webforms.serialization.CategoryDeserializer;
+import com.biit.webforms.serialization.CategorySerializer;
 import com.biit.webforms.serialization.DynamicAnswerSerializer;
 import com.biit.webforms.serialization.FormSerializer;
 import com.biit.webforms.serialization.QuestionSerializer;
@@ -538,7 +538,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		gsonBuilder.setPrettyPrinting();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
 		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
-		gsonBuilder.registerTypeAdapter(Category.class, new CategoryDeserializer());
+		gsonBuilder.registerTypeAdapter(Category.class, new CategorySerializer());
 		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
 		gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
