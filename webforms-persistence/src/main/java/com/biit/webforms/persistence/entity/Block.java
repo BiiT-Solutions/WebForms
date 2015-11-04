@@ -29,8 +29,7 @@ public class Block extends Form implements IWebformsBlockView {
 		return DEFAULT_LABEL;
 	}
 
-	public Block(String name, IUser<Long> user, Long organizationId) throws FieldTooLongException,
-			CharacterNotAllowedException {
+	public Block(String name, IUser<Long> user, Long organizationId) throws FieldTooLongException, CharacterNotAllowedException {
 		super(name, user, organizationId);
 	}
 

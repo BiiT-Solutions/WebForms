@@ -1030,4 +1030,11 @@ $open-sans-pathPrefix: "./fonts/";
 	    -ms-user-select: none;
 	    -webkit-user-select: none;
 	}	
+	
+	
+	/* Image status */
+	.v-label-status_field {
+		font-style: italic;
+		opacity: 0.6;
+	}
 }

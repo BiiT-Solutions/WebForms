@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.biit.form.entity.BaseCategory;
@@ -21,10 +24,13 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 @Entity
 @Table(name = "tree_categories")
 @Cacheable(true)
-public class Category extends BaseCategory {
+public class Category extends BaseCategory implements ElementWithImage {
 	private static final long serialVersionUID = 7418748035993485582L;
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
 			Arrays.asList(BaseQuestion.class, BaseRepeatableGroup.class));
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectImage image;
 
 	public Category() {
 		super();
@@ -32,6 +38,22 @@ public class Category extends BaseCategory {
 
 	public Category(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		super(name);
+	}
+
+	@Override
+	public void resetIds() {
+		super.resetIds();
+		if (image != null) {
+			image.resetIds();
+		}
+	}
+
+	@Override
+	protected void resetDatabaseIds() {
+		super.resetDatabaseIds();
+		if (image != null) {
+			image.resetDatabaseIds();
+		}
 	}
 
 	@Override
@@ -85,12 +107,22 @@ public class Category extends BaseCategory {
 	 * @param category
 	 * @return
 	 */
-	
+
 	@Override
 	public boolean isContentEqual(TreeObject treeObject) {
 		if (treeObject instanceof Category) {
 			return super.isContentEqual(treeObject);
 		}
 		return false;
+	}
+
+	@Override
+	public void setImage(TreeObjectImage image) {
+		this.image = image;
+	}
+
+	@Override
+	public TreeObjectImage getImage() {
+		return image;
 	}
 }

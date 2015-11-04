@@ -20,14 +20,14 @@ import com.biit.webforms.computed.FlowConditionScript;
 @Entity
 @Table(name = "tree_dynamic_answer")
 @Cacheable(true)
-public class DynamicAnswer extends BaseAnswer implements FlowConditionScript{
+public class DynamicAnswer extends BaseAnswer implements FlowConditionScript {
 	private static final long serialVersionUID = -1233082747412521896L;
 	public static final String ANSWER_TAG_ALLOWED_CHARS = ".*";
 	private static final Pattern NAME_ALLOWED = Pattern.compile(ANSWER_TAG_ALLOWED_CHARS);
 
-	@ManyToOne(cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch=FetchType.EAGER)
+	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.EAGER)
 	private Question reference;
-		
+
 	public Question getReference() {
 		return reference;
 	}
@@ -40,12 +40,12 @@ public class DynamicAnswer extends BaseAnswer implements FlowConditionScript{
 		super.setName(getComparationId());
 	}
 
-	public String getReferenceName(){
-		if(reference!=null){
-			return "{"+reference.getPathName()+"}";
-		}else{
+	public String getReferenceName() {
+		if (reference != null) {
+			return "{" + reference.getPathName() + "}";
+		} else {
 			return "{}";
-		}		
+		}
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class DynamicAnswer extends BaseAnswer implements FlowConditionScript{
 		if (object instanceof DynamicAnswer) {
 			copyBasicInfo(object);
 
-			DynamicAnswer dynamicQuestion =(DynamicAnswer)object;
+			DynamicAnswer dynamicQuestion = (DynamicAnswer) object;
 			setReference(dynamicQuestion.getReference());
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy");

@@ -28,7 +28,7 @@ public class Group extends BaseRepeatableGroup {
 
 	public int exportToJavaCode(StringBuilder sb, int counter) {
 		String idName = "el_" + counter;
-		
+
 		sb.append("Group ").append(idName).append("  = new Group();").append(System.lineSeparator());
 		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
 		sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
@@ -40,7 +40,7 @@ public class Group extends BaseRepeatableGroup {
 
 		int currentCounter = counter;
 		for (TreeObject child : getChildren()) {
-			int tempCounter = currentCounter+1;
+			int tempCounter = currentCounter + 1;
 			if (child instanceof Group) {
 				currentCounter = ((Group) child).exportToJavaCode(sb, currentCounter + 1);
 			}
@@ -58,7 +58,7 @@ public class Group extends BaseRepeatableGroup {
 		}
 		return currentCounter;
 	}
-	
+
 	@Override
 	public boolean isContentEqual(TreeObject treeObject) {
 		if (treeObject instanceof Group) {

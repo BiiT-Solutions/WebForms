@@ -9,10 +9,13 @@ public class ComponentCellTreeObject extends ComponentCell {
 
 	private IconProvider<TreeObject> iconProvider;
 	private IconProvider<TreeObject> statusIconProvider;
+	private IconProvider<TreeObject> imageIconProvider;
 
-	public ComponentCellTreeObject(IconProvider<TreeObject> iconProvider, IconProvider<TreeObject> statusIconProvider) {
+	public ComponentCellTreeObject(IconProvider<TreeObject> iconProvider, IconProvider<TreeObject> statusIconProvider,
+			IconProvider<TreeObject> imageIconProvider) {
 		this.iconProvider = iconProvider;
 		this.statusIconProvider = statusIconProvider;
+		this.imageIconProvider = imageIconProvider;
 	}
 
 	public void update(TreeObject treeObject) {
@@ -20,9 +23,9 @@ public class ComponentCellTreeObject extends ComponentCell {
 		clear();
 		if (treeObject instanceof BaseForm) {
 			addLabel(treeObject.getLabel());
-		} else if(treeObject instanceof DynamicAnswer){
-			addLabel(((DynamicAnswer)treeObject).getReferenceName());
-		}else{
+		} else if (treeObject instanceof DynamicAnswer) {
+			addLabel(((DynamicAnswer) treeObject).getReferenceName());
+		} else {
 			addLabel(treeObject.getName());
 		}
 		if (iconProvider.getIcon(treeObject) != null) {
@@ -30,6 +33,9 @@ public class ComponentCellTreeObject extends ComponentCell {
 		}
 		if (statusIconProvider.getIcon(treeObject) != null) {
 			addIcon(statusIconProvider.getIcon(treeObject));
+		}
+		if (imageIconProvider.getIcon(treeObject) != null) {
+			addIcon(imageIconProvider.getIcon(treeObject));
 		}
 		registerTouchCallback();
 	}

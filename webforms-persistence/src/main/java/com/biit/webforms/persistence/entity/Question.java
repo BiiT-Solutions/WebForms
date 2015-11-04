@@ -7,11 +7,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.biit.form.entity.TreeObject;
@@ -31,7 +34,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatExc
 @Entity
 @Table(name = "tree_questions")
 @Cacheable(true)
-public class Question extends WebformsBaseQuestion implements FlowConditionScript {
+public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithImage {
 	private static final long serialVersionUID = -7243001035969348318L;
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 	public static final int MAX_DEFAULT_VALUE = 100;
@@ -61,6 +64,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	private Timestamp defaultValueTime;
 
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectImage image;
+
 	public Question() {
 		super();
 		mandatory = DEFAULT_MANDATORY;
@@ -79,6 +85,22 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		answerType = AnswerType.INPUT;
 		answerFormat = AnswerFormat.TEXT;
 		answerSubformat = AnswerSubformat.TEXT;
+	}
+
+	@Override
+	public void resetIds() {
+		super.resetIds();
+		if (image != null) {
+			image.resetIds();
+		}
+	}
+
+	@Override
+	protected void resetDatabaseIds() {
+		super.resetDatabaseIds();
+		if (image != null) {
+			image.resetDatabaseIds();
+		}
 	}
 
 	public AnswerType getAnswerType() {
@@ -144,7 +166,8 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		this.answerFormat = answerFormat;
 		if (answerFormat != null) {
 			// Answer subform is not valid for answerSubformat, change it.
-			if (answerSubformat == null || (answerSubformat.getAnswerFormat() != null && !answerSubformat.getAnswerFormat().equals(answerFormat))) {
+			if (answerSubformat == null || (answerSubformat.getAnswerFormat() != null
+					&& !answerSubformat.getAnswerFormat().equals(answerFormat))) {
 				this.answerSubformat = answerFormat.getDefaultSubformat();
 			}
 		} else {
@@ -159,10 +182,12 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	public void setAnswerSubformat(AnswerSubformat answerSubformat) throws InvalidAnswerSubformatException {
 		if (answerFormat == null && answerSubformat != null) {
-			throw new InvalidAnswerSubformatException("Answer subformat can't be defined if the question doesn't have any format.");
+			throw new InvalidAnswerSubformatException(
+					"Answer subformat can't be defined if the question doesn't have any format.");
 		}
 		if (answerFormat != null && answerSubformat != null && !answerFormat.isSubformat(answerSubformat)) {
-			throw new InvalidAnswerSubformatException("Answer subformat " + answerSubformat + " is not compatible with answer format " + answerFormat);
+			throw new InvalidAnswerSubformatException(
+					"Answer subformat " + answerSubformat + " is not compatible with answer format " + answerFormat);
 		}
 		if (answerFormat != null && answerSubformat == null) {
 			this.answerSubformat = answerFormat.getDefaultSubformat();
@@ -331,16 +356,20 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE);").append(System.lineSeparator());
 				break;
 			case DATE_BIRTHDAY:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_BIRTHDAY);").append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_BIRTHDAY);")
+						.append(System.lineSeparator());
 				break;
 			case DATE_FUTURE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_FUTURE);").append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_FUTURE);")
+						.append(System.lineSeparator());
 				break;
 			case DATE_PAST:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PAST);").append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PAST);")
+						.append(System.lineSeparator());
 				break;
 			case DATE_PERIOD:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PERIOD);").append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PERIOD);")
+						.append(System.lineSeparator());
 				break;
 			case EMAIL:
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.EMAIL);").append(System.lineSeparator());
@@ -358,7 +387,8 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.PHONE);").append(System.lineSeparator());
 				break;
 			case POSTAL_CODE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSTAL_CODE);").append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSTAL_CODE);")
+						.append(System.lineSeparator());
 				break;
 			case TEXT:
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.TEXT);").append(System.lineSeparator());
@@ -369,10 +399,12 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			sb.append(idName).append(".setAnswerType(AnswerType.MULTIPLE_SELECTION);").append(System.lineSeparator());
 			break;
 		case SINGLE_SELECTION_LIST:
-			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_LIST);").append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_LIST);")
+					.append(System.lineSeparator());
 			break;
 		case SINGLE_SELECTION_RADIO:
-			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_RADIO);").append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_RADIO);")
+					.append(System.lineSeparator());
 			break;
 		case TEXT_AREA:
 			sb.append(idName).append(".setAnswerType(AnswerType.TEXT_AREA);").append(System.lineSeparator());
@@ -395,7 +427,8 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			int tempCounter = currentCounter + 1;
 			currentCounter = ((Answer) child).exportToJavaCode(sb, currentCounter + 1);
 			sb.append("//ques").append(System.lineSeparator());
-			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
+			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");")
+					.append(System.lineSeparator());
 		}
 
 		return currentCounter;
@@ -513,5 +546,15 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	public void setEditionDisabled(boolean editionDisabled) {
 		this.editionDisabled = editionDisabled;
+	}
+
+	@Override
+	public void setImage(TreeObjectImage image) {
+		this.image = image;
+	}
+
+	@Override
+	public TreeObjectImage getImage() {
+		return image;
 	}
 }

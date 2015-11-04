@@ -14,13 +14,13 @@ import com.vaadin.ui.TextField;
 
 public abstract class StorableObjectProperties<T extends StorableObject> extends PropertiesForClassComponent<T> {
 	private static final long serialVersionUID = -1986275953105055523L;
-	protected TextField createdByField, creationTimeField, updatedByField, updateTimeField;
-
-	private T instance;
+	private TextField createdByField, creationTimeField, updatedByField, updateTimeField;
 
 	private IWebformsSecurityService webformsSecurityService;
 
-	public StorableObjectProperties(Class<? extends T> type) {
+	private T instance;
+
+	protected StorableObjectProperties(Class<? extends T> type) {
 		super(type);
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
 		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
@@ -33,17 +33,17 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	 * @param element
 	 */
 	protected void initElement() {
-		createdByField = new TextField(
-				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_CREATED_BY));
+		createCommonProperties();
+	}
+
+	private void createCommonProperties() {
+		createdByField = new TextField(ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_CREATED_BY));
 		createdByField.setEnabled(false);
-		creationTimeField = new TextField(
-				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_CREATION_TIME));
+		creationTimeField = new TextField(ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_CREATION_TIME));
 		creationTimeField.setEnabled(false);
-		updatedByField = new TextField(
-				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_UPDATED_BY));
+		updatedByField = new TextField(ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_UPDATED_BY));
 		updatedByField.setEnabled(false);
-		updateTimeField = new TextField(
-				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_UPDATE_TIME));
+		updateTimeField = new TextField(ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_UPDATE_TIME));
 		updateTimeField.setEnabled(false);
 
 		FormLayout commonProperties = new FormLayout();
@@ -54,9 +54,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		commonProperties.addComponent(updatedByField);
 		commonProperties.addComponent(updateTimeField);
 
-		addTab(commonProperties,
-				ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_COMMON_FORM_CAPTION),
-				false);
+		addTab(commonProperties, ServerTranslate.translate(CommonComponentsLanguageCodes.TREE_OBJECT_PROPERTIES_COMMON_FORM_CAPTION), false);
 	}
 
 	/**
@@ -65,6 +63,10 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 	 * @param element
 	 */
 	protected void initValues() {
+		initCommonValues();
+	}
+
+	private void initCommonValues() {
 		String valueCreatedBy = "";
 		String valueUpdatedBy = "";
 
@@ -73,21 +75,18 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		}
 
 		try {
-			valueCreatedBy = getInstance().getCreatedBy() == null ? "" : webformsSecurityService
-					.getUserById(getInstance().getCreatedBy()).getEmailAddress();
+			valueCreatedBy = getInstance().getCreatedBy() == null ? "" : webformsSecurityService.getUserById(getInstance().getCreatedBy()).getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
 			valueCreatedBy = getInstance().getCreatedBy() + "";
 		}
 
 		try {
-			valueUpdatedBy = getInstance().getUpdatedBy() == null ? "" : webformsSecurityService
-					.getUserById(getInstance().getUpdatedBy()).getEmailAddress();
+			valueUpdatedBy = getInstance().getUpdatedBy() == null ? "" : webformsSecurityService.getUserById(getInstance().getUpdatedBy()).getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
 			valueUpdatedBy = getInstance().getUpdatedBy() + "";
 		}
 
-		String valueCreationTime = getInstance().getCreationTime() == null ? "" : getInstance().getCreationTime()
-				.toString();
+		String valueCreationTime = getInstance().getCreationTime() == null ? "" : getInstance().getCreationTime().toString();
 		String valueUpdatedTime = getInstance().getUpdateTime() == null ? "" : getInstance().getUpdateTime().toString();
 
 		createdByField.setValue(valueCreatedBy);

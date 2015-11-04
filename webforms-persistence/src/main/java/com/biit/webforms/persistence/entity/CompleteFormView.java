@@ -36,6 +36,7 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkE
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.serialization.AnswerSerializer;
 import com.biit.webforms.serialization.BaseRepeatableGroupSerializer;
+import com.biit.webforms.serialization.CategorySerializer;
 import com.biit.webforms.serialization.DynamicAnswerSerializer;
 import com.biit.webforms.serialization.FormSerializer;
 import com.biit.webforms.serialization.QuestionSerializer;
@@ -47,7 +48,7 @@ import com.biit.webforms.serialization.TokenComparationValueSerializer;
 import com.biit.webforms.serialization.TokenInSerializer;
 import com.biit.webforms.serialization.TokenInValueSerializer;
 import com.biit.webforms.serialization.TokenSerializer;
-import com.biit.webforms.serialization.TreeObjectSerializer;
+import com.biit.webforms.serialization.TreeObjectImageSerializer;
 import com.biit.webforms.serialization.WebserviceCallInputLinkErrorsSerializer;
 import com.biit.webforms.serialization.WebserviceCallInputLinkSerializer;
 import com.biit.webforms.serialization.WebserviceCallOutputLinkSerializer;
@@ -56,7 +57,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * This class is a wrapper of a Form class that translates any block reference to a list of its elements.
+ * This class is a wrapper of a Form class that translates any block reference
+ * to a list of its elements.
  */
 public class CompleteFormView extends Form implements IWebformsFormView {
 	private static final long serialVersionUID = -426480388117580446L;
@@ -73,9 +75,26 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		setForm(form);
 	}
 
+	@Override
+	public void resetIds() {
+		super.resetIds();
+		if (form != null) {
+			form.resetIds();
+		}
+	}
+
+	@Override
+	protected void resetDatabaseIds() {
+		super.resetDatabaseIds();
+		if (form != null) {
+			form.resetIds();
+		}
+	}
+
 	/**
-	 * Returns all children, replacing the block reference for the elements of the block. If a child is hidden also is
-	 * returned with the flag hidden as true.
+	 * Returns all children, replacing the block reference for the elements of
+	 * the block. If a child is hidden also is returned with the flag hidden as
+	 * true.
 	 */
 	@Override
 	public List<TreeObject> getChildren() {
@@ -126,8 +145,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	/**
-	 * Returns all children, replacing the block reference for the elements of the block and skipping the hidden
-	 * elements.
+	 * Returns all children, replacing the block reference for the elements of
+	 * the block and skipping the hidden elements.
 	 */
 	@Override
 	public List<TreeObject> getAllNotHiddenChildren() {
@@ -141,7 +160,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	/**
-	 * Set the elements selected by the user in a Block Reference and its children as hidden.
+	 * Set the elements selected by the user in a Block Reference and its
+	 * children as hidden.
 	 * 
 	 * @param block
 	 * @param linkedChild
@@ -301,8 +321,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				if (!flow.isHidden()) {
 					Flow copiedFlow = flow.generateCopy();
 					// Maybe some others are alone, remove the others condition.
-					if ((filterHiddenFlows(form.getFormReference().getFlowsFrom(flow.getOrigin())).size() + filterHiddenFlows(
-							form.getFlowsFrom(flow.getOrigin())).size()) < 2) {
+					if ((filterHiddenFlows(form.getFormReference().getFlowsFrom(flow.getOrigin())).size()
+							+ filterHiddenFlows(form.getFlowsFrom(flow.getOrigin())).size()) < 2) {
 						copiedFlow.setOthers(false);
 						copiedFlow.setCondition(new ArrayList<Token>());
 					}
@@ -327,7 +347,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	/**
-	 * Not allowed rules are the rules that comes from linked block and end in another linked block.
+	 * Not allowed rules are the rules that comes from linked block and end in
+	 * another linked block.
 	 * 
 	 * @param rule
 	 * @throws FlowNotAllowedException
@@ -349,8 +370,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
-	 * goes to the next element). Skip the hidden elements.
+	 * This method creates a ComputeRuleView with all the current rules and the
+	 * implicit rules (question without rule goes to the next element). Skip the
+	 * hidden elements.
 	 * 
 	 * @return
 	 */
@@ -509,8 +531,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		createCopyOfBlocks();
 	}
 
-	public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException,
-			ElementIsReadOnly {
+	public void removeTreeObject(TreeObject element)
+			throws DependencyExistException, ChildrenNotFoundException, ElementIsReadOnly {
 		// Check if it is inside a linked block.
 		BlockReference blockReference = getBlockReference(element);
 		if (blockReference == null) {
@@ -535,7 +557,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		gsonBuilder.setPrettyPrinting();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
 		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
-		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectSerializer<Category>());
+		gsonBuilder.registerTypeAdapter(Category.class, new CategorySerializer());
 		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
 		gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
@@ -551,8 +573,10 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCall.class, new WebserviceCallSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputLinkSerializer());
-		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class, new WebserviceCallInputLinkErrorsSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class,
+				new WebserviceCallInputLinkErrorsSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkSerializer());
+		gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageSerializer());
 		Gson gson = gsonBuilder.create();
 
 		CompleteFormView form = new CompleteFormView();
@@ -577,8 +601,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
 		if (getForm() != null) {
 			if (element != null
-					&& (getForm().getFormReference() != null && !getForm().getFormReference()
-							.getAllInnerStorableObjects().contains(element)) && (getBlockReference(element) != null)) {
+					&& (getForm().getFormReference() != null
+							&& !getForm().getFormReference().getAllInnerStorableObjects().contains(element))
+					&& (getBlockReference(element) != null)) {
 				throw new ElementCannotBeRemovedException("Element '" + element + "' does not exists in the form.");
 			}
 			return getForm().hideElement(element);
@@ -645,6 +670,21 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	public void removeWebserviceCall(WebserviceCall call) {
 		if (form != null) {
 			form.getWebserviceCalls().remove(call);
+		}
+	}
+
+	@Override
+	public TreeObjectImage getImage() {
+		if (form == null) {
+			return null;
+		}
+		return form.getImage();
+	}
+
+	@Override
+	public void setImage(TreeObjectImage image) {
+		if (form != null) {
+			form.setImage(image);
 		}
 	}
 

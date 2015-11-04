@@ -2,14 +2,14 @@ package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.UserSessionHandler;
-import com.biit.webforms.gui.components.StorableObjectProperties;
+import com.biit.webforms.gui.common.components.StorableObjectPropertiesWithImages;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-public class PropertiesAnswer extends StorableObjectProperties<Answer> {
+public class PropertiesAnswer extends StorableObjectPropertiesWithImages<Answer> {
 	private static final long serialVersionUID = 8035711998129559199L;
 	private static final String WIDTH = "200px";
 
@@ -44,8 +44,7 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 		commonProperties.addComponent(label);
 		commonProperties.addComponent(description);
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isElementEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_ANSWER.translation(), true);
@@ -81,7 +80,7 @@ public class PropertiesAnswer extends StorableObjectProperties<Answer> {
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		UserSessionHandler.getController().updateAnswer(getInstance(), tempValue, tempLabel, description.getValue());
+		UserSessionHandler.getController().updateAnswer(getInstance(), tempValue, tempLabel, description.getValue(), getImage());
 
 		super.updateElement();
 	}

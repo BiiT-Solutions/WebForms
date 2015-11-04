@@ -242,6 +242,11 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_PROPERTIES_FORM("caption.properties.form"),
 	CAPTION_PROPERTIES_SYSTEM_FIELD("caption.properties.system.field"),
 	CAPTION_PROPERTIES_DYNAMIC_QUESTION("caption.properties.dynamic.question"),
+	CAPTION_PROPERITES_IMAGE_FILE("caption.properties.image.file"),
+	CAPTION_PROPERITES_IMAGE_WIDTH("caption.properties.image.width"),
+	CAPTION_PROPERITES_IMAGE_HEIGHT("caption.properties.image.height"),
+	CAPTION_PROPERTIES_IMAGE_TITLE("caption.properties.image.title"),
+	CAPTION_PROPERTIES_IMAGE_PREVIEW("caption.properties.image.preview"),
 	CAPTION_SAVE_AS_BLOCK("caption.save.as.block"),
 	CAPTION_INSERT_NEW_BLOCK("caption.insert.new.block"),
 	CAPTION_LINK_BLOCK("caption.link.block"),
@@ -642,6 +647,23 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	CAPTION_DEFAULT_VALUE("caption.default.value"),
 	
+	IMAGE_NOT_CREATED_TEXT("image.not.created"),
+	IMAGE_NOT_EXISTING_TEXT("image.not.existing"),
+	
+	FILE_UPLOAD_CAPTION("file.upload.caption"),
+	FILE_UPLOAD_UPLOADING("file.upload.uploading"),
+	FILE_UPLOAD_SUCCESS("file.upload.success"),
+	FILE_UPLOAD_DELETE("file.upload.deleted"),
+	FILE_UPLOAD_CANCEL("file.upload.cancel"),
+	FILE_UPLOAD_ERROR("file.upload.error"),	
+	FILE_UPLOAD_BUTTON_SELECT("file.upload.button.select"),
+	FILE_UPLOAD_BUTTON_CANCEL("file.upload.button.cancel"),
+	FILE_UPLOAD_BUTTON_UPDATE("file.upload.button.update"),
+	FILE_UPLOAD_BUTTON_DELETE("file.upload.button.delete"),
+	FILE_UPLOAD_INVALID("file.upload.invalid"),
+	FILE_UPLOAD_INVALID_DESCRIPTION_TYPE("file.upload.invalid.description.type"),
+	FILE_UPLOAD_INVALID_DESCRIPTION_SIZE("file.upload.invalid.description.size"),
+	FILE_DELETED("file.deleted"),
 	;
 
 	private String value;

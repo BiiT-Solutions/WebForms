@@ -33,6 +33,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String ID_BUILDING_BLOCK_LINKS_VISIBLE = "button.link.block.visible";
 	private static final String ID_XFORMS_MULTIPLE_FILES_VISIBLE = "button.xforms.multiple.visible";
 	private static final String ID_XFORMS_CUSTOM_WIZARD_BUTTON = "buttons.xforms.custom.wizard";
+	private static final String ID_IMAGES_ENABLED = "forms.with.images";
 
 	private static final String DEFAULT_REGEX_EMAIL = "[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]+(\\.[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]|[a-zA-Z!#$%&'*+\\-/=?^_`{|}~])*@[a-zA-Z0-9](\\.[a-zA-Z0-9-]|[a-zA-Z0-9-])*[a-zA-Z0-9]";
 	private static final String DEFAULT_REGEX_AMOUNT = "[0-9]+\\.[0-9]*€";
@@ -54,6 +55,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_BUILDING_BLOCK_LINKS_VISIBLE = "true";
 	private static final String DEFAULT_XFORMS_MULTIPLE_FILES_VISIBLE = "false";
 	private static final String DEFAULT_XFORMS_CUSTOM_WIZARD_BUTTON = "false";
+	private static final String DEFAULT_IMAGES_ENABLED = "false";
 
 	// XForms
 	private static final String ID_XFORMS_USER = "orbeon.user";
@@ -113,6 +115,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		addProperty(ID_XML_BASE_ADDRESS, DEFAULT_XML_BASE_ADDRESS);
 		addProperty(ID_BUILDING_BLOCK_LINKS_VISIBLE, DEFAULT_BUILDING_BLOCK_LINKS_VISIBLE);
 		addProperty(ID_XFORMS_MULTIPLE_FILES_VISIBLE, DEFAULT_XFORMS_MULTIPLE_FILES_VISIBLE);
+		addProperty(ID_IMAGES_ENABLED, DEFAULT_IMAGES_ENABLED);
 
 		addProperty(ID_XFORMS_USER, DEFAULT_XFORMS_USER);
 		addProperty(ID_XFORMS_PASSWORD, DEFAULT_XFORMS_PASSWORD);
@@ -130,8 +133,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		addProperty(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID, DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_ID);
 		addProperty(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION,
 				DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION);
-		addProperty(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION,
-				DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
+		addProperty(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION, DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
 
 		addPropertiesSource(new PropertiesSourceFile(CONFIG_FILE));
 		addPropertiesSource(new SystemVariablePropertiesSourceFile(WEBFORMS_SYSTEM_VARIABLE_CONFIG, CONFIG_FILE));
@@ -301,5 +303,9 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	public String[] getOrbeonAvailableLanguages() {
 		String languages = getPropertyLogException(ID_XFORMS_AVAILABLE_LANGUAGES);
 		return languages.replace(" ", "").split(",");
+	}
+
+	public boolean isImagesEnabled() {
+		return Boolean.parseBoolean(getPropertyLogException(ID_IMAGES_ENABLED));
 	}
 }

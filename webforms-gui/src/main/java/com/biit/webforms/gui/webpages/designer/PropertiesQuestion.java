@@ -7,7 +7,7 @@ import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.gui.UserSessionHandler;
-import com.biit.webforms.gui.components.StorableObjectProperties;
+import com.biit.webforms.gui.common.components.StorableObjectPropertiesWithImages;
 import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.AnswerTypeUi;
@@ -23,7 +23,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-public class PropertiesQuestion extends StorableObjectProperties<Question> {
+public class PropertiesQuestion extends StorableObjectPropertiesWithImages<Question> {
 	private static final long serialVersionUID = 7572463216386081265L;
 	private static final String WIDTH = "200px";
 
@@ -304,9 +304,8 @@ public class PropertiesQuestion extends StorableObjectProperties<Question> {
 
 		UserSessionHandler.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(), mandatory.getValue(),
 				(AnswerType) answerTypeComboBox.getValue(), (AnswerFormat) answerFormat.getValue(), (AnswerSubformat) answerSubformat.getValue(),
-				horizontal.getValue(), tempDefaultValue, disableEdition.getValue());
+				horizontal.getValue(), tempDefaultValue, disableEdition.getValue(), getImage());
 
 		super.updateElement();
 	}
-
 }

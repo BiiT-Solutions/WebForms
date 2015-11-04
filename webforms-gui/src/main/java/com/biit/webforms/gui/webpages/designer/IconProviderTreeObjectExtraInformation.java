@@ -5,12 +5,13 @@ import com.biit.webforms.gui.common.components.IconProvider;
 import com.biit.webforms.gui.common.theme.IThemeIcon;
 import com.biit.webforms.theme.ThemeIcons;
 
-public class IconProviderTreeObjectHidden extends IconProvider<TreeObject> {
+public class IconProviderTreeObjectExtraInformation extends IconProvider<TreeObject> {
 
 	@Override
 	public IThemeIcon getIcon(TreeObject object) {
 		if (object.isHiddenElement()) {
 			return ThemeIcons.ELEMENT_HIDE;
+			// Add image icon.
 		}
 		return null;
 	}

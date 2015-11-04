@@ -5,8 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.biit.form.entity.BaseAnswer;
@@ -20,10 +23,11 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.FlowConditionScript;
 
 /**
- * Answer is a class that contains the information of a defined and possible answer to a multiple choice question.
+ * Answer is a class that contains the information of a defined and possible
+ * answer to a multiple choice question.
  * 
- * -Has the next properties: name (value for client purposes, the method get/set name and value affect the same
- * parameter)
+ * -Has the next properties: name (value for client purposes, the method get/set
+ * name and value affect the same parameter)
  * 
  * -label
  * 
@@ -34,7 +38,7 @@ import com.biit.webforms.computed.FlowConditionScript;
 @Entity
 @Table(name = "tree_answers")
 @Cacheable(true)
-public class Answer extends BaseAnswer implements FlowConditionScript {
+public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithImage {
 	private static final long serialVersionUID = 7614678800982506178L;
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<Class<? extends TreeObject>>(
 			Arrays.asList(Answer.class));
@@ -42,6 +46,9 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 
 	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
 	private String description;
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectImage image;
 
 	public Answer() {
 		super();
@@ -52,6 +59,22 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 		super(name);
 		setValue(name);
 		description = new String();
+	}
+
+	@Override
+	public void resetIds() {
+		super.resetIds();
+		if (image != null) {
+			image.resetIds();
+		}
+	}
+
+	@Override
+	protected void resetDatabaseIds() {
+		super.resetDatabaseIds();
+		if (image != null) {
+			image.resetDatabaseIds();
+		}
 	}
 
 	@Override
@@ -109,7 +132,8 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 	}
 
 	/**
-	 * Checks if this answer is a subanswer by looking if it has a parent and if it has if is an answer.
+	 * Checks if this answer is a subanswer by looking if it has a parent and if
+	 * it has if is an answer.
 	 * 
 	 * @return
 	 */
@@ -164,5 +188,15 @@ public class Answer extends BaseAnswer implements FlowConditionScript {
 				throw new DependencyExistException("Flow '" + flow + "' depends of element '" + this + "'");
 			}
 		}
+	}
+
+	@Override
+	public void setImage(TreeObjectImage image) {
+		this.image = image;
+	}
+
+	@Override
+	public TreeObjectImage getImage() {
+		return image;
 	}
 }

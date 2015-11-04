@@ -3,14 +3,14 @@ package com.biit.webforms.gui.webpages.designer;
 import com.biit.form.entity.BaseForm;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.UserSessionHandler;
-import com.biit.webforms.gui.components.StorableObjectProperties;
+import com.biit.webforms.gui.common.components.StorableObjectPropertiesWithImages;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Form;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObjectProperties<T> {
+public abstract class PropertiesBaseForm<T extends Form> extends StorableObjectPropertiesWithImages<T> {
 	private static final long serialVersionUID = -7053263006728113569L;
 	private static final String WIDTH = "200px";
 
@@ -31,7 +31,8 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 		label = new TextField(LanguageCodes.CAPTION_NAME.translation());
 		label.setWidth(WIDTH);
 		label.setEnabled(true);
-		// label.addValidator(new ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
+		// label.addValidator(new
+		// ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
 		// label.addValidator(new ValidatorTreeObjectNameLength());
 
 		version = new TextField(LanguageCodes.CAPTION_VERSION.translation());
@@ -62,8 +63,7 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 		commonProperties.addComponent(referenceLabel);
 		commonProperties.addComponent(referenceVersion);
 
-		boolean canEdit = getWebformsSecurityService().isFormEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_FORM.translation(), true);
@@ -85,15 +85,12 @@ public abstract class PropertiesBaseForm<T extends BaseForm> extends StorableObj
 		if (getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null) {
 			referenceLabel.setVisible(true);
 			referenceVersion.setVisible(true);
-			getReferenceLabel()
-					.setValue(
-							getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance())
-									.getFormReference().getLabel() : "");
-			getReferenceVersion()
-					.setValue(
-							getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance())
-									.getFormReference().getVersion() + ""
-									: "");
+			getReferenceLabel().setValue(
+					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance()).getFormReference().getLabel()
+							: "");
+			getReferenceVersion().setValue(
+					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance()).getFormReference().getVersion()
+							+ "" : "");
 		}
 	}
 

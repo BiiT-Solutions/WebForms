@@ -26,6 +26,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -64,6 +65,7 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkE
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.serialization.AnswerSerializer;
 import com.biit.webforms.serialization.BaseRepeatableGroupSerializer;
+import com.biit.webforms.serialization.CategorySerializer;
 import com.biit.webforms.serialization.DynamicAnswerSerializer;
 import com.biit.webforms.serialization.FormDeserializer;
 import com.biit.webforms.serialization.FormSerializer;
@@ -76,7 +78,7 @@ import com.biit.webforms.serialization.TokenComparationValueSerializer;
 import com.biit.webforms.serialization.TokenInSerializer;
 import com.biit.webforms.serialization.TokenInValueSerializer;
 import com.biit.webforms.serialization.TokenSerializer;
-import com.biit.webforms.serialization.TreeObjectSerializer;
+import com.biit.webforms.serialization.TreeObjectImageSerializer;
 import com.biit.webforms.serialization.WebserviceCallInputLinkErrorsSerializer;
 import com.biit.webforms.serialization.WebserviceCallInputLinkSerializer;
 import com.biit.webforms.serialization.WebserviceCallOutputLinkSerializer;
@@ -86,12 +88,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @Entity
-@Table(name = "tree_forms", uniqueConstraints = { @UniqueConstraint(columnNames = { "label", "version",
-		"organizationId" }) })
+@Table(name = "tree_forms", uniqueConstraints = {
+		@UniqueConstraint(columnNames = { "label", "version", "organizationId" }) })
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
-		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
+		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")") )
 @Cacheable(true)
-public class Form extends BaseForm implements IWebformsFormView {
+public class Form extends BaseForm implements IWebformsFormView, ElementWithImage {
 	private static final long serialVersionUID = 5220239269341014315L;
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
 			Arrays.asList(BaseCategory.class, BlockReference.class));
@@ -113,8 +115,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	private String linkedFormLabel;
 
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "linked_form_versions", joinColumns = @JoinColumn(name = "formId"), uniqueConstraints = @UniqueConstraint(columnNames = {
-			"formId", "linkedFormVersions" }))
+	@CollectionTable(name = "linked_form_versions", joinColumns = @JoinColumn(name = "formId") , uniqueConstraints = @UniqueConstraint(columnNames = {
+			"formId", "linkedFormVersions" }) )
 	private Set<Integer> linkedFormVersions;
 
 	private Long linkedFormOrganizationId;
@@ -130,6 +132,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 	@JoinTable(name = "tree_forms_references_hidden_elements")
 	private Set<TreeObject> elementsToHide;
 
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectImage image;
+
 	public Form() {
 		super();
 		status = FormWorkStatus.DESIGN;
@@ -141,8 +146,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 		elementsToHide = new HashSet<>();
 	}
 
-	public Form(String label, IUser<Long> user, Long organizationId) throws FieldTooLongException,
-			CharacterNotAllowedException {
+	public Form(String label, IUser<Long> user, Long organizationId)
+			throws FieldTooLongException, CharacterNotAllowedException {
 		super(label);
 		status = FormWorkStatus.DESIGN;
 		description = new String();
@@ -201,7 +206,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * Returns all elements that the user has selected to hide and the elements that are children of this elements.
+	 * Returns all elements that the user has selected to hide and the elements
+	 * that are children of this elements.
 	 * 
 	 * @return
 	 */
@@ -273,8 +279,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 			// destiny and is not in the list.
 			if (discard) {
 				if (!mappedElements.containsKey(copiedRule.getOrigin().getComparationId())
-						|| (copiedRule.getDestiny() != null && !mappedElements.containsKey(copiedRule.getDestiny()
-								.getComparationId()))) {
+						|| (copiedRule.getDestiny() != null
+								&& !mappedElements.containsKey(copiedRule.getDestiny().getComparationId()))) {
 					continue;
 				}
 			}
@@ -301,13 +307,14 @@ public class Form extends BaseForm implements IWebformsFormView {
 		return newVersion;
 	}
 
-	public Form createNewVersion(IUser<Long> user) throws NotValidStorableObjectException, CharacterNotAllowedException {
+	public Form createNewVersion(IUser<Long> user)
+			throws NotValidStorableObjectException, CharacterNotAllowedException {
 		return createNewVersion(user.getId());
 	}
 
 	/**
-	 * Equals by comparationId and class. Comparation by class has been removed to allow the comparation with
-	 * CompleteFormView.
+	 * Equals by comparationId and class. Comparation by class has been removed
+	 * to allow the comparation with CompleteFormView.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -436,8 +443,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	 * @throws NotValidTreeObjectException
 	 * @throws CharacterNotAllowedException
 	 */
-	public Form generateFormCopiedSimplification(TreeObject seed) throws NotValidStorableObjectException,
-			CharacterNotAllowedException {
+	public Form generateFormCopiedSimplification(TreeObject seed)
+			throws NotValidStorableObjectException, CharacterNotAllowedException {
 		TreeObject copiedSeed = seed.generateCopy(true, true);
 		Form formSeed = (Form) copiedSeed.getAncestor(Form.class);
 
@@ -464,8 +471,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * This method creates a ComputeRuleView with all the current rules and the implicit rules (question without rule
-	 * goes to the next element)
+	 * This method creates a ComputeRuleView with all the current rules and the
+	 * implicit rules (question without rule goes to the next element)
 	 * 
 	 * @return
 	 */
@@ -520,8 +527,9 @@ public class Form extends BaseForm implements IWebformsFormView {
 		Set<Flow> selectedFlows = new HashSet<Flow>();
 		for (Flow flow : getFlows()) {
 			if (flow.getOrigin().getOriginalReference().equals(origin.getOriginalReference())
-					&& ((flow.getDestiny() != null && destiny!=null && flow.getDestiny().getOriginalReference()
-							.equals(destiny.getOriginalReference())) || (flow.getDestiny() == null && destiny == null))) {
+					&& ((flow.getDestiny() != null && destiny != null
+							&& flow.getDestiny().getOriginalReference().equals(destiny.getOriginalReference()))
+							|| (flow.getDestiny() == null && destiny == null))) {
 				selectedFlows.add(flow);
 			}
 		}
@@ -595,8 +603,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 			parentList.add(parent);
 		}
 		if (!parentList.get(parentList.size() - 1).equals(this)) {
-			throw new ReferenceNotPertainsToFormException("TreeObject: '" + element + "' doesn't belong to '" + this
-					+ "'");
+			throw new ReferenceNotPertainsToFormException(
+					"TreeObject: '" + element + "' doesn't belong to '" + this + "'");
 		}
 
 		String reference = "<" + element.getName() + ">";
@@ -666,7 +674,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 				if (linkedFormVersions != null && !linkedFormVersions.equals(form.linkedFormVersions)) {
 					return false;
 				}
-				if (linkedFormOrganizationId != null && !linkedFormOrganizationId.equals(form.linkedFormOrganizationId)) {
+				if (linkedFormOrganizationId != null
+						&& !linkedFormOrganizationId.equals(form.linkedFormOrganizationId)) {
 					return false;
 				}
 
@@ -713,6 +722,17 @@ public class Form extends BaseForm implements IWebformsFormView {
 		for (WebserviceCall call : getWebserviceCalls()) {
 			call.resetIds();
 		}
+		if (image != null) {
+			image.resetIds();
+		}
+	}
+
+	@Override
+	protected void resetDatabaseIds() {
+		super.resetDatabaseIds();
+		if (image != null) {
+			image.resetDatabaseIds();
+		}
 	}
 
 	public void setDescription(String description) throws FieldTooLongException {
@@ -738,9 +758,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * This is the only function that has to be used to link forms. This controls that the linked element and versions
-	 * are present at the same time or not when modifying data. It is assumed that all linked forms have the same name
-	 * and organization.
+	 * This is the only function that has to be used to link forms. This
+	 * controls that the linked element and versions are present at the same
+	 * time or not when modifying data. It is assumed that all linked forms have
+	 * the same name and organization.
 	 * 
 	 * @param linkedForms
 	 */
@@ -780,7 +801,7 @@ public class Form extends BaseForm implements IWebformsFormView {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
-		gsonBuilder.registerTypeAdapter(Category.class, new TreeObjectSerializer<Category>());
+		gsonBuilder.registerTypeAdapter(Category.class, new CategorySerializer());
 		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
 		gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
@@ -796,8 +817,10 @@ public class Form extends BaseForm implements IWebformsFormView {
 		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCall.class, new WebserviceCallSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputLinkSerializer());
-		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class, new WebserviceCallInputLinkErrorsSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class,
+				new WebserviceCallInputLinkErrorsSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkSerializer());
+		gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageSerializer());
 		Gson gson = gsonBuilder.create();
 
 		return gson.toJson(this);
@@ -812,7 +835,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 		Set<List<Flow>> availablePaths = new HashSet<List<Flow>>();
 		Set<Flow> flowsTo = computedFlowsView.getFlowsByDestiny(destiny);
 		for (Flow flow : flowsTo) {
-			// Flows that comes from question hat are previous to the origin, can be discarded.
+			// Flows that comes from question hat are previous to the origin,
+			// can be discarded.
 			if (questionIndex.get(flow.getOrigin()) < questionIndex.get(origin)) {
 				continue;
 			}
@@ -873,7 +897,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * For some cases, i.e. using Springcache we need to initialize all sets (disabling the Lazy loading).
+	 * For some cases, i.e. using Springcache we need to initialize all sets
+	 * (disabling the Lazy loading).
 	 * 
 	 * @param elements
 	 */
@@ -896,7 +921,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * Get index of child. If the element is a category of a LinkedBuildingBlock try to find it in the Block References.
+	 * Get index of child. If the element is a category of a LinkedBuildingBlock
+	 * try to find it in the Block References.
 	 * 
 	 * @param child
 	 * @return
@@ -955,7 +981,8 @@ public class Form extends BaseForm implements IWebformsFormView {
 	}
 
 	/**
-	 * Moves an object of the tree to last position in @toParent returns @objectToMove
+	 * Moves an object of the tree to last position in @toParent
+	 * returns @objectToMove
 	 * 
 	 * @param objectToMove
 	 * @param toParent
@@ -1038,5 +1065,15 @@ public class Form extends BaseForm implements IWebformsFormView {
 	public void removeWebserviceCall(WebserviceCall call) {
 		webserviceCalls.remove(call);
 		call.setForm(null);
+	}
+
+	@Override
+	public void setImage(TreeObjectImage image) {
+		this.image = image;
+	}
+
+	@Override
+	public TreeObjectImage getImage() {
+		return image;
 	}
 }
