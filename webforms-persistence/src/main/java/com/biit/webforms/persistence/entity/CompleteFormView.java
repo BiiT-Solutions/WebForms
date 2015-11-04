@@ -75,6 +75,22 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		setForm(form);
 	}
 
+	@Override
+	public void resetIds() {
+		super.resetIds();
+		if (form != null) {
+			form.resetIds();
+		}
+	}
+
+	@Override
+	protected void resetDatabaseIds() {
+		super.resetDatabaseIds();
+		if (form != null) {
+			form.resetIds();
+		}
+	}
+
 	/**
 	 * Returns all children, replacing the block reference for the elements of
 	 * the block. If a child is hidden also is returned with the flag hidden as
@@ -305,8 +321,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				if (!flow.isHidden()) {
 					Flow copiedFlow = flow.generateCopy();
 					// Maybe some others are alone, remove the others condition.
-					if ((filterHiddenFlows(form.getFormReference().getFlowsFrom(flow.getOrigin())).size() + filterHiddenFlows(
-							form.getFlowsFrom(flow.getOrigin())).size()) < 2) {
+					if ((filterHiddenFlows(form.getFormReference().getFlowsFrom(flow.getOrigin())).size()
+							+ filterHiddenFlows(form.getFlowsFrom(flow.getOrigin())).size()) < 2) {
 						copiedFlow.setOthers(false);
 						copiedFlow.setCondition(new ArrayList<Token>());
 					}
@@ -344,7 +360,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			BlockReference blockReferenceOfDestination = getBlockReference(rule.getDestiny());
 
 			// Flows in the same linked block are not allowed.
-			if (blockReferenceOfSource != null && blockReferenceOfDestination != null && blockReferenceOfSource.equals(blockReferenceOfDestination)) {
+			if (blockReferenceOfSource != null && blockReferenceOfDestination != null
+					&& blockReferenceOfSource.equals(blockReferenceOfDestination)) {
 				throw new FlowNotAllowedException("Flows in the same linked block are not allowed.");
 			}
 
@@ -377,7 +394,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 
 			for (int i = 0; i < numQuestions; i++) {
 				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
-					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i], (BaseQuestion) baseQuestions[i + 1]);
+					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i],
+							(BaseQuestion) baseQuestions[i + 1]);
 				}
 			}
 			if (computedView.getFlowsByOrigin((BaseQuestion) baseQuestions[numQuestions]) == null) {
@@ -513,7 +531,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		createCopyOfBlocks();
 	}
 
-	public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException, ElementIsReadOnly {
+	public void removeTreeObject(TreeObject element)
+			throws DependencyExistException, ChildrenNotFoundException, ElementIsReadOnly {
 		// Check if it is inside a linked block.
 		BlockReference blockReference = getBlockReference(element);
 		if (blockReference == null) {
@@ -554,7 +573,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCall.class, new WebserviceCallSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputLinkSerializer());
-		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class, new WebserviceCallInputLinkErrorsSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class,
+				new WebserviceCallInputLinkErrorsSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkSerializer());
 		gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageSerializer());
 		Gson gson = gsonBuilder.create();
@@ -580,7 +600,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	@Override
 	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
 		if (getForm() != null) {
-			if (element != null && (getForm().getFormReference() != null && !getForm().getFormReference().getAllInnerStorableObjects().contains(element))
+			if (element != null
+					&& (getForm().getFormReference() != null
+							&& !getForm().getFormReference().getAllInnerStorableObjects().contains(element))
 					&& (getBlockReference(element) != null)) {
 				throw new ElementCannotBeRemovedException("Element '" + element + "' does not exists in the form.");
 			}

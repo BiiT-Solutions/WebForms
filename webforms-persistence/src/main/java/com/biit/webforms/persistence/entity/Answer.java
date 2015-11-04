@@ -40,7 +40,8 @@ import com.biit.webforms.computed.FlowConditionScript;
 @Cacheable(true)
 public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithImage {
 	private static final long serialVersionUID = 7614678800982506178L;
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(Answer.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<Class<? extends TreeObject>>(
+			Arrays.asList(Answer.class));
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 
 	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
@@ -58,6 +59,22 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
 		super(name);
 		setValue(name);
 		description = new String();
+	}
+
+	@Override
+	public void resetIds() {
+		super.resetIds();
+		if (image != null) {
+			image.resetIds();
+		}
+	}
+
+	@Override
+	protected void resetDatabaseIds() {
+		super.resetDatabaseIds();
+		if (image != null) {
+			image.resetDatabaseIds();
+		}
 	}
 
 	@Override

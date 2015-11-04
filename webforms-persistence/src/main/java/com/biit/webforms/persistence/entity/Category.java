@@ -26,8 +26,8 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 @Cacheable(true)
 public class Category extends BaseCategory implements ElementWithImage {
 	private static final long serialVersionUID = 7418748035993485582L;
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(BaseQuestion.class,
-			BaseRepeatableGroup.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(
+			Arrays.asList(BaseQuestion.class, BaseRepeatableGroup.class));
 
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private TreeObjectImage image;
@@ -38,6 +38,22 @@ public class Category extends BaseCategory implements ElementWithImage {
 
 	public Category(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		super(name);
+	}
+
+	@Override
+	public void resetIds() {
+		super.resetIds();
+		if (image != null) {
+			image.resetIds();
+		}
+	}
+
+	@Override
+	protected void resetDatabaseIds() {
+		super.resetDatabaseIds();
+		if (image != null) {
+			image.resetDatabaseIds();
+		}
 	}
 
 	@Override
@@ -79,7 +95,8 @@ public class Category extends BaseCategory implements ElementWithImage {
 			}
 
 			sb.append("//cat").append(System.lineSeparator());
-			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
+			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");")
+					.append(System.lineSeparator());
 		}
 		return currentCounter;
 	}

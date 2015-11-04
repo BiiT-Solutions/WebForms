@@ -42,6 +42,22 @@ public class Text extends WebformsBaseQuestion implements ElementWithImage {
 	}
 
 	@Override
+	public void resetIds() {
+		super.resetIds();
+		if (image != null) {
+			image.resetIds();
+		}
+	}
+
+	@Override
+	protected void resetDatabaseIds() {
+		super.resetDatabaseIds();
+		if (image != null) {
+			image.resetDatabaseIds();
+		}
+	}
+
+	@Override
 	protected List<Class<? extends TreeObject>> getAllowedChildren() {
 		return new ArrayList<Class<? extends TreeObject>>();
 	}
@@ -87,7 +103,8 @@ public class Text extends WebformsBaseQuestion implements ElementWithImage {
 
 		sb.append("Text ").append(idName).append("  = new Text();").append(System.lineSeparator());
 		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
-		sb.append(idName).append(".setDescription(\"").append(this.getDescription()).append("\");").append(System.lineSeparator());
+		sb.append(idName).append(".setDescription(\"").append(this.getDescription()).append("\");")
+				.append(System.lineSeparator());
 
 		return counter;
 	}

@@ -40,6 +40,10 @@ public class TreeObjectImage extends StorableObject {
 
 	}
 
+	protected void resetDatabaseIds() {
+		setId(null);
+	}
+
 	public int getWidth() {
 		return width;
 	}
