@@ -688,4 +688,12 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		}
 	}
 
+	@Override
+	public Set<TreeObjectImage> getAllImages() {
+		if (form == null) {
+			return new HashSet<>();
+		}
+		return form.getAllImages();
+	}
+
 }

@@ -1076,4 +1076,20 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 	public TreeObjectImage getImage() {
 		return image;
 	}
+
+	@Override
+	public Set<TreeObjectImage> getAllImages() {
+		Set<TreeObjectImage> images = new HashSet<>();
+		if (this.getImage() != null) {
+			images.add(this.getImage());
+		}
+		for (StorableObject children : getAllInnerStorableObjects()) {
+			if (children instanceof ElementWithImage) {
+				if (((ElementWithImage) children).getImage() != null) {
+					images.add(((ElementWithImage) children).getImage());
+				}
+			}
+		}
+		return images;
+	}
 }

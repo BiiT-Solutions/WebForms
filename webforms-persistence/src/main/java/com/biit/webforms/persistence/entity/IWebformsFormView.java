@@ -18,4 +18,6 @@ public interface IWebformsFormView extends IBaseFormView {
 	public String getLinkedFormLabel();
 
 	public boolean isLastVersion();
+
+	public Set<TreeObjectImage> getAllImages();
 }

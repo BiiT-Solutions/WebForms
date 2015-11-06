@@ -177,7 +177,8 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	}
 
 	/**
-	 * For some cases, i.e. using Springcache we need to initialize all sets (disabling the Lazy loading).
+	 * For some cases, i.e. using Springcache we need to initialize all sets
+	 * (disabling the Lazy loading).
 	 * 
 	 * @param elements
 	 */
@@ -185,5 +186,18 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	public void initializeSets() {
 		super.initializeSets();
 		reference.initializeSets();
+	}
+
+	@Override
+	public Set<TreeObjectImage> getAllImages() {
+		Set<TreeObjectImage> images = new HashSet<>();
+		for (StorableObject children : getAllInnerStorableObjects()) {
+			if (children instanceof ElementWithImage) {
+				if (((ElementWithImage) children).getImage() != null) {
+					images.add(((ElementWithImage) children).getImage());
+				}
+			}
+		}
+		return images;
 	}
 }

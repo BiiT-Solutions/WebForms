@@ -35,12 +35,14 @@ public class OrbeonUtils {
 		XFormsPersistence xformsConnection = new XFormsPersistence();
 		try {
 			xformsConnection.connect(WebformsConfigurationReader.getInstance().getXFormsPassword(),
-					WebformsConfigurationReader.getInstance().getXFormsUser(), WebformsConfigurationReader
-							.getInstance().getXFormsDatabaseName(), WebformsConfigurationReader.getInstance()
-							.getXFormsDatabaseHost());
+					WebformsConfigurationReader.getInstance().getXFormsUser(),
+					WebformsConfigurationReader.getInstance().getXFormsDatabaseName(),
+					WebformsConfigurationReader.getInstance().getXFormsDatabaseHost());
 			try {
 				String xmlData = getXFormsData(form);
 				xformsConnection.storeForm(form, UserSessionHandler.getUser(), organization, xmlData, preview);
+				xformsConnection.storeImages(form, UserSessionHandler.getUser(), organization, form.getAllImages(),
+						preview);
 			} catch (DuplicatedXFormException e) {
 				MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_PUBLISHED,
 						LanguageCodes.ERROR_FORM_ALREADY_EXISTS);
@@ -74,11 +76,11 @@ public class OrbeonUtils {
 		return true;
 	}
 
-	public static String getXFormsData(Form form) throws NotValidTreeObjectException, NotValidChildException,
-			IOException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError {
-		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form, UserSessionHandler.getController()
-				.getAllWebservices());
+	public static String getXFormsData(Form form)
+			throws NotValidTreeObjectException, NotValidChildException, IOException, NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form,
+				UserSessionHandler.getController().getAllWebservices());
 		BufferedInputStream in = new BufferedInputStream(xformExporter.generateXFormsLanguage());
 		byte[] contents = new byte[1024];
 

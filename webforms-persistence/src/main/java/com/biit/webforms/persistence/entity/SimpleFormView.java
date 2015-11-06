@@ -247,4 +247,9 @@ public class SimpleFormView implements IWebformsFormView {
 	public void setFormReferenceId(Long formReferenceId) {
 		this.formReferenceId = formReferenceId;
 	}
+
+	@Override
+	public Set<TreeObjectImage> getAllImages() {
+		return new HashSet<>();
+	}
 }
