@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.biit.form.entity.TreeObject;
+import com.biit.utils.image.ImageTools;
 import com.biit.webforms.gui.common.components.ImagePanel;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
@@ -14,7 +15,6 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
-import com.biit.webforms.utils.images.ImageTools;
 import com.vaadin.server.Scrollable;
 import com.vaadin.server.StreamResource;
 
