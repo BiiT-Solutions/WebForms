@@ -78,6 +78,7 @@ import com.biit.webforms.serialization.TokenComparationValueSerializer;
 import com.biit.webforms.serialization.TokenInSerializer;
 import com.biit.webforms.serialization.TokenInValueSerializer;
 import com.biit.webforms.serialization.TokenSerializer;
+import com.biit.webforms.serialization.TreeObjectImageDeserializer;
 import com.biit.webforms.serialization.TreeObjectImageSerializer;
 import com.biit.webforms.serialization.WebserviceCallInputLinkErrorsSerializer;
 import com.biit.webforms.serialization.WebserviceCallInputLinkSerializer;
@@ -891,6 +892,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 	public static Form fromJson(String jsonString) {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
+		gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageDeserializer());
 		Gson gson = gsonBuilder.create();
 
 		return (Form) gson.fromJson(jsonString, Form.class);
