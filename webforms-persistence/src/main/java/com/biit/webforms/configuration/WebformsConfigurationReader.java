@@ -55,7 +55,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_BUILDING_BLOCK_LINKS_VISIBLE = "true";
 	private static final String DEFAULT_XFORMS_MULTIPLE_FILES_VISIBLE = "false";
 	private static final String DEFAULT_XFORMS_CUSTOM_WIZARD_BUTTON = "false";
-	private static final String DEFAULT_IMAGES_ENABLED = "false";
+	private static final String DEFAULT_IMAGES_ENABLED = "true";
 
 	// XForms
 	private static final String ID_XFORMS_USER = "orbeon.user";
