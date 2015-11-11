@@ -15,21 +15,24 @@ public class ValidateFormFlows extends SimpleValidator<Form> {
 
 	@Override
 	protected void validateImplementation(Form form) {
+		AllBaseQuestionHaveFlowInValidator allBaseQuestionHaveFlowInValidator = new AllBaseQuestionHaveFlowInValidator();
+		if (!allBaseQuestionHaveFlowInValidator.validate(form, getReport())) {
+			return;
+		}
+
 		ValidateFlow validateFlow = new ValidateFlow();
 		if (!validateFlow.validate(form.getFlows(), getReport()) && isStopOnFail()) {
 			return;
 		}
 		OthersOrphanAndUnicityValidator othersUnicityValidator = new OthersOrphanAndUnicityValidator();
 		othersUnicityValidator.validate(form, getReport());
-		
-		AllBaseQuestionHaveFlowInValidator allBaseQuestionHaveFlowInValidator = new AllBaseQuestionHaveFlowInValidator();
-		allBaseQuestionHaveFlowInValidator.validate(form, getReport());
-		
+
 		ValidateEmptyFlows validateEmptyFlows = new ValidateEmptyFlows();
 		validateEmptyFlows.validate(form, getReport());
-		
-//		FlowOriginDestinyUnicityValidator flowOriginDestinyUnicityValidator = new FlowOriginDestinyUnicityValidator();
-//		flowOriginDestinyUnicityValidator.validate(form, getReport());
+
+		// FlowOriginDestinyUnicityValidator flowOriginDestinyUnicityValidator =
+		// new FlowOriginDestinyUnicityValidator();
+		// flowOriginDestinyUnicityValidator.validate(form, getReport());
 	}
-	
+
 }
