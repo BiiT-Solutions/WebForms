@@ -60,7 +60,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	@ManyToOne(optional = true)
 	private Answer defaultValueAnswer;
 
-	private boolean editionDisabled;
+	// Disables in orbeon the edition of this field. Means that when creating a
+	// new form in orbeon is enabled, but when editing is disabled.
+	private boolean editionDisabled = false;
 
 	private Timestamp defaultValueTime;
 
@@ -166,8 +168,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		this.answerFormat = answerFormat;
 		if (answerFormat != null) {
 			// Answer subform is not valid for answerSubformat, change it.
-			if (answerSubformat == null || (answerSubformat.getAnswerFormat() != null
-					&& !answerSubformat.getAnswerFormat().equals(answerFormat))) {
+			if (answerSubformat == null || (answerSubformat.getAnswerFormat() != null && !answerSubformat.getAnswerFormat().equals(answerFormat))) {
 				this.answerSubformat = answerFormat.getDefaultSubformat();
 			}
 		} else {
@@ -182,12 +183,10 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	public void setAnswerSubformat(AnswerSubformat answerSubformat) throws InvalidAnswerSubformatException {
 		if (answerFormat == null && answerSubformat != null) {
-			throw new InvalidAnswerSubformatException(
-					"Answer subformat can't be defined if the question doesn't have any format.");
+			throw new InvalidAnswerSubformatException("Answer subformat can't be defined if the question doesn't have any format.");
 		}
 		if (answerFormat != null && answerSubformat != null && !answerFormat.isSubformat(answerSubformat)) {
-			throw new InvalidAnswerSubformatException(
-					"Answer subformat " + answerSubformat + " is not compatible with answer format " + answerFormat);
+			throw new InvalidAnswerSubformatException("Answer subformat " + answerSubformat + " is not compatible with answer format " + answerFormat);
 		}
 		if (answerFormat != null && answerSubformat == null) {
 			this.answerSubformat = answerFormat.getDefaultSubformat();
@@ -221,6 +220,8 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			}
 			setMandatory(question.isMandatory());
 			setHorizontal(question.isHorizontal());
+
+			setEditionDisabled(question.isEditionDisabled());
 
 			setDefaultValueString(question.getDefaultValueString());
 			setDefaultValueTime(question.getDefaultValueTime());
@@ -356,20 +357,16 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE);").append(System.lineSeparator());
 				break;
 			case DATE_BIRTHDAY:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_BIRTHDAY);")
-						.append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_BIRTHDAY);").append(System.lineSeparator());
 				break;
 			case DATE_FUTURE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_FUTURE);")
-						.append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_FUTURE);").append(System.lineSeparator());
 				break;
 			case DATE_PAST:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PAST);")
-						.append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PAST);").append(System.lineSeparator());
 				break;
 			case DATE_PERIOD:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PERIOD);")
-						.append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PERIOD);").append(System.lineSeparator());
 				break;
 			case EMAIL:
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.EMAIL);").append(System.lineSeparator());
@@ -387,8 +384,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.PHONE);").append(System.lineSeparator());
 				break;
 			case POSTAL_CODE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSTAL_CODE);")
-						.append(System.lineSeparator());
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSTAL_CODE);").append(System.lineSeparator());
 				break;
 			case TEXT:
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.TEXT);").append(System.lineSeparator());
@@ -399,12 +395,10 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			sb.append(idName).append(".setAnswerType(AnswerType.MULTIPLE_SELECTION);").append(System.lineSeparator());
 			break;
 		case SINGLE_SELECTION_LIST:
-			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_LIST);")
-					.append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_LIST);").append(System.lineSeparator());
 			break;
 		case SINGLE_SELECTION_RADIO:
-			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_RADIO);")
-					.append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_RADIO);").append(System.lineSeparator());
 			break;
 		case TEXT_AREA:
 			sb.append(idName).append(".setAnswerType(AnswerType.TEXT_AREA);").append(System.lineSeparator());
@@ -427,8 +421,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			int tempCounter = currentCounter + 1;
 			currentCounter = ((Answer) child).exportToJavaCode(sb, currentCounter + 1);
 			sb.append("//ques").append(System.lineSeparator());
-			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");")
-					.append(System.lineSeparator());
+			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
 		}
 
 		return currentCounter;
@@ -457,6 +450,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 					return false;
 				}
 				if (this.isHorizontal() != question.isHorizontal()) {
+					return false;
+				}
+				if (this.isEditionDisabled() != question.isEditionDisabled()) {
 					return false;
 				}
 				return true;
