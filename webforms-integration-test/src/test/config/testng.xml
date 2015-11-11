@@ -4,16 +4,16 @@
 		<groups>
 			<run>
 				<include name="login" />
-				<exclude name="basicFunctionality" />
-				<exclude name="formBlockDesign" />
-				<exclude name="formFlow" />
-				<exclude name="export" />
-				<exclude name="impactAnalysis" />
-				<exclude name="xForms" />
-				<exclude name="validation" />
-				<exclude name="linkedBlocks" />
-				<exclude name="linkedForms" />
-				<exclude name="webservices" />
+				<include name="basicFunctionality" />
+				<include name="formBlockDesign" />
+				<include name="formFlow" />
+				<include name="export" />
+				<include name="impactAnalysis" />
+				<include name="xForms" />
+				<include name="validation" />
+				<include name="linkedBlocks" />
+				<include name="linkedForms" />
+				<include name="webservices" />
 			</run>
 		</groups>
 		<classes>
