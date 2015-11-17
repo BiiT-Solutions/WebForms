@@ -192,6 +192,7 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
 	@Override
 	public void setImage(TreeObjectImage image) {
 		this.image = image;
+		image.setElement(this);
 	}
 
 	@Override

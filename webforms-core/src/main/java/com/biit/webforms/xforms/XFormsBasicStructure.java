@@ -26,14 +26,11 @@ public abstract class XFormsBasicStructure {
 	private List<XFormsCategory> xFormsCategories;
 	private Form form;
 	private XFormsHelper xFormsHelper;
-	private IGroup<Long> organization;
-	private boolean imagesEnabled = false;
-	private boolean previewMode = false;
 
 	public XFormsBasicStructure(Form form, IGroup<Long> organization) throws NotValidTreeObjectException, NotValidChildException {
 		this.form = form;
-		this.organization = organization;
 		xFormsHelper = new XFormsHelper(form);
+		setOrganization(organization);
 		createXFormObjectsStructure();
 	}
 
@@ -136,8 +133,8 @@ public abstract class XFormsBasicStructure {
 		text.append(XFormsHiddenEmailField.getModel());
 
 		// Add form's image
-		if (isImagesEnabled() && getForm().getImage() != null) {
-			text.append(XFormsImage.getDefinition(getForm().getImage(), getForm(), organization, isPreviewMode()));
+		if (getXFormsHelper().isImagesEnabled() && getForm().getImage() != null) {
+			text.append(XFormsImage.getDefinition(getForm().getImage(), getForm(), getXFormsHelper().getOrganization(), getXFormsHelper().isPreviewMode()));
 		}
 
 		for (XFormsCategory xFormCategory : getXFormsCategories()) {
@@ -227,8 +224,8 @@ public abstract class XFormsBasicStructure {
 		binding.append("<xf:bind id=\"fr-form-binds\" ref=\"instance('fr-form-instance')\">");
 
 		// Add form image binding
-		if (isImagesEnabled() && getForm().getImage() != null) {
-			XFormsImage.getBinding(getForm().getImage(), binding);
+		if (getXFormsHelper().isImagesEnabled() && getForm().getImage() != null) {
+			XFormsImage.getBinding(null, getForm().getImage(), binding, null);
 		}
 
 		binding.append(getElementBinding(xformsObject));
@@ -275,7 +272,7 @@ public abstract class XFormsBasicStructure {
 			resource.append("<resource xml:lang=\"" + language.getAbbreviature() + "\">");
 
 			// Add form's image.
-			if (isImagesEnabled() && getForm().getImage() != null) {
+			if (getXFormsHelper().isImagesEnabled() && getForm().getImage() != null) {
 				resource.append(XFormsImage.getResources(getForm().getImage(), language));
 			}
 
@@ -332,19 +329,15 @@ public abstract class XFormsBasicStructure {
 	 */
 	protected abstract String getBodySection(XFormsObject<?> xformsObject);
 
-	public boolean isImagesEnabled() {
-		return imagesEnabled;
-	}
-
 	public void setImagesEnabled(boolean imagesEnabled) {
-		this.imagesEnabled = imagesEnabled;
-	}
-
-	public boolean isPreviewMode() {
-		return previewMode;
+		getXFormsHelper().setImagesEnabled(imagesEnabled);
 	}
 
 	public void setPreviewMode(boolean previewMode) {
-		this.previewMode = previewMode;
+		getXFormsHelper().setPreviewMode(previewMode);
+	}
+
+	public void setOrganization(IGroup<Long> organization) {
+		getXFormsHelper().setOrganization(organization);
 	}
 }

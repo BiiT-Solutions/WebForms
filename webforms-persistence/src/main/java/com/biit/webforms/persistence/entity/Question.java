@@ -66,7 +66,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	private Timestamp defaultValueTime;
 
-	@OneToOne(mappedBy="element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private TreeObjectImage image;
 
 	public Question() {
@@ -547,6 +547,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	@Override
 	public void setImage(TreeObjectImage image) {
 		this.image = image;
+		image.setElement(this);
 	}
 
 	@Override

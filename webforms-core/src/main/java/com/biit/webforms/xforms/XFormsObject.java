@@ -24,7 +24,9 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
+import com.biit.webforms.persistence.entity.ElementWithImage;
 import com.biit.webforms.persistence.entity.Flow;
+import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
@@ -52,8 +54,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	private XFormsObject<? extends TreeObject> parent;
 
-	public XFormsObject(XFormsHelper xFormsHelper, T treeObject)
-			throws NotValidTreeObjectException, NotValidChildException {
+	public XFormsObject(XFormsHelper xFormsHelper, T treeObject) throws NotValidTreeObjectException, NotValidChildException {
 		setSource(treeObject);
 		this.xFormsHelper = xFormsHelper;
 		children = new ArrayList<>();
@@ -112,8 +113,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 		}
 	}
 
-	private void addWebserviceValidationField(BaseQuestion child)
-			throws NotValidTreeObjectException, NotValidChildException {
+	private void addWebserviceValidationField(BaseQuestion child) throws NotValidTreeObjectException, NotValidChildException {
 		// Webservice validation
 		XformsWebserviceValidationField webformsValidation = xFormsHelper.getWebserviceValidationField(child);
 		webformsValidation.setParent(this);
@@ -121,8 +121,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	private boolean hasWebserviceValidation(BaseQuestion child) {
-		return xFormsHelper.getWebserviceCallInputLinks(child) != null
-				&& !xFormsHelper.getWebserviceCallInputLinks(child).isEmpty();
+		return xFormsHelper.getWebserviceCallInputLinks(child) != null && !xFormsHelper.getWebserviceCallInputLinks(child).isEmpty();
 	}
 
 	protected T getSource() {
@@ -146,8 +145,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 			if (getParent() instanceof XFormsRepeatableGroup) {
 				// Repeatable groups are composed by a section + iterator. We
 				// need both elements in the XPath.
-				return getParent().getXPath() + "/" + ((XFormsRepeatableGroup) getParent()).getIteratorControlName()
-						+ "/" + getName();
+				return getParent().getXPath() + "/" + ((XFormsRepeatableGroup) getParent()).getIteratorControlName() + "/" + getName();
 			} else {
 				return getParent().getXPath() + "/" + getName();
 			}
@@ -179,8 +177,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws InvalidFlowInForm
 	 */
 	protected String getBodyStructure(String structure, boolean html) {
-		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/"
-				+ structure + "\"";
+		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/" + structure + "\"";
 		if (html) {
 			text += " mediatype=\"text/html\" ";
 		}
@@ -245,8 +242,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 		return "<hint/>";
 	}
 
-	protected void getRelevantStructure(StringBuilder relevant)
-			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected void getRelevantStructure(StringBuilder relevant) throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		String flow = getAllFlowsVisibility();
 		if (flow != null && flow.length() > 0) {
 			getFlowRule(relevant);
@@ -254,6 +250,12 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// Calculate now is handle by events.
 			// relevant.append(getCalculateStructure(flow));
 		}
+	}
+
+	protected String getRelevantStructure() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		StringBuilder builder = new StringBuilder();
+		getRelevantStructure(builder);
+		return builder.toString();
 	}
 
 	/**
@@ -294,8 +296,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws StringRuleSyntaxError
 	 * @throws PostCodeRuleSyntaxError
 	 */
-	protected String getAllFlowsVisibility()
-			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// Load stored visibility if exists.
 		if (getXFormsHelper().getVisibilityOfElement(getSource()) != null) {
 			return getXFormsHelper().getVisibilityOfElement(getSource());
@@ -319,42 +320,54 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws StringRuleSyntaxError
 	 * @throws PostCodeRuleSyntaxError
 	 */
-	protected abstract String getDefaultVisibility()
-			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError;
+	protected abstract String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError;
 
 	protected String getResources(OrbeonLanguage language) throws NotExistingDynamicFieldException {
-		String resource = "<" + getName() + ">";
-		resource += getLabel(language);
-		resource += getHint(language);
-		resource += getAlert(language);
-		resource += getHelp(language);
+		StringBuilder resource = new StringBuilder();
+		
+		// Add element's image.
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
+			resource.append(XFormsImage.getResources(((ElementWithImage) getSource()).getImage(), language));
+		}
+		
+		resource.append("<" + getName() + ">");
+		resource.append(getLabel(language));
+		resource.append(getHint(language));
+		resource.append(getAlert(language));
+		resource.append(getHelp(language));
 
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
-			resource += child.getResources(language);
+			resource.append(child.getResources(language));
 		}
 
-		resource += "</" + getName() + ">";
-		return resource;
+		resource.append("</" + getName() + ">");
+		return resource.toString();
 	}
 
 	protected String getSectionControlName() {
 		return getUniqueName() + "-control";
 	}
 
-	protected abstract void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException,
-			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError;
+	protected abstract void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError;
 
 	protected abstract void getSectionBody(StringBuilder body);
 
-	// protected abstract void getStandardXFormsBody(StringBuilder body);
-
 	protected String getDefinition() {
-		String section = "<" + getName() + ">";
-		for (XFormsObject<? extends TreeObject> child : getChildren()) {
-			section += child.getDefinition();
+		StringBuilder section = new StringBuilder();
+
+		// Add element's image
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
+			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(), (Form) getSource().getAncestor(Form.class), getXFormsHelper()
+					.getOrganization(), getXFormsHelper().isPreviewMode()));
 		}
-		section += "</" + getName() + ">";
-		return section;
+
+		section.append("<" + getName() + ">");
+		for (XFormsObject<? extends TreeObject> child : getChildren()) {
+			section.append(child.getDefinition());
+		}
+		section.append("</" + getName() + ">");
+		return section.toString();
 	}
 
 	/**
@@ -396,8 +409,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @param filter
 	 * @return
 	 */
-	public LinkedHashSet<XFormsObject<? extends TreeObject>> getAllChildrenInHierarchy(
-			Class<? extends XFormsObject<? extends TreeObject>> filter) {
+	public LinkedHashSet<XFormsObject<? extends TreeObject>> getAllChildrenInHierarchy(Class<? extends XFormsObject<? extends TreeObject>> filter) {
 		LinkedHashSet<XFormsObject<? extends TreeObject>> selectedChildren = new LinkedHashSet<>();
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
 			if (filter.isInstance(child)) {
@@ -428,31 +440,24 @@ public abstract class XFormsObject<T extends TreeObject> {
 			getInputFieldVisibility(visibility, (TokenComparationValue) token);
 		} else if (token instanceof TokenAnswerNeeded) {
 			// Check the event.
-			visibility.append("instance('visible')/"
-					+ getXFormsHelper().getUniqueName(((TokenAnswerNeeded) token).getQuestion()) + " != 'false'");
+			visibility.append("instance('visible')/" + getXFormsHelper().getUniqueName(((TokenAnswerNeeded) token).getQuestion()) + " != 'false'");
 		} else if (token instanceof TokenOthersMustBeAnswered) {
 			// Others ensure that question is answered with a string-length() or
 			// checks that is not visible with the
 			// event.
-			visibility.append("(string-length(").append(getXPath(((TokenOthersMustBeAnswered) token).getQuestion()))
-					.append("/text()) &gt; 0 ");
+			visibility.append("(string-length(").append(getXPath(((TokenOthersMustBeAnswered) token).getQuestion())).append("/text()) &gt; 0 ");
 			if (!isInRepeatableGroup(((TokenOthersMustBeAnswered) token).getQuestion())) {
 				// Checks that is not visible.
-				visibility.append("or instance('visible')/"
-						+ getXFormsHelper().getUniqueName(((TokenOthersMustBeAnswered) token).getQuestion())
-						+ " = 'false'");
+				visibility
+						.append("or instance('visible')/" + getXFormsHelper().getUniqueName(((TokenOthersMustBeAnswered) token).getQuestion()) + " = 'false'");
 			} else {
 				// Repeatable groups cannot use events. Copy relevant rule.
-				visibility.append(" or not("
-						+ getXFormsHelper().getVisibilityOfElement(((TokenOthersMustBeAnswered) token).getQuestion())
-						+ ")");
+				visibility.append(" or not(" + getXFormsHelper().getVisibilityOfElement(((TokenOthersMustBeAnswered) token).getQuestion()) + ")");
 			}
 			visibility.append(")");
 		} else if (token instanceof TokenInheritRelevant) {
 			// Uses same visibility that this element.
-			visibility.append("instance('visible')/"
-					+ getXFormsHelper().getUniqueName(((TokenInheritRelevant) token).getInheritedQuestion())
-					+ " != 'false'");
+			visibility.append("instance('visible')/" + getXFormsHelper().getUniqueName(((TokenInheritRelevant) token).getInheritedQuestion()) + " != 'false'");
 		} else {
 			// An operator 'and', 'or', ...
 			visibility.append(token.getType().getOrbeonRepresentation());
@@ -488,13 +493,12 @@ public abstract class XFormsObject<T extends TreeObject> {
 		if (token.getType().equals(TokenTypes.NE)) {
 			// Not Equals is true if the answer is empty! Avoid it.
 			if (token.getQuestion().isMandatory()) {
-				visibility.append("(string-length(" + getXPath(((TokenComparationAnswer) token).getQuestion())
-						+ "/text()) &gt; 0 and ");
+				visibility.append("(string-length(" + getXPath(((TokenComparationAnswer) token).getQuestion()) + "/text()) &gt; 0 and ");
 			}
 			visibility.append("not(");
 		}
-		visibility.append("contains(concat(").append(getXPath(token.getQuestion())).append(", ' '), concat('")
-				.append(token.getAnswer().getName()).append("', ' '))");
+		visibility.append("contains(concat(").append(getXPath(token.getQuestion())).append(", ' '), concat('").append(token.getAnswer().getName())
+				.append("', ' '))");
 		if (token.getType().equals(TokenTypes.NE)) {
 			visibility.append(")");
 			if (token.getQuestion().isMandatory()) {
@@ -514,8 +518,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	private void getBasicSelectionVisibility(StringBuilder visibility, TokenComparationAnswer token) {
 		// Not Equals is true if the answer is empty! Avoid it.
 		if (token.getQuestion().isMandatory() && token.getType().equals(TokenTypes.NE)) {
-			visibility.append("(string-length(" + getXPath(((TokenComparationAnswer) token).getQuestion())
-					+ "/text()) &gt; 0 and ");
+			visibility.append("(string-length(" + getXPath(((TokenComparationAnswer) token).getQuestion()) + "/text()) &gt; 0 and ");
 		}
 		visibility.append(getXPath(((TokenComparationAnswer) token).getQuestion()));
 		visibility.append(token.getType().getOrbeonRepresentation());
@@ -533,8 +536,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * @throws ParseException
 	 * @throws PostCodeRuleSyntaxError
 	 */
-	private void getInputFieldVisibility(StringBuilder visibility, TokenComparationValue token)
-			throws InvalidDateException {
+	private void getInputFieldVisibility(StringBuilder visibility, TokenComparationValue token) throws InvalidDateException {
 		if (token.getQuestion().getAnswerFormat() != null) {
 			switch (token.getQuestion().getAnswerFormat()) {
 			case NUMBER:
@@ -602,15 +604,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 			// adjust-date-to-timezone(current-date(), ())"
 			visibility.append(getXPath(token.getQuestion())).append("/text() ");
 			visibility.append(getOrbeonDatesOpposite(token.getType()).getOrbeonRepresentation());
-			visibility.append(" format-date(adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation)
-					.append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
-					.append("'), '" + DATE_FORMAT + "')");
+			visibility.append(" format-date(adjust-date-to-timezone(current-date(), ()) - xs:").append(xPathOperation).append("('P").append(token.getValue())
+					.append(token.getDatePeriodUnit().getAbbreviature()).append("'), '" + DATE_FORMAT + "')");
 		} else {
 			visibility.append(getXPath(token.getQuestion())).append("/text() ");
-			visibility.append(token.getType().getOrbeonRepresentation())
-					.append(" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
-			visibility.append(xPathOperation).append("('P").append(token.getValue())
-					.append(token.getDatePeriodUnit().getAbbreviature()).append("'), '" + DATE_FORMAT + "')");
+			visibility.append(token.getType().getOrbeonRepresentation()).append(" format-date(adjust-date-to-timezone(current-date(), ()) + xs:");
+			visibility.append(xPathOperation).append("('P").append(token.getValue()).append(token.getDatePeriodUnit().getAbbreviature())
+					.append("'), '" + DATE_FORMAT + "')");
 		}
 	}
 
@@ -684,13 +684,11 @@ public abstract class XFormsObject<T extends TreeObject> {
 						// Condition must be answered if mandatory
 						if ((((TokenWithQuestion) token).getQuestion()).isMandatory()
 								&& !alreadyCheckedQuestions.contains(((TokenWithQuestion) token).getQuestion())) {
-							othersVisibility
-									.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token).getQuestion()));
+							othersVisibility.add(new TokenOthersMustBeAnswered(((TokenWithQuestion) token).getQuestion()));
 							alreadyCheckedQuestions.add(((TokenWithQuestion) token).getQuestion());
 						} else {
 							// No token added: remove previous AND or OR.
-							if (othersVisibility.size() > 1 && TokenUtils
-									.isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
+							if (othersVisibility.size() > 1 && TokenUtils.isLogicalOperator(othersVisibility.get(othersVisibility.size() - 1))) {
 								othersVisibility.remove(othersVisibility.size() - 1);
 							}
 						}
@@ -781,10 +779,9 @@ public abstract class XFormsObject<T extends TreeObject> {
 							}
 							flowvisibility.add(Token.getAndToken());
 						}
-						flowvisibility.add(new TokenAnswerNeeded(flow.getOrigin(),
-								(flow.getOrigin() instanceof Question)
-										&& ((Question) flow.getOrigin()).getAnswerFormat() != null
-										&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+						flowvisibility.add(new TokenAnswerNeeded(flow.getOrigin(), (flow.getOrigin() instanceof Question)
+								&& ((Question) flow.getOrigin()).getAnswerFormat() != null
+								&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 					}
 				}
 			}
@@ -897,8 +894,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	private boolean existPreviousCondition(List<Token> flowChain) {
 		for (Token token : flowChain) {
 			// Skip any parenthesis, look for real rules.
-			if (token instanceof TokenComparationValue || token instanceof TokenComparationAnswer
-					|| token instanceof TokenInheritRelevant) {
+			if (token instanceof TokenComparationValue || token instanceof TokenComparationAnswer || token instanceof TokenInheritRelevant) {
 				return true;
 			}
 		}

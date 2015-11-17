@@ -11,6 +11,7 @@ import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Flow;
@@ -45,8 +46,12 @@ class XFormsHelper {
 	private HashMap<BaseQuestion, Set<WebserviceCallInputLink>> webserviceInputs;
 	private Set<String> usedCallNames;
 	private HashMap<BaseQuestion, XformsWebserviceValidationField> webserviceValidationField;
-	
+
 	private HashMap<WebserviceCall, String> callNames;
+
+	private boolean imagesEnabled = false;
+	private boolean previewMode = false;
+	private IGroup<Long> organization;
 
 	protected XFormsHelper(Form form) {
 		questions = new ArrayList<>();
@@ -88,14 +93,14 @@ class XFormsHelper {
 				defaultFlows.add(flow);
 			}
 		}
-		
+
 		// Set all webservice inputs classified for question
-		for(WebserviceCall call: form.getWebserviceCalls()){
-			for(WebserviceCallOutputLink link: call.getOutputLinks()){
+		for (WebserviceCall call : form.getWebserviceCalls()) {
+			for (WebserviceCallOutputLink link : call.getOutputLinks()) {
 				webserviceOuput.put(link.getFormElement(), link);
 			}
-			for(WebserviceCallInputLink link: call.getInputLinks()){
-				if(webserviceInputs.get(link.getFormElement())==null){
+			for (WebserviceCallInputLink link : call.getInputLinks()) {
+				if (webserviceInputs.get(link.getFormElement()) == null) {
 					webserviceInputs.put(link.getFormElement(), new HashSet<WebserviceCallInputLink>());
 				}
 				webserviceInputs.get(link.getFormElement()).add(link);
@@ -108,11 +113,11 @@ class XFormsHelper {
 			}
 		}
 	}
-	
-	public WebserviceCallOutputLink getWebserviceCallOutputLink(BaseQuestion question){
+
+	public WebserviceCallOutputLink getWebserviceCallOutputLink(BaseQuestion question) {
 		return webserviceOuput.get(question);
 	}
-	
+
 	public Set<WebserviceCallInputLink> getWebserviceCallInputLinks(BaseQuestion question) {
 		return webserviceInputs.get(question);
 	}
@@ -162,8 +167,9 @@ class XFormsHelper {
 	}
 
 	/**
-	 * Return the tokens needed to represent the previous visibility of a node. The previous visibility is the answers
-	 * of a questions needed to make this element visible. It is analyzed by flow and not by question to allow
+	 * Return the tokens needed to represent the previous visibility of a node.
+	 * The previous visibility is the answers of a questions needed to make this
+	 * element visible. It is analyzed by flow and not by question to allow
 	 * recursivity.
 	 * 
 	 * @param flow
@@ -179,13 +185,14 @@ class XFormsHelper {
 				tokens.addAll(flow.getConditionSimpleTokens());
 				if (flow.getOrigin() instanceof Question) {
 					// Input field must filled up!
-					// if (((Question) flow.getOrigin()).getAnswerType().equals(AnswerType.INPUT)) {
+					// if (((Question)
+					// flow.getOrigin()).getAnswerType().equals(AnswerType.INPUT))
+					// {
 					if (!tokens.isEmpty()) {
 						tokens.add(Token.getAndToken());
 					}
-					tokens.add(new TokenAnswerNeeded(flow.getOrigin(),
-							((Question) flow.getOrigin()).getAnswerFormat() != null
-									&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
+					tokens.add(new TokenAnswerNeeded(flow.getOrigin(), ((Question) flow.getOrigin()).getAnswerFormat() != null
+							&& ((Question) flow.getOrigin()).getAnswerFormat().equals(AnswerFormat.DATE)));
 					// }
 				}
 				return tokens;
@@ -205,7 +212,8 @@ class XFormsHelper {
 	}
 
 	/**
-	 * Return all the elements which answers has impact to a question visibility.
+	 * Return all the elements which answers has impact to a question
+	 * visibility.
 	 * 
 	 * @param flow
 	 * @return
@@ -219,7 +227,8 @@ class XFormsHelper {
 		}
 
 		Set<Flow> flowsFromOrigin = flowsByOrigin.get(flow.getOrigin());
-		// Has more than one outgoing flow, the flow does not inherit relevance rule.
+		// Has more than one outgoing flow, the flow does not inherit relevance
+		// rule.
 		if (flowsFromOrigin.size() > 1) {
 			sources.add(flow.getOrigin());
 			return sources;
@@ -306,8 +315,8 @@ class XFormsHelper {
 		}
 		return controlNames.get(treeObject);
 	}
-	
-	public String getUniqueName(WebserviceCall call){
+
+	public String getUniqueName(WebserviceCall call) {
 		if (callNames.get(call) == null) {
 			if (!usedCallNames.contains(call.getName())) {
 				callNames.put(call, call.getName());
@@ -330,6 +339,30 @@ class XFormsHelper {
 
 	public XformsWebserviceValidationField getWebserviceValidationField(BaseQuestion formElement) {
 		return webserviceValidationField.get(formElement);
+	}
+
+	public boolean isImagesEnabled() {
+		return imagesEnabled;
+	}
+
+	public void setImagesEnabled(boolean imagesEnabled) {
+		this.imagesEnabled = imagesEnabled;
+	}
+
+	public boolean isPreviewMode() {
+		return previewMode;
+	}
+
+	public void setPreviewMode(boolean previewMode) {
+		this.previewMode = previewMode;
+	}
+
+	public IGroup<Long> getOrganization() {
+		return organization;
+	}
+
+	public void setOrganization(IGroup<Long> organization) {
+		this.organization = organization;
 	}
 
 }

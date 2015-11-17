@@ -68,13 +68,13 @@ public class XFormsImage {
 	}
 
 	private static String getPath(XFormsObject<?> xFormsObject, TreeObjectImage image) {
-		if (image.getElement().getParent() != null) {
-			return xFormsObject.getParent().getPath() + "/" + getName(image);
+		if (xFormsObject != null) {
+			return xFormsObject.getPath() + "/" + getName(image);
 		}
 		return getName(image);
 	}
 
-	public static String getResources(TreeObjectImage image, OrbeonLanguage language) throws NotExistingDynamicFieldException {
+	public static String getResources(TreeObjectImage image, OrbeonLanguage language) {
 		String resource = "<" + getName(image) + ">";
 		resource += getLabel(language);
 		resource += getHint(language);
@@ -95,12 +95,17 @@ public class XFormsImage {
 		binding.append("type=\"xf:anyURI\"");
 	}
 
-	// <xf:bind id="control-3-bind" ref="control-3" name="control-3"
-	// type="xf:anyURI"/>
-	public static void getBinding(TreeObjectImage image, StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
-			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	public static void getBinding(XFormsObject<?> xFormsObject, TreeObjectImage image, StringBuilder binding, String relevance)
+			throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		binding.append("<xf:bind id=\"").append(getBindingId(image)).append("\"  name=\"").append(getName(image)).append("\" ");
-		binding.append("ref=\"").append(getName(image)).append("\" ");
+		if (xFormsObject != null) {
+			binding.append("ref=\"").append(xFormsObject.getXPath() + "/" + getName(image)).append("\" ");
+		} else {
+			binding.append("ref=\"").append(getName(image)).append("\" ");
+		}
+		if (relevance != null) {
+			binding.append(relevance);
+		}
 		getXFormsType(binding);
 		binding.append("/>");
 	}

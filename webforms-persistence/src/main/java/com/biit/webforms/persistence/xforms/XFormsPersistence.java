@@ -47,6 +47,7 @@ public class XFormsPersistence {
 
 	/**
 	 * file_name column of orbeon database
+	 * 
 	 * @param form
 	 * @param organization
 	 * @param image
@@ -54,15 +55,12 @@ public class XFormsPersistence {
 	 * @return
 	 */
 	public static String imageFileName(IWebformsFormView form, IGroup<Long> organization, TreeObjectImage image, boolean preview) {
-		if (preview) {
-			return PREVIEW_PREFIX + "_" + image.getComparationId();
-		} else {
-			return image.getComparationId();
-		}
+		return image.getComparationId();
 	}
 
 	/**
 	 * document_id column of orbeon database
+	 * 
 	 * @param form
 	 * @param organization
 	 * @param image

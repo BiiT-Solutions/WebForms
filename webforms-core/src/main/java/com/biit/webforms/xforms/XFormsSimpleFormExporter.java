@@ -155,7 +155,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 		body.append("xmlns:p=\"http://www.orbeon.com/oxf/pipeline\" >");
 
 		// Add form image information
-		if (isImagesEnabled() && getForm().getImage() != null) {
+		if (getXFormsHelper().isImagesEnabled() && getForm().getImage() != null) {
 			XFormsImage.getBody(null, getForm().getImage(), body);
 		}
 

@@ -6,6 +6,8 @@ import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.persistence.entity.ElementWithImage;
+import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
@@ -19,9 +21,29 @@ public class XFormsCategory extends XFormsGroup {
 
 	private static final String CSS_CLASS_CATEGORY = "webforms-category";
 
-	public XFormsCategory(XFormsHelper xFormsHelper, BaseCategory category) throws NotValidTreeObjectException,
-			NotValidChildException {
+	public XFormsCategory(XFormsHelper xFormsHelper, BaseCategory category) throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, category);
+	}
+
+	/**
+	 * Categories has the image inside the object, not before as others
+	 * XFormsObjects
+	 */
+	@Override
+	protected String getDefinition() {
+		StringBuilder section = new StringBuilder();
+
+		section.append("<" + getName() + ">");
+		// Add element's image
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
+			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(), (Form) getSource().getAncestor(Form.class), getXFormsHelper()
+					.getOrganization(), getXFormsHelper().isPreviewMode()));
+		}
+		for (XFormsObject<? extends TreeObject> child : getChildren()) {
+			section.append(child.getDefinition());
+		}
+		section.append("</" + getName() + ">");
+		return section.toString();
 	}
 
 	@Override
@@ -39,18 +61,50 @@ public class XFormsCategory extends XFormsGroup {
 	}
 
 	@Override
-	protected void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
-			StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		binding.append("<xf:bind id=\"").append(getBindingId()).append("\" name=\"").append(getBindingName())
-				.append("\"");
+	protected void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
+		binding.append("<xf:bind id=\"").append(getBindingId()).append("\" name=\"").append(getBindingName()).append("\"");
 		getRelevantStructure(binding);
 
 		binding.append(" ref=\"").append(getXPath()).append("\" >");
+
+		// Add form image binding
+		if (getXFormsHelper().isImagesEnabled() && ((ElementWithImage) getSource()).getImage() != null) {
+			XFormsImage.getBinding(this, ((ElementWithImage) getSource()).getImage(), binding, getRelevantStructure());
+		}
+
 		// Add also children.
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
 			child.getBinding(binding);
 		}
 		binding.append("</xf:bind>");
+	}
+
+	/**
+	 * Categories has the image inside the object, not before as others
+	 * XFormsObjects
+	 */
+	@Override
+	protected String getResources(OrbeonLanguage language) throws NotExistingDynamicFieldException {
+		StringBuilder resource = new StringBuilder();
+
+		resource.append("<" + getName() + ">");
+		resource.append(getLabel(language));
+		resource.append(getHint(language));
+		resource.append(getAlert(language));
+		resource.append(getHelp(language));
+
+		// Add element's image.
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
+			resource.append(XFormsImage.getResources(((ElementWithImage) getSource()).getImage(), language));
+		}
+
+		for (XFormsObject<? extends TreeObject> child : getChildren()) {
+			resource.append(child.getResources(language));
+		}
+
+		resource.append("</" + getName() + ">");
+		return resource.toString();
 	}
 
 	/**
@@ -68,6 +122,12 @@ public class XFormsCategory extends XFormsGroup {
 		body.append(getBodyHint());
 		body.append(getBodyAlert());
 		body.append(getBodyHelp());
+
+		// Add element's image.
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
+			XFormsImage.getBody(this, ((ElementWithImage) getSource()).getImage(), body);
+		}
+
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
 			child.getSectionBody(body);
 		}
@@ -75,8 +135,7 @@ public class XFormsCategory extends XFormsGroup {
 	}
 
 	private String getCSSDisplayConditionRule() {
-		return " {if((instance('category-menu-button-active')/" + getUniqueName()
-				+ "='true') and (instance('show-category')/" + getUniqueName()
+		return " {if((instance('category-menu-button-active')/" + getUniqueName() + "='true') and (instance('show-category')/" + getUniqueName()
 				+ "='true')) then '' else 'category-show-disabled'}";
 	}
 }
