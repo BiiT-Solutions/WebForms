@@ -66,7 +66,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	private Timestamp defaultValueTime;
 
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(mappedBy="element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private TreeObjectImage image;
 
 	public Question() {

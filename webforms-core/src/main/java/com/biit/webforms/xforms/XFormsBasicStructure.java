@@ -9,6 +9,7 @@ import java.util.Set;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.usermanager.entity.IGroup;
 import com.biit.utils.date.DateManager;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.persistence.entity.Category;
@@ -25,9 +26,13 @@ public abstract class XFormsBasicStructure {
 	private List<XFormsCategory> xFormsCategories;
 	private Form form;
 	private XFormsHelper xFormsHelper;
+	private IGroup<Long> organization;
+	private boolean imagesEnabled = false;
+	private boolean previewMode = false;
 
-	public XFormsBasicStructure(Form form) throws NotValidTreeObjectException, NotValidChildException {
+	public XFormsBasicStructure(Form form, IGroup<Long> organization) throws NotValidTreeObjectException, NotValidChildException {
 		this.form = form;
+		this.organization = organization;
 		xFormsHelper = new XFormsHelper(form);
 		createXFormObjectsStructure();
 	}
@@ -39,9 +44,8 @@ public abstract class XFormsBasicStructure {
 	 * @return
 	 */
 	protected static String createFormDescription(Form form) {
-		return "Version: " + form.getVersion() + ". Modification date: "
-				+ DateManager.convertDateToStringWithHours(form.getUpdateTime()) + ". Publication date: "
-				+ DateManager.convertDateToStringWithHours(new Timestamp(new java.util.Date().getTime())) + ".";
+		return "Version: " + form.getVersion() + ". Modification date: " + DateManager.convertDateToStringWithHours(form.getUpdateTime())
+				+ ". Publication date: " + DateManager.convertDateToStringWithHours(new Timestamp(new java.util.Date().getTime())) + ".";
 	}
 
 	/**
@@ -79,8 +83,7 @@ public abstract class XFormsBasicStructure {
 	 * @throws InvalidFlowInForm
 	 */
 	protected static String getInstances() {
-		StringBuilder instances = new StringBuilder(
-				"<xf:instance id=\"fr-service-request-instance\" xxf:exclude-result-prefixes=\"#all\">");
+		StringBuilder instances = new StringBuilder("<xf:instance id=\"fr-service-request-instance\" xxf:exclude-result-prefixes=\"#all\">");
 		instances.append("<request/>");
 		instances.append("</xf:instance>");
 		instances.append("<xf:instance id=\"fr-service-response-instance\" xxf:exclude-result-prefixes=\"#all\">");
@@ -118,8 +121,7 @@ public abstract class XFormsBasicStructure {
 		}
 	}
 
-	protected XFormsCategory createXFormsCategory(Category category)
-			throws NotValidTreeObjectException, NotValidChildException {
+	protected XFormsCategory createXFormsCategory(Category category) throws NotValidTreeObjectException, NotValidChildException {
 		return new XFormsCategory(getXFormsHelper(), category);
 	}
 
@@ -132,6 +134,11 @@ public abstract class XFormsBasicStructure {
 
 		// Add hidden email field.
 		text.append(XFormsHiddenEmailField.getModel());
+
+		// Add form's image
+		if (isImagesEnabled() && getForm().getImage() != null) {
+			text.append(XFormsImage.getDefinition(getForm().getImage(), getForm(), organization, isPreviewMode()));
+		}
 
 		for (XFormsCategory xFormCategory : getXFormsCategories()) {
 			text.append(xFormCategory.getDefinition());
@@ -159,15 +166,14 @@ public abstract class XFormsBasicStructure {
 	 * @throws PostCodeRuleSyntaxError
 	 * @throws DateRuleSyntaxError
 	 */
-	protected String getHeader(XFormsObject<?> xFormsObject) throws NotExistingDynamicFieldException,
-			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getHeader(XFormsObject<?> xFormsObject) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
 		StringBuilder header = new StringBuilder("<xh:head>");
 		header.append("<xh:meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
 		header.append("<xh:title>" + getForm().getLabel() + "</xh:title>");
 		header.append("<xf:model id=\"fr-form-model\" xxf:expose-xpath-types=\"true\">");
 		header.append(getInput());
-		header.append(
-				"<xf:instance xxf:readonly=\"true\" id=\"fr-form-metadata\" xxf:exclude-result-prefixes=\"#all\">");
+		header.append("<xf:instance xxf:readonly=\"true\" id=\"fr-form-metadata\" xxf:exclude-result-prefixes=\"#all\">");
 		header.append(getMetaData(getForm()));
 		header.append("</xf:instance>");
 		header.append(getModelInstance());
@@ -215,10 +221,15 @@ public abstract class XFormsBasicStructure {
 	 * @throws PostCodeRuleSyntaxError
 	 * @throws DateRuleSyntaxError
 	 */
-	private String getBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException,
-			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	private String getBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
 		StringBuilder binding = new StringBuilder();
 		binding.append("<xf:bind id=\"fr-form-binds\" ref=\"instance('fr-form-instance')\">");
+
+		// Add form image binding
+		if (isImagesEnabled() && getForm().getImage() != null) {
+			XFormsImage.getBinding(getForm().getImage(), binding);
+		}
 
 		binding.append(getElementBinding(xformsObject));
 
@@ -237,8 +248,8 @@ public abstract class XFormsBasicStructure {
 	 * @throws StringRuleSyntaxError
 	 * @throws PostCodeRuleSyntaxError
 	 */
-	protected abstract String getElementBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException,
-			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError;
+	protected abstract String getElementBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError;
 
 	private String getTemplatesOfLoops() {
 		String templates = "";
@@ -252,16 +263,21 @@ public abstract class XFormsBasicStructure {
 	 * Creates all resources of the form (labels initial values, ...).
 	 * 
 	 * @param xFormsCategory
-	 *            if not null, gete resources for only this category
+	 *            if not null, get resources for only this category
 	 * @return
 	 * @throws NotExistingDynamicFieldException
 	 */
 	private String getResources(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException {
 		StringBuilder resource = new StringBuilder("<xf:instance id=\"fr-form-resources\" xxf:readonly=\"false\" xxf:exclude-result-prefixes=\"#all\">");
 		resource.append("<resources>");
-		//For each language
+		// For each language
 		for (OrbeonLanguage language : getEnabledLanguages()) {
 			resource.append("<resource xml:lang=\"" + language.getAbbreviature() + "\">");
+
+			// Add form's image.
+			if (isImagesEnabled() && getForm().getImage() != null) {
+				resource.append(XFormsImage.getResources(getForm().getImage(), language));
+			}
 
 			// Add resources
 			resource.append(getElementResources(xformsObject, language));
@@ -296,8 +312,7 @@ public abstract class XFormsBasicStructure {
 	 * @return
 	 * @throws NotExistingDynamicFieldException
 	 */
-	protected abstract String getElementResources(XFormsObject<?> xformsObject, OrbeonLanguage language)
-			throws NotExistingDynamicFieldException;
+	protected abstract String getElementResources(XFormsObject<?> xformsObject, OrbeonLanguage language) throws NotExistingDynamicFieldException;
 
 	/**
 	 * Creates the body section of the XForm.
@@ -316,4 +331,20 @@ public abstract class XFormsBasicStructure {
 	 * @throws InvalidFlowInForm
 	 */
 	protected abstract String getBodySection(XFormsObject<?> xformsObject);
+
+	public boolean isImagesEnabled() {
+		return imagesEnabled;
+	}
+
+	public void setImagesEnabled(boolean imagesEnabled) {
+		this.imagesEnabled = imagesEnabled;
+	}
+
+	public boolean isPreviewMode() {
+		return previewMode;
+	}
+
+	public void setPreviewMode(boolean previewMode) {
+		this.previewMode = previewMode;
+	}
 }

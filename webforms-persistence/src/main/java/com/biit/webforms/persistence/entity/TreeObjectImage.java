@@ -14,10 +14,12 @@ import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.util.Base64Utils;
 
+import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.logger.WebformsLogger;
@@ -35,6 +37,9 @@ public class TreeObjectImage extends StorableObject {
 	@Lob
 	@Column(length = MAX_IMAGE_LENGTH)
 	private byte[] data;
+
+	@OneToOne(optional = false)
+	private TreeObject element;
 
 	public TreeObjectImage() {
 
@@ -170,6 +175,14 @@ public class TreeObjectImage extends StorableObject {
 		} catch (IOException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
+	}
+
+	public TreeObject getElement() {
+		return element;
+	}
+
+	public void setElement(TreeObject element) {
+		this.element = element;
 	}
 
 }

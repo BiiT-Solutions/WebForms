@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
@@ -21,11 +22,12 @@ import com.biit.webforms.xml.XmlUtils;
  * - Page Flow. Relationship among all files. <br>
  * - StepN-categoryName. A category exported in an independent file. .<br>
  */
+@Deprecated
 public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	private final static String DEFAULT_SUBMISSION = "initial-instance.xml";
 
-	public XFormsMultiplesFormsExporter(Form form) throws NotValidTreeObjectException, NotValidChildException {
-		super(form);
+	public XFormsMultiplesFormsExporter(Form form, IGroup<Long> organization) throws NotValidTreeObjectException, NotValidChildException {
+		super(form, organization);
 	}
 
 	/**
@@ -55,8 +57,8 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 		return "<epilogue url=\"oxf:/config/epilogue.xpl\"/>";
 	}
 
-	public List<String> getAllcategoryModelPages() throws NotExistingDynamicFieldException, InvalidDateException,
-			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	public List<String> getAllcategoryModelPages() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
 		List<String> files = new ArrayList<>();
 		for (XFormsCategory xFormsCategory : this.getXFormsCategories()) {
 			files.add(getCategoryModelPage(xFormsCategory));
@@ -74,11 +76,10 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	 * @throws InvalidDateException
 	 * @throws NotExistingDynamicFieldException
 	 */
-	public String getCategoryModelPage(XFormsCategory xFormsCategory) throws NotExistingDynamicFieldException,
-			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	public String getCategoryModelPage(XFormsCategory xFormsCategory) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
 		StringBuilder text = new StringBuilder();
-		text.append(
-				"<xh:html xmlns:xh=\"http://www.w3.org/1999/xhtml\" xmlns:xf=\"http://www.w3.org/2002/xforms\" xmlns:xxf=\"http://orbeon.org/oxf/xml/xforms\" xmlns:ev=\"http://www.w3.org/2001/xml-events\" xmlns:fr=\"http://orbeon.org/oxf/xml/form-runner\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">");
+		text.append("<xh:html xmlns:xh=\"http://www.w3.org/1999/xhtml\" xmlns:xf=\"http://www.w3.org/2002/xforms\" xmlns:xxf=\"http://orbeon.org/oxf/xml/xforms\" xmlns:ev=\"http://www.w3.org/2001/xml-events\" xmlns:fr=\"http://orbeon.org/oxf/xml/form-runner\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">");
 		text.append(getHeader(xFormsCategory));
 		text.append(getBody(xFormsCategory));
 		text.append("</xh:html>");
@@ -89,8 +90,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 		StringBuilder text = new StringBuilder();
 
 		for (XFormsCategory xFormsCategory : getXFormsCategories()) {
-			boolean firstCategory = xFormsCategory.getSource().getParent().getChildren()
-					.indexOf(xFormsCategory.getSource()) == 0;
+			boolean firstCategory = xFormsCategory.getSource().getParent().getChildren().indexOf(xFormsCategory.getSource()) == 0;
 			text.append("<page path=\"/" + getOrbeonAppFolder() + "/");
 			if (!firstCategory) {
 				text.append(getCategoryPage(xFormsCategory));
@@ -152,8 +152,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	}
 
 	private String getCategoryPage(XFormsCategory xFormsCategory) {
-		if (xFormsCategory == null
-				|| xFormsCategory.getSource().getParent().getChildren().indexOf(xFormsCategory.getSource()) == 0) {
+		if (xFormsCategory == null || xFormsCategory.getSource().getParent().getChildren().indexOf(xFormsCategory.getSource()) == 0) {
 			return "";
 		}
 		return xFormsCategory.getSource().getName();
@@ -171,8 +170,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	 * Creates the resources for current category.
 	 */
 	@Override
-	protected String getElementResources(XFormsObject<?> xformsObject, OrbeonLanguage language)
-			throws NotExistingDynamicFieldException {
+	protected String getElementResources(XFormsObject<?> xformsObject, OrbeonLanguage language) throws NotExistingDynamicFieldException {
 		StringBuilder resource = new StringBuilder();
 
 		// Add hidden email field in first category.
@@ -203,8 +201,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 			resource.append("</xf:trigger>");
 		}
 
-		if (getXFormsCategories().indexOf(xformsObject) < getXFormsCategories().size() - 1
-				&& getXFormsCategories().indexOf(xformsObject) >= 0) {
+		if (getXFormsCategories().indexOf(xformsObject) < getXFormsCategories().size() - 1 && getXFormsCategories().indexOf(xformsObject) >= 0) {
 			resource.append("<xf:trigger>");
 			resource.append("<xf:label>Next &gt;</xf:label>");
 			resource.append("<xf:send ev:event=\"DOMActivate\" submission=\"next-submission\"/>");
@@ -257,8 +254,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	private void getNextAndPreviousButtonEvents(StringBuilder events, XFormsObject<?> xFormsObject) {
 		if (xFormsObject instanceof XFormsCategory) {
 			XFormsCategory xFormsCategory = (XFormsCategory) xFormsObject;
-			int xFormsCategoryIndex = xFormsCategory.getSource().getParent().getChildren()
-					.indexOf(xFormsCategory.getSource());
+			int xFormsCategoryIndex = xFormsCategory.getSource().getParent().getChildren().indexOf(xFormsCategory.getSource());
 			XFormsCategory previousXFormsCategory = null;
 			XFormsCategory nextXFormsCategory = null;
 
@@ -274,12 +270,12 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 
 			events.append("<!-- Next / Previous button events -->");
 			if (previousXFormsCategory != null) {
-				events.append("<xf:submission id=\"previous-submission\" resource=\"/" + getOrbeonAppFolder() + "/"
-						+ getCategoryPage(previousXFormsCategory) + "\" method=\"post\" replace=\"all\"/>");
+				events.append("<xf:submission id=\"previous-submission\" resource=\"/" + getOrbeonAppFolder() + "/" + getCategoryPage(previousXFormsCategory)
+						+ "\" method=\"post\" replace=\"all\"/>");
 			}
 			if (nextXFormsCategory != null) {
-				events.append("<xf:submission id=\"next-submission\" resource=\"/" + getOrbeonAppFolder() + "/"
-						+ getCategoryPage(nextXFormsCategory) + "\" method=\"post\" replace=\"all\"/>");
+				events.append("<xf:submission id=\"next-submission\" resource=\"/" + getOrbeonAppFolder() + "/" + getCategoryPage(nextXFormsCategory)
+						+ "\" method=\"post\" replace=\"all\"/>");
 			}
 		}
 	}
@@ -288,11 +284,9 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 		if (xFormsObject instanceof XFormsCategory) {
 			XFormsCategory xFormsCategory = (XFormsCategory) xFormsObject;
 			// Only last category
-			if (xFormsCategory.getSource().getParent().getChildren()
-					.indexOf(xFormsCategory.getSource()) == getXFormsCategories().size() - 1) {
+			if (xFormsCategory.getSource().getParent().getChildren().indexOf(xFormsCategory.getSource()) == getXFormsCategories().size() - 1) {
 				events.append("<xf:submission id=\"submit-form\" method=\"put\" resource=\"\" replace=\"none\" >");
-				events.append(
-						"<xf:message ev:event=\"xforms-submit-error\" level=\"modal\">An error occurred while saving!</xf:message>");
+				events.append("<xf:message ev:event=\"xforms-submit-error\" level=\"modal\">An error occurred while saving!</xf:message>");
 				events.append("</xf:submission>");
 			}
 		}
@@ -306,8 +300,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 	 */
 	private void getSkipEmptyCategoryEvents(StringBuilder events, XFormsObject<?> xFormsObject) {
 		events.append("<!-- Keep track of enabled/disabled status -->");
-		events.append(
-				"<xf:instance id=\"totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName() + "\">");
+		events.append("<xf:instance id=\"totalVisibleElements-" + xFormsObject.getSource().getSimpleAsciiName() + "\">");
 		events.append("<value>0</value>");
 		events.append("</xf:instance>");
 		events.append("<!-- Update for each element -->");
@@ -325,14 +318,13 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 			// + "') - 1\"/>");
 		}
 		events.append("<!-- Redirect to next page -->");
-		events.append(
-				"<xf:send ev:event=\"xforms-ready\" submission=\"next-submission\" if=\"instance('totalVisibleElements-"
-						+ xFormsObject.getSource().getSimpleAsciiName() + "') = 0\"/>");
+		events.append("<xf:send ev:event=\"xforms-ready\" submission=\"next-submission\" if=\"instance('totalVisibleElements-"
+				+ xFormsObject.getSource().getSimpleAsciiName() + "') = 0\"/>");
 	}
 
 	@Override
-	protected String getElementBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException,
-			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getElementBinding(XFormsObject<?> xformsObject) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
 		StringBuilder binding = new StringBuilder();
 
 		// Add hidden email field.

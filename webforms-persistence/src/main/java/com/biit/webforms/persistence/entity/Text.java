@@ -33,7 +33,7 @@ public class Text extends WebformsBaseQuestion implements ElementWithImage {
 	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
 	private String description;
 
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private TreeObjectImage image;
 
 	public Text() {
@@ -103,8 +103,7 @@ public class Text extends WebformsBaseQuestion implements ElementWithImage {
 
 		sb.append("Text ").append(idName).append("  = new Text();").append(System.lineSeparator());
 		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
-		sb.append(idName).append(".setDescription(\"").append(this.getDescription()).append("\");")
-				.append(System.lineSeparator());
+		sb.append(idName).append(".setDescription(\"").append(this.getDescription()).append("\");").append(System.lineSeparator());
 
 		return counter;
 	}

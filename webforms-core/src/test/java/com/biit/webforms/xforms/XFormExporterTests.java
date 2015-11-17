@@ -32,12 +32,11 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 public class XFormExporterTests {
 
 	@Test
-	public void exportToXForms() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
-			InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType,
-			NotValidTreeObjectException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
-			PostCodeRuleSyntaxError, ElementIsReadOnly, FlowNotAllowedException, UnsupportedEncodingException {
+	public void exportToXForms() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException,
+			InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, NotValidTreeObjectException, NotExistingDynamicFieldException,
+			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError, ElementIsReadOnly, FlowNotAllowedException, UnsupportedEncodingException {
 		Form form = FormUtils.createCompleteForm();
-		new XFormsSimpleFormExporter(form,new HashSet<Webservice>()).generateXFormsLanguage();
+		new XFormsSimpleFormExporter(form, null, new HashSet<Webservice>(), false).generateXFormsLanguage();
 	}
 }

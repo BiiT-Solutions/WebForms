@@ -30,22 +30,20 @@ public class OrbeonUtils {
 	 * 
 	 * @param form
 	 */
-	public static boolean saveFormInOrbeon(Form form, IGroup<Long> organization, boolean preview) {
+	public static boolean saveFormInOrbeon(Form form, IGroup<Long> organization, boolean preview, boolean includeImages) {
 		// Save it.
 		XFormsPersistence xformsConnection = new XFormsPersistence();
 		try {
-			xformsConnection.connect(WebformsConfigurationReader.getInstance().getXFormsPassword(),
-					WebformsConfigurationReader.getInstance().getXFormsUser(),
-					WebformsConfigurationReader.getInstance().getXFormsDatabaseName(),
-					WebformsConfigurationReader.getInstance().getXFormsDatabaseHost());
+			xformsConnection.connect(WebformsConfigurationReader.getInstance().getXFormsPassword(), WebformsConfigurationReader.getInstance().getXFormsUser(),
+					WebformsConfigurationReader.getInstance().getXFormsDatabaseName(), WebformsConfigurationReader.getInstance().getXFormsDatabaseHost());
 			try {
-				String xmlData = getXFormsData(form);
+				String xmlData = getXFormsData(form, organization, includeImages);
 				xformsConnection.storeForm(form, UserSessionHandler.getUser(), organization, xmlData, preview);
-				xformsConnection.storeImages(form, UserSessionHandler.getUser(), organization, form.getAllImages(),
-						preview);
+				if (includeImages) {
+					xformsConnection.storeImages(form, UserSessionHandler.getUser(), organization, form.getAllImages(), preview);
+				}
 			} catch (DuplicatedXFormException e) {
-				MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_PUBLISHED,
-						LanguageCodes.ERROR_FORM_ALREADY_EXISTS);
+				MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_PUBLISHED, LanguageCodes.ERROR_FORM_ALREADY_EXISTS);
 				return false;
 			} catch (NotExistingDynamicFieldException e) {
 				MessageManager.showError(e.getMessage());
@@ -61,11 +59,10 @@ public class OrbeonUtils {
 			}
 			xformsConnection.disconnectDatabase();
 		} catch (CommunicationsException ce) {
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 			WebformsLogger.errorMessage(OrbeonUtils.class.getName(), ce);
 		} catch (SQLException e) {
-			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE);
 			WebformsLogger.errorMessage(OrbeonUtils.class.getName(), e);
 			return false;
 		} catch (AccessNotAllowed e1) {
@@ -76,11 +73,10 @@ public class OrbeonUtils {
 		return true;
 	}
 
-	public static String getXFormsData(Form form)
-			throws NotValidTreeObjectException, NotValidChildException, IOException, NotExistingDynamicFieldException,
-			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form,
-				UserSessionHandler.getController().getAllWebservices());
+	private static String getXFormsData(Form form, IGroup<Long> organization, boolean includeImages) throws NotValidTreeObjectException,
+			NotValidChildException, IOException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form, organization, UserSessionHandler.getController().getAllWebservices(),
+				includeImages);
 		BufferedInputStream in = new BufferedInputStream(xformExporter.generateXFormsLanguage());
 		byte[] contents = new byte[1024];
 

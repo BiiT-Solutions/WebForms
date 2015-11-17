@@ -8,6 +8,7 @@
 				  webforms-element subanswer-child
    Horizontal Radio-button	: webforms-element fr-radio-horizontal webforms-answer
    Info-text			: webforms-element webforms-infotext
+   Form Image: .Form-image .xforms-output-output
  */
 
 /* Header: off
@@ -102,71 +103,6 @@
   margin-left: 15px;
 }
 
-/* Element: custom wizard
-   -------------------
- */
-.category-show-disabled {
-        display: none;
-}
-
-.fr-mode-pdf .category-show-disabled {
-        display: inline;
-}
-
-.fr-mode-pdf .category-show-disabled {
-	display: inline;
-}
-
-.category-button-disabled{
-	pointer-events: none;
-}
-
-.category-button-disabled a{
-	color: #C0C0C0 ;
-}
-
-.webforms-list-no-bullets {
-	list-style-type: none;
-	margin: 0 0 0 0 !important;
-}
-
-.categories-menu{
-	float: left;
-	width: 200px;
-	text-align: center;
-	margin-top: 25px;
-}
-
-.webforms-category-components{
-	margin-left: 200px;
-	width: auto;
-	vertical-align: top;
-	position: relative;
-}
-
-.webforms-list-no-bullets-element{
-	margin: 5px;
-}
-
-.webforms-list-no-bullets-element a{
-	text-decoration: none;
-
-}
-
-.webforms-list-no-bullets-element-selected{
-	background-color: gainsboro;
-}
-
-.fr-body{
-	display: inline-block !important;
-	width: 100%;
-}
-
-.orbeon .xbl-fr-section .fr-section-content{
-	display: inline-block;
-	width: 96%;
-}
-
 /* Element: Orbeon ERROR style Override
    -------------------
  */
@@ -209,4 +145,13 @@
 
 .orbeon .fr-view .xbl-fr-error-summary table {
     margin: 2px 2px 15px;
+}
+
+/* Images */
+.Form-image .xforms-output-output {
+    text-align: center;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 350px;
 }
