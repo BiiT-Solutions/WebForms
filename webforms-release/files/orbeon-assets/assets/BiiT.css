@@ -155,3 +155,15 @@
     top: 40px;
     width: 350px;
 }
+
+.Category-image .xforms-output-output {
+    text-align: center;
+	display: block;
+    max-width: 80% !important;
+}
+
+.Question-image .xforms-output-output {
+    text-align: center;
+	display: block;
+    max-width: 60% !important;
+}
