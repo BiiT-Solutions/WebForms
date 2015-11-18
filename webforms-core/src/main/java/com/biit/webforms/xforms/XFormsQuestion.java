@@ -14,7 +14,9 @@ import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
+import com.biit.webforms.persistence.entity.ElementWithImage;
 import com.biit.webforms.persistence.entity.Flow;
+import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
@@ -44,17 +46,25 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 	@Override
 	protected String getDefinition() {
-		String section = "<" + getName() + ">";
+		StringBuilder section = new StringBuilder();
+
+		// Add element's image
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
+			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(), (Form) getSource().getAncestor(Form.class), getXFormsHelper()
+					.getOrganization(), getXFormsHelper().isPreviewMode()));
+		}
+
+		section.append("<" + getName() + ">");
 		if (getSource() instanceof Question) {
 			if (((Question) getSource()).getDefaultValueTime() != null) {
 				SimpleDateFormat formatter = new SimpleDateFormat(XFormsObject.XPATH_DATE_FORMAT);
-				section += formatter.format(((Question) getSource()).getDefaultValueTime());
+				section.append(formatter.format(((Question) getSource()).getDefaultValueTime()));
 			} else {
-				section += ((Question) getSource()).getDefaultValue();
+				section.append(((Question) getSource()).getDefaultValue());
 			}
 		}
-		section += "</" + getName() + ">";
-		return section;
+		section.append("</" + getName() + ">");
+		return section.toString();
 	}
 
 	@Override
@@ -68,6 +78,11 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 	@Override
 	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		// Add form image binding
+		if (getXFormsHelper().isImagesEnabled() && ((ElementWithImage) getSource()).getImage() != null) {
+			XFormsImage.getBinding(this.getParent(), ((ElementWithImage) getSource()).getImage(), binding, getRelevantStructure());
+		}
+
 		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"").append(getBindingName()).append("\" ");
 		// Reference must be always to a name and not to a complete xpath, if
 		// the xpath is used, in a loop all repeated
@@ -375,6 +390,12 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	 */
 	private String createElementBody() {
 		StringBuilder section = new StringBuilder();
+
+		// Add element's image.
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
+			XFormsImage.getBody(this.getParent(), ((ElementWithImage) getSource()).getImage(), section);
+		}
+
 		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName() + "\" class=\"" + getCssClass()
 				+ "\" bind=\"" + getBindingId() + "\">");
 		section.append(getBodyLabel());
