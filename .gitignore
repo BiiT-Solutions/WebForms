@@ -15,6 +15,7 @@ styles.css
 /webforms-integration-test/src/main/webapp
 pom.xml.releaseBackup
 release.properties
+/webforms-release/database/updates/
 
 burgerservicenumber2.json
 burgerservicenumber.json
