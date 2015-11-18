@@ -1058,7 +1058,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 	@Override
 	public void setImage(TreeObjectImage image) {
 		this.image = image;
-		image.setElement(this);
+		if (image != null) {
+			image.setElement(this);
+		}
 	}
 
 	@Override

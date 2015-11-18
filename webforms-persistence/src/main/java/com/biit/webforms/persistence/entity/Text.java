@@ -150,6 +150,9 @@ public class Text extends WebformsBaseQuestion implements ElementWithImage {
 	@Override
 	public void setImage(TreeObjectImage image) {
 		this.image = image;
+		if (image != null) {
+			image.setElement(this);
+		}
 	}
 
 	@Override

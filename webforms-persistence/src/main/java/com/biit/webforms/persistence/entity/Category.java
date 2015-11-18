@@ -118,7 +118,9 @@ public class Category extends BaseCategory implements ElementWithImage {
 	@Override
 	public void setImage(TreeObjectImage image) {
 		this.image = image;
-		image.setElement(this);
+		if (image != null) {
+			image.setElement(this);
+		}
 	}
 
 	@Override
