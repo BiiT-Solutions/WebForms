@@ -156,14 +156,25 @@
     width: 350px;
 }
 
+/* Hide form image if screen is small */
+@media screen and (max-width: 1800px) {
+    .Form-image {
+        display: none !important;
+    }
+}
+
 .Category-image .xforms-output-output {
     text-align: center;
 	display: block;
     max-width: 80% !important;
+	margin-left: auto;
+    margin-right: auto;
 }
 
 .Question-image .xforms-output-output {
     text-align: center;
 	display: block;
-    max-width: 60% !important;
+    max-width: 50% !important;margin-left: auto;
+    margin-right: auto;
 }
+
