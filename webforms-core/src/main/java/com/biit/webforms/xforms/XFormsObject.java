@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import com.biit.form.entity.BaseQuestion;
@@ -324,12 +325,12 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	protected String getResources(OrbeonLanguage language) throws NotExistingDynamicFieldException {
 		StringBuilder resource = new StringBuilder();
-		
+
 		// Add element's image.
 		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
 			resource.append(XFormsImage.getResources(((ElementWithImage) getSource()).getImage(), language));
 		}
-		
+
 		resource.append("<" + getName() + ">");
 		resource.append(getLabel(language));
 		resource.append(getHint(language));
@@ -834,7 +835,13 @@ public abstract class XFormsObject<T extends TreeObject> {
 					break;
 				} else {
 					// Get previous element by flow.
-					origin = previousFlow.iterator().next().getOrigin();
+					try {
+						origin = previousFlow.iterator().next().getOrigin();
+					} catch (NoSuchElementException nse) {
+						// System Field is the first element of the form. Always
+						// visible next element.
+						return new ArrayList<Token>();
+					}
 				}
 			}
 			if (!isAlwaysHiddenElement(origin)) {
