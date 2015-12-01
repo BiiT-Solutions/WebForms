@@ -11,7 +11,6 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.DefaultErrorHandler;
@@ -19,8 +18,9 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
 /**
- * Main Ui class of application. Ui has been configured to preserve the Ui when a Refresh action has occurred. This way,
- * a UI is only discarded when the user is no longer active in a long time, instead of every time there is a refresh
+ * Main Ui class of application. Ui has been configured to preserve the Ui when
+ * a Refresh action has occurred. This way, a UI is only discarded when the user
+ * is no longer active in a long time, instead of every time there is a refresh
  * event.
  */
 @Push
@@ -30,7 +30,7 @@ public class ApplicationUi extends UI {
 	public final static String USER_PARAMETER_TAG = "user";
 	public final static String PASSWORD_PARAMETER_TAG = "password";
 	private static final long serialVersionUID = -704009283476930001L;
-	private Navigator navigator;
+	private BiitNavigator navigator;
 	private View currentView;
 	private String userEmail;
 	private String password;
@@ -55,32 +55,36 @@ public class ApplicationUi extends UI {
 		defineWebPages();
 		UiAccesser.register(UserSessionHandler.getController());
 
-		// Liferay send this data and automatically are used in the login screen.
+		// Liferay send this data and automatically are used in the login
+		// screen.
 		userEmail = request.getParameter(USER_PARAMETER_TAG);
 		password = request.getParameter(PASSWORD_PARAMETER_TAG);
 
 		setErrorHandler(new WebformsErrorHandler());
+
+		if(UserSessionHandler.getUser()!=null){
+			//User already logged in the connection
+			WebformsLogger.info(ApplicationUi.class.getName(), "New Ui initializated for User '"+UserSessionHandler.getUser().getEmailAddress()+"'");
+			defaultStartNavigations();
+		}else{
+			//User not logged yet
+			if(autologinImplementation()){
+				defaultStartNavigations();
+			}else{
+				navigator.setState(WebMap.LOGIN_PAGE.name());
+			}
+		}
 	}
 
-	public static void autologin() {
-		((ApplicationUi) ApplicationUi.getCurrent()).autologinImplementation();
-	}
-
-	private void autologinImplementation() {
+	private boolean autologinImplementation() {
 		// When accessing from Liferay, user and password are already set.
 		if (userEmail != null && userEmail.length() > 0 && password != null && password.length() > 0) {
-			WebformsLogger.info(ApplicationUi.class.getName(), "Autologin with user '" + userEmail
-					+ "' and password with length of " + password.length());
+			WebformsLogger.info(ApplicationUi.class.getName(), "Autologin with user '" + userEmail + "' and password with length of "
+					+ password.length());
 			try {
 				IUser<Long> user = UserSessionHandler.getUser(userEmail, password);
 				if (user != null) {
-					// Try to go to the last page and last form if user has no logged out.
-					if (UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()) != null
-							&& UserSessionHandler.getController().getFormInUse() != null) {
-						navigateTo(UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()));
-					} else {
-						navigateTo(WebMap.getMainPage());
-					}
+					return true;
 				}
 			} catch (UserManagementException | AuthenticationRequired | InvalidCredentialsException e) {
 				WebformsLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
@@ -94,14 +98,24 @@ public class ApplicationUi extends UI {
 				WebformsLogger.debug(this.getClass().getName(), "Autologin failed.");
 			}
 		}
+		return false;
+	}
+
+	private void defaultStartNavigations() {
+		// Try to go to the last page and last form if user has no logged out.
+		if (UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()) != null
+				&& UserSessionHandler.getController().getFormInUse() != null) {
+			navigator.setState(UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()).name());
+		} else {
+			navigator.setState(WebMap.getMainPage().name());
+		}
 	}
 
 	@Override
 	public void detach() {
 		if (UserSessionHandler.getUser() != null) {
 			// Log user ui expired.
-			WebformsLogger.info(this.getClass().getName(), " UI of '" + UserSessionHandler.getUser().getEmailAddress()
-					+ "' has expired.");
+			WebformsLogger.info(this.getClass().getName(), " UI of '" + UserSessionHandler.getUser().getEmailAddress() + "' has expired.");
 		} else {
 			WebformsLogger.debug(this.getClass().getName(), " UI closed.");
 		}
@@ -122,9 +136,8 @@ public class ApplicationUi extends UI {
 			@Override
 			public void afterViewChange(ViewChangeEvent event) {
 				if (UserSessionHandler.getUser() != null) {
-					WebformsLogger.info(this.getClass().getName(), "User '"
-							+ UserSessionHandler.getUser().getEmailAddress() + "' has change view to '"
-							+ event.getNewView().getClass().getName() + "'.");
+					WebformsLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
+							+ "' has change view to '" + event.getNewView().getClass().getName() + "'.");
 				}
 			}
 		});
@@ -133,9 +146,9 @@ public class ApplicationUi extends UI {
 	@SuppressWarnings("unchecked")
 	private void defineWebPages() {
 		// Create a navigator to control the views
-		navigator = new Navigator(this, this);
-		// Define login page as first one.
-		navigator.addView("", WebMap.getLoginPage().getWebPageJavaClass());
+		navigator = new BiitNavigator(this, this);
+		// // Define login page as first one.
+		// navigator.addView("", WebMap.getLoginPage().getWebPageJavaClass());
 		navigator.setErrorView(WebMap.getNotFoundPage().getWebPageJavaClass());
 		// Create and register the other web pages.
 		for (WebMap page : WebMap.values()) {
