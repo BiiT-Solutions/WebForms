@@ -68,8 +68,8 @@ public class Login extends WebPageComponent {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// Nothing to do. Autologin managed by ApplicationUI.
-		ApplicationUi.autologin();
+//		// Nothing to do. Autologin managed by ApplicationUI.
+//		ApplicationUi.autologin();
 	}
 
 	private Panel buildLoginForm() {
