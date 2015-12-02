@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ws.rs.ProcessingException;
+
 import com.biit.form.entity.IBaseFormView;
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
@@ -16,6 +18,7 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
@@ -23,7 +26,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
 
 /**
- * Base tree table. This generic table needs a dataProvider to initialize the data.
+ * Base tree table. This generic table needs a dataProvider to initialize the
+ * data.
  * 
  * @param <T>
  */
@@ -146,21 +150,21 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		}
 
 		try {
-			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue(
-					webformsSecurityService.getUserById(form.getCreatedBy()).getEmailAddress());
+			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY)
+					.setValue(webformsSecurityService.getUserById(form.getCreatedBy()).getEmailAddress());
 		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException | NullPointerException e) {
 			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue("");
 		}
-		item.getItemProperty(TreeTableBaseFormProperties.CREATION_DATE).setValue(
-				(DateManager.convertDateToString(form.getCreationTime())));
+		item.getItemProperty(TreeTableBaseFormProperties.CREATION_DATE)
+				.setValue((DateManager.convertDateToString(form.getCreationTime())));
 		try {
-			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue(
-					webformsSecurityService.getUserById(form.getUpdatedBy()).getEmailAddress());
+			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY)
+					.setValue(webformsSecurityService.getUserById(form.getUpdatedBy()).getEmailAddress());
 		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException | NullPointerException e) {
 			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue("");
 		}
-		item.getItemProperty(TreeTableBaseFormProperties.MODIFICATION_DATE).setValue(
-				(DateManager.convertDateToString(form.getUpdateTime())));
+		item.getItemProperty(TreeTableBaseFormProperties.MODIFICATION_DATE)
+				.setValue((DateManager.convertDateToString(form.getUpdateTime())));
 		return item;
 	}
 
@@ -217,11 +221,17 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
 					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		} catch (ProcessingException e) {
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_WEBSERVICES,
+					LanguageCodes.ERROR_ACCESSING_WEBSERVICES_DESCRIPTION);
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 
 	/**
-	 * Overridden version of sort for this table. Sorts by name ascendenly and version descendenly.
+	 * Overridden version of sort for this table. Sorts by name ascendenly and
+	 * version descendenly.
 	 */
 	public void defaultSort() {
 		sort(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION },
@@ -233,7 +243,8 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 	}
 
 	/**
-	 * Add a new element to the table. If sort is true, the table is reordered after inserting the value.
+	 * Add a new element to the table. If sort is true, the table is reordered
+	 * after inserting the value.
 	 * 
 	 * @param form
 	 * @param sort

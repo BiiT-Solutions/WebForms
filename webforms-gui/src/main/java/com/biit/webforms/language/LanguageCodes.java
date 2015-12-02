@@ -201,6 +201,9 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	ERROR_ACCESSING_DATABASE("error.database.access"),
 	ERROR_ACCESSING_DATABASE_DESCRIPTION("error.database.description"),
+	
+	ERROR_ACCESSING_WEBSERVICES("error.webservice.access"),
+	ERROR_ACCESSING_WEBSERVICES_DESCRIPTION("error.webservice.access.description"),
 
 	//BlockManager
 	CAPTION_NEW_BLOCK("caption.new.block"),
