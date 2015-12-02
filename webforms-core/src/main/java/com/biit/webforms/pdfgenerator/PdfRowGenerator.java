@@ -53,7 +53,7 @@ public class PdfRowGenerator {
 	}
 
 	public static PdfRow generateAnnexQuestion(Question question) {
-		PdfRow row = new PdfRow(1, 4);
+		PdfRow row = new PdfRow(PdfBlockGenerator.ANNEX_QUESTION_ROWS, PdfBlockGenerator.ANNEX_COLS);
 
 		PdfPCell cellLabel = PdfPCellGenerator.generateLabelCell(question);
 		PdfPCell cellName = PdfPCellGenerator.generateNameCell(question);
@@ -61,10 +61,11 @@ public class PdfRowGenerator {
 		try {
 			row.addCell(cellLabel);
 			row.addCell(cellName);
-
 			cellName.setColspan(2);
 			PdfPCell cellAnswerFormat = PdfPCellGenerator.generateAnswerFormatParagraph(question);
 			row.addCell(cellAnswerFormat);
+			PdfPCell cellAnswerSubformat = PdfPCellGenerator.generateAnswerSubformatParagraph(question);
+			row.addCell(cellAnswerSubformat);
 
 		} catch (BadBlockException e) {
 			WebformsLogger.errorMessage(PdfRowGenerator.class.getName(), e);
@@ -74,14 +75,14 @@ public class PdfRowGenerator {
 	}
 
 	public static PdfRow generateAnnexQuestion(Text infoText) {
-		PdfRow row = new PdfRow(1, 4);
+		PdfRow row = new PdfRow(PdfBlockGenerator.ANNEX_QUESTION_ROWS, PdfBlockGenerator.ANNEX_COLS);
 
 		PdfPCell cellLabel = PdfPCellGenerator.generateLabelCell(infoText);
 		PdfPCell cellName = PdfPCellGenerator.generateNameCell(infoText);
 
 		try {
 			row.addCell(cellLabel);
-			cellName.setColspan(3);
+			cellName.setColspan(4);
 			row.addCell(cellName);
 		} catch (BadBlockException e) {
 			WebformsLogger.errorMessage(PdfRowGenerator.class.getName(), e);

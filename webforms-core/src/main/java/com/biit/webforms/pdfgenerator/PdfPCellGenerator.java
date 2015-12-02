@@ -28,6 +28,10 @@ public class PdfPCellGenerator {
 		return new PdfPCell(ParagraphGenerator.generateAnswerFormatParagraph(question));
 	}
 
+	public static PdfPCell generateAnswerSubformatParagraph(Question question) {
+		return new PdfPCell(ParagraphGenerator.generateAnswerSubformatParagraph(question));
+	}
+
 	public static PdfPCell generateInputFieldCell(PdfWriter writer, Question question) {
 		PdfPCell cell = new PdfPCell();
 		cell.setBorder(BORDER);

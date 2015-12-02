@@ -88,6 +88,14 @@ public class ParagraphGenerator {
 			return new Paragraph("-", PdfFont.SMALL_FONT.getFont());
 		}
 	}
+	
+	public static Phrase generateAnswerSubformatParagraph(Question question) {
+		if(question.getAnswerSubformat()!=null){
+			return new Paragraph("(" + question.getAnswerSubformat().toString() + ")", PdfFont.SMALL_FONT.getFont());
+		}else{
+			return new Paragraph("-", PdfFont.SMALL_FONT.getFont());
+		}
+	}
 
 	public static Paragraph generateTextParagraph(String textParagraph) {
 		Paragraph paragraph = new Paragraph(textParagraph, PdfFont.NORMAL_FONT.getFont());
