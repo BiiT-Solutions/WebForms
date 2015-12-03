@@ -18,50 +18,41 @@ public class XFormsTests extends WebFormsTester {
 
 	private static final String VALID_FLOW_TAG = "Valid";
 
-	private void createFormElementsFlowAndFinishDesign() {
-		try {
-			loginFormAdmin1();
-			getFormManagerPage().createNewForm(NEW_FORM_NAME);
-			// Create a couple of categories and questions
-			goToDesignerPage();
-			getDesignerPage().createAndSaveSimpleFormDesign();
-			// Create a flow
-			goToFlowManagerPage();
-			getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
-			getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
-			getFlowManagerPage().clickEditRuleButton();
-			// Add the question IN [answer1 answer2] condition
-			getFlowManagerPage().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
-			getFlowManagerPage().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
-			getFlowManagerPage().getFlowRuleWindow().clickInButton();
-			Assert.assertEquals(getFlowManagerPage().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
-			getFlowManagerPage().getFlowRuleWindow().clickAccept();
-			// Redraw the graph
-			getFlowManagerPage().clickRedrawButton();
-			getFlowManagerPage().saveFlow();
-			goToFormManagerPage();
-			goToDesignerPage();
-			getDesignerPage().finishForm();
-			clickAcceptButtonIfExists();
-		} catch (FieldNotEditableException e) {
-			Assert.fail();
-		}
+	private void createFormElementsFlowAndFinishDesign() throws FieldNotEditableException {
+		loginFormAdmin1();
+		getFormManagerPage().createNewForm(NEW_FORM_NAME);
+		// Create a couple of categories and questions
+		goToDesignerPage();
+		getDesignerPage().createAndSaveSimpleFormDesign();
+		// Create a flow
+		goToFlowManagerPage();
+		getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+		getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
+		getFlowManagerPage().clickEditRuleButton();
+		// Add the question IN [answer1 answer2] condition
+		getFlowManagerPage().getFlowRuleWindow().searchForElement(QUESTION1_NAME);
+		getFlowManagerPage().getFlowRuleWindow().selectElementAndNextElementInSubTreeTable(ANSWER1_NAME);
+		getFlowManagerPage().getFlowRuleWindow().clickInButton();
+		Assert.assertEquals(getFlowManagerPage().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
+		getFlowManagerPage().getFlowRuleWindow().clickAccept();
+		// Redraw the graph
+		getFlowManagerPage().clickRedrawButton();
+		getFlowManagerPage().saveFlow();
+		goToFormManagerPage();
+		goToDesignerPage();
+		getDesignerPage().finishForm();
+		clickAcceptButtonIfExists();
 	}
 
 	@Test(groups = "xForms")
-	public void performImpactAnalysis() {
-		try {
-			printTestNameInDebugTrace("performImpactAnalysis");
-			createFormElementsFlowAndFinishDesign();
-			getFormManagerPage().clickXFormsButton();
-			getFormManagerPage().clickXFormsDownloadButton();
-			getFormManagerPage().getDownloadWindow().checkCorrectFileGeneration();
-			getFormManagerPage().getDownloadWindow().closeWindow();
-			logOut();
-			deleteForm();
-		} catch ( IncorrectFileGenerationException e) {
-			e.printStackTrace();
-			Assert.fail();
-		}
+	public void performImpactAnalysis() throws IncorrectFileGenerationException, FieldNotEditableException {
+		printTestNameInDebugTrace("performImpactAnalysis");
+		createFormElementsFlowAndFinishDesign();
+		getFormManagerPage().clickXFormsButton();
+		getFormManagerPage().clickXFormsDownloadButton();
+		getFormManagerPage().getDownloadWindow().checkCorrectFileGeneration();
+		getFormManagerPage().getDownloadWindow().closeWindow();
+		logOut();
+		deleteForm();
 	}
 }
