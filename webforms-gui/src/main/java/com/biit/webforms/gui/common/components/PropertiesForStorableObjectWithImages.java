@@ -14,11 +14,13 @@ import javax.imageio.ImageIO;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.gui.webpages.designer.ImagePreview;
 import com.biit.webforms.gui.webpages.designer.ValidatorInteger;
+import com.biit.webforms.gui.webpages.designer.WindowSetUrl;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.ElementWithImage;
@@ -41,7 +43,7 @@ import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 
-public abstract class StorableObjectPropertiesWithImages<T extends StorableObject & ElementWithImage>
+public abstract class PropertiesForStorableObjectWithImages<T extends StorableObject & ElementWithImage>
 		extends StorableObjectProperties<T> {
 	private static final long serialVersionUID = 894265579530046205L;
 	private static final List<String> allowedMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp",
@@ -50,7 +52,7 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 	private static final String STATUS_STYLE = "status_field";
 	private TextField imageFile, imageWidth, imageHeight;
 	private ImagePreview imagePreview;
-	private Button deleteImageButton;
+	private Button deleteImageButton, urlButton;
 	// Image uploader
 	private Upload upload;
 	// Put upload in this memory buffer that grows automatically
@@ -58,7 +60,7 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 
 	private Label status;
 
-	protected StorableObjectPropertiesWithImages(Class<? extends T> type) {
+	protected PropertiesForStorableObjectWithImages(Class<? extends T> type) {
 		super(type);
 	}
 
@@ -100,7 +102,7 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		status = new Label(LanguageCodes.FILE_UPLOAD_CAPTION.translation());
 		ImageReceiver receiver = new ImageReceiver();
 
-		imageFile = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_FILE));
+		imageFile = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_FILE));
 		imageFile.setEnabled(false);
 		imageWidth = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_WIDTH));
 		imageWidth.addValidator(new ValidatorInteger());
@@ -170,7 +172,32 @@ public abstract class StorableObjectPropertiesWithImages<T extends StorableObjec
 		status.addStyleName(STATUS_STYLE);
 
 		layout.addComponent(status);
-		layout.addComponent(upload);
+
+		urlButton = new Button(LanguageCodes.CAPTION_PROPERTIES_IMAGE_URL.translation());
+
+		urlButton.addClickListener(new Button.ClickListener() {
+			private static final long serialVersionUID = 1216975176474531329L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				WindowSetUrl window = new WindowSetUrl();
+				window.addAcceptActionListener(new AcceptActionListener() {
+
+					@Override
+					public void acceptAction(WindowAcceptCancel window) {
+
+					}
+				});
+				window.showCentered();
+			}
+		});
+
+		HorizontalLayout buttonsLayout = new HorizontalLayout();
+		buttonsLayout.addComponent(upload);
+		buttonsLayout.addComponent(urlButton);
+		buttonsLayout.setSpacing(true);
+		buttonsLayout.setWidth("100%");
+		layout.addComponent(buttonsLayout);
 		layout.addComponent(progressLayout);
 
 		// Make uploading start immediately when file is selected

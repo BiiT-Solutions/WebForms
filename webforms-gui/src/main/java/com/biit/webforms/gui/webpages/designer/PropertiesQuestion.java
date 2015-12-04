@@ -7,7 +7,7 @@ import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.gui.UserSessionHandler;
-import com.biit.webforms.gui.common.components.StorableObjectPropertiesWithImages;
+import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
 import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.AnswerTypeUi;
@@ -23,7 +23,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-public class PropertiesQuestion extends StorableObjectPropertiesWithImages<Question> {
+public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Question> {
 	private static final long serialVersionUID = 7572463216386081265L;
 	private static final String WIDTH = "200px";
 

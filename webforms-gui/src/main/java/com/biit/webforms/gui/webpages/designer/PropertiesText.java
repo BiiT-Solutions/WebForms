@@ -3,7 +3,7 @@ package com.biit.webforms.gui.webpages.designer;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.gui.UserSessionHandler;
-import com.biit.webforms.gui.common.components.StorableObjectPropertiesWithImages;
+import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Text;
@@ -11,7 +11,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-public class PropertiesText extends StorableObjectPropertiesWithImages<Text> {
+public class PropertiesText extends PropertiesForStorableObjectWithImages<Text> {
 	private static final long serialVersionUID = 3545367878977339439L;
 	private static final String WIDTH = "200px";
 
