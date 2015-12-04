@@ -29,6 +29,8 @@ public class PdfBlockGenerator {
 	private static final int TEXT_BLOCK_COL = 1;
 	private static final int FORM_LIST_ROW = 1;
 	private static final int FORM_LIST_COL = 2;
+	public static final int ANNEX_COLS = 5;
+	public static final int ANNEX_QUESTION_ROWS = 1;
 
 	private static int FORM_SINGLE_SELECTION_ROW = 1;
 	private static int FORM_QUESTION_COL = 2;
@@ -36,12 +38,14 @@ public class PdfBlockGenerator {
 	public static PdfTableBlock generateAnnexQuestionTableBlock(Question question) {
 		PdfTableBlock block = null;
 		try {
-			block = new PdfTableBlock(1 + question.getAllChildrenInHierarchy(BaseAnswer.class).size(), 4);
+			block = new PdfTableBlock(ANNEX_QUESTION_ROWS + question.getAllChildrenInHierarchy(BaseAnswer.class).size(),
+					ANNEX_COLS);
 
 			block.insertRow(PdfRowGenerator.generateAnnexQuestion(question));
 
 			if (!question.getChildren().isEmpty()) {
-				block.insertCol(PdfCol.generateWhiteCol(question.getAllChildrenInHierarchy(BaseAnswer.class).size(), 1));
+				block.insertCol(
+						PdfCol.generateWhiteCol(question.getAllChildrenInHierarchy(BaseAnswer.class).size(), 1));
 				for (TreeObject child : question.getChildren()) {
 					// They are all answers
 					block.insertRow(PdfRowGenerator.generateAnnexAnswer((BaseAnswer) child));
@@ -59,7 +63,7 @@ public class PdfBlockGenerator {
 	public static PdfTableBlock generateAnnexQuestionTableBlock(Text infoText) {
 		PdfTableBlock block = null;
 		try {
-			block = new PdfTableBlock(1, 4);
+			block = new PdfTableBlock(ANNEX_QUESTION_ROWS, ANNEX_COLS);
 			block.insertRow(PdfRowGenerator.generateAnnexQuestion(infoText));
 		} catch (BadBlockException e) {
 			WebformsLogger.errorMessage(PdfRowGenerator.class.getName(), e);
@@ -85,7 +89,8 @@ public class PdfBlockGenerator {
 		return blocks;
 	}
 
-	public static PdfTableBlock generateFormQuestionElement(PdfWriter writer, Question question) throws BadBlockException {
+	public static PdfTableBlock generateFormQuestionElement(PdfWriter writer, Question question)
+			throws BadBlockException {
 		switch (question.getAnswerType()) {
 		case MULTIPLE_SELECTION:
 			return generateMultipleSelectionBlock(writer, question);
@@ -106,7 +111,8 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	private static PdfTableBlock generateSingleSelectionBlock(PdfWriter writer, Question question) throws BadBlockException {
+	private static PdfTableBlock generateSingleSelectionBlock(PdfWriter writer, Question question)
+			throws BadBlockException {
 
 		List<PdfRow> rows = PdfRowGenerator.generateRadioFieldRows(writer, question);
 
@@ -125,7 +131,8 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	private static PdfTableBlock generateSingleSelectionListBlock(PdfWriter writer, Question question) throws BadBlockException {
+	private static PdfTableBlock generateSingleSelectionListBlock(PdfWriter writer, Question question)
+			throws BadBlockException {
 		PdfRow row = PdfRowGenerator.generateSelectionListRow(writer, question, FORM_LIST_ROW, FORM_LIST_COL);
 
 		int numberRows = row.getNumberRows();
@@ -135,7 +142,8 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	private static PdfTableBlock generateMultipleSelectionBlock(PdfWriter writer, Question question) throws BadBlockException {
+	private static PdfTableBlock generateMultipleSelectionBlock(PdfWriter writer, Question question)
+			throws BadBlockException {
 		List<PdfRow> rows = PdfRowGenerator.generateCheckFieldRows(writer, question);
 
 		int numberRows = getRowSizeOfRows(rows);
@@ -153,7 +161,8 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	public static List<PdfTableBlock> generateFormQuestionTableBlocks(PdfWriter writer, Question question) throws BadBlockException {
+	public static List<PdfTableBlock> generateFormQuestionTableBlocks(PdfWriter writer, Question question)
+			throws BadBlockException {
 		List<PdfTableBlock> tableBlocks = new ArrayList<PdfTableBlock>();
 
 		tableBlocks.add(generateFormQuestionElement(writer, question));

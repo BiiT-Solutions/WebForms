@@ -5,6 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.biit.webforms.gui.tests.exceptions.FieldNotEditableException;
+import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.testbench.By;
 
 public class LinkFormTests extends WebFormsTester {
@@ -32,7 +33,7 @@ public class LinkFormTests extends WebFormsTester {
 			getDesignerPage().createAndSaveSimpleFormDesign();
 			closeNotificationIfExists();
 		} catch (FieldNotEditableException e) {
-			e.printStackTrace();
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 		addSomeFlow(QUESTION1_NAME, QUESTION2_NAME, ANSWER1_NAME, 0);
 		addSomeFlow(QUESTION1_NAME, QUESTION3_NAME, ANSWER2_NAME, 1);
@@ -88,8 +89,9 @@ public class LinkFormTests extends WebFormsTester {
 		logOut();
 	}
 
-	/**0
-	 * Hidding a referenced question also hides the flow related to this question.
+	/**
+	 * 0 Hidding a referenced question also hides the flow related to this
+	 * question.
 	 */
 	@Test(groups = "linkedForms")
 	public void hideElement1() {

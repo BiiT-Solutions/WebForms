@@ -5,6 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.biit.webforms.gui.tests.exceptions.FieldNotEditableException;
+import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.testbench.By;
 
 public class LinkBlockTests extends WebFormsTester {
@@ -21,27 +22,23 @@ public class LinkBlockTests extends WebFormsTester {
 
 	private static final Integer FORM_ROW = 0;
 
-	private void createSimpleBlock() {
-		try {
-			loginFormAdmin1();
-			deleteFormAndBlock();
-			goToBlockManagerPage();
-			getBlockManagerPage().createNewBlock(NEW_BLOCK_NAME);
-			// Design building block.
-			goToDesignerPage();
-			getDesignerPage().addNewCategory();
-			getDesignerPage().addNewInputDateQuestion();
-			getDesignerPage().addNewGroup();
-			getDesignerPage().addNewMultiCheckboxQuestion();
-			getDesignerPage().addNewAnswer();
-			getDesignerPage().addNewAnswer();
-			getDesignerPage().addNewAnswer();
-			getDesignerPage().addNewQuestion();
-			getDesignerPage().saveDesign();
-			goToFormManagerPage();
-		} catch (FieldNotEditableException e) {
-			Assert.fail();
-		}
+	private void createSimpleBlock() throws FieldNotEditableException {
+		loginFormAdmin1();
+		deleteFormAndBlock();
+		goToBlockManagerPage();
+		getBlockManagerPage().createNewBlock(NEW_BLOCK_NAME);
+		// Design building block.
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
+		getDesignerPage().addNewInputDateQuestion();
+		getDesignerPage().addNewGroup();
+		getDesignerPage().addNewMultiCheckboxQuestion();
+		getDesignerPage().addNewAnswer();
+		getDesignerPage().addNewAnswer();
+		getDesignerPage().addNewAnswer();
+		getDesignerPage().addNewQuestion();
+		getDesignerPage().saveDesign();
+		goToFormManagerPage();
 	}
 
 	private void createSimpleBlockWithFlow() {
@@ -68,6 +65,7 @@ public class LinkBlockTests extends WebFormsTester {
 			getFlowManagerPage().saveFlow();
 			goToFormManagerPage();
 		} catch (FieldNotEditableException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			Assert.fail();
 		}
 	}
@@ -77,6 +75,7 @@ public class LinkBlockTests extends WebFormsTester {
 		try {
 			getBlockManagerPage().getBlockTable().getCell(BLOCK_TABLE_ROW, BLOCK_TABLE_COLUMN);
 		} catch (NoSuchElementException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			Assert.fail();
 		}
 		goToDesignerPage();
@@ -103,7 +102,7 @@ public class LinkBlockTests extends WebFormsTester {
 	}
 
 	@Test(groups = "linkedBlocks")
-	public void addLinkedBlockToFormTest() {
+	public void addLinkedBlockToFormTest() throws FieldNotEditableException {
 		printTestNameInDebugTrace("addLinkedBlockToFormTest");
 		createSimpleBlock();
 		addLinkedBlockToForm();
@@ -112,7 +111,7 @@ public class LinkBlockTests extends WebFormsTester {
 	}
 
 	@Test(groups = "linkedBlocks")
-	public void moveUpDownLinkedBlock() {
+	public void moveUpDownLinkedBlock() throws FieldNotEditableException {
 		printTestNameInDebugTrace("moveUpDownLinkedBlock");
 		createSimpleBlock();
 		addLinkedBlockToForm();
@@ -128,7 +127,7 @@ public class LinkBlockTests extends WebFormsTester {
 	}
 
 	@Test(groups = "linkedBlocks")
-	public void removeLinkedBlockFromForm() {
+	public void removeLinkedBlockFromForm() throws FieldNotEditableException {
 		printTestNameInDebugTrace("removeLinkedBlockFromForm");
 		createSimpleBlock();
 		addLinkedBlockToForm();
@@ -147,7 +146,7 @@ public class LinkBlockTests extends WebFormsTester {
 	}
 
 	@Test(groups = "linkedBlocks")
-	public void removeLinkedBlock() {
+	public void removeLinkedBlock() throws FieldNotEditableException {
 		printTestNameInDebugTrace("removeLinkedBlock");
 		createSimpleBlock();
 		addLinkedBlockToForm();
@@ -162,7 +161,7 @@ public class LinkBlockTests extends WebFormsTester {
 	}
 
 	@Test(groups = "linkedBlocks")
-	public void removeFormWithLinkedBlock() {
+	public void removeFormWithLinkedBlock() throws FieldNotEditableException {
 		printTestNameInDebugTrace("removeFormWithLinkedBlock");
 		createSimpleBlock();
 		addLinkedBlockToForm();
@@ -172,6 +171,7 @@ public class LinkBlockTests extends WebFormsTester {
 		try {
 			getBlockManagerPage().getBlockTable().getCell(BLOCK_TABLE_ROW, BLOCK_TABLE_COLUMN);
 		} catch (NoSuchElementException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			Assert.fail();
 		}
 		getBlockManagerPage().deleteBlock();
@@ -186,12 +186,12 @@ public class LinkBlockTests extends WebFormsTester {
 		goToFlowManagerPage();
 		Assert.assertNotNull(getFlowManagerPage().getFlowRulesTable().getRow(FORM_ROW));
 		goToDesignerPage();
-		
+
 		// Hide question1
 		// Click on a row sometimes fails. Use cell better.
 		getDesignerPage().getTreeTable().getCell(4, 0).click();
 		getDesignerPage().getTreeTable().waitForVaadin();
-		
+
 		// hide element.
 		sleep();
 		Assert.assertTrue(getDesignerPage().getHideButton().isEnabled());
@@ -200,9 +200,9 @@ public class LinkBlockTests extends WebFormsTester {
 
 		goToFlowManagerPage();
 		// Flow table has a dummy list. Then always exists one row.
-		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[0]")).size(),1);
-		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[1]")).size(),0);
-		
+		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[0]")).size(), 1);
+		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[1]")).size(), 0);
+
 		deleteFormAndBlock();
 		logOut();
 	}
@@ -225,18 +225,18 @@ public class LinkBlockTests extends WebFormsTester {
 		Assert.assertTrue(getDesignerPage().getHideButton().isEnabled());
 		getDesignerPage().getHideButton().click();
 		getDesignerPage().saveDesign();
-		
+
 		goToFlowManagerPage();
 		// Flow table has a dummy list. Then always exists one row.
-		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[0]")).size(),1);
-		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[1]")).size(),0);
-		
+		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[0]")).size(), 1);
+		Assert.assertEquals(getFlowManagerPage().getFlowRulesTable().findElements(By.vaadin("#row[1]")).size(), 0);
+
 		deleteFormAndBlock();
 		logOut();
 	}
 
 	@Test(groups = "linkedBlocks")
-	public void modifyBlockAlsoModifyForm() {
+	public void modifyBlockAlsoModifyForm() throws FieldNotEditableException {
 		printTestNameInDebugTrace("modifyBlockAlsoModifyForm");
 		createSimpleBlock();
 		addLinkedBlockToForm();
@@ -259,12 +259,12 @@ public class LinkBlockTests extends WebFormsTester {
 		deleteFormAndBlock();
 		logOut();
 	}
-	
+
 	private void sleep() {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}	
-	}	
+		}
+	}
 }

@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 
 import com.biit.webforms.gui.tests.exceptions.FieldNotEditableException;
 import com.biit.webforms.gui.tests.exceptions.IncorrectFileGenerationException;
+import com.biit.webforms.logger.WebformsLogger;
 
 public class ImpactAnalysisTests extends WebFormsTester {
 
@@ -44,6 +45,7 @@ public class ImpactAnalysisTests extends WebFormsTester {
 			getDesignerPage().finishForm();
 			clickAcceptButtonIfExists();
 		} catch (FieldNotEditableException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			Assert.fail();
 		}
 	}
@@ -86,7 +88,7 @@ public class ImpactAnalysisTests extends WebFormsTester {
 			deleteForm();
 			deleteForm();
 		} catch (FieldNotEditableException | IncorrectFileGenerationException e) {
-			e.printStackTrace();
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			Assert.fail();
 		}
 	}

@@ -23,17 +23,13 @@ public class ValidationTests extends WebFormsTester {
 	private static final String VALIDATION_QUESTION_WITHOUT_FLOW_IN = "Element 'Category/Question2' doesnt have flow in.";
 	private static final String VALIDATION_QUESTION_NOT_MANDATORY = "Flow 'Question3 to END_FORM' origin 'Category3/Question3' is not mandatory.";
 
-	private void createSimpleForm() {
-		try {
+	private void createSimpleForm() throws FieldNotEditableException {
 			loginFormAdmin1();
 			getFormManagerPage().createNewForm(NEW_FORM_NAME);
 			// Create a couple of categories and questions
 			goToDesignerPage();
 			getDesignerPage().createAndSaveSimpleFormDesign();
 			goToFormManagerPage();
-		} catch (FieldNotEditableException e) {
-			Assert.fail();
-		}
 	}
 
 	private void createSimpleFlow() {
@@ -63,7 +59,7 @@ public class ValidationTests extends WebFormsTester {
 	}
 
 	@Test(groups = "validation")
-	public void validateCorrectForm() {
+	public void validateCorrectForm() throws FieldNotEditableException {
 		printTestNameInDebugTrace("validateCorrectForm");
 		createSimpleForm();
 		createSimpleFlow();
@@ -71,7 +67,7 @@ public class ValidationTests extends WebFormsTester {
 	}
 
 	@Test(groups = "validation")
-	public void validateFormWithTwoOthersFromTheSameElement() {
+	public void validateFormWithTwoOthersFromTheSameElement() throws FieldNotEditableException {
 		printTestNameInDebugTrace("validateFormWithTwoOthersFromTheSameElement");
 		createSimpleForm();
 		createSimpleFlow();
@@ -82,7 +78,7 @@ public class ValidationTests extends WebFormsTester {
 	}
 
 	@Test(groups = "validation")
-	public void validateFormOthersFlowWithoutNormalFlow() {
+	public void validateFormOthersFlowWithoutNormalFlow() throws FieldNotEditableException {
 		printTestNameInDebugTrace("validateFormOthersFlowWithoutNormalFlow");
 		createSimpleForm();
 		goToFlowManagerPage();
@@ -91,7 +87,7 @@ public class ValidationTests extends WebFormsTester {
 	}
 
 	@Test(groups = "validation")
-	public void validateFormWithQuestionWithoutFlowIn() {
+	public void validateFormWithQuestionWithoutFlowIn() throws FieldNotEditableException {
 		printTestNameInDebugTrace("validateFormWithQuestionWithoutFlowIn");
 		createSimpleForm();
 		goToFlowManagerPage();
@@ -100,7 +96,7 @@ public class ValidationTests extends WebFormsTester {
 	}
 
 	@Test(groups = "validation")
-	public void validateFormWithQuestionNotMandatoryInFlow() {
+	public void validateFormWithQuestionNotMandatoryInFlow() throws FieldNotEditableException {
 		printTestNameInDebugTrace("validateFormWithQuestionNotMandatoryInFlow");
 		createSimpleForm();
 		goToFlowManagerPage();

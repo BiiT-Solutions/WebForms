@@ -23,7 +23,7 @@ public class PdfTableGenerator {
 
 	private final static float[] textColumnRatios = { 1.0f };
 	private final static float[] formColumnRatios = { 0.5f, 0.5f };
-	private final static float[] annexFormColumnRatios = { 0.5f, 0.165f, 0.165f, 0.17f };
+	private final static float[] annexFormColumnRatios = { 0.34f, 0.18f, 0.16f, 0.16f, 0.16f };
 	private final static int BORDER = Rectangle.NO_BORDER;
 	private static final float QUESTION_TABLE_PADDING = 20;
 

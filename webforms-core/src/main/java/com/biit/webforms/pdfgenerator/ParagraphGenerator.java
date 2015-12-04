@@ -23,7 +23,8 @@ public class ParagraphGenerator {
 	private final static float PADDING = 20;
 	private final static int MAX_INFO_TEXT_DESCRIPTION = 100;
 
-	public static Paragraph generate(String content, PdfFont font, PdfAlign align, float spacing) throws DocumentException {
+	public static Paragraph generate(String content, PdfFont font, PdfAlign align, float spacing)
+			throws DocumentException {
 		Paragraph annexTitle = new Paragraph(content, font.getFont());
 		annexTitle.setAlignment(align.getAlignment());
 		annexTitle.setSpacingAfter(spacing);
@@ -34,24 +35,28 @@ public class ParagraphGenerator {
 		document.add(generate(content, PdfFont.FORM_TITLE_FONT, align, PADDING));
 	}
 
-	public static void generateAndAddSubtitle(Document document, String content, PdfAlign align) throws DocumentException {
+	public static void generateAndAddSubtitle(Document document, String content, PdfAlign align)
+			throws DocumentException {
 		document.add(generate(content, PdfFont.SUBTITLE_FONT, align, PADDING * 2));
 	}
 
-	public static void generateAndAddFormTitle(Document document, String content, PdfAlign align) throws DocumentException {
+	public static void generateAndAddFormTitle(Document document, String content, PdfAlign align)
+			throws DocumentException {
 		Paragraph title = new Paragraph(new Paragraph(content, PdfFont.FORM_TITLE_FONT.getFont()));
 		title.setAlignment(align.getAlignment());
 		title.setSpacingAfter(PADDING);
 		document.add(title);
 	}
 
-	public static void generateAndAddAnnexTitle(Document document, String content, PdfAlign align) throws DocumentException {
+	public static void generateAndAddAnnexTitle(Document document, String content, PdfAlign align)
+			throws DocumentException {
 		document.add(generate(content, PdfFont.ANNEX_TITLE_FONT, align, PADDING));
 	}
 
 	public static Paragraph generateLabelParagraph(TreeObject object) {
 		if (object instanceof Text) {
-			return new Paragraph(((Text) object).descriptionShorted(MAX_INFO_TEXT_DESCRIPTION), PdfFont.NORMAL_FONT.getFont());
+			return new Paragraph(((Text) object).descriptionShorted(MAX_INFO_TEXT_DESCRIPTION),
+					PdfFont.NORMAL_FONT.getFont());
 		}
 		return new Paragraph(object.getLabel(), PdfFont.NORMAL_FONT.getFont());
 	}
@@ -70,8 +75,26 @@ public class ParagraphGenerator {
 		return new Paragraph("<" + object.getName() + ">", PdfFont.SMALL_FONT.getFont());
 	}
 
-	public static Paragraph generateAnswerFormatParagraph(Question object) {
-		return new Paragraph("(" + object.getAnswerFormat().toString() + ")", PdfFont.SMALL_FONT.getFont());
+	public static Paragraph generateAnswerFormatParagraph(Question question) {
+		switch (question.getAnswerType()) {
+		case INPUT:
+			return new Paragraph("(" + question.getAnswerFormat().toString() + ")", PdfFont.SMALL_FONT.getFont());
+		case TEXT_AREA:
+		case MULTIPLE_SELECTION:
+		case SINGLE_SELECTION_LIST:
+		case SINGLE_SELECTION_RADIO:
+			return new Paragraph("(" + question.getAnswerType().toString() + ")", PdfFont.SMALL_FONT.getFont());
+		default:
+			return new Paragraph("-", PdfFont.SMALL_FONT.getFont());
+		}
+	}
+	
+	public static Phrase generateAnswerSubformatParagraph(Question question) {
+		if(question.getAnswerSubformat()!=null){
+			return new Paragraph("(" + question.getAnswerSubformat().toString() + ")", PdfFont.SMALL_FONT.getFont());
+		}else{
+			return new Paragraph("-", PdfFont.SMALL_FONT.getFont());
+		}
 	}
 
 	public static Paragraph generateTextParagraph(String textParagraph) {
@@ -89,13 +112,14 @@ public class ParagraphGenerator {
 	}
 
 	public static Paragraph generateFieldName(Question question) {
-		String label = question.isMandatory() && question.getAnswerType() != AnswerType.MULTIPLE_SELECTION ? question.getLabel() + "*"
-				: question.getLabel();
+		String label = question.isMandatory() && question.getAnswerType() != AnswerType.MULTIPLE_SELECTION
+				? question.getLabel() + "*" : question.getLabel();
 		return new Paragraph(label, PdfFont.NORMAL_FONT.getFont());
 	}
 
 	/**
-	 * Text for descriptions 
+	 * Text for descriptions
+	 * 
 	 * @param description
 	 * @return
 	 */

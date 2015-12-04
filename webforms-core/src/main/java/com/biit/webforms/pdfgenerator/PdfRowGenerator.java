@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.biit.form.entity.BaseAnswer;
 import com.biit.form.entity.TreeObject;
-import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.biit.webforms.persistence.entity.Answer;
@@ -54,7 +53,7 @@ public class PdfRowGenerator {
 	}
 
 	public static PdfRow generateAnnexQuestion(Question question) {
-		PdfRow row = new PdfRow(1, 4);
+		PdfRow row = new PdfRow(PdfBlockGenerator.ANNEX_QUESTION_ROWS, PdfBlockGenerator.ANNEX_COLS);
 
 		PdfPCell cellLabel = PdfPCellGenerator.generateLabelCell(question);
 		PdfPCell cellName = PdfPCellGenerator.generateNameCell(question);
@@ -62,15 +61,11 @@ public class PdfRowGenerator {
 		try {
 			row.addCell(cellLabel);
 			row.addCell(cellName);
-
-			if (question.getAnswerType() == AnswerType.INPUT) {
-				cellName.setColspan(2);
-
-				PdfPCell cellAnswerFormat = PdfPCellGenerator.generateAnswerFormatParagraph(question);
-				row.addCell(cellAnswerFormat);
-			} else {
-				cellName.setColspan(3);
-			}
+			cellName.setColspan(2);
+			PdfPCell cellAnswerFormat = PdfPCellGenerator.generateAnswerFormatParagraph(question);
+			row.addCell(cellAnswerFormat);
+			PdfPCell cellAnswerSubformat = PdfPCellGenerator.generateAnswerSubformatParagraph(question);
+			row.addCell(cellAnswerSubformat);
 
 		} catch (BadBlockException e) {
 			WebformsLogger.errorMessage(PdfRowGenerator.class.getName(), e);
@@ -80,14 +75,14 @@ public class PdfRowGenerator {
 	}
 
 	public static PdfRow generateAnnexQuestion(Text infoText) {
-		PdfRow row = new PdfRow(1, 4);
+		PdfRow row = new PdfRow(PdfBlockGenerator.ANNEX_QUESTION_ROWS, PdfBlockGenerator.ANNEX_COLS);
 
 		PdfPCell cellLabel = PdfPCellGenerator.generateLabelCell(infoText);
 		PdfPCell cellName = PdfPCellGenerator.generateNameCell(infoText);
 
 		try {
 			row.addCell(cellLabel);
-			cellName.setColspan(3);
+			cellName.setColspan(4);
 			row.addCell(cellName);
 		} catch (BadBlockException e) {
 			WebformsLogger.errorMessage(PdfRowGenerator.class.getName(), e);
@@ -129,8 +124,8 @@ public class PdfRowGenerator {
 		return rows;
 	}
 
-	public static List<PdfRow> generateRadioFieldRows(PdfWriter writer, PdfFormField radioGroup, Question question, BaseAnswer baseAnswer)
-			throws BadBlockException {
+	public static List<PdfRow> generateRadioFieldRows(PdfWriter writer, PdfFormField radioGroup, Question question,
+			BaseAnswer baseAnswer) throws BadBlockException {
 		List<PdfRow> rows = new ArrayList<PdfRow>();
 
 		PdfRow row = new PdfRow(RADIO_FIELD_ROW, RADIO_FIELD_COL);
@@ -147,10 +142,12 @@ public class PdfRowGenerator {
 		// are subanswers.
 		if (!(baseAnswer.getParent() instanceof Answer)) {
 			field.setPaddingLeft(PADDING);
-			field.setCellEvent(new FormRadioField(writer, question.getComparationId(), baseAnswer.getComparationId(), radioGroup, 0));
+			field.setCellEvent(new FormRadioField(writer, question.getComparationId(), baseAnswer.getComparationId(),
+					radioGroup, 0));
 		} else {
 			field.setPaddingLeft(PADDING * 2);
-			field.setCellEvent(new FormRadioField(writer, question.getComparationId(), baseAnswer.getComparationId(), radioGroup, PADDING));
+			field.setCellEvent(new FormRadioField(writer, question.getComparationId(), baseAnswer.getComparationId(),
+					radioGroup, PADDING));
 		}
 		field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
 		row.addCell(field);
@@ -190,7 +187,8 @@ public class PdfRowGenerator {
 		return rows;
 	}
 
-	public static List<PdfRow> generateCheckFieldRows(PdfWriter writer, Question question, BaseAnswer baseAnswer) throws BadBlockException {
+	public static List<PdfRow> generateCheckFieldRows(PdfWriter writer, Question question, BaseAnswer baseAnswer)
+			throws BadBlockException {
 		List<PdfRow> rows = new ArrayList<PdfRow>();
 
 		PdfRow row = new PdfRow(CHECK_FIELD_ROW, CHECK_FIELD_COL);
@@ -233,7 +231,8 @@ public class PdfRowGenerator {
 	private static PdfRow generateAnswerDescriptionRow(Answer answer) throws BadBlockException {
 		PdfRow answerDescriptionRow = new PdfRow(ANSWER_DESCRIPTION_ROW, ANSWER_DESCRIPTION_COL);
 
-		PdfPCell descriptionField = PdfPCellGenerator.generateDescription(answer.getDescription(), ANSWER_DESCRIPTION_COL);
+		PdfPCell descriptionField = PdfPCellGenerator.generateDescription(answer.getDescription(),
+				ANSWER_DESCRIPTION_COL);
 		if (answer.getChildren().isEmpty()) {
 			descriptionField.setPaddingLeft(PADDING);
 		} else {
@@ -257,14 +256,15 @@ public class PdfRowGenerator {
 		return row;
 	}
 
-	public static PdfRow createTextRow(String description, int textBlockRow, int textBlockCol) throws BadBlockException {
+	public static PdfRow createTextRow(String description, int textBlockRow, int textBlockCol)
+			throws BadBlockException {
 		PdfRow row = new PdfRow(textBlockRow, textBlockCol);
 		row.addCell(PdfPCellGenerator.generateText(description, textBlockCol));
 		return row;
 	}
 
-	public static PdfRow generateSelectionListRow(PdfWriter writer, Question question, int selectionListBlockRow, int selectionListBlockCol)
-			throws BadBlockException {
+	public static PdfRow generateSelectionListRow(PdfWriter writer, Question question, int selectionListBlockRow,
+			int selectionListBlockCol) throws BadBlockException {
 		PdfRow row = new PdfRow(selectionListBlockRow, selectionListBlockCol);
 		row.addCell(PdfPCellGenerator.generateFormQuestionNameCell(question));
 		row.addCell(PdfPCellGenerator.generateComboBoxQuestion(writer, question));
