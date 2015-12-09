@@ -1,14 +1,10 @@
 package com.biit.webforms.persistence.entity;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,15 +22,17 @@ import org.springframework.util.Base64Utils;
 import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.utils.image.ImageTools;
+import com.biit.utils.image.exceptions.InvalidRemoteImageDefinition;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.exceptions.InvalidRemoteImageDefinition;
 
 @Entity
 @Table(name = "images")
 @Cacheable(true)
 public class TreeObjectImage extends StorableObject {
-	public static final int MAX_IMAGE_LENGTH = 1024 * 1024 * 10;
 	private static final long serialVersionUID = 1072375747626406485L;
+	public static final int MAX_IMAGE_LENGTH = 1024 * 1024 * 10;
+	public static final String IMAGE_DEFAULT_FORMAT = "gif";
 
 	@Column
 	private String fileName;
@@ -82,31 +80,15 @@ public class TreeObjectImage extends StorableObject {
 	}
 
 	public byte[] getDataFromUrl() throws InvalidRemoteImageDefinition {
-		try {
-			URL urlPath = new URL(getUrl());
-			return getDataFromUrl(urlPath);
-		} catch (IOException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-			throw new InvalidRemoteImageDefinition(e.getMessage());
+		if (getUrl() != null) {
+			return ImageTools.getImageFromUrl(getUrl(), IMAGE_DEFAULT_FORMAT);
 		}
-	}
-
-	private byte[] getDataFromUrl(URL url) throws IOException {
-		if (url == null) {
-			return null;
-		}
-		BufferedImage bufferedImage = ImageIO.read(url);
-
-		// get DataBufferBytes from Raster
-		WritableRaster raster = bufferedImage.getRaster();
-		DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
-
-		return data.getData();
+		return null;
 	}
 
 	public void setData(byte[] data) {
 		this.data = data;
-		url = null;
+		this.url = null;
 	}
 
 	@Override
@@ -121,6 +103,7 @@ public class TreeObjectImage extends StorableObject {
 			this.setWidth(((TreeObjectImage) object).getWidth());
 			this.setHeight(((TreeObjectImage) object).getHeight());
 			setData(Arrays.copyOf(((TreeObjectImage) object).getData(), ((TreeObjectImage) object).getData().length));
+			this.setUrl(((TreeObjectImage) object).getUrl());
 		} else {
 			throw new NotValidStorableObjectException("Copy data for Images only supports the same type copy");
 		}
@@ -132,16 +115,35 @@ public class TreeObjectImage extends StorableObject {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+		this.url = null;
 	}
 
 	public ByteArrayOutputStream getStream() {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream(getData().length);
-		baos.write(getData(), 0, getData().length);
+		byte[] byteArray = null;
+		try {
+			byte[] urlData = getDataFromUrl();
+			if (urlData != null) {
+				byteArray = urlData;
+			}
+		} catch (InvalidRemoteImageDefinition e) {
+
+		}
+		if (byteArray == null) {
+			byteArray = getData();
+		}
+		if (byteArray == null) {
+			return null;
+		}
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(byteArray.length);
+		baos.write(byteArray, 0, byteArray.length);
 		return baos;
 	}
 
 	public void setStream(ByteArrayOutputStream baos) {
-		setData(baos.toByteArray());
+		if (baos != null) {
+			setData(baos.toByteArray());
+		} else {
+		}
 	}
 
 	@Override
@@ -227,7 +229,8 @@ public class TreeObjectImage extends StorableObject {
 
 	public void setUrl(String url) {
 		this.url = url;
-		data = null;
+		this.fileName = null;
+		this.data = null;
 	}
 
 }

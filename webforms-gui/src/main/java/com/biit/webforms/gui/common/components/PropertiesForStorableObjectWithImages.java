@@ -12,6 +12,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import com.biit.persistence.entity.StorableObject;
+import com.biit.utils.image.ImageTools;
+import com.biit.utils.image.exceptions.InvalidRemoteImageDefinition;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -87,7 +89,11 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 		if (image != null) {
 			imageWidth.setValue(image.getWidth() + "");
 			imageHeight.setValue(image.getHeight() + "");
-			imageFile.setValue(image.getFileName());
+			if (image.getUrl() != null) {
+				imageFile.setValue(image.getUrl());
+			} else {
+				imageFile.setValue(image.getFileName());
+			}
 
 			imageMemoryOutputStream = image.getStream();
 			updatePreviewImagePanel();
@@ -161,6 +167,13 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 		// getInstance().setImage(null);
 	}
 
+	private void displayImage() {
+		imagePreview.setVisible(true);
+		deleteImageButton.setVisible(true);
+		updatePreviewImagePanel();
+		updateElement();
+	}
+
 	private VerticalLayout createUploader(String currentUploadButtonText, ImageReceiver receiver) {
 		final ProgressBar progressIndicator = new ProgressBar();
 		final HorizontalLayout progressLayout = new HorizontalLayout();
@@ -185,7 +198,21 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 
 					@Override
 					public void acceptAction(WindowAcceptCancel window) {
+						imageFile.setValue(((WindowSetUrl) window).getUrl());
 
+						// Obtain image for preview.
+						byte[] byteArray;
+						try {
+							byteArray = ImageTools.getImageFromUrl(((WindowSetUrl) window).getUrl(), TreeObjectImage.IMAGE_DEFAULT_FORMAT);
+							imageMemoryOutputStream = new ByteArrayOutputStream(byteArray.length);
+							imageMemoryOutputStream.write(byteArray, 0, byteArray.length);
+						} catch (InvalidRemoteImageDefinition e) {
+							imageMemoryOutputStream = null;
+							WebformsLogger.warning(this.getClass().getName(), e.getMessage());
+						}
+
+						displayImage();
+						window.close();
 					}
 				});
 				window.showCentered();
@@ -286,12 +313,7 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 										? event.getFilename()
 										: event.getFilename().substring(0, MAX_DISPLAY_FILE_NAME_LENGTH) }));
 				upload.setButtonCaption(LanguageCodes.FILE_UPLOAD_BUTTON_UPDATE.translation());
-				imageFile.setValue(event.getFilename());
-				imagePreview.setVisible(true);
-				deleteImageButton.setVisible(true);
-				updatePreviewImagePanel();
-				// updateImageValue();
-				updateElement();
+				displayImage();
 			}
 		});
 
@@ -407,9 +429,14 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 			image.setHeight(Integer.parseInt(imageHeight.getValue()));
 		} catch (NumberFormatException e) {
 		}
-		image.setFileName(imageFile.getValue());
-		// imageMemoryOutputStream.reset();
-		image.setStream(imageMemoryOutputStream);
+
+		if (imageFile.getValue() != null && imageFile.getValue().startsWith("http")) {
+			image.setUrl(imageFile.getValue());
+		} else {
+			image.setFileName(imageFile.getValue());
+			image.setStream(imageMemoryOutputStream);
+		}
+		
 		return image;
 	}
 

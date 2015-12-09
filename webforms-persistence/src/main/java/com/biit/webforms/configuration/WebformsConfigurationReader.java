@@ -5,7 +5,7 @@ import net.sf.ehcache.util.FindBugsSuppressWarnings;
 import com.biit.utils.configuration.ConfigurationReader;
 import com.biit.utils.configuration.PropertiesSourceFile;
 import com.biit.utils.configuration.SystemVariablePropertiesSourceFile;
-import com.biit.utils.configuration.exception.PropertyNotFoundException;
+import com.biit.utils.configuration.exceptions.PropertyNotFoundException;
 import com.biit.webforms.logger.WebformsLogger;
 
 public class WebformsConfigurationReader extends ConfigurationReader {

@@ -4,7 +4,7 @@ import java.io.File;
 
 import com.biit.utils.configuration.ConfigurationReader;
 import com.biit.utils.configuration.PropertiesSourceFile;
-import com.biit.utils.configuration.exception.PropertyNotFoundException;
+import com.biit.utils.configuration.exceptions.PropertyNotFoundException;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.logger.WebformsLogger;
 
