@@ -203,7 +203,7 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 						// Obtain image for preview.
 						byte[] byteArray;
 						try {
-							byteArray = ImageTools.getImageFromUrl(((WindowSetUrl) window).getUrl(), TreeObjectImage.IMAGE_DEFAULT_FORMAT);
+							byteArray = ImageTools.getImageFromUrl(((WindowSetUrl) window).getUrl());
 							imageMemoryOutputStream = new ByteArrayOutputStream(byteArray.length);
 							imageMemoryOutputStream.write(byteArray, 0, byteArray.length);
 						} catch (InvalidRemoteImageDefinition e) {

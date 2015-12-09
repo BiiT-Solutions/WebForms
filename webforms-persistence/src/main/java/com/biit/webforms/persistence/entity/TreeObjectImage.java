@@ -32,7 +32,6 @@ import com.biit.webforms.logger.WebformsLogger;
 public class TreeObjectImage extends StorableObject {
 	private static final long serialVersionUID = 1072375747626406485L;
 	public static final int MAX_IMAGE_LENGTH = 1024 * 1024 * 10;
-	public static final String IMAGE_DEFAULT_FORMAT = "gif";
 
 	@Column
 	private String fileName;
@@ -81,7 +80,7 @@ public class TreeObjectImage extends StorableObject {
 
 	public byte[] getDataFromUrl() throws InvalidRemoteImageDefinition {
 		if (getUrl() != null) {
-			return ImageTools.getImageFromUrl(getUrl(), IMAGE_DEFAULT_FORMAT);
+			return ImageTools.getImageFromUrl(getUrl());
 		}
 		return null;
 	}
