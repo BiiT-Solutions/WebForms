@@ -2,14 +2,14 @@ package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.UserSessionHandler;
-import com.biit.webforms.gui.common.components.StorableObjectPropertiesWithImages;
+import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Category;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-public class PropertiesCategory extends StorableObjectPropertiesWithImages<Category> {
+public class PropertiesCategory extends PropertiesForStorableObjectWithImages<Category> {
 	private static final long serialVersionUID = 766903215139261772L;
 	private static final String WIDTH = "200px";
 

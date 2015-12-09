@@ -41,8 +41,10 @@ public class PdfRowGenerator {
 		PdfPCell labelCell = PdfPCellGenerator.generateLabelCell(answer);
 		labelCell.setColspan(2);
 		PdfPCell nameCell = PdfPCellGenerator.generateNameCell(answer);
+		nameCell.setColspan(2);
 
-		PdfRow answerRow = new PdfRow(1, 3);
+		//Annex answer have one column less than the questions.
+		PdfRow answerRow = new PdfRow(PdfBlockGenerator.ANNEX_QUESTION_ROWS, PdfBlockGenerator.ANNEX_COLS-1);
 		try {
 			answerRow.addCell(labelCell);
 			answerRow.addCell(nameCell);

@@ -1,10 +1,14 @@
 package com.biit.webforms.persistence.entity;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +27,7 @@ import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.entity.exceptions.InvalidRemoteImageDefinition;
 
 @Entity
 @Table(name = "images")
@@ -30,8 +35,12 @@ import com.biit.webforms.logger.WebformsLogger;
 public class TreeObjectImage extends StorableObject {
 	public static final int MAX_IMAGE_LENGTH = 1024 * 1024 * 10;
 	private static final long serialVersionUID = 1072375747626406485L;
+
+	@Column
 	private String fileName;
+
 	private int width;
+
 	private int height;
 
 	@Lob
@@ -40,6 +49,9 @@ public class TreeObjectImage extends StorableObject {
 
 	@OneToOne(optional = false)
 	private TreeObject element;
+
+	@Column(columnDefinition = "TEXT")
+	private String url;
 
 	public TreeObjectImage() {
 
@@ -69,8 +81,32 @@ public class TreeObjectImage extends StorableObject {
 		return data;
 	}
 
+	public byte[] getDataFromUrl() throws InvalidRemoteImageDefinition {
+		try {
+			URL urlPath = new URL(getUrl());
+			return getDataFromUrl(urlPath);
+		} catch (IOException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			throw new InvalidRemoteImageDefinition(e.getMessage());
+		}
+	}
+
+	private byte[] getDataFromUrl(URL url) throws IOException {
+		if (url == null) {
+			return null;
+		}
+		BufferedImage bufferedImage = ImageIO.read(url);
+
+		// get DataBufferBytes from Raster
+		WritableRaster raster = bufferedImage.getRaster();
+		DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
+
+		return data.getData();
+	}
+
 	public void setData(byte[] data) {
 		this.data = data;
+		url = null;
 	}
 
 	@Override
@@ -183,6 +219,15 @@ public class TreeObjectImage extends StorableObject {
 
 	public void setElement(TreeObject element) {
 		this.element = element;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+		data = null;
 	}
 
 }
