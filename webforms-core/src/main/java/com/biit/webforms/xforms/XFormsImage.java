@@ -23,9 +23,15 @@ public class XFormsImage {
 
 	public static String getDefinition(TreeObjectImage image, Form form, IGroup<Long> organization, boolean preview) {
 		if (image != null) {
-			return "<" + getName(image) + ">/fr/service/persistence/crud/" + XFormsPersistence.APP_NAME + "/"
-					+ XFormsPersistence.formatFormName(form, organization, preview) + "/data/"
-					+ XFormsPersistence.imageDocumentId(form, organization, image, preview) + "/" + image.getComparationId() + "</" + getName(image) + ">";
+			// Remote image
+			if (image.getUrl() != null) {
+				return "<" + getName(image) + ">" + image.getUrl() + "</" + getName(image) + ">";
+			} else {
+				// Embedded image.
+				return "<" + getName(image) + ">/fr/service/persistence/crud/" + XFormsPersistence.APP_NAME + "/"
+						+ XFormsPersistence.formatFormName(form, organization, preview) + "/data/"
+						+ XFormsPersistence.imageDocumentId(form, organization, image, preview) + "/" + image.getComparationId() + "</" + getName(image) + ">";
+			}
 		}
 		return "";
 	}

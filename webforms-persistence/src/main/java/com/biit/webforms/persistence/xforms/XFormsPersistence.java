@@ -69,10 +69,16 @@ public class XFormsPersistence {
 	 */
 	public static String imageDocumentId(IWebformsFormView form, IGroup<Long> organization, TreeObjectImage image, boolean preview) {
 		if (preview) {
-			return PREVIEW_PREFIX + "_" + image.getFileName().replace(" ", "_");
+			if (image.getFileName() != null) {
+				return PREVIEW_PREFIX + "_" + image.getFileName().replace(" ", "_");
+			}
 		} else {
-			return image.getFileName().replace(" ", "_");
+			if (image.getFileName() != null) {
+				return image.getFileName().replace(" ", "_");
+			}
 		}
+		// URL images are not stored in orbeon.
+		return null;
 	}
 
 	/**
@@ -218,7 +224,7 @@ public class XFormsPersistence {
 	 */
 	public void storeImage(Form form, IUser<Long> user, IGroup<Long> organization, TreeObjectImage image, boolean preview) throws SQLException,
 			DuplicatedXFormException {
-		if (connection != null) {
+		if (connection != null && image.getData() != null) {
 			// String xmldata = new
 			// XFormsExporter(form).generateXFormsLanguage();
 			// Delete previous form instance.
