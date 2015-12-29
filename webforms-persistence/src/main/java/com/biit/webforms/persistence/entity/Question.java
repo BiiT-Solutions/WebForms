@@ -44,7 +44,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	private boolean mandatory;
 	private boolean horizontal;
 
-	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
+	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
 	private String description;
 
 	@Enumerated(EnumType.STRING)
@@ -54,7 +54,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	@Enumerated(EnumType.STRING)
 	private AnswerSubformat answerSubformat;
 
-	@Column(length = MAX_DEFAULT_VALUE)
+	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
 	private String defaultValueString;
 
 	@ManyToOne(optional = true)
