@@ -97,7 +97,7 @@ public class TreeObjectImage extends StorableObject {
 
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		if (object instanceof TreeObjectImage) {
+		if (object !=null && object instanceof TreeObjectImage) {
 			copyBasicInfo(object);
 			this.setWidth(((TreeObjectImage) object).getWidth());
 			this.setHeight(((TreeObjectImage) object).getHeight());

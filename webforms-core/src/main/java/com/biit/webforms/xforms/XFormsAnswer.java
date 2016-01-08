@@ -3,7 +3,6 @@ package com.biit.webforms.xforms;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.biit.form.entity.BaseAnswer;
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -20,14 +19,12 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	private final static String SUBANSWER_CSS_CLASS = "subanswer-child";
 	private static final String CSS_CLASS_ANSWER = "webforms-answer";
 
-	public XFormsAnswer(XFormsHelper xFormsHelper, Answer answer)
-			throws NotValidTreeObjectException, NotValidChildException {
+	public XFormsAnswer(XFormsHelper xFormsHelper, Answer answer) throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, answer);
 	}
 
 	@Override
-	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
-			StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// Do nothing.
 	}
 
@@ -39,18 +36,15 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 		// An itemset for standard answers.
 		if (getSource().getChildren().isEmpty()) {
 			stringBuilder.append("<xf:itemset ref=\"instance('fr-form-resources')/resource/");
-			stringBuilder.append(getParent().getPath() + "/item\" class=\"" + getCssClass() + "\" >");
+			stringBuilder.append(getParent().getPath() + "/" + getItemGroupName() + "\" class=\"" + getCssClass() + "\" >");
 			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
 			stringBuilder.append("<xf:value ref=\"value\" />");
 			stringBuilder.append("<xf:hint ref=\"hint\" />");
 			stringBuilder.append("</xf:itemset>");
 		} else {
-			int subanswerParentsCounter = ((Question) getSource().getParent())
-					.getAnswerWithSubanswersIndex((BaseAnswer) getSource());
 			// Parent answer.
 			stringBuilder.append("<xf:itemset ref=\"instance('fr-form-resources')/resource/");
-			stringBuilder.append(getParent().getPath() + "/item" + subanswerParentsCounter + "\" class=\""
-					+ getCssClass() + " " + PARENT_ANSWER_CSS_CLASS + "\" >");
+			stringBuilder.append(getParent().getPath() + "/" + getItemGroupName() + "\" class=\"" + getCssClass() + " " + PARENT_ANSWER_CSS_CLASS + "\" >");
 			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
 			stringBuilder.append("<xf:value ref=\"value\" />");
 			stringBuilder.append("<xf:hint ref=\"hint\" />");
@@ -58,13 +52,22 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 
 			// Subanswer
 			stringBuilder.append("<xf:itemset ref=\"instance('fr-form-resources')/resource/");
-			stringBuilder.append(getParent().getPath() + "/item" + subanswerParentsCounter + "/subitem"
-					+ subanswerParentsCounter + "\" class=\"" + getCssClass() + " " + SUBANSWER_CSS_CLASS + "\" >");
+			stringBuilder.append(getParent().getPath() + "/" + getItemGroupName() + "/sub" + getItemGroupName() + "\" class=\"" + getCssClass() + " "
+					+ SUBANSWER_CSS_CLASS + "\" >");
 			stringBuilder.append("<xf:label ref=\"label\" " + isHtmlText() + " />");
 			stringBuilder.append("<xf:value ref=\"value\" />");
 			stringBuilder.append("<xf:hint ref=\"hint\" />");
 			stringBuilder.append("</xf:itemset>");
 		}
+	}
+
+	/**
+	 * Answers are divided in groups split by answers with subanswers.
+	 * 
+	 * @return
+	 */
+	public String getItemGroupName() {
+		return "item" + ((XFormsQuestion) getParent()).getItemGroupName(this);
 	}
 
 	/**
@@ -92,8 +95,7 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	 */
 	@Override
 	protected String getResources(OrbeonLanguage language) throws NotExistingDynamicFieldException {
-		return getResource("item", getSource().getChildren().isEmpty() ? null
-				: ((BaseQuestion) getSource().getParent()).getAnswerWithSubanswersIndex(getSource()), language);
+		return getResource(getItemGroupName(), language);
 	}
 
 	/**
@@ -106,9 +108,8 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	 * @return
 	 * @throws NotExistingDynamicFieldException
 	 */
-	private String getResource(String prefix, Integer index, OrbeonLanguage language)
-			throws NotExistingDynamicFieldException {
-		String resource = "<" + prefix + (index != null ? index.toString() : "") + ">";
+	private String getResource(String prefix, OrbeonLanguage language) throws NotExistingDynamicFieldException {
+		String resource = "<" + prefix + ">";
 
 		resource += getLabel(language);
 		resource += getHint(language);
@@ -116,22 +117,20 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 
 		// Add subanswers also.
 		for (XFormsObject<?> child : getChildren()) {
-			resource += ((XFormsAnswer) child).getResource("subitem", index, language);
+			resource += ((XFormsAnswer) child).getResource("sub" + getItemGroupName(), language);
 		}
 
-		resource += "</" + prefix + (index != null ? index.toString() : "") + ">";
+		resource += "</" + prefix + ">";
 		return resource;
 	}
 
 	@Override
-	protected String getAllFlowsVisibility()
-			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getAllFlowsVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		return null;
 	}
 
 	@Override
-	protected String getDefaultVisibility()
-			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		return null;
 	}
 
@@ -155,8 +154,7 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	 */
 	@Override
 	protected String getBodyStructure(String structure, boolean html) {
-		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/"
-				+ structure + "\"";
+		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/" + structure + "\"";
 		if (html) {
 			text += " mediatype=\"text/html\"";
 		}

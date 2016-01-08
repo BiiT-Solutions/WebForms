@@ -32,6 +32,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	private static final String CSS_CLASS_QUESTION = "webforms-question";
 	private static final String CSS_CLASS_QUESTION_HELP = "webforms-help";
 
+	private List<List<XFormsAnswer>> answersGroups;
+
 	public XFormsQuestion(XFormsHelper xFormsHelper, BaseQuestion question) throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, question);
 	}
@@ -484,18 +486,10 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 				row.append("<xf:item><xf:label>[Select...]</xf:label><xf:value/></xf:item>");
 			}
 
-			// Only one itemset for elements without subanswers.
-			boolean simpleElementsAdded = false;
-			for (XFormsObject<? extends TreeObject> answer : getChildren()) {
-				if (answer.getSource() instanceof DynamicAnswer) {
-					answer.getSectionBody(row);
-				} else {
-					if (!answer.getChildren().isEmpty() || !simpleElementsAdded) {
-						answer.getSectionBody(row);
-						if (answer.getChildren().isEmpty()) {
-							simpleElementsAdded = true;
-						}
-					}
+			// For each group of answer, create a itemset
+			for (List<XFormsAnswer> group : getAnswersGroups()) {
+				if (!group.isEmpty()) {
+					group.get(0).getSectionBody(row);
 				}
 			}
 		}
@@ -571,5 +565,76 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			section += child.getVisibilityStructure();
 		}
 		return section;
+	}
+
+	/**
+	 * To maintain the order of the answers if subanswers are used, we need to
+	 * create different sets of "items" or Orbeon will order first the answers
+	 * and later the answers with subanswers.
+	 * 
+	 * @return
+	 */
+	private List<List<XFormsAnswer>> getItemGroups() {
+		List<List<XFormsAnswer>> itemGroups = new ArrayList<>();
+		List<XFormsAnswer> group = new ArrayList<>();
+		for (XFormsObject<? extends TreeObject> answer : getChildren()) {
+			// Answers with subanswers always ina separate group.
+			if (!((TreeObject) answer.getSource()).getChildren().isEmpty()) {
+				if (!group.isEmpty()) {
+					// Store previous group and start a new one.
+					itemGroups.add(group);
+					group = new ArrayList<>();
+				}
+				// Store current group also.
+				group.add((XFormsAnswer) answer);
+				itemGroups.add(group);
+				group = new ArrayList<>();
+			} else {
+				// Standard answer without subanswers. Include in current group.
+				group.add((XFormsAnswer) answer);
+			}
+		}
+		// Store last group if needed.
+		if (!group.isEmpty()) {
+			itemGroups.add(group);
+		}
+		return itemGroups;
+	}
+
+	/**
+	 * An answer group is a group of answers that are represented by a itemset
+	 * in orbeon. A standard question only has an itemset, but this itemset can
+	 * be split in two or more by answers with subanswers that has its own
+	 * itemsets
+	 * 
+	 * @return
+	 */
+	private List<List<XFormsAnswer>> getAnswersGroups() {
+		if (answersGroups == null) {
+			// Initialize groups.
+			answersGroups = getItemGroups();
+		}
+		return answersGroups;
+	}
+
+	private Integer getItemGroupIndex(XFormsAnswer answer) {
+		if (answersGroups == null) {
+			// Initialize groups.
+			answersGroups = getItemGroups();
+		}
+		for (List<XFormsAnswer> group : getAnswersGroups()) {
+			if (group.contains(answer)) {
+				return getAnswersGroups().indexOf(group);
+			}
+		}
+		return null;
+	}
+
+	public String getItemGroupName(XFormsAnswer answer) {
+		Integer index = getItemGroupIndex(answer);
+		if (index == null || index == 0) {
+			return "";
+		}
+		return index + "";
 	}
 }

@@ -78,7 +78,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 			// convert array of bytes into file
 			InputStream inputStream = new ByteArrayInputStream(data);
 			return inputStream;
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
 			WebformsLogger.errorMessage(XFormsSimpleFormExporter.class.getName(), e);
 			saveToFile(xforms);
 			throw e;
