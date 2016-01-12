@@ -24,6 +24,7 @@ import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.exceptions.BadAbcdLink;
 import com.biit.webforms.gui.webpages.validation.ValidationUpperMenu;
 import com.biit.webforms.gui.webpages.validation.WindowCompareAbcdForm;
+import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
@@ -50,6 +51,7 @@ import com.biit.webforms.validators.reports.FormElementNotFound;
 import com.biit.webforms.validators.reports.FormElementWithoutFlowIn;
 import com.biit.webforms.validators.reports.FormGroupRepeatableStatusIsDifferent;
 import com.biit.webforms.validators.reports.IncompleteLogicReport;
+import com.biit.webforms.validators.reports.InvalidDefaultValue;
 import com.biit.webforms.validators.reports.InvalidFlowCondition;
 import com.biit.webforms.validators.reports.InvalidFlowSubformat;
 import com.biit.webforms.validators.reports.LinkedFormStructureNotCompatible;
@@ -496,6 +498,10 @@ public class Validation extends SecuredWebPage {
 			} else if (report instanceof WebserviceCallTriggerNull) {
 				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_TRIGGER_NULL, new Object[] { ((WebserviceCallTriggerNull) report).getCall()
 						.getName() }));
+			} else if (report instanceof InvalidDefaultValue) {
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INVALID_DEFAULT_VALUE, new Object[] {
+						((InvalidDefaultValue) report).getQuestion().getPathName(), ((InvalidDefaultValue) report).getQuestion().getDefaultValueString(),
+						AnswerSubformatUi.get(((InvalidDefaultValue) report).getQuestion().getAnswerSubformat()).getLanguageCode().translation() }));
 			} else {
 				text.append(report.getReport());
 			}

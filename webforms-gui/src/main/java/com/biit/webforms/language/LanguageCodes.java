@@ -498,6 +498,7 @@ public enum LanguageCodes implements ILanguageCode {
 	VALIDATION_INVALID_ELEMENT_NAME("validation.invalid.element.name"),
 	VALIDATION_BACKWARD_FLOW("validation.backward.flow"),
 	VALIDATION_INVALID_DATE_UNIT("validation.invalid.date.unit"),
+	VALIDATION_INVALID_DEFAULT_VALUE("validation.invalid.default.value"),
 	VALIDATION_FLOW_ORIGIN_NOT_MANDATORY("validation.flow.origin.not.mandatory"),
 	VALIDATION_INCOMPLETE_LOGIN_REPORT("validation.incomplete.login.report"),
 	VALIDATION_INVALID_FLOW_CONDITION("validation.invalid.flow.condition"),	

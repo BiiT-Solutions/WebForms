@@ -13,7 +13,6 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
-import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.ElementWithImage;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
