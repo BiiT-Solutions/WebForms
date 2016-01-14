@@ -9,7 +9,7 @@ import com.biit.webforms.webservices.Webservice;
 
 public class ValidateFormComplete extends CompositeValidator<Form> {
 
-	public ValidateFormComplete(){
+	public ValidateFormComplete() {
 		super(Form.class);
 		configure();
 	}
@@ -28,5 +28,5 @@ public class ValidateFormComplete extends CompositeValidator<Form> {
 		add(ValidateWebserviceCalls.class);
 		setStopOnFail(true);
 	}
-	
+
 }
