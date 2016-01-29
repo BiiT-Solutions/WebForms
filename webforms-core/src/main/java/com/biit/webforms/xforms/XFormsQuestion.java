@@ -33,7 +33,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 	private List<List<XFormsAnswer>> answersGroups;
 
-	public XFormsQuestion(XFormsHelper xFormsHelper, BaseQuestion question) throws NotValidTreeObjectException, NotValidChildException {
+	public XFormsQuestion(XFormsHelper xFormsHelper, BaseQuestion question)
+			throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, question);
 	}
 
@@ -50,9 +51,11 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		StringBuilder section = new StringBuilder();
 
 		// Add element's image
-		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(), (Form) getSource().getAncestor(Form.class), getXFormsHelper()
-					.getOrganization(), getXFormsHelper().isPreviewMode()));
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage
+				&& ((ElementWithImage) getSource()).getImage() != null) {
+			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(),
+					(Form) getSource().getAncestor(Form.class), getXFormsHelper().getOrganization(),
+					getXFormsHelper().isPreviewMode()));
 		}
 
 		section.append("<" + getName() + ">");
@@ -78,13 +81,16 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	@Override
-	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException,
+			StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// Add form image binding
 		if (getXFormsHelper().isImagesEnabled() && ((ElementWithImage) getSource()).getImage() != null) {
-			XFormsImage.getBinding(this.getParent(), ((ElementWithImage) getSource()).getImage(), binding, getRelevantStructure());
+			XFormsImage.getBinding(this.getParent(), ((ElementWithImage) getSource()).getImage(), binding,
+					getRelevantStructure());
 		}
 
-		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"").append(getBindingName()).append("\" ");
+		binding.append("<xf:bind id=\"").append(getBindingId()).append("\"  name=\"").append(getBindingName())
+				.append("\" ");
 		// Reference must be always to a name and not to a complete xpath, if
 		// the xpath is used, in a loop all repeated
 		// questions would always have the same answers selected.
@@ -161,7 +167,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		} else {
 			// Orbeon $fr-mode indicates form modes "new", "edit", and "view".
 			// Disable the edition of the question if it is not a new form.
-			if (getSource() instanceof Question && ((Question) getSource()).isEditionDisabled()) {
+			if (((Form) getSource().getAncestor(Form.class)).isEditionDisabled()
+					|| (getSource() instanceof Question && ((Question) getSource()).isEditionDisabled())) {
 				binding.append("readonly=\"$fr-mode != 'new'\" ");
 			} else {
 				binding.append("readonly=\"false()\" ");
@@ -205,8 +212,10 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		List<WebserviceCallInputLinkErrors> webserviceValidations = getWebserviceCallInputErrors();
 
 		for (int i = 0; i < webserviceValidations.size(); i++) {
-			constraints.append("<xf:constraint id=\"webservice-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-" + i + "-validation\" ");
-			constraints.append("value=\"$" + getXFormsHelper().getWebserviceValidationField(getSource()).getUniqueName() + " != '");
+			constraints.append("<xf:constraint id=\"webservice-constraint-"
+					+ getXFormsHelper().getUniqueName(getSource()) + "-" + i + "-validation\" ");
+			constraints.append("value=\"$" + getXFormsHelper().getWebserviceValidationField(getSource()).getUniqueName()
+					+ " != '");
 			constraints.append(webserviceValidations.get(i).getErrorCode());
 			constraints.append("'\"/>");
 		}
@@ -219,7 +228,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		}
 
 		// We define constraint as subtype-constraint-[unique name]
-		constraints.append("<xf:constraint id=\"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation\" ");
+		constraints.append("<xf:constraint id=\"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource())
+				+ "-validation\" ");
 		constraints.append("value=\"");
 		// Add condition depending on answer subformat.
 
@@ -234,25 +244,32 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 		switch (((Question) getSource()).getAnswerSubformat()) {
 		case PHONE:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPhone()).append("$')");
+			constraints.append(". = '' or matches(., '^")
+					.append(WebformsConfigurationReader.getInstance().getRegexPhone()).append("$')");
 			break;
 		case POSTAL_CODE:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPostalCode()).append("$')");
+			constraints.append(". = '' or matches(., '^")
+					.append(WebformsConfigurationReader.getInstance().getRegexPostalCode()).append("$')");
 			break;
 		case BSN:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexBsn()).append("$')");
+			constraints.append(". = '' or matches(., '^")
+					.append(WebformsConfigurationReader.getInstance().getRegexBsn()).append("$')");
 			break;
 		case IBAN:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexIban()).append("$')");
+			constraints.append(". = '' or matches(., '^")
+					.append(WebformsConfigurationReader.getInstance().getRegexIban()).append("$')");
 			break;
 		case DATE_FUTURE:
-			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &gt;= adjust-date-to-timezone(current-date(), ())");
+			constraints.append("string-length(" + sourceXpath
+					+ "/text())=0 or . &gt;= adjust-date-to-timezone(current-date(), ())");
 			break;
 		case DATE_PAST:
-			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ())");
+			constraints.append("string-length(" + sourceXpath
+					+ "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ())");
 			break;
 		case DATE_BIRTHDAY:
-			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ()) ");
+			constraints.append("string-length(" + sourceXpath
+					+ "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ()) ");
 			constraints.append("and (year-from-date(current-date()) - year-from-date(.) &lt;= ");
 			constraints.append(MAX_YEARS_BIRTHDAY).append(")");
 			break;
@@ -312,7 +329,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 				}
 				sb.append("<alert><![CDATA[" + alert + "]]></alert>");
 			} else {
-				sb.append("<alert><![CDATA[" + OrbeonLanguageManager.getInstance().getAlertDefault(language) + "]]></alert>");
+				sb.append("<alert><![CDATA[" + OrbeonLanguageManager.getInstance().getAlertDefault(language)
+						+ "]]></alert>");
 			}
 		}
 
@@ -393,12 +411,13 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		StringBuilder section = new StringBuilder();
 
 		// Add element's image.
-		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage
+				&& ((ElementWithImage) getSource()).getImage() != null) {
 			XFormsImage.getBody(this.getParent(), ((ElementWithImage) getSource()).getImage(), section);
 		}
 
-		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName() + "\" class=\"" + getCssClass()
-				+ "\" bind=\"" + getBindingId() + "\">");
+		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName()
+				+ "\" class=\"" + getCssClass() + "\" bind=\"" + getBindingId() + "\">");
 		section.append(getBodyLabel());
 		section.append(getBodyHint());
 
@@ -406,14 +425,16 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		int alertsAdded = 1;
 		// Add subtype constraint
 		if (hasSubtypeConstraint()) {
-			section.append(getAlert(alertsAdded, "subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation"));
+			section.append(getAlert(alertsAdded,
+					"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation"));
 			alertsAdded++;
 		}
 		// Add webservice alerts
 		if (hasWebserviceValidation()) {
 			List<WebserviceCallInputLinkErrors> webserviceValidations = getWebserviceCallInputErrors();
 			for (int i = 0; i < webserviceValidations.size(); i++) {
-				section.append(getAlert(i + alertsAdded, "webservice-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-" + i + "-validation"));
+				section.append(getAlert(i + alertsAdded, "webservice-constraint-"
+						+ getXFormsHelper().getUniqueName(getSource()) + "-" + i + "-validation"));
 			}
 		}
 
@@ -516,7 +537,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	@Override
-	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+	protected String getDefaultVisibility()
+			throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// First element always visible.
 		if (getXFormsHelper().isFirstQuestion(getSource())) {
 			return "";
@@ -549,7 +571,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		if (getSource() instanceof Question && ((Question) getSource()).isHorizontal()) {
 			classList += " " + CSS_CLASS_RADIO_BUTTON_HORIZONTAL;
 		}
-		if (getSource() instanceof Question && ((Question) getSource()).getDescription() != null && ((Question) getSource()).getDescription().length() > 0) {
+		if (getSource() instanceof Question && ((Question) getSource()).getDescription() != null
+				&& ((Question) getSource()).getDescription().length() > 0) {
 			classList += " " + CSS_CLASS_QUESTION_HELP;
 		}
 		return classList;

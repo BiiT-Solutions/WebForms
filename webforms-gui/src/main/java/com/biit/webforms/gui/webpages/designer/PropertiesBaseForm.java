@@ -6,6 +6,7 @@ import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Form;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -16,6 +17,10 @@ public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForSt
 
 	private TextField label, version, referenceLabel, referenceVersion;
 	private TextArea description;
+
+	// Disable the field if orbeon is in edition mode. Disables all questions of
+	// the form.
+	private CheckBox disableEdition;
 
 	public PropertiesBaseForm(Class<? extends T> type) {
 		super(type);
@@ -54,6 +59,9 @@ public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForSt
 		referenceVersion.setEnabled(false);
 		referenceVersion.setVisible(false);
 
+		disableEdition = new CheckBox(LanguageCodes.CAPTION_DISABLE_EDITION.translation());
+		disableEdition.setDescription(LanguageCodes.CAPTION_DISABLE_EDITION_TOOLTIP.translation());
+
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
 		commonProperties.setHeight(null);
@@ -62,8 +70,10 @@ public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForSt
 		commonProperties.addComponent(description);
 		commonProperties.addComponent(referenceLabel);
 		commonProperties.addComponent(referenceVersion);
+		commonProperties.addComponent(disableEdition);
 
-		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
+				UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_FORM.translation(), true);
@@ -85,13 +95,19 @@ public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForSt
 		if (getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null) {
 			referenceLabel.setVisible(true);
 			referenceVersion.setVisible(true);
-			getReferenceLabel().setValue(
-					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance()).getFormReference().getLabel()
-							: "");
-			getReferenceVersion().setValue(
-					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance()).getFormReference().getVersion()
-							+ "" : "");
+			getReferenceLabel()
+					.setValue(getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null
+							? ((Form) getInstance()).getFormReference().getLabel() : "");
+			getReferenceVersion()
+					.setValue(getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null
+							? ((Form) getInstance()).getFormReference().getVersion() + "" : "");
 		}
+
+		disableEdition.setValue(((Form) getInstance()).isEditionDisabled());
+	}
+
+	public CheckBox getDisableEdition() {
+		return disableEdition;
 	}
 
 	protected TextField getLabelTextField() {

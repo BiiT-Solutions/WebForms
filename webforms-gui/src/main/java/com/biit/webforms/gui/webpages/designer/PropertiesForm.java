@@ -24,19 +24,22 @@ public class PropertiesForm extends PropertiesBaseForm<Form> {
 
 	@Override
 	public void updateElement() {
-		if (getLabelTextField().isValid() && getLabelTextField().getValue() != null && getLabelTextField().getValue().length() > 0) {
+		if (getLabelTextField().isValid() && getLabelTextField().getValue() != null
+				&& getLabelTextField().getValue().length() > 0) {
 			try {
 				// Checks if already exists a form with this label and its
 				// version.
-				if (!formDao.exists(getLabelTextField().getValue(), ((BaseForm) getInstance()).getVersion(), ((BaseForm) getInstance()).getOrganizationId(),
-						getInstance().getId())) {
-					UserSessionHandler.getController().updateForm((Form) getInstance(), getLabelTextField().getValue(), getDescriptionTextArea().getValue(),
-							getImage());
+				if (!formDao.exists(getLabelTextField().getValue(), ((BaseForm) getInstance()).getVersion(),
+						((BaseForm) getInstance()).getOrganizationId(), getInstance().getId())) {
+					UserSessionHandler.getController().updateForm((Form) getInstance(), getLabelTextField().getValue(),
+							getDescriptionTextArea().getValue(), getImage(), getDisableEdition().getValue());
 				} else {
 					getLabelTextField().setValue(((BaseForm) getInstance()).getLabel());
-					MessageManager.showWarning(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE, LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE_DESCRIPTION);
-					UserSessionHandler.getController().updateForm((Form) getInstance(), ((BaseForm) getInstance()).getLabel(),
-							getDescriptionTextArea().getValue(), getImage());
+					MessageManager.showWarning(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE,
+							LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE_DESCRIPTION);
+					UserSessionHandler.getController().updateForm((Form) getInstance(),
+							((BaseForm) getInstance()).getLabel(), getDescriptionTextArea().getValue(), getImage(),
+							getDisableEdition().getValue());
 				}
 			} catch (ReadOnlyException e) {
 				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE);
