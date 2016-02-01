@@ -72,8 +72,7 @@ public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForSt
 		commonProperties.addComponent(referenceVersion);
 		commonProperties.addComponent(disableEdition);
 
-		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
-				UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_FORM.translation(), true);
@@ -95,15 +94,17 @@ public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForSt
 		if (getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null) {
 			referenceLabel.setVisible(true);
 			referenceVersion.setVisible(true);
-			getReferenceLabel()
-					.setValue(getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null
-							? ((Form) getInstance()).getFormReference().getLabel() : "");
-			getReferenceVersion()
-					.setValue(getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null
-							? ((Form) getInstance()).getFormReference().getVersion() + "" : "");
+			getReferenceLabel().setValue(
+					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance()).getFormReference().getLabel()
+							: "");
+			getReferenceVersion().setValue(
+					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance()).getFormReference().getVersion()
+							+ "" : "");
 		}
 
-		disableEdition.setValue(((Form) getInstance()).isEditionDisabled());
+		if (getInstance() instanceof Form) {
+			disableEdition.setValue(((Form) getInstance()).isEditionDisabled());
+		}
 	}
 
 	public CheckBox getDisableEdition() {

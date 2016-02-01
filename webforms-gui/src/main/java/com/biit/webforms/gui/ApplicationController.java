@@ -968,7 +968,7 @@ public class ApplicationController {
 			boolean editionDisabled) {
 		try {
 			if (!form.getLabel().equals(label) || !form.getDescription().equals(description)
-					|| !Objects.equals(form.getImage(), image)) {
+					|| !Objects.equals(form.getImage(), image) || (form.isEditionDisabled() != editionDisabled)) {
 				setUnsavedFormChanges(true);
 				form.setDescription(description);
 				form.setLabel(label);
