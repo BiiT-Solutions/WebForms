@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.biit.webforms.gui.UserSessionHandler;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.AbstractComponentContainer;
@@ -71,7 +72,7 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 		while (itr.hasNext()) {
 			Component component = itr.next();
 			if (component instanceof AbstractComponentContainer) {
-				addValueChangeListenerToFieldsInContainer((AbstractComponentContainer)component);
+				addValueChangeListenerToFieldsInContainer((AbstractComponentContainer) component);
 			} else {
 				if (component instanceof AbstractField<?>) {
 					addValueChangeListenerToField((AbstractField<?>) component);
@@ -99,8 +100,9 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 	protected abstract void firePropertyUpdateOnExitListener();
 
 	private void updateAndExit() {
-		// Check UI is different of null due to the detach is also triggered when UI.close() is called.
-		if (UI.getCurrent() != null) {
+		// Check UI is different of null due to the detach is also triggered
+		// when UI.close() is called.
+		if (UI.getCurrent() != null && UserSessionHandler.getUser() != null) {
 			firePropertyUpdateOnExitListener();
 		}
 	}
