@@ -98,7 +98,7 @@ public class XFormsImage {
 	}
 
 	private static void getXFormsType(StringBuilder binding) {
-		binding.append("type=\"xf:anyURI\"");
+		binding.append(" type=\"xf:anyURI\"");
 	}
 
 	public static void getBinding(XFormsObject<?> xFormsObject, TreeObjectImage image, StringBuilder binding, String relevance)
