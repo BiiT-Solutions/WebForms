@@ -156,7 +156,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 		// Add form image information
 		if (getXFormsHelper().isImagesEnabled() && getForm().getImage() != null) {
-			XFormsImage.getBody(null, getForm().getImage(), body);
+			XFormsImage.getBody(null, getForm().getImage(), body, getXFormsHelper());
 		}
 
 		if (WebformsConfigurationReader.getInstance().isXFormsCustomWizardEnabled()) {
