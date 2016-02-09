@@ -36,8 +36,8 @@ public class XFormsCategory extends XFormsGroup {
 		section.append("<" + getName() + ">");
 		// Add element's image
 		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(), (Form) getSource().getAncestor(Form.class), getXFormsHelper()
-					.getOrganization(), getXFormsHelper().isPreviewMode()));
+			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(), getXFormsHelper(),
+					(Form) getSource().getAncestor(Form.class), getXFormsHelper().getOrganization(), getXFormsHelper().isPreviewMode()));
 		}
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
 			section.append(child.getDefinition());
@@ -70,7 +70,7 @@ public class XFormsCategory extends XFormsGroup {
 
 		// Add form image binding
 		if (getXFormsHelper().isImagesEnabled() && ((ElementWithImage) getSource()).getImage() != null) {
-			XFormsImage.getBinding(this, ((ElementWithImage) getSource()).getImage(), binding, getRelevantStructure());
+			XFormsImage.getBinding(this, ((ElementWithImage) getSource()).getImage(), binding, getRelevantStructure(), getXFormsHelper(), getSource());
 		}
 
 		// Add also children.
@@ -96,7 +96,7 @@ public class XFormsCategory extends XFormsGroup {
 
 		// Add element's image.
 		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			resource.append(XFormsImage.getResources(((ElementWithImage) getSource()).getImage(), language));
+			resource.append(XFormsImage.getResources(((ElementWithImage) getSource()).getImage(), language, getXFormsHelper()));
 		}
 
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
@@ -125,7 +125,7 @@ public class XFormsCategory extends XFormsGroup {
 
 		// Add element's image.
 		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			XFormsImage.getBody(this, ((ElementWithImage) getSource()).getImage(), body);
+			XFormsImage.getBody(this, ((ElementWithImage) getSource()).getImage(), body, getXFormsHelper());
 		}
 
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {

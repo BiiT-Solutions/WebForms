@@ -328,7 +328,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 		// Add element's image.
 		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			resource.append(XFormsImage.getResources(((ElementWithImage) getSource()).getImage(), language));
+			resource.append(XFormsImage.getResources(((ElementWithImage) getSource()).getImage(), language, getXFormsHelper()));
 		}
 
 		resource.append("<" + getName() + ">");
@@ -359,8 +359,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 		// Add element's image
 		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(), (Form) getSource().getAncestor(Form.class), getXFormsHelper()
-					.getOrganization(), getXFormsHelper().isPreviewMode()));
+			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(), getXFormsHelper(),
+					(Form) getSource().getAncestor(Form.class), getXFormsHelper().getOrganization(), getXFormsHelper().isPreviewMode()));
 		}
 
 		section.append("<" + getName() + ">");

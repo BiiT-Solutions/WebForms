@@ -1,5 +1,6 @@
 package com.biit.webforms.xforms;
 
+import com.biit.form.entity.TreeObject;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
@@ -17,47 +18,48 @@ import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 public class XFormsImage {
 	private final static String BASIC_NAME = "image";
 
-	public static String getName(TreeObjectImage image) {
-		return image.getElement().getName() + "-" + BASIC_NAME;
+	public static String getName(TreeObjectImage image, XFormsHelper xFormsHelper) {
+		return xFormsHelper.getUniqueName(image.getElement()) + "-" + BASIC_NAME;
 	}
 
-	public static String getDefinition(TreeObjectImage image, Form form, IGroup<Long> organization, boolean preview) {
+	public static String getDefinition(TreeObjectImage image, XFormsHelper xFormsHelper, Form form, IGroup<Long> organization, boolean preview) {
 		if (image != null) {
 			// Remote image
 			if (image.getUrl() != null) {
-				return "<" + getName(image) + ">" + image.getUrl() + "</" + getName(image) + ">";
+				return "<" + getName(image, xFormsHelper) + ">" + image.getUrl() + "</" + getName(image, xFormsHelper) + ">";
 			} else {
 				// Embedded image.
-				return "<" + getName(image) + ">/fr/service/persistence/crud/" + XFormsPersistence.APP_NAME + "/"
+				return "<" + getName(image, xFormsHelper) + ">/fr/service/persistence/crud/" + XFormsPersistence.APP_NAME + "/"
 						+ XFormsPersistence.formatFormName(form, organization, preview) + "/data/"
-						+ XFormsPersistence.imageDocumentId(form, organization, image, preview) + "/" + image.getComparationId() + "</" + getName(image) + ">";
+						+ XFormsPersistence.imageDocumentId(form, organization, image, preview) + "/" + image.getComparationId() + "</"
+						+ getName(image, xFormsHelper) + ">";
 			}
 		}
 		return "";
 	}
 
-	private static String getSectionControlName(TreeObjectImage image) {
-		return getName(image) + "-control";
+	private static String getSectionControlName(TreeObjectImage image, XFormsHelper xFormsHelper) {
+		return getName(image, xFormsHelper) + "-control";
 	}
 
-	private static String getBindingId(TreeObjectImage image) {
-		return getName(image) + "-bind";
+	private static String getBindingId(TreeObjectImage image, XFormsHelper xFormsHelper) {
+		return getName(image, xFormsHelper) + "-bind";
 	}
 
-	public static void getBody(XFormsObject<?> xFormsObject, TreeObjectImage image, StringBuilder body) {
-		body.append("<xf:output id=\"" + getSectionControlName(image) + "\" bind=\"" + getBindingId(image) + "\" mediatype=\"image/*\" class=\"image "
-				+ image.getElement().getClass().getSimpleName() + "-image\" >");
-		body.append(getBodyLabel(xFormsObject, image));
-		body.append(getBodyHint(xFormsObject, image));
+	public static void getBody(XFormsObject<?> xFormsObject, TreeObjectImage image, StringBuilder body, XFormsHelper xFormsHelper) {
+		body.append("<xf:output id=\"" + getSectionControlName(image, xFormsHelper) + "\" bind=\"" + getBindingId(image, xFormsHelper)
+				+ "\" mediatype=\"image/*\" class=\"image " + image.getElement().getClass().getSimpleName() + "-image\" >");
+		body.append(getBodyLabel(xFormsObject, image, xFormsHelper));
+		body.append(getBodyHint(xFormsObject, image, xFormsHelper));
 		body.append("</xf:output>");
 	}
 
-	private static String getBodyHint(XFormsObject<?> xFormsObject, TreeObjectImage image) {
-		return getBodyStructure(xFormsObject, image, "hint");
+	private static String getBodyHint(XFormsObject<?> xFormsObject, TreeObjectImage image, XFormsHelper xFormsHelper) {
+		return getBodyStructure(xFormsObject, image, "hint", xFormsHelper);
 	}
 
-	private static String getBodyLabel(XFormsObject<?> xFormsObject, TreeObjectImage image) {
-		return getBodyStructure(xFormsObject, image, "label");
+	private static String getBodyLabel(XFormsObject<?> xFormsObject, TreeObjectImage image, XFormsHelper xFormsHelper) {
+		return getBodyStructure(xFormsObject, image, "label", xFormsHelper);
 	}
 
 	/**
@@ -67,25 +69,25 @@ public class XFormsImage {
 	 * @return
 	 * @throws InvalidFlowInForm
 	 */
-	private static String getBodyStructure(XFormsObject<?> xFormsObject, TreeObjectImage image, String structure) {
-		String text = "<xf:output ref=\"instance('fr-form-resources')/resource/" + getPath(xFormsObject, image) + "/" + structure + "\"";
+	private static String getBodyStructure(XFormsObject<?> xFormsObject, TreeObjectImage image, String structure, XFormsHelper xFormsHelper) {
+		String text = "<xf:output ref=\"instance('fr-form-resources')/resource/" + getPath(xFormsObject, image, xFormsHelper) + "/" + structure + "\"";
 		text += " />";
 		return text;
 	}
 
-	private static String getPath(XFormsObject<?> xFormsObject, TreeObjectImage image) {
+	private static String getPath(XFormsObject<?> xFormsObject, TreeObjectImage image, XFormsHelper xFormsHelper) {
 		if (xFormsObject != null) {
-			return xFormsObject.getPath() + "/" + getName(image);
+			return xFormsObject.getPath() + "/" + getName(image, xFormsHelper);
 		}
-		return getName(image);
+		return getName(image, xFormsHelper);
 	}
 
-	public static String getResources(TreeObjectImage image, OrbeonLanguage language) {
-		String resource = "<" + getName(image) + ">";
+	public static String getResources(TreeObjectImage image, OrbeonLanguage language, XFormsHelper xFormsHelper) {
+		String resource = "<" + getName(image, xFormsHelper) + ">";
 		resource += getLabel(language);
 		resource += getHint(language);
 
-		resource += "</" + getName(image) + ">";
+		resource += "</" + getName(image, xFormsHelper) + ">";
 		return resource;
 	}
 
@@ -101,13 +103,13 @@ public class XFormsImage {
 		binding.append(" type=\"xf:anyURI\"");
 	}
 
-	public static void getBinding(XFormsObject<?> xFormsObject, TreeObjectImage image, StringBuilder binding, String relevance)
-			throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		binding.append("<xf:bind id=\"").append(getBindingId(image)).append("\"  name=\"").append(getName(image)).append("\" ");
+	public static void getBinding(XFormsObject<?> xFormsObject, TreeObjectImage image, StringBuilder binding, String relevance, XFormsHelper xFormsHelper,
+			TreeObject source) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
+		binding.append("<xf:bind id=\"").append(getBindingId(image, xFormsHelper)).append("\"  name=\"").append(getName(image, xFormsHelper)).append("\" ");
 		if (xFormsObject != null) {
-			binding.append("ref=\"").append(xFormsObject.getXPath() + "/" + getName(image)).append("\" ");
+			binding.append("ref=\"").append(xFormsObject.getXPath() + "/" + getName(image, xFormsHelper)).append("\" ");
 		} else {
-			binding.append("ref=\"").append(getName(image)).append("\" ");
+			binding.append("ref=\"").append(getName(image, xFormsHelper)).append("\" ");
 		}
 		if (relevance != null) {
 			binding.append(relevance);

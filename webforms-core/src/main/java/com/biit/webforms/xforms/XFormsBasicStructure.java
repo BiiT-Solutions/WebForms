@@ -134,7 +134,8 @@ public abstract class XFormsBasicStructure {
 
 		// Add form's image
 		if (getXFormsHelper().isImagesEnabled() && getForm().getImage() != null) {
-			text.append(XFormsImage.getDefinition(getForm().getImage(), getForm(), getXFormsHelper().getOrganization(), getXFormsHelper().isPreviewMode()));
+			text.append(XFormsImage.getDefinition(getForm().getImage(), getXFormsHelper(), getForm(), getXFormsHelper().getOrganization(), getXFormsHelper()
+					.isPreviewMode()));
 		}
 
 		for (XFormsCategory xFormCategory : getXFormsCategories()) {
@@ -225,7 +226,7 @@ public abstract class XFormsBasicStructure {
 
 		// Add form image binding
 		if (getXFormsHelper().isImagesEnabled() && getForm().getImage() != null) {
-			XFormsImage.getBinding(null, getForm().getImage(), binding, null);
+			XFormsImage.getBinding(null, getForm().getImage(), binding, null, getXFormsHelper(), getForm());
 		}
 
 		binding.append(getElementBinding(xformsObject));
@@ -273,7 +274,7 @@ public abstract class XFormsBasicStructure {
 
 			// Add form's image.
 			if (getXFormsHelper().isImagesEnabled() && getForm().getImage() != null) {
-				resource.append(XFormsImage.getResources(getForm().getImage(), language));
+				resource.append(XFormsImage.getResources(getForm().getImage(), language, getXFormsHelper()));
 			}
 
 			// Add resources
