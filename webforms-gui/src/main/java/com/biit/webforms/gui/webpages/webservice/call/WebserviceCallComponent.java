@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.biit.form.entity.BaseQuestion;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -15,7 +16,6 @@ import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
@@ -210,7 +210,7 @@ public class WebserviceCallComponent extends CustomComponent {
 				this.webservice = UserSessionHandler.getController().findWebservice(webserviceCall.getWebserviceName());
 			} catch (WebserviceNotFoundException e) {
 				this.webservice = null;
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
+				WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			}
 		}
@@ -244,7 +244,8 @@ public class WebserviceCallComponent extends CustomComponent {
 	}
 
 	/**
-	 * Get a set of output call links with new elements for all not used ports and the already existing ones.
+	 * Get a set of output call links with new elements for all not used ports
+	 * and the already existing ones.
 	 * 
 	 * @return
 	 */
@@ -329,8 +330,7 @@ public class WebserviceCallComponent extends CustomComponent {
 	public void editSelectedLink() {
 		// Check read only.
 		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !webformsSecurityService.isFormEditable(UserSessionHandler.getController().getFormInUse(),
-						UserSessionHandler.getUser())) {
+				&& !webformsSecurityService.isFormEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
 			return;
 		}
 

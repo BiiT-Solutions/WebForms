@@ -3,9 +3,9 @@ package com.biit.webforms.gui.webpages.designer;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
@@ -37,8 +37,8 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(field);
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isElementEditable(UserSessionHandler.getController().getFormInUse(),
+				UserSessionHandler.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_SYSTEM_FIELD.translation(), true);
@@ -76,7 +76,7 @@ public class PropertiesSystemField extends StorableObjectProperties<SystemField>
 				getInstance().setFieldName(field.getValue());
 			}
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 		super.updateElement();
 	}

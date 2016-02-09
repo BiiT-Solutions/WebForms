@@ -4,10 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
@@ -129,7 +129,7 @@ public class WindowDownloader extends WindowProgressBar {
 				setDataSource(data);
 				enableDownload();
 			} catch (IOException e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
+				WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			}		    
 		}

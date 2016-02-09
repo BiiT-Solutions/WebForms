@@ -10,12 +10,12 @@ import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
 import com.vaadin.server.VaadinServlet;
@@ -74,16 +74,14 @@ public class WindowImportJson extends WindowAcceptCancel {
 
 		IActivity[] exclusivePermissionFilter = new IActivity[] { WebformsActivity.FORM_EDITING };
 		try {
-			Set<IGroup<Long>> organizations = webformsSecurityService
-					.getUserOrganizations(UserSessionHandler.getUser());
+			Set<IGroup<Long>> organizations = webformsSecurityService.getUserOrganizations(UserSessionHandler.getUser());
 			Iterator<IGroup<Long>> itr = organizations.iterator();
 			while (itr.hasNext()) {
 				IGroup<Long> organization = itr.next();
 				for (IActivity activity : exclusivePermissionFilter) {
 					// If the user doesn't comply to all activities in the
 					// filter in the group, then exit
-					if (!webformsSecurityService.isAuthorizedActivity(UserSessionHandler.getUser(), organization,
-							activity)) {
+					if (!webformsSecurityService.isAuthorizedActivity(UserSessionHandler.getUser(), organization, activity)) {
 						itr.remove();
 						break;
 					}
@@ -101,7 +99,7 @@ public class WindowImportJson extends WindowAcceptCancel {
 				organizationField.setEnabled(false);
 			}
 		} catch (UserManagementException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 		}
 
@@ -140,9 +138,8 @@ public class WindowImportJson extends WindowAcceptCancel {
 		} catch (FieldTooLongException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
 		} catch (ElementCannotBePersistedException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
-					LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 		return false;
 	}

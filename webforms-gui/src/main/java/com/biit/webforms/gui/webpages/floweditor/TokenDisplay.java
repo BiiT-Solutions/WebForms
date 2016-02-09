@@ -6,10 +6,10 @@ import java.util.List;
 
 import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.enumerations.TokenTypes;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenDoubleClickListener;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenSingleClickListener;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
@@ -96,8 +96,8 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	/**
-	 * Adds a TokenComponent to the end of a specific line or after the current selected element or adds the element as
-	 * the last selected element.
+	 * Adds a TokenComponent to the end of a specific line or after the current
+	 * selected element or adds the element as the last selected element.
 	 * 
 	 * @param token
 	 * @param line
@@ -133,7 +133,8 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	/**
-	 * Gets currently selected line for work. If a component is selected returns its line, else returns the last line.
+	 * Gets currently selected line for work. If a component is selected returns
+	 * its line, else returns the last line.
 	 * 
 	 * @return
 	 */
@@ -238,9 +239,10 @@ public class TokenDisplay extends CustomComponent {
 	}
 
 	/**
-	 * Get element in current position + numPosition if there are no tokens returns null. If no token is selected it
-	 * gets the first element or the last depending on the numPosition defined. Else we get the sum of currentPosition +
-	 * numPosition and do the module to get the new position.
+	 * Get element in current position + numPosition if there are no tokens
+	 * returns null. If no token is selected it gets the first element or the
+	 * last depending on the numPosition defined. Else we get the sum of
+	 * currentPosition + numPosition and do the module to get the new position.
 	 * 
 	 * @param position
 	 */
@@ -312,7 +314,8 @@ public class TokenDisplay extends CustomComponent {
 		}
 
 		List<TokenComponent> tokens = getCurrentLine().getTokensAfter(focusedComponent);
-		// Remove tokens at the right side of the current selected element. Add them to the new line.
+		// Remove tokens at the right side of the current selected element. Add
+		// them to the new line.
 		getCurrentLine().removeTokens(tokens);
 		newLine.addTokens(tokens);
 
@@ -411,7 +414,7 @@ public class TokenDisplay extends CustomComponent {
 			fireValidationListeners("");
 		} catch (Exception e) {
 			fireValidationListeners(e.getMessage());
-			WebformsLogger.debug(TokenDisplay.class.getName(), e.getMessage());
+			WebformsUiLogger.debug(TokenDisplay.class.getName(), e.getMessage());
 			evaluatorOutput.setStyleName("expression-invalid");
 			evaluatorOutput.setValue(LanguageCodes.EXPRESSION_CHECKER_INVALID.translation());
 		}

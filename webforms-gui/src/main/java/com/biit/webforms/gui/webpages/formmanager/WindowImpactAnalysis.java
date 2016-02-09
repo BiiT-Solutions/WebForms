@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
@@ -55,12 +55,12 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					byte[] removedElementsFile = GraphvizApp.generateImageImpactAnalysisRemovedElements(
-							loadForm(getSelectedVersion()), loadForm(form), ImgType.PDF);
+					byte[] removedElementsFile = GraphvizApp.generateImageImpactAnalysisRemovedElements(loadForm(getSelectedVersion()),
+							loadForm(form), ImgType.PDF);
 					byte[] addedAndUpdatedElementsFile = GraphvizApp.generateImageImpactAnalysisAddedElements(
 							loadForm(getSelectedVersion()), loadForm(form), ImgType.PDF);
 
-					//Zip files
+					// Zip files
 					List<byte[]> filesInBytes = new ArrayList<>();
 					List<String> fileNames = new ArrayList<>();
 					filesInBytes.add(removedElementsFile);
@@ -72,7 +72,7 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 
 					return new ByteArrayInputStream(zipFile);
 				} catch (IOException | InterruptedException e) {
-					WebformsLogger.errorMessage(this.getClass().getName(), e);
+					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 					return null;
 				}
 			}
@@ -87,8 +87,7 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 	}
 
 	private String getRemovedElementsFileName() {
-		return form.getLabel() + "_analysis_" + form.getVersion() + "_" + getSelectedVersion() + "_removed_elements"
-				+ ".pdf";
+		return form.getLabel() + "_analysis_" + form.getVersion() + "_" + getSelectedVersion() + "_removed_elements" + ".pdf";
 	}
 
 	private String getAddedUpdatedElementsFileName() {

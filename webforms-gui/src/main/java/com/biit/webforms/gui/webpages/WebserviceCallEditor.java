@@ -9,6 +9,7 @@ import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.usermanager.security.IActivity;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -21,7 +22,6 @@ import com.biit.webforms.gui.webpages.webservice.call.WebserviceCallComponent;
 import com.biit.webforms.gui.webpages.webservice.call.WebserviceCallTable;
 import com.biit.webforms.gui.webpages.webservice.call.WindowWebservices;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
@@ -35,8 +35,7 @@ import com.vaadin.ui.HorizontalLayout;
 
 public class WebserviceCallEditor extends SecuredWebPage {
 	private static final long serialVersionUID = 2762557506974832944L;
-	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
-			Arrays.asList(WebformsActivity.READ));
+	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(Arrays.asList(WebformsActivity.READ));
 
 	private UpperMenu upperMenu;
 	private final WebserviceCallTable webserviceCallTable;
@@ -193,8 +192,8 @@ public class WebserviceCallEditor extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				WindowWebservices windowWebservices = (WindowWebservices) window;
-				WebserviceCall call = UserSessionHandler.getController().generateNewWebserviceCall(
-						windowWebservices.getName(), windowWebservices.getWebservice());
+				WebserviceCall call = UserSessionHandler.getController().generateNewWebserviceCall(windowWebservices.getName(),
+						windowWebservices.getWebservice());
 				updateWebserviceCallTable();
 				window.close();
 				webserviceCallTable.setValue(call);
@@ -213,16 +212,13 @@ public class WebserviceCallEditor extends SecuredWebPage {
 		try {
 			UserSessionHandler.getController().saveForm();
 			updateWebserviceCallTable();
-			MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE,
-					LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
+			MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
 		} catch (UnexpectedDatabaseException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		} catch (ElementCannotBePersistedException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
-					LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 

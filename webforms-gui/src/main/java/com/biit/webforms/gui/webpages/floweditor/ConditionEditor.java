@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.condition.parser.WebformsParser;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.StatusLabel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -12,7 +13,6 @@ import com.biit.webforms.gui.webpages.floweditor.TokenDisplay.ValidationListener
 import com.biit.webforms.gui.webpages.floweditor.listeners.InsertTokenListener;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenDoubleClickListener;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
@@ -38,7 +38,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * token conditions. Contains the right side controls and the current token condition display.
+ * token conditions. Contains the right side controls and the current token
+ * condition display.
  * 
  */
 public class ConditionEditor extends CustomComponent {
@@ -161,8 +162,7 @@ public class ConditionEditor extends CustomComponent {
 			public void acceptAction(WindowAcceptCancel window) {
 				WindowTokenBetween windowToken = (WindowTokenBetween) window;
 				TokenBetween tokenBetween = (TokenBetween) tokenComponent.getToken();
-				tokenBetween.setContent(windowToken.getDatePeriodUnit(), windowToken.getValueStart(),
-						windowToken.getValueEnd());
+				tokenBetween.setContent(windowToken.getDatePeriodUnit(), windowToken.getValueStart(), windowToken.getValueEnd());
 
 				tokenComponent.refresh();
 				window.close();
@@ -200,7 +200,7 @@ public class ConditionEditor extends CustomComponent {
 							thisWindow.getAnswerSubformat(), thisWindow.getDatePeriod(), thisWindow.getValue());
 					tokenComponent.refresh();
 				} catch (NotValidTokenType e) {
-					WebformsLogger.errorMessage(this.getClass().getName(), e);
+					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				}
 				window.close();
 			}
@@ -220,12 +220,11 @@ public class ConditionEditor extends CustomComponent {
 					if (thisWindow.getOperator() == null || thisWindow.getAnswer() == null) {
 						MessageManager.showError(LanguageCodes.ERROR_INVALID_CONDITION);
 					} else {
-						((TokenComparationAnswer) tokenComponent.getToken()).setContent(thisWindow.getOperator(),
-								thisWindow.getAnswer());
+						((TokenComparationAnswer) tokenComponent.getToken()).setContent(thisWindow.getOperator(), thisWindow.getAnswer());
 						tokenComponent.refresh();
 					}
 				} catch (NotValidTokenType e) {
-					WebformsLogger.errorMessage(this.getClass().getName(), e);
+					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				}
 				window.close();
 			}

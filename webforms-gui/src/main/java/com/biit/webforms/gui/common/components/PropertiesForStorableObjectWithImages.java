@@ -16,6 +16,7 @@ import com.biit.utils.image.ImageTools;
 import com.biit.utils.image.exceptions.InvalidRemoteImageDefinition;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -24,7 +25,6 @@ import com.biit.webforms.gui.webpages.designer.ImagePreview;
 import com.biit.webforms.gui.webpages.designer.ValidatorInteger;
 import com.biit.webforms.gui.webpages.designer.WindowSetUrl;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.ElementWithImage;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.vaadin.server.StreamResource.StreamSource;
@@ -45,11 +45,10 @@ import com.vaadin.ui.Upload.StartedEvent;
 import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 
-public abstract class PropertiesForStorableObjectWithImages<T extends StorableObject & ElementWithImage>
-		extends StorableObjectProperties<T> {
+public abstract class PropertiesForStorableObjectWithImages<T extends StorableObject & ElementWithImage> extends
+		StorableObjectProperties<T> {
 	private static final long serialVersionUID = 894265579530046205L;
-	private static final List<String> allowedMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp",
-			"image/gif");
+	private static final List<String> allowedMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp", "image/gif");
 	private static final int MAX_DISPLAY_FILE_NAME_LENGTH = 12;
 	private static final String STATUS_STYLE = "status_field";
 	private TextField imageFile, imageWidth, imageHeight;
@@ -208,7 +207,7 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 							imageMemoryOutputStream.write(byteArray, 0, byteArray.length);
 						} catch (InvalidRemoteImageDefinition e) {
 							imageMemoryOutputStream = null;
-							WebformsLogger.warning(this.getClass().getName(), e.getMessage());
+							WebformsUiLogger.warning(this.getClass().getName(), e.getMessage());
 						}
 
 						displayImage();
@@ -272,8 +271,7 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 					upload.setVisible(false);
 					progressLayout.setVisible(true);
 					progressIndicator.setValue(0f);
-					status.setValue(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_UPLOADING,
-							new Object[] { event.getFilename() }));
+					status.setValue(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_UPLOADING, new Object[] { event.getFilename() }));
 				} else {
 					MessageManager.showError(LanguageCodes.FILE_UPLOAD_INVALID.translation(),
 							LanguageCodes.FILE_UPLOAD_INVALID_DESCRIPTION_TYPE.translation() + " " + allowedMimeTypes);
@@ -283,9 +281,8 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 
 				// Check correct length
 				if (event.getContentLength() > TreeObjectImage.MAX_IMAGE_LENGTH) {
-					MessageManager.showError(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_INVALID),
-							ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_INVALID_DESCRIPTION_SIZE,
-									new Object[] { TreeObjectImage.MAX_IMAGE_LENGTH }));
+					MessageManager.showError(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_INVALID), ServerTranslate.translate(
+							LanguageCodes.FILE_UPLOAD_INVALID_DESCRIPTION_SIZE, new Object[] { TreeObjectImage.MAX_IMAGE_LENGTH }));
 					upload.interruptUpload();
 					cancelImage();
 				}
@@ -307,11 +304,9 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 
 			public void uploadSucceeded(SucceededEvent event) {
 				// This method gets called when the upload finished successfully
-				status.setValue(
-						ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_SUCCESS,
-								new Object[] { event.getFilename().length() < MAX_DISPLAY_FILE_NAME_LENGTH
-										? event.getFilename()
-										: event.getFilename().substring(0, MAX_DISPLAY_FILE_NAME_LENGTH) }));
+				status.setValue(ServerTranslate.translate(LanguageCodes.FILE_UPLOAD_SUCCESS,
+						new Object[] { event.getFilename().length() < MAX_DISPLAY_FILE_NAME_LENGTH ? event.getFilename() : event
+								.getFilename().substring(0, MAX_DISPLAY_FILE_NAME_LENGTH) }));
 				upload.setButtonCaption(LanguageCodes.FILE_UPLOAD_BUTTON_UPDATE.translation());
 				displayImage();
 			}
@@ -390,7 +385,7 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 					imageHeight.setEnabled(true);
 				}
 			} catch (IOException e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
+				WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 			}
 		} else {
 			imagePreview.setStreamSource(null);
@@ -436,7 +431,7 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 			image.setFileName(imageFile.getValue());
 			image.setStream(imageMemoryOutputStream);
 		}
-		
+
 		return image;
 	}
 

@@ -5,12 +5,12 @@ import java.io.IOException;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.xforms.XFormsSimpleFormExporter;
@@ -25,12 +25,10 @@ import com.vaadin.ui.Button.ClickListener;
 public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private static final long serialVersionUID = -3687306989433923394L;
 
-	private final IconButton submenuNew, newForm, newFormVersion, webformReference, removeForm, importAbcdForm,
-			importJsonForm;
+	private final IconButton submenuNew, newForm, newFormVersion, webformReference, removeForm, importAbcdForm, importJsonForm;
 	private final IconButton linkAbcdForm;
 	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms, downloadXFormsMultiple;
-	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson, exportXml,
-			exportBaseFormMetadataJson;
+	private final IconButton export, exportPdf, exportFlowPdf, exportXsd, exportJson, exportXml, exportBaseFormMetadataJson;
 	private final IconButton impactAnalysis, compareContent;
 	private BrowserWindowOpener opener;
 	// Neede due to the existence of a second 'Flow' button at the same time in
@@ -43,44 +41,42 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		boolean enableExportJson = false;
 		boolean enableImportJson = false;
 		try {
-			enableExportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(
-					UserSessionHandler.getUser(), WebformsActivity.EXPORT_JSON);
-			enableImportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(
-					UserSessionHandler.getUser(), WebformsActivity.IMPORT_JSON);
+			enableExportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(),
+					WebformsActivity.EXPORT_JSON);
+			enableImportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(),
+					WebformsActivity.IMPORT_JSON);
 		} catch (IOException | AuthenticationRequired e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 
-		newForm = new IconButton(LanguageCodes.CAPTION_NEW_FORM, ThemeIcons.FORM_MANAGER_ADD_FORM,
-				LanguageCodes.TOOLTIP_NEW_FORM, IconSize.BIG);
+		newForm = new IconButton(LanguageCodes.CAPTION_NEW_FORM, ThemeIcons.FORM_MANAGER_ADD_FORM, LanguageCodes.TOOLTIP_NEW_FORM,
+				IconSize.BIG);
 		newFormVersion = new IconButton(LanguageCodes.CAPTION_NEW_FORM_VERSION, ThemeIcons.FORM_MANAGER_NEW_VERSION,
 				LanguageCodes.TOOLTIP_NEW_FORM_VERSION, IconSize.BIG);
 
-		importAbcdForm = new IconButton(LanguageCodes.CAPTION_IMPORT_ABCD_FORM,
-				ThemeIcons.FORM_MANAGER_IMPORT_ABCD_FORM, LanguageCodes.TOOLTIP_IMPORT_ABCD_FORM, IconSize.BIG);
-		importJsonForm = new IconButton(LanguageCodes.CAPTION_IMPORT_JSON_FORM,
-				ThemeIcons.FORM_MANAGER_IMPORT_JSON_FORM, LanguageCodes.TOOLTIP_IMPORT_JSON_FORM, IconSize.BIG);
+		importAbcdForm = new IconButton(LanguageCodes.CAPTION_IMPORT_ABCD_FORM, ThemeIcons.FORM_MANAGER_IMPORT_ABCD_FORM,
+				LanguageCodes.TOOLTIP_IMPORT_ABCD_FORM, IconSize.BIG);
+		importJsonForm = new IconButton(LanguageCodes.CAPTION_IMPORT_JSON_FORM, ThemeIcons.FORM_MANAGER_IMPORT_JSON_FORM,
+				LanguageCodes.TOOLTIP_IMPORT_JSON_FORM, IconSize.BIG);
 		importJsonForm.setVisible(enableImportJson);
 
-		webformReference = new IconButton(LanguageCodes.CAPTION_LINK_WEBFORMS_FORM,
-				ThemeIcons.FORM_MANAGER_LINK_WEBFORMS_FORM, LanguageCodes.TOOLTIP_LINK_WEBFORMS_FORM, IconSize.BIG);
+		webformReference = new IconButton(LanguageCodes.CAPTION_LINK_WEBFORMS_FORM, ThemeIcons.FORM_MANAGER_LINK_WEBFORMS_FORM,
+				LanguageCodes.TOOLTIP_LINK_WEBFORMS_FORM, IconSize.BIG);
 
 		linkAbcdForm = new IconButton(LanguageCodes.CAPTION_LINK_ABCD_FORM, ThemeIcons.FORM_MANAGER_LINK_ABCD_FORM,
 				LanguageCodes.TOOLTIP_LINK_ABCD_FORM, IconSize.BIG);
 
 		exportPdf = new IconButton(LanguageCodes.COMMON_CAPTION_EXPORT_TO_PDF, ThemeIcons.EXPORT_FORM_TO_PDF,
 				LanguageCodes.COMMON_TOOLTIP_EXPORT_TO_PDF, IconSize.BIG);
-		exportFlowPdf = new IconButton(LanguageCodes.CAPTION_PRINT_FLOW, ThemeIcons.EXPORT_FORM_TO_PDF,
-				LanguageCodes.TOOLTIP_PRINT_FLOW, IconSize.BIG);
+		exportFlowPdf = new IconButton(LanguageCodes.CAPTION_PRINT_FLOW, ThemeIcons.EXPORT_FORM_TO_PDF, LanguageCodes.TOOLTIP_PRINT_FLOW,
+				IconSize.BIG);
 		exportFlowPdf.setId(FLOW_BUTTON_ID);
-		exportXsd = new IconButton(LanguageCodes.CAPTION_EXPORT_XSD, ThemeIcons.EXPORT_XSD,
-				LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
-		exportJson = new IconButton(LanguageCodes.CAPTION_EXPORT_JSON, ThemeIcons.EXPORT_JSON,
-				LanguageCodes.TOOLTIP_EXPORT_JSON, IconSize.BIG);
+		exportXsd = new IconButton(LanguageCodes.CAPTION_EXPORT_XSD, ThemeIcons.EXPORT_XSD, LanguageCodes.TOOLTIP_EXPORT_XSD, IconSize.BIG);
+		exportJson = new IconButton(LanguageCodes.CAPTION_EXPORT_JSON, ThemeIcons.EXPORT_JSON, LanguageCodes.TOOLTIP_EXPORT_JSON,
+				IconSize.BIG);
 		exportJson.setVisible(enableExportJson);
 
-		exportXml = new IconButton(LanguageCodes.CAPTION_EXPORT_XML, ThemeIcons.EXPORT_XML,
-				LanguageCodes.TOOLTIP_EXPORT_XML, IconSize.BIG);
+		exportXml = new IconButton(LanguageCodes.CAPTION_EXPORT_XML, ThemeIcons.EXPORT_XML, LanguageCodes.TOOLTIP_EXPORT_XML, IconSize.BIG);
 
 		exportBaseFormMetadataJson = new IconButton(LanguageCodes.CAPTION_EXPORT_FORM_METADATA, ThemeIcons.EXPORT_JSON,
 				LanguageCodes.TOOLTIP_EXPORT_FORM_METADATA, IconSize.BIG);
@@ -97,8 +93,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		downloadXForms = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS, ThemeIcons.DOWNLOAD_XFORMS,
 				LanguageCodes.TOOLTIP_DOWNLOAD_XFORMS, IconSize.BIG);
 		if (WebformsConfigurationReader.getInstance().isXFormsToMultipleFilesEnabled()) {
-			downloadXFormsMultiple = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS_MULTIPLE,
-					ThemeIcons.DOWNLOAD_XFORMS_MULTIPLE, LanguageCodes.TOOLTIP_DOWNLOAD_XFORMS_MULTIPLE, IconSize.BIG);
+			downloadXFormsMultiple = new IconButton(LanguageCodes.CAPTION_DOWNLOAD_XFORMS_MULTIPLE, ThemeIcons.DOWNLOAD_XFORMS_MULTIPLE,
+					LanguageCodes.TOOLTIP_DOWNLOAD_XFORMS_MULTIPLE, IconSize.BIG);
 		} else {
 			downloadXFormsMultiple = null;
 		}
@@ -109,19 +105,19 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		compareContent = new IconButton(LanguageCodes.CAPTION_COMPARE_CONTENT, ThemeIcons.COMPARE_CONTENT,
 				LanguageCodes.TOOLTIP_COMPARE_CONTENT, IconSize.BIG);
 
-		submenuNew = addSubMenu(ThemeIcons.NEW, LanguageCodes.CAPTION_NEW, LanguageCodes.TOOLTIP_NEW, newForm,
-				webformReference, newFormVersion, importAbcdForm, importJsonForm);
+		submenuNew = addSubMenu(ThemeIcons.NEW, LanguageCodes.CAPTION_NEW, LanguageCodes.TOOLTIP_NEW, newForm, webformReference,
+				newFormVersion, importAbcdForm, importJsonForm);
 
-		removeForm = new IconButton(LanguageCodes.CAPTION_REMOVE_FORM, ThemeIcons.DELETE_FORM,
-				LanguageCodes.CAPTION_REMOVE_FORM, IconSize.MEDIUM);
+		removeForm = new IconButton(LanguageCodes.CAPTION_REMOVE_FORM, ThemeIcons.DELETE_FORM, LanguageCodes.CAPTION_REMOVE_FORM,
+				IconSize.MEDIUM);
 		addIconButton(removeForm);
 
 		addIconButton(linkAbcdForm);
 
-		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
-				exportFlowPdf, exportXsd, exportXml, exportJson, exportBaseFormMetadataJson);
-		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
-				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms, downloadXFormsMultiple);
+		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf, exportFlowPdf,
+				exportXsd, exportXml, exportJson, exportBaseFormMetadataJson);
+		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS, LanguageCodes.TOOLTIP_TO_XFORMS,
+				previewXForms, publishXForms, downloadXForms, downloadXFormsMultiple);
 		opener.extend(previewXForms);
 
 		addIconButton(impactAnalysis);

@@ -7,12 +7,12 @@ import java.util.List;
 
 import org.vaadin.risto.stepper.IntStepper;
 
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.ZipTools;
 import com.biit.webforms.utils.exporters.xml.RandomXmlFormResultExporter;
@@ -92,13 +92,12 @@ public class WindowGenerateXml extends WindowAcceptCancel {
 					RandomXmlFormResultExporter exporter = new RandomXmlFormResultExporter(form);
 					List<String> xmlFiles = exporter.generate(stepper.getValue());
 
-					byte[] zipFile = ZipTools.zipFiles(xmlFiles);					
+					byte[] zipFile = ZipTools.zipFiles(xmlFiles);
 
 					return new ByteArrayInputStream(zipFile);
-				} catch (IOException | BadFormedExpressions | ElementWithoutNextElement
-						| TooMuchIterationsWhileGeneratingPath e) {
+				} catch (IOException | BadFormedExpressions | ElementWithoutNextElement | TooMuchIterationsWhileGeneratingPath e) {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-					WebformsLogger.errorMessage(this.getClass().getName(), e);
+					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 					return null;
 				}
 			}

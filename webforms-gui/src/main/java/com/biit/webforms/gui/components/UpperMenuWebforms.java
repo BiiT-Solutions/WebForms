@@ -3,6 +3,7 @@ package com.biit.webforms.gui.components;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.common.components.UpperMenu;
@@ -14,7 +15,6 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.theme.ThemeIcons;
@@ -49,14 +49,13 @@ public class UpperMenuWebforms extends UpperMenu {
 					@Override
 					public void buttonClick(ClickEvent event) {
 						if (confirmationNeeded && UserSessionHandler.getController().existsUnsavedFormChanges()) {
-							new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_LOSE_DATA,
-									new AcceptActionListener() {
+							new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_LOSE_DATA, new AcceptActionListener() {
 
-										@Override
-										public void acceptAction(WindowAcceptCancel window) {
-											ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
-										}
-									});
+								@Override
+								public void acceptAction(WindowAcceptCancel window) {
+									ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
+								}
+							});
 						} else {
 							ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
 						}
@@ -65,22 +64,20 @@ public class UpperMenuWebforms extends UpperMenu {
 		formManagerButton.setHeight("100%");
 		formManagerButton.setWidth(BUTTON_WIDTH);
 
-		blockManagerButton = new IconButton(LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER,
-				ThemeIcons.PAGE_BUILDING_BLOCK_MANAGER, LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER,
-				IconSize.BIG, new ClickListener() {
+		blockManagerButton = new IconButton(LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER, ThemeIcons.PAGE_BUILDING_BLOCK_MANAGER,
+				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, IconSize.BIG, new ClickListener() {
 					private static final long serialVersionUID = 8754692681745450679L;
 
 					@Override
 					public void buttonClick(ClickEvent event) {
 						if (confirmationNeeded && UserSessionHandler.getController().existsUnsavedFormChanges()) {
-							new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_LOSE_DATA,
-									new AcceptActionListener() {
+							new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_LOSE_DATA, new AcceptActionListener() {
 
-										@Override
-										public void acceptAction(WindowAcceptCancel window) {
-											ApplicationUi.navigateTo(WebMap.BLOCK_MANAGER);
-										}
-									});
+								@Override
+								public void acceptAction(WindowAcceptCancel window) {
+									ApplicationUi.navigateTo(WebMap.BLOCK_MANAGER);
+								}
+							});
 						} else {
 							ApplicationUi.navigateTo(WebMap.BLOCK_MANAGER);
 						}
@@ -90,8 +87,8 @@ public class UpperMenuWebforms extends UpperMenu {
 		blockManagerButton.setWidth(BUTTON_WIDTH);
 
 		// Settings menu.
-		IconButton aboutUsButton = new IconButton(LanguageCodes.CAPTION_ABOUT_US, ThemeIcons.ABOUT_US,
-				LanguageCodes.TOOLTIP_ABOUT_US, new ClickListener() {
+		IconButton aboutUsButton = new IconButton(LanguageCodes.CAPTION_ABOUT_US, ThemeIcons.ABOUT_US, LanguageCodes.TOOLTIP_ABOUT_US,
+				new ClickListener() {
 					private static final long serialVersionUID = -4996751752953783384L;
 
 					@Override
@@ -100,8 +97,8 @@ public class UpperMenuWebforms extends UpperMenu {
 					}
 				});
 
-		IconButton clearCacheButton = new IconButton(LanguageCodes.CAPTION_SETTINGS_CLEAR_CACHE,
-				ThemeIcons.CLEAR_CACHE, LanguageCodes.TOOLTIP_SETTINGS_CLEAR_CACHE, new ClickListener() {
+		IconButton clearCacheButton = new IconButton(LanguageCodes.CAPTION_SETTINGS_CLEAR_CACHE, ThemeIcons.CLEAR_CACHE,
+				LanguageCodes.TOOLTIP_SETTINGS_CLEAR_CACHE, new ClickListener() {
 					private static final long serialVersionUID = -1121572145945309858L;
 
 					@Override
@@ -111,8 +108,7 @@ public class UpperMenuWebforms extends UpperMenu {
 							public void acceptAction(WindowAcceptCancel window) {
 								UserSessionHandler.getController().evictAllCache();
 								ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
-								WebformsLogger.info(this.getClass().getName(), "User '"
-										+ UserSessionHandler.getUser().getEmailAddress()
+								WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
 										+ "' has cleared all the 2nd level cache.");
 								MessageManager.showInfo(LanguageCodes.INFO_CACHE_CLEARED);
 							}
@@ -121,8 +117,7 @@ public class UpperMenuWebforms extends UpperMenu {
 				});
 		// Clear cache for admin users.
 		try {
-			if (webformsSecurityService
-					.isAuthorizedActivity(UserSessionHandler.getUser(), WebformsActivity.EVICT_CACHE)) {
+			if (webformsSecurityService.isAuthorizedActivity(UserSessionHandler.getUser(), WebformsActivity.EVICT_CACHE)) {
 				clearCacheButton.setVisible(true);
 				clearCacheButton.setWidth("100%");
 			} else {
@@ -130,11 +125,11 @@ public class UpperMenuWebforms extends UpperMenu {
 			}
 		} catch (UserManagementException e) {
 			clearCacheButton.setVisible(false);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 
-		logoutButton = new IconButton(LanguageCodes.CAPTION_SETTINGS_LOG_OUT, ThemeIcons.LOG_OUT,
-				LanguageCodes.TOOLTIP_SETTINGS_LOG_OUT, new ClickListener() {
+		logoutButton = new IconButton(LanguageCodes.CAPTION_SETTINGS_LOG_OUT, ThemeIcons.LOG_OUT, LanguageCodes.TOOLTIP_SETTINGS_LOG_OUT,
+				new ClickListener() {
 					private static final long serialVersionUID = -1121572145945309858L;
 
 					@Override
@@ -149,8 +144,8 @@ public class UpperMenuWebforms extends UpperMenu {
 					}
 				});
 
-		settingsButton = generateSubMenu(ThemeIcons.SETTINGS, LanguageCodes.COMMON_CAPTION_SETTINGS,
-				LanguageCodes.COMMON_TOOLTIP_SETTINGS, aboutUsButton, clearCacheButton, logoutButton);
+		settingsButton = generateSubMenu(ThemeIcons.SETTINGS, LanguageCodes.COMMON_CAPTION_SETTINGS, LanguageCodes.COMMON_TOOLTIP_SETTINGS,
+				aboutUsButton, clearCacheButton, logoutButton);
 
 		settingsButton.setHeight("100%");
 		settingsButton.setWidth(BUTTON_WIDTH);

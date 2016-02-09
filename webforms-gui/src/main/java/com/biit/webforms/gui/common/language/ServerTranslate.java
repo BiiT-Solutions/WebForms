@@ -5,9 +5,9 @@ import java.util.Locale;
 import org.springframework.util.StringUtils;
 
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
-import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 
@@ -61,7 +61,7 @@ public class ServerTranslate {
 		try {
 			return translationException(code, args);
 		} catch (RuntimeException e) {
-			WebformsLogger.errorMessage(ServerTranslate.class.getName(), e);
+			WebformsUiLogger.errorMessage(ServerTranslate.class.getName(), e);
 			try {
 				MessageManager.showError(ServerTranslate.translationException("error.fatal", null));
 			} catch (RuntimeException e2) {

@@ -12,12 +12,12 @@ import com.biit.usermanager.security.exceptions.InvalidCredentialsException;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WebPageComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -68,8 +68,8 @@ public class Login extends WebPageComponent {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-//		// Nothing to do. Autologin managed by ApplicationUI.
-//		ApplicationUi.autologin();
+		// // Nothing to do. Autologin managed by ApplicationUI.
+		// ApplicationUi.autologin();
 	}
 
 	private Panel buildLoginForm() {
@@ -84,8 +84,7 @@ public class Login extends WebPageComponent {
 		usernameField.setWidth(FIELD_SIZE);
 		usernameField.setId(NAME_LOGIN_FIELD_ID);
 
-		passwordField = new PasswordField(
-				ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_PASSWORD));
+		passwordField = new PasswordField(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_PASSWORD));
 		passwordField.setRequired(true);
 		passwordField.setWidth(FIELD_SIZE);
 		passwordField.setRequiredError(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_ERROR_PASSWORD));
@@ -101,8 +100,7 @@ public class Login extends WebPageComponent {
 				// form
 				if (target == passwordField) {
 					try {
-						IUser<Long> user = UserSessionHandler.getUser((String) usernameField.getValue(),
-								(String) passwordField.getValue());
+						IUser<Long> user = UserSessionHandler.getUser((String) usernameField.getValue(), (String) passwordField.getValue());
 						if (user != null) {
 							ApplicationUi.navigateTo(WebMap.getMainPage());
 						}
@@ -113,7 +111,7 @@ public class Login extends WebPageComponent {
 						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
 								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_TRYAGAIN);
 					} catch (UserManagementException e) {
-						WebformsLogger.errorMessage(this.getClass().getName(), e);
+						WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
 								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
 					}
@@ -141,11 +139,10 @@ public class Login extends WebPageComponent {
 							passwordField.setComponentError(new UserError(ServerTranslate.translate(
 									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER,
 									new Object[] { (String) usernameField.getValue() })));
-							MessageManager.showError(
-									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
+							MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
 									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_TRYAGAIN);
 						} catch (UserManagementException e) {
-							WebformsLogger.errorMessage(this.getClass().getName(), e);
+							WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 							MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
 									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
 						}
@@ -174,7 +171,7 @@ public class Login extends WebPageComponent {
 			Attributes attributes = manifest.getMainAttributes();
 			version = attributes.getValue("Implementation-Version");
 		} catch (IOException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 		return version;
 	}

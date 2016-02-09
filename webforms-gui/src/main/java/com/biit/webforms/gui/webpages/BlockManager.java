@@ -14,6 +14,7 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -26,7 +27,6 @@ import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.gui.webpages.blockmanager.TableBlock;
 import com.biit.webforms.gui.webpages.blockmanager.UpperMenuBlockManager;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.IWebformsBlockView;
@@ -40,8 +40,7 @@ import com.vaadin.ui.Button.ClickListener;
 
 public class BlockManager extends SecuredWebPage {
 	private static final long serialVersionUID = -2939326703361794764L;
-	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
-			Arrays.asList(WebformsActivity.READ));
+	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(Arrays.asList(WebformsActivity.READ));
 
 	private UpperMenuBlockManager upperMenu;
 	private FormEditBottomMenu bottomMenu;
@@ -88,8 +87,8 @@ public class BlockManager extends SecuredWebPage {
 			IWebformsBlockView block = getSelectedBlock();
 
 			boolean blockNotNull = block != null;
-			boolean canCreateBlocks = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(
-					UserSessionHandler.getUser(), WebformsActivity.BUILDING_BLOCK_EDITING);
+			boolean canCreateBlocks = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(),
+					WebformsActivity.BUILDING_BLOCK_EDITING);
 
 			upperMenu.getNewBlock().setEnabled(canCreateBlocks);
 
@@ -105,7 +104,7 @@ public class BlockManager extends SecuredWebPage {
 			bottomMenu.getValidateForm().setEnabled(blockNotNull);
 
 		} catch (IOException | AuthenticationRequired e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			// failsafe, disable everything.
 			upperMenu.getNewBlock().setEnabled(false);
@@ -171,9 +170,8 @@ public class BlockManager extends SecuredWebPage {
 			if (selectedBlock != null) {
 				// Remove the form.
 				blockDao.makeTransient(selectedBlock);
-				WebformsLogger.info(this.getClass().getName(),
-						"User '" + UserSessionHandler.getUser().getEmailAddress() + "' has removed form '"
-								+ selectedBlock.getLabel() + "' (version " + selectedBlock.getVersion() + ").");
+				WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
+						+ "' has removed form '" + selectedBlock.getLabel() + "' (version " + selectedBlock.getVersion() + ").");
 				blockTable.refreshTableData();
 			}
 		} catch (ElementCannotBeRemovedException e) {
@@ -197,8 +195,7 @@ public class BlockManager extends SecuredWebPage {
 
 	private void openNewBlockWindow() {
 		final WindowNameGroup newBlockWindow = new WindowNameGroup(LanguageCodes.COMMON_CAPTION_NAME.translation(),
-				LanguageCodes.COMMON_CAPTION_GROUP.translation(),
-				new IActivity[] { WebformsActivity.BUILDING_BLOCK_EDITING });
+				LanguageCodes.COMMON_CAPTION_GROUP.translation(), new IActivity[] { WebformsActivity.BUILDING_BLOCK_EDITING });
 		newBlockWindow.setCaption(LanguageCodes.CAPTION_NEW_BLOCK.translation());
 		newBlockWindow.setDefaultValue(LanguageCodes.NULL_VALUE_NEW_BLOCK.translation());
 		newBlockWindow.showCentered();
@@ -224,11 +221,10 @@ public class BlockManager extends SecuredWebPage {
 					MessageManager.showError(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE);
 				} catch (CharacterNotAllowedException e) {
 					// Impossible
-					WebformsLogger.errorMessage(this.getClass().getName(), e);
+					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				} catch (UnexpectedDatabaseException | ElementCannotBePersistedException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-					WebformsLogger.errorMessage(this.getClass().getName(), e);
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
 		});

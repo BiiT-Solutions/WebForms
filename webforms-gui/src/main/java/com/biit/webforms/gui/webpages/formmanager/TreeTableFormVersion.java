@@ -7,6 +7,7 @@ import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.TreeTableBaseForm;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -18,7 +19,6 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.exceptions.NotEnoughRightsToChangeStatusException;
 import com.biit.webforms.language.FormWorkStatusUi;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.security.WebformsActivity;
@@ -33,8 +33,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		ACCESS, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
 	};
 
-	public TreeTableFormVersion(TreeTableProvider<SimpleFormView> formProvider,
-			IconProviderFormLinked iconProviderFormLinked) {
+	public TreeTableFormVersion(TreeTableProvider<SimpleFormView> formProvider, IconProviderFormLinked iconProviderFormLinked) {
 		super(formProvider, iconProviderFormLinked);
 		configureContainerProperties();
 		setImmediate(true);
@@ -79,11 +78,10 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 
 		// Set new visibility order
 		setVisibleColumns(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION,
-				TreeTableFormVersionProperties.ACCESS, TreeTableFormVersionProperties.USED_BY,
-				TreeTableFormVersionProperties.STATUS, TreeTableBaseFormProperties.ORGANIZATION,
-				TreeTableFormVersionProperties.LINKED_FORM, TreeTableFormVersionProperties.LINKED_ORGANIZATION,
-				TreeTableFormVersionProperties.LINKED_VERSIONS, TreeTableBaseFormProperties.CREATED_BY,
-				TreeTableBaseFormProperties.CREATION_DATE, TreeTableBaseFormProperties.MODIFIED_BY,
+				TreeTableFormVersionProperties.ACCESS, TreeTableFormVersionProperties.USED_BY, TreeTableFormVersionProperties.STATUS,
+				TreeTableBaseFormProperties.ORGANIZATION, TreeTableFormVersionProperties.LINKED_FORM,
+				TreeTableFormVersionProperties.LINKED_ORGANIZATION, TreeTableFormVersionProperties.LINKED_VERSIONS,
+				TreeTableBaseFormProperties.CREATED_BY, TreeTableBaseFormProperties.CREATION_DATE, TreeTableBaseFormProperties.MODIFIED_BY,
 				TreeTableBaseFormProperties.MODIFICATION_DATE });
 	}
 
@@ -91,8 +89,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	@Override
 	public Item updateRow(IBaseFormView form) {
 		Item item = super.updateRow(form);
-		item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(
-				getFormPermissionsTag((SimpleFormView) form));
+		item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag((SimpleFormView) form));
 
 		IUser<Long> userOfForm = UiAccesser.getUserUsingForm((IWebformsFormView) form);
 		if (userOfForm != null) {
@@ -102,19 +99,16 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		}
 
 		// Status
-		item.getItemProperty(TreeTableFormVersionProperties.STATUS).setValue(
-				generateStatusComboBox((IWebformsFormView) form));
+		item.getItemProperty(TreeTableFormVersionProperties.STATUS).setValue(generateStatusComboBox((IWebformsFormView) form));
 
 		// Linked parameters
-		item.getItemProperty(TreeTableFormVersionProperties.LINKED_FORM).setValue(
-				((IWebformsFormView) form).getLinkedFormLabel());
+		item.getItemProperty(TreeTableFormVersionProperties.LINKED_FORM).setValue(((IWebformsFormView) form).getLinkedFormLabel());
 
 		if (((IWebformsFormView) form).getLinkedFormOrganizationId() != null) {
-			IGroup<Long> linkedOrganization = getWebformsSecurityService().getOrganization(
-					UserSessionHandler.getUser(), ((IWebformsFormView) form).getLinkedFormOrganizationId());
+			IGroup<Long> linkedOrganization = getWebformsSecurityService().getOrganization(UserSessionHandler.getUser(),
+					((IWebformsFormView) form).getLinkedFormOrganizationId());
 			if (linkedOrganization != null) {
-				item.getItemProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION).setValue(
-						linkedOrganization.getUniqueName());
+				item.getItemProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION).setValue(linkedOrganization.getUniqueName());
 			}
 		}
 
@@ -135,8 +129,8 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		statusComboBox.setWidth("100%");
 		statusComboBox.setImmediate(true);
 
-		boolean userCanUpgradeStatus = getWebformsSecurityService().isAuthorizedActivity(UserSessionHandler.getUser(),
-				form, WebformsActivity.FORM_STATUS_DOWNGRADE);
+		boolean userCanUpgradeStatus = getWebformsSecurityService().isAuthorizedActivity(UserSessionHandler.getUser(), form,
+				WebformsActivity.FORM_STATUS_DOWNGRADE);
 
 		statusComboBox.setEnabled(userCanUpgradeStatus);
 		statusComboBox.addValueChangeListener(new ValueChangeListener() {
@@ -177,12 +171,10 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 			UserSessionHandler.getController().changeFormStatus(form, value);
 		} catch (NotEnoughRightsToChangeStatusException e) {
 			statusComboBox.setValue(form.getStatus());
-			MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
-					LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
+			MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED, LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
 		} catch (ElementCannotBePersistedException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
-					LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 
@@ -205,14 +197,14 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	}
 
 	/**
-	 * This function returns an string with read only if the form can't be edited by the user
+	 * This function returns an string with read only if the form can't be
+	 * edited by the user
 	 * 
 	 * @param form
 	 * @return
 	 */
 	private String getFormPermissionsTag(SimpleFormView form) {
-		if (UiAccesser.getUserUsingForm(form) != null
-				&& !UiAccesser.getUserUsingForm(form).equals(UserSessionHandler.getUser())) {
+		if (UiAccesser.getUserUsingForm(form) != null && !UiAccesser.getUserUsingForm(form).equals(UserSessionHandler.getUser())) {
 			return LanguageCodes.CAPTION_IN_USE.translation();
 		}
 

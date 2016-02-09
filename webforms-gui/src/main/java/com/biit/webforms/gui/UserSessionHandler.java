@@ -12,7 +12,6 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.WebBrowser;
@@ -22,7 +21,8 @@ public class UserSessionHandler {
 	private static final String DEFAULT_SUFIX = "-sessionhandler";
 	private IUser<Long> user = null;
 	private ApplicationController controller = null;
-	// User Id --> List<UI> (A user can have different browsers opened in the same machine)
+	// User Id --> List<UI> (A user can have different browsers opened in the
+	// same machine)
 	private static HashMap<Long, Set<UI>> usersSession = new HashMap<>();
 	// User Id --> IP (current UI ip connected)
 	private static HashMap<Long, String> usersIp = new HashMap<>();
@@ -48,14 +48,13 @@ public class UserSessionHandler {
 			if (ip == null || !ip.equals(usersIp.get(user.getId()))) {
 				for (UI userUI : usersSession.get(user.getId())) {
 					try {
-						WebformsLogger.info(
-								UserSessionHandler.class.getName(),
-								"Closing session for user '" + user.getEmailAddress() + "', IP '"
-										+ usersIp.get(user.getId()) + "'.");
+						WebformsUiLogger.info(UserSessionHandler.class.getName(), "Closing session for user '" + user.getEmailAddress()
+								+ "', IP '" + usersIp.get(user.getId()) + "'.");
 						userUI.getPage().setLocation("./VAADIN/logout.html");
 						userUI.close();
 					} catch (Exception e) {
-						// maybe the session has expired in Vaadin and cannot be closed.
+						// maybe the session has expired in Vaadin and cannot be
+						// closed.
 					}
 				}
 				MessageManager.showWarning(LanguageCodes.INFO_USER_SESSION_EXPIRED);
@@ -93,7 +92,8 @@ public class UserSessionHandler {
 	}
 
 	/**
-	 * Set the User object for the currently inlogged user for this application instance
+	 * Set the User object for the currently inlogged user for this application
+	 * instance
 	 * 
 	 * @param user
 	 */
@@ -104,7 +104,8 @@ public class UserSessionHandler {
 	}
 
 	/**
-	 * Get the User object of the currently inlogged user for this application instance.
+	 * Get the User object of the currently inlogged user for this application
+	 * instance.
 	 * 
 	 * @return The currently inlogged user
 	 */
@@ -114,7 +115,8 @@ public class UserSessionHandler {
 	}
 
 	/**
-	 * Set the User object for the currently inlogged user for this application instance
+	 * Set the User object for the currently inlogged user for this application
+	 * instance
 	 * 
 	 * @param user
 	 */
@@ -156,24 +158,24 @@ public class UserSessionHandler {
 		}
 	}
 
-	public static IUser<Long> getUser(String userMail, String password) throws UserManagementException,
-			AuthenticationRequired, InvalidCredentialsException {
+	public static IUser<Long> getUser(String userMail, String password) throws UserManagementException, AuthenticationRequired,
+			InvalidCredentialsException {
 		// Try to log in the user when the button is clicked
 		IUser<Long> user = getAuthenticationService().getAuthenticationService().authenticate(userMail, password);
 
 		if (user != null) {
 			WebBrowser browser = (WebBrowser) UI.getCurrent().getPage().getWebBrowser();
 			try {
-				String message = "User '" + user.getEmailAddress() + "' logged successfully. Using '"
-						+ browser.getBrowserApplication() + "'";
+				String message = "User '" + user.getEmailAddress() + "' logged successfully. Using '" + browser.getBrowserApplication()
+						+ "'";
 				if (browser.getAddress() != null) {
 					message += " (IP: " + browser.getAddress() + ").";
 				} else {
 					message += ".";
 				}
-				WebformsLogger.info(UserSessionHandler.class.getName(), message);
+				WebformsUiLogger.info(UserSessionHandler.class.getName(), message);
 			} catch (Exception e) {
-				WebformsLogger.errorMessage(UserSessionHandler.class.getName(), e);
+				WebformsUiLogger.errorMessage(UserSessionHandler.class.getName(), e);
 			}
 			// Store the password.
 			user.setPassword(password);
@@ -187,7 +189,8 @@ public class UserSessionHandler {
 	}
 
 	/**
-	 * Autowired not working correctly in this version of Vaadin. Use the helper if needed in a static method.
+	 * Autowired not working correctly in this version of Vaadin. Use the helper
+	 * if needed in a static method.
 	 * 
 	 * @return
 	 */

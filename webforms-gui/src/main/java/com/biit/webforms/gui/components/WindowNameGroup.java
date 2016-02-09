@@ -7,11 +7,11 @@ import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -64,7 +64,8 @@ public class WindowNameGroup extends WindowAcceptCancel {
 		textField = new TextField(inputFieldCaption);
 		textField.focus();
 		textField.setWidth("100%");
-		// textField.addValidator(new ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
+		// textField.addValidator(new
+		// ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
 		// textField.addValidator(new ValidatorTreeObjectNameLength());
 
 		textField.addValueChangeListener(new ValueChangeListener() {
@@ -80,15 +81,14 @@ public class WindowNameGroup extends WindowAcceptCancel {
 		organizationField.setNullSelectionAllowed(false);
 		organizationField.setWidth("100%");
 		try {
-			Set<IGroup<Long>> organizations = webformsSecurityService
-					.getUserOrganizations(UserSessionHandler.getUser());
+			Set<IGroup<Long>> organizations = webformsSecurityService.getUserOrganizations(UserSessionHandler.getUser());
 			Iterator<IGroup<Long>> itr = organizations.iterator();
 			while (itr.hasNext()) {
 				IGroup<Long> organization = itr.next();
 				for (IActivity activity : exclusivePermissionFilter) {
-					// If the user doesn't comply to all activities in the filter in the group, then exit
-					if (!webformsSecurityService.isAuthorizedActivity(UserSessionHandler.getUser(), organization,
-							activity)) {
+					// If the user doesn't comply to all activities in the
+					// filter in the group, then exit
+					if (!webformsSecurityService.isAuthorizedActivity(UserSessionHandler.getUser(), organization, activity)) {
 						itr.remove();
 						break;
 					}
@@ -106,7 +106,7 @@ public class WindowNameGroup extends WindowAcceptCancel {
 				organizationField.setEnabled(false);
 			}
 		} catch (UserManagementException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 		}
 

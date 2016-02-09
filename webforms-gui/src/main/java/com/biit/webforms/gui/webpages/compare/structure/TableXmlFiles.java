@@ -2,12 +2,12 @@ package com.biit.webforms.gui.webpages.compare.structure;
 
 import java.io.UnsupportedEncodingException;
 
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.common.utils.UploadedFile;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.xml.XmlUtils;
 import com.vaadin.data.Item;
@@ -28,8 +28,7 @@ public class TableXmlFiles extends Table {
 	}
 
 	protected void initContainerProperties() {
-		addContainerProperty(Properties.LABEL, String.class, null, LanguageCodes.CAPTION_LABEL.translation(), null,
-				Align.LEFT);
+		addContainerProperty(Properties.LABEL, String.class, null, LanguageCodes.CAPTION_LABEL.translation(), null, Align.LEFT);
 		addContainerProperty(Properties.STATUS, Component.class, null, "", null, Align.LEFT);
 		addContainerProperty(Properties.XML_FILE, String.class, new String(), "", null, Align.LEFT);
 		addContainerProperty(Properties.RESULT, String.class, new String(), "", null, Align.LEFT);
@@ -54,7 +53,7 @@ public class TableXmlFiles extends Table {
 		try {
 			return XmlUtils.format(file.getStream().toString("UTF-8"));
 		} catch (UnsupportedEncodingException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 		return "Not a valid file";
 	}
@@ -81,11 +80,9 @@ public class TableXmlFiles extends Table {
 	public void setStatusMark(UploadedFile itemId, boolean value) {
 		Item item = getItem(itemId);
 		if (value) {
-			item.getItemProperty(Properties.STATUS).setValue(
-					new IconButton(CommonThemeIcon.ACCEPT, IconSize.MEDIUM, ""));
+			item.getItemProperty(Properties.STATUS).setValue(new IconButton(CommonThemeIcon.ACCEPT, IconSize.MEDIUM, ""));
 		} else {
-			item.getItemProperty(Properties.STATUS).setValue(
-					new IconButton(ThemeIcons.ALERT, IconSize.MEDIUM, ""));
+			item.getItemProperty(Properties.STATUS).setValue(new IconButton(ThemeIcons.ALERT, IconSize.MEDIUM, ""));
 		}
 	}
 }

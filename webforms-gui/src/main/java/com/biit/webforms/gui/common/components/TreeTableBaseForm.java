@@ -13,12 +13,12 @@ import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.utils.date.DateManager;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
@@ -143,28 +143,26 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 
 		item.getItemProperty(TreeTableBaseFormProperties.VERSION).setValue(form.getVersion() + "");
 
-		IGroup<Long> organization = webformsSecurityService.getOrganization(UserSessionHandler.getUser(),
-				form.getOrganizationId());
+		IGroup<Long> organization = webformsSecurityService.getOrganization(UserSessionHandler.getUser(), form.getOrganizationId());
 		if (organization != null) {
 			item.getItemProperty(TreeTableBaseFormProperties.ORGANIZATION).setValue(organization.getUniqueName());
 		}
 
 		try {
-			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY)
-					.setValue(webformsSecurityService.getUserById(form.getCreatedBy()).getEmailAddress());
+			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue(
+					webformsSecurityService.getUserById(form.getCreatedBy()).getEmailAddress());
 		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException | NullPointerException e) {
 			item.getItemProperty(TreeTableBaseFormProperties.CREATED_BY).setValue("");
 		}
-		item.getItemProperty(TreeTableBaseFormProperties.CREATION_DATE)
-				.setValue((DateManager.convertDateToString(form.getCreationTime())));
+		item.getItemProperty(TreeTableBaseFormProperties.CREATION_DATE).setValue((DateManager.convertDateToString(form.getCreationTime())));
 		try {
-			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY)
-					.setValue(webformsSecurityService.getUserById(form.getUpdatedBy()).getEmailAddress());
+			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue(
+					webformsSecurityService.getUserById(form.getUpdatedBy()).getEmailAddress());
 		} catch (com.vaadin.data.Property.ReadOnlyException | UserDoesNotExistException | NullPointerException e) {
 			item.getItemProperty(TreeTableBaseFormProperties.MODIFIED_BY).setValue("");
 		}
-		item.getItemProperty(TreeTableBaseFormProperties.MODIFICATION_DATE)
-				.setValue((DateManager.convertDateToString(form.getUpdateTime())));
+		item.getItemProperty(TreeTableBaseFormProperties.MODIFICATION_DATE).setValue(
+				(DateManager.convertDateToString(form.getUpdateTime())));
 		return item;
 	}
 
@@ -219,13 +217,11 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 
 			defaultSort();
 		} catch (UnexpectedDatabaseException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		} catch (ProcessingException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_WEBSERVICES,
-					LanguageCodes.ERROR_ACCESSING_WEBSERVICES_DESCRIPTION);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_WEBSERVICES, LanguageCodes.ERROR_ACCESSING_WEBSERVICES_DESCRIPTION);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}
 
@@ -234,8 +230,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 	 * version descendenly.
 	 */
 	public void defaultSort() {
-		sort(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION },
-				new boolean[] { true, false });
+		sort(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION }, new boolean[] { true, false });
 	}
 
 	public void addForm(IBaseFormView form) {
