@@ -2,7 +2,7 @@ package com.biit.webforms.gui.common.components;
 
 import java.util.Iterator;
 
-import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
@@ -56,7 +56,7 @@ public class HorizontalButtonGroup extends CustomComponent {
 			rootLayout.addComponent(newButton, index);
 			newButton.setSizeFull();
 		} else {
-			WebformsLogger.warning(this.getClass().getName(), "Trying to replace a non existing element.");
+			WebformsUiLogger.warning(this.getClass().getName(), "Trying to replace a non existing element.");
 		}
 	}
 

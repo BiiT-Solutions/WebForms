@@ -12,8 +12,8 @@ import java.util.Set;
 import com.biit.form.entity.BaseForm;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Tree.CollapseEvent;
@@ -87,9 +87,11 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Loads a tree object structure recursively. At the end of the process selects the root element inserted. element.
-	 * It can also be specified an array of filterClasses. If this is not specified, then every kind of element is
-	 * allowed. Else only the elements in the hierarchy whose path is made of valid elements.
+	 * Loads a tree object structure recursively. At the end of the process
+	 * selects the root element inserted. element. It can also be specified an
+	 * array of filterClasses. If this is not specified, then every kind of
+	 * element is allowed. Else only the elements in the hierarchy whose path is
+	 * made of valid elements.
 	 * 
 	 * @param element
 	 * @param parent
@@ -139,7 +141,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Adds a new row to the table. Default configuration makes that adding a new row also selects.
+	 * Adds a new row to the table. Default configuration makes that adding a
+	 * new row also selects.
 	 * 
 	 * @param element
 	 * @param parent
@@ -184,13 +187,13 @@ public class TableTreeObject extends TreeTable {
 			}
 
 			// Update
-			((ComponentCellTreeObject) item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).getValue())
-					.update(element);
+			((ComponentCellTreeObject) item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).getValue()).update(element);
 		}
 	}
 
 	/**
-	 * Removes any row of the table of a child of element that does not exists any more.
+	 * Removes any row of the table of a child of element that does not exists
+	 * any more.
 	 * 
 	 * @param element
 	 */
@@ -220,8 +223,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Gets Name property to show form a TreeObject element. If the name can't be defined, then raises a
-	 * {@link UnsupportedOperationException}
+	 * Gets Name property to show form a TreeObject element. If the name can't
+	 * be defined, then raises a {@link UnsupportedOperationException}
 	 * 
 	 * @param element
 	 * @return
@@ -295,7 +298,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Collapse the tree in a specific hierarchy level to inner levels. The level is specified by a class.
+	 * Collapse the tree in a specific hierarchy level to inner levels. The
+	 * level is specified by a class.
 	 * 
 	 * @param collapseFrom
 	 */
@@ -330,7 +334,7 @@ public class TableTreeObject extends TreeTable {
 				setValue(getParentRowItem(selectedElement).getChild(index - 1));
 			} catch (ChildrenNotFoundException e) {
 				// Impossible
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
+				WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 			}
 		}
 	}
@@ -362,7 +366,8 @@ public class TableTreeObject extends TreeTable {
 	}
 
 	/**
-	 * Return the parent row of the row of the element. Form is translated to CompleteFormView.
+	 * Return the parent row of the row of the element. Form is translated to
+	 * CompleteFormView.
 	 * 
 	 * @param element
 	 * @return

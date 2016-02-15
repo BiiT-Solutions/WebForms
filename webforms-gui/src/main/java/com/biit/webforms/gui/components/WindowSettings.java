@@ -3,6 +3,7 @@ package com.biit.webforms.gui.components;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.WindowAboutUs;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -13,7 +14,6 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
@@ -71,10 +71,9 @@ public class WindowSettings extends Window {
 
 		// Clear cache for admin users.
 		try {
-			if (webformsSecurityService
-					.isAuthorizedActivity(UserSessionHandler.getUser(), WebformsActivity.EVICT_CACHE)) {
-				Button clearCacheButton = new Button(
-						ServerTranslate.translate(LanguageCodes.CAPTION_SETTINGS_CLEAR_CACHE), new ClickListener() {
+			if (webformsSecurityService.isAuthorizedActivity(UserSessionHandler.getUser(), WebformsActivity.EVICT_CACHE)) {
+				Button clearCacheButton = new Button(ServerTranslate.translate(LanguageCodes.CAPTION_SETTINGS_CLEAR_CACHE),
+						new ClickListener() {
 							private static final long serialVersionUID = -1121572145945309858L;
 
 							@Override
@@ -87,9 +86,9 @@ public class WindowSettings extends Window {
 										// Reset Liferay Users pool.
 										webformsSecurityService.reset();
 										ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
-										WebformsLogger.info(this.getClass().getName(), "User '"
-												+ UserSessionHandler.getUser().getEmailAddress()
-												+ "' has cleared all the 2nd level cache.");
+										WebformsUiLogger
+												.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
+														+ "' has cleared all the 2nd level cache.");
 										MessageManager.showInfo(LanguageCodes.INFO_CACHE_CLEARED);
 										closeSettingsWindow();
 									}
@@ -100,7 +99,7 @@ public class WindowSettings extends Window {
 				rootLayout.addComponent(clearCacheButton);
 			}
 		} catch (UserManagementException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 
 		Button logoutButton = new Button(LanguageCodes.CAPTION_SETTINGS_LOG_OUT.translation(), new ClickListener() {

@@ -15,6 +15,7 @@ import com.biit.usermanager.security.IActivity;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -26,7 +27,6 @@ import com.biit.webforms.gui.webpages.validation.ValidationUpperMenu;
 import com.biit.webforms.gui.webpages.validation.WindowCompareAbcdForm;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.validators.CompareFormAbcdStructure;
@@ -160,8 +160,8 @@ public class Validation extends SecuredWebPage {
 		List<com.biit.abcd.persistence.entity.SimpleFormView> availableForms;
 		if (form.getLinkedFormLabel() != null) {
 			// Already linked form, show only the versions of this form.
-			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdByLabelAndOrganization(form.getLinkedFormLabel(),
-					form.getLinkedFormOrganizationId());
+			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdByLabelAndOrganization(
+					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
 
 			// Let user choose the version.
 			WindowCompareAbcdForm linkAbcdForm = new WindowCompareAbcdForm(form);
@@ -183,7 +183,8 @@ public class Validation extends SecuredWebPage {
 					ValidateReport report = new ValidateReport();
 					for (IBaseFormView abcdForm : linkWindow.getValue()) {
 						// Create the report.
-						CompareFormAbcdStructure validator = new CompareFormAbcdStructure(UserSessionHandler.getController().getCompleteFormView());
+						CompareFormAbcdStructure validator = new CompareFormAbcdStructure(UserSessionHandler.getController()
+								.getCompleteFormView());
 						validator.validate(UserSessionHandler.getController().getFormFromAbcdById(abcdForm.getId()), report);
 						if (report.isValid()) {
 							if (report.hasWarnings()) {
@@ -209,12 +210,14 @@ public class Validation extends SecuredWebPage {
 		if (structureValidator.validate(UserSessionHandler.getController().getCompleteFormView())) {
 			List<com.biit.abcd.persistence.entity.Form> linkedForms;
 			try {
-				linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(UserSessionHandler.getController().getCompleteFormView());
+				linkedForms = UserSessionHandler.getController()
+						.getLinkedAbcdForm(UserSessionHandler.getController().getCompleteFormView());
 
 				if (linkedForms.isEmpty()) {
 					setNoLinkedFormsMessage();
 				} else {
-					ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(UserSessionHandler.getController().getCompleteFormView());
+					ValidateFormAbcdCompatibility validator = new ValidateFormAbcdCompatibility(UserSessionHandler.getController()
+							.getCompleteFormView());
 					ValidateReport report = new ValidateReport();
 					validator.validate(linkedForms, report);
 					if (report.isValid()) {
@@ -228,7 +231,7 @@ public class Validation extends SecuredWebPage {
 					}
 				}
 			} catch (UnexpectedDatabaseException e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
+				WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 			} catch (BadAbcdLink e) {
 				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ABCD_FORM_LINKED_NOT_FOUND);
@@ -287,7 +290,8 @@ public class Validation extends SecuredWebPage {
 		List<com.biit.abcd.persistence.entity.Form> linkedForms;
 		try {
 			linkedForms = UserSessionHandler.getController().getLinkedAbcdForm(UserSessionHandler.getController().getCompleteFormView());
-			ValidateFormAbcdCompatibility validatorLink = new ValidateFormAbcdCompatibility(UserSessionHandler.getController().getCompleteFormView());
+			ValidateFormAbcdCompatibility validatorLink = new ValidateFormAbcdCompatibility(UserSessionHandler.getController()
+					.getCompleteFormView());
 			validatorLink.validate(linkedForms, report);
 
 			if (report.isValid()) {
@@ -301,7 +305,7 @@ public class Validation extends SecuredWebPage {
 			}
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		} catch (BadAbcdLink e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ABCD_FORM_LINKED_NOT_FOUND);
 		}
@@ -346,26 +350,29 @@ public class Validation extends SecuredWebPage {
 						((DuplicatedNestedName) report).getChild().getName(), ((DuplicatedNestedName) report).getElement().getPathName() }));
 			} else if (report instanceof DuplicatedNestedNameWithChild) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_DUPLICATED_NAMES_WITH_CHILDS, new Object[] {
-						((DuplicatedNestedNameWithChild) report).getChild().getName(), ((DuplicatedNestedNameWithChild) report).getElement().getPathName() }));
+						((DuplicatedNestedNameWithChild) report).getChild().getName(),
+						((DuplicatedNestedNameWithChild) report).getElement().getPathName() }));
 			} else if (report instanceof InvalidTreeObjectName) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INVALID_ELEMENT_NAME, new Object[] { ((InvalidTreeObjectName) report)
-						.getInvalidElement().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INVALID_ELEMENT_NAME,
+						new Object[] { ((InvalidTreeObjectName) report).getInvalidElement().getPathName() }));
 			} else if (report instanceof BackwardFlow) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_BACKWARD_FLOW, new Object[] { ((BackwardFlow) report).getFlow(),
-						((BackwardFlow) report).getFlow().getOrigin().getPathName(), ((BackwardFlow) report).getFlow().getDestiny().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_BACKWARD_FLOW,
+						new Object[] { ((BackwardFlow) report).getFlow(), ((BackwardFlow) report).getFlow().getOrigin().getPathName(),
+								((BackwardFlow) report).getFlow().getDestiny().getPathName() }));
 			} else if (report instanceof DifferentDateUnitForQuestionsReport) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INVALID_DATE_UNIT,
-						new Object[] { ((DifferentDateUnitForQuestionsReport) report).getElement().getPathName(),
-								((DifferentDateUnitForQuestionsReport) report).getQuestions() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INVALID_DATE_UNIT, new Object[] {
+						((DifferentDateUnitForQuestionsReport) report).getElement().getPathName(),
+						((DifferentDateUnitForQuestionsReport) report).getQuestions() }));
 			} else if (report instanceof FlowOriginIsNotMandatory) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_FLOW_ORIGIN_NOT_MANDATORY,
-						new Object[] { ((FlowOriginIsNotMandatory) report).getFlow(), ((FlowOriginIsNotMandatory) report).getFlow().getOrigin().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_FLOW_ORIGIN_NOT_MANDATORY, new Object[] {
+						((FlowOriginIsNotMandatory) report).getFlow(),
+						((FlowOriginIsNotMandatory) report).getFlow().getOrigin().getPathName() }));
 			} else if (report instanceof IncompleteLogicReport) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INCOMPLETE_LOGIN_REPORT, new Object[] { ((IncompleteLogicReport) report)
-						.getElement().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INCOMPLETE_LOGIN_REPORT,
+						new Object[] { ((IncompleteLogicReport) report).getElement().getPathName() }));
 			} else if (report instanceof InvalidFlowCondition) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INVALID_FLOW_CONDITION, new Object[] { ((InvalidFlowCondition) report).getFlow()
-						.toString() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INVALID_FLOW_CONDITION,
+						new Object[] { ((InvalidFlowCondition) report).getFlow().toString() }));
 			} else if (report instanceof ConditionWithNotMandatoryQuestion) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_CONDITION_WITH_NOT_MANDATORY_QUESTION, new Object[] {
 						((ConditionWithNotMandatoryQuestion) report).getQuestion().getPathName(),
@@ -377,32 +384,36 @@ public class Validation extends SecuredWebPage {
 						((InvalidFlowSubformat) report).getInvalidToken().getQuestion().getAnswerFormat() }));
 			} else if (report instanceof FormAnswerNotFound) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_ANSWER_NOT_FOUND, new Object[] {
-						((FormAnswerNotFound) report).getFormWithElement().getLabel(), ((FormAnswerNotFound) report).getFormWithElement().getVersion(),
-						((FormAnswerNotFound) report).getElementMissed().getPathName(), ((FormAnswerNotFound) report).getFormWithoutElement().getLabel(),
+						((FormAnswerNotFound) report).getFormWithElement().getLabel(),
+						((FormAnswerNotFound) report).getFormWithElement().getVersion(),
+						((FormAnswerNotFound) report).getElementMissed().getPathName(),
+						((FormAnswerNotFound) report).getFormWithoutElement().getLabel(),
 						((FormAnswerNotFound) report).getFormWithoutElement().getVersion() }));
 			} else if (report instanceof FormElementIsBaseGroupNotBaseQuestion) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_ELEMENT_IS_GROUP_NOT_QUESTION, new Object[] {
-						((FormElementIsBaseGroupNotBaseQuestion) report).getFormWithGroup().getLabel(),
-						((FormElementIsBaseGroupNotBaseQuestion) report).getFormWithGroup().getVersion(),
-						((FormElementIsBaseGroupNotBaseQuestion) report).getElementAsGroup().getPathName(),
-						((FormElementIsBaseGroupNotBaseQuestion) report).getFormWithQuestion().getLabel(),
-						((FormElementIsBaseGroupNotBaseQuestion) report).getFormWithQuestion().getVersion() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_ELEMENT_IS_GROUP_NOT_QUESTION,
+						new Object[] { ((FormElementIsBaseGroupNotBaseQuestion) report).getFormWithGroup().getLabel(),
+								((FormElementIsBaseGroupNotBaseQuestion) report).getFormWithGroup().getVersion(),
+								((FormElementIsBaseGroupNotBaseQuestion) report).getElementAsGroup().getPathName(),
+								((FormElementIsBaseGroupNotBaseQuestion) report).getFormWithQuestion().getLabel(),
+								((FormElementIsBaseGroupNotBaseQuestion) report).getFormWithQuestion().getVersion() }));
 			} else if (report instanceof FormElementIsBaseQuestionNotBaseGroup) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_ELEMENT_IS_QUESTION_NOT_GROUP, new Object[] {
-						((FormElementIsBaseQuestionNotBaseGroup) report).getFormWithQuestion().getLabel(),
-						((FormElementIsBaseQuestionNotBaseGroup) report).getFormWithQuestion().getVersion(),
-						((FormElementIsBaseQuestionNotBaseGroup) report).getElementAsQuestion().getPathName(),
-						((FormElementIsBaseQuestionNotBaseGroup) report).getFormWithGroup().getLabel(),
-						((FormElementIsBaseQuestionNotBaseGroup) report).getFormWithGroup().getVersion() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_ELEMENT_IS_QUESTION_NOT_GROUP,
+						new Object[] { ((FormElementIsBaseQuestionNotBaseGroup) report).getFormWithQuestion().getLabel(),
+								((FormElementIsBaseQuestionNotBaseGroup) report).getFormWithQuestion().getVersion(),
+								((FormElementIsBaseQuestionNotBaseGroup) report).getElementAsQuestion().getPathName(),
+								((FormElementIsBaseQuestionNotBaseGroup) report).getFormWithGroup().getLabel(),
+								((FormElementIsBaseQuestionNotBaseGroup) report).getFormWithGroup().getVersion() }));
 			} else if (report instanceof FormElementNotFound) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_ELEMENT_NOT_FOUND, new Object[] {
-						((FormElementNotFound) report).getFormWithElement().getLabel(), ((FormElementNotFound) report).getFormWithElement().getVersion(),
-						((FormElementNotFound) report).getElementMissed().getPathName(), ((FormElementNotFound) report).getFormWithoutElement().getLabel(),
+						((FormElementNotFound) report).getFormWithElement().getLabel(),
+						((FormElementNotFound) report).getFormWithElement().getVersion(),
+						((FormElementNotFound) report).getElementMissed().getPathName(),
+						((FormElementNotFound) report).getFormWithoutElement().getLabel(),
 						((FormElementNotFound) report).getFormWithoutElement().getVersion() }));
 			} else if (report instanceof FormGroupRepeatableStatusIsDifferent) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_GROUP_REPEATABLE_STATUS_IS_DIFFERENT, new Object[] {
-						((FormGroupRepeatableStatusIsDifferent) report).getAbcdForm().getLabel(),
-						((FormGroupRepeatableStatusIsDifferent) report).getAbcdChild().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_LINKED_FORM_ABCD_GROUP_REPEATABLE_STATUS_IS_DIFFERENT,
+						new Object[] { ((FormGroupRepeatableStatusIsDifferent) report).getAbcdForm().getLabel(),
+								((FormGroupRepeatableStatusIsDifferent) report).getAbcdChild().getPathName() }));
 			} else if (report instanceof LinkedFormStructureNotCompatible) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_LINKED_FORM_STRUCTURE_NOT_COMPATIBLE, new Object[] {
 						((LinkedFormStructureNotCompatible) report).getWebform().getLabel(),
@@ -420,43 +431,42 @@ public class Validation extends SecuredWebPage {
 						((MultipleFlowsWithSameOriginAndDestiny) report).getOrigin().getPathName(),
 						((MultipleFlowsWithSameOriginAndDestiny) report).getDestination().getPathName() }));
 			} else if (report instanceof NoSubanswersAllowed) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_NO_SUBANSWERS_ALLOWED, new Object[] { ((NoSubanswersAllowed) report)
-						.getQuestion().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_NO_SUBANSWERS_ALLOWED,
+						new Object[] { ((NoSubanswersAllowed) report).getQuestion().getPathName() }));
 			} else if (report instanceof NotValidCondition) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_NOT_VALID_CONDITION,
-						new Object[] { ((NotValidCondition) report).getBadFormedExpression(),
-								((NotValidCondition) report).getBadFormedExpression().get(0).getOrigin().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_NOT_VALID_CONDITION, new Object[] {
+						((NotValidCondition) report).getBadFormedExpression(),
+						((NotValidCondition) report).getBadFormedExpression().get(0).getOrigin().getPathName() }));
 			} else if (report instanceof OthersUnicityBrokenAt) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_OTHERS_UNICITY_BROKEN, new Object[] { ((OthersUnicityBrokenAt) report)
-						.getOrigin().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_OTHERS_UNICITY_BROKEN,
+						new Object[] { ((OthersUnicityBrokenAt) report).getOrigin().getPathName() }));
 			} else if (report instanceof QuestionNotFound) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_QUESTION_NOT_FOUND, new Object[] {
 						((QuestionNotFound) report).getWebform().getLabel(), ((QuestionNotFound) report).getQuestion().getPathName() }));
 			} else if (report instanceof RedundantLogicReport) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_REDUNDANT_LOGIC, new Object[] { ((RedundantLogicReport) report).getElement()
-						.getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_REDUNDANT_LOGIC,
+						new Object[] { ((RedundantLogicReport) report).getElement().getPathName() }));
 			} else if (report instanceof FlowBlockedInQuestion) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_FLOW_BLOCKED_IN_QUESTION, new Object[] { ((FlowBlockedInQuestion) report)
-						.getElement().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_FLOW_BLOCKED_IN_QUESTION,
+						new Object[] { ((FlowBlockedInQuestion) report).getElement().getPathName() }));
 			} else if (report instanceof TokenUsesNonFinalAnswer) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_TOKEN_USES_NON_FINAL_ANSWER,
-						new Object[] {
-								((TokenUsesNonFinalAnswer) report).getFlow(),
-								((TokenUsesNonFinalAnswer) report).getToken().getAnswer() != null ? ((TokenUsesNonFinalAnswer) report).getToken().getAnswer()
-										.getPathAnswerValue() : "null" }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_TOKEN_USES_NON_FINAL_ANSWER, new Object[] {
+						((TokenUsesNonFinalAnswer) report).getFlow(),
+						((TokenUsesNonFinalAnswer) report).getToken().getAnswer() != null ? ((TokenUsesNonFinalAnswer) report).getToken()
+								.getAnswer().getPathAnswerValue() : "null" }));
 			} else if (report instanceof OthersOrphanAt) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_OTHERS_ORPHAN, new Object[] { ((OthersOrphanAt) report).getOrigin()
-						.getPathName() }));
-			} else if (report instanceof FormElementWithoutFlowIn) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_ELEMENT_NO_FLOW_IN, new Object[] { ((FormElementWithoutFlowIn) report)
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_OTHERS_ORPHAN, new Object[] { ((OthersOrphanAt) report)
 						.getOrigin().getPathName() }));
+			} else if (report instanceof FormElementWithoutFlowIn) {
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_ELEMENT_NO_FLOW_IN,
+						new Object[] { ((FormElementWithoutFlowIn) report).getOrigin().getPathName() }));
 			} else if (report instanceof MultipleDynamicAnswersReferenceTheSameQuestion) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_MULTIPLE_DYNAMIC_ANSWERS_REFERENCE_SAME_QUESTION, new Object[] {
-						((MultipleDynamicAnswersReferenceTheSameQuestion) report).getQuestion().getPathName(),
-						((MultipleDynamicAnswersReferenceTheSameQuestion) report).getAnswer().getReference().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_MULTIPLE_DYNAMIC_ANSWERS_REFERENCE_SAME_QUESTION,
+						new Object[] { ((MultipleDynamicAnswersReferenceTheSameQuestion) report).getQuestion().getPathName(),
+								((MultipleDynamicAnswersReferenceTheSameQuestion) report).getAnswer().getReference().getPathName() }));
 			} else if (report instanceof DynamicAnswerNullReference) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_DYNAMIC_ANSWER_NULL_VALUE, new Object[] { ((DynamicAnswerNullReference) report)
-						.getQuestion().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_DYNAMIC_ANSWER_NULL_VALUE,
+						new Object[] { ((DynamicAnswerNullReference) report).getQuestion().getPathName() }));
 			} else if (report instanceof DynamicAnswerReferenceInvalid) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_DYNAMIC_ANSWER_REFERENCE_INVALID, new Object[] {
 						((DynamicAnswerReferenceInvalid) report).getQuestion().getPathName(),
@@ -468,14 +478,14 @@ public class Validation extends SecuredWebPage {
 					nullReportAdded = true;
 				}
 			} else if (report instanceof EmptyFlowIsNotAlone) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_EMPTY_FLOW_IS_NOT_ALONE, new Object[] { ((EmptyFlowIsNotAlone) report).getFlow()
-						.getOrigin().getPathName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_EMPTY_FLOW_IS_NOT_ALONE,
+						new Object[] { ((EmptyFlowIsNotAlone) report).getFlow().getOrigin().getPathName() }));
 			} else if (report instanceof FlowConditionIsUseless) {
 				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_CONDITION_IS_USELESS, new Object[] {
 						((FlowConditionIsUseless) report).getFlow(), ((FlowConditionIsUseless) report).getCondition() }));
 			} else if (report instanceof WebserviceCallCorruption) {
-				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_CORRUPTION, new Object[] { ((WebserviceCallCorruption) report).getCall()
-						.getName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_CORRUPTION,
+						new Object[] { ((WebserviceCallCorruption) report).getCall().getName() }));
 			} else if (report instanceof WebserviceCallIncompatibleField) {
 				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_INCOMPATIBLE_FIELD, new Object[] {
 						((WebserviceCallIncompatibleField) report).getLink().getWebservicePort(),
@@ -486,7 +496,8 @@ public class Validation extends SecuredWebPage {
 						((WebserviceCallInputAfterTrigger) report).getCall().getName() }));
 			} else if (report instanceof WebserviceCallInputNull) {
 				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_INPUT_NULL, new Object[] {
-						((WebserviceCallInputNull) report).getLink().getWebservicePort(), ((WebserviceCallInputNull) report).getCall().getName() }));
+						((WebserviceCallInputNull) report).getLink().getWebservicePort(),
+						((WebserviceCallInputNull) report).getCall().getName() }));
 			} else if (report instanceof WebserviceCallOutputAfterTrigger) {
 				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_OUTPUT_AFTER_TRIGGER, new Object[] {
 						((WebserviceCallOutputAfterTrigger) report).getLink().getWebservicePort(),
@@ -496,12 +507,16 @@ public class Validation extends SecuredWebPage {
 						((WebserviceCallReferencesUnexistingWebservice) report).getCall().getName(),
 						((WebserviceCallReferencesUnexistingWebservice) report).getCall().getWebserviceName() }));
 			} else if (report instanceof WebserviceCallTriggerNull) {
-				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_TRIGGER_NULL, new Object[] { ((WebserviceCallTriggerNull) report).getCall()
-						.getName() }));
+				text.append(ServerTranslate.translate(LanguageCodes.WEBSERVICE_CALL_TRIGGER_NULL,
+						new Object[] { ((WebserviceCallTriggerNull) report).getCall().getName() }));
 			} else if (report instanceof InvalidDefaultValue) {
-				text.append(ServerTranslate.translate(LanguageCodes.VALIDATION_INVALID_DEFAULT_VALUE, new Object[] {
-						((InvalidDefaultValue) report).getQuestion().getPathName(), ((InvalidDefaultValue) report).getQuestion().getDefaultValueString(),
-						AnswerSubformatUi.get(((InvalidDefaultValue) report).getQuestion().getAnswerSubformat()).getLanguageCode().translation() }));
+				text.append(ServerTranslate.translate(
+						LanguageCodes.VALIDATION_INVALID_DEFAULT_VALUE,
+						new Object[] {
+								((InvalidDefaultValue) report).getQuestion().getPathName(),
+								((InvalidDefaultValue) report).getQuestion().getDefaultValueString(),
+								AnswerSubformatUi.get(((InvalidDefaultValue) report).getQuestion().getAnswerSubformat()).getLanguageCode()
+										.translation() }));
 			} else {
 				text.append(report.getReport());
 			}

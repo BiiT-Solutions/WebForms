@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.utils.MessageManager;
-import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.UI;
@@ -79,7 +79,7 @@ public class PropertiesComponent extends CustomComponent implements Component.Fo
 			} catch (InstantiationException | IllegalAccessException e) {
 				MessageManager.showError(CommonComponentsLanguageCodes.ERROR_UNEXPECTED_ERROR.translation() + " "
 						+ CommonComponentsLanguageCodes.ERROR_CONTACT.translation());
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
+				WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 			}
 		}
 	}

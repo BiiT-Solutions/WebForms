@@ -2,9 +2,9 @@ package com.biit.webforms.gui.common.utils;
 
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.biit.webforms.gui.common.language.ServerTranslate;
-import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -69,11 +69,11 @@ public class MessageManager {
 			} else {
 				user = "none";
 			}
-			WebformsLogger.info(MessageManager.class.getName(), "Message '" + caption
+			WebformsUiLogger.info(MessageManager.class.getName(), "Message '" + caption
 					+ (description != null ? " | " : "") + description + "' (" + type + ") displayed to user '" + user
 					+ "'.");
 		} catch (Exception e) {
-			WebformsLogger.errorMessage(MessageManager.class.getName(), e);
+			WebformsUiLogger.errorMessage(MessageManager.class.getName(), e);
 		}
 
 		if (UI.getCurrent() != null) {

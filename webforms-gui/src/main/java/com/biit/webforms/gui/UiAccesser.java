@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 
 import com.biit.form.entity.IBaseFormView;
 import com.biit.usermanager.entity.IUser;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 
 public class UiAccesser {
@@ -53,8 +52,7 @@ public class UiAccesser {
 
 	public static synchronized boolean isUserUserUsingForm(IUser<Long> user, IBaseFormView form) {
 		if (form != null) {
-			return formsInUse.get(form.getComparationId()) != null
-					&& formsInUse.get(form.getComparationId()).equals(user);
+			return formsInUse.get(form.getComparationId()) != null && formsInUse.get(form.getComparationId()).equals(user);
 		}
 		return false;
 	}
@@ -69,15 +67,13 @@ public class UiAccesser {
 		}
 
 		if (!formsInUse.containsKey(form.getComparationId())) {
-			WebformsLogger.info(UiAccesser.class.getName(), "User '" + user.getEmailAddress() + "' has locked '" + form
-					+ "'");
+			WebformsUiLogger.info(UiAccesser.class.getName(), "User '" + user.getEmailAddress() + "' has locked '" + form + "'");
 			formsInUse.put(form.getComparationId(), user);
 		}
 	}
 
 	public static synchronized void releaseForm(Form form, IUser<Long> user) {
-		WebformsLogger.info(UiAccesser.class.getName(), "User '" + user.getEmailAddress() + "' has released '" + form
-				+ "'");
+		WebformsUiLogger.info(UiAccesser.class.getName(), "User '" + user.getEmailAddress() + "' has released '" + form + "'");
 		// If form is still locked and the user is who lock the form.
 		if (formsInUse.containsKey(form.getComparationId()) && formsInUse.get(form.getComparationId()).equals(user)) {
 			formsInUse.remove(form.getComparationId());

@@ -10,10 +10,10 @@ import com.biit.security.DESEncryptor;
 import com.biit.security.exceptions.DESEncryptorException;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -38,7 +38,7 @@ public class WindowAboutUs extends Window {
 	public WindowAboutUs() {
 		super();
 		setId(this.getClass().getName());
-		
+
 		setModal(true);
 
 		setWidth(width);
@@ -53,8 +53,8 @@ public class WindowAboutUs extends Window {
 	}
 
 	private Component createCancelButton() {
-		IconButton cancelButton = new IconButton(LanguageCodes.CAPTION_CLOSE, CommonThemeIcon.CANCEL,
-				LanguageCodes.TOOLTIP_CLOSE, new ClickListener() {
+		IconButton cancelButton = new IconButton(LanguageCodes.CAPTION_CLOSE, CommonThemeIcon.CANCEL, LanguageCodes.TOOLTIP_CLOSE,
+				new ClickListener() {
 					private static final long serialVersionUID = -2391267793996787730L;
 
 					@Override
@@ -75,26 +75,24 @@ public class WindowAboutUs extends Window {
 			Attributes attributes = manifest.getMainAttributes();
 			version = attributes.getValue("Implementation-Version");
 		} catch (IOException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 
 		Label nameLabel = new Label("<h3><center>" + LanguageCodes.ABOUT_US_TOOL_NAME.translation() + "</center></h3>"
-				+ "<center><p align=\"justify\">" + LanguageCodes.ABOUT_US_TOOL_PURPOUSE.translation()
-				+ "</p></center>", ContentMode.HTML);
+				+ "<center><p align=\"justify\">" + LanguageCodes.ABOUT_US_TOOL_PURPOUSE.translation() + "</p></center>", ContentMode.HTML);
 		nameLabel.setWidth("100%");
-		Label versionLabel = new Label("<center><p align=\"center\">Version: " + version + "</p></center>",
-				ContentMode.HTML);
+		Label versionLabel = new Label("<center><p align=\"center\">Version: " + version + "</p></center>", ContentMode.HTML);
 		versionLabel.setWidth("100%");
-		Label textLabel = new Label("<center><p align=\"justify\">" + LanguageCodes.ABOUT_US_BIIT.translation()
-				+ "</p></center>", ContentMode.HTML);
+		Label textLabel = new Label("<center><p align=\"justify\">" + LanguageCodes.ABOUT_US_BIIT.translation() + "</p></center>",
+				ContentMode.HTML);
 		textLabel.setWidth("100%");
 
 		String linkUrl = getIssueUrl();
 
 		Label linkLabel = null;
 		if (linkUrl != null && !linkUrl.isEmpty()) {
-			linkLabel = new Label("<center><a href=\"" + linkUrl + "\" target=\"_blank\">"
-					+ LanguageCodes.ABOUT_US_REPORT.translation() + "</a></center>", ContentMode.HTML);
+			linkLabel = new Label("<center><a href=\"" + linkUrl + "\" target=\"_blank\">" + LanguageCodes.ABOUT_US_REPORT.translation()
+					+ "</a></center>", ContentMode.HTML);
 		}
 
 		VerticalLayout rootLayout = new VerticalLayout();
@@ -153,13 +151,13 @@ public class WindowAboutUs extends Window {
 		try {
 			desEncryptedString = DESEncryptor.encrypt(UserSessionHandler.getUser().getPassword());
 		} catch (DESEncryptorException e) {
-			WebformsLogger.errorMessage(WindowAboutUs.class.getName(), e);
+			WebformsUiLogger.errorMessage(WindowAboutUs.class.getName(), e);
 			MessageManager.showError(e.getMessage());
 			desEncryptedString = "error";
 		}
 
-		return issueManagerUrl + separatorChar + LOGIN_PARAM + "=" + UserSessionHandler.getUser().getEmailAddress()
-				+ "&" + PASSWORD_PARAM + "=" + desEncryptedString;
+		return issueManagerUrl + separatorChar + LOGIN_PARAM + "=" + UserSessionHandler.getUser().getEmailAddress() + "&" + PASSWORD_PARAM
+				+ "=" + desEncryptedString;
 	}
 
 	public void showCentered() {

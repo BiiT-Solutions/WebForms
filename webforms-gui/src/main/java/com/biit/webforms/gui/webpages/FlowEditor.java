@@ -13,6 +13,7 @@ import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.usermanager.security.IActivity;
 import com.biit.webforms.flow.FlowCleaner;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -33,7 +34,6 @@ import com.biit.webforms.gui.webpages.floweditor.UpperMenuFlowEditor;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.gui.webpages.floweditor.listeners.EditItemAction;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Flow;
@@ -64,8 +64,7 @@ import com.vaadin.ui.VerticalLayout;
 
 public class FlowEditor extends SecuredWebPage {
 	private static final long serialVersionUID = -6257723403353946354L;
-	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
-			Arrays.asList(WebformsActivity.READ));
+	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(Arrays.asList(WebformsActivity.READ));
 
 	private UpperMenuFlowEditor upperMenu;
 	private TableFlows tableFlows;
@@ -86,8 +85,8 @@ public class FlowEditor extends SecuredWebPage {
 		zoomSliderValueChangeListener = new ZoomSliderValueChangeListener();
 
 		if (UserSessionHandler.getController().getCompleteFormView() != null
-				&& !getWebformsSecurityService().isFormEditable(
-						UserSessionHandler.getController().getCompleteFormView(), UserSessionHandler.getUser())) {
+				&& !getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getCompleteFormView(),
+						UserSessionHandler.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
@@ -219,21 +218,19 @@ public class FlowEditor extends SecuredWebPage {
 		for (Object itemId : itemIds) {
 			selectedNew = itemId != null && itemId.equals(tableFlows.getNewFlowId());
 		}
-		boolean canEdit = getWebformsSecurityService().isFormEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
+				UserSessionHandler.getUser());
 
 		Object selectedRow = null;
 		if (somethingSelected) {
 			selectedRow = itemIds.iterator().next();
 		}
-		boolean elementIsReadOnly = (selectedRow != null) && (selectedRow instanceof Flow)
-				&& ((Flow) selectedRow).isReadOnly();
+		boolean elementIsReadOnly = (selectedRow != null) && (selectedRow instanceof Flow) && ((Flow) selectedRow).isReadOnly();
 
 		// Top button state
 		upperMenu.getSaveButton().setEnabled(canEdit);
 		upperMenu.getNewFlowButton().setEnabled(canEdit);
-		upperMenu.getEditFlowButton().setEnabled(
-				canEdit && !selectedNew && !multipleSelection && somethingSelected && !elementIsReadOnly);
+		upperMenu.getEditFlowButton().setEnabled(canEdit && !selectedNew && !multipleSelection && somethingSelected && !elementIsReadOnly);
 		upperMenu.getCloneFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected);
 		upperMenu.getRemoveFlowButton().setEnabled(canEdit && !selectedNew && somethingSelected && !elementIsReadOnly);
 		upperMenu.getCleanFlowButton().setEnabled(canEdit);
@@ -297,8 +294,7 @@ public class FlowEditor extends SecuredWebPage {
 			}
 		});
 
-		IconButton redrawButton = new IconButton(LanguageCodes.CAPTION_REDRAW, ThemeIcons.RULE_DIAGRAM_REDRAW,
-				LanguageCodes.TOOLTIP_REDRAW);
+		IconButton redrawButton = new IconButton(LanguageCodes.CAPTION_REDRAW, ThemeIcons.RULE_DIAGRAM_REDRAW, LanguageCodes.TOOLTIP_REDRAW);
 		redrawButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 7689117025171099202L;
 
@@ -352,8 +348,10 @@ public class FlowEditor extends SecuredWebPage {
 				try {
 					UserSessionHandler.getController().saveForm();
 					// Refresh the table.
-					// Now the form has changes so current selected elements are not exactly the same as the ones
-					// in the form, so we search for the new instances and replace the selection.
+					// Now the form has changes so current selected elements are
+					// not exactly the same as the ones
+					// in the form, so we search for the new instances and
+					// replace the selection.
 					// Also we redraw the current form.
 					@SuppressWarnings("unchecked")
 					Set<Object> selectedObjects = new HashSet<Object>((Set<Object>) tableFlows.getValue());
@@ -380,12 +378,11 @@ public class FlowEditor extends SecuredWebPage {
 								LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
 					}
 				} catch (UnexpectedDatabaseException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-							LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				} catch (ElementCannotBePersistedException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
 							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
-					WebformsLogger.errorMessage(this.getClass().getName(), e);
+					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				}
 
 			}
@@ -435,7 +432,7 @@ public class FlowEditor extends SecuredWebPage {
 						addOrUpdateFlowInTableAction(clones.toArray(new Flow[0]));
 					} catch (FlowNotAllowedException e) {
 						// Not possible.
-						WebformsLogger.errorMessage(this.getClass().getName(), e);
+						WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 					}
 				}
 			}
@@ -506,21 +503,22 @@ public class FlowEditor extends SecuredWebPage {
 	 * This method opens the new flow window
 	 */
 	private void addNewFlowAction() {
-		boolean canEdit = getWebformsSecurityService().isFormEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
+				UserSessionHandler.getUser());
 		if (canEdit) {
 			createFlowWindow(new Flow());
 		}
 	}
 
 	/**
-	 * This method takes a existing flow and opens flow window with the parameters assigned in the flow to edit.
+	 * This method takes a existing flow and opens flow window with the
+	 * parameters assigned in the flow to edit.
 	 * 
 	 * @param flow
 	 */
 	private void editFlowAction(Flow flow) {
-		boolean canEdit = getWebformsSecurityService().isFormEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
+				UserSessionHandler.getUser());
 		if (canEdit) {
 			createFlowWindow(flow);
 		}
@@ -543,20 +541,17 @@ public class FlowEditor extends SecuredWebPage {
 						MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
 								LanguageCodes.ERROR_DESCRIPTION_CONDITION_BAD_FORMED);
 					} else {
-						UserSessionHandler.getController().updateFlowContent(flow,
-								(BaseQuestion) windowFlow.getOrigin(), windowFlow.getFlowType(),
-								(BaseQuestion) windowFlow.getDestiny(), windowFlow.isOthers(),
+						UserSessionHandler.getController().updateFlowContent(flow, (BaseQuestion) windowFlow.getOrigin(),
+								windowFlow.getFlowType(), (BaseQuestion) windowFlow.getDestiny(), windowFlow.isOthers(),
 								windowFlow.getCondition());
 						addOrUpdateFlowInTableAction(flow);
 						window.close();
 					}
 				} catch (BadFlowContentException e) {
-					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.ERROR_DESCRIPTION_RULE_BAD_FORMED);
-					WebformsLogger.errorMessage(this.getClass().getName(), e);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT, LanguageCodes.ERROR_DESCRIPTION_RULE_BAD_FORMED);
+					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				} catch (FlowWithoutSourceException e) {
-					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.ERROR_DESCRIPTION_ORIGIN_IS_NULL);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT, LanguageCodes.ERROR_DESCRIPTION_ORIGIN_IS_NULL);
 				} catch (FlowSameOriginAndDestinyException e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.ERROR_DESCRIPTION_SAME_ORIGIN_AND_DESTINY);
@@ -564,11 +559,9 @@ public class FlowEditor extends SecuredWebPage {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
 							LanguageCodes.ERROR_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN);
 				} catch (FlowWithoutDestinyException e) {
-					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.ERROR_DESCRIPTION_DESTINY_IS_NULL);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT, LanguageCodes.ERROR_DESCRIPTION_DESTINY_IS_NULL);
 				} catch (FlowNotAllowedException e) {
-					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT, LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}
 			}
 		});

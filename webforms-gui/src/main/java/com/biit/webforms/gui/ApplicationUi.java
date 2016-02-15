@@ -7,7 +7,6 @@ import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.webpages.WebMap;
-import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
@@ -42,7 +41,7 @@ public class ApplicationUi extends UI {
 		public void error(com.vaadin.server.ErrorEvent event) {
 			// Throw the error to the logger.
 			MessageManager.showError(CommonComponentsLanguageCodes.ERROR_UNEXPECTED_ERROR);
-			WebformsLogger.errorMessage(ApplicationUi.class.getName(), event.getThrowable());
+			WebformsUiLogger.errorMessage(ApplicationUi.class.getName(), event.getThrowable());
 		}
 	};
 
@@ -50,7 +49,7 @@ public class ApplicationUi extends UI {
 	protected void init(VaadinRequest request) {
 		getPage().setTitle("");
 
-		WebformsLogger.debug(ApplicationUi.class.getName(), "UI initialized.");
+		WebformsUiLogger.debug(ApplicationUi.class.getName(), "UI initialized.");
 
 		defineWebPages();
 		UiAccesser.register(UserSessionHandler.getController());
@@ -62,15 +61,16 @@ public class ApplicationUi extends UI {
 
 		setErrorHandler(new WebformsErrorHandler());
 
-		if(UserSessionHandler.getUser()!=null){
-			//User already logged in the connection
-			WebformsLogger.info(ApplicationUi.class.getName(), "New Ui initializated for User '"+UserSessionHandler.getUser().getEmailAddress()+"'");
+		if (UserSessionHandler.getUser() != null) {
+			// User already logged in the connection
+			WebformsUiLogger.info(ApplicationUi.class.getName(), "New Ui initializated for User '"
+					+ UserSessionHandler.getUser().getEmailAddress() + "'");
 			defaultStartNavigations();
-		}else{
-			//User not logged yet
-			if(autologinImplementation()){
+		} else {
+			// User not logged yet
+			if (autologinImplementation()) {
 				defaultStartNavigations();
-			}else{
+			} else {
 				navigator.setState(WebMap.LOGIN_PAGE.name());
 			}
 		}
@@ -79,7 +79,7 @@ public class ApplicationUi extends UI {
 	private boolean autologinImplementation() {
 		// When accessing from Liferay, user and password are already set.
 		if (userEmail != null && userEmail.length() > 0 && password != null && password.length() > 0) {
-			WebformsLogger.info(ApplicationUi.class.getName(), "Autologin with user '" + userEmail + "' and password with length of "
+			WebformsUiLogger.info(ApplicationUi.class.getName(), "Autologin with user '" + userEmail + "' and password with length of "
 					+ password.length());
 			try {
 				IUser<Long> user = UserSessionHandler.getUser(userEmail, password);
@@ -87,15 +87,15 @@ public class ApplicationUi extends UI {
 					return true;
 				}
 			} catch (UserManagementException | AuthenticationRequired | InvalidCredentialsException e) {
-				WebformsLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
+				WebformsUiLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
 						+ "' failed! Wrong user or password.");
 			}
 		} else {
 			if (userEmail != null && userEmail.length() > 0) {
-				WebformsLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
+				WebformsUiLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
 						+ "' but no password provided!");
 			} else {
-				WebformsLogger.debug(this.getClass().getName(), "Autologin failed.");
+				WebformsUiLogger.debug(this.getClass().getName(), "Autologin failed.");
 			}
 		}
 		return false;
@@ -115,9 +115,10 @@ public class ApplicationUi extends UI {
 	public void detach() {
 		if (UserSessionHandler.getUser() != null) {
 			// Log user ui expired.
-			WebformsLogger.info(this.getClass().getName(), " UI of '" + UserSessionHandler.getUser().getEmailAddress() + "' has expired.");
+			WebformsUiLogger
+					.info(this.getClass().getName(), " UI of '" + UserSessionHandler.getUser().getEmailAddress() + "' has expired.");
 		} else {
-			WebformsLogger.debug(this.getClass().getName(), " UI closed.");
+			WebformsUiLogger.debug(this.getClass().getName(), " UI closed.");
 		}
 		UiAccesser.unregister(UserSessionHandler.getController());
 		super.detach();
@@ -136,7 +137,7 @@ public class ApplicationUi extends UI {
 			@Override
 			public void afterViewChange(ViewChangeEvent event) {
 				if (UserSessionHandler.getUser() != null) {
-					WebformsLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
+					WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
 							+ "' has change view to '" + event.getNewView().getClass().getName() + "'.");
 				}
 			}

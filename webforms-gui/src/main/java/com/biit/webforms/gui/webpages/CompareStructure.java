@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.usermanager.security.IActivity;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -22,7 +23,6 @@ import com.biit.webforms.gui.webpages.compare.structure.TableXmlFiles;
 import com.biit.webforms.gui.webpages.compare.structure.UpperMenu;
 import com.biit.webforms.gui.webpages.compare.structure.XmlWindowUpload;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.xml.XmlUtils;
 import com.biit.webforms.xsd.WebformsXsdForm;
@@ -37,8 +37,7 @@ import com.vaadin.ui.VerticalLayout;
 
 public class CompareStructure extends SecuredWebPage {
 	private static final long serialVersionUID = 6637808831858543345L;
-	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
-			Arrays.asList(WebformsActivity.READ));
+	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(Arrays.asList(WebformsActivity.READ));
 
 	private static final float TABLE_WIDTH_EXPAND_RATIO = 0.25f;
 	private static final float FILE_CONTENT_HEIGHT_RATIO = 0.75f;
@@ -229,7 +228,7 @@ public class CompareStructure extends SecuredWebPage {
 					return false;
 				}
 			} catch (ParserConfigurationException | SAXException | IOException e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
+				WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 			}
 		}
 		tableFiles.setResult(itemId, LanguageCodes.XSD_XML_VALIDATION_COULD_NOT_BE_DONE.translation());

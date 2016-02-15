@@ -8,10 +8,10 @@ import java.util.Date;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.utils.image.ImageTools;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.ImagePanel;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
@@ -79,9 +79,9 @@ public class FormFlowViewer extends ImagePanel {
 				return inputStream;
 			} catch (IOException ioe) {
 				MessageManager.showError(LanguageCodes.GRAPHVIZ_EXEC_NOT_FOUND, LanguageCodes.GRAPHVIZ_EXEC_NOT_FOUND_DESCRIPTION);
-				WebformsLogger.errorMessage(this.getClass().getName(), ioe);
+				WebformsUiLogger.errorMessage(this.getClass().getName(), ioe);
 			} catch (Exception e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
+				WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 			}
 
 			if (defaultImage == null) {

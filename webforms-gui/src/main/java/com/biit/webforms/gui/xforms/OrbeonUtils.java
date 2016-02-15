@@ -9,9 +9,9 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.persistence.xforms.exceptions.AccessNotAllowed;
@@ -34,8 +34,9 @@ public class OrbeonUtils {
 		// Save it.
 		XFormsPersistence xformsConnection = new XFormsPersistence();
 		try {
-			xformsConnection.connect(WebformsConfigurationReader.getInstance().getXFormsPassword(), WebformsConfigurationReader.getInstance().getXFormsUser(),
-					WebformsConfigurationReader.getInstance().getXFormsDatabaseName(), WebformsConfigurationReader.getInstance().getXFormsDatabaseHost());
+			xformsConnection.connect(WebformsConfigurationReader.getInstance().getXFormsPassword(), WebformsConfigurationReader
+					.getInstance().getXFormsUser(), WebformsConfigurationReader.getInstance().getXFormsDatabaseName(),
+					WebformsConfigurationReader.getInstance().getXFormsDatabaseHost());
 			try {
 				String xmlData = getXFormsData(form, organization, includeImages);
 				xformsConnection.storeForm(form, UserSessionHandler.getUser(), organization, xmlData, preview);
@@ -50,33 +51,34 @@ public class OrbeonUtils {
 				return false;
 			} catch (InvalidDateException | StringRuleSyntaxError | PostCodeRuleSyntaxError e) {
 				MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_PUBLISHED);
-				WebformsLogger.errorMessage(OrbeonUtils.class.getName(), e);
+				WebformsUiLogger.errorMessage(OrbeonUtils.class.getName(), e);
 				return false;
 			} catch (Exception e) {
 				MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-				WebformsLogger.errorMessage(OrbeonUtils.class.getName(), e);
+				WebformsUiLogger.errorMessage(OrbeonUtils.class.getName(), e);
 				return false;
 			}
 			xformsConnection.disconnectDatabase();
 		} catch (CommunicationsException ce) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-			WebformsLogger.errorMessage(OrbeonUtils.class.getName(), ce);
+			WebformsUiLogger.errorMessage(OrbeonUtils.class.getName(), ce);
 		} catch (SQLException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE);
-			WebformsLogger.errorMessage(OrbeonUtils.class.getName(), e);
+			WebformsUiLogger.errorMessage(OrbeonUtils.class.getName(), e);
 			return false;
 		} catch (AccessNotAllowed e1) {
 			MessageManager.showError(LanguageCodes.ERROR_XFORMS_USER_INVALID);
-			WebformsLogger.errorMessage(OrbeonUtils.class.getName(), e1);
+			WebformsUiLogger.errorMessage(OrbeonUtils.class.getName(), e1);
 			return false;
 		}
 		return true;
 	}
 
 	private static String getXFormsData(Form form, IGroup<Long> organization, boolean includeImages) throws NotValidTreeObjectException,
-			NotValidChildException, IOException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
-		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form, organization, UserSessionHandler.getController().getAllWebservices(),
-				includeImages);
+			NotValidChildException, IOException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
+			PostCodeRuleSyntaxError {
+		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form, organization, UserSessionHandler.getController()
+				.getAllWebservices(), includeImages);
 		BufferedInputStream in = new BufferedInputStream(xformExporter.generateXFormsLanguage());
 		byte[] contents = new byte[1024];
 

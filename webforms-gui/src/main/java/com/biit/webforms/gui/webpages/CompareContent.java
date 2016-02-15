@@ -10,6 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 import com.biit.usermanager.security.IActivity;
+import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -20,7 +21,6 @@ import com.biit.webforms.gui.webpages.compare.content.TableOriginalProcessedComp
 import com.biit.webforms.gui.webpages.compare.content.UpperMenu;
 import com.biit.webforms.gui.webpages.compare.structure.XmlWindowUpload;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.xml.CompareXmlToXml;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -33,8 +33,7 @@ import com.vaadin.ui.TextArea;
 
 public class CompareContent extends SecuredWebPage {
 	private static final long serialVersionUID = 8670784419625264277L;
-	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(
-			Arrays.asList(WebformsActivity.READ));
+	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(Arrays.asList(WebformsActivity.READ));
 
 	private UpperMenu upperMenu;
 
@@ -163,12 +162,10 @@ public class CompareContent extends SecuredWebPage {
 		for (Object itemId : tableXmlFiles.getItemIds()) {
 
 			if (tableXmlFiles.isOriginalAndProcessedFileUploaded(itemId)) {
-				compareXmlContents(itemId, tableXmlFiles.getOriginalFile(itemId),
-						tableXmlFiles.getProcessedFile(itemId));
+				compareXmlContents(itemId, tableXmlFiles.getOriginalFile(itemId), tableXmlFiles.getProcessedFile(itemId));
 			} else {
 				if (!missingFilesShown) {
-					MessageManager
-							.showWarning(LanguageCodes.WARNING_DESCRIPTION_NUMBER_OF_ORIGINAL_AND_PROCESSED_FILES_DOESNT_MATCH);
+					MessageManager.showWarning(LanguageCodes.WARNING_DESCRIPTION_NUMBER_OF_ORIGINAL_AND_PROCESSED_FILES_DOESNT_MATCH);
 					missingFilesShown = true;
 				}
 			}
@@ -182,7 +179,7 @@ public class CompareContent extends SecuredWebPage {
 			comparator = new CompareXmlToXml(originalFile.getStream(), processedFile.getStream());
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			MessageManager.showError(LanguageCodes.ERROR_UNEXPECTED_ERROR_IN_COMPARATION);
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 
 		String message = "File '" + originalFile.getFileName() + "' and '" + processedFile.getFileName() + "' ";
