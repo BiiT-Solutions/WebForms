@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import com.biit.webforms.gui.components.ZoomChangedListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
@@ -18,6 +15,8 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.JavaScriptFunction;
 import com.vaadin.ui.Panel;
+
+import elemental.json.JsonArray;
 
 /**
  * Panel that contains an image with zoom.
@@ -140,9 +139,9 @@ public abstract class ImagePanel extends Panel {
 			private static final long serialVersionUID = 6587969690665052777L;
 
 			@Override
-			public void call(final JSONArray arguments) throws JSONException {
-				int panelX = arguments.getInt(0);
-				int panelY = arguments.getInt(1);
+			public void call(JsonArray arguments) {
+				int panelX = (int) arguments.getNumber(0);
+				int panelY = (int) arguments.getNumber(1);
 
 				int halfPanelX = (int) (panelX / 2.0f);
 				int halfPanelY = (int) (panelY / 2.0f);
@@ -170,8 +169,7 @@ public abstract class ImagePanel extends Panel {
 			private static final long serialVersionUID = 6587969690665052777L;
 
 			@Override
-			public void call(final JSONArray arguments) throws JSONException {
-
+			public void call(JsonArray arguments) {
 				if (resize == MIN_AUGMENT && resizeFactor <= 1.0f) {
 					return;
 				}
@@ -191,8 +189,8 @@ public abstract class ImagePanel extends Panel {
 					newResizeFactor = MIN_AUGMENT;
 				}
 
-				int panelX = arguments.getInt(0);
-				int panelY = arguments.getInt(1);
+				int panelX = (int) arguments.getNumber(0);
+				int panelY = (int) arguments.getNumber(1);
 
 				int newClickSizeX = (int) (x * tempResizeFactor);
 				int newClickSizeY = (int) (y * tempResizeFactor);
@@ -207,6 +205,7 @@ public abstract class ImagePanel extends Panel {
 				setScrollLeft(positionX);
 				setScrollTop(positionY);
 			}
+
 		});
 		JavaScript.getCurrent().execute(
 				"getElementAndZoom(document.getElementById('" + this.getId() + "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
