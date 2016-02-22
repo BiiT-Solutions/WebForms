@@ -48,10 +48,11 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	private Set<Webservice> webservices;
 
-	public XFormsSimpleFormExporter(Form form, IGroup<Long> organization, Set<Webservice> webservices, boolean includeImages)
+	public XFormsSimpleFormExporter(Form form, IGroup<Long> organization, Set<Webservice> webservices, boolean includeImages, boolean previewMode)
 			throws NotValidTreeObjectException, NotValidChildException {
 		super(form, organization);
 		setImagesEnabled(includeImages);
+		setPreviewMode(previewMode);
 		this.webservices = new HashSet<>();
 		for (Webservice webservice : webservices) {
 			this.webservices.add(webservice);

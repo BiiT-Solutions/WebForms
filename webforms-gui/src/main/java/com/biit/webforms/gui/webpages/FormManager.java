@@ -380,7 +380,7 @@ public class FormManager extends SecuredWebPage {
 						try {
 							return new XFormsSimpleFormExporter(completeFormView, getWebformsSecurityService().getOrganization(
 									UserSessionHandler.getUser(), getSelectedForm().getOrganizationId()), UserSessionHandler
-									.getController().getAllWebservices(), false).generateXFormsLanguage();
+									.getController().getAllWebservices(), false, false).generateXFormsLanguage();
 						} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
 								| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException | UnsupportedEncodingException e) {
 							MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);

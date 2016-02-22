@@ -37,6 +37,6 @@ public class XFormExporterTests {
 			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, NotValidTreeObjectException, NotExistingDynamicFieldException,
 			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError, ElementIsReadOnly, FlowNotAllowedException, UnsupportedEncodingException {
 		Form form = FormUtils.createCompleteForm();
-		new XFormsSimpleFormExporter(form, null, new HashSet<Webservice>(), false).generateXFormsLanguage();
+		new XFormsSimpleFormExporter(form, null, new HashSet<Webservice>(), false, false).generateXFormsLanguage();
 	}
 }
