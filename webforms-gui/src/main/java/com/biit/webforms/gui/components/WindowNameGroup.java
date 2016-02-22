@@ -6,7 +6,7 @@ import java.util.Set;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.UserManagementException;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -81,14 +81,14 @@ public class WindowNameGroup extends WindowAcceptCancel {
 		organizationField.setNullSelectionAllowed(false);
 		organizationField.setWidth("100%");
 		try {
-			Set<IGroup<Long>> organizations = webformsSecurityService.getUserOrganizations(UserSessionHandler.getUser());
+			Set<IGroup<Long>> organizations = webformsSecurityService.getUserOrganizations(UserSession.getUser());
 			Iterator<IGroup<Long>> itr = organizations.iterator();
 			while (itr.hasNext()) {
 				IGroup<Long> organization = itr.next();
 				for (IActivity activity : exclusivePermissionFilter) {
 					// If the user doesn't comply to all activities in the
 					// filter in the group, then exit
-					if (!webformsSecurityService.isAuthorizedActivity(UserSessionHandler.getUser(), organization, activity)) {
+					if (!webformsSecurityService.isAuthorizedActivity(UserSession.getUser(), organization, activity)) {
 						itr.remove();
 						break;
 					}

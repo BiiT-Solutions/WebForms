@@ -1,6 +1,6 @@
 package com.biit.webforms.gui.webpages.webservice.call;
 
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.webservices.Webservice;
@@ -45,7 +45,7 @@ public class WindowWebservices extends WindowAcceptCancel {
 			}
 		});
 		table.setSizeFull();
-		table.addRows(UserSessionHandler.getController().getAllWebservices());
+		table.addRows(ApplicationUi.getController().getAllWebservices());
 		table.setSelectable(true);
 		table.setNullSelectionAllowed(false);
 		table.sortByName();

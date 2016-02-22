@@ -11,6 +11,8 @@ import com.vaadin.ui.UI;
 
 public class WebformsUiLogger {
 
+	private static final String UNKNOWN = "[UNK]";
+
 	public static void info(String className, String message) {
 		WebformsLogger.info(className, formatMessage(message));
 	}
@@ -66,9 +68,9 @@ public class WebformsUiLogger {
 	}
 
 	private static String formatMessage(String message) {
-		String sessionId = "[UKN]";
-		String sessionStart = "[UKN]";
-		String numberOfUi = "[UKN]";
+		String sessionId = UNKNOWN;
+		String sessionStart = UNKNOWN;
+		String numberOfUi = UNKNOWN;
 		VaadinSession currentSession = VaadinSession.getCurrent();
 		if(currentSession!=null && currentSession.getSession()!=null){
 			sessionId = currentSession.getSession().getId();
@@ -85,13 +87,13 @@ public class WebformsUiLogger {
 		try {
 			uiid = UI.getCurrent().getUIId()+"";
 		} catch (Exception e) {
-			uiid = "[UKN]";
+			uiid = UNKNOWN;
 		}
 
 		try {
-			userMail = UserSessionHandler.getUser().getEmailAddress();
+			userMail = UserSession.getUser().getEmailAddress();
 		} catch (Exception e) {
-			userMail = "[UKN]";
+			userMail = UNKNOWN;
 		}
 		
 		return "Session '"+sessionId+"' active since '"+sessionStart+"' TotalUi '"+numberOfUi+"' UI '"+uiid+"', user '"+userMail+"': "+message;

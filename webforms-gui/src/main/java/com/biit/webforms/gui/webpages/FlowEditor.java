@@ -12,7 +12,8 @@ import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.usermanager.security.IActivity;
 import com.biit.webforms.flow.FlowCleaner;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
@@ -84,9 +85,8 @@ public class FlowEditor extends SecuredWebPage {
 		formFlowViewerZoomListener = new FormFlowViewerZoomListener();
 		zoomSliderValueChangeListener = new ZoomSliderValueChangeListener();
 
-		if (UserSessionHandler.getController().getCompleteFormView() != null
-				&& !getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getCompleteFormView(),
-						UserSessionHandler.getUser())) {
+		if (ApplicationUi.getController().getCompleteFormView() != null
+				&& !getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getCompleteFormView(), UserSession.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
@@ -110,7 +110,7 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private void initializeContent() {
-		Set<Flow> flows = UserSessionHandler.getController().getCompleteFormView().getFlows();
+		Set<Flow> flows = ApplicationUi.getController().getCompleteFormView().getFlows();
 		tableFlows.addRows(flows);
 		tableFlows.sortByUpdateDate(false);
 	}
@@ -218,8 +218,7 @@ public class FlowEditor extends SecuredWebPage {
 		for (Object itemId : itemIds) {
 			selectedNew = itemId != null && itemId.equals(tableFlows.getNewFlowId());
 		}
-		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
-				UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
 
 		Object selectedRow = null;
 		if (somethingSelected) {
@@ -242,7 +241,7 @@ public class FlowEditor extends SecuredWebPage {
 
 		formFlowViewer = new FormFlowViewer(ImgType.SVG, 1.0f);
 		formFlowViewer.setSizeFull();
-		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getCompleteFormView(), null);
+		formFlowViewer.setFormAndFilter(ApplicationUi.getController().getCompleteFormView(), null);
 		formFlowViewer.addZoomChangedListener(formFlowViewerZoomListener);
 
 		Component flowViewerControlBar = createFlowViewerControlBar();
@@ -330,7 +329,7 @@ public class FlowEditor extends SecuredWebPage {
 
 	protected void filterFlowDiagram(TreeObject filter) {
 		zoomSlider.setValue(FormFlowViewer.MIN_AUGMENT);
-		formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getCompleteFormView(), filter);
+		formFlowViewer.setFormAndFilter(ApplicationUi.getController().getCompleteFormView(), filter);
 	}
 
 	@Override
@@ -346,7 +345,7 @@ public class FlowEditor extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
-					UserSessionHandler.getController().saveForm();
+					ApplicationUi.getController().saveForm();
 					// Refresh the table.
 					// Now the form has changes so current selected elements are
 					// not exactly the same as the ones
@@ -356,8 +355,8 @@ public class FlowEditor extends SecuredWebPage {
 					@SuppressWarnings("unchecked")
 					Set<Object> selectedObjects = new HashSet<Object>((Set<Object>) tableFlows.getValue());
 					Set<Object> newSelectedObjects = new HashSet<Object>();
-					tableFlows.setRows(UserSessionHandler.getController().getCompleteFormView().getFlows());
-					for (Flow newFlow : UserSessionHandler.getController().getCompleteFormView().getFlows()) {
+					tableFlows.setRows(ApplicationUi.getController().getCompleteFormView().getFlows());
+					for (Flow newFlow : ApplicationUi.getController().getCompleteFormView().getFlows()) {
 						if (selectedObjects.contains(newFlow)) {
 							newSelectedObjects.add(newFlow);
 							selectedObjects.remove(newFlow);
@@ -368,9 +367,9 @@ public class FlowEditor extends SecuredWebPage {
 					}
 					tableFlows.setValue(null);
 					tableFlows.setValue(newSelectedObjects);
-					formFlowViewer.setFormAndFilter(UserSessionHandler.getController().getCompleteFormView(), null);
+					formFlowViewer.setFormAndFilter(ApplicationUi.getController().getCompleteFormView(), null);
 
-					if (UserSessionHandler.getController().getFormInUse() instanceof Block) {
+					if (ApplicationUi.getController().getFormInUse() instanceof Block) {
 						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
 								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
 					} else {
@@ -428,7 +427,7 @@ public class FlowEditor extends SecuredWebPage {
 					}
 					Set<Flow> clones;
 					try {
-						clones = UserSessionHandler.getController().cloneFlowsAndInsertIntoForm(selectedFlows);
+						clones = ApplicationUi.getController().cloneFlowsAndInsertIntoForm(selectedFlows);
 						addOrUpdateFlowInTableAction(clones.toArray(new Flow[0]));
 					} catch (FlowNotAllowedException e) {
 						// Not possible.
@@ -458,9 +457,9 @@ public class FlowEditor extends SecuredWebPage {
 	}
 
 	private void cleanFlowOfForm() {
-		FlowCleaner flowCleaner = new FlowCleaner(UserSessionHandler.getController().getCompleteFormView());
+		FlowCleaner flowCleaner = new FlowCleaner(ApplicationUi.getController().getCompleteFormView());
 		flowCleaner.cleanFlow();
-		tableFlows.setRows(UserSessionHandler.getController().getCompleteFormView().getFlows());
+		tableFlows.setRows(ApplicationUi.getController().getCompleteFormView().getFlows());
 		tableFlows.sortByUpdateDate(false);
 		if (!flowCleaner.getOtherFlowsRemoved().isEmpty() || !flowCleaner.getUselessFlowRemoved().isEmpty()) {
 			StringBuilder report = new StringBuilder();
@@ -495,7 +494,7 @@ public class FlowEditor extends SecuredWebPage {
 				flowsToDelete.add((Flow) selectedObject);
 			}
 		}
-		UserSessionHandler.getController().removeFlows(flowsToDelete);
+		ApplicationUi.getController().removeFlows(flowsToDelete);
 		removeFlowsFromTable(flowsToDelete);
 	}
 
@@ -503,8 +502,7 @@ public class FlowEditor extends SecuredWebPage {
 	 * This method opens the new flow window
 	 */
 	private void addNewFlowAction() {
-		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
-				UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
 		if (canEdit) {
 			createFlowWindow(new Flow());
 		}
@@ -517,8 +515,7 @@ public class FlowEditor extends SecuredWebPage {
 	 * @param flow
 	 */
 	private void editFlowAction(Flow flow) {
-		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
-				UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
 		if (canEdit) {
 			createFlowWindow(flow);
 		}
@@ -541,7 +538,7 @@ public class FlowEditor extends SecuredWebPage {
 						MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
 								LanguageCodes.ERROR_DESCRIPTION_CONDITION_BAD_FORMED);
 					} else {
-						UserSessionHandler.getController().updateFlowContent(flow, (BaseQuestion) windowFlow.getOrigin(),
+						ApplicationUi.getController().updateFlowContent(flow, (BaseQuestion) windowFlow.getOrigin(),
 								windowFlow.getFlowType(), (BaseQuestion) windowFlow.getDestiny(), windowFlow.isOthers(),
 								windowFlow.getCondition());
 						addOrUpdateFlowInTableAction(flow);

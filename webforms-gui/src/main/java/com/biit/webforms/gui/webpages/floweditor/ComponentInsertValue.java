@@ -9,7 +9,7 @@ import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.TokenTypes;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -37,8 +37,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * This class holds all the representation of the form to introduce a token value. Previously this was part of Condition
- * Editor controls.
+ * This class holds all the representation of the form to introduce a token
+ * value. Previously this was part of Condition Editor controls.
  */
 public class ComponentInsertValue extends CustomComponent {
 	private static final long serialVersionUID = -5236675580401960488L;
@@ -56,8 +56,7 @@ public class ComponentInsertValue extends CustomComponent {
 
 	private ComboBox datePeriodUnit;
 	private AbstractField<?> value;
-	private Button insertEqValue, insertNeValue, insertLtValue, insertGtValue, insertLeValue, insertGeValue,
-			insertBetweenButton;
+	private Button insertEqValue, insertNeValue, insertLtValue, insertGtValue, insertLeValue, insertGeValue, insertBetweenButton;
 
 	private List<InsertTokenListener> insertTokenListeners;
 
@@ -121,8 +120,8 @@ public class ComponentInsertValue extends CustomComponent {
 		insertGeValue = createTokenComparationValueButton(TokenTypes.GT.toString(), TokenTypes.GT);
 		insertBetweenButton = createBetweenButton();
 
-		GridLayout buttonLayout = new GridLayout(VALUE_BUTTON_COLS, VALUE_BUTTON_ROWS, insertEqValue, insertLeValue,
-				insertLtValue, insertBetweenButton, insertNeValue, insertGeValue, insertGtValue);
+		GridLayout buttonLayout = new GridLayout(VALUE_BUTTON_COLS, VALUE_BUTTON_ROWS, insertEqValue, insertLeValue, insertLtValue,
+				insertBetweenButton, insertNeValue, insertGeValue, insertGtValue);
 		buttonLayout.setWidth(FULL);
 
 		insertValueLayout.addComponent(datePeriodUnit);
@@ -223,8 +222,8 @@ public class ComponentInsertValue extends CustomComponent {
 		if (getCurrentQuestion().getAnswerFormat().equals(AnswerFormat.DATE)
 				&& (getCurrentValueAnswerSubformat().equals(AnswerSubformat.DATE)
 						|| getCurrentValueAnswerSubformat().equals(AnswerSubformat.DATE_PAST)
-						|| getCurrentValueAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE) || getCurrentValueAnswerSubformat()
-						.equals(AnswerSubformat.DATE_BIRTHDAY))) {
+						|| getCurrentValueAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE) || getCurrentValueAnswerSubformat().equals(
+						AnswerSubformat.DATE_BIRTHDAY))) {
 			value = new DateField();
 		} else {
 			value = new TextField();
@@ -247,8 +246,8 @@ public class ComponentInsertValue extends CustomComponent {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if (value.isValid()) {
-					Token token = UserSessionHandler.getController().createTokenComparationValue(type,
-							getCurrentQuestion(), getCurrentValueAnswerSubformat(), getDatePeriodUnit(), getValue());
+					Token token = ApplicationUi.getController().createTokenComparationValue(type, getCurrentQuestion(),
+							getCurrentValueAnswerSubformat(), getDatePeriodUnit(), getValue());
 					fireInsertTokenListeners(token);
 				} else {
 					MessageManager.showError(LanguageCodes.ERROR_MESSAGE_VALUE_HAS_WRONG_FORMAT);
@@ -275,16 +274,16 @@ public class ComponentInsertValue extends CustomComponent {
 
 	protected void openWindowTokenBetween() {
 		WindowTokenBetween window = new WindowTokenBetween();
-		window.setQuestion(getCurrentQuestion(), (DatePeriodUnit) datePeriodUnit.getValue(),
-				value.getValue() != null ? value.getValue() : null);
+		window.setQuestion(getCurrentQuestion(), (DatePeriodUnit) datePeriodUnit.getValue(), value.getValue() != null ? value.getValue()
+				: null);
 		window.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				WindowTokenBetween between = (WindowTokenBetween) window;
 				if (((WindowTokenBetween) window).isDataValid()) {
-					fireInsertTokenListeners(TokenBetween.getBetween(between.getQuestion(),
-							between.getDatePeriodUnit(), between.getValueStart(), between.getValueEnd()));
+					fireInsertTokenListeners(TokenBetween.getBetween(between.getQuestion(), between.getDatePeriodUnit(),
+							between.getValueStart(), between.getValueEnd()));
 					window.close();
 				} else {
 					MessageManager.showError(LanguageCodes.ERROR_MESSAGE_FIELDS_ARE_NOT_FILLED_CORRECTLY);

@@ -1,12 +1,17 @@
 package com.biit.webforms.gui;
 
+import java.util.Objects;
+
 import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.usermanager.security.exceptions.InvalidCredentialsException;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
+import com.biit.webforms.gui.exceptions.SessionHasAlreadyUser;
 import com.biit.webforms.gui.webpages.WebMap;
+import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
@@ -14,6 +19,8 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.DefaultErrorHandler;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.UI;
 
 /**
@@ -34,6 +41,9 @@ public class ApplicationUi extends UI {
 	private String userEmail;
 	private String password;
 
+	private ApplicationController controller = null;
+	private static IWebformsSecurityService webformsSecurityService;
+
 	private class WebformsErrorHandler extends DefaultErrorHandler {
 		private static final long serialVersionUID = -5570064834518413901L;
 
@@ -45,6 +55,19 @@ public class ApplicationUi extends UI {
 		}
 	};
 
+	public ApplicationUi() {
+		controller = new ApplicationController();
+		addDetachListener(new DetachListener() {
+			private static final long serialVersionUID = -3577213711157021631L;
+
+			@Override
+			public void detach(DetachEvent event) {
+				WebformsUiLogger.debug(this.getClass().getName(), "has been detached.");
+				UiAccesser.unregister(controller);
+			}
+		});
+	}
+
 	@Override
 	protected void init(VaadinRequest request) {
 		getPage().setTitle("");
@@ -52,7 +75,7 @@ public class ApplicationUi extends UI {
 		WebformsUiLogger.debug(ApplicationUi.class.getName(), "UI initialized.");
 
 		defineWebPages();
-		UiAccesser.register(UserSessionHandler.getController());
+		UiAccesser.register(controller);
 
 		// Liferay send this data and automatically are used in the login
 		// screen.
@@ -61,28 +84,31 @@ public class ApplicationUi extends UI {
 
 		setErrorHandler(new WebformsErrorHandler());
 
-		if (UserSessionHandler.getUser() != null) {
+		if (UserSession.getUser() != null) {
 			// User already logged in the connection
-			WebformsUiLogger.info(ApplicationUi.class.getName(), "New Ui initializated for User '"
-					+ UserSessionHandler.getUser().getEmailAddress() + "'");
 			defaultStartNavigations();
 		} else {
 			// User not logged yet
-			if (autologinImplementation()) {
-				defaultStartNavigations();
-			} else {
-				navigator.setState(WebMap.LOGIN_PAGE.name());
+			try {
+				if (autologinImplementation()) {
+					defaultStartNavigations();
+				} else {
+					navigator.setState(WebMap.LOGIN_PAGE.name());
+				}
+			} catch (SessionHasAlreadyUser e) {
+				WebformsUiLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
+						+ "' is trying to access a session with another user already logged.");
 			}
 		}
 	}
 
-	private boolean autologinImplementation() {
+	private boolean autologinImplementation() throws SessionHasAlreadyUser {
 		// When accessing from Liferay, user and password are already set.
 		if (userEmail != null && userEmail.length() > 0 && password != null && password.length() > 0) {
 			WebformsUiLogger.info(ApplicationUi.class.getName(), "Autologin with user '" + userEmail + "' and password with length of "
 					+ password.length());
 			try {
-				IUser<Long> user = UserSessionHandler.getUser(userEmail, password);
+				IUser<Long> user = login(userEmail, password);
 				if (user != null) {
 					return true;
 				}
@@ -101,27 +127,47 @@ public class ApplicationUi extends UI {
 		return false;
 	}
 
+	public IUser<Long> login(String userEmail, String password) throws UserManagementException, AuthenticationRequired,
+			InvalidCredentialsException, SessionHasAlreadyUser {
+		IUser<Long> currentUser = UserSession.getUser();
+		if (currentUser != null) {
+			if (Objects.equals(currentUser.getEmailAddress(), userEmail) && Objects.equals(currentUser.getPassword(), password)) {
+				return currentUser;
+			}
+			throw new SessionHasAlreadyUser();
+		}
+		// Try to log in the user when the button is clicked
+		IUser<Long> user = getAuthenticationService().getAuthenticationService().authenticate(userEmail, password);
+		if (user != null) {
+			UserSession.setUser(user);
+
+			WebBrowser browser = (WebBrowser) UI.getCurrent().getPage().getWebBrowser();
+			try {
+				String message = "Logged successfully. Using '" + browser.getBrowserApplication() + "'";
+				if (browser.getAddress() != null) {
+					message += " (IP: " + browser.getAddress() + ").";
+				} else {
+					message += ".";
+				}
+				WebformsUiLogger.info(ApplicationUi.class.getName(), message);
+			} catch (Exception e) {
+				WebformsUiLogger.errorMessage(ApplicationUi.class.getName(), e);
+			}
+
+			// Store the password.
+			user.setPassword(password);
+		}
+		return user;
+	}
+
 	private void defaultStartNavigations() {
 		// Try to go to the last page and last form if user has no logged out.
-		if (UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()) != null
-				&& UserSessionHandler.getController().getFormInUse() != null) {
-			navigator.setState(UserSessionHandler.getUserLastPage(UserSessionHandler.getUser()).name());
+		WebMap lastPage = UserSession.getUserLastPage();
+		if (lastPage != null && getController().getFormInUse() != null) {
+			navigator.setState(lastPage.name());
 		} else {
 			navigator.setState(WebMap.getMainPage().name());
 		}
-	}
-
-	@Override
-	public void detach() {
-		if (UserSessionHandler.getUser() != null) {
-			// Log user ui expired.
-			WebformsUiLogger
-					.info(this.getClass().getName(), " UI of '" + UserSessionHandler.getUser().getEmailAddress() + "' has expired.");
-		} else {
-			WebformsUiLogger.debug(this.getClass().getName(), " UI closed.");
-		}
-		UiAccesser.unregister(UserSessionHandler.getController());
-		super.detach();
 	}
 
 	private void setChangeViewEvents() {
@@ -136,10 +182,7 @@ public class ApplicationUi extends UI {
 
 			@Override
 			public void afterViewChange(ViewChangeEvent event) {
-				if (UserSessionHandler.getUser() != null) {
-					WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
-							+ "' has change view to '" + event.getNewView().getClass().getName() + "'.");
-				}
+				WebformsUiLogger.info(this.getClass().getName(), "View changed to '" + event.getNewView().getClass().getName() + "'.");
 			}
 		});
 	}
@@ -165,7 +208,7 @@ public class ApplicationUi extends UI {
 
 	public static void navigateTo(WebMap newPage) {
 		UI.getCurrent().getNavigator().navigateTo(newPage.toString());
-		UserSessionHandler.setUserLastPage(newPage);
+		UserSession.setUserLastPage(newPage);
 	}
 
 	public View getCurrentView() {
@@ -184,4 +227,25 @@ public class ApplicationUi extends UI {
 		return password;
 	}
 
+	/**
+	 * Autowired not working correctly in this version of Vaadin. Use the helper
+	 * if needed in a static method.
+	 * 
+	 * @return
+	 */
+	private static IWebformsSecurityService getAuthenticationService() {
+		if (webformsSecurityService == null) {
+			SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+			webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
+		}
+		return webformsSecurityService;
+	}
+
+	public ApplicationController getControllerInstance() {
+		return controller;
+	}
+	
+	public static ApplicationController getController() {
+		return ((ApplicationUi) getCurrent()).controller;
+	}
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.AbstractComponentContainer;
@@ -102,7 +102,7 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 	private void updateAndExit() {
 		// Check UI is different of null due to the detach is also triggered
 		// when UI.close() is called.
-		if (UI.getCurrent() != null && UserSessionHandler.getUser() != null) {
+		if (UI.getCurrent() != null && UserSession.getUser() != null) {
 			firePropertyUpdateOnExitListener();
 		}
 	}

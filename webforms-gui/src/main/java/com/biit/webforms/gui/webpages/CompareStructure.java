@@ -11,7 +11,7 @@ import org.xml.sax.SAXException;
 
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.usermanager.security.IActivity;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -238,12 +238,12 @@ public class CompareStructure extends SecuredWebPage {
 
 	private boolean isValidCurrentForm() {
 		ValidateBaseForm validator = new ValidateBaseForm();
-		return validator.validate(UserSessionHandler.getController().getCompleteFormView());
+		return validator.validate(ApplicationUi.getController().getCompleteFormView());
 	}
 
 	private String generateCurrentXsd() {
 		if (isValidCurrentForm()) {
-			return new WebformsXsdForm(UserSessionHandler.getController().getCompleteFormView()).toString();
+			return new WebformsXsdForm(ApplicationUi.getController().getCompleteFormView()).toString();
 		}
 		MessageManager.showError(LanguageCodes.ERROR_MESSAGE_CURRENT_FORM_STRUCTURE_IS_NOT_VALID);
 		return null;

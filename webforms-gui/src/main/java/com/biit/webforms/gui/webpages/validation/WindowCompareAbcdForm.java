@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.webpages.validation;
 
 import com.biit.abcd.persistence.entity.SimpleFormView;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
 import com.biit.webforms.persistence.entity.Form;
 
@@ -18,7 +18,7 @@ public class WindowCompareAbcdForm extends WindowLinkAbcdForm {
 		getVersionList().removeAllItems();
 		getVersionList().setValue(null);
 		if (getAbcdFormsTable().getValue() != null) {
-			for (SimpleFormView simpleFormView : UserSessionHandler.getController().getLinkedSimpleFormViewsFromAbcd(form)) {
+			for (SimpleFormView simpleFormView : ApplicationUi.getController().getLinkedSimpleFormViewsFromAbcd(form)) {
 				addToVersionList(simpleFormView);
 			}
 		}

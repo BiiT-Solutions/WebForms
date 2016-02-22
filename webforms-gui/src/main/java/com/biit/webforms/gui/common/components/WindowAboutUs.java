@@ -9,7 +9,7 @@ import javax.servlet.ServletContext;
 import com.biit.security.DESEncryptor;
 import com.biit.security.exceptions.DESEncryptorException;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -149,14 +149,14 @@ public class WindowAboutUs extends Window {
 
 		String desEncryptedString;
 		try {
-			desEncryptedString = DESEncryptor.encrypt(UserSessionHandler.getUser().getPassword());
+			desEncryptedString = DESEncryptor.encrypt(UserSession.getUser().getPassword());
 		} catch (DESEncryptorException e) {
 			WebformsUiLogger.errorMessage(WindowAboutUs.class.getName(), e);
 			MessageManager.showError(e.getMessage());
 			desEncryptedString = "error";
 		}
 
-		return issueManagerUrl + separatorChar + LOGIN_PARAM + "=" + UserSessionHandler.getUser().getEmailAddress() + "&" + PASSWORD_PARAM
+		return issueManagerUrl + separatorChar + LOGIN_PARAM + "=" + UserSession.getUser().getEmailAddress() + "&" + PASSWORD_PARAM
 				+ "=" + desEncryptedString;
 	}
 

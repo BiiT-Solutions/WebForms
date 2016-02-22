@@ -2,7 +2,7 @@ package com.biit.webforms.gui.components;
 
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.ApplicationUi;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
@@ -48,7 +48,7 @@ public class UpperMenuWebforms extends UpperMenu {
 
 					@Override
 					public void buttonClick(ClickEvent event) {
-						if (confirmationNeeded && UserSessionHandler.getController().existsUnsavedFormChanges()) {
+						if (confirmationNeeded && ApplicationUi.getController().existsUnsavedFormChanges()) {
 							new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_LOSE_DATA, new AcceptActionListener() {
 
 								@Override
@@ -70,7 +70,7 @@ public class UpperMenuWebforms extends UpperMenu {
 
 					@Override
 					public void buttonClick(ClickEvent event) {
-						if (confirmationNeeded && UserSessionHandler.getController().existsUnsavedFormChanges()) {
+						if (confirmationNeeded && ApplicationUi.getController().existsUnsavedFormChanges()) {
 							new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_LOSE_DATA, new AcceptActionListener() {
 
 								@Override
@@ -106,9 +106,9 @@ public class UpperMenuWebforms extends UpperMenu {
 						new WindowProceedAction(LanguageCodes.WARNING_CLEAR_CACHE, new AcceptActionListener() {
 							@Override
 							public void acceptAction(WindowAcceptCancel window) {
-								UserSessionHandler.getController().evictAllCache();
+								ApplicationUi.getController().evictAllCache();
 								ApplicationUi.navigateTo(WebMap.FORM_MANAGER);
-								WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
+								WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSession.getUser().getEmailAddress()
 										+ "' has cleared all the 2nd level cache.");
 								MessageManager.showInfo(LanguageCodes.INFO_CACHE_CLEARED);
 							}
@@ -117,7 +117,7 @@ public class UpperMenuWebforms extends UpperMenu {
 				});
 		// Clear cache for admin users.
 		try {
-			if (webformsSecurityService.isAuthorizedActivity(UserSessionHandler.getUser(), WebformsActivity.EVICT_CACHE)) {
+			if (webformsSecurityService.isAuthorizedActivity(UserSession.getUser(), WebformsActivity.EVICT_CACHE)) {
 				clearCacheButton.setVisible(true);
 				clearCacheButton.setWidth("100%");
 			} else {
@@ -138,7 +138,7 @@ public class UpperMenuWebforms extends UpperMenu {
 
 							@Override
 							public void acceptAction(WindowAcceptCancel window) {
-								UserSessionHandler.getController().logOut();
+								ApplicationUi.getController().logOut();
 							}
 						});
 					}

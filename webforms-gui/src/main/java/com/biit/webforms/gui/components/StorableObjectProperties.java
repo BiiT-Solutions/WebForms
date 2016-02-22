@@ -2,7 +2,7 @@ package com.biit.webforms.gui.components;
 
 import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.entity.StorableObject;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.components.PropertiesForClassComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
@@ -75,13 +75,15 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		}
 
 		try {
-			valueCreatedBy = getInstance().getCreatedBy() == null ? "" : webformsSecurityService.getUserById(getInstance().getCreatedBy()).getEmailAddress();
+			valueCreatedBy = getInstance().getCreatedBy() == null ? "" : webformsSecurityService.getUserById(getInstance().getCreatedBy())
+					.getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
 			valueCreatedBy = getInstance().getCreatedBy() + "";
 		}
 
 		try {
-			valueUpdatedBy = getInstance().getUpdatedBy() == null ? "" : webformsSecurityService.getUserById(getInstance().getUpdatedBy()).getEmailAddress();
+			valueUpdatedBy = getInstance().getUpdatedBy() == null ? "" : webformsSecurityService.getUserById(getInstance().getUpdatedBy())
+					.getEmailAddress();
 		} catch (UserDoesNotExistException udne) {
 			valueUpdatedBy = getInstance().getUpdatedBy() + "";
 		}
@@ -103,7 +105,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 
 	@Override
 	public void updateElement() {
-		getInstance().setUpdatedBy(UserSessionHandler.getUser());
+		getInstance().setUpdatedBy(UserSession.getUser());
 		getInstance().setUpdateTime();
 		// // Update common ui fields.
 		// initValues();
