@@ -3,11 +3,15 @@ package com.biit.webforms.gui;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.sql.Timestamp;
 
 import com.biit.webforms.logger.WebformsLogger;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
 public class WebformsUiLogger {
+
+	private static final String UNKNOWN = "[UNK]";
 
 	public static void info(String className, String message) {
 		WebformsLogger.info(className, formatMessage(message));
@@ -64,22 +68,35 @@ public class WebformsUiLogger {
 	}
 
 	private static String formatMessage(String message) {
+		String sessionId = UNKNOWN;
+		String sessionStart = UNKNOWN;
+		String numberOfUi = UNKNOWN;
+		VaadinSession currentSession = VaadinSession.getCurrent();
+		if(currentSession!=null && currentSession.getSession()!=null){
+			sessionId = currentSession.getSession().getId();
+			try{
+				sessionStart = new Timestamp(currentSession.getSession().getCreationTime()).toString();
+			}catch(IllegalStateException e){
+				//Do nothing
+			}
+			numberOfUi = currentSession.getUIs().size()+"";
+		}
 		String uiid = null;
 		String userMail = null;
 
 		try {
 			uiid = UI.getCurrent().getUIId()+"";
 		} catch (Exception e) {
-			uiid = "[NO UI]";
+			uiid = UNKNOWN;
 		}
 
 		try {
-			userMail = UserSessionHandler.getUser().getEmailAddress();
+			userMail = UserSession.getUser().getEmailAddress();
 		} catch (Exception e) {
-			userMail = "[NO USER]";
+			userMail = UNKNOWN;
 		}
 		
-		return "UI '"+uiid+"', user '"+userMail+"': "+message;
+		return "Session '"+sessionId+"' active since '"+sessionStart+"' TotalUi '"+numberOfUi+"' UI '"+uiid+"', user '"+userMail+"': "+message;
 	}
 
 	public static String getStackTrace(Throwable throwable) {

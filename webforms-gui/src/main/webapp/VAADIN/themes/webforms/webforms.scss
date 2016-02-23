@@ -1041,4 +1041,22 @@ $open-sans-pathPrefix: "./fonts/";
 	img.v-image.v-widget {
 	    opacity: 1.0;
 	}
+	
+	.stepper-updown {
+		position: absolute;
+		/* position correctly in relation to the textfield padding */
+		top: 2px;
+		right: 2px;
+	}
+	
+	.stepper-up, .stepper-down {
+		display: block;
+		outline: none;
+		font-size: 12px;
+		line-height: 11px;
+	}
+	
+	.stepper.v-widget {
+	    position: relative;
+	}
 }

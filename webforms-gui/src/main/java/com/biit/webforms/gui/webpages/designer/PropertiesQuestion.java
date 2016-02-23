@@ -6,7 +6,8 @@ import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
 import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerSubformatUi;
@@ -194,7 +195,8 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 		commonProperties.addComponent(mandatory);
 		commonProperties.addComponent(disableEdition);
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(),
+				UserSession.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_QUESTION.translation(), true);
@@ -302,9 +304,10 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 			tempDefaultValue = defaultValueAnswer.getValue();
 		}
 
-		UserSessionHandler.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(), mandatory.getValue(),
-				(AnswerType) answerTypeComboBox.getValue(), (AnswerFormat) answerFormat.getValue(), (AnswerSubformat) answerSubformat.getValue(),
-				horizontal.getValue(), tempDefaultValue, disableEdition.getValue(), getImage());
+		ApplicationUi.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(), mandatory.getValue(),
+				(AnswerType) answerTypeComboBox.getValue(), (AnswerFormat) answerFormat.getValue(),
+				(AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue, disableEdition.getValue(),
+				getImage());
 
 		super.updateElement();
 	}

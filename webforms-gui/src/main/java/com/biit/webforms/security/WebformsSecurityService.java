@@ -4,6 +4,7 @@ import com.biit.form.entity.IBaseFormView;
 import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.gui.UiAccesser;
 import com.biit.webforms.persistence.entity.Form;
+import com.vaadin.ui.UI;
 
 public class WebformsSecurityService extends SecurityService implements IWebformsSecurityService {
 
@@ -13,7 +14,7 @@ public class WebformsSecurityService extends SecurityService implements IWebform
 
 	@Override
 	public boolean isFormEditable(IBaseFormView form, IUser<Long> user) {
-		boolean userLockedForm = UiAccesser.isUserUserUsingForm(user, form);
+		boolean userLockedForm = UiAccesser.isUserUiUsingForm(user, UI.getCurrent(), form);
 		return userLockedForm && isAuthorizedToForm(form, user);
 	}
 

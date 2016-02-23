@@ -2,7 +2,7 @@ package com.biit.webforms.gui.webpages.formmanager;
 
 import com.biit.form.entity.IBaseFormView;
 import com.biit.usermanager.entity.IGroup;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.security.IWebformsSecurityService;
@@ -27,10 +27,9 @@ public class TableSimpleFormNameOrganization extends Table {
 	}
 
 	private void configureDataSource() {
-		addContainerProperty(Properties.FORM_NAME, String.class, null, LanguageCodes.CAPTION_NAME.translation(), null,
+		addContainerProperty(Properties.FORM_NAME, String.class, null, LanguageCodes.CAPTION_NAME.translation(), null, Align.CENTER);
+		addContainerProperty(Properties.FORM_ORGANIZATION, String.class, null, LanguageCodes.CAPTION_ORGANIZATION.translation(), null,
 				Align.CENTER);
-		addContainerProperty(Properties.FORM_ORGANIZATION, String.class, null,
-				LanguageCodes.CAPTION_ORGANIZATION.translation(), null, Align.CENTER);
 	}
 
 	public void add(IBaseFormView form) {
@@ -43,8 +42,7 @@ public class TableSimpleFormNameOrganization extends Table {
 		Item item = getItem(form);
 		item.getItemProperty(Properties.FORM_NAME).setValue(form.getLabel());
 
-		IGroup<Long> organization = webformsSecurityService.getOrganization(UserSessionHandler.getUser(),
-				form.getOrganizationId());
+		IGroup<Long> organization = webformsSecurityService.getOrganization(UserSession.getUser(), form.getOrganizationId());
 		if (organization != null) {
 			item.getItemProperty(Properties.FORM_ORGANIZATION).setValue(organization.getUniqueName());
 		}

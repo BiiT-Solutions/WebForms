@@ -4,7 +4,7 @@ import java.util.Locale;
 
 import org.springframework.util.StringUtils;
 
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
@@ -28,8 +28,8 @@ public class ServerTranslate {
 	}
 
 	private static Locale getLocale() {
-		if (UserSessionHandler.getUser() != null) {
-			return StringUtils.parseLocaleString(UserSessionHandler.getUser().getLanguageId());
+		if (UserSession.getUser() != null) {
+			return StringUtils.parseLocaleString(UserSession.getUser().getLanguageId());
 		} else {
 			if (Page.getCurrent() != null) {
 				return Page.getCurrent().getWebBrowser().getLocale();

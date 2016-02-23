@@ -2,7 +2,8 @@ package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.BaseForm;
 import com.biit.form.entity.TreeObject;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Form;
@@ -72,7 +73,7 @@ public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForSt
 		commonProperties.addComponent(referenceVersion);
 		commonProperties.addComponent(disableEdition);
 
-		boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_FORM.translation(), true);
@@ -95,11 +96,11 @@ public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForSt
 			referenceLabel.setVisible(true);
 			referenceVersion.setVisible(true);
 			getReferenceLabel().setValue(
-					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance()).getFormReference().getLabel()
-							: "");
+					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance())
+							.getFormReference().getLabel() : "");
 			getReferenceVersion().setValue(
-					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance()).getFormReference().getVersion()
-							+ "" : "");
+					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance())
+							.getFormReference().getVersion() + "" : "");
 		}
 
 		if (getInstance() instanceof Form) {

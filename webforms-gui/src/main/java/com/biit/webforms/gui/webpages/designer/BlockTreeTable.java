@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.usermanager.entity.IGroup;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.TableTreeObjectLabel;
@@ -40,15 +40,15 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 		blockDao = (IBlockDao) helper.getBean("blockDao");
 		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 
-		addContainerProperty(BlockTreeTableProperties.ORGANIZATION, String.class, null,
-				LanguageCodes.CAPTION_ORGANIZATION.translation(), null, Align.LEFT);
+		addContainerProperty(BlockTreeTableProperties.ORGANIZATION, String.class, null, LanguageCodes.CAPTION_ORGANIZATION.translation(),
+				null, Align.LEFT);
 
 		initializeBlockTable();
 	}
 
 	private void initializeBlockTable() {
-		Set<IGroup<Long>> organizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(
-				UserSessionHandler.getUser(), WebformsActivity.READ);
+		Set<IGroup<Long>> organizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(UserSession.getUser(),
+				WebformsActivity.READ);
 		List<Block> blocks = new ArrayList<>();
 		try {
 			for (IGroup<Long> organization : organizations) {
@@ -61,8 +61,7 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 				setCollapsed(block, true);
 			}
 		} catch (Exception e) {
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
 	}
 
@@ -75,8 +74,7 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 		if (item != null) {
 			if (element instanceof Form) {
 				Long organizationId = ((Form) element).getOrganizationId();
-				IGroup<Long> organization = webformsSecurityService.getOrganization(UserSessionHandler.getUser(),
-						organizationId);
+				IGroup<Long> organization = webformsSecurityService.getOrganization(UserSession.getUser(), organizationId);
 				if (organization != null) {
 					item.getItemProperty(BlockTreeTableProperties.ORGANIZATION).setValue(organization.getUniqueName());
 				}

@@ -11,12 +11,13 @@ import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.usermanager.security.exceptions.InvalidCredentialsException;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.ApplicationUi;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WebPageComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.exceptions.SessionHasAlreadyUser;
 import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
@@ -99,22 +100,7 @@ public class Login extends WebPageComponent {
 				// limit the enters to only from the password field from this
 				// form
 				if (target == passwordField) {
-					try {
-						IUser<Long> user = UserSessionHandler.getUser((String) usernameField.getValue(), (String) passwordField.getValue());
-						if (user != null) {
-							ApplicationUi.navigateTo(WebMap.getMainPage());
-						}
-					} catch (InvalidCredentialsException | AuthenticationRequired e) {
-						passwordField.setComponentError(new UserError(ServerTranslate.translate(
-								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER,
-								new Object[] { (String) usernameField.getValue() })));
-						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
-								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_TRYAGAIN);
-					} catch (UserManagementException e) {
-						WebformsUiLogger.errorMessage(this.getClass().getName(), e);
-						MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
-								CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
-					}
+					loginAction();
 				}
 				// If write user name and press enter, go to pass field.
 				if (target == usernameField) {
@@ -129,23 +115,7 @@ public class Login extends WebPageComponent {
 
 					@Override
 					public void buttonClick(ClickEvent event) {
-						try {
-							IUser<Long> user = UserSessionHandler.getUser((String) usernameField.getValue(),
-									(String) passwordField.getValue());
-							if (user != null) {
-								ApplicationUi.navigateTo(WebMap.getMainPage());
-							}
-						} catch (InvalidCredentialsException | AuthenticationRequired e) {
-							passwordField.setComponentError(new UserError(ServerTranslate.translate(
-									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER,
-									new Object[] { (String) usernameField.getValue() })));
-							MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
-									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_TRYAGAIN);
-						} catch (UserManagementException e) {
-							WebformsUiLogger.errorMessage(this.getClass().getName(), e);
-							MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
-									CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
-						}
+						loginAction();
 					}
 				});
 		loginButton.setWidth(FIELD_SIZE);
@@ -160,6 +130,29 @@ public class Login extends WebPageComponent {
 		layout.addComponent(loginButton);
 		panel.setContent(layout);
 		return panel;
+	}
+
+	protected void loginAction() {
+		try {
+			IUser<Long> user = UserSession.login((String) usernameField.getValue(), (String) passwordField.getValue());
+			if (user != null) {
+				ApplicationUi.navigateTo(WebMap.getMainPage());
+			}
+		} catch (InvalidCredentialsException | AuthenticationRequired e) {
+			passwordField.setComponentError(new UserError(ServerTranslate.translate(
+					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER,
+					new Object[] { (String) usernameField.getValue() })));
+			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
+					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_TRYAGAIN);
+		} catch (UserManagementException e) {
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
+					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
+		} catch (SessionHasAlreadyUser e) {
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+			ApplicationUi.navigateTo(WebMap.ERROR_PAGE);
+		}
 	}
 
 	private String getVersion() {

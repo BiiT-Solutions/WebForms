@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.biit.webforms.gui.ApplicationUi;
-import com.biit.webforms.gui.UserSessionHandler;
 import com.biit.webforms.gui.common.components.BottomMenu;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
@@ -30,8 +29,8 @@ public class FormEditBottomMenu extends BottomMenu {
 				LanguageCodes.TOOLTIP_EDIT_FORM_FLOW, IconSize.BIG);
 		editWebserviceCall = new IconButton(LanguageCodes.CAPTION_EDIT_WEBSERVICE_CALL, ThemeIcons.EDIT_WEBSERVICE_CALL,
 				LanguageCodes.TOOLTIP_EDIT_WEBSERVICE_CALL, IconSize.BIG);
-		validateForm = new IconButton(LanguageCodes.CAPTION_VALIDATE_FORM, ThemeIcons.VALIDATE_FORM,
-				LanguageCodes.TOOLTIP_VALIDATE_FORM, IconSize.BIG);
+		validateForm = new IconButton(LanguageCodes.CAPTION_VALIDATE_FORM, ThemeIcons.VALIDATE_FORM, LanguageCodes.TOOLTIP_VALIDATE_FORM,
+				IconSize.BIG);
 		compareStructure = new IconButton(LanguageCodes.CAPTION_COMPARE_STRUCTURE, ThemeIcons.COMPARE_STRUCTURE,
 				LanguageCodes.TOOLTIP_COMPARE_STRUCTURE, IconSize.BIG);
 
@@ -95,7 +94,7 @@ public class FormEditBottomMenu extends BottomMenu {
 	public IconButton getEditFlowButton() {
 		return editFlowButton;
 	}
-	
+
 	public IconButton getEditWebserviceCall() {
 		return editWebserviceCall;
 	}
@@ -105,7 +104,7 @@ public class FormEditBottomMenu extends BottomMenu {
 	}
 
 	private void lockForm() {
-		if (UserSessionHandler.getController().getFormInUse() == null) {
+		if (ApplicationUi.getController().getFormInUse() == null) {
 			fireLockFormListeners();
 		}
 	}

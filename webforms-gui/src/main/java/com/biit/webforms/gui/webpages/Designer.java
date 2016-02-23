@@ -23,7 +23,7 @@ import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.gui.ApplicationUi;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
@@ -99,10 +99,10 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void nodeCollapse(CollapseEvent event) {
-				if (UserSessionHandler.getController().getCollapsedStatus() == null) {
-					UserSessionHandler.getController().setCollapsedStatus(new HashSet<>());
+				if (ApplicationUi.getController().getCollapsedStatus() == null) {
+					ApplicationUi.getController().setCollapsedStatus(new HashSet<>());
 				}
-				UserSessionHandler.getController().getCollapsedStatus().add(event.getItemId());
+				ApplicationUi.getController().getCollapsedStatus().add(event.getItemId());
 			}
 		};
 		expandListener = new ExpandListener() {
@@ -110,19 +110,18 @@ public class Designer extends SecuredWebPage {
 
 			@Override
 			public void nodeExpand(ExpandEvent event) {
-				if (UserSessionHandler.getController().getCollapsedStatus() == null) {
-					UserSessionHandler.getController().setCollapsedStatus(new HashSet<>());
+				if (ApplicationUi.getController().getCollapsedStatus() == null) {
+					ApplicationUi.getController().setCollapsedStatus(new HashSet<>());
 				}
-				UserSessionHandler.getController().getCollapsedStatus().remove(event.getItemId());
+				ApplicationUi.getController().getCollapsedStatus().remove(event.getItemId());
 			}
 		};
 	}
 
 	@Override
 	protected void initContent() {
-		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
-						UserSessionHandler.getUser())) {
+		if (ApplicationUi.getController().getFormInUse() != null
+				&& !getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
@@ -198,10 +197,10 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
-					UserSessionHandler.getController().saveForm();
+					ApplicationUi.getController().saveForm();
 					clearAndUpdateFormTable();
 
-					if (UserSessionHandler.getController().getFormInUse() instanceof Block) {
+					if (ApplicationUi.getController().getFormInUse() instanceof Block) {
 						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
 								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
 					} else {
@@ -248,7 +247,7 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
-					Category newCategory = UserSessionHandler.getController().addNewCategory();
+					Category newCategory = ApplicationUi.getController().addNewCategory();
 					table.addRow(newCategory, newCategory.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_CATEGORY_NOT_INSERTED_IN_BLOCK);
@@ -264,7 +263,7 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
-					Group newGroup = UserSessionHandler.getController().addNewGroup(selectedRow.getAncestorThatAccepts(Group.class));
+					Group newGroup = ApplicationUi.getController().addNewGroup(selectedRow.getAncestorThatAccepts(Group.class));
 					table.addRow(newGroup, newGroup.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_GROUP_NOT_INSERTED);
@@ -282,7 +281,7 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					Question newQuestion;
-					newQuestion = UserSessionHandler.getController().addNewQuestion(selectedRow.getAncestorThatAccepts(Question.class));
+					newQuestion = ApplicationUi.getController().addNewQuestion(selectedRow.getAncestorThatAccepts(Question.class));
 					table.addRow(newQuestion, newQuestion.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_QUESTION_NOT_INSERTED);
@@ -299,7 +298,7 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					SystemField newField;
-					newField = UserSessionHandler.getController().addNewSystemField(selectedRow.getAncestorThatAccepts(SystemField.class));
+					newField = ApplicationUi.getController().addNewSystemField(selectedRow.getAncestorThatAccepts(SystemField.class));
 					table.addRow(newField, newField.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_SYSTEM_FIELD_NOT_INSERTED);
@@ -316,7 +315,7 @@ public class Designer extends SecuredWebPage {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
 					Text newText;
-					newText = UserSessionHandler.getController().addNewText(selectedRow.getAncestorThatAccepts(Text.class));
+					newText = ApplicationUi.getController().addNewText(selectedRow.getAncestorThatAccepts(Text.class));
 					table.addRow(newText, newText.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_TEXT_NOT_INSERTED);
@@ -335,11 +334,11 @@ public class Designer extends SecuredWebPage {
 					Answer newAnswer;
 					if (selectedRow instanceof BaseAnswer) {
 						Question parentQuestion = (Question) selectedRow.getAncestor(Question.class);
-						newAnswer = UserSessionHandler.getController().addNewAnswer(parentQuestion);
+						newAnswer = ApplicationUi.getController().addNewAnswer(parentQuestion);
 					} else {
 						// If Parent is selected then we just add it as a new
 						// child
-						newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow);
+						newAnswer = ApplicationUi.getController().addNewAnswer(selectedRow);
 					}
 					table.addRow(newAnswer, newAnswer.getParent());
 				} catch (NotValidChildException e) {
@@ -359,9 +358,9 @@ public class Designer extends SecuredWebPage {
 					try {
 						Answer newAnswer;
 						if (!((Answer) selectedRow).isSubanswer()) {
-							newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow);
+							newAnswer = ApplicationUi.getController().addNewAnswer(selectedRow);
 						} else {
-							newAnswer = UserSessionHandler.getController().addNewAnswer(selectedRow.getParent());
+							newAnswer = ApplicationUi.getController().addNewAnswer(selectedRow.getParent());
 						}
 						table.addRow(newAnswer, newAnswer.getParent());
 					} catch (NotValidChildException e) {
@@ -379,20 +378,20 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				// Do not remove any element of a block if a form that is
 				// linking it is in use.
-				if (!(UserSessionHandler.getController().getFormInUse() instanceof Block)
-						|| !isBlockLinkedByFormInUse((Block) UserSessionHandler.getController().getFormInUse())) {
+				if (!(ApplicationUi.getController().getFormInUse() instanceof Block)
+						|| !isBlockLinkedByFormInUse((Block) ApplicationUi.getController().getFormInUse())) {
 					TreeObject row = table.getSelectedRow();
 					// Do not remove an element of a block if is in use in any
 					// flow.
 					try {
-						if ((UserSessionHandler.getController().getFormInUse() instanceof Block)
-								&& UserSessionHandler.getController().existFormThatUseElementInFlow(row)) {
+						if ((ApplicationUi.getController().getFormInUse() instanceof Block)
+								&& ApplicationUi.getController().existFormThatUseElementInFlow(row)) {
 							MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE,
 									LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_BLOCK_ELEMENT_DESCRIPTION);
 						} else {
 							try {
 								table.selectPreviousRow();
-								UserSessionHandler.getController().removeTreeObject(row);
+								ApplicationUi.getController().removeTreeObject(row);
 								table.updateRow(table.getParentRowItem(row));
 							} catch (DependencyExistException | ChildrenNotFoundException e) {
 								table.setValue(row);
@@ -438,7 +437,7 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
 				try {
-					UserSessionHandler.getController().moveUp(row);
+					ApplicationUi.getController().moveUp(row);
 					// Remove collapse state listeners, redraw row and recover
 					// the original collapse state and
 					// listeners.
@@ -459,7 +458,7 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				TreeObject row = table.getSelectedRow();
 				try {
-					UserSessionHandler.getController().moveDown(row);
+					ApplicationUi.getController().moveDown(row);
 					// Remove collapse state listeners, redraw row and recover
 					// the original collapse state and
 					// listeners.
@@ -497,7 +496,7 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
-					DynamicAnswer newDynamicQuestion = UserSessionHandler.getController().addNewDynamicQuestion(
+					DynamicAnswer newDynamicQuestion = ApplicationUi.getController().addNewDynamicQuestion(
 							selectedRow.getAncestorThatAccepts(DynamicAnswer.class));
 					table.addRow(newDynamicQuestion, newDynamicQuestion.getParent());
 				} catch (NotValidChildException e) {
@@ -513,46 +512,44 @@ public class Designer extends SecuredWebPage {
 
 	private void showOrHideElement(TreeObject element) {
 		try {
-			BlockReference blockReference = UserSessionHandler.getController().getCompleteFormView().getBlockReference(element);
+			BlockReference blockReference = ApplicationUi.getController().getCompleteFormView().getBlockReference(element);
 			// Do not hide an element of a form reference if it is in use in any
 			// external flow.
-			if (UserSessionHandler.getController().existDefinedFlowToReferencedElementOrItsChildren(element)) {
+			if (ApplicationUi.getController().existDefinedFlowToReferencedElementOrItsChildren(element)) {
 				MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
 						LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
 				// Do not remove an element of a block if it is in use in any
 				// external flow of the block.
 			} else if (blockReference != null
-					&& UserSessionHandler.getController().existExternalFlowToReferencedElementOrItsChildren(element, blockReference)) {
+					&& ApplicationUi.getController().existExternalFlowToReferencedElementOrItsChildren(element, blockReference)) {
 				MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
 						LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
 			} else {
 				// It is not an element or it is a form reference element.
 				if (element.isHiddenElement()) {
-					if (UserSessionHandler.getController().getCompleteFormView().showElement(element)) {
+					if (ApplicationUi.getController().getCompleteFormView().showElement(element)) {
 						element.setHiddenElement(false);
 						if (blockReference != null) {
-							WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
-									+ "' has show element '" + element + "' of block '" + blockReference + "'.");
+							WebformsUiLogger.info(this.getClass().getName(), "Has show element '" + element + "' of block '"
+									+ blockReference + "'.");
 						} else {
-							WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
-									+ "' has show element '" + element + "'.");
+							WebformsUiLogger.info(this.getClass().getName(), "Has show element '" + element + "'.");
 						}
-						UserSessionHandler.getController().setUnsavedFormChanges(true);
+						ApplicationUi.getController().setUnsavedFormChanges(true);
 					} else {
 						MessageManager.showWarning(LanguageCodes.WARNING_CANNOT_SHOW_ELEMENT_DUE_TO_HIDDEN_PARENT);
 					}
 				} else {
 					try {
-						if (UserSessionHandler.getController().getCompleteFormView().hideElement(element)) {
+						if (ApplicationUi.getController().getCompleteFormView().hideElement(element)) {
 							element.setHiddenElement(true);
 							if (blockReference != null) {
-								WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
-										+ "' has hide element '" + element + "' of block '" + blockReference + "'.");
+								WebformsUiLogger.info(this.getClass().getName(), "Has hide element '" + element + "' of block '"
+										+ blockReference + "'.");
 							} else {
-								WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
-										+ "' has hide element '" + element + "'.");
+								WebformsUiLogger.info(this.getClass().getName(), "Has hide element '" + element + "'.");
 							}
-							UserSessionHandler.getController().setUnsavedFormChanges(true);
+							ApplicationUi.getController().setUnsavedFormChanges(true);
 						}
 					} catch (ElementCannotBeRemovedException e) {
 						WebformsUiLogger.errorMessage(this.getClass().getName(), e);
@@ -578,7 +575,7 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				try {
-					UserSessionHandler.getController().finishForm(UserSessionHandler.getController().getFormInUse());
+					ApplicationUi.getController().finishForm(ApplicationUi.getController().getFormInUse());
 					ApplicationUi.navigateTo(WebMap.getMainPage());
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
@@ -598,20 +595,20 @@ public class Designer extends SecuredWebPage {
 		try {
 			TreeObject selectedElement = table.getSelectedRow();
 
-			if (UserSessionHandler.getController().getFormInUse() != null) {
+			if (ApplicationUi.getController().getFormInUse() != null) {
 				boolean formIsBlock = getCurrentForm() instanceof Block;
 				boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
 				boolean formHasLinkedForm;
-				formHasLinkedForm = UserSessionHandler.getController().getFormInUse().getFormReference() != null;
+				formHasLinkedForm = ApplicationUi.getController().getFormInUse().getFormReference() != null;
 				boolean rowIsNull = (selectedElement == null);
 				boolean rowIsForm = (selectedElement != null && selectedElement instanceof Form);
 				boolean rowIsElementReference = (selectedElement != null && selectedElement.isReadOnly());
 
 				boolean rowIsBlockReferenceCategory = rowIsElementReference && (selectedElement instanceof BaseCategory)
-						&& UserSessionHandler.getController().getCompleteFormView().getBlockReference(selectedElement) != null;
-				boolean canEdit = getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
-						UserSessionHandler.getUser());
-				boolean canStoreBlock = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(),
+						&& ApplicationUi.getController().getCompleteFormView().getBlockReference(selectedElement) != null;
+				boolean canEdit = getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(),
+						UserSession.getUser());
+				boolean canStoreBlock = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(),
 						WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
 				boolean selectedRowIsAnswer = (table.getSelectedRow() != null) && (table.getSelectedRow() instanceof Answer);
 				boolean isHidden = selectedElement != null && selectedElement.isHiddenElement();
@@ -730,11 +727,11 @@ public class Designer extends SecuredWebPage {
 					return;
 				}
 				try {
-					UserSessionHandler.getController().saveAsBlock(table.getSelectedRow(), newBlockWindow.getValue(),
+					ApplicationUi.getController().saveAsBlock(table.getSelectedRow(), newBlockWindow.getValue(),
 							newBlockWindow.getOrganization().getId());
 					newBlockWindow.close();
 
-					if (UserSessionHandler.getController().getFormInUse() instanceof Block) {
+					if (ApplicationUi.getController().getFormInUse() instanceof Block) {
 						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
 								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
 					} else {
@@ -773,7 +770,7 @@ public class Designer extends SecuredWebPage {
 				// Insert block in form
 				try {
 					if (windowBlocks.getSelectedBlock() != null) {
-						TreeObject insertedElement = UserSessionHandler.getController().insertBlock(windowBlocks.getSelectedBlock());
+						TreeObject insertedElement = ApplicationUi.getController().insertBlock(windowBlocks.getSelectedBlock());
 						clearAndUpdateFormTable();
 						table.expand(insertedElement);
 						table.setValue(insertedElement);
@@ -804,7 +801,7 @@ public class Designer extends SecuredWebPage {
 			public void acceptAction(WindowAcceptCancel window) {
 				// Insert block in form
 				try {
-					TreeObject linkedElement = UserSessionHandler.getController().linkBlock(windowBlocks.getSelectedBlock());
+					TreeObject linkedElement = ApplicationUi.getController().linkBlock(windowBlocks.getSelectedBlock());
 					clearAndUpdateFormTable();
 					table.expand(linkedElement);
 					table.setValue(linkedElement);
@@ -838,7 +835,7 @@ public class Designer extends SecuredWebPage {
 					TreeObject whatToMove = table.getSelectedRow();
 					TreeObject whereToMove = moveWindow.getSelectedTreeObject();
 					if (!whereToMove.isReadOnly()) {
-						TreeObject movedObjectNewInstance = UserSessionHandler.getController().moveTo(whatToMove, whereToMove);
+						TreeObject movedObjectNewInstance = ApplicationUi.getController().moveTo(whatToMove, whereToMove);
 						window.close();
 						table.setValue(null);
 						table.removeRow(whatToMove);
@@ -871,7 +868,7 @@ public class Designer extends SecuredWebPage {
 	}
 
 	protected void saveCollapsedTableState() {
-		UserSessionHandler.getController().setCollapsedStatus(table.getCollapsedStatus(UserSessionHandler.getController().getFormInUse()));
+		ApplicationUi.getController().setCollapsedStatus(table.getCollapsedStatus(ApplicationUi.getController().getFormInUse()));
 	}
 
 	private void removeCollapseStateListeners() {
@@ -886,9 +883,8 @@ public class Designer extends SecuredWebPage {
 
 	private void retrieveCollapsedTableState() {
 		removeCollapseStateListeners();
-		if (UserSessionHandler.getController().getCollapsedStatus() != null) {
-			table.setCollapsedStatus(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getController()
-					.getCollapsedStatus());
+		if (ApplicationUi.getController().getCollapsedStatus() != null) {
+			table.setCollapsedStatus(ApplicationUi.getController().getFormInUse(), ApplicationUi.getController().getCollapsedStatus());
 		}
 		addCollapseStateListeners();
 
@@ -916,7 +912,7 @@ public class Designer extends SecuredWebPage {
 	}
 
 	private Form getCurrentForm() {
-		return UserSessionHandler.getController().getCompleteFormView();
+		return ApplicationUi.getController().getCompleteFormView();
 	}
 
 	public boolean isBlockLinkedByFormInUse(Block block) {

@@ -15,7 +15,7 @@ import com.biit.persistence.entity.StorableObject;
 import com.biit.utils.image.ImageTools;
 import com.biit.utils.image.exceptions.InvalidRemoteImageDefinition;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.language.ServerTranslate;
@@ -394,7 +394,7 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 
 	@Override
 	public void updateElement() {
-		getInstance().setUpdatedBy(UserSessionHandler.getUser());
+		getInstance().setUpdatedBy(UserSession.getUser());
 		getInstance().setUpdateTime();
 		firePropertyUpdateListener(getInstance());
 	}
@@ -415,7 +415,7 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 			return null;
 		}
 		TreeObjectImage image = new TreeObjectImage();
-		image.setCreatedBy(UserSessionHandler.getUser().getId());
+		image.setCreatedBy(UserSession.getUser().getId());
 		try {
 			image.setWidth(Integer.parseInt(imageWidth.getValue()));
 		} catch (NumberFormatException e) {

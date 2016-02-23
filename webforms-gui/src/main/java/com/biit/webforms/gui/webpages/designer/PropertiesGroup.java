@@ -1,7 +1,8 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.TreeObject;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Group;
@@ -44,8 +45,8 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		commonProperties.addComponent(label);
 		commonProperties.addComponent(repeatable);
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(),
+				UserSession.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_GROUP.translation(), true);
@@ -81,7 +82,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		UserSessionHandler.getController().updateGroup(getInstance(), tempName, tempLabel, repeatable.getValue());
+		ApplicationUi.getController().updateGroup(getInstance(), tempName, tempLabel, repeatable.getValue());
 
 		super.updateElement();
 	}

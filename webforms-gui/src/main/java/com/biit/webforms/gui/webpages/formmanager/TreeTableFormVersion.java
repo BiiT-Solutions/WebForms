@@ -5,8 +5,9 @@ import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UiAccesser;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.TreeTableBaseForm;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
@@ -105,7 +106,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		item.getItemProperty(TreeTableFormVersionProperties.LINKED_FORM).setValue(((IWebformsFormView) form).getLinkedFormLabel());
 
 		if (((IWebformsFormView) form).getLinkedFormOrganizationId() != null) {
-			IGroup<Long> linkedOrganization = getWebformsSecurityService().getOrganization(UserSessionHandler.getUser(),
+			IGroup<Long> linkedOrganization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
 					((IWebformsFormView) form).getLinkedFormOrganizationId());
 			if (linkedOrganization != null) {
 				item.getItemProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION).setValue(linkedOrganization.getUniqueName());
@@ -129,7 +130,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 		statusComboBox.setWidth("100%");
 		statusComboBox.setImmediate(true);
 
-		boolean userCanUpgradeStatus = getWebformsSecurityService().isAuthorizedActivity(UserSessionHandler.getUser(), form,
+		boolean userCanUpgradeStatus = getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), form,
 				WebformsActivity.FORM_STATUS_DOWNGRADE);
 
 		statusComboBox.setEnabled(userCanUpgradeStatus);
@@ -168,7 +169,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	private void changeStatus(IWebformsFormView form, ComboBox statusComboBox, FormWorkStatus value) {
 		updateRow(form);
 		try {
-			UserSessionHandler.getController().changeFormStatus(form, value);
+			ApplicationUi.getController().changeFormStatus(form, value);
 		} catch (NotEnoughRightsToChangeStatusException e) {
 			statusComboBox.setValue(form.getStatus());
 			MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED, LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
@@ -183,9 +184,9 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	 */
 	public void selectLastUsedForm() {
 		try {
-			if (UserSessionHandler.getController().getLastEditedForm() != null) {
+			if (ApplicationUi.getController().getLastEditedForm() != null) {
 				// Update form with new object if the form has change.
-				selectForm(UserSessionHandler.getController().getLastEditedForm());
+				selectForm(ApplicationUi.getController().getLastEditedForm());
 			} else {
 				// Select default one.
 				selectFirstRow();
@@ -204,12 +205,11 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	 * @return
 	 */
 	private String getFormPermissionsTag(SimpleFormView form) {
-		if (UiAccesser.getUserUsingForm(form) != null && !UiAccesser.getUserUsingForm(form).equals(UserSessionHandler.getUser())) {
+		if (UiAccesser.getUserUsingForm(form) != null && !UiAccesser.getUserUsingForm(form).equals(UserSession.getUser())) {
 			return LanguageCodes.CAPTION_IN_USE.translation();
 		}
 
-		if (!getWebformsSecurityService().isAuthorizedToForm(form, UserSessionHandler.getUser())
-				&& form.getStatus().equals(FormWorkStatus.DESIGN)) {
+		if (!getWebformsSecurityService().isAuthorizedToForm(form, UserSession.getUser()) && form.getStatus().equals(FormWorkStatus.DESIGN)) {
 			return LanguageCodes.CAPTION_READ_ONLY.translation();
 		}
 		return "";

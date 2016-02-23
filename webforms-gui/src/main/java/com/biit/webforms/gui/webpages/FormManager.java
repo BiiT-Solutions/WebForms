@@ -24,7 +24,7 @@ import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.gui.ApplicationUi;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -95,7 +95,7 @@ public class FormManager extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
-		UserSessionHandler.getController().clearFormInUse();
+		ApplicationUi.getController().clearFormInUse();
 
 		setCentralPanelAsWorkingArea();
 		createUpperMenu();
@@ -104,7 +104,7 @@ public class FormManager extends SecuredWebPage {
 		setUpperMenu(upperMenu);
 		setBottomMenu(bottomMenu);
 
-		formTable = new TreeTableFormVersion(UserSessionHandler.getController().getTreeTableFormsProvider(), new IconProviderFormLinked());
+		formTable = new TreeTableFormVersion(ApplicationUi.getController().getTreeTableFormsProvider(), new IconProviderFormLinked());
 		formTable.setImmediate(true);
 		formTable.setSizeFull();
 		formTable.addValueChangeListener(new ValueChangeListener() {
@@ -194,7 +194,7 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSessionHandler.getUser(),
+				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
 						getSelectedForm().getOrganizationId());
 				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
 						XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
@@ -307,7 +307,7 @@ public class FormManager extends SecuredWebPage {
 	private void removeSelectedForm() {
 		try {
 			if (formTable.getValue() != null) {
-				UserSessionHandler.getController().removeForm(((IWebformsFormView) formTable.getValue()).getId());
+				ApplicationUi.getController().removeForm(((IWebformsFormView) formTable.getValue()).getId());
 				formTable.refreshTableData();
 			}
 		} catch (ElementCannotBeRemovedException e) {
@@ -351,7 +351,7 @@ public class FormManager extends SecuredWebPage {
 		CompleteFormView form = (CompleteFormView) loadCompleteForm(getSelectedForm());
 
 		// Xforms only can use valid forms.
-		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController().getAllWebservices());
+		ValidateFormComplete validator = new ValidateFormComplete(ApplicationUi.getController().getAllWebservices());
 		validator.setStopOnFail(true);
 
 		ValidateReport report = new ValidateReport();
@@ -379,8 +379,8 @@ public class FormManager extends SecuredWebPage {
 					public InputStream getInputStream() {
 						try {
 							return new XFormsSimpleFormExporter(completeFormView, getWebformsSecurityService().getOrganization(
-									UserSessionHandler.getUser(), getSelectedForm().getOrganizationId()), UserSessionHandler
-									.getController().getAllWebservices(), false).generateXFormsLanguage();
+									UserSession.getUser(), getSelectedForm().getOrganizationId()), ApplicationUi.getController()
+									.getAllWebservices(), false).generateXFormsLanguage();
 						} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
 								| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException | UnsupportedEncodingException e) {
 							MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
@@ -412,7 +412,7 @@ public class FormManager extends SecuredWebPage {
 							List<String> xmlFiles = new ArrayList<>();
 							List<String> xmlFileNames = new ArrayList<>();
 							XFormsMultiplesFormsExporter formExporter = new XFormsMultiplesFormsExporter(form, getWebformsSecurityService()
-									.getOrganization(UserSessionHandler.getUser(), getSelectedForm().getOrganizationId()));
+									.getOrganization(UserSession.getUser(), getSelectedForm().getOrganizationId()));
 							xmlFiles.add(formExporter.getInitialInstancePage());
 							xmlFileNames.add("initial-instance.xml");
 							xmlFiles.add(formExporter.getCategoriesFlowPage());
@@ -446,8 +446,7 @@ public class FormManager extends SecuredWebPage {
 		if (form != null) {
 			// Orbeon fails if a form has no categories.
 			if (!form.getChildren().isEmpty()) {
-				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSessionHandler.getUser(),
-						form.getOrganizationId());
+				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(), form.getOrganizationId());
 				if (OrbeonUtils.saveFormInOrbeon(form, organization, false, true)) {
 					MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
 				}
@@ -463,8 +462,7 @@ public class FormManager extends SecuredWebPage {
 		if (form != null) {
 			// Orbeon fails if a form has no categories.
 			if (!form.getChildren().isEmpty()) {
-				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSessionHandler.getUser(),
-						form.getOrganizationId());
+				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(), form.getOrganizationId());
 				if (!OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization, true, true)) {
 					// If xforms is not generated, close the popup.
 					// ((OrbeonPreviewFrame)
@@ -480,7 +478,7 @@ public class FormManager extends SecuredWebPage {
 	private void exportXsd() {
 		CompleteFormView completeFormView = loadCompleteForm(getSelectedForm());
 
-		ValidateFormComplete validator = new ValidateFormComplete(UserSessionHandler.getController().getAllWebservices());
+		ValidateFormComplete validator = new ValidateFormComplete(ApplicationUi.getController().getAllWebservices());
 		validator.setStopOnFail(true);
 
 		ValidateReport report = new ValidateReport();
@@ -556,23 +554,23 @@ public class FormManager extends SecuredWebPage {
 
 		if (form.getLinkedFormLabel() == null || form.getLinkedFormLabel().isEmpty()) {
 			// Not linked yet. Show all available forms.
-			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdForCurrentUser();
+			availableForms = ApplicationUi.getController().getAllSimpleFormViewsFromAbcdForCurrentUser();
 		} else {
 			// Already linked form, show only the versions of this form.
-			availableForms = UserSessionHandler.getController().getAllSimpleFormViewsFromAbcdByLabelAndOrganization(
-					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
+			availableForms = ApplicationUi.getController().getAllSimpleFormViewsFromAbcdByLabelAndOrganization(form.getLinkedFormLabel(),
+					form.getLinkedFormOrganizationId());
 		}
 
 		// Let user choose the version.
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
 		for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
-			if (getWebformsSecurityService().isAuthorizedActivity(UserSessionHandler.getUser(), simpleFormView.getOrganizationId(),
+			if (getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), simpleFormView.getOrganizationId(),
 					WebformsActivity.FORM_EDITING)) {
 				linkAbcdForm.add(simpleFormView);
 			}
 		}
 
-		linkAbcdForm.setValue(UserSessionHandler.getController().getLinkedSimpleFormViewsFromAbcd(form));
+		linkAbcdForm.setValue(ApplicationUi.getController().getLinkedSimpleFormViewsFromAbcd(form));
 		linkAbcdForm.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
@@ -581,7 +579,7 @@ public class FormManager extends SecuredWebPage {
 
 				for (IBaseFormView abcdForm : linkWindow.getValue()) {
 					try {
-						UserSessionHandler.getController().validateCompatibility(form, abcdForm);
+						ApplicationUi.getController().validateCompatibility(form, abcdForm);
 					} catch (BadAbcdLink e) {
 						MessageManager.showWarning(LanguageCodes.WARNING_ABCD_FORM_LINKED_NOT_VALID,
 								LanguageCodes.WARNING_ABCD_FORM_LINKED_NOT_VALID_DESCRIPTION);
@@ -590,9 +588,9 @@ public class FormManager extends SecuredWebPage {
 				}
 				form.setLinkedForms(linkWindow.getValue());
 				try {
-					form.setUpdatedBy(UserSessionHandler.getUser());
+					form.setUpdatedBy(UserSession.getUser());
 					form.setUpdateTime();
-					UserSessionHandler.getController().saveForm(form);
+					ApplicationUi.getController().saveForm(form);
 					formTable.refreshTableData();
 					formTable.selectForm(form);
 					window.close();
@@ -609,7 +607,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void importAbcdForm() {
-		final WindowImportAbcdForms importAbcdForm = new WindowImportAbcdForms(UserSessionHandler.getController()
+		final WindowImportAbcdForms importAbcdForm = new WindowImportAbcdForms(ApplicationUi.getController()
 				.getTreeTableSimpleAbcdFormsProvider());
 		importAbcdForm.addAcceptActionListener(new AcceptActionListener() {
 
@@ -627,8 +625,7 @@ public class FormManager extends SecuredWebPage {
 				// Try to import the form.
 				try {
 					com.biit.abcd.persistence.entity.SimpleFormView abcdForm = importAbcdForm.getForm();
-					Form importedForm = UserSessionHandler.getController().importAbcdForm(abcdForm, newFormName,
-							abcdForm.getOrganizationId());
+					Form importedForm = ApplicationUi.getController().importAbcdForm(abcdForm, newFormName, abcdForm.getOrganizationId());
 					formTable.refreshTableData();
 					formTable.selectForm(importedForm);
 					window.close();
@@ -660,7 +657,7 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void lockForm() {
-				UserSessionHandler.getController().setFormInUse(loadForm(getSelectedForm()));
+				ApplicationUi.getController().setFormInUse(loadForm(getSelectedForm()));
 			}
 		});
 		return bottomMenu;
@@ -687,8 +684,8 @@ public class FormManager extends SecuredWebPage {
 				try {
 					if (newFormWindow.getOrganization() != null) {
 						Form newForm;
-						newForm = UserSessionHandler.getController().createNewLinkedForm(loadForm(getSelectedForm()),
-								newFormWindow.getValue(), newFormWindow.getOrganization().getId());
+						newForm = ApplicationUi.getController().createNewLinkedForm(loadForm(getSelectedForm()), newFormWindow.getValue(),
+								newFormWindow.getOrganization().getId());
 						addFormToTable(newForm);
 						formTable.selectForm(newForm);
 						newFormWindow.close();
@@ -710,7 +707,7 @@ public class FormManager extends SecuredWebPage {
 	private void newFormVersion() {
 		Form newForm;
 		try {
-			newForm = UserSessionHandler.getController().createNewFormVersion(loadForm(getSelectedForm()));
+			newForm = ApplicationUi.getController().createNewFormVersion(loadForm(getSelectedForm()));
 			formTable.refreshTableData();
 			formTable.defaultSort();
 			formTable.selectForm(newForm);
@@ -730,7 +727,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private Form loadForm(IWebformsFormView formView) {
-		Form form = UserSessionHandler.getController().loadForm(formView);
+		Form form = ApplicationUi.getController().loadForm(formView);
 		form.setLastVersion(formView.isLastVersion());
 		return form;
 	}
@@ -759,7 +756,7 @@ public class FormManager extends SecuredWebPage {
 				}
 				try {
 					if (newFormWindow.getOrganization() != null) {
-						Form newForm = UserSessionHandler.getController().createFormAndPersist(newFormWindow.getValue(),
+						Form newForm = ApplicationUi.getController().createFormAndPersist(newFormWindow.getValue(),
 								newFormWindow.getOrganization().getId());
 						newForm.setLastVersion(true);
 						addFormToTable(newForm);
@@ -811,11 +808,11 @@ public class FormManager extends SecuredWebPage {
 
 			boolean rowInstanceOfRootForm = row instanceof RootForm;
 			boolean rowNotNullAndForm = rowNotNull && !rowInstanceOfRootForm;
-			boolean canCreateForms = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(),
+			boolean canCreateForms = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(),
 					WebformsActivity.FORM_EDITING);
-			boolean canCreateNewVersion = getWebformsSecurityService().isAuthorizedActivity(UserSessionHandler.getUser(), selectedForm,
+			boolean canCreateNewVersion = getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), selectedForm,
 					WebformsActivity.FORM_NEW_VERSION);
-			boolean canLinkVersion = getWebformsSecurityService().isAuthorizedActivity(UserSessionHandler.getUser(), selectedForm,
+			boolean canLinkVersion = getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), selectedForm,
 					WebformsActivity.FORM_EDITING);
 
 			upperMenu.setEnabled(true);
@@ -835,11 +832,10 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.getImpactAnalysis().setEnabled(rowNotNullAndForm);
 
 			upperMenu.getRemoveForm().setVisible(
-					getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(),
-							WebformsActivity.FORM_REMOVE));
+					getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.FORM_REMOVE));
 			upperMenu.getRemoveForm().setEnabled(
 					rowNotNullAndForm
-							&& getWebformsSecurityService().isAuthorizedActivity(UserSessionHandler.getUser(), selectedForm,
+							&& getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), selectedForm,
 									WebformsActivity.FORM_REMOVE));
 
 			// Bottom menu

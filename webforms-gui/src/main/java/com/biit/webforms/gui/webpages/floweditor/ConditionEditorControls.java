@@ -6,7 +6,7 @@ import java.util.List;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.TokenTypes;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.FilterTreeObjectTableContainsName;
 import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.gui.common.components.TableWithSearch;
@@ -81,8 +81,8 @@ public class ConditionEditorControls extends TabSheet {
 	 * Initialize Ui default values.
 	 */
 	private void initializeComposition() {
-		treeObjectTable.loadTreeObject(UserSessionHandler.getController().getCompleteFormView(), null, Form.class,
-				Category.class, Group.class, Question.class, SystemField.class);
+		treeObjectTable.loadTreeObject(ApplicationUi.getController().getCompleteFormView(), null, Form.class, Category.class, Group.class,
+				Question.class, SystemField.class);
 		treeObjectTable.setValue(null);
 	}
 
@@ -204,8 +204,7 @@ public class ConditionEditorControls extends TabSheet {
 		// Oher
 		pilcrow = createTokenButton("\u00B6", TokenTypes.RETURN);
 
-		GridLayout buttonHolder = new GridLayout(NUM_BUTTON_COLUMNS, NUM_BUTTON_ROWS, and, or, not, leftPar, rightPar,
-				pilcrow);
+		GridLayout buttonHolder = new GridLayout(NUM_BUTTON_COLUMNS, NUM_BUTTON_ROWS, and, or, not, leftPar, rightPar, pilcrow);
 		buttonHolder.setCaption(LanguageCodes.CAPTION_OPERATORS.translation());
 
 		buttonHolder.setWidth(FULL);
