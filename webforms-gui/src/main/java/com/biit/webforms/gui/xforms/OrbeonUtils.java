@@ -39,7 +39,7 @@ public class OrbeonUtils {
 					.getInstance().getXFormsUser(), WebformsConfigurationReader.getInstance().getXFormsDatabaseName(),
 					WebformsConfigurationReader.getInstance().getXFormsDatabaseHost());
 			try {
-				String xmlData = getXFormsData(form, organization, includeImages);
+				String xmlData = getXFormsData(form, organization, includeImages, preview);
 				xformsConnection.storeForm(form, UserSession.getUser(), organization, xmlData, preview);
 				if (includeImages) {
 					xformsConnection.storeImages(form, UserSession.getUser(), organization, form.getAllImages(), preview);
@@ -79,7 +79,7 @@ public class OrbeonUtils {
 			NotValidChildException, IOException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
 		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form, organization, ApplicationUi.getController()
-				.getAllWebservices(), includeImages);
+				.getAllWebservices(), includeImages, preview);
 		BufferedInputStream in = new BufferedInputStream(xformExporter.generateXFormsLanguage());
 		byte[] contents = new byte[1024];
 
