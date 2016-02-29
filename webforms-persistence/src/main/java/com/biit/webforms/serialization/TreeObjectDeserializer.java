@@ -25,7 +25,7 @@ public class TreeObjectDeserializer<T extends TreeObject> extends StorableObject
 	}
 
 	@Override
-	public void deserialize(JsonElement json, JsonDeserializationContext context, T element) {
+	public void deserialize(JsonElement json, JsonDeserializationContext context, T element) throws JsonParseException {
 		JsonObject jobject = (JsonObject) json;
 
 		try {

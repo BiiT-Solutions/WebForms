@@ -13,7 +13,7 @@ import com.google.gson.JsonParseException;
 
 public class StorableObjectDeserializer<T extends StorableObject> implements JsonDeserializer<T> {
 
-	public void deserialize(JsonElement json, JsonDeserializationContext context, T element) {
+	public void deserialize(JsonElement json, JsonDeserializationContext context, T element) throws JsonParseException {
 		JsonObject jobject = (JsonObject) json;
 
 		element.setComparationId(parseString("comparationId", jobject, context));

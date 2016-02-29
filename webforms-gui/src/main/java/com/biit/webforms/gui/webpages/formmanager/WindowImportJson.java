@@ -9,7 +9,9 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.UserManagementException;
+import com.biit.webforms.gui.ApplicationController;
 import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.Message;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -19,6 +21,7 @@ import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
+import com.google.gson.JsonParseException;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
@@ -54,8 +57,7 @@ public class WindowImportJson extends WindowAcceptCancel {
 		textArea = new TextArea();
 		textArea.setSizeFull();
 
-		Component component = nameOrganization(LanguageCodes.COMMON_CAPTION_NAME.translation(),
-				LanguageCodes.COMMON_CAPTION_GROUP.translation());
+		Component component = nameOrganization(LanguageCodes.COMMON_CAPTION_NAME.translation(), LanguageCodes.COMMON_CAPTION_GROUP.translation());
 
 		rootLayout.addComponent(textArea);
 		rootLayout.addComponent(component);
@@ -141,8 +143,10 @@ public class WindowImportJson extends WindowAcceptCancel {
 		} catch (ElementCannotBePersistedException e) {
 			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+		} catch (JsonParseException jpe) {
+			WebformsUiLogger.errorMessage(ApplicationController.class.getName(), jpe);
+			MessageManager.showError(LanguageCodes.INVALID_JSON_CODE);
 		}
 		return false;
 	}
-
 }

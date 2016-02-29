@@ -87,6 +87,7 @@ import com.biit.webforms.serialization.WebserviceCallSerializer;
 import com.biit.webforms.webservices.Webservice;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 
 @Entity
 @Table(name = "tree_forms", uniqueConstraints = {
@@ -898,7 +899,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 		}
 	}
 
-	public static Form fromJson(String jsonString) {
+	public static Form fromJson(String jsonString) throws JsonParseException {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
 		gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageDeserializer());

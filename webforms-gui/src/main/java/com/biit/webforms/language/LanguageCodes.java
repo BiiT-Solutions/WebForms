@@ -670,6 +670,9 @@ public enum LanguageCodes implements ILanguageCode {
 	FILE_UPLOAD_INVALID_DESCRIPTION_TYPE("file.upload.invalid.description.type"),
 	FILE_UPLOAD_INVALID_DESCRIPTION_SIZE("file.upload.invalid.description.size"),
 	FILE_DELETED("file.deleted"),
+	
+	INVALID_JSON_CODE("invalid.json.code"),
+	INVALID_JSON_CODE_DESCRIPTION("invalid.json.code.description"),
 	;
 
 	private String value;

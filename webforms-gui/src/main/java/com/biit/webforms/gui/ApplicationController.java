@@ -99,6 +99,7 @@ import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.webservice.rest.client.AbcdRestClient;
 import com.biit.webforms.webservices.Webservice;
 import com.biit.webforms.webservices.WebserviceValidatedPort;
+import com.google.gson.JsonParseException;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
@@ -141,8 +142,8 @@ public class ApplicationController {
 	 * @throws FormWithSameNameException
 	 * @throws UnexpectedDatabaseException
 	 */
-	public Form createForm(String formLabel, Long organizationId) throws FieldTooLongException, FormWithSameNameException,
-			CharacterNotAllowedException, UnexpectedDatabaseException {
+	public Form createForm(String formLabel, Long organizationId) throws FieldTooLongException, FormWithSameNameException, CharacterNotAllowedException,
+			UnexpectedDatabaseException {
 		logInfoStart("createForm", formLabel, organizationId);
 
 		// Create new form
@@ -167,7 +168,7 @@ public class ApplicationController {
 	/**
 	 * Imports a form serialized in json with formLabel as name in
 	 * organizacionId organization. If database contains a form with the same
-	 * label a {@link ElementCannotBePersistedException} exception is trown.
+	 * label a {@link ElementCannotBePersistedException} exception is thrown.
 	 * 
 	 * @param json
 	 * @param formLabel
@@ -178,7 +179,7 @@ public class ApplicationController {
 	 * @throws FieldTooLongException
 	 * @throws ElementCannotBePersistedException
 	 */
-	public Form importFormFromJson(String json, String formLabel, Long organizationId) throws FormWithSameNameException,
+	public Form importFormFromJson(String json, String formLabel, Long organizationId) throws JsonParseException, FormWithSameNameException,
 			UnexpectedDatabaseException, FieldTooLongException, ElementCannotBePersistedException {
 		// Check if database contains a form with the same name.
 		if (formDao.exists(formLabel, organizationId)) {
@@ -202,14 +203,14 @@ public class ApplicationController {
 			newForm.removeWebserviceCall(call);
 		}
 
-		// Reset ids before persisting buf after removing incorrect webservices.
+		// Reset ids before persisting buf after removing incorrect
+		// webservices.
 		newForm.resetIds();
 		formDao.makePersistent(newForm);
 		if (!webservicesToRemove.isEmpty()) {
 			MessageManager.showWarning(LanguageCodes.WARNING_WRONG_WEBSERVICE_CONFIGURATION);
 		}
-
-		return formInUse;
+		return newForm;
 	}
 
 	private boolean checkWebserviceCallConsistency(WebserviceCall call) {
@@ -286,8 +287,8 @@ public class ApplicationController {
 	 * @throws UnexpectedDatabaseException
 	 * @throws ElementCannotBePersistedException
 	 */
-	public Block createBlock(String blockName, Long organizationId) throws CharacterNotAllowedException, FieldTooLongException,
-			FormWithSameNameException, UnexpectedDatabaseException, ElementCannotBePersistedException {
+	public Block createBlock(String blockName, Long organizationId) throws CharacterNotAllowedException, FieldTooLongException, FormWithSameNameException,
+			UnexpectedDatabaseException, ElementCannotBePersistedException {
 		WebformsUiLogger.info(ApplicationController.class.getName(), "createBlock " + blockName);
 		logInfoStart("createBlock", blockName, organizationId);
 
@@ -332,9 +333,8 @@ public class ApplicationController {
 	 * @throws ElementIsReadOnly
 	 * @throws ElementCannotBePersistedException
 	 */
-	public Form importAbcdForm(IBaseFormView simpleFormView, String importLabel, Long organizationId) throws NotValidAbcdForm,
-			FieldTooLongException, FormWithSameNameException, CharacterNotAllowedException, UnexpectedDatabaseException, ElementIsReadOnly,
-			ElementCannotBePersistedException {
+	public Form importAbcdForm(IBaseFormView simpleFormView, String importLabel, Long organizationId) throws NotValidAbcdForm, FieldTooLongException,
+			FormWithSameNameException, CharacterNotAllowedException, UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException {
 		logInfoStart("importAbcdForm", simpleFormView, importLabel, organizationId);
 
 		// Try to create a new form with the name and the organization
@@ -405,8 +405,8 @@ public class ApplicationController {
 	public List<com.biit.abcd.persistence.entity.SimpleFormView> getLinkedSimpleAbcdForms(Form form) {
 		List<com.biit.abcd.persistence.entity.SimpleFormView> linkedSimpleAbcdForms = new ArrayList<>();
 		if (form.getLabel() != null && form.getOrganizationId() != null) {
-			List<com.biit.abcd.persistence.entity.SimpleFormView> views = getAllSimpleFormViewsFromAbcdByLabelAndOrganization(
-					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
+			List<com.biit.abcd.persistence.entity.SimpleFormView> views = getAllSimpleFormViewsFromAbcdByLabelAndOrganization(form.getLinkedFormLabel(),
+					form.getLinkedFormOrganizationId());
 			for (com.biit.abcd.persistence.entity.SimpleFormView view : views) {
 				if (form.getLinkedFormVersions().contains(view.getVersion())) {
 					linkedSimpleAbcdForms.add(view);
@@ -429,8 +429,8 @@ public class ApplicationController {
 	 * @throws FormWithSameNameException
 	 * @throws UnexpectedDatabaseException
 	 */
-	public Form createNewLinkedForm(Form form, String formLabel, Long organizationId) throws NotValidStorableObjectException,
-			CharacterNotAllowedException, FieldTooLongException, FormWithSameNameException, UnexpectedDatabaseException {
+	public Form createNewLinkedForm(Form form, String formLabel, Long organizationId) throws NotValidStorableObjectException, CharacterNotAllowedException,
+			FieldTooLongException, FormWithSameNameException, UnexpectedDatabaseException {
 		WebformsUiLogger.info(ApplicationController.class.getName(), "createNewLinkedForm " + form);
 
 		Form newForm = createForm(formLabel, organizationId);
@@ -459,8 +459,8 @@ public class ApplicationController {
 	 * @throws UnexpectedDatabaseException
 	 * @throws ElementCannotBePersistedException
 	 */
-	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException, NotValidStorableObjectException,
-			CharacterNotAllowedException, UnexpectedDatabaseException, ElementCannotBePersistedException {
+	public Form createNewFormVersion(Form form) throws NewVersionWithoutFinalDesignException, NotValidStorableObjectException, CharacterNotAllowedException,
+			UnexpectedDatabaseException, ElementCannotBePersistedException {
 		WebformsUiLogger.info(ApplicationController.class.getName(), "createNewFormVersion " + form);
 
 		if (form.getStatus() == FormWorkStatus.DESIGN) {
@@ -495,8 +495,7 @@ public class ApplicationController {
 	 * @throws UnexpectedDatabaseException
 	 * @throws ElementCannotBePersistedException
 	 */
-	public void changeFormDescription(Form form, String text) throws FieldTooLongException, UnexpectedDatabaseException,
-			ElementCannotBePersistedException {
+	public void changeFormDescription(Form form, String text) throws FieldTooLongException, UnexpectedDatabaseException, ElementCannotBePersistedException {
 		WebformsUiLogger.info(ApplicationController.class.getName(), "changeFormDescription " + form + " " + text);
 		try {
 			form.setDescription(text);
@@ -511,7 +510,7 @@ public class ApplicationController {
 		if (formInUse != null) {
 			// Release current form if any.
 			collapsedStatus = null;
-			UiAccesser.releaseForm(formInUse, UserSession.getUser(),UI.getCurrent());
+			UiAccesser.releaseForm(formInUse, UserSession.getUser(), UI.getCurrent());
 		}
 		if (form == null) {
 			formInUse = null;
@@ -520,7 +519,7 @@ public class ApplicationController {
 			formInUse = form;
 			collapsedStatus = null;
 			// Lock new form
-			UiAccesser.lockForm(formInUse, UserSession.getUser(),UI.getCurrent());
+			UiAccesser.lockForm(formInUse, UserSession.getUser(), UI.getCurrent());
 			WebformsUiLogger.info(ApplicationController.class.getName(), "setFormInUse Form '" + formInUse + "'.");
 			setUnsavedFormChanges(false);
 			setLastEditedForm(formInUse);
@@ -555,7 +554,7 @@ public class ApplicationController {
 	public void clearFormInUse() {
 		if (formInUse != null) {
 			WebformsUiLogger.info(ApplicationController.class.getName(), "clearFormInUse");
-			UiAccesser.releaseForm(formInUse, UserSession.getUser(),UI.getCurrent());
+			UiAccesser.releaseForm(formInUse, UserSession.getUser(), UI.getCurrent());
 			clearParameters();
 			setUnsavedFormChanges(false);
 		}
@@ -668,16 +667,15 @@ public class ApplicationController {
 	 * @throws NotValidChildException
 	 * @throws ElementIsReadOnly
 	 */
-	public TreeObject insertTreeObject(Class<? extends TreeObject> classType, TreeObject parent, String name)
-			throws NotValidChildException, ElementIsReadOnly {
+	public TreeObject insertTreeObject(Class<? extends TreeObject> classType, TreeObject parent, String name) throws NotValidChildException, ElementIsReadOnly {
 
 		// Block references cannot have new childs.
 		if (parent instanceof BlockReference || parent.isReadOnly()) {
 			throw new NotValidChildException("Block References are read only and cannot be modified. ");
 		}
 
-		WebformsUiLogger.info(ApplicationController.class.getName(), "insertTreeObject of type '" + classType.getName() + "' to '" + parent
-				+ "' with name '" + name + "' START");
+		WebformsUiLogger.info(ApplicationController.class.getName(), "insertTreeObject of type '" + classType.getName() + "' to '" + parent + "' with name '"
+				+ name + "' START");
 
 		TreeObject treeObject = null;
 		try {
@@ -689,14 +687,14 @@ public class ApplicationController {
 			treeObject.setUpdatedBy(UserSession.getUser());
 			parent.addChild(treeObject);
 			setUnsavedFormChanges(true);
-			WebformsUiLogger.info(ApplicationController.class.getName(),
-					"inserted '" + treeObject + "' into '" + parent + "' ('" + parent.getPathName() + "')");
+			WebformsUiLogger
+					.info(ApplicationController.class.getName(), "inserted '" + treeObject + "' into '" + parent + "' ('" + parent.getPathName() + "')");
 		} catch (FieldTooLongException | InstantiationException | IllegalAccessException | CharacterNotAllowedException e) {
 			// Impossible
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		} catch (NotValidChildException e) {
-			WebformsUiLogger.severe(this.getClass().getName(), "Element of type '" + classType.getName() + "' could not be inserted in '"
-					+ parent.getPathName() + "'");
+			WebformsUiLogger.severe(this.getClass().getName(),
+					"Element of type '" + classType.getName() + "' could not be inserted in '" + parent.getPathName() + "'");
 			throw e;
 		}
 
@@ -878,8 +876,8 @@ public class ApplicationController {
 	 * @throws ElementCannotBeRemovedException
 	 * @throws ElementCannotBePersistedException
 	 */
-	public void saveAsBlock(TreeObject element, String blockLabel, Long organizationId) throws FieldTooLongException,
-			FormWithSameNameException, UnexpectedDatabaseException, ElementCannotBeRemovedException, ElementCannotBePersistedException {
+	public void saveAsBlock(TreeObject element, String blockLabel, Long organizationId) throws FieldTooLongException, FormWithSameNameException,
+			UnexpectedDatabaseException, ElementCannotBeRemovedException, ElementCannotBePersistedException {
 		logInfoStart("saveAsBlock ", element, blockLabel, organizationId);
 
 		Block block = null;
@@ -1020,12 +1018,10 @@ public class ApplicationController {
 	 * @param defaultValue
 	 */
 	public void updateQuestion(Question question, String name, String label, String description, boolean mandatory, AnswerType answerType,
-			AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled,
-			TreeObjectImage image) {
+			AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled, TreeObjectImage image) {
 		try {
 			if (!question.getLabel().equals(label) || !question.getDescription().equals(description) || !question.getName().equals(name)
-					|| question.isMandatory() != mandatory
-					|| (question.getAnswerType() != null && !question.getAnswerType().equals(answerType))
+					|| question.isMandatory() != mandatory || (question.getAnswerType() != null && !question.getAnswerType().equals(answerType))
 					|| (question.getAnswerFormat() != null && !question.getAnswerFormat().equals(answerFormat))
 					|| (question.getAnswerSubformat() != null && !question.getAnswerSubformat().equals(answerSubformat))
 					|| question.isHorizontal() != horizontal || (defaultValue == null && question.getDefaultValue() != "")
@@ -1045,8 +1041,8 @@ public class ApplicationController {
 				question.setDefaultValue(defaultValue);
 				question.setEditionDisabled(editionDisabled);
 				question.setImage(image);
-				logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat, answerSubformat,
-						horizontal, image != null ? image.getFileName() : null);
+				logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat, answerSubformat, horizontal,
+						image != null ? image.getFileName() : null);
 			}
 		} catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException | InvalidAnswerSubformatException e) {
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
@@ -1064,8 +1060,7 @@ public class ApplicationController {
 	 * @throws EmptyBlockCannotBeInserted
 	 * @throws ElementIsReadOnly
 	 */
-	public TreeObject insertBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm, EmptyBlockCannotBeInserted,
-			ElementIsReadOnly {
+	public TreeObject insertBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm, EmptyBlockCannotBeInserted, ElementIsReadOnly {
 		WebformsUiLogger.info(ApplicationController.class.getName(), "insert Block " + formInUse + " " + block);
 
 		if (block instanceof Block) {
@@ -1152,8 +1147,8 @@ public class ApplicationController {
 	 * @throws EmptyBlockCannotBeInserted
 	 * @throws ElementIsReadOnly
 	 */
-	public TreeObject linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm, EmptyBlockCannotBeInserted,
-			ElementIsReadOnly, LinkCanOnlyBePerformedOnWholeBlock {
+	public TreeObject linkBlock(TreeObject block) throws CategoryWithSameNameAlreadyExistsInForm, EmptyBlockCannotBeInserted, ElementIsReadOnly,
+			LinkCanOnlyBePerformedOnWholeBlock {
 		WebformsUiLogger.info(ApplicationController.class.getName(), "link Block '" + block + "' in '" + formInUse + "' ");
 
 		if (block instanceof Block) {
@@ -1214,16 +1209,15 @@ public class ApplicationController {
 			MessageManager.showWarning(LanguageCodes.WARNING_ELEMENT_WTIH_SAME_NAME_EXIST);
 		}
 		if (!destiny.isAllowedChildren(origin)) {
-			throw new NotValidChildException("Class '" + this.getClass().getName() + "' does not allows instances of '"
-					+ origin.getClass().getName() + "' as child.");
+			throw new NotValidChildException("Class '" + this.getClass().getName() + "' does not allows instances of '" + origin.getClass().getName()
+					+ "' as child.");
 		}
 		try {
 			TreeObject newInstanceOfOrigin = Form.move(origin, destiny);
 			setUnsavedFormChanges(true);
 			return newInstanceOfOrigin;
 		} catch (NotValidChildException | ChildrenNotFoundException e) {
-			WebformsUiLogger
-					.warning(ApplicationController.class.getName(), "move '" + origin + "' to '" + destiny + "' could not be done.");
+			WebformsUiLogger.warning(ApplicationController.class.getName(), "move '" + origin + "' to '" + destiny + "' could not be done.");
 			throw e;
 		}
 	}
@@ -1265,9 +1259,9 @@ public class ApplicationController {
 	 * @throws FlowWithoutDestinyException
 	 * @throws FlowNotAllowedException
 	 */
-	public void updateFlowContent(Flow flow, BaseQuestion origin, FlowType flowType, BaseQuestion destiny, boolean others,
-			List<Token> condition) throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, FlowNotAllowedException {
+	public void updateFlowContent(Flow flow, BaseQuestion origin, FlowType flowType, BaseQuestion destiny, boolean others, List<Token> condition)
+			throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
+			FlowWithoutDestinyException, FlowNotAllowedException {
 		logInfoStart("updateFlowContent", flow, origin, flowType, destiny, others, condition);
 		flow.setContent(origin, flowType, destiny, others, condition);
 
@@ -1484,8 +1478,7 @@ public class ApplicationController {
 		ValidateReport report = new ValidateReport();
 		validator.validate(abcdForm, report);
 		if (!report.isValid()) {
-			throw new BadAbcdLink("Abcd form '" + abcdSimpleForm.getLabel() + "' is not a valid link for form '" + currentForm.getLabel()
-					+ "'.");
+			throw new BadAbcdLink("Abcd form '" + abcdSimpleForm.getLabel() + "' is not a valid link for form '" + currentForm.getLabel() + "'.");
 		}
 	}
 
@@ -1497,12 +1490,10 @@ public class ApplicationController {
 	 * @param organizationId
 	 * @return
 	 */
-	public List<com.biit.abcd.persistence.entity.SimpleFormView> getAllSimpleFormViewsFromAbcdByLabelAndOrganization(String label,
-			Long organizationId) {
-		return AbcdRestClient.getSimpleFormViewsFromAbcdByLabelAndOrganization(WebformsConfigurationReader.getInstance()
-				.getAbcdRestServiceUrl(), WebformsConfigurationReader.getInstance()
-				.getAbcdRestServiceSimpleFormViewByLabelAndOrganizationPath(), UserSession.getUser().getEmailAddress(), label,
-				organizationId);
+	public List<com.biit.abcd.persistence.entity.SimpleFormView> getAllSimpleFormViewsFromAbcdByLabelAndOrganization(String label, Long organizationId) {
+		return AbcdRestClient.getSimpleFormViewsFromAbcdByLabelAndOrganization(WebformsConfigurationReader.getInstance().getAbcdRestServiceUrl(),
+				WebformsConfigurationReader.getInstance().getAbcdRestServiceSimpleFormViewByLabelAndOrganizationPath(),
+				UserSession.getUser().getEmailAddress(), label, organizationId);
 	}
 
 	/**
@@ -1512,8 +1503,7 @@ public class ApplicationController {
 	 */
 	public List<com.biit.abcd.persistence.entity.SimpleFormView> getAllSimpleFormViewsFromAbcdForCurrentUser() {
 		return AbcdRestClient.getSimpleFormViewsFromAbcdByUserEmail(WebformsConfigurationReader.getInstance().getAbcdRestServiceUrl(),
-				WebformsConfigurationReader.getInstance().getAbcdRestServiceAllSimpleFormViewsPath(), UserSession.getUser()
-						.getEmailAddress());
+				WebformsConfigurationReader.getInstance().getAbcdRestServiceAllSimpleFormViewsPath(), UserSession.getUser().getEmailAddress());
 	}
 
 	/**
@@ -1523,9 +1513,8 @@ public class ApplicationController {
 	 * @return
 	 */
 	public com.biit.abcd.persistence.entity.Form getFormFromAbcdById(Long formId) {
-		return AbcdRestClient.getFormFromAbcdById(WebformsConfigurationReader.getInstance().getAbcdRestServiceUrl(),
-				WebformsConfigurationReader.getInstance().getAbcdRestServiceCompleteFormByIdPath(),
-				UserSession.getUser().getEmailAddress(), formId);
+		return AbcdRestClient.getFormFromAbcdById(WebformsConfigurationReader.getInstance().getAbcdRestServiceUrl(), WebformsConfigurationReader.getInstance()
+				.getAbcdRestServiceCompleteFormByIdPath(), UserSession.getUser().getEmailAddress(), formId);
 	}
 
 	/**
@@ -1535,9 +1524,8 @@ public class ApplicationController {
 	 * @return
 	 */
 	public List<com.biit.abcd.persistence.entity.Form> getFormsFromAbcdByOrganization(Long organizationId) {
-		return AbcdRestClient.getFormsFromAbcdByOrganization(WebformsConfigurationReader.getInstance().getAbcdRestServiceUrl(),
-				WebformsConfigurationReader.getInstance().getAbcdRestServiceCompleteFormsByOrganizationPath(), UserSession.getUser()
-						.getEmailAddress(), organizationId);
+		return AbcdRestClient.getFormsFromAbcdByOrganization(WebformsConfigurationReader.getInstance().getAbcdRestServiceUrl(), WebformsConfigurationReader
+				.getInstance().getAbcdRestServiceCompleteFormsByOrganizationPath(), UserSession.getUser().getEmailAddress(), organizationId);
 	}
 
 	/**
@@ -1548,12 +1536,10 @@ public class ApplicationController {
 	 * @param formVersion
 	 * @return
 	 */
-	public com.biit.abcd.persistence.entity.Form getFormFromAbcdByLabelOrganizationAndVersion(String formLabel, Long formOrganization,
-			Integer formVersion) {
-		return AbcdRestClient.getFormFromAbcdByLabelOrganizationAndVersion(WebformsConfigurationReader.getInstance()
-				.getAbcdRestServiceUrl(), WebformsConfigurationReader.getInstance()
-				.getAbcdRestServiceCompleteFormByLabelFormAndOrganizationPath(), UserSession.getUser().getEmailAddress(), formLabel,
-				formOrganization, formVersion);
+	public com.biit.abcd.persistence.entity.Form getFormFromAbcdByLabelOrganizationAndVersion(String formLabel, Long formOrganization, Integer formVersion) {
+		return AbcdRestClient.getFormFromAbcdByLabelOrganizationAndVersion(WebformsConfigurationReader.getInstance().getAbcdRestServiceUrl(),
+				WebformsConfigurationReader.getInstance().getAbcdRestServiceCompleteFormByLabelFormAndOrganizationPath(), UserSession.getUser()
+						.getEmailAddress(), formLabel, formOrganization, formVersion);
 	}
 
 	/**
@@ -1637,8 +1623,7 @@ public class ApplicationController {
 	public void changeFormStatus(IWebformsFormView formView, FormWorkStatus value) throws NotEnoughRightsToChangeStatusException,
 			ElementCannotBePersistedException {
 		// Can downgrade
-		boolean userCanDowngradeStatus = webformsSecurityService.isAuthorizedActivity(UserSession.getUser(), formView,
-				WebformsActivity.FORM_STATUS_DOWNGRADE);
+		boolean userCanDowngradeStatus = webformsSecurityService.isAuthorizedActivity(UserSession.getUser(), formView, WebformsActivity.FORM_STATUS_DOWNGRADE);
 
 		if (!formView.getStatus().isMovingForward(value)) {
 			if (!(userCanDowngradeStatus)) {
@@ -1713,8 +1698,7 @@ public class ApplicationController {
 				if (flow.getDestiny() != null && blockReference.getReference() != null) {
 					boolean outsideOfBlock = true;
 					for (StorableObject object : blockReference.getReference().getAllInnerStorableObjects()) {
-						if (object instanceof TreeObject
-								&& ((TreeObject) object).getOriginalReference().equals(flow.getDestiny().getOriginalReference())) {
+						if (object instanceof TreeObject && ((TreeObject) object).getOriginalReference().equals(flow.getDestiny().getOriginalReference())) {
 							outsideOfBlock = false;
 						}
 					}
@@ -1728,8 +1712,7 @@ public class ApplicationController {
 				if (flow.getOrigin() != null && blockReference.getReference() != null) {
 					boolean outsideOfBlock = true;
 					for (StorableObject object : blockReference.getReference().getAllInnerStorableObjects()) {
-						if (object instanceof TreeObject
-								&& ((TreeObject) object).getOriginalReference().equals(flow.getOrigin().getOriginalReference())) {
+						if (object instanceof TreeObject && ((TreeObject) object).getOriginalReference().equals(flow.getOrigin().getOriginalReference())) {
 							outsideOfBlock = false;
 						}
 					}
@@ -1788,8 +1771,8 @@ public class ApplicationController {
 	public List<com.biit.abcd.persistence.entity.SimpleFormView> getLinkedSimpleFormViewsFromAbcd(Form form) {
 		List<com.biit.abcd.persistence.entity.SimpleFormView> linkedSimpleAbcdForms = new ArrayList<>();
 		if (form.getLabel() != null && form.getOrganizationId() != null) {
-			List<com.biit.abcd.persistence.entity.SimpleFormView> views = getAllSimpleFormViewsFromAbcdByLabelAndOrganization(
-					form.getLinkedFormLabel(), form.getLinkedFormOrganizationId());
+			List<com.biit.abcd.persistence.entity.SimpleFormView> views = getAllSimpleFormViewsFromAbcdByLabelAndOrganization(form.getLinkedFormLabel(),
+					form.getLinkedFormOrganizationId());
 			if (views != null) {
 				for (com.biit.abcd.persistence.entity.SimpleFormView view : views) {
 					if (form.getLinkedFormVersions().contains(view.getVersion())) {
@@ -1817,13 +1800,13 @@ public class ApplicationController {
 				if (selectedForm != null) {
 					// Remove the form.
 					formDao.makeTransient(selectedForm);
-					WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSession.getUser().getEmailAddress()
-							+ "' has removed form '" + selectedForm.getLabel() + "' (version " + selectedForm.getVersion() + ").");
+					WebformsUiLogger.info(this.getClass().getName(),
+							"User '" + UserSession.getUser().getEmailAddress() + "' has removed form '" + selectedForm.getLabel() + "' (version "
+									+ selectedForm.getVersion() + ").");
 
 				}
 			} else {
-				throw new FormIsUsedAsReferenceException(
-						LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_FORM_DESCRIPTION.translation());
+				throw new FormIsUsedAsReferenceException(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_FORM_DESCRIPTION.translation());
 			}
 		}
 	}
