@@ -11,7 +11,6 @@ import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.ApplicationController;
 import com.biit.webforms.gui.ApplicationUi;
-import com.biit.webforms.gui.Message;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
