@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.biit.form.entity.TreeObject;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.OpenSearchComponentListener;
 import com.biit.webforms.gui.common.components.SearchButtonField;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -39,8 +39,9 @@ public class SearchFormElementField extends SearchButtonField {
 	}
 
 	/**
-	 * This function configures the select treeObject window to enable accept button only when the selected element is
-	 * from any class contained in the filter.
+	 * This function configures the select treeObject window to enable accept
+	 * button only when the selected element is from any class contained in the
+	 * filter.
 	 * 
 	 * @param selectfilter
 	 */
@@ -49,9 +50,8 @@ public class SearchFormElementField extends SearchButtonField {
 	}
 
 	protected void openSearchFormElementWindow(TreeObject currentValue) {
-		final WindowTreeObject windowTreeObject = new WindowTreeObject(
-				LanguageCodes.CAPTION_WINDOW_SELECT_FORM_ELEMENT, UserSessionHandler.getController()
-						.getCompleteFormView(), filterClasses);
+		final WindowTreeObject windowTreeObject = new WindowTreeObject(LanguageCodes.CAPTION_WINDOW_SELECT_FORM_ELEMENT, ApplicationUi
+				.getController().getCompleteFormView(), filterClasses);
 		windowTreeObject.setSelectableFilers(selectFilter);
 		for (Filter filter : filters) {
 			windowTreeObject.addFilter(filter);

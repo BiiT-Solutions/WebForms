@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowDownloader;
@@ -142,8 +142,7 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 	private void updateUi() {
 		setLabel(form);
 
-		List<SimpleFormView> forms = UserSessionHandler.getController().getSimpleFormVersionsWebforms(form.getLabel(),
-				form.getOrganizationId());
+		List<SimpleFormView> forms = ApplicationUi.getController().getSimpleFormVersionsWebforms(form.getLabel(), form.getOrganizationId());
 
 		for (SimpleFormView otherVersion : forms) {
 			if (otherVersion.getVersion() < form.getVersion()) {
@@ -160,7 +159,7 @@ public class WindowImpactAnalysis extends WindowAcceptCancel {
 	}
 
 	private Form loadForm(IWebformsFormView formView) {
-		Form form = UserSessionHandler.getController().loadForm(formView);
+		Form form = ApplicationUi.getController().loadForm(formView);
 		form.setLastVersion(formView.isLastVersion());
 		return new CompleteFormView(form);
 	}

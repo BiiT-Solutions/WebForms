@@ -8,7 +8,8 @@ import java.util.Set;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.usermanager.security.IActivity;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -50,9 +51,8 @@ public class WebserviceCallEditor extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
-		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
-						UserSessionHandler.getUser())) {
+		if (ApplicationUi.getController().getFormInUse() != null
+				&& !getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser())) {
 			MessageManager.showWarning(LanguageCodes.INFO_MESSAGE_FORM_IS_READ_ONLY);
 		}
 
@@ -115,9 +115,8 @@ public class WebserviceCallEditor extends SecuredWebPage {
 		webserviceCallComponent.setValue((WebserviceCall) webserviceCallTable.getValue());
 		webserviceCallComponent.setEnabled((WebserviceCall) webserviceCallTable.getValue() != null
 				&& !((WebserviceCall) webserviceCallTable.getValue()).isReadOnly());
-		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
-						UserSessionHandler.getUser())) {
+		if (ApplicationUi.getController().getFormInUse() != null
+				&& !getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser())) {
 			webserviceCallComponent.setSelectable(false);
 		} else {
 			webserviceCallComponent.setSelectable(true);
@@ -180,7 +179,7 @@ public class WebserviceCallEditor extends SecuredWebPage {
 	}
 
 	protected void removeWebserviceCall() {
-		UserSessionHandler.getController().removeWebserviceCall((WebserviceCall) webserviceCallTable.getValue());
+		ApplicationUi.getController().removeWebserviceCall((WebserviceCall) webserviceCallTable.getValue());
 		webserviceCallTable.removeItem(webserviceCallTable.getValue());
 		webserviceCallTable.setValue(null);
 	}
@@ -192,7 +191,7 @@ public class WebserviceCallEditor extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				WindowWebservices windowWebservices = (WindowWebservices) window;
-				WebserviceCall call = UserSessionHandler.getController().generateNewWebserviceCall(windowWebservices.getName(),
+				WebserviceCall call = ApplicationUi.getController().generateNewWebserviceCall(windowWebservices.getName(),
 						windowWebservices.getWebservice());
 				updateWebserviceCallTable();
 				window.close();
@@ -210,7 +209,7 @@ public class WebserviceCallEditor extends SecuredWebPage {
 
 	protected void save() {
 		try {
-			UserSessionHandler.getController().saveForm();
+			ApplicationUi.getController().saveForm();
 			updateWebserviceCallTable();
 			MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
 		} catch (UnexpectedDatabaseException e) {
@@ -233,7 +232,7 @@ public class WebserviceCallEditor extends SecuredWebPage {
 
 		webserviceCallTable.setValue(null);
 		webserviceCallTable.removeAllItems();
-		Set<WebserviceCall> calls = UserSessionHandler.getController().getCompleteFormView().getWebserviceCalls();
+		Set<WebserviceCall> calls = ApplicationUi.getController().getCompleteFormView().getWebserviceCalls();
 		webserviceCallTable.addRows(calls);
 		if (selectedCall != null) {
 			for (WebserviceCall call : calls) {
@@ -261,9 +260,8 @@ public class WebserviceCallEditor extends SecuredWebPage {
 	}
 
 	private void updateUpperMenu() {
-		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !getWebformsSecurityService().isFormEditable(UserSessionHandler.getController().getFormInUse(),
-						UserSessionHandler.getUser())) {
+		if (ApplicationUi.getController().getFormInUse() != null
+				&& !getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser())) {
 			upperMenu.getSaveButton().setEnabled(false);
 			upperMenu.getAddWebserviceCall().setEnabled(false);
 			upperMenu.getRemoveWebserviceCall().setEnabled(false);

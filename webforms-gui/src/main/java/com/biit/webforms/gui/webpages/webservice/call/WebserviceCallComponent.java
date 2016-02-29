@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.biit.form.entity.BaseQuestion;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -207,7 +208,7 @@ public class WebserviceCallComponent extends CustomComponent {
 		this.webserviceCall = value;
 		if (value != null) {
 			try {
-				this.webservice = UserSessionHandler.getController().findWebservice(webserviceCall.getWebserviceName());
+				this.webservice = ApplicationUi.getController().findWebservice(webserviceCall.getWebserviceName());
 			} catch (WebserviceNotFoundException e) {
 				this.webservice = null;
 				WebformsUiLogger.errorMessage(this.getClass().getName(), e);
@@ -329,8 +330,8 @@ public class WebserviceCallComponent extends CustomComponent {
 
 	public void editSelectedLink() {
 		// Check read only.
-		if (UserSessionHandler.getController().getFormInUse() != null
-				&& !webformsSecurityService.isFormEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser())) {
+		if (ApplicationUi.getController().getFormInUse() != null
+				&& !webformsSecurityService.isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser())) {
 			return;
 		}
 

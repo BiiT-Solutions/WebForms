@@ -7,7 +7,7 @@ import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.gui.ApplicationUi;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -51,7 +51,7 @@ public abstract class SecuredWebPage extends WebPage {
 	public final void enter(ViewChangeEvent event) {
 		// Check if the user is logged in. If not, redirect to main page.
 		try {
-			IUser<Long> user = UserSessionHandler.getUser();
+			IUser<Long> user = UserSession.getUser();
 			if (user == null) {
 				WebformsUiLogger.debug(this.getClass().getName(),
 						"Unknown user is trying to access a secure webpage without login. Redirected to Login page.");
@@ -61,8 +61,8 @@ public abstract class SecuredWebPage extends WebPage {
 					if (accessAuthorizationsRequired() != null && !accessAuthorizationsRequired().isEmpty()) {
 						for (IActivity activity : accessAuthorizationsRequired()) {
 							if (!getWebformsSecurityService().isUserAuthorizedInAnyOrganization(user, activity)) {
-								WebformsUiLogger.debug(this.getClass().getName(), "User: " + UserSessionHandler.getUser().getEmailAddress()
-										+ " tried to access application without appropiate roles.");
+								WebformsUiLogger
+										.debug(this.getClass().getName(), "Attempt to access application without appropiate roles.");
 								MessageManager.showError(CommonComponentsLanguageCodes.ERROR_NOT_AUTHORIZED,
 										CommonComponentsLanguageCodes.ERROR_CONTACT);
 								ApplicationUi.navigateTo(WebMap.getLoginPage());
@@ -71,8 +71,7 @@ public abstract class SecuredWebPage extends WebPage {
 						}
 					}
 					securedEnter(event);
-					WebformsUiLogger.debug(this.getClass().getName(), "Initialized correctly for user: "
-							+ UserSessionHandler.getUser().getEmailAddress());
+					WebformsUiLogger.debug(this.getClass().getName(), "Initialized correctly");
 				} catch (AuthenticationRequired | IOException e) {
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 					MessageManager.showError(LanguageCodes.ERROR_USER_SERVICE);

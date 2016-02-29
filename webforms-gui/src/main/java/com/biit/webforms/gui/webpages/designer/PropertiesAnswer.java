@@ -1,7 +1,8 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.TreeObject;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
@@ -44,7 +45,8 @@ public class PropertiesAnswer extends PropertiesForStorableObjectWithImages<Answ
 		commonProperties.addComponent(label);
 		commonProperties.addComponent(description);
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(),
+				UserSession.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_ANSWER.translation(), true);
@@ -80,7 +82,7 @@ public class PropertiesAnswer extends PropertiesForStorableObjectWithImages<Answ
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		UserSessionHandler.getController().updateAnswer(getInstance(), tempValue, tempLabel, description.getValue(), getImage());
+		ApplicationUi.getController().updateAnswer(getInstance(), tempValue, tempLabel, description.getValue(), getImage());
 
 		super.updateElement();
 	}

@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.biit.form.entity.IBaseFormView;
 import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.persistence.entity.Form;
+import com.vaadin.ui.UI;
 
 public class UiAccesser {
 	static ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -18,10 +20,11 @@ public class UiAccesser {
 		void receiveBroadcast(String message);
 	}
 
-	private static HashMap<String, IUser<Long>> formsInUse = new HashMap<String, IUser<Long>>();
+	private static HashMap<String, IUser<Long>> formsToUser = new HashMap<>();
+	private static HashMap<String, UI> formsToUi = new HashMap<>();
 
-	private static LinkedList<BroadcastListener> listeners = new LinkedList<BroadcastListener>();
-	private static List<ApplicationController> controllers = new ArrayList<ApplicationController>();
+	private static LinkedList<BroadcastListener> listeners = new LinkedList<>();
+	private static List<ApplicationController> controllers = new ArrayList<>();
 
 	public static synchronized void register(ApplicationController controller) {
 		controllers.add(controller);
@@ -50,33 +53,51 @@ public class UiAccesser {
 			});
 	}
 
-	public static synchronized boolean isUserUserUsingForm(IUser<Long> user, IBaseFormView form) {
+	public static synchronized boolean isUserUiUsingForm(IUser<Long> user, UI ui, IBaseFormView form) {
 		if (form != null) {
-			return formsInUse.get(form.getComparationId()) != null && formsInUse.get(form.getComparationId()).equals(user);
+			return formsToUser.get(form.getComparationId()) != null && formsToUser.get(form.getComparationId()).equals(user)
+					&& formsToUi.get(form.getComparationId()) != null && formsToUi.get(form.getComparationId()).equals(ui);
 		}
 		return false;
 	}
 
 	public static synchronized IUser<Long> getUserUsingForm(IBaseFormView form) {
-		return formsInUse.get(form.getComparationId());
+		return formsToUser.get(form.getComparationId());
 	}
 
-	public static synchronized void lockForm(Form form, IUser<Long> user) {
+	public static synchronized void lockForm(Form form, IUser<Long> user, UI ui) {
 		if (form == null || user == null) {
 			return;
 		}
 
-		if (!formsInUse.containsKey(form.getComparationId())) {
-			WebformsUiLogger.info(UiAccesser.class.getName(), "User '" + user.getEmailAddress() + "' has locked '" + form + "'");
-			formsInUse.put(form.getComparationId(), user);
+		if ((!formsToUser.containsKey(form.getComparationId())) || Objects.equals(formsToUser.get(form.getComparationId()), user)) {
+			WebformsUiLogger.info(UiAccesser.class.getName(), "User already has locked '" + form + "'");
+			if (formsToUi.get(form.getComparationId()) != null && !Objects.equals(formsToUi.get(form.getComparationId()), ui)) {
+				WebformsUiLogger.info(UiAccesser.class.getName(), "Killing previous ui '" + formsToUi + "'");
+				unregister(((ApplicationUi) formsToUi.get(form.getComparationId())).getControllerInstance());
+				// formsToUi.get(form.getComparationId()).access(new Runnable()
+				// {
+				//
+				// @Override
+				// public void run() {
+				//
+				// }
+				// });
+				formsToUi.get(form.getComparationId()).close();
+			}
+			WebformsUiLogger.info(UiAccesser.class.getName(), "Has locked '" + form + "'");
+			formsToUser.put(form.getComparationId(), user);
+			formsToUi.put(form.getComparationId(), ui);
 		}
 	}
 
-	public static synchronized void releaseForm(Form form, IUser<Long> user) {
-		WebformsUiLogger.info(UiAccesser.class.getName(), "User '" + user.getEmailAddress() + "' has released '" + form + "'");
+	public static synchronized void releaseForm(Form form, IUser<Long> user, UI ui) {
 		// If form is still locked and the user is who lock the form.
-		if (formsInUse.containsKey(form.getComparationId()) && formsInUse.get(form.getComparationId()).equals(user)) {
-			formsInUse.remove(form.getComparationId());
+		if (formsToUser.containsKey(form.getComparationId()) && formsToUser.get(form.getComparationId()).equals(user)
+				&& formsToUi.containsKey(form.getComparationId()) && Objects.equals(formsToUi.get(form.getComparationId()), ui)) {
+			WebformsUiLogger.info(UiAccesser.class.getName(), "Has released '" + form + "'");
+			formsToUser.remove(form.getComparationId());
+			formsToUi.remove(form.getComparationId());
 		}
 	}
 }

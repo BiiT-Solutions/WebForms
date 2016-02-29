@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.common.components.WindowTextArea;
@@ -19,12 +19,12 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	private final IconButton saveButton;
 	private final IconButton blockMenu, saveAsBlockButton, insertBlockButton, linkBlockButton;
 	private final IconButton otherElementsMenu, newSubanswerButton, newTextButton, newSystemFieldButton;
-	private final IconButton newCategoryButton, newGroupButton, newQuestionButton, newAnswerButton, moveButton,
-			deleteButton, upButton, downButton, finish, exportToJavaCode, hideButton, newDynamicAnswer;
+	private final IconButton newCategoryButton, newGroupButton, newQuestionButton, newAnswerButton, moveButton, deleteButton, upButton,
+			downButton, finish, exportToJavaCode, hideButton, newDynamicAnswer;
 
 	public UpperMenuDesigner() {
-		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE,
-				LanguageCodes.COMMON_TOOLTIP_SAVE, IconSize.BIG);
+		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE, LanguageCodes.COMMON_TOOLTIP_SAVE,
+				IconSize.BIG);
 
 		saveAsBlockButton = new IconButton(LanguageCodes.CAPTION_SAVE_AS_BLOCK, ThemeIcons.BUILDING_BLOCK_SAVE,
 				LanguageCodes.TOOLTIP_SAVE_AS_BLOCK, IconSize.BIG);
@@ -36,64 +36,53 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 		newCategoryButton = new IconButton(LanguageCodes.CAPTION_NEW_CATEGORY, ThemeIcons.DESIGNER_NEW_CATEGORY,
 				LanguageCodes.TOOLTIP_NEW_CATEGORY);
-		newGroupButton = new IconButton(LanguageCodes.CAPTION_NEW_GROUP, ThemeIcons.DESIGNER_NEW_GROUP,
-				LanguageCodes.TOOLTIP_NEW_GROUP);
+		newGroupButton = new IconButton(LanguageCodes.CAPTION_NEW_GROUP, ThemeIcons.DESIGNER_NEW_GROUP, LanguageCodes.TOOLTIP_NEW_GROUP);
 		newQuestionButton = new IconButton(LanguageCodes.CAPTION_NEW_QUESTION, ThemeIcons.DESIGNER_NEW_QUESTION,
 				LanguageCodes.TOOLTIP_NEW_QUESTION);
-		newAnswerButton = new IconButton(LanguageCodes.CAPTION_NEW_ANSWER, ThemeIcons.DESIGNER_NEW_ANSWER,
-				LanguageCodes.TOOLTIP_NEW_ANSWER);
+		newAnswerButton = new IconButton(LanguageCodes.CAPTION_NEW_ANSWER, ThemeIcons.DESIGNER_NEW_ANSWER, LanguageCodes.TOOLTIP_NEW_ANSWER);
 		newSubanswerButton = new IconButton(LanguageCodes.CAPTION_NEW_SUBANSWER, ThemeIcons.DESIGNER_NEW_SUBANSWER,
 				LanguageCodes.TOOLTIP_NEW_SUBANSWER);
-		newTextButton = new IconButton(LanguageCodes.CAPTION_NEW_TEXT, ThemeIcons.DESIGNER_NEW_INFOTEXT,
-				LanguageCodes.TOOLTIP_NEW_TEXT);
-		newSystemFieldButton = new IconButton(LanguageCodes.CAPTION_NEW_SYSTEM_FIELD,
-				ThemeIcons.DESIGNER_NEW_SYSTEM_FIELD, LanguageCodes.TOOLTIP_NEW_SYSTEM_FIELD);
-		newDynamicAnswer = new IconButton(LanguageCodes.CAPTION_NEW_DYNAMIC_ANSWER,
-				ThemeIcons.DESIGNER_NEW_DYNAMIC_ANSWER, LanguageCodes.TOOLTIP_NEW_DYNAMIC_ANSWER);
-		moveButton = new IconButton(LanguageCodes.COMMON_CAPTION_MOVE, ThemeIcons.DESIGNER_MOVE,
-				LanguageCodes.COMMON_TOOLTIP_MOVE);
-		upButton = new IconButton(LanguageCodes.COMMON_CAPTION_UP, ThemeIcons.ELEMENT_MOVE_UP,
-				LanguageCodes.COMMON_TOOLTIP_UP);
-		downButton = new IconButton(LanguageCodes.COMMON_CAPTION_DOWN, ThemeIcons.ELEMENT_MOVE_DOWN,
-				LanguageCodes.COMMON_TOOLTIP_DOWN);
-		deleteButton = new IconButton(LanguageCodes.COMMON_CAPTION_DELETE, ThemeIcons.ELEMENT_DELETE,
-				LanguageCodes.COMMON_TOOLTIP_DELETE);
-		hideButton = new IconButton(LanguageCodes.COMMON_CAPTION_HIDE, ThemeIcons.ELEMENT_HIDE,
-				LanguageCodes.COMMON_TOOLTIP_HIDE);
-		finish = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH,
-				LanguageCodes.COMMON_TOOLTIP_FINISH, IconSize.BIG);
+		newTextButton = new IconButton(LanguageCodes.CAPTION_NEW_TEXT, ThemeIcons.DESIGNER_NEW_INFOTEXT, LanguageCodes.TOOLTIP_NEW_TEXT);
+		newSystemFieldButton = new IconButton(LanguageCodes.CAPTION_NEW_SYSTEM_FIELD, ThemeIcons.DESIGNER_NEW_SYSTEM_FIELD,
+				LanguageCodes.TOOLTIP_NEW_SYSTEM_FIELD);
+		newDynamicAnswer = new IconButton(LanguageCodes.CAPTION_NEW_DYNAMIC_ANSWER, ThemeIcons.DESIGNER_NEW_DYNAMIC_ANSWER,
+				LanguageCodes.TOOLTIP_NEW_DYNAMIC_ANSWER);
+		moveButton = new IconButton(LanguageCodes.COMMON_CAPTION_MOVE, ThemeIcons.DESIGNER_MOVE, LanguageCodes.COMMON_TOOLTIP_MOVE);
+		upButton = new IconButton(LanguageCodes.COMMON_CAPTION_UP, ThemeIcons.ELEMENT_MOVE_UP, LanguageCodes.COMMON_TOOLTIP_UP);
+		downButton = new IconButton(LanguageCodes.COMMON_CAPTION_DOWN, ThemeIcons.ELEMENT_MOVE_DOWN, LanguageCodes.COMMON_TOOLTIP_DOWN);
+		deleteButton = new IconButton(LanguageCodes.COMMON_CAPTION_DELETE, ThemeIcons.ELEMENT_DELETE, LanguageCodes.COMMON_TOOLTIP_DELETE);
+		hideButton = new IconButton(LanguageCodes.COMMON_CAPTION_HIDE, ThemeIcons.ELEMENT_HIDE, LanguageCodes.COMMON_TOOLTIP_HIDE);
+		finish = new IconButton(LanguageCodes.COMMON_CAPTION_FINISH, ThemeIcons.FORM_FINISH, LanguageCodes.COMMON_TOOLTIP_FINISH,
+				IconSize.BIG);
 
-		exportToJavaCode = new IconButton(LanguageCodes.APPLICATION_NAME, ThemeIcons.ALERT,
-				LanguageCodes.APPLICATION_NAME);
+		exportToJavaCode = new IconButton(LanguageCodes.APPLICATION_NAME, ThemeIcons.ALERT, LanguageCodes.APPLICATION_NAME);
 		exportToJavaCode.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 5531403001527645029L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				WindowTextArea window = new WindowTextArea("Java code");
-				window.setValue(UserSessionHandler.getController().getCompleteFormView()
-						.exportToJavaCode(new StringBuilder()));
+				window.setValue(ApplicationUi.getController().getCompleteFormView().exportToJavaCode(new StringBuilder()));
 				window.setResizable(true);
 				window.showCentered();
 			}
 		});
 		exportToJavaCode.setVisible(false);
-		
+
 		addIconButton(saveButton);
-		
+
 		blockMenu = addSubMenu(ThemeIcons.BUILDING_BLOCK_MENU, LanguageCodes.COMMON_CAPTION_BUILDING_BLOCK_MANAGER,
-				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, saveAsBlockButton, insertBlockButton,
-				linkBlockButton);
-		
+				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, saveAsBlockButton, insertBlockButton, linkBlockButton);
+
 		addIconButton(newCategoryButton);
 		addIconButton(newGroupButton);
 		addIconButton(newQuestionButton);
 		addIconButton(newAnswerButton);
-		
+
 		otherElementsMenu = addSubMenu(ThemeIcons.OTHER_ELEMENTS_MENU, LanguageCodes.COMMON_CAPTION_OTHER_ELEMENTS_SUBMENU,
 				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, newSubanswerButton, newDynamicAnswer, newTextButton,
-				newSystemFieldButton); 
-		
+				newSystemFieldButton);
+
 		addIconButton(moveButton);
 		addIconButton(upButton);
 		addIconButton(downButton);
@@ -169,7 +158,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public void addHideButtonListener(ClickListener listener) {
 		hideButton.addClickListener(listener);
 	}
-	
+
 	public void addNewDynamicAnswerListener(ClickListener listener) {
 		newDynamicAnswer.addClickListener(listener);
 	}
@@ -217,7 +206,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public IconButton getNewSubanswerButton() {
 		return newSubanswerButton;
 	}
-	
+
 	public IconButton getNewDynamicQuestionButton() {
 		return newDynamicAnswer;
 	}
@@ -237,8 +226,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public IconButton getDownButton() {
 		return downButton;
 	}
-	
-	public IconButton getNewDynamicAnswer(){
+
+	public IconButton getNewDynamicAnswer() {
 		return newDynamicAnswer;
 	}
 
@@ -253,7 +242,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	public AbstractComponent getBlockMenu() {
 		return blockMenu;
 	}
-	
+
 	public AbstractComponent getOtherElementsMenu() {
 		return otherElementsMenu;
 	}

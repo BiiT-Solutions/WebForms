@@ -8,7 +8,8 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
@@ -38,10 +39,10 @@ public class OrbeonUtils {
 					.getInstance().getXFormsUser(), WebformsConfigurationReader.getInstance().getXFormsDatabaseName(),
 					WebformsConfigurationReader.getInstance().getXFormsDatabaseHost());
 			try {
-				String xmlData = getXFormsData(form, organization, includeImages, preview);
-				xformsConnection.storeForm(form, UserSessionHandler.getUser(), organization, xmlData, preview);
+				String xmlData = getXFormsData(form, organization, includeImages);
+				xformsConnection.storeForm(form, UserSession.getUser(), organization, xmlData, preview);
 				if (includeImages) {
-					xformsConnection.storeImages(form, UserSessionHandler.getUser(), organization, form.getAllImages(), preview);
+					xformsConnection.storeImages(form, UserSession.getUser(), organization, form.getAllImages(), preview);
 				}
 			} catch (DuplicatedXFormException e) {
 				MessageManager.showError(LanguageCodes.ERROR_FORM_NOT_PUBLISHED, LanguageCodes.ERROR_FORM_ALREADY_EXISTS);
@@ -77,8 +78,8 @@ public class OrbeonUtils {
 	private static String getXFormsData(Form form, IGroup<Long> organization, boolean includeImages, boolean preview) throws NotValidTreeObjectException,
 			NotValidChildException, IOException, NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError,
 			PostCodeRuleSyntaxError {
-		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form, organization, UserSessionHandler.getController()
-				.getAllWebservices(), includeImages, preview);
+		XFormsSimpleFormExporter xformExporter = new XFormsSimpleFormExporter(form, organization, ApplicationUi.getController()
+				.getAllWebservices(), includeImages);
 		BufferedInputStream in = new BufferedInputStream(xformExporter.generateXFormsLanguage());
 		byte[] contents = new byte[1024];
 

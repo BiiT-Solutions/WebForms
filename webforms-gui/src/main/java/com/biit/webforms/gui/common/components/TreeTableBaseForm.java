@@ -12,7 +12,7 @@ import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.utils.date.DateManager;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -143,7 +143,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 
 		item.getItemProperty(TreeTableBaseFormProperties.VERSION).setValue(form.getVersion() + "");
 
-		IGroup<Long> organization = webformsSecurityService.getOrganization(UserSessionHandler.getUser(), form.getOrganizationId());
+		IGroup<Long> organization = webformsSecurityService.getOrganization(UserSession.getUser(), form.getOrganizationId());
 		if (organization != null) {
 			item.getItemProperty(TreeTableBaseFormProperties.ORGANIZATION).setValue(organization.getUniqueName());
 		}

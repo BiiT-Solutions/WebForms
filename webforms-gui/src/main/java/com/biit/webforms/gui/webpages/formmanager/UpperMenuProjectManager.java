@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
@@ -41,9 +41,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		boolean enableExportJson = false;
 		boolean enableImportJson = false;
 		try {
-			enableExportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(),
+			enableExportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(),
 					WebformsActivity.EXPORT_JSON);
-			enableImportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(),
+			enableImportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(),
 					WebformsActivity.IMPORT_JSON);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);

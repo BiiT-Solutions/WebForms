@@ -1,7 +1,8 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.BaseQuestion;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.gui.components.utils.FilterByTreeObjectOrderLess;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
@@ -47,8 +48,8 @@ public class PropertiesDynamicAnswer extends StorableObjectProperties<DynamicAns
 		rootLayout.addComponent(search);
 		rootLayout.setMargin(new MarginInfo(true, false, true, false));
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(
-				UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(),
+				UserSession.getUser());
 		rootLayout.setEnabled(canEdit);
 
 		addTab(rootLayout, LanguageCodes.CAPTION_PROPERTIES_DYNAMIC_QUESTION.translation(), true);

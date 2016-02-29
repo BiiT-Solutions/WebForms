@@ -1,7 +1,8 @@
 package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.TreeObject;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Category;
@@ -38,7 +39,8 @@ public class PropertiesCategory extends PropertiesForStorableObjectWithImages<Ca
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(UserSessionHandler.getController().getFormInUse(), UserSessionHandler.getUser());
+		boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(),
+				UserSession.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_CATEGORY.translation(), true);
@@ -71,7 +73,7 @@ public class PropertiesCategory extends PropertiesForStorableObjectWithImages<Ca
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		UserSessionHandler.getController().updateCategory(getInstance(), tempName, tempLabel, getImage());
+		ApplicationUi.getController().updateCategory(getInstance(), tempName, tempLabel, getImage());
 
 		super.updateElement();
 	}

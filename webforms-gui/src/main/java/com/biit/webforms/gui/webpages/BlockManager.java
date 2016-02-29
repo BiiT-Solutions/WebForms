@@ -13,7 +13,8 @@ import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -56,7 +57,7 @@ public class BlockManager extends SecuredWebPage {
 
 	@Override
 	protected void initContent() {
-		UserSessionHandler.getController().clearFormInUse();
+		ApplicationUi.getController().clearFormInUse();
 
 		setCentralPanelAsWorkingArea();
 		upperMenu = createUpperMenu();
@@ -87,14 +88,14 @@ public class BlockManager extends SecuredWebPage {
 			IWebformsBlockView block = getSelectedBlock();
 
 			boolean blockNotNull = block != null;
-			boolean canCreateBlocks = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSessionHandler.getUser(),
+			boolean canCreateBlocks = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(),
 					WebformsActivity.BUILDING_BLOCK_EDITING);
 
 			upperMenu.getNewBlock().setEnabled(canCreateBlocks);
 
 			upperMenu.getRemoveBlock().setEnabled(
 					blockNotNull
-							&& getWebformsSecurityService().isAuthorizedActivity(UserSessionHandler.getUser(), block,
+							&& getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), block,
 									WebformsActivity.BLOCK_REMOVE));
 
 			// Bottom menu
@@ -123,7 +124,7 @@ public class BlockManager extends SecuredWebPage {
 
 			@Override
 			public void lockForm() {
-				UserSessionHandler.getController().setFormInUse(loadBlock(getSelectedBlock()));
+				ApplicationUi.getController().setFormInUse(loadBlock(getSelectedBlock()));
 			}
 		});
 		return bottomMenu;
@@ -170,7 +171,7 @@ public class BlockManager extends SecuredWebPage {
 			if (selectedBlock != null) {
 				// Remove the form.
 				blockDao.makeTransient(selectedBlock);
-				WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSessionHandler.getUser().getEmailAddress()
+				WebformsUiLogger.info(this.getClass().getName(), "User '" + UserSession.getUser().getEmailAddress()
 						+ "' has removed form '" + selectedBlock.getLabel() + "' (version " + selectedBlock.getVersion() + ").");
 				blockTable.refreshTableData();
 			}
@@ -186,7 +187,7 @@ public class BlockManager extends SecuredWebPage {
 
 	private Block loadBlock(IWebformsBlockView blockView) {
 		if (blockView != null) {
-			Block block = UserSessionHandler.getController().loadBlock(blockView);
+			Block block = ApplicationUi.getController().loadBlock(blockView);
 			block.setLastVersion(blockView.isLastVersion());
 			return block;
 		}
@@ -210,7 +211,7 @@ public class BlockManager extends SecuredWebPage {
 				}
 				try {
 					if (newBlockWindow.getOrganization() != null) {
-						Block newBlock = UserSessionHandler.getController().createBlock(newBlockWindow.getValue(),
+						Block newBlock = ApplicationUi.getController().createBlock(newBlockWindow.getValue(),
 								newBlockWindow.getOrganization().getId());
 						addBlockToTable(newBlock);
 						newBlockWindow.close();

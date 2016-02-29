@@ -9,8 +9,9 @@ import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.entity.IUser;
 import com.biit.utils.date.DateManager;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UiAccesser;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
@@ -53,8 +54,8 @@ public class TableBlock extends Table {
 	private void initializeBlockTable() {
 		List<SimpleBlockView> blocks = new ArrayList<>();
 
-		Set<IGroup<Long>> userOrganizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(
-				UserSessionHandler.getUser(), WebformsActivity.READ);
+		Set<IGroup<Long>> userOrganizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(UserSession.getUser(),
+				WebformsActivity.READ);
 		try {
 			for (IGroup<Long> organization : userOrganizations) {
 				blocks.addAll(simpleBlockDao.getAll(organization.getId()));
@@ -67,8 +68,7 @@ public class TableBlock extends Table {
 			defaultSort();
 		} catch (Exception e) {
 			e.printStackTrace();
-			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE,
-					LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+			MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 		}
 	}
 
@@ -78,8 +78,7 @@ public class TableBlock extends Table {
 			Item item = addItem(block);
 			item.getItemProperty(TreeTableBlockProperties.BLOCK_LABEL).setValue(block.getLabel());
 
-			IGroup<Long> organization = webformsSecurityService.getOrganization(UserSessionHandler.getUser(),
-					block.getOrganizationId());
+			IGroup<Long> organization = webformsSecurityService.getOrganization(UserSession.getUser(), block.getOrganizationId());
 			if (organization != null) {
 				item.getItemProperty(TreeTableBlockProperties.ORGANIZATION).setValue(organization.getUniqueName());
 			}
@@ -113,7 +112,8 @@ public class TableBlock extends Table {
 	}
 
 	/**
-	 * This function returns an string with read only if the form can't be edited by the user
+	 * This function returns an string with read only if the form can't be
+	 * edited by the user
 	 * 
 	 * @param form
 	 * @return
@@ -121,7 +121,7 @@ public class TableBlock extends Table {
 	private String getFormPermissionsTag(SimpleBlockView form) {
 		String permissions = "";
 
-		if (webformsSecurityService.isFormReadOnly(form, UserSessionHandler.getUser())) {
+		if (webformsSecurityService.isFormReadOnly(form, UserSession.getUser())) {
 			permissions = LanguageCodes.CAPTION_READ_ONLY.translation();
 		}
 		return permissions;
@@ -183,9 +183,9 @@ public class TableBlock extends Table {
 	 */
 	public void selectLastUsedBlock() {
 		try {
-			if (UserSessionHandler.getController().getLastEditedForm() != null) {
+			if (ApplicationUi.getController().getLastEditedForm() != null) {
 				// Update form with new object if the form has change.
-				selectBlock(UserSessionHandler.getController().getLastEditedForm());
+				selectBlock(ApplicationUi.getController().getLastEditedForm());
 			} else {
 				// Select default one.
 				selectFirstRow();

@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.common.utils;
 
 import com.biit.webforms.gui.ApplicationUi;
-import com.biit.webforms.gui.UserSessionHandler;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.biit.webforms.gui.common.language.ServerTranslate;
@@ -64,8 +64,8 @@ public class MessageManager {
 		// Log it.
 		try {
 			String user;
-			if (UserSessionHandler.getUser() != null) {
-				user = UserSessionHandler.getUser().getEmailAddress();
+			if (UserSession.getUser() != null) {
+				user = UserSession.getUser().getEmailAddress();
 			} else {
 				user = "none";
 			}
