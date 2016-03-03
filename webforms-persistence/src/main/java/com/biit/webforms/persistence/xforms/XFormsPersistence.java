@@ -69,6 +69,7 @@ public class XFormsPersistence {
 	 */
 	public static String imageDocumentId(IWebformsFormView form, IGroup<Long> organization, TreeObjectImage image, boolean preview) {
 		if (preview) {
+			//Only local images are stored in orbeon.
 			if (image.getFileName() != null) {
 				return PREVIEW_PREFIX + "_" + image.getFileName().replace(" ", "_");
 			}

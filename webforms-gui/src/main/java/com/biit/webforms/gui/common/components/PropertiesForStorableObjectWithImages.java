@@ -309,6 +309,7 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 								.getFilename().substring(0, MAX_DISPLAY_FILE_NAME_LENGTH) }));
 				upload.setButtonCaption(LanguageCodes.FILE_UPLOAD_BUTTON_UPDATE.translation());
 				displayImage();
+				imageFile.setValue(event.getFilename());
 			}
 		});
 
