@@ -97,12 +97,17 @@ public class TreeObjectImage extends StorableObject {
 
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		if (object !=null && object instanceof TreeObjectImage) {
+		if (object != null && object instanceof TreeObjectImage) {
 			copyBasicInfo(object);
 			this.setWidth(((TreeObjectImage) object).getWidth());
 			this.setHeight(((TreeObjectImage) object).getHeight());
 			setData(Arrays.copyOf(((TreeObjectImage) object).getData(), ((TreeObjectImage) object).getData().length));
-			this.setUrl(((TreeObjectImage) object).getUrl());
+			if (((TreeObjectImage) object).getUrl() != null) {
+				this.setUrl(((TreeObjectImage) object).getUrl());
+			}
+			if (((TreeObjectImage) object).getFileName() != null) {
+				this.setFileName(((TreeObjectImage) object).getFileName());
+			}
 		} else {
 			throw new NotValidStorableObjectException("Copy data for Images only supports the same type copy");
 		}
