@@ -121,7 +121,7 @@ public class WindowTokenIn extends WindowAcceptCancel {
 		} else {
 			@SuppressWarnings("unchecked")
 			Set<Object> selectedValues = (Set<Object>) answer.getValue();
-			if (selectedValues.size() > 1) {
+			if (selectedValues.size() >= ComponentInsertAnswer.MIN_IN_ELEMENTS) {
 				for (Object selectedValue : selectedValues) {
 					Answer answer = (Answer) selectedValue;
 					if (!answer.isFinalAnswer()) {

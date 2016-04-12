@@ -25,6 +25,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
 public class ComponentInsertAnswer extends CustomComponent {
+	public static final int MIN_IN_ELEMENTS = 1;
 	private static final long serialVersionUID = 8934445212073001188L;
 	private static final String FULL = "100%";
 	private static final String EXPAND = null;
@@ -80,8 +81,7 @@ public class ComponentInsertAnswer extends CustomComponent {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				fireInsertTokenListeners(TokenComparationAnswer.getTokenEqual(currentQuestion,
-						getSingleAnswer()));
+				fireInsertTokenListeners(TokenComparationAnswer.getTokenEqual(currentQuestion, getSingleAnswer()));
 			}
 		});
 		insertNeAnswer = new Button(TokenTypes.NE.toString());
@@ -91,8 +91,7 @@ public class ComponentInsertAnswer extends CustomComponent {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				fireInsertTokenListeners(TokenComparationAnswer.getTokenNotEqual(currentQuestion,
-						getSingleAnswer()));
+				fireInsertTokenListeners(TokenComparationAnswer.getTokenNotEqual(currentQuestion, getSingleAnswer()));
 			}
 		});
 
@@ -103,7 +102,7 @@ public class ComponentInsertAnswer extends CustomComponent {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				fireInsertTokenListeners(TokenIn.getTokenIn(currentQuestion,getAnswers()));
+				fireInsertTokenListeners(TokenIn.getTokenIn(currentQuestion, getAnswers()));
 			}
 		});
 
@@ -120,14 +119,14 @@ public class ComponentInsertAnswer extends CustomComponent {
 
 	protected Answer[] getAnswers() {
 		List<Answer> answers = new ArrayList<>();
-	
+
 		@SuppressWarnings("unchecked")
 		Set<Object> selectedValues = (Set<Object>) answerTable.getValue();
 		Iterator<Object> itr = selectedValues.iterator();
-		while(itr.hasNext()){
-			answers.add((Answer)itr.next());
+		while (itr.hasNext()) {
+			answers.add((Answer) itr.next());
 		}
-		return answers.toArray(new Answer[]{});
+		return answers.toArray(new Answer[] {});
 	}
 
 	/**
@@ -138,7 +137,7 @@ public class ComponentInsertAnswer extends CustomComponent {
 	protected void updateInsertAnswerLayout() {
 		answerTable.removeAllItems();
 		answerTable.setValue(null);
-		
+
 		if (currentQuestion == null || currentQuestion.getChildren().isEmpty()) {
 			rootLayout.setEnabled(false);
 		} else {
@@ -148,7 +147,7 @@ public class ComponentInsertAnswer extends CustomComponent {
 			}
 			answerTable.setValue(null);
 		}
-		
+
 		updateInsertAnswerButtonState();
 	}
 
@@ -182,7 +181,7 @@ public class ComponentInsertAnswer extends CustomComponent {
 		} else {
 			@SuppressWarnings("unchecked")
 			Set<Object> selectedValues = (Set<Object>) answerTable.getValue();
-			if (selectedValues.size() > 1) {
+			if (selectedValues.size() >= MIN_IN_ELEMENTS) {
 				for (Object selectedValue : selectedValues) {
 					Answer answer = (Answer) selectedValue;
 					if (!answer.isFinalAnswer()) {
@@ -194,11 +193,11 @@ public class ComponentInsertAnswer extends CustomComponent {
 			return false;
 		}
 	}
-	
-	private Answer getSingleAnswer(){
+
+	private Answer getSingleAnswer() {
 		@SuppressWarnings("unchecked")
 		Set<Object> selectedValues = (Set<Object>) answerTable.getValue();
-		return (Answer)selectedValues.iterator().next();
+		return (Answer) selectedValues.iterator().next();
 	}
 
 	public void addInsertTokenListener(InsertTokenListener listener) {
