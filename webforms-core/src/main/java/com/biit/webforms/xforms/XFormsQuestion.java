@@ -137,10 +137,14 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		case DATE_FUTURE:
 		case DATE_PAST:
 		case DATE_BIRTHDAY:
+		case POSITIVE_NUMBER:
+		case NEGATIVE_NUMBER:
 			return true;
 		case DATE_PERIOD:
 			// This type will never arrive here -no constraint-
 			return false;
+		case POSITIVE_FLOAT:
+		case NEGATIVE_FLOAT:
 		case TEXT:
 		case DATE:
 		case EMAIL:
@@ -261,10 +265,18 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		case DATE_PERIOD:
 			// Do nothing this type will never arrive here
 			break;
+		case POSITIVE_FLOAT:
+			constraints.append(". &gt;= 0");
+			break;
+		case NEGATIVE_FLOAT:
+			constraints.append(". &lt;= 0");
+			break;
 		case TEXT:
 		case DATE:
 		case EMAIL:
 		case NUMBER:
+		case POSITIVE_NUMBER:
+		case NEGATIVE_NUMBER:
 		case FLOAT:
 			// No constraint, type handles restriction.
 			break;
@@ -301,6 +313,12 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 					break;
 				case POSTAL_CODE:
 					alert = OrbeonLanguageManager.getInstance().getAlertPostalCode(language);
+					break;
+				case POSITIVE_NUMBER:
+				case NEGATIVE_NUMBER:
+				case POSITIVE_FLOAT:
+				case NEGATIVE_FLOAT:
+					alert = OrbeonLanguageManager.getInstance().getAlertInvalidNumber(language);
 					break;
 				case TEXT:
 				case DATE:
@@ -354,6 +372,12 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 				break;
 			case NUMBER:
 				switch (((Question) getSource()).getAnswerSubformat()) {
+				case POSITIVE_NUMBER:
+					type.append(" type=\"xf:positiveInteger\" ");
+					break;
+				case NEGATIVE_NUMBER:
+					type.append(" type=\"xf:negativeInteger\" ");
+					break;
 				case NUMBER:
 					type.append(" type=\"xf:integer\" ");
 					break;

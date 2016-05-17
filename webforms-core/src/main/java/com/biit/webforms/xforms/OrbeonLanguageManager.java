@@ -2,13 +2,13 @@ package com.biit.webforms.xforms;
 
 import java.io.File;
 
+import net.sf.ehcache.util.FindBugsSuppressWarnings;
+
 import com.biit.utils.configuration.ConfigurationReader;
 import com.biit.utils.configuration.PropertiesSourceFile;
 import com.biit.utils.configuration.exceptions.PropertyNotFoundException;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.logger.WebformsLogger;
-
-import net.sf.ehcache.util.FindBugsSuppressWarnings;
 
 public class OrbeonLanguageManager extends ConfigurationReader {
 	private static final OrbeonLanguage[] languages = OrbeonLanguage.values();
@@ -22,6 +22,7 @@ public class OrbeonLanguageManager extends ConfigurationReader {
 	private static final String ALERT_IBAN = "iban";
 	private static final String ALERT_PHONE = "phone";
 	private static final String ALERT_POSTAL_CODE = "postal.code";
+	private static final String INVALID_NUMBER_CODE = "invalid.number";
 	private static final String ALERT_DEFAULT = "default";
 
 	private static OrbeonLanguageManager instance;
@@ -94,6 +95,10 @@ public class OrbeonLanguageManager extends ConfigurationReader {
 
 	private String getRealTag(OrbeonLanguage language, String sufix) {
 		return ORBEON_PREFIX + "." + language.getAbbreviature() + "." + sufix;
+	}
+	
+	public String getAlertInvalidNumber(OrbeonLanguage language) {
+		return getPropertyLogException(getRealTag(language, INVALID_NUMBER_CODE));
 	}
 
 }
