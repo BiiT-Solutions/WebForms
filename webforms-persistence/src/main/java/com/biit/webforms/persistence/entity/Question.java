@@ -389,6 +389,20 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			case TEXT:
 				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.TEXT);").append(System.lineSeparator());
 				break;
+			case NEGATIVE_FLOAT:
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.NEGATIVE_FLOAT);").append(System.lineSeparator());
+				break;
+			case NEGATIVE_NUMBER:
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.NEGATIVE_NUMBER);").append(System.lineSeparator());
+				break;
+			case POSITIVE_FLOAT:
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSITIVE_FLOAT);").append(System.lineSeparator());
+				break;
+			case POSITIVE_NUMBER:
+				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSITIVE_NUMBER);").append(System.lineSeparator());
+				break;
+			default:
+				break;
 			}
 			break;
 		case MULTIPLE_SELECTION:
