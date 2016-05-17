@@ -50,10 +50,10 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_REGEX_DATE = "([0-9]{1,2}[-/]){1,2}[0-9]{4}";
 	private static final String DEFAULT_REGEX_DATE_PERIOD = "[0-9]+";
 	private static final String DEFAULT_REGEX_NUMBER = "[0-9]+";
-	private static final String DEFAULT_REGEX_POSITIVE_NUMBER = "\\++[0-9]+";
-	private static final String DEFAULT_REGEX_NEGATIVE_NUMBER = "-[0-9]+";
+	private static final String DEFAULT_REGEX_POSITIVE_NUMBER = "\\+*([0-9]\\b|[1-9][0-9]+)";
+	private static final String DEFAULT_REGEX_NEGATIVE_NUMBER = "(0\\b|\\-[1-9][0-9]+)";
 	private static final String DEFAULT_REGEX_FLOAT = "[0-9]+\\.[0-9]*";
-	private static final String DEFAULT_REGEX_POSITIVE_FLOAT = "\\++[0-9]+\\.[0-9]*";
+	private static final String DEFAULT_REGEX_POSITIVE_FLOAT = "\\+*[0-9]+\\.[0-9]*";
 	private static final String DEFAULT_REGEX_NEGATIVE_FLOAT = "-[0-9]+\\.[0-9]*";
 	private static final String DEFAULT_REGEX_POSTAL_CODE = "[0-9]{4}[a-zA-Z]{2}";
 	private static final String DEFAULT_ISSUE_MANAGER_URL = null;
