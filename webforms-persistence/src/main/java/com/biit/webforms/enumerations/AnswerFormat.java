@@ -1,25 +1,23 @@
 package com.biit.webforms.enumerations;
 
-
 /**
  * Used only for text inputs.
  */
 public enum AnswerFormat {
 
-	TEXT(AnswerSubformat.TEXT, new AnswerSubformat[] { AnswerSubformat.TEXT, AnswerSubformat.EMAIL,
-			AnswerSubformat.PHONE, AnswerSubformat.IBAN, AnswerSubformat.BSN }, new TokenTypes[] { TokenTypes.EQ,
-			TokenTypes.NE }),
+	TEXT(AnswerSubformat.TEXT, new AnswerSubformat[] { AnswerSubformat.TEXT, AnswerSubformat.EMAIL, AnswerSubformat.PHONE,
+			AnswerSubformat.IBAN, AnswerSubformat.BSN }, new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE }),
 
-	NUMBER(AnswerSubformat.NUMBER,
-			new AnswerSubformat[] { AnswerSubformat.NUMBER, AnswerSubformat.FLOAT, AnswerSubformat.AMOUNT },
-			new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN, TokenTypes.IN }),
+	NUMBER(AnswerSubformat.NUMBER, new AnswerSubformat[] { AnswerSubformat.NUMBER, AnswerSubformat.FLOAT, AnswerSubformat.POSITIVE_NUMBER,
+			AnswerSubformat.NEGATIVE_NUMBER, AnswerSubformat.POSITIVE_FLOAT, AnswerSubformat.NEGATIVE_FLOAT }, new TokenTypes[] {
+			TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN, TokenTypes.IN }),
 
-	DATE(AnswerSubformat.DATE, new AnswerSubformat[] { AnswerSubformat.DATE, AnswerSubformat.DATE_PAST,
-			AnswerSubformat.DATE_FUTURE, AnswerSubformat.DATE_PERIOD, AnswerSubformat.DATE_BIRTHDAY }, new TokenTypes[] { TokenTypes.EQ,
-			TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN}),
+	DATE(AnswerSubformat.DATE, new AnswerSubformat[] { AnswerSubformat.DATE, AnswerSubformat.DATE_PAST, AnswerSubformat.DATE_FUTURE,
+			AnswerSubformat.DATE_PERIOD, AnswerSubformat.DATE_BIRTHDAY }, new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT,
+			TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN }),
 
-	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, new AnswerSubformat[] { AnswerSubformat.POSTAL_CODE }, new TokenTypes[] {
-			TokenTypes.EQ, TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN, TokenTypes.IN })
+	POSTAL_CODE(AnswerSubformat.POSTAL_CODE, new AnswerSubformat[] { AnswerSubformat.POSTAL_CODE }, new TokenTypes[] { TokenTypes.EQ,
+			TokenTypes.NE, TokenTypes.GT, TokenTypes.LT, TokenTypes.GE, TokenTypes.LE, TokenTypes.BETWEEN, TokenTypes.IN })
 
 	;
 

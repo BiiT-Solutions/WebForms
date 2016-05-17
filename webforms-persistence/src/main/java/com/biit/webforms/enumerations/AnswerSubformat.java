@@ -22,6 +22,14 @@ public enum AnswerSubformat {
 
 	FLOAT("[0-9]+\\.[0-9]*", WebformsConfigurationReader.getInstance().getRegexFloat()),
 	
+	POSITIVE_NUMBER("\\++[0-9]+", WebformsConfigurationReader.getInstance().getRegexPositiveNumber()),
+	
+	NEGATIVE_NUMBER("-[0-9]+", WebformsConfigurationReader.getInstance().getRegexNegativeNumber()),
+
+	POSITIVE_FLOAT("\\++[0-9]+\\.[0-9]*", WebformsConfigurationReader.getInstance().getRegexPositiveFloat()),
+	
+	NEGATIVE_FLOAT("-[0-9]+\\.[0-9]*", WebformsConfigurationReader.getInstance().getRegexNegativeFloat()),
+	
 	AMOUNT("[0-9]+\\.[0-9]*", WebformsConfigurationReader.getInstance().getRegexAmount()),
 
 	// Date subtypes
@@ -45,6 +53,7 @@ public enum AnswerSubformat {
 
 	AnswerSubformat(String hint, String regexPattern) {
 		this.hint = hint;
+		System.out.println(regexPattern);
 		this.regex = Pattern.compile(regexPattern);
 	}
 

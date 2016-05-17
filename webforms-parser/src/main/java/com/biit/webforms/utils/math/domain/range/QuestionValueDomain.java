@@ -22,7 +22,7 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 	private final RealLimitPair<T> completeDomain;
 	private final RealRange<T> value;
 
-	public QuestionValueDomain(WebformsBaseQuestion question, RealLimitPair<T> completeDomain, RealRange<T> value) {
+	private QuestionValueDomain(WebformsBaseQuestion question, RealLimitPair<T> completeDomain, RealRange<T> value) {
 		this.question = question;
 		this.completeDomain = completeDomain;
 		this.value = value;
@@ -49,8 +49,7 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 	public IDomain union(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {
 			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
-				return new QuestionValueDomain<T>(question, completeDomain,
-						this.value.union(((QuestionValueDomain<T>) domain).value));
+				return new QuestionValueDomain<T>(question, completeDomain, this.value.union(((QuestionValueDomain<T>) domain).value));
 			} else {
 				return new DomainSetUnion(this, (IDomainQuestion) domain);
 			}
@@ -102,6 +101,12 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 		case FLOAT:
 			floatValue = Float.parseFloat(token.getValue());
 			return generateFloatQuestionValueDomain(token, floatValue);
+		case POSITIVE_FLOAT:
+			floatValue = Float.parseFloat(token.getValue());
+			return generateFloatQuestionValuePositiveDomain(token, floatValue);
+		case NEGATIVE_FLOAT:
+			floatValue = Float.parseFloat(token.getValue());
+			return generateFloatQuestionValueNegativeDomain(token, floatValue);
 		case DATE:
 			longValue = ParseValueUtils.parseDate(token.getValue());
 			return generateLongQuestionValueDomain(token, longValue);
@@ -114,6 +119,12 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 		case NUMBER:
 			intValue = Integer.parseInt(token.getValue());
 			return generateIntQuestionValueDomain(token, intValue);
+		case POSITIVE_NUMBER:
+			intValue = Integer.parseInt(token.getValue());
+			return generateIntQuestionValuePositiveDomain(token, intValue);
+		case NEGATIVE_NUMBER:
+			intValue = Integer.parseInt(token.getValue());
+			return generateIntQuestionValueNegativeDomain(token, intValue);
 		case BSN:
 		case EMAIL:
 		case IBAN:
@@ -127,33 +138,49 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 
 	private static QuestionValueDomain<RangedText> generateRangedTextDomain(TokenComparationValue token, String value) {
 		RealRange<RangedText> generator = new RealStringRange();
-		return new QuestionValueDomain<RangedText>(token.getQuestion(), generator.domain(), generator.generateValue(
-				token.getType(), new RangedText(value)));
+		return new QuestionValueDomain<RangedText>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(),
+				new RangedText(value)));
 	}
 
-	private static QuestionValueDomain<PostalCode> generatePostalCodeQuestionValueDomain(TokenComparationValue token,
-			String value) {
+	private static QuestionValueDomain<PostalCode> generatePostalCodeQuestionValueDomain(TokenComparationValue token, String value) {
 		RealRange<PostalCode> generator = new RealRangePostalCode();
-		return new QuestionValueDomain<PostalCode>(token.getQuestion(), generator.domain(), generator.generateValue(
-				token.getType(), new PostalCode(value)));
+		return new QuestionValueDomain<PostalCode>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(),
+				new PostalCode(value)));
 	}
 
-	public static QuestionValueDomain<Float> generateFloatQuestionValueDomain(TokenComparationValue token, Float value) {
+	private static QuestionValueDomain<Float> generateFloatQuestionValueDomain(TokenComparationValue token, Float value) {
 		RealRange<Float> generator = new RealRangeFloat();
-		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(), generator.generateValue(
-				token.getType(), value));
+		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
 	}
 
-	public static QuestionValueDomain<Long> generateLongQuestionValueDomain(TokenComparationValue token, Long value) {
+	private static QuestionValueDomain<Float> generateFloatQuestionValuePositiveDomain(TokenComparationValue token, Float value) {
+		RealRange<Float> generator = new RealRangePositiveFloat();
+		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
+	}
+
+	private static QuestionValueDomain<Float> generateFloatQuestionValueNegativeDomain(TokenComparationValue token, Float value) {
+		RealRange<Float> generator = new RealRangeNegativeFloat();
+		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
+	}
+
+	private static QuestionValueDomain<Long> generateLongQuestionValueDomain(TokenComparationValue token, Long value) {
 		RealRange<Long> generator = new RealRangeLong();
-		return new QuestionValueDomain<Long>(token.getQuestion(), generator.domain(), generator.generateValue(
-				token.getType(), value));
+		return new QuestionValueDomain<Long>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
 	}
 
-	public static QuestionValueDomain<Integer> generateIntQuestionValueDomain(TokenComparationValue token, Integer value) {
+	private static QuestionValueDomain<Integer> generateIntQuestionValueDomain(TokenComparationValue token, Integer value) {
 		RealRange<Integer> generator = new RealRangeInteger();
-		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(), generator.generateValue(
-				token.getType(), value));
+		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
+	}
+
+	private static QuestionValueDomain<Integer> generateIntQuestionValueNegativeDomain(TokenComparationValue token, Integer value) {
+		RealRange<Integer> generator = new RealRangeNegativeInteger();
+		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
+	}
+
+	private static QuestionValueDomain<Integer> generateIntQuestionValuePositiveDomain(TokenComparationValue token, Integer value) {
+		RealRange<Integer> generator = new RealRangePositiveInteger();
+		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
 	}
 
 	@Override

@@ -24,7 +24,11 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String ID_REGEX_DATE = "regexDate";
 	private static final String ID_REGEX_DATE_PERIOD = "regexDatePeriod";
 	private static final String ID_REGEX_NUMBER = "regexNumber";
+	private static final String ID_REGEX_POSITIVE_NUMBER = "regexPositiveNumber";
+	private static final String ID_REGEX_NEGATIVE_NUMBER = "regexNegativeNumber";
 	private static final String ID_REGEX_FLOAT = "regexFloat";
+	private static final String ID_REGEX_POSITIVE_FLOAT = "regexPositiveFloat";
+	private static final String ID_REGEX_NEGATIVE_FLOAT = "regexNegativeFloat";
 	private static final String ID_REGEX_POSTAL_CODE = "regexPostalCode";
 	private static final String ID_ISSUE_MANAGER_URL = "issueManagerUrl";
 	private static final String ID_DATE_PATTERN = "dd/MM/yyyy";
@@ -46,7 +50,11 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_REGEX_DATE = "([0-9]{1,2}[-/]){1,2}[0-9]{4}";
 	private static final String DEFAULT_REGEX_DATE_PERIOD = "[0-9]+";
 	private static final String DEFAULT_REGEX_NUMBER = "[0-9]+";
+	private static final String DEFAULT_REGEX_POSITIVE_NUMBER = "\\++[0-9]+";
+	private static final String DEFAULT_REGEX_NEGATIVE_NUMBER = "-[0-9]+";
 	private static final String DEFAULT_REGEX_FLOAT = "[0-9]+\\.[0-9]*";
+	private static final String DEFAULT_REGEX_POSITIVE_FLOAT = "\\++[0-9]+\\.[0-9]*";
+	private static final String DEFAULT_REGEX_NEGATIVE_FLOAT = "-[0-9]+\\.[0-9]*";
 	private static final String DEFAULT_REGEX_POSTAL_CODE = "[0-9]{4}[a-zA-Z]{2}";
 	private static final String DEFAULT_ISSUE_MANAGER_URL = null;
 	private static final String DEFAULT_DATE_PATTERN = "dd/MM/yyyy";
@@ -107,7 +115,11 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		addProperty(ID_REGEX_DATE, DEFAULT_REGEX_DATE);
 		addProperty(ID_REGEX_DATE_PERIOD, DEFAULT_REGEX_DATE_PERIOD);
 		addProperty(ID_REGEX_NUMBER, DEFAULT_REGEX_NUMBER);
+		addProperty(ID_REGEX_POSITIVE_NUMBER, DEFAULT_REGEX_POSITIVE_NUMBER);
+		addProperty(ID_REGEX_NEGATIVE_NUMBER, DEFAULT_REGEX_NEGATIVE_NUMBER);
 		addProperty(ID_REGEX_FLOAT, DEFAULT_REGEX_FLOAT);
+		addProperty(ID_REGEX_POSITIVE_FLOAT, DEFAULT_REGEX_POSITIVE_FLOAT);
+		addProperty(ID_REGEX_NEGATIVE_FLOAT, DEFAULT_REGEX_NEGATIVE_FLOAT);
 		addProperty(ID_REGEX_POSTAL_CODE, DEFAULT_REGEX_POSTAL_CODE);
 		addProperty(ID_ISSUE_MANAGER_URL, DEFAULT_ISSUE_MANAGER_URL);
 		addProperty(ID_DATE_PATTERN, DEFAULT_DATE_PATTERN);
@@ -202,8 +214,24 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		return getPropertyLogException(ID_REGEX_NUMBER);
 	}
 
+	public String getRegexPositiveNumber() {
+		return getPropertyLogException(ID_REGEX_POSITIVE_NUMBER);
+	}
+
+	public String getRegexNegativeNumber() {
+		return getPropertyLogException(ID_REGEX_NEGATIVE_NUMBER);
+	}
+
 	public String getRegexFloat() {
 		return getPropertyLogException(ID_REGEX_FLOAT);
+	}
+
+	public String getRegexPositiveFloat() {
+		return getPropertyLogException(ID_REGEX_POSITIVE_FLOAT);
+	}
+
+	public String getRegexNegativeFloat() {
+		return getPropertyLogException(ID_REGEX_NEGATIVE_FLOAT);
 	}
 
 	public String getIssueManagerUrl() {
@@ -308,4 +336,5 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	public boolean isImagesEnabled() {
 		return Boolean.parseBoolean(getPropertyLogException(ID_IMAGES_ENABLED));
 	}
+
 }

@@ -672,7 +672,16 @@ public enum LanguageCodes implements ILanguageCode {
 	FILE_DELETED("file.deleted"),
 	
 	INVALID_JSON_CODE("invalid.json.code"),
-	INVALID_JSON_CODE_DESCRIPTION("invalid.json.code.description"),
+	INVALID_JSON_CODE_DESCRIPTION("invalid.json.code.description"), 
+	
+	CAPTION_ANSWER_SUBFORMAT_POSITIVE_NUMBER("caption.answer.subformat.positive.number"),
+	INPUT_PROMPT_POSITIVE_NUMBER("input.prompt.positive.number"),
+	CAPTION_ANSWER_SUBFORMAT_NEGATIVE_NUMBER("caption.answer.subformat.negative.number"),
+	INPUT_PROMPT_NEGATIVE_NUMBER("input.prompt.negative.number"), 
+	CAPTION_ANSWER_SUBFORMAT_POSITIVE_FLOAT("caption.answer.subformat.positive.float"), 
+	INPUT_PROMPT_POSITIVE_FLOAT("input.prompt.positive.float"), 
+	CAPTION_ANSWER_SUBFORMAT_NEGATIVE_FLOAT("caption.answer.subformat.negative.float"), 
+	INPUT_PROMPT_NEGATIVE_FLOAT("input.prompt.negative.float"), 
 	;
 
 	private String value;

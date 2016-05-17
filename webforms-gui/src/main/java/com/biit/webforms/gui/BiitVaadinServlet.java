@@ -22,7 +22,6 @@ public class BiitVaadinServlet extends VaadinServlet implements SessionDestroyLi
 	@Override
 	protected void servletInitialized() throws ServletException {
 		super.servletInitialized();
-		System.out.println("Servlet initialization");
 		this.getService().addSessionInitListener(this);
 		this.getService().addSessionDestroyListener(this);
 	}
