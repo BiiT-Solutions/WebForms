@@ -121,7 +121,8 @@ public abstract class RealRange<T extends Comparable<T>> {
 			RealLimitPair<T> nextAccum = accum.union(allPairs.get(i));
 			if (isDiscrete() && nextAccum == null) {
 				// Try to make an union for discretes
-				if (accum.getRight().getClosure() == Closure.INCLUSIVE && allPairs.get(i).getLeft().getClosure() == Closure.INCLUSIVE) {
+				if (accum.getRight().getClosure() == Closure.INCLUSIVE
+						&& allPairs.get(i).getLeft().getClosure() == Closure.INCLUSIVE) {
 					T nextValue = getNextDiscreteValue(accum.getRight().getLimit());
 					if (nextValue.compareTo(allPairs.get(i).getLeft().getLimit()) == 0) {
 						nextAccum = accum.discreteUnion(allPairs.get(i));
@@ -190,12 +191,14 @@ public abstract class RealRange<T extends Comparable<T>> {
 			}
 
 			for (int i = 1; i < limits.size(); i++) {
-				inverseRanges.add(new RealLimitPair<T>(limits.get(i - 1).getRight().inverse(), limits.get(i).getLeft().inverse()));
+				inverseRanges.add(new RealLimitPair<T>(limits.get(i - 1).getRight().inverse(),
+						limits.get(i).getLeft().inverse()));
 			}
 
 			int maxRange = limits.size() - 1;
 			if (completeDomain.getRight().compareTo(limits.get(maxRange).getRight()) > 0) {
-				inverseRanges.add(new RealLimitPair<T>(limits.get(maxRange).getRight().inverse(), completeDomain.getRight()));
+				inverseRanges.add(
+						new RealLimitPair<T>(limits.get(maxRange).getRight().inverse(), completeDomain.getRight()));
 			}
 
 			return createNewRealRange(inverseRanges);
@@ -290,5 +293,25 @@ public abstract class RealRange<T extends Comparable<T>> {
 	}
 
 	public abstract T generateRandomValue(RealLimitPair<T> range);
+
+	public boolean contains(T value) {
+		for (RealLimitPair<T> limit : limits) {
+			int compareLeft = value.compareTo(limit.getLeft().getLimit());
+			int compareRight = value.compareTo(limit.getRight().getLimit());
+
+			if (compareLeft > 0 && compareRight < 0) {
+				return true;
+			}
+			if (compareLeft == 0 && (limit.getLeft().getClosure() == Closure.INCLUSIVE
+					|| limit.getLeft().getClosure() == Closure.SINGLE_VALUE)) {
+				return true;
+			}
+			if (compareRight == 0 && (limit.getRight().getClosure() == Closure.INCLUSIVE
+					|| limit.getRight().getClosure() == Closure.SINGLE_VALUE)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

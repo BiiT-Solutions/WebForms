@@ -27,7 +27,8 @@ public class RealRangeLong extends RealRange<Long> {
 		super(first, second);
 	}
 
-	public RealRangeLong(Closure leftClosure, Long left, Long right, Closure rightClosure) throws LimitInsertionException {
+	public RealRangeLong(Closure leftClosure, Long left, Long right, Closure rightClosure)
+			throws LimitInsertionException {
 		super(leftClosure, left, right, rightClosure);
 	}
 
@@ -72,9 +73,25 @@ public class RealRangeLong extends RealRange<Long> {
 		if (range.getLeft().getLimit().equals(range.getRight().getLimit())) {
 			return range.getLeft().getLimit();
 		}
-		long randomNum = (random.nextInt(Integer.MAX_VALUE) % (range.getRight().getLimit() - range.getLeft().getLimit()) + range.getLeft()
-				.getLimit());
+		long randomNum = (random.nextInt(Integer.MAX_VALUE) % (range.getRight().getLimit() - range.getLeft().getLimit())
+				+ range.getLeft().getLimit());
 		return randomNum;
 	}
 
+	public static RealRangeLong positiveRange() {
+		RealRangeLong realRange = new RealRangeLong();
+		return new RealRangeLong(new RealLimitPair<>(realRange.negativeInfinity(), realRange.positiveInfinity()));
+	}
+
+	public static RealRangeLong negativeRange() {
+		RealRangeLong realRange = new RealRangeLong();
+		return new RealRangeLong(
+				new RealLimitPair<>(realRange.negativeInfinity(), new RealLimit<Long>(0L, Closure.INCLUSIVE)));
+	}
+
+	public static RealRangeLong fullRange() {
+		RealRangeLong realRange = new RealRangeLong();
+		return new RealRangeLong(
+				new RealLimitPair<>(new RealLimit<Long>(0L, Closure.INCLUSIVE), realRange.positiveInfinity()));
+	}
 }
