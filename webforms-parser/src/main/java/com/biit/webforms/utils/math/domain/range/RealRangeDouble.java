@@ -76,7 +76,8 @@ public class RealRangeDouble extends RealRange<Double> {
 
 	public static RealRangeDouble positiveRange() {
 		RealRangeDouble realRange = new RealRangeDouble();
-		return new RealRangeDouble(new RealLimitPair<>(realRange.negativeInfinity(), realRange.positiveInfinity()));
+		return new RealRangeDouble(
+				new RealLimitPair<>(new RealLimit<Double>(0D, Closure.INCLUSIVE), realRange.positiveInfinity()));
 	}
 
 	public static RealRangeDouble negativeRange() {
@@ -87,8 +88,7 @@ public class RealRangeDouble extends RealRange<Double> {
 
 	public static RealRangeDouble fullRange() {
 		RealRangeDouble realRange = new RealRangeDouble();
-		return new RealRangeDouble(
-				new RealLimitPair<>(new RealLimit<Double>(0D, Closure.INCLUSIVE), realRange.positiveInfinity()));
+		return new RealRangeDouble(new RealLimitPair<>(realRange.negativeInfinity(), realRange.positiveInfinity()));
 	}
 
 }
