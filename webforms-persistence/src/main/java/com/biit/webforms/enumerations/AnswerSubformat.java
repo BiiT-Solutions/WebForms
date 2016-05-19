@@ -53,7 +53,6 @@ public enum AnswerSubformat {
 
 	AnswerSubformat(String hint, String regexPattern) {
 		this.hint = hint;
-		System.out.println(regexPattern);
 		this.regex = Pattern.compile(regexPattern);
 	}
 
