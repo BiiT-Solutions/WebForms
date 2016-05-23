@@ -89,14 +89,14 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 	}
 
 	@Test(dependsOnMethods = { "createBuildingBlock" })
-	@Rollback(value=false)
+	@Rollback(value=true)
 	@Transactional
 	public void testNewVersion() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
 			InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException,
 			ChildrenNotFoundException, BadFlowContentException, FlowWithoutSourceException,
 			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
 			NotValidStorableObjectException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
-			ElementCannotBePersistedException {
+			ElementCannotBePersistedException, ElementCannotBeRemovedException {
 		Form form = FormUtils.createCompleteForm(block);
 		Form formV2 = form.createNewVersion(USER_ID);
 
@@ -107,8 +107,6 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
 		//Put the same version number and must be the same!
 		formV2.setVersion(form.getVersion());
 		Assert.assertTrue(form.isContentEqual(formV2));
-
-		formDao.makePersistent(formV2);
 	}
 
 	private void checkEquals(TreeObject obj1, TreeObject obj2) throws ChildrenNotFoundException {
