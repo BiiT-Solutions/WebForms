@@ -59,7 +59,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_ISSUE_MANAGER_URL = null;
 	private static final String DEFAULT_DATE_PATTERN = "dd/MM/yyyy";
 	private static final String DEFAULT_BOOLEAN_SIMPLIFICATION_ENABLED = "false";
-	private static final String DEFAULT_XML_BASE_ADDRESS = "http://dev.biit-solutions.com/";
+	private static final String DEFAULT_XML_BASE_ADDRESS = "http://git.biit-solutions.com/";
 	private static final String DEFAULT_BUILDING_BLOCK_LINKS_VISIBLE = "true";
 	private static final String DEFAULT_XFORMS_MULTIPLE_FILES_VISIBLE = "false";
 	private static final String DEFAULT_XFORMS_CUSTOM_WIZARD_BUTTON = "false";

@@ -83,4 +83,15 @@
 
 		</plugins>
 	</build>
+	
+	<!-- Skip unitary tests if this profile is selected. Jenkins Integration 
+		branch can disable tests of core -->
+	<profiles>
+		<profile>
+			<id>skipUnitaryTests</id>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+		</profile>
+	</profiles>
 </project>
