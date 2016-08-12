@@ -93,7 +93,7 @@ public class WebformsSchemaExporter extends com.biit.persistence.JpaSchemaExport
 		// Launch the JpaSchemaExporter
 		JpaSchemaExporter gen = new WebformsSchemaExporter(getPacketsToScan(), getClassesToIgnoreWhenCreatingDatabase());
 		gen.createDatabaseScript(HibernateDialect.MYSQL, getDirectory(), getOutputFile(), true);
-		gen = new JpaSchemaExporter(getPacketsToScan(), getClassesToIgnoreWhenUpdatingDatabase());
+		gen = new WebformsSchemaExporter(getPacketsToScan(), getClassesToIgnoreWhenUpdatingDatabase());
 		gen.updateDatabaseScript(HibernateDialect.MYSQL, getDirectory(), getHost(), getPort(), getUser(), getPassword(), getDatabaseName());
 
 		// Add hibernate sequence table.
