@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.biit</groupId>
 		<artifactId>webforms</artifactId>
-		<version>2.9.174-SNAPSHOT</version>
+		<version>2.9.205-SNAPSHOT</version>
 	</parent> 
 
 	<properties>
@@ -190,13 +190,13 @@
 		</plugins>
 	</build>
 
-	<!-- 'mvn install -Prelease' test all application with jenkins -->
+	<!-- 'mvn install -PlaunchIntegrationTests' test all application with jenkins -->
 	<profiles>
 		<profile>
-			<id>release</id>
+			<id>launchIntegrationTests</id>
 			<activation>
 				<property>
-					<name>release</name>
+					<name>launchIntegrationTests</name>
 				</property>
 			</activation>
 			<build>

@@ -93,7 +93,7 @@ import com.google.gson.JsonParseException;
 @Table(name = "tree_forms", uniqueConstraints = {
 		@UniqueConstraint(columnNames = { "label", "version", "organizationId" }) })
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
-		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")") )
+		+ StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
 @Cacheable(true)
 public class Form extends BaseForm implements IWebformsFormView, ElementWithImage {
 	private static final long serialVersionUID = 5220239269341014315L;
