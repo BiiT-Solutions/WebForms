@@ -45,22 +45,23 @@
 		<maven-resources-plugin.version>2.7</maven-resources-plugin.version>
 		<maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
 		<maven-surefire.version>2.17</maven-surefire.version>
-		<exec-maven-plugin.version>1.3.2</exec-maven-plugin.version>
-		<org.testng.version>6.8.8</org.testng.version>
+		<maven-war-plugin.version>2.3</maven-war-plugin.version>
+		<exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
+		<org.testng.version>6.8.7</org.testng.version>
 		<vaadin.version>7.6.2</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
-		<mysql-odbc.version>5.1.31</mysql-odbc.version>
+		<mysql-odbc.version>5.1.27</mysql-odbc.version>
 		<org.springframework.version>4.1.5.RELEASE</org.springframework.version>
-		<aspectj.version>1.8.1</aspectj.version>
+		<aspectj.version>1.8.2</aspectj.version>
 		<log4j.version>1.2.17</log4j.version>
 		<slf4j-api.version>1.7.7</slf4j-api.version>
 		<slf4j-log4j12.version>1.7.7</slf4j-log4j12.version>
 		<hibernate.version>4.3.8.Final</hibernate.version>
 		<root.directory>${project.basedir}</root.directory>
 		<itext.version>2.1.7</itext.version>
-		<h2.version>1.4.181</h2.version>
+		<h2.version>1.4.182</h2.version>
 		<ehcache.version>2.6.9</ehcache.version>
-		<c3p0.version>0.9.5.1</c3p0.version>
+		<c3p0.version>0.9.2.1</c3p0.version>
 		<DES-encryption.version>1.0.0</DES-encryption.version>
 		<jbool_expressions.version>1.6</jbool_expressions.version>
 		<gson.version>2.3.1</gson.version>
