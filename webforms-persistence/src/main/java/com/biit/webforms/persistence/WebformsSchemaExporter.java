@@ -14,7 +14,7 @@ import com.biit.persistence.JpaSchemaExporter;
 import com.biit.webforms.logger.WebformsLogger;
 
 public class WebformsSchemaExporter extends com.biit.persistence.JpaSchemaExporter {
-	private static final String[] TABLES_TO_MODIFY = new String[] { "tree_forms", "tree_blocks" };
+	private static final String[] TABLES_TO_MODIFY = new String[] { "tree_forms", "tree_blocks", "tree_blocks_references" };
 
 	public WebformsSchemaExporter(String[] packagesName, String[] classesToIgnore) {
 		super(packagesName, classesToIgnore);
@@ -93,7 +93,7 @@ public class WebformsSchemaExporter extends com.biit.persistence.JpaSchemaExport
 		// Launch the JpaSchemaExporter
 		JpaSchemaExporter gen = new WebformsSchemaExporter(getPacketsToScan(), getClassesToIgnoreWhenCreatingDatabase());
 		gen.createDatabaseScript(HibernateDialect.MYSQL, getDirectory(), getOutputFile(), true);
-		gen = new JpaSchemaExporter(getPacketsToScan(), getClassesToIgnoreWhenUpdatingDatabase());
+		gen = new WebformsSchemaExporter(getPacketsToScan(), getClassesToIgnoreWhenUpdatingDatabase());
 		gen.updateDatabaseScript(HibernateDialect.MYSQL, getDirectory(), getHost(), getPort(), getUser(), getPassword(), getDatabaseName());
 
 		// Add hibernate sequence table.
