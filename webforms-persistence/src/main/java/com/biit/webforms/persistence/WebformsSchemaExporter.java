@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.biit.persistence.HibernateDialect;
 import com.biit.persistence.JpaSchemaExporter;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.logger.WebformsLogger;
 
 public class WebformsSchemaExporter extends com.biit.persistence.JpaSchemaExporter {
@@ -100,5 +101,8 @@ public class WebformsSchemaExporter extends com.biit.persistence.JpaSchemaExport
 		addTextToFile(createHibernateSequenceTable(), getDirectory() + File.separator + getOutputFile());
 		// Add extra information from a external script.
 		addTextToFile(readFile(getScriptsToAdd(), Charset.forName("UTF-8")), getDirectory() + File.separator + getOutputFile());
+
+		//Close file watchers to ensure that the thread ends and maven exec is not frozen. 
+		WebformsConfigurationReader.getInstance().stopFileWatchers();
 	}
 }
