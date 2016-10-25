@@ -20,6 +20,7 @@ public class TokenDeserializer<T extends Token> extends
 		this.specificClass = specificClass;
 	}
 
+	@Override
 	public void deserialize(JsonElement json,JsonDeserializationContext context, T element){
 		JsonObject jobject = (JsonObject) json;
 		

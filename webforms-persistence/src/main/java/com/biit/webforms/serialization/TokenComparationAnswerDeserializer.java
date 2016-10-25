@@ -17,6 +17,7 @@ public class TokenComparationAnswerDeserializer extends TokenDeserializer<TokenC
 		this.form = element;
 	}
 	
+	@Override
 	public void deserialize(JsonElement json,JsonDeserializationContext context, TokenComparationAnswer element){
 		JsonObject jobject = (JsonObject) json;
 		
