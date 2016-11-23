@@ -78,7 +78,7 @@ public class RealRangeLong extends RealRange<Long> {
 		return randomNum;
 	}
 
-	public static RealRangeLong positiveRange() {
+	public static RealRangeLong fullRange() {
 		RealRangeLong realRange = new RealRangeLong();
 		return new RealRangeLong(new RealLimitPair<>(realRange.negativeInfinity(), realRange.positiveInfinity()));
 	}
@@ -89,7 +89,7 @@ public class RealRangeLong extends RealRange<Long> {
 				new RealLimitPair<>(realRange.negativeInfinity(), new RealLimit<Long>(0L, Closure.INCLUSIVE)));
 	}
 
-	public static RealRangeLong fullRange() {
+	public static RealRangeLong positiveRange() {
 		RealRangeLong realRange = new RealRangeLong();
 		return new RealRangeLong(
 				new RealLimitPair<>(new RealLimit<Long>(0L, Closure.INCLUSIVE), realRange.positiveInfinity()));
