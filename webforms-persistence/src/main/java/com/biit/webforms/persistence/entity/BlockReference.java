@@ -200,4 +200,9 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 		}
 		return images;
 	}
+
+	@Override
+	public String getDroolsXPathName() {
+		throw new UnsupportedOperationException();
+	}
 }

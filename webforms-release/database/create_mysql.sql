@@ -1,6 +1,6 @@
 
     create table flow (
-        ID bigint not null,
+        ID bigint not null auto_increment,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
@@ -15,7 +15,7 @@
     );
 
     create table images (
-        ID bigint not null,
+        ID bigint not null auto_increment,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
@@ -36,7 +36,7 @@
     );
 
     create table token (
-        ID bigint not null,
+        ID bigint not null auto_increment,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
@@ -113,7 +113,7 @@
     );
 
     create table token_in_value (
-        ID bigint not null,
+        ID bigint not null auto_increment,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
@@ -313,7 +313,7 @@
     );
 
     create table webservice_call (
-        ID bigint not null,
+        ID bigint not null auto_increment,
         comparationId varchar(190) not null,
         createdBy DOUBLE,
         creationTime datetime not null,
@@ -363,25 +363,16 @@
     );
 
     alter table flow 
-        add constraint UK_kffbghchm5cku772ng2gmaofa  unique (ID);
-
-    alter table flow 
         add constraint UK_ncm3pmigu960w0cbnc8cpi9ip  unique (comparationId);
 
     alter table images 
         add constraint UK_tinm9y54etwk8ee0v9h24pgt9  unique (element_ID);
 
     alter table images 
-        add constraint UK_qfuack4ay60u2cynki09pb6si  unique (ID);
-
-    alter table images 
         add constraint UK_2tlwidr1tjv26iu20m0jxnhw3  unique (comparationId);
 
     alter table linked_form_versions 
         add constraint UK_c87p50fduqtda2111ese0s580  unique (formId, linkedFormVersions);
-
-    alter table token 
-        add constraint UK_cw25p7uvbd3f5kb07q97haaho  unique (ID);
 
     alter table token 
         add constraint UK_7adviq7imnx5f4hfitaywu9ba  unique (comparationId);
@@ -409,9 +400,6 @@
 
     alter table token_in 
         add constraint UK_os6rq6y1tm4v0hodtajw6gk5b  unique (comparationId);
-
-    alter table token_in_value 
-        add constraint UK_i22eg0e2jvfqeelp7l9ycjylo  unique (ID);
 
     alter table token_in_value 
         add constraint UK_5f75q3eyx1mg10qmjxxpxdtwp  unique (comparationId);
@@ -481,9 +469,6 @@
 
     alter table tree_texts 
         add constraint UK_qe6275omm38jd6s7q9frwpdet  unique (comparationId);
-
-    alter table webservice_call 
-        add constraint UK_bh1l5k7kne9rc6jlkt1y0xvx  unique (ID);
 
     alter table webservice_call 
         add constraint UK_mfxxle3ihnquqxog0ijnoyak6  unique (comparationId);

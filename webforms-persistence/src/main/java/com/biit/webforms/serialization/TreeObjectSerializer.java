@@ -15,9 +15,9 @@ public class TreeObjectSerializer<T extends TreeObject> extends StorableObjectSe
 
 		jsonObject.add("name", context.serialize(src.getName()));
 		jsonObject.add("label", context.serialize(src.getLabel()));
-		jsonObject.add("children", context.serialize(src.getAllNotHiddenChildren()));
+		jsonObject.add("hidden", context.serialize(src.isHiddenElement()));
+		jsonObject.add("children", context.serialize(src.getChildren()));
 
 		return jsonObject;
 	}
-
 }
