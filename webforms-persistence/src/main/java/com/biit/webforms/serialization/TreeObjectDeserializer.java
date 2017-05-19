@@ -37,6 +37,12 @@ public class TreeObjectDeserializer<T extends TreeObject> extends StorableObject
 			throw new JsonParseException(e);
 		}
 
+		try {
+			element.setHiddenElement(parseBoolean("hiddenElement", jobject, context));
+		} catch (Exception e) {
+			// false by default.
+		}
+
 		// Children deserialization
 		Type listType = new TypeToken<ArrayList<TreeObject>>() {
 		}.getType();
