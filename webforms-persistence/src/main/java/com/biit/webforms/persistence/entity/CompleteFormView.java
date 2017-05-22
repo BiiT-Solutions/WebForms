@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.biit.form.entity.BaseQuestion;
@@ -171,7 +172,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		// Mark element as hidden.
 		for (TreeObject hiddenElement : getForm().getElementsToHide()) {
 			// Can be a copy. Compare by original reference.
-			if (hiddenElement.getOriginalReference().equals(
+			if (Objects.equals(hiddenElement.getOriginalReference(), 
 					linkedChild.getOriginalReference())) {
 				linkedChild.setHiddenElement(true);
 			}
@@ -303,8 +304,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		for (TreeObject child : form.getChildren()) {
 			// For block reference.
 			if (child instanceof BlockReference) {
-				for (Flow flow : ((BlockReference) child).getReference()
-						.getFlows()) {
+				for (Flow flow : ((BlockReference) child).getReference().getFlows()) {
 					if (!flow.isHidden()) {
 						Flow copiedFlow = flow.generateCopy();
 						copiedFlow.resetIds();
@@ -324,9 +324,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 				if (!flow.isHidden()) {
 					Flow copiedFlow = flow.generateCopy();
 					// Maybe some others are alone, remove the others condition.
-					if ((filterHiddenFlows(
-							form.getFormReference().getFlowsFrom(
-									flow.getOrigin())).size() + filterHiddenFlows(
+					if ((filterHiddenFlows(form.getFormReference().getFlowsFrom(flow.getOrigin())).size() + filterHiddenFlows(
 							form.getFlowsFrom(flow.getOrigin())).size()) < 2) {
 						copiedFlow.setOthers(false);
 						copiedFlow.setCondition(new ArrayList<Token>());
@@ -361,18 +359,12 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	@Override
 	public void addFlow(Flow rule) throws FlowNotAllowedException {
 		if (form != null) {
-			BlockReference blockReferenceOfSource = getBlockReference(rule
-					.getOrigin());
-			BlockReference blockReferenceOfDestination = getBlockReference(rule
-					.getDestiny());
+			BlockReference blockReferenceOfSource = getBlockReference(rule.getOrigin());
+			BlockReference blockReferenceOfDestination = getBlockReference(rule.getDestiny());
 
 			// Flows in the same linked block are not allowed.
-			if (blockReferenceOfSource != null
-					&& blockReferenceOfDestination != null
-					&& blockReferenceOfSource
-							.equals(blockReferenceOfDestination)) {
-				throw new FlowNotAllowedException(
-						"Flows in the same linked block are not allowed.");
+			if (blockReferenceOfSource != null && blockReferenceOfDestination != null && blockReferenceOfSource.equals(blockReferenceOfDestination)) {
+				throw new FlowNotAllowedException("Flows in the same linked block are not allowed.");
 			}
 
 			form.addFlow(rule);
@@ -390,11 +382,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	public ComputedFlowView getComputedFlowsView() {
 		LinkedHashSet<TreeObject> allBaseQuestions = new LinkedHashSet<>();
 		if (form.getFormReference() != null) {
-			allBaseQuestions.addAll(form.getFormReference()
-					.getAllNotHiddenChildrenInHierarchy(BaseQuestion.class));
+			allBaseQuestions.addAll(form.getFormReference().getAllNotHiddenChildrenInHierarchy(BaseQuestion.class));
 		}
-		allBaseQuestions
-				.addAll(getAllNotHiddenChildrenInHierarchy(BaseQuestion.class));
+		allBaseQuestions.addAll(getAllNotHiddenChildrenInHierarchy(BaseQuestion.class));
 		ComputedFlowView computedView = new ComputedFlowView();
 
 		if (!allBaseQuestions.isEmpty()) {
@@ -405,25 +395,19 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			int numQuestions = baseQuestions.length - 1;
 
 			for (int i = 0; i < numQuestions; i++) {
-				if (computedView
-						.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
-					computedView.addNewNextElementFlow(
-							(BaseQuestion) baseQuestions[i],
-							(BaseQuestion) baseQuestions[i + 1]);
+				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
+					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i], (BaseQuestion) baseQuestions[i + 1]);
 				}
 			}
-			if (computedView
-					.getFlowsByOrigin((BaseQuestion) baseQuestions[numQuestions]) == null) {
-				computedView
-						.addNewEndFormFlow((BaseQuestion) baseQuestions[numQuestions]);
+			if (computedView.getFlowsByOrigin((BaseQuestion) baseQuestions[numQuestions]) == null) {
+				computedView.addNewEndFormFlow((BaseQuestion) baseQuestions[numQuestions]);
 			}
 		}
 		return computedView;
 	}
 
 	@Override
-	public void addChild(TreeObject child) throws NotValidChildException,
-			ElementIsReadOnly {
+	public void addChild(TreeObject child) throws NotValidChildException, ElementIsReadOnly {
 		if (form != null) {
 			form.addChild(child);
 		}
@@ -529,20 +513,17 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	@Override
-	public void copyData(StorableObject object)
-			throws NotValidStorableObjectException {
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
 		if (object instanceof CompleteFormView) {
 			try {
-				setForm((Form) ((CompleteFormView) object).getForm()
-						.generateCopy(true, true));
+				setForm((Form) ((CompleteFormView) object).getForm().generateCopy(true, true));
 			} catch (CharacterNotAllowedException e) {
 				// Impossible but log it.
 				WebformsLogger.errorMessage(this.getClass().getName(), e);
 			}
 			super.copyData(object);
 		} else {
-			throw new NotValidTreeObjectException(
-					"Copy data for CompleteFormView only supports the same type copy");
+			throw new NotValidTreeObjectException("Copy data for CompleteFormView only supports the same type copy");
 		}
 	}
 
@@ -551,9 +532,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		createCopyOfBlocks();
 	}
 
-	public void removeTreeObject(TreeObject element)
-			throws DependencyExistException, ChildrenNotFoundException,
-			ElementIsReadOnly {
+	public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException, ElementIsReadOnly {
 		// Check if it is inside a linked block.
 		BlockReference blockReference = getBlockReference(element);
 		if (blockReference == null) {
@@ -577,42 +556,26 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
-		gsonBuilder.registerTypeAdapter(CompleteFormView.class,
-				new FormSerializer());
-		gsonBuilder.registerTypeAdapter(Category.class,
-				new CategorySerializer());
-		gsonBuilder.registerTypeAdapter(Group.class,
-				new BaseRepeatableGroupSerializer<Group>());
-		gsonBuilder.registerTypeAdapter(Question.class,
-				new QuestionSerializer());
+		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
+		gsonBuilder.registerTypeAdapter(Category.class, new CategorySerializer());
+		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
+		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
 		gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
-		gsonBuilder.registerTypeAdapter(SystemField.class,
-				new SystemFieldSerializer());
+		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldSerializer());
 		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerSerializer());
-		gsonBuilder.registerTypeAdapter(DynamicAnswer.class,
-				new DynamicAnswerSerializer());
+		gsonBuilder.registerTypeAdapter(DynamicAnswer.class, new DynamicAnswerSerializer());
 		gsonBuilder.registerTypeAdapter(Flow.class, new FlowSerializer());
-		gsonBuilder.registerTypeAdapter(Token.class,
-				new TokenSerializer<Token>());
-		gsonBuilder.registerTypeAdapter(TokenBetween.class,
-				new TokenBetweenSerializer());
-		gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class,
-				new TokenComparationAnswerSerializer());
-		gsonBuilder.registerTypeAdapter(TokenComparationValue.class,
-				new TokenComparationValueSerializer());
+		gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<Token>());
+		gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenSerializer());
+		gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerSerializer());
+		gsonBuilder.registerTypeAdapter(TokenComparationValue.class, new TokenComparationValueSerializer());
 		gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInSerializer());
-		gsonBuilder.registerTypeAdapter(TokenInValue.class,
-				new TokenInValueSerializer());
-		gsonBuilder.registerTypeAdapter(WebserviceCall.class,
-				new WebserviceCallSerializer());
-		gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class,
-				new WebserviceCallInputLinkSerializer());
-		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class,
-				new WebserviceCallInputLinkErrorsSerializer());
-		gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class,
-				new WebserviceCallOutputLinkSerializer());
-		gsonBuilder.registerTypeAdapter(TreeObjectImage.class,
-				new TreeObjectImageSerializer());
+		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCall.class, new WebserviceCallSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputLinkSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class, new WebserviceCallInputLinkErrorsSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkSerializer());
+		gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageSerializer());
 		Gson gson = gsonBuilder.create();
 
 		CompleteFormView form = new CompleteFormView();
@@ -634,16 +597,11 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	}
 
 	@Override
-	public boolean hideElement(TreeObject element)
-			throws ElementCannotBeRemovedException {
+	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
 		if (getForm() != null) {
-			if (element != null
-					&& (getForm().getFormReference() != null && !getForm()
-							.getFormReference().getAllInnerStorableObjects()
-							.contains(element))
+			if (element != null && (getForm().getFormReference() != null && !getForm().getFormReference().getAllInnerStorableObjects().contains(element))
 					&& (getBlockReference(element) != null)) {
-				throw new ElementCannotBeRemovedException("Element '" + element
-						+ "' does not exists in the form.");
+				throw new ElementCannotBeRemovedException("Element '" + element + "' does not exists in the form.");
 			}
 			return getForm().hideElement(element);
 		}
@@ -681,27 +639,22 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			for (TreeObject child : form.getChildren()) {
 				// Add linked block children
 				if (child instanceof BlockReference) {
-					calls.addAll(((BlockReference) child).getReference()
-							.getWebserviceCalls());
-					for (WebserviceCall call : ((BlockReference) child)
-							.getReference().getWebserviceCalls()) {
+					calls.addAll(((BlockReference) child).getReference().getWebserviceCalls());
+					for (WebserviceCall call : ((BlockReference) child).getReference().getWebserviceCalls()) {
 						call.setReadOnly(true);
 					}
 				}
 			}
 			if (form.getFormReference() != null) {
 				calls.addAll(form.getFormReference().getWebserviceCalls());
-				for (WebserviceCall call : form.getFormReference()
-						.getWebserviceCalls()) {
+				for (WebserviceCall call : form.getFormReference().getWebserviceCalls()) {
 					call.setReadOnly(true);
 				}
 				for (TreeObject child : form.getFormReference().getChildren()) {
 					// Add linked block children
 					if (child instanceof BlockReference) {
-						calls.addAll(((BlockReference) child).getReference()
-								.getWebserviceCalls());
-						for (WebserviceCall call : ((BlockReference) child)
-								.getReference().getWebserviceCalls()) {
+						calls.addAll(((BlockReference) child).getReference().getWebserviceCalls());
+						for (WebserviceCall call : ((BlockReference) child).getReference().getWebserviceCalls()) {
 							call.setReadOnly(true);
 						}
 					}
