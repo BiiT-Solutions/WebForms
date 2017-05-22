@@ -2,6 +2,7 @@ package com.biit.webforms.serialization;
 
 import java.lang.reflect.Type;
 
+import com.biit.form.json.serialization.StorableObjectDeserializer;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;

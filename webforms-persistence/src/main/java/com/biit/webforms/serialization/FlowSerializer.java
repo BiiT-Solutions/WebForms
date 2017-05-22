@@ -1,8 +1,9 @@
-package com.biit.webforms.persistence.entity;
+package com.biit.webforms.serialization;
 
 import java.lang.reflect.Type;
 
-import com.biit.webforms.serialization.StorableObjectSerializer;
+import com.biit.form.json.serialization.StorableObjectSerializer;
+import com.biit.webforms.persistence.entity.Flow;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
