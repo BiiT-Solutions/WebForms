@@ -49,13 +49,20 @@
   padding: 5px 0px 5px 0px;
 }
 
+/* Question mark */
 .webforms-help > .xforms-label {
   display: inline;
+  margin-left: 5px;
+}
+
+.webforms-help .xforms-input-input {
+    display: block !important;
 }
 
 .webforms-help > .xforms-help {
-  margin-left: -15px;
+  margin-left: 0px;
 }
+
 
 /* Element: Horizontal Radio-button
    --------------------------------
