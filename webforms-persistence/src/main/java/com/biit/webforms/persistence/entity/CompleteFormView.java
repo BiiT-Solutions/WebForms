@@ -170,19 +170,21 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	 */
 	private void updateHiddenElements(TreeObject linkedChild) {
 		// Mark element as hidden.
-		if (getForm() != null) {
-			for (TreeObject hiddenElement : getForm().getElementsToHide()) {
-				// Can be a copy. Compare by original reference.
-				if (Objects.equals(hiddenElement.getOriginalReference(), linkedChild.getOriginalReference())) {
-					linkedChild.setHiddenElement(true);
+		if (linkedChild != null) {
+			if (getForm() != null) {
+				for (TreeObject hiddenElement : getForm().getElementsToHide()) {
+					// Can be a copy. Compare by original reference.
+					if (Objects.equals(hiddenElement.getOriginalReference(), linkedChild.getOriginalReference())) {
+						linkedChild.setHiddenElement(true);
+					}
 				}
 			}
-		}
 
-		// Check its children
-		if (!linkedChild.isHiddenElement()) {
-			for (TreeObject child : linkedChild.getChildren()) {
-				updateHiddenElements(child);
+			// Check its children
+			if (!linkedChild.isHiddenElement()) {
+				for (TreeObject child : linkedChild.getChildren()) {
+					updateHiddenElements(child);
+				}
 			}
 		}
 	}
