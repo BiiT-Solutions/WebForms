@@ -34,8 +34,7 @@ public class XmlUtils {
 	public static StringWriter formatToStringWriter(String xml) {
 		try {
 			final InputStream source = new ByteArrayInputStream(xml.getBytes(XML_CODIFICATION));
-			final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(source)
-					.getDocumentElement();
+			final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(source).getDocumentElement();
 
 			StringWriter result = new StringWriter();
 			DOMSource domSource = new DOMSource(document);
@@ -47,21 +46,25 @@ public class XmlUtils {
 			// XML header
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 			// t.setOutputProperty(OutputKeys.STANDALONE, "yes");
-			transformer.setOutputProperty(OutputKeys.ENCODING, XML_CODIFICATION);
+
+			// Forcing to not replace the html references to special characters.
+			// https://stackoverflow.com/questions/27915445/how-to-retain-special-characters-after-transformation
+			transformer.setOutputProperty(OutputKeys.ENCODING, "US-ASCII");
 
 			// Create data
 			transformer.transform(domSource, new StreamResult(result));
 			return result;
 		} catch (Exception e) {
-			WebformsLogger.warning(XmlUtils.class.getName(), "Unexpected failure while processing xml file. Dumping content to a temporaly file 'webforms_xml_prettify'.");
-			try{
+			WebformsLogger.warning(XmlUtils.class.getName(),
+					"Unexpected failure while processing xml file. Dumping content to a temporaly file 'webforms_xml_prettify'.");
+			try {
 				File temp = File.createTempFile("webforms_xml_prettify", "xml");
 				BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(temp));
-	    	    bufferedWriter.write(xml);
-	    	    bufferedWriter.close();				
-			}catch(IOException ioe){				
+				bufferedWriter.write(xml);
+				bufferedWriter.close();
+			} catch (IOException ioe) {
 			}
-			throw new RuntimeException(e);			
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -78,8 +81,7 @@ public class XmlUtils {
 		return originalString.replaceAll(" ", "_");
 	}
 
-	public static String validateXml(String xml, String xsd) throws ParserConfigurationException, SAXException,
-			IOException {
+	public static String validateXml(String xml, String xsd) throws ParserConfigurationException, SAXException, IOException {
 		String resultString = new String();
 
 		// create a SchemaFactory capable of understanding WXS schemas
