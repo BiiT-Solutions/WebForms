@@ -205,4 +205,50 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	public String getDroolsXPathName() {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public TreeObject getChild(String pathstring) {
+		if (reference == null) {
+			return null;
+		}
+		// Skip categories in path, path level already consumed by block.
+		for (TreeObject children : reference.getChildren()) {
+			TreeObject child = children.getChild(pathstring);
+			if (child != null) {
+				return child;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public TreeObject getChild(List<String> childPath) {
+		if (reference == null) {
+			return null;
+		}
+		// Skip categories in path, path level already consumed by block.
+		for (TreeObject children : reference.getChildren()) {
+			TreeObject child = children.getChild(childPath);
+			if (child != null) {
+				return child;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public TreeObject getChild(String... pathStrings) {
+		if (reference == null) {
+			return null;
+		}
+		// Skip categories in path, path level already consumed by block.
+		for (TreeObject children : reference.getChildren()) {
+			TreeObject child = children.getChild(pathStrings);
+			if (child != null) {
+				return child;
+			}
+		}
+		return null;
+	}
+
 }

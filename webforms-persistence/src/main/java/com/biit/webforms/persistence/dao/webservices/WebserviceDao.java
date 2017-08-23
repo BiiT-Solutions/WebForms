@@ -1,4 +1,4 @@
-package com.biit.webforms.persistence.dao.json;
+package com.biit.webforms.persistence.dao.webservices;
 
 import java.io.File;
 import java.io.IOException;

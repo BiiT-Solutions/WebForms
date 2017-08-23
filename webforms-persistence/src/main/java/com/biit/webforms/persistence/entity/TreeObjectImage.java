@@ -33,7 +33,7 @@ public class TreeObjectImage extends StorableObject {
 	private static final long serialVersionUID = 1072375747626406485L;
 	public static final int MAX_IMAGE_LENGTH = 1024 * 1024 * 10;
 
-	@Column
+	@Column(name = "file_name")
 	private String fileName;
 
 	private int width;

@@ -119,7 +119,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			}
 			for (TreeObject child : form.getChildren()) {
 				if (child instanceof BlockReference) {
-					Block block = ((BlockReference) child).getReference();
+					Block block = ((BlockReference) child).getReference();					
 					for (TreeObject linkedChild : convertBlockReference(block)) {
 						children.add(linkedChild);
 						updateHiddenElements(linkedChild);

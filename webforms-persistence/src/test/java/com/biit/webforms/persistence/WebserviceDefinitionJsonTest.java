@@ -18,7 +18,7 @@ import com.biit.webforms.webservices.WebserviceValidatedPort;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContextTest.xml" })
 @Test(groups = { "webserviceDefinitionJsonTest" })
-public class WebserviceDefinitionJsonTest extends AbstractTransactionalTestNGSpringContextTests{
+public class WebserviceDefinitionJsonTest extends AbstractTransactionalTestNGSpringContextTests {
 
 	private static final String WEBSERVICE_NAME = "validate_bsn";
 	private static final String WEBSERVICE_DESCRIPTION = "ipsum lorem...";
@@ -37,12 +37,12 @@ public class WebserviceDefinitionJsonTest extends AbstractTransactionalTestNGSpr
 	private static final String NOT_FOUND = "NOT_FOUND";
 	private static final String INVALID_BSN = "INVALID_BSN";
 	private static final String VALIDATION_XPATH = "/validation";
-	
+
 	@Autowired
 	private IWebserviceDao webserviceDao;
 
 	@Test
-	public void testGenerateJsonAndParseBack(){
+	public void testGenerateJsonAndParseBack() {
 		Webservice webservice = new Webservice();
 		webservice.setName(WEBSERVICE_NAME);
 		webservice.setDescription(WEBSERVICE_DESCRIPTION);
@@ -50,35 +50,35 @@ public class WebserviceDefinitionJsonTest extends AbstractTransactionalTestNGSpr
 		webservice.setHost(WEBSERVICE_HOST);
 		webservice.setPort(WEBSERVICE_PORT);
 		webservice.setPath(WEBSERVICE_PATH);
-		webservice.getInputPorts().add(new WebserviceValidatedPort(INPUT_PORT,INPUT_XPATH,VALIDATION_XPATH,NOT_FOUND,INVALID_BSN));
-		webservice.getOutputPorts().add(new WebservicePort(OUTPUT_PORT_1,OUTPUT_XPATH_1));
-		webservice.getOutputPorts().add(new WebservicePort(OUTPUT_PORT_2,OUTPUT_XPATH_2));
-		webservice.getOutputPorts().add(new WebservicePort(OUTPUT_PORT_3,OUTPUT_XPATH_3));
-		
+		webservice.getInputPorts().add(new WebserviceValidatedPort(INPUT_PORT, INPUT_XPATH, VALIDATION_XPATH, NOT_FOUND, INVALID_BSN));
+		webservice.getOutputPorts().add(new WebservicePort(OUTPUT_PORT_1, OUTPUT_XPATH_1));
+		webservice.getOutputPorts().add(new WebservicePort(OUTPUT_PORT_2, OUTPUT_XPATH_2));
+		webservice.getOutputPorts().add(new WebservicePort(OUTPUT_PORT_3, OUTPUT_XPATH_3));
+
 		String jsonString = webservice.toJson();
-		Assert.assertTrue(jsonString!=null);
+		Assert.assertTrue(jsonString != null);
 		Assert.assertFalse(jsonString.isEmpty());
-		
+
 		Webservice parsedJson = Webservice.fromJson(jsonString);
 		Assert.assertEquals(parsedJson.getName(), WEBSERVICE_NAME);
 		Assert.assertEquals(parsedJson.getProtocol(), WEBSERVICE_PROTOCOL);
 		Assert.assertEquals(parsedJson.getHost(), WEBSERVICE_HOST);
 		Assert.assertEquals(parsedJson.getPort(), WEBSERVICE_PORT);
-		
-		for(WebserviceValidatedPort input : parsedJson.getInputPorts()){
+
+		for (WebserviceValidatedPort input : parsedJson.getInputPorts()) {
 			Assert.assertTrue(input.getName().equals(INPUT_PORT));
 			Assert.assertTrue(input.getXpath().equals(INPUT_XPATH));
 			Assert.assertTrue(input.getErrorCodes().contains(NOT_FOUND));
 			Assert.assertTrue(input.getErrorCodes().contains(INVALID_BSN));
 		}
-		for(WebservicePort output : parsedJson.getOutputPorts()){
-			Assert.assertTrue(output.getName().equals(OUTPUT_PORT_1)||output.getName().equals(OUTPUT_PORT_2)||output.getName().equals(OUTPUT_PORT_3));
-			Assert.assertTrue(output.getXpath().equals(OUTPUT_XPATH_1)||output.getXpath().equals(OUTPUT_XPATH_2)||output.getXpath().equals(OUTPUT_XPATH_3));
+		for (WebservicePort output : parsedJson.getOutputPorts()) {
+			Assert.assertTrue(output.getName().equals(OUTPUT_PORT_1) || output.getName().equals(OUTPUT_PORT_2) || output.getName().equals(OUTPUT_PORT_3));
+			Assert.assertTrue(output.getXpath().equals(OUTPUT_XPATH_1) || output.getXpath().equals(OUTPUT_XPATH_2) || output.getXpath().equals(OUTPUT_XPATH_3));
 		}
 	}
-	
+
 	@Test
-	public void testWebserviceDao(){
+	public void testWebserviceDao() {
 		Set<Webservice> webservices = webserviceDao.getAll();
 		Assert.assertFalse(webservices.isEmpty());
 	}

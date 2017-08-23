@@ -53,10 +53,10 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 	@Override
 	public List<SimpleFormView> getAll() {
 		Query query = entityManager
-				.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, tf.formReferenceID, max.maxversion "
+				.createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, tf.formReferenceID, max.maxversion "
 						+ "FROM tree_forms tf INNER JOIN "
-						+ "(SELECT MAX(version) AS maxversion, label, organizationId FROM tree_forms "
-						+ "GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
+						+ "(SELECT MAX(version) AS maxversion, label, organization_id FROM tree_forms "
+						+ "GROUP BY label, organization_id) AS max  ON max.label = tf.label and max.organization_id = tf.organization_id "
 						+ "ORDER BY label, tf.version DESC;");
 
 		List<Object[]> rows = query.getResultList();
@@ -107,8 +107,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 	private Set<Integer> getLinkedFormVersions(long formId) {
 		Set<Integer> linkedVersions = new HashSet<>();
 
-		Query query = entityManager
-				.createNativeQuery("SELECT linkedFormVersions FROM linked_form_versions WHERE formId=" + formId);
+		Query query = entityManager.createNativeQuery("SELECT linked_form_versions FROM linked_form_versions WHERE form_id=" + formId);
 		List<Object> rows = query.getResultList();
 
 		for (Object row : rows) {
@@ -121,16 +120,13 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 	@Override
 	public List<SimpleFormView> getFormsThatUse(Block block) {
 		Query query = entityManager
-				.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, tf.linkedFormLabel, tf.linkedFormOrganizationId, tf.status, max.maxversion "
+				.createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, tf.linked_form_label, tf.linked_form_organization_id, tf.status, max.maxversion "
 						+ " FROM tree_forms tf "
-						+ " INNER JOIN (SELECT MAX(version) AS maxversion, label, organizationId FROM tree_forms "
-						+ " GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
+						+ " INNER JOIN (SELECT MAX(version) AS maxversion, label, organization_id FROM tree_forms "
+						+ " GROUP BY label, organization_id) AS max  ON max.label = tf.label and max.organization_id = tf.organization_id "
 						+ " WHERE EXISTS "
-						+ " (SELECT * FROM tree_blocks_references tr WHERE tr.parent_ID=tf.ID AND EXISTS "
-						+ " (SELECT * FROM tree_blocks tb WHERE tr.reference_ID="
-						+ block.getId()
-						+ ")) "
-						+ " ORDER BY label, tf.version DESC;");
+						+ " (SELECT * FROM tree_blocks_references tr WHERE tr.parent=tf.id AND EXISTS "
+						+ " (SELECT * FROM tree_blocks tb WHERE tr.reference_id=" + block.getId() + ")) " + " ORDER BY label, tf.version DESC;");
 
 		List<Object[]> rows = query.getResultList();
 

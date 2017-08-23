@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -48,22 +49,30 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	private String description;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name = "answer_type")
 	private AnswerType answerType;
+
 	@Enumerated(EnumType.STRING)
+	@Column(name = "answer_format")
 	private AnswerFormat answerFormat;
+
 	@Enumerated(EnumType.STRING)
+	@Column(name = "answer_subformat")
 	private AnswerSubformat answerSubformat;
 
-	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
+	@Column(name = "default_value_string", length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
 	private String defaultValueString;
 
 	@ManyToOne(optional = true)
+	@JoinColumn(name = "default_value_answer")
 	private Answer defaultValueAnswer;
 
 	// Disables in orbeon the edition of this field. Means that when creating a
 	// new form in orbeon is enabled, but when editing is disabled.
+	@Column(name = "edition_disabled")
 	private boolean editionDisabled = false;
 
+	@Column(name = "default_value_time")
 	private Timestamp defaultValueTime;
 
 	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

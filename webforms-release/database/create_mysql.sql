@@ -1,559 +1,559 @@
 
     create table flow (
-        ID bigint not null auto_increment,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null auto_increment,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         flowType varchar(255),
         others bit not null,
         destiny_id bigint,
-        form_ID bigint not null,
+        form_id bigint not null,
         origin_id bigint,
-        primary key (ID)
+        primary key (id)
     );
 
     create table images (
-        ID bigint not null auto_increment,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null auto_increment,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         data longblob,
-        fileName varchar(255),
+        file_name varchar(255),
         height integer not null,
         url TEXT,
         width integer not null,
-        element_ID bigint not null,
-        primary key (ID)
+        element_id bigint not null,
+        primary key (id)
     );
 
     create table linked_form_versions (
-        formId bigint not null,
-        linkedFormVersions integer
+        form_id bigint not null,
+        linked_form_versions integer
     );
 
     create table token (
-        ID bigint not null auto_increment,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
-        sortSeq bigint not null,
+        id bigint not null auto_increment,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
+        sort_seq bigint not null,
         type varchar(255) not null,
-        flow_ID bigint not null,
-        primary key (ID)
+        flow_id bigint not null,
+        primary key (id)
     );
 
     create table token_between (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
-        sortSeq bigint not null,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
+        sort_seq bigint not null,
         type varchar(255) not null,
-        flow_ID bigint not null,
-        question_ID bigint,
-        datePeriodUnit varchar(255),
+        flow_id bigint not null,
+        question bigint,
+        date_period_unit varchar(255),
         subformat varchar(255) not null,
-        valueEnd varchar(255),
-        valueStart varchar(255),
-        primary key (ID)
+        value_end varchar(255),
+        value_start varchar(255),
+        primary key (id)
     );
 
     create table token_comparation_answer (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
-        sortSeq bigint not null,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
+        sort_seq bigint not null,
         type varchar(255) not null,
-        flow_ID bigint not null,
-        question_ID bigint,
-        answer_ID bigint,
-        primary key (ID)
+        flow_id bigint not null,
+        question bigint,
+        answer_id bigint,
+        primary key (id)
     );
 
     create table token_comparation_value (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
-        sortSeq bigint not null,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
+        sort_seq bigint not null,
         type varchar(255) not null,
-        flow_ID bigint not null,
-        question_ID bigint,
-        datePeriodUnit varchar(255),
+        flow_id bigint not null,
+        question bigint,
+        date_period_unit varchar(255),
         subformat varchar(255) not null,
         value varchar(255),
-        primary key (ID)
+        primary key (id)
     );
 
     create table token_in (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
-        sortSeq bigint not null,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
+        sort_seq bigint not null,
         type varchar(255) not null,
-        flow_ID bigint not null,
-        question_ID bigint,
-        primary key (ID)
+        flow_id bigint not null,
+        question bigint,
+        primary key (id)
     );
 
     create table token_in_value (
-        ID bigint not null auto_increment,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
-        sortSeq bigint not null,
-        answerValue_ID bigint,
-        tokenIn_ID bigint not null,
-        primary key (ID)
+        id bigint not null auto_increment,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
+        sort_seq bigint not null,
+        answer_value bigint,
+        token_in bigint not null,
+        primary key (id)
     );
 
     create table tree_answers (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         label varchar(1000),
         name varchar(190),
-        originalReference varchar(190) not null,
-        sortSeq bigint not null,
-        parent_ID bigint,
+        original_reference varchar(190) not null,
+        sort_sequence bigint not null,
+        parent bigint,
         description varchar(10000),
-        primary key (ID)
+        primary key (id)
     );
 
     create table tree_blocks (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         label varchar(190),
         name varchar(190),
-        originalReference varchar(190) not null,
-        sortSeq bigint not null,
-        parent_ID bigint,
-        organizationId DOUBLE not null,
+        original_reference varchar(190) not null,
+        sort_sequence bigint not null,
+        parent bigint,
+        organization_id DOUBLE not null,
         version integer,
         description longtext,
-        editionDisabled bit not null,
-        linkedFormLabel varchar(255),
-        linkedFormOrganizationId bigint,
+        edition_disabled bit,
+        linked_form_label varchar(255),
+        linked_form_organization_id bigint,
         status varchar(255),
-        formReferenceID bigint,
-        primary key (ID)
+        form_reference_id bigint,
+        primary key (id)
     );
 
     create table tree_blocks_references (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         label varchar(190),
         name varchar(190),
-        originalReference varchar(190) not null,
-        sortSeq bigint not null,
-        parent_ID bigint,
-        reference_ID bigint not null,
-        primary key (ID)
+        original_reference varchar(190) not null,
+        sort_sequence bigint not null,
+        parent bigint,
+        reference_id bigint not null,
+        primary key (id)
     );
 
     create table tree_categories (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         label varchar(1000),
         name varchar(190),
-        originalReference varchar(190) not null,
-        sortSeq bigint not null,
-        parent_ID bigint,
-        primary key (ID)
+        original_reference varchar(190) not null,
+        sort_sequence bigint not null,
+        parent bigint,
+        primary key (id)
     );
 
     create table tree_dynamic_answer (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         label varchar(1000),
         name varchar(190),
-        originalReference varchar(190) not null,
-        sortSeq bigint not null,
-        parent_ID bigint,
-        reference_ID bigint,
-        primary key (ID)
+        original_reference varchar(190) not null,
+        sort_sequence bigint not null,
+        parent bigint,
+        reference_id bigint,
+        primary key (id)
     );
 
     create table tree_forms (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         label varchar(190),
         name varchar(190),
-        originalReference varchar(190) not null,
-        sortSeq bigint not null,
-        parent_ID bigint,
-        organizationId DOUBLE not null,
+        original_reference varchar(190) not null,
+        sort_sequence bigint not null,
+        parent bigint,
+        organization_id DOUBLE not null,
         version integer,
         description longtext,
-        editionDisabled bit not null,
-        linkedFormLabel varchar(255),
-        linkedFormOrganizationId bigint,
+        edition_disabled bit,
+        linked_form_label varchar(255),
+        linked_form_organization_id bigint,
         status varchar(255),
-        formReferenceID bigint,
-        primary key (ID)
+        form_reference_id bigint,
+        primary key (id)
     );
 
     create table tree_forms_references_hidden_elements (
-        tree_forms_ID bigint not null,
-        elementsToHide_ID bigint not null,
-        primary key (tree_forms_ID, elementsToHide_ID)
+        tree_forms_id bigint not null,
+        elementsToHide_id bigint not null,
+        primary key (tree_forms_id, elementsToHide_id)
     );
 
     create table tree_groups (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         label varchar(1000),
         name varchar(190),
-        originalReference varchar(190) not null,
-        sortSeq bigint not null,
-        parent_ID bigint,
+        original_reference varchar(190) not null,
+        sort_sequence bigint not null,
+        parent bigint,
         repeatable bit not null,
-        primary key (ID)
+        primary key (id)
     );
 
     create table tree_questions (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         label varchar(1000),
         name varchar(190),
-        originalReference varchar(190) not null,
-        sortSeq bigint not null,
-        parent_ID bigint,
-        answerFormat varchar(255),
-        answerSubformat varchar(255),
-        answerType varchar(255),
-        defaultValueString TEXT,
-        defaultValueTime datetime,
+        original_reference varchar(190) not null,
+        sort_sequence bigint not null,
+        parent bigint,
+        answer_format varchar(255),
+        answer_subformat varchar(255),
+        answer_type varchar(255),
+        default_value_string TEXT,
+        default_value_time datetime,
         description TEXT,
-        editionDisabled bit not null,
+        edition_disabled bit,
         horizontal bit not null,
         mandatory bit not null,
-        defaultValueAnswer_ID bigint,
-        primary key (ID)
+        default_value_answer bigint,
+        primary key (id)
     );
 
     create table tree_system_fields (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         label varchar(1000),
         name varchar(190),
-        originalReference varchar(190) not null,
-        sortSeq bigint not null,
-        parent_ID bigint,
-        primary key (ID)
+        original_reference varchar(190) not null,
+        sort_sequence bigint not null,
+        parent bigint,
+        primary key (id)
     );
 
     create table tree_texts (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         label varchar(1000),
         name varchar(190),
-        originalReference varchar(190) not null,
-        sortSeq bigint not null,
-        parent_ID bigint,
+        original_reference varchar(190) not null,
+        sort_sequence bigint not null,
+        parent bigint,
         description varchar(10000),
-        primary key (ID)
+        primary key (id)
     );
 
     create table webservice_call (
-        ID bigint not null auto_increment,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null auto_increment,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         name varchar(255) not null,
         webserviceName varchar(255),
-        form_ID bigint not null,
-        formElementTrigger_ID bigint,
-        primary key (ID)
+        form_id bigint not null,
+        formElementTrigger_id bigint,
+        primary key (id)
     );
 
     create table webservice_call_input_link (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         webservicePort varchar(250),
-        formElement_ID bigint,
+        formElement_id bigint,
         validationXpath varchar(255),
-        webserviceCall_ID bigint not null,
-        primary key (ID)
+        webserviceCall_id bigint not null,
+        primary key (id)
     );
 
     create table webservice_call_input_link_errors (
         ID bigint not null auto_increment,
         errorCode varchar(255),
         errorMessage varchar(255),
-        webserviceCallInputLink_ID bigint not null,
+        webserviceCallInputLink_id bigint not null,
         primary key (ID)
     );
 
     create table webservice_call_output_link (
-        ID bigint not null,
-        comparationId varchar(190) not null,
-        createdBy DOUBLE,
-        creationTime datetime not null,
-        updateTime datetime,
-        updatedBy DOUBLE,
+        id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime not null,
+        update_time datetime,
+        updated_by DOUBLE,
         webservicePort varchar(250),
-        formElement_ID bigint,
+        formElement_id bigint,
         isEditable bit not null,
-        webserviceCall_ID bigint not null,
-        primary key (ID)
+        webserviceCall_id bigint not null,
+        primary key (id)
     );
 
     alter table flow 
-        add constraint UK_ncm3pmigu960w0cbnc8cpi9ip  unique (comparationId);
+        add constraint UK_f2lbg87w4l8ckurvqn29yhw5u  unique (comparation_id);
 
     alter table images 
-        add constraint UK_tinm9y54etwk8ee0v9h24pgt9  unique (element_ID);
+        add constraint UK_q68t2ifi5ad0ohm85eqk9jbu5  unique (element_id);
 
     alter table images 
-        add constraint UK_2tlwidr1tjv26iu20m0jxnhw3  unique (comparationId);
+        add constraint UK_dy9n7qskcu76kw98po10wqkgs  unique (comparation_id);
 
     alter table linked_form_versions 
-        add constraint UK_c87p50fduqtda2111ese0s580  unique (formId, linkedFormVersions);
+        add constraint UK_k6vfb9l7mjmvtsnprdh4ncyh7  unique (form_id, linked_form_versions);
 
     alter table token 
-        add constraint UK_7adviq7imnx5f4hfitaywu9ba  unique (comparationId);
+        add constraint UK_n5llyb0plj8fyj0xra95qsjw7  unique (comparation_id);
 
     alter table token_between 
-        add constraint UK_qt1gj983c6e5r5ptwyiqxahb5  unique (ID);
+        add constraint UK_7393phfyfur3ypdj6lh7wcwyr  unique (id);
 
     alter table token_between 
-        add constraint UK_r9pxcwv0o4d8b4r75htyvdnkx  unique (comparationId);
+        add constraint UK_f80vpw5r8wr8ob7fwvfv9db8f  unique (comparation_id);
 
     alter table token_comparation_answer 
-        add constraint UK_n8snmhcqi2j07dp4sonrmnwv7  unique (ID);
+        add constraint UK_1q0mna2llubobh3uuu1kmtha4  unique (id);
 
     alter table token_comparation_answer 
-        add constraint UK_k8hfe94svgroao3ro57m60ptl  unique (comparationId);
+        add constraint UK_3hrlvy8i3jgq156hju7193qbo  unique (comparation_id);
 
     alter table token_comparation_value 
-        add constraint UK_bh6lvajnm5h8vhj2ef632fbct  unique (ID);
+        add constraint UK_1nxjs9edjvkn1i9d14315dkni  unique (id);
 
     alter table token_comparation_value 
-        add constraint UK_6jhrnt7aar8o5gycyy2hr91dk  unique (comparationId);
+        add constraint UK_f16xon5c6ikammnr4wtau299n  unique (comparation_id);
 
     alter table token_in 
-        add constraint UK_ap3dned8u6o0obyr6cc79ju3  unique (ID);
+        add constraint UK_etg9s4o7mwaiicwejxjab260a  unique (id);
 
     alter table token_in 
-        add constraint UK_os6rq6y1tm4v0hodtajw6gk5b  unique (comparationId);
+        add constraint UK_45pd168dkiq2lm490jwcunwal  unique (comparation_id);
 
     alter table token_in_value 
-        add constraint UK_5f75q3eyx1mg10qmjxxpxdtwp  unique (comparationId);
+        add constraint UK_7plyot15t7efka3kxkgkh4dlx  unique (comparation_id);
 
     alter table tree_answers 
-        add constraint UK_413vxa542h86uqy4uvcnv6y2x  unique (ID);
+        add constraint UK_dktggosx7ohcksfob4k94bfmb  unique (id);
 
     alter table tree_answers 
-        add constraint UK_5xuj3de6ide6evpo4sijpqa4o  unique (comparationId);
+        add constraint UK_novq229qj7ibt96gyqw251biu  unique (comparation_id);
 
     alter table tree_blocks 
-        add constraint UK_f965i4ecegx997gfv8w2tij8t  unique (ID);
+        add constraint UK_kfl0ygxd3kmomv1x5s3uy1ro4  unique (id);
 
     alter table tree_blocks 
-        add constraint UK_5yv2t9uoy5skfid1s6p1i6tay  unique (comparationId);
+        add constraint UK_lmu3cq3olf1t5gmi39cf1aac  unique (comparation_id);
 
     alter table tree_blocks 
-        add constraint UK_r7xwfhjrx5jwbwhtd8kyp563s  unique (label, version, organizationId);
+        add constraint UK_5cuv65mhqmelrdm4jmpejhqiv  unique (label, version, organization_id);
 
     alter table tree_blocks_references 
-        add constraint UK_c8un1l38a1eplwrsrc1j45i9a  unique (ID);
+        add constraint UK_h6705gqc3ly6jvk0gr2net9wk  unique (id);
 
     alter table tree_blocks_references 
-        add constraint UK_7wyh0kt2iv3j3w9mxvi12v3tq  unique (comparationId);
+        add constraint UK_nuir1gkk1iqhv8mtvj4k9vrw7  unique (comparation_id);
 
     alter table tree_categories 
-        add constraint UK_ec3bvy7lletc6jmyvyfwuroqv  unique (ID);
+        add constraint UK_t6nmk0eqg7yvg78lxqlrtdr66  unique (id);
 
     alter table tree_categories 
-        add constraint UK_gtcyh8mle277igwtb5dvhjkr1  unique (comparationId);
+        add constraint UK_1xpeifv5qxo29x7yhpfmjtbyo  unique (comparation_id);
 
     alter table tree_dynamic_answer 
-        add constraint UK_2ydjana3hlpsw5bkxkt3bsrq8  unique (ID);
+        add constraint UK_5y5wyxigj8ukynqia8jfbwe9c  unique (id);
 
     alter table tree_dynamic_answer 
-        add constraint UK_rkkl8hjn6deghh7wvdq1rxnkf  unique (comparationId);
+        add constraint UK_oeg54oeq04pihalip3b3479vp  unique (comparation_id);
 
     alter table tree_forms 
-        add constraint UK_gyfbqpo5jwnsoftogc0bs77k0  unique (label, version, organizationId);
+        add constraint UK_89ul4cb5nvq3aaiyni9w6dqaq  unique (label, version, organization_id);
 
     alter table tree_forms 
-        add constraint UK_plkq2e2pj19uak2ncrgf1ft6v  unique (ID);
+        add constraint UK_765yjtcx0oa8unb588ngimaml  unique (id);
 
     alter table tree_forms 
-        add constraint UK_k9mhkly9g8lqwf1m9esm50y6m  unique (comparationId);
+        add constraint UK_t05hap53xy8005w0etx1tm0yx  unique (comparation_id);
 
     alter table tree_groups 
-        add constraint UK_sfdvxxi1k3p9pqsjl5nhmgdp  unique (ID);
+        add constraint UK_lkx000598o8fu6o45gc6j8j6h  unique (id);
 
     alter table tree_groups 
-        add constraint UK_sno2xl7o9nxmt3xh48ywus36u  unique (comparationId);
+        add constraint UK_544k9wyac47tkk3mh7itf8h9f  unique (comparation_id);
 
     alter table tree_questions 
-        add constraint UK_9lkt55st6up2vyh38lrmu0dc5  unique (ID);
+        add constraint UK_qmnu5ia8n490ok4d7obj7khk6  unique (id);
 
     alter table tree_questions 
-        add constraint UK_nu1epukynjltak450rhyp6eu0  unique (comparationId);
+        add constraint UK_589h63s3jthrsckwd8a4dn3xq  unique (comparation_id);
 
     alter table tree_system_fields 
-        add constraint UK_4qh5vx93d0480hg3j76p7oexr  unique (ID);
+        add constraint UK_bnumacfcvsl95y2gnfn4so2op  unique (id);
 
     alter table tree_system_fields 
-        add constraint UK_r0il4g95ge6177s84s50icaui  unique (comparationId);
+        add constraint UK_f0b017j2vmq9p9kga9bq7o85x  unique (comparation_id);
 
     alter table tree_texts 
-        add constraint UK_gh4f3qqt3q8ak4wvj0kptc7x2  unique (ID);
+        add constraint UK_evv83frsh83pykib24ywsb5pm  unique (id);
 
     alter table tree_texts 
-        add constraint UK_qe6275omm38jd6s7q9frwpdet  unique (comparationId);
+        add constraint UK_jgk76ykdcnwih8xjeno3ibtbp  unique (comparation_id);
 
     alter table webservice_call 
-        add constraint UK_mfxxle3ihnquqxog0ijnoyak6  unique (comparationId);
+        add constraint UK_s9sdg0nbynxb17f5xenv24wov  unique (comparation_id);
 
     alter table webservice_call_input_link 
-        add constraint UK_i3b2fh7rfs8p8v8xkqolpd57f  unique (ID);
+        add constraint UK_eyb62ax0biq5p0xlp9u3wqoo8  unique (id);
 
     alter table webservice_call_input_link 
-        add constraint UK_r4e49ykfejtivfhvpq389x26x  unique (comparationId);
+        add constraint UK_t78d3ptjxutqtos6q8k1ei3nb  unique (comparation_id);
 
     alter table webservice_call_output_link 
-        add constraint UK_ok4mtc0pr7mfm73jpyora6kqp  unique (ID);
+        add constraint UK_t5weay02d8vl513y6nlvqp37  unique (id);
 
     alter table webservice_call_output_link 
-        add constraint UK_gsqntlasoa0sjbacff6ftndla  unique (comparationId);
+        add constraint UK_a32de2wku4rhijgxgsr96ps0i  unique (comparation_id);
 
     alter table token 
-        add constraint FK_1jkae8phlxx6soqblc3rk1s04 
-        foreign key (flow_ID) 
-        references flow (ID);
+        add constraint FK_2u42myosx0nme6wjh4jl3e0yj 
+        foreign key (flow_id) 
+        references flow (id);
 
     alter table token_between 
-        add constraint FK_ra954eotsl01s1s20r3iipvqv 
-        foreign key (flow_ID) 
-        references flow (ID);
+        add constraint FK_7tjeerxgw64y4402cmacgk1du 
+        foreign key (flow_id) 
+        references flow (id);
 
     alter table token_comparation_answer 
-        add constraint FK_6y1oe55eikigt0ncjjeh6kueo 
-        foreign key (answer_ID) 
-        references tree_answers (ID);
+        add constraint FK_7uu1oap25s2nmbvsew903qq05 
+        foreign key (answer_id) 
+        references tree_answers (id);
 
     alter table token_comparation_answer 
-        add constraint FK_qjip50m8a6wkqu9wdqw828a9l 
-        foreign key (flow_ID) 
-        references flow (ID);
+        add constraint FK_9mrc252gn4kqsqxhs4ncvja2k 
+        foreign key (flow_id) 
+        references flow (id);
 
     alter table token_comparation_value 
-        add constraint FK_m1g8tiej2sbbgy2y4xoyw6g7x 
-        foreign key (flow_ID) 
-        references flow (ID);
+        add constraint FK_mfdogudm01f0163yqe2tc480c 
+        foreign key (flow_id) 
+        references flow (id);
 
     alter table token_in 
-        add constraint FK_p9a5xftusa2qj6w2uxujwmshf 
-        foreign key (flow_ID) 
-        references flow (ID);
+        add constraint FK_h2dbwke556p1a2tyap957ssn0 
+        foreign key (flow_id) 
+        references flow (id);
 
     alter table token_in_value 
-        add constraint FK_aysu47tqxey50xwwod5kki3nd 
-        foreign key (answerValue_ID) 
-        references tree_answers (ID);
+        add constraint FK_6ptmici4nt86dy24b0ncgmb7c 
+        foreign key (answer_value) 
+        references tree_answers (id);
 
     alter table token_in_value 
-        add constraint FK_1ja0iuwo6243fkd998qr2uwds 
-        foreign key (tokenIn_ID) 
-        references token_in (ID);
+        add constraint FK_87wv2oc3y69qhprtkeb91r67d 
+        foreign key (token_in) 
+        references token_in (id);
 
     alter table tree_blocks_references 
-        add constraint FK_c2brjl6vkdwug1svsxaf3vol3 
-        foreign key (reference_ID) 
-        references tree_blocks (ID);
+        add constraint FK_m8991wm6hsvhvb67n6y77lrgn 
+        foreign key (reference_id) 
+        references tree_blocks (id);
 
     alter table tree_dynamic_answer 
-        add constraint FK_1focp8yixjr3i902hvvklx3wi 
-        foreign key (reference_ID) 
-        references tree_questions (ID);
+        add constraint FK_thio6kqvdspy60mmod8x69xp7 
+        foreign key (reference_id) 
+        references tree_questions (id);
 
     alter table tree_questions 
-        add constraint FK_b7pgk7nxqs4ru44km5ues8jn0 
-        foreign key (defaultValueAnswer_ID) 
-        references tree_answers (ID);
+        add constraint FK_rburksw4qm0iuf4e96pc1lcel 
+        foreign key (default_value_answer) 
+        references tree_answers (id);
 
     alter table webservice_call_input_link 
-        add constraint FK_gh8lglngvsku2hb11oki042l 
-        foreign key (webserviceCall_ID) 
-        references webservice_call (ID);
+        add constraint FK_4lf5959fqm28gct2x45b4wn7k 
+        foreign key (webserviceCall_id) 
+        references webservice_call (id);
 
     alter table webservice_call_input_link_errors 
-        add constraint FK_d10983vqvyeh4v32lxya3ego5 
-        foreign key (webserviceCallInputLink_ID) 
-        references webservice_call_input_link (ID);
+        add constraint FK_2n7xqjpvrclgb23f8gw2ax36w 
+        foreign key (webserviceCallInputLink_id) 
+        references webservice_call_input_link (id);
 
     alter table webservice_call_output_link 
-        add constraint FK_6xdyavaobw5ajkh22m3wpl63d 
-        foreign key (webserviceCall_ID) 
-        references webservice_call (ID);
+        add constraint FK_7vma0jxb4jlwbucdiw4vv9net 
+        foreign key (webserviceCall_id) 
+        references webservice_call (id);
 
 	CREATE TABLE `hibernate_sequence` (
 		`next_val` bigint(20) DEFAULT NULL

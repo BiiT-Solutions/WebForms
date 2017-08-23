@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.biit.form.entity.TreeObject;
@@ -19,7 +20,9 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class TokenWithQuestion extends Token {
 	private static final long serialVersionUID = 3644011189971053183L;
+
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="question")
 	private WebformsBaseQuestion question;
 
 	public TokenWithQuestion() {
@@ -45,8 +48,7 @@ public abstract class TokenWithQuestion extends Token {
 			TokenWithQuestion token = (TokenWithQuestion) object;
 			this.question = token.getQuestion();
 		} else {
-			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
-					+ TokenWithQuestion.class.getName());
+			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with " + TokenWithQuestion.class.getName());
 		}
 	}
 

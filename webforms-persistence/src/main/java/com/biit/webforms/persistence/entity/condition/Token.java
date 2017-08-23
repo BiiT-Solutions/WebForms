@@ -32,7 +32,7 @@ public class Token extends StorableObject {
 	@Enumerated(EnumType.STRING)
 	private TokenTypes type;
 
-	@Column(nullable = false)
+	@Column(name="sort_seq", nullable = false)
 	private long sortSeq = 0;
 
 	@ManyToOne(optional = false)

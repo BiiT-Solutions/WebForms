@@ -12,6 +12,7 @@
 				<include name="persistForm" />
 				<include name="formReference" />
 				<include name="webserviceDefinitionJsonTest" />
+				<include name="jsonTests"/>
 			</run>
 		</groups>
 		<classes>
@@ -24,6 +25,7 @@
 			<class name="com.biit.webforms.persistence.PersistForm" />
 			<class name="com.biit.webforms.persistence.FormReference" />
 			<class name="com.biit.webforms.persistence.WebserviceDefinitionJsonTest" />
+			<class name="com.biit.webforms.persistence.FormToJsonTests" />
 		</classes>
 	</test>
 </suite>

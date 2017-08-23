@@ -33,32 +33,32 @@ public class XmlUtils {
 
 	public static StringWriter formatToStringWriter(String xml) {
 		try {
-			final InputStream src = new ByteArrayInputStream(xml.getBytes(XML_CODIFICATION));
-			final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(src)
+			final InputStream source = new ByteArrayInputStream(xml.getBytes(XML_CODIFICATION));
+			final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(source)
 					.getDocumentElement();
 
 			StringWriter result = new StringWriter();
-			DOMSource ds = new DOMSource(document);
-			Transformer t = TransformerFactory.newInstance().newTransformer();
+			DOMSource domSource = new DOMSource(document);
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 
 			// Indentation
-			t.setOutputProperty(OutputKeys.INDENT, "yes");
-			t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "8");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "8");
 			// XML header
-			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 			// t.setOutputProperty(OutputKeys.STANDALONE, "yes");
-			t.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			transformer.setOutputProperty(OutputKeys.ENCODING, XML_CODIFICATION);
 
 			// Create data
-			t.transform(ds, new StreamResult(result));
+			transformer.transform(domSource, new StreamResult(result));
 			return result;
 		} catch (Exception e) {
-			WebformsLogger.warning(XmlUtils.class.getName(), "Unexpected failure while processing xml file. Storing content in temp file");
+			WebformsLogger.warning(XmlUtils.class.getName(), "Unexpected failure while processing xml file. Dumping content to a temporaly file 'webforms_xml_prettify'.");
 			try{
 				File temp = File.createTempFile("webforms_xml_prettify", "xml");
-				BufferedWriter bw = new BufferedWriter(new FileWriter(temp));
-	    	    bw.write(xml);
-	    	    bw.close();				
+				BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(temp));
+	    	    bufferedWriter.write(xml);
+	    	    bufferedWriter.close();				
 			}catch(IOException ioe){				
 			}
 			throw new RuntimeException(e);			

@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -20,12 +21,14 @@ public class TokenInValue extends StorableObject {
 	private static final long serialVersionUID = 4271257510746487089L;
 
 	@ManyToOne(optional=false)
+	@JoinColumn(name="token_in")
 	private TokenIn tokenIn;
 
-	@Column(nullable = false)
+	@Column(name="sort_seq", nullable = false)
 	private long sortSeq = 0;
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="answer_value")
 	private Answer answerValue;
 
 	public Answer getAnswerValue() {

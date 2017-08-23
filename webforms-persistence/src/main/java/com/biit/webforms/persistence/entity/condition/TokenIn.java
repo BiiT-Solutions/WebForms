@@ -31,7 +31,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "tokenIn")
 	@BatchSize(size = 100)
-	@OrderBy(value = "sortSeq ASC")
+	@OrderBy(value = "sort_seq ASC")
 	private List<TokenInValue> values;
 
 	public TokenIn() {

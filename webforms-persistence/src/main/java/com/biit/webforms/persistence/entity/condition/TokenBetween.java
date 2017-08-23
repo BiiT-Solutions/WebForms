@@ -27,11 +27,14 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 	@Enumerated(EnumType.STRING)
 	private AnswerSubformat subformat;
 
+	@Column(name="date_period_unit")
 	@Enumerated(EnumType.STRING)
 	private DatePeriodUnit datePeriodUnit;
 
+	@Column(name="value_start")
 	private String valueStart;
 
+	@Column(name="value_end")
 	private String valueEnd;
 
 	@Override

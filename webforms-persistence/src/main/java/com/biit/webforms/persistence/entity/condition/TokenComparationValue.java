@@ -37,6 +37,7 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 	private AnswerSubformat subformat;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name="date_period_unit")
 	private DatePeriodUnit datePeriodUnit;
 
 	private String value;

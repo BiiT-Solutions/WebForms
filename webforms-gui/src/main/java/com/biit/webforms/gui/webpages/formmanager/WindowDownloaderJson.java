@@ -10,7 +10,6 @@ import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
 import com.biit.webforms.persistence.entity.CompleteFormView;
 
 public class WindowDownloaderJson extends WindowDownloader {
-
 	private static final long serialVersionUID = 1327278107256149670L;
 
 	public WindowDownloaderJson(final CompleteFormView completeFormView, String filename) {
