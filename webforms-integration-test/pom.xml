@@ -13,6 +13,7 @@
 	</parent>
 
 	<properties>
+		<maven-war-plugin.version>2.3</maven-war-plugin.version>
 		<!-- Project cloned for testing -->
 		<source.gui.project>webforms-gui</source.gui.project>
 		<!-- Database server -->
@@ -175,6 +176,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
+				<version>${maven-war-plugin.version}</version>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>

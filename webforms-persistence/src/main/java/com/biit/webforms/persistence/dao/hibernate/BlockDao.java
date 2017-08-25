@@ -63,7 +63,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		Root<Block> form = cq.from(Block.class);
 
 		cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), blockLabel),
-				cb.equal(form.get(formMetamodel.getSingularAttribute("organization_id", Long.class)), organizationId)));
+				cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
 		try {
 			Block returnBlock = getEntityManager().createQuery(cq).getSingleResult();
 			if (returnBlock != null) {
@@ -85,7 +85,7 @@ public class BlockDao extends AnnotatedGenericDao<Block, Long> implements IBlock
 		EntityType<Block> formMetamodel = m.entity(Block.class);
 		Root<Block> form = cq.from(Block.class);
 
-		cq.where(cb.equal(form.get(formMetamodel.getSingularAttribute("organization_id", Long.class)), organizationId));
+		cq.where(cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId));
 		List<Block> blocks = getEntityManager().createQuery(cq).getResultList();
 		for (Block block : blocks) {
 			block.initializeSets();

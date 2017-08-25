@@ -47,10 +47,10 @@ public class SimpleBlockViewDao implements ISimpleBlockViewDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleBlockView> getAll() {
-		Query query = entityManager.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, max.maxversion "
+		Query query = entityManager.createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, max.maxversion "
 						+ "FROM tree_blocks tf INNER JOIN "
-						+ "(SELECT MAX(version) AS maxversion, label, organizationId FROM tree_blocks "
-						+ "GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
+						+ "(SELECT MAX(version) AS maxversion, label, organization_id FROM tree_blocks "
+						+ "GROUP BY label, organization_id) AS max  ON max.label = tf.label and max.organization_id = tf.organization_id "
 						+ "ORDER BY label, tf.version DESC;");
 
 		List<Object[]> rows = query.getResultList();
@@ -84,11 +84,11 @@ public class SimpleBlockViewDao implements ISimpleBlockViewDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SimpleBlockView> getAll(Long organizationId) {
-		Query query = entityManager.createNativeQuery("SELECT tf.ID, tf.name, tf.label, tf.version, tf.creationTime, tf.createdBy, tf.updateTime, tf.updatedBy, tf.comparationId, tf.organizationId, max.maxversion "
+		Query query = entityManager.createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, max.maxversion "
 						+ "FROM tree_blocks tf INNER JOIN "
-						+ "(SELECT MAX(version) AS maxversion, label, organizationId FROM tree_blocks WHERE organizationId="
+						+ "(SELECT MAX(version) AS maxversion, label, organization_id FROM tree_blocks WHERE organization_id="
 						+ organizationId
-						+ " GROUP BY label, organizationId) AS max  ON max.label = tf.label and max.organizationId = tf.organizationId "
+						+ " GROUP BY label, organization_id) AS max  ON max.label = tf.label and max.organization_id = tf.organization_id "
 						+ "ORDER BY label, tf.version DESC;");
 
 		List<Object[]> rows = query.getResultList();
