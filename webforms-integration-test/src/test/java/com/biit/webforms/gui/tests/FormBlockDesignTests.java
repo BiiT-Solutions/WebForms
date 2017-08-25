@@ -118,6 +118,64 @@ public class FormBlockDesignTests extends WebFormsTester {
 		Assert.assertEquals(getDesignerPage().getTextPropertiesView().getTechnicalName(), modifiedName);
 	}
 
+	/**
+	 * Used to check that the tree table element modifications are stored
+	 * correctly
+	 * 
+	 * @param tableRow
+	 */
+	private void deselectSelecTableRow(int tableRow) {
+		getDesignerPage().goToBeginningOfTreeTable();
+		getDesignerPage().clickInTreeTableRow(tableRow);
+	}
+
+	/**
+	 * Method to avoid repeating all the code that creates a block and a
+	 * category.<br>
+	 */
+	private void createNewBlockAndCategory() {
+		createNewBlock(NEW_BLOCK_NAME);
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
+	}
+
+	/**
+	 * Method to avoid repeating all the code that creates a form and a
+	 * category.<br>
+	 */
+	private void createNewFormAndCategory() {
+		createNewEmptyForm(NEW_FORM_NAME);
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
+	}
+
+	private void createNewFormAndCategoryWithAdminRights() {
+		createNewFormWithAdminRights(NEW_FORM_NAME);
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
+	}
+	
+	/**
+	 * Method to avoid repeating all the code that block a form design and
+	 * removes it afterwards.<br>
+	 */
+	private void saveDesignAndRemoveForm() {
+		getDesignerPage().saveDesign();
+		logOut();
+		deleteForm();
+	}
+	
+	/**
+	 * Method to avoid repeating all the code that saves a block design and
+	 * removes it afterwards.<br>
+	 */
+	private void saveDesignAndRemoveBlock() {
+		getDesignerPage().saveDesign();
+		takeScreenshot("screnshotBeforeLogOut");
+		logOut();
+		deleteBlock();
+	}
+
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtBlockCategoryGroupQuestionInput() throws FieldNotEditableException {
 		printTestNameInDebugTrace("checkAnswerSubanswerAtBlockCategoryGroupQuestionInput");
@@ -329,32 +387,6 @@ public class FormBlockDesignTests extends WebFormsTester {
 		createNewFormAndCategory();
 		getDesignerPage().addNewGroup();
 		saveDesignAndRemoveForm();
-	}
-
-	/**
-	 * Method to avoid repeating all the code that creates a block and a
-	 * category.<br>
-	 */
-	private void createNewBlockAndCategory() {
-		createNewBlock(NEW_BLOCK_NAME);
-		goToDesignerPage();
-		getDesignerPage().addNewCategory();
-	}
-
-	/**
-	 * Method to avoid repeating all the code that creates a form and a
-	 * category.<br>
-	 */
-	private void createNewFormAndCategory() {
-		createNewEmptyForm(NEW_FORM_NAME);
-		goToDesignerPage();
-		getDesignerPage().addNewCategory();
-	}
-
-	private void createNewFormAndCategoryWithAdminRights() {
-		createNewFormWithAdminRights(NEW_FORM_NAME);
-		goToDesignerPage();
-		getDesignerPage().addNewCategory();
 	}
 
 	@Test(groups = { "formBlockDesign" })
@@ -795,17 +827,6 @@ public class FormBlockDesignTests extends WebFormsTester {
 		getDesignerPage().addNewSubanswer();
 		getDesignerPage().clickDeleteButton();
 		saveDesignAndRemoveForm();
-	}
-
-	/**
-	 * Used to check that the tree table element modifications are stored
-	 * correctly
-	 * 
-	 * @param tableRow
-	 */
-	private void deselectSelecTableRow(int tableRow) {
-		getDesignerPage().goToBeginningOfTreeTable();
-		getDesignerPage().clickInTreeTableRow(tableRow);
 	}
 
 	@Test(groups = { "formBlockDesign" })
@@ -1330,26 +1351,6 @@ public class FormBlockDesignTests extends WebFormsTester {
 		deleteBlock();
 	}
 
-	/**
-	 * Method to avoid repeating all the code that saves a block design and
-	 * removes it afterwards.<br>
-	 */
-	private void saveDesignAndRemoveBlock() {
-		getDesignerPage().saveDesign();
-		takeScreenshot("screnshotBeforeLogOut");
-		logOut();
-		deleteBlock();
-	}
-
-	/**
-	 * Method to avoid repeating all the code that block a form design and
-	 * removes it afterwards.<br>
-	 */
-	private void saveDesignAndRemoveForm() {
-		getDesignerPage().saveDesign();
-		logOut();
-		deleteForm();
-	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void saveGroupAsBlock() {
