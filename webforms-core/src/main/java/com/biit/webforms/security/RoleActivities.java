@@ -5,10 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.stereotype.Repository;
+
 import com.biit.usermanager.entity.IRole;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.IRoleActivities;
 
+@Repository
 public class RoleActivities implements IRoleActivities {
 
 	/**
