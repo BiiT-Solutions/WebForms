@@ -32,6 +32,17 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+			<!-- JBOSS repository for drools-core -->
+		<repository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Repository Group</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
@@ -46,6 +57,7 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+
 
 	<profiles>
 		<!-- Modify the web.xml for the release profile -->
