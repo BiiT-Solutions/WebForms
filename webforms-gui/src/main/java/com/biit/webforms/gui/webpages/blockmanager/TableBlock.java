@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import com.biit.form.entity.IBaseFormView;
-import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.entity.IUser;
+import com.biit.usermanager.security.exceptions.UserDoesNotExistException;
 import com.biit.utils.date.DateManager;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UiAccesser;

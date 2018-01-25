@@ -3,6 +3,7 @@ package com.biit.webforms.gui;
 import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.usermanager.security.exceptions.InvalidCredentialsException;
+import com.biit.usermanager.security.exceptions.UserDoesNotExistException;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.exceptions.SessionHasAlreadyUser;
 import com.biit.webforms.gui.webpages.WebMap;
@@ -38,7 +39,8 @@ public class UserSession {
 		}
 	}
 	
-	public static IUser<Long> login(String userEmail, String password) throws UserManagementException, AuthenticationRequired, InvalidCredentialsException, SessionHasAlreadyUser{
+	public static IUser<Long> login(String userEmail, String password) throws UserManagementException, AuthenticationRequired, InvalidCredentialsException,
+			SessionHasAlreadyUser, UserDoesNotExistException {
 		return ((ApplicationUi)ApplicationUi.getCurrent()).login(userEmail,password);
 	}
 	

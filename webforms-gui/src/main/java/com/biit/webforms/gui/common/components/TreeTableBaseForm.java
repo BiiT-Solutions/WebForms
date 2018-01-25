@@ -8,9 +8,9 @@ import java.util.List;
 import javax.ws.rs.ProcessingException;
 
 import com.biit.form.entity.IBaseFormView;
-import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.usermanager.entity.IGroup;
+import com.biit.usermanager.security.exceptions.UserDoesNotExistException;
 import com.biit.utils.date.DateManager;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;

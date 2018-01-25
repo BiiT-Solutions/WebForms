@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.usermanager.security.exceptions.InvalidCredentialsException;
+import com.biit.usermanager.security.exceptions.UserDoesNotExistException;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -105,21 +106,18 @@ public class ApplicationUi extends UI {
 	private boolean autologinImplementation() throws SessionHasAlreadyUser {
 		// When accessing from Liferay, user and password are already set.
 		if (userEmail != null && userEmail.length() > 0 && password != null && password.length() > 0) {
-			WebformsUiLogger.info(ApplicationUi.class.getName(), "Autologin with user '" + userEmail + "' and password with length of "
-					+ password.length());
+			WebformsUiLogger.info(ApplicationUi.class.getName(), "Autologin with user '" + userEmail + "' and password with length of " + password.length());
 			try {
 				IUser<Long> user = login(userEmail, password);
 				if (user != null) {
 					return true;
 				}
-			} catch (UserManagementException | AuthenticationRequired | InvalidCredentialsException e) {
-				WebformsUiLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
-						+ "' failed! Wrong user or password.");
+			} catch (UserManagementException | AuthenticationRequired | InvalidCredentialsException | UserDoesNotExistException e) {
+				WebformsUiLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail + "' failed! Wrong user or password.");
 			}
 		} else {
 			if (userEmail != null && userEmail.length() > 0) {
-				WebformsUiLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail
-						+ "' but no password provided!");
+				WebformsUiLogger.info(ApplicationUi.class.getClass().getName(), "Autologin with user '" + userEmail + "' but no password provided!");
 			} else {
 				WebformsUiLogger.debug(this.getClass().getName(), "Autologin failed.");
 			}
@@ -127,8 +125,8 @@ public class ApplicationUi extends UI {
 		return false;
 	}
 
-	public IUser<Long> login(String userEmail, String password) throws UserManagementException, AuthenticationRequired,
-			InvalidCredentialsException, SessionHasAlreadyUser {
+	public IUser<Long> login(String userEmail, String password) throws UserManagementException, AuthenticationRequired, InvalidCredentialsException,
+			SessionHasAlreadyUser, UserDoesNotExistException {
 		IUser<Long> currentUser = UserSession.getUser();
 		if (currentUser != null) {
 			if (Objects.equals(currentUser.getEmailAddress(), userEmail) && Objects.equals(currentUser.getPassword(), password)) {
@@ -138,6 +136,7 @@ public class ApplicationUi extends UI {
 		}
 		// Try to log in the user when the button is clicked
 		IUser<Long> user = getAuthenticationService().getAuthenticationService().authenticate(userEmail, password);
+
 		if (user != null) {
 			UserSession.setUser(user);
 
@@ -244,7 +243,7 @@ public class ApplicationUi extends UI {
 	public ApplicationController getControllerInstance() {
 		return controller;
 	}
-	
+
 	public static ApplicationController getController() {
 		return ((ApplicationUi) getCurrent()).controller;
 	}

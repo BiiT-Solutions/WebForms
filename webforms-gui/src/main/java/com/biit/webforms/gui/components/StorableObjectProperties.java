@@ -1,7 +1,7 @@
 package com.biit.webforms.gui.components;
 
-import com.biit.liferay.access.exceptions.UserDoesNotExistException;
 import com.biit.persistence.entity.StorableObject;
+import com.biit.usermanager.security.exceptions.UserDoesNotExistException;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.components.PropertiesForClassComponent;
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;

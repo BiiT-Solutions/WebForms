@@ -9,6 +9,7 @@ import javax.servlet.ServletContext;
 import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.usermanager.security.exceptions.InvalidCredentialsException;
+import com.biit.usermanager.security.exceptions.UserDoesNotExistException;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
@@ -109,15 +110,14 @@ public class Login extends WebPageComponent {
 			}
 		});
 		// Add the login button
-		Button loginButton = new Button(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_SIGN_IN),
-				new ClickListener() {
-					private static final long serialVersionUID = 1239035599265918788L;
+		Button loginButton = new Button(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_CAPTION_SIGN_IN), new ClickListener() {
+			private static final long serialVersionUID = 1239035599265918788L;
 
-					@Override
-					public void buttonClick(ClickEvent event) {
-						loginAction();
-					}
-				});
+			@Override
+			public void buttonClick(ClickEvent event) {
+				loginAction();
+			}
+		});
 		loginButton.setWidth(FIELD_SIZE);
 		loginButton.setId(USER_PASS_LOGIN_BUTTON_ID);
 
@@ -138,16 +138,14 @@ public class Login extends WebPageComponent {
 			if (user != null) {
 				ApplicationUi.navigateTo(WebMap.getMainPage());
 			}
-		} catch (InvalidCredentialsException | AuthenticationRequired e) {
-			passwordField.setComponentError(new UserError(ServerTranslate.translate(
-					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER,
+		} catch (InvalidCredentialsException | AuthenticationRequired | UserDoesNotExistException e) {
+			passwordField.setComponentError(new UserError(ServerTranslate.translate(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_USER,
 					new Object[] { (String) usernameField.getValue() })));
 			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_MESSAGE_BADUSERPSWD,
 					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_TRYAGAIN);
 		} catch (UserManagementException e) {
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
-			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE,
-					CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
+			MessageManager.showError(CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_USER_SERVICE, CommonComponentsLanguageCodes.LOGIN_ERROR_MESSAGE_CONTACT);
 		} catch (SessionHasAlreadyUser e) {
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
