@@ -4,8 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -20,11 +22,14 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 	private static final long serialVersionUID = 8534588762014331498L;
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "webservice_call")
 	protected WebserviceCall webserviceCall;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "webserviceCallInputLink")
+	@JoinColumn(name = "errors")
 	private Set<WebserviceCallInputLinkErrors> errors;
 
+	@Column(name="validation_xpath")
 	private String validationXpath;
 
 	public WebserviceCallInputLink() {
@@ -61,12 +66,11 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 
 			setValidationXpath(link.getValidationXpath());
 			for (WebserviceCallInputLinkErrors error : link.getErrors()) {
-				addWebserviceCallInputError(new WebserviceCallInputLinkErrors(error.getErrorCode(),
-						error.getErrorMessage()));
+				addWebserviceCallInputError(new WebserviceCallInputLinkErrors(error.getErrorCode(), error.getErrorMessage()));
 			}
 		} else {
-			throw new NotValidStorableObjectException("Element of class '" + object.getClass().getName()
-					+ "' is not compatible with '" + this.getClass().getName() + "'");
+			throw new NotValidStorableObjectException("Element of class '" + object.getClass().getName() + "' is not compatible with '"
+					+ this.getClass().getName() + "'");
 		}
 	}
 
@@ -75,7 +79,8 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 	}
 
 	/**
-	 * Filters error list and returns only the error codes with a message for the user.
+	 * Filters error list and returns only the error codes with a message for
+	 * the user.
 	 * 
 	 * @return
 	 */
@@ -121,12 +126,12 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 			error.resetIds();
 		}
 	}
-	
+
 	public void setErrors(Set<WebserviceCallInputLinkErrors> errors) {
 		this.errors.clear();
-		for(WebserviceCallInputLinkErrors error: errors){
+		for (WebserviceCallInputLinkErrors error : errors) {
 			addWebserviceCallInputError(error);
 		}
 	}
-	
+
 }

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -17,14 +18,17 @@ public class WebserviceCallInputLinkErrors implements Serializable, Comparable<W
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "ID", unique = true, nullable = false)
+	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name="webservice_call_input_link")
 	private WebserviceCallInputLink webserviceCallInputLink;
 
+	@Column(name="error_code")
 	private String errorCode;
 
+	@Column(name="error_message")
 	private String errorMessage;
 
 	protected WebserviceCallInputLinkErrors() {

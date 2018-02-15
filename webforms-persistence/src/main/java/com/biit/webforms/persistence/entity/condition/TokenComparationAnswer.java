@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -28,6 +29,7 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 	private transient Boolean evaluationValue = null;
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "answer")
 	private Answer answer;
 
 	public TokenComparationAnswer() {
@@ -43,8 +45,7 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 		return tokenTypes;
 	}
 
-	public void setContent(WebformsBaseQuestion reference, TokenTypes tokenType, Answer answer)
-			throws NotValidTokenType {
+	public void setContent(WebformsBaseQuestion reference, TokenTypes tokenType, Answer answer) throws NotValidTokenType {
 		setQuestion(reference);
 		setType(tokenType);
 		this.answer = answer;
@@ -97,8 +98,7 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 			TokenComparationAnswer token = (TokenComparationAnswer) object;
 			answer = token.getAnswer();
 		} else {
-			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
-					+ TokenComparationAnswer.class.getName());
+			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with " + TokenComparationAnswer.class.getName());
 		}
 	}
 
@@ -143,7 +143,8 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 	}
 
 	/**
-	 * Compares two token ComparationAnswer. it must be of token comparation type.
+	 * Compares two token ComparationAnswer. it must be of token comparation
+	 * type.
 	 */
 	@Override
 	public boolean isContentEqual(Token token) {

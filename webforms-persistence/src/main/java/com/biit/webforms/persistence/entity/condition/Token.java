@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -32,10 +33,11 @@ public class Token extends StorableObject {
 	@Enumerated(EnumType.STRING)
 	private TokenTypes type;
 
-	@Column(name="sort_seq", nullable = false)
+	@Column(name = "sort_seq", nullable = false)
 	private long sortSeq = 0;
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "flow")
 	private Flow flow;
 
 	public Token() {
@@ -71,8 +73,7 @@ public class Token extends StorableObject {
 		if (isValidTokenType(tokenType)) {
 			this.type = tokenType;
 		} else {
-			throw new NotValidTokenType("Token type " + tokenType + " is not valid for token class "
-					+ this.getClass().getName());
+			throw new NotValidTokenType("Token type " + tokenType + " is not valid for token class " + this.getClass().getName());
 		}
 	}
 
@@ -94,8 +95,7 @@ public class Token extends StorableObject {
 			this.type = token.type;
 			this.sortSeq = token.sortSeq;
 		} else {
-			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
-					+ Token.class.getName());
+			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with " + Token.class.getName());
 		}
 	}
 

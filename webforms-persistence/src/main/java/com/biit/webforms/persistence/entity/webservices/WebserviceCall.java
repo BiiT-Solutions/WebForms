@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -32,9 +33,11 @@ public class WebserviceCall extends StorableObject {
 	@Column(nullable = false)
 	private String name;
 
+	@Column(name="webservice_name")
 	private String webserviceName;
 
 	@ManyToOne(optional = true)
+	@JoinColumn(name="form_element_trigger")
 	private BaseQuestion formElementTrigger;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "webserviceCall")

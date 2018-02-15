@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.biit.form.entity.BaseQuestion;
@@ -23,10 +24,11 @@ public abstract class WebserviceCallLink extends StorableObject {
 
 	private static final int WEBSERVICE_PORT_MAX_LENGTH = 250;
 
-	@Column(length = WEBSERVICE_PORT_MAX_LENGTH)
+	@Column(name = "webservice_port", length = WEBSERVICE_PORT_MAX_LENGTH)
 	private String webservicePort;
 
 	@ManyToOne(optional = true, fetch = FetchType.EAGER)
+	@JoinColumn(name = "form_element")
 	private BaseQuestion formElement;
 
 	protected WebserviceCallLink() {
@@ -55,8 +57,8 @@ public abstract class WebserviceCallLink extends StorableObject {
 			}
 			setFormElement(link.getFormElement());
 		} else {
-			throw new NotValidStorableObjectException("Element of class '" + object.getClass().getName()
-					+ "' is not compatible with '" + WebserviceCallLink.class.getName() + "'");
+			throw new NotValidStorableObjectException("Element of class '" + object.getClass().getName() + "' is not compatible with '"
+					+ WebserviceCallLink.class.getName() + "'");
 		}
 	}
 
