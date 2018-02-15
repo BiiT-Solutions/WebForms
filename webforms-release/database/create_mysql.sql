@@ -44,7 +44,7 @@
         updated_by DOUBLE,
         sort_seq bigint not null,
         type varchar(255) not null,
-        flow_id bigint not null,
+        flow bigint not null,
         primary key (id)
     );
 
@@ -57,7 +57,7 @@
         updated_by DOUBLE,
         sort_seq bigint not null,
         type varchar(255) not null,
-        flow_id bigint not null,
+        flow bigint not null,
         question bigint,
         date_period_unit varchar(255),
         subformat varchar(255) not null,
@@ -75,9 +75,9 @@
         updated_by DOUBLE,
         sort_seq bigint not null,
         type varchar(255) not null,
-        flow_id bigint not null,
+        flow bigint not null,
         question bigint,
-        answer_id bigint,
+        answer bigint,
         primary key (id)
     );
 
@@ -90,7 +90,7 @@
         updated_by DOUBLE,
         sort_seq bigint not null,
         type varchar(255) not null,
-        flow_id bigint not null,
+        flow bigint not null,
         question bigint,
         date_period_unit varchar(255),
         subformat varchar(255) not null,
@@ -107,7 +107,7 @@
         updated_by DOUBLE,
         sort_seq bigint not null,
         type varchar(255) not null,
-        flow_id bigint not null,
+        flow bigint not null,
         question bigint,
         primary key (id)
     );
@@ -320,9 +320,9 @@
         update_time datetime,
         updated_by DOUBLE,
         name varchar(255) not null,
-        webserviceName varchar(255),
+        webservice_name varchar(255),
         form_id bigint not null,
-        formElementTrigger_id bigint,
+        form_element_trigger bigint,
         primary key (id)
     );
 
@@ -333,19 +333,19 @@
         creation_time datetime not null,
         update_time datetime,
         updated_by DOUBLE,
-        webservicePort varchar(250),
-        formElement_id bigint,
-        validationXpath varchar(255),
-        webserviceCall_id bigint not null,
+        webservice_port varchar(250),
+        form_element bigint,
+        validation_xpath varchar(255),
+        webservice_call bigint not null,
         primary key (id)
     );
 
     create table webservice_call_input_link_errors (
-        ID bigint not null auto_increment,
-        errorCode varchar(255),
-        errorMessage varchar(255),
-        webserviceCallInputLink_id bigint not null,
-        primary key (ID)
+        id bigint not null auto_increment,
+        error_code varchar(255),
+        error_message varchar(255),
+        webservice_call_input_link bigint not null,
+        primary key (id)
     );
 
     create table webservice_call_output_link (
@@ -355,10 +355,10 @@
         creation_time datetime not null,
         update_time datetime,
         updated_by DOUBLE,
-        webservicePort varchar(250),
-        formElement_id bigint,
-        isEditable bit not null,
-        webserviceCall_id bigint not null,
+        webservice_port varchar(250),
+        form_element bigint,
+        editable bit,
+        webservice_call bigint not null,
         primary key (id)
     );
 
@@ -486,33 +486,33 @@
         add constraint UK_a32de2wku4rhijgxgsr96ps0i  unique (comparation_id);
 
     alter table token 
-        add constraint FK_2u42myosx0nme6wjh4jl3e0yj 
-        foreign key (flow_id) 
+        add constraint FK_heb9yyngdvoa1ub18ejvc5ybl 
+        foreign key (flow) 
         references flow (id);
 
     alter table token_between 
-        add constraint FK_7tjeerxgw64y4402cmacgk1du 
-        foreign key (flow_id) 
+        add constraint FK_ltqb9si4d4fff9inaj1710g4 
+        foreign key (flow) 
         references flow (id);
 
     alter table token_comparation_answer 
-        add constraint FK_7uu1oap25s2nmbvsew903qq05 
-        foreign key (answer_id) 
+        add constraint FK_kxpy86r5mg99ik0a022kh3ljh 
+        foreign key (answer) 
         references tree_answers (id);
 
     alter table token_comparation_answer 
-        add constraint FK_9mrc252gn4kqsqxhs4ncvja2k 
-        foreign key (flow_id) 
+        add constraint FK_ihdep1i36ddlnhfs7a4fbk4d5 
+        foreign key (flow) 
         references flow (id);
 
     alter table token_comparation_value 
-        add constraint FK_mfdogudm01f0163yqe2tc480c 
-        foreign key (flow_id) 
+        add constraint FK_5ela5pdlkhjlbfeoip70ry7bf 
+        foreign key (flow) 
         references flow (id);
 
     alter table token_in 
-        add constraint FK_h2dbwke556p1a2tyap957ssn0 
-        foreign key (flow_id) 
+        add constraint FK_n0wcrcuwekihl1l9pujhqhisa 
+        foreign key (flow) 
         references flow (id);
 
     alter table token_in_value 
@@ -541,18 +541,18 @@
         references tree_answers (id);
 
     alter table webservice_call_input_link 
-        add constraint FK_4lf5959fqm28gct2x45b4wn7k 
-        foreign key (webserviceCall_id) 
+        add constraint FK_p698hf08nf8tde9nn3dt03lv8 
+        foreign key (webservice_call) 
         references webservice_call (id);
 
     alter table webservice_call_input_link_errors 
-        add constraint FK_2n7xqjpvrclgb23f8gw2ax36w 
-        foreign key (webserviceCallInputLink_id) 
+        add constraint FK_igpo7ceak9mi0if6qs14fr0k6 
+        foreign key (webservice_call_input_link) 
         references webservice_call_input_link (id);
 
     alter table webservice_call_output_link 
-        add constraint FK_7vma0jxb4jlwbucdiw4vv9net 
-        foreign key (webserviceCall_id) 
+        add constraint FK_aogpfv24m21y2jndsydqu9rfx 
+        foreign key (webservice_call) 
         references webservice_call (id);
 
 	CREATE TABLE `hibernate_sequence` (
