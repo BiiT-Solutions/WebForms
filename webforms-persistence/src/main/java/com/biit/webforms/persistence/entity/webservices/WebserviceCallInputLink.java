@@ -26,7 +26,6 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 	protected WebserviceCall webserviceCall;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "webserviceCallInputLink")
-	@JoinColumn(name = "errors")
 	private Set<WebserviceCallInputLinkErrors> errors;
 
 	@Column(name="validation_xpath")
