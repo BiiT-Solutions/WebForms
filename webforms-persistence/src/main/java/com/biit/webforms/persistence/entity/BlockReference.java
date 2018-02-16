@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -30,6 +31,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>();
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(name = "reference")
 	private Block reference;
 
 	public BlockReference() {

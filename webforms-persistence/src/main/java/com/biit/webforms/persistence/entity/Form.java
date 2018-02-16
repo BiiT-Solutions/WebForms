@@ -130,11 +130,11 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 	private boolean isLastVersion;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "form_reference_id")
+	@JoinColumn(name = "form_reference")
 	private Form formReference;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "tree_forms_references_hidden_elements")
+	@JoinTable(name = "tree_forms_references_hidden_elements", joinColumns = @JoinColumn(name = "form", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "element_to_hide", referencedColumnName = "id"))
 	private Set<TreeObject> elementsToHide;
 
 	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)

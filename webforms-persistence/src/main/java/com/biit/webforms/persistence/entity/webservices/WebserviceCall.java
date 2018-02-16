@@ -28,6 +28,7 @@ public class WebserviceCall extends StorableObject {
 	private static final long serialVersionUID = -8130775804790464077L;
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name="form")
 	private Form form;
 
 	@Column(nullable = false)
