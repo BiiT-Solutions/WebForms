@@ -126,7 +126,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 						+ " GROUP BY label, organization_id) AS max  ON max.label = tf.label and max.organization_id = tf.organization_id "
 						+ " WHERE EXISTS "
 						+ " (SELECT * FROM tree_blocks_references tr WHERE tr.parent=tf.id AND EXISTS "
-						+ " (SELECT * FROM tree_blocks tb WHERE tr.reference_id=" + block.getId() + ")) " + " ORDER BY label, tf.version DESC;");
+						+ " (SELECT * FROM tree_blocks tb WHERE tr.reference=" + block.getId() + ")) " + " ORDER BY label, tf.version DESC;");
 
 		List<Object[]> rows = query.getResultList();
 

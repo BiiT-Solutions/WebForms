@@ -6,7 +6,7 @@
         creation_time datetime not null,
         update_time datetime,
         updated_by DOUBLE,
-        flowType varchar(255),
+        flow_type varchar(255),
         others bit not null,
         destiny_id bigint,
         form_id bigint not null,
@@ -42,7 +42,7 @@
         creation_time datetime not null,
         update_time datetime,
         updated_by DOUBLE,
-        sort_seq bigint not null,
+        sort_sequence bigint not null,
         type varchar(255) not null,
         flow bigint not null,
         primary key (id)
@@ -55,7 +55,7 @@
         creation_time datetime not null,
         update_time datetime,
         updated_by DOUBLE,
-        sort_seq bigint not null,
+        sort_sequence bigint not null,
         type varchar(255) not null,
         flow bigint not null,
         question bigint,
@@ -73,7 +73,7 @@
         creation_time datetime not null,
         update_time datetime,
         updated_by DOUBLE,
-        sort_seq bigint not null,
+        sort_sequence bigint not null,
         type varchar(255) not null,
         flow bigint not null,
         question bigint,
@@ -88,7 +88,7 @@
         creation_time datetime not null,
         update_time datetime,
         updated_by DOUBLE,
-        sort_seq bigint not null,
+        sort_sequence bigint not null,
         type varchar(255) not null,
         flow bigint not null,
         question bigint,
@@ -105,7 +105,7 @@
         creation_time datetime not null,
         update_time datetime,
         updated_by DOUBLE,
-        sort_seq bigint not null,
+        sort_sequence bigint not null,
         type varchar(255) not null,
         flow bigint not null,
         question bigint,
@@ -160,7 +160,7 @@
         linked_form_label varchar(255),
         linked_form_organization_id bigint,
         status varchar(255),
-        form_reference_id bigint,
+        form_reference bigint,
         primary key (id)
     );
 
@@ -176,7 +176,7 @@
         original_reference varchar(190) not null,
         sort_sequence bigint not null,
         parent bigint,
-        reference_id bigint not null,
+        reference bigint not null,
         primary key (id)
     );
 
@@ -230,14 +230,14 @@
         linked_form_label varchar(255),
         linked_form_organization_id bigint,
         status varchar(255),
-        form_reference_id bigint,
+        form_reference bigint,
         primary key (id)
     );
 
     create table tree_forms_references_hidden_elements (
-        tree_forms_id bigint not null,
-        elementsToHide_id bigint not null,
-        primary key (tree_forms_id, elementsToHide_id)
+        form bigint not null,
+        element_to_hide bigint not null,
+        primary key (form, element_to_hide)
     );
 
     create table tree_groups (
@@ -321,7 +321,7 @@
         updated_by DOUBLE,
         name varchar(255) not null,
         webservice_name varchar(255),
-        form_id bigint not null,
+        form bigint not null,
         form_element_trigger bigint,
         primary key (id)
     );
@@ -526,8 +526,8 @@
         references token_in (id);
 
     alter table tree_blocks_references 
-        add constraint FK_m8991wm6hsvhvb67n6y77lrgn 
-        foreign key (reference_id) 
+        add constraint FK_s4424qaihy5b33a4x77ui7l1k 
+        foreign key (reference) 
         references tree_blocks (id);
 
     alter table tree_dynamic_answer 
