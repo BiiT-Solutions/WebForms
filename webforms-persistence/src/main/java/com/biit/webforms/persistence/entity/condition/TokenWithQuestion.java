@@ -22,7 +22,7 @@ public abstract class TokenWithQuestion extends Token {
 	private static final long serialVersionUID = 3644011189971053183L;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="question")
+	@JoinColumn(name = "question")
 	private WebformsBaseQuestion question;
 
 	public TokenWithQuestion() {
