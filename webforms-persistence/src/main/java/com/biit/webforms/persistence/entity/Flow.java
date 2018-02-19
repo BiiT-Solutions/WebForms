@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -57,6 +58,7 @@ public class Flow extends StorableObject {
 	private BaseQuestion origin;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name="flow_type")
 	private FlowType flowType;
 
 	@ManyToOne

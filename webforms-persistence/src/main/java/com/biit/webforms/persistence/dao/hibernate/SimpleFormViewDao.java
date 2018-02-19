@@ -53,7 +53,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 	@Override
 	public List<SimpleFormView> getAll() {
 		Query query = entityManager
-				.createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, tf.linked_form_label, tf.linked_form_organization_id, tf.status, tf.form_reference_id, max.maxversion "
+				.createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, tf.linked_form_label, tf.linked_form_organization_id, tf.status, tf.form_reference, max.maxversion "
 						+ "FROM tree_forms tf INNER JOIN "
 						+ "(SELECT MAX(version) AS maxversion, label, organization_id FROM tree_forms "
 						+ "GROUP BY label, organization_id) AS max  ON max.label = tf.label and max.organization_id = tf.organization_id "
@@ -126,7 +126,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 						+ " GROUP BY label, organization_id) AS max  ON max.label = tf.label and max.organization_id = tf.organization_id "
 						+ " WHERE EXISTS "
 						+ " (SELECT * FROM tree_blocks_references tr WHERE tr.parent=tf.id AND EXISTS "
-						+ " (SELECT * FROM tree_blocks tb WHERE tr.reference_id=" + block.getId() + ")) " + " ORDER BY label, tf.version DESC;");
+						+ " (SELECT * FROM tree_blocks tb WHERE tr.reference=" + block.getId() + ")) " + " ORDER BY label, tf.version DESC;");
 
 		List<Object[]> rows = query.getResultList();
 
