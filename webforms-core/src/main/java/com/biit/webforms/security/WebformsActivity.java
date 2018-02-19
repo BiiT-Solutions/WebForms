@@ -3,8 +3,8 @@ package com.biit.webforms.security;
 import com.biit.usermanager.security.IActivity;
 
 /**
- * Activities are used for authorization system to define what a user can do and cannot do. The string for each activity
- * must be unique.
+ * Activities are used for authorization system to define what a user can do and
+ * cannot do. The string for each activity must be unique.
  */
 public enum WebformsActivity implements IActivity {
 	READ("Read"),
@@ -36,15 +36,17 @@ public enum WebformsActivity implements IActivity {
 	ADMIN_FORMS("AdminRights"),
 
 	EVICT_CACHE("EvictCache"),
-	
+
 	FORM_REMOVE("FormRemove"),
-	
+
 	BLOCK_REMOVE("BlockRemove"),
-	
+
 	IMPORT_JSON("ImportJson"),
-	
+
 	EXPORT_JSON("ExportJson"),
-	
+
+	EXPORT_ABCD("ExportAbcd"),
+
 	;
 
 	private String tag;

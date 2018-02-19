@@ -206,7 +206,7 @@ public class ApplicationController {
 		// Reset ids before persisting buf after removing incorrect
 		// webservices.
 		newForm.resetIds();
-		formDao.makePersistent(newForm);
+		newForm = formDao.makePersistent(newForm);
 		if (!webservicesToRemove.isEmpty()) {
 			MessageManager.showWarning(LanguageCodes.WARNING_WRONG_WEBSERVICE_CONFIGURATION);
 		}

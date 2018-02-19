@@ -70,6 +70,8 @@ public class RoleActivities implements IRoleActivities {
 	WebformsActivity.FORM_STATUS_DOWNGRADE,
 
 	WebformsActivity.FORM_REMOVE,
+	
+	WebformsActivity.EXPORT_ABCD,
 
 	};
 
