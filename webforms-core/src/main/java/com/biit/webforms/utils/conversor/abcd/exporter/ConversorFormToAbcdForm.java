@@ -1,12 +1,12 @@
-package com.biit.webforms.utils.conversor;
+package com.biit.webforms.utils.conversor.abcd.exporter;
 
-import com.biit.abcd.persistence.entity.Category;
 import com.biit.abcd.persistence.entity.Form;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.utils.conversor.abcd.importer.ConversorTreeObject;
 
 /**
  * Conversor from Abcd Form to Webforms form.
@@ -14,17 +14,17 @@ import com.biit.webforms.logger.WebformsLogger;
  * Both forms only have categories as childs.
  *
  */
-public class ConversorAbcdFormToForm extends ConversorTreeObject<Form, com.biit.webforms.persistence.entity.Form> {
+public class ConversorFormToAbcdForm extends ConversorTreeObject<com.biit.webforms.persistence.entity.Form, Form> {
 
-	private ConversorAbcdCategoryToCategory conversorCategory = new ConversorAbcdCategoryToCategory();
+	private ConversorCategoryToAbcdCategory conversorCategory = new ConversorCategoryToAbcdCategory();
 
 	@Override
-	public com.biit.webforms.persistence.entity.Form createDestinyInstance() {
-		return new com.biit.webforms.persistence.entity.Form();
+	public Form createDestinyInstance() {
+		return new Form();
 	}
 
 	@Override
-	public void copyData(Form origin, com.biit.webforms.persistence.entity.Form destiny) {
+	public void copyData(com.biit.webforms.persistence.entity.Form origin, Form destiny) {
 		// Copy base data
 		try {
 			destiny.setLabel(origin.getLabel());
@@ -35,11 +35,11 @@ public class ConversorAbcdFormToForm extends ConversorTreeObject<Form, com.biit.
 
 		// Create copy of the childs and assign.
 		for (TreeObject child : origin.getChildren()) {
-			if (!(child instanceof Category)) {
+			if (!(child instanceof com.biit.webforms.persistence.entity.Category)) {
 				WebformsLogger.errorMessage(this.getClass().getName(), new Throwable("Child type not expected"));
 				continue;
 			}
-			com.biit.webforms.persistence.entity.Category convertedChild = conversorCategory.convert((Category) child);
+			TreeObject convertedChild = conversorCategory.convert((com.biit.webforms.persistence.entity.Category) child);
 			try {
 				destiny.addChild(convertedChild);
 			} catch (NotValidChildException | ElementIsReadOnly e) {

@@ -94,7 +94,7 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkE
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
-import com.biit.webforms.utils.conversor.ConversorAbcdFormToForm;
+import com.biit.webforms.utils.conversor.abcd.importer.ConversorAbcdFormToForm;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.webservice.rest.client.AbcdRestClient;
 import com.biit.webforms.webservices.Webservice;

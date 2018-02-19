@@ -1,5 +1,6 @@
-package com.biit.webforms.utils.conversor;
+package com.biit.webforms.utils.conversor.abcd.importer;
 
+import com.biit.abcd.persistence.entity.Category;
 import com.biit.abcd.persistence.entity.Group;
 import com.biit.abcd.persistence.entity.Question;
 import com.biit.form.entity.TreeObject;
@@ -8,28 +9,28 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.logger.WebformsLogger;
 
 /**
- * Conversor from abcd groups to webforms groups.
+ * Conversor from Abcd categories to Webforms Categories.
  * 
- * A group only has base question elements.
+ * A category has base question and groups as childs
  *
  */
-public class ConversorAbcdGroupToGroup extends ConversorTreeObject<Group, com.biit.webforms.persistence.entity.Group> {
+public class ConversorAbcdCategoryToCategory extends
+		ConversorTreeObject<Category, com.biit.webforms.persistence.entity.Category> {
 
+	private ConversorAbcdGroupToGroup conversorGroup = new ConversorAbcdGroupToGroup();
 	private ConversorAbcdQuestionToQuestion conversorQuestion = new ConversorAbcdQuestionToQuestion();
 
 	@Override
-	public com.biit.webforms.persistence.entity.Group createDestinyInstance() {
-		return new com.biit.webforms.persistence.entity.Group();
+	public com.biit.webforms.persistence.entity.Category createDestinyInstance() {
+		return new com.biit.webforms.persistence.entity.Category();
 	}
 
 	@Override
-	public void copyData(Group origin, com.biit.webforms.persistence.entity.Group destiny) {
+	public void copyData(Category origin, com.biit.webforms.persistence.entity.Category destiny) {
 		// Copy base data
 		super.copyData(origin, destiny);
 
-		// Copy repeatable info
-		destiny.setRepeatable(origin.isRepeatable());
-
+		// Create copy of the childs and assign.
 		for (TreeObject child : origin.getChildren()) {
 			if (!(child instanceof Group || child instanceof Question)) {
 				WebformsLogger.errorMessage(this.getClass().getName(), new Throwable("Child type not expected"));
@@ -37,7 +38,7 @@ public class ConversorAbcdGroupToGroup extends ConversorTreeObject<Group, com.bi
 			}
 			TreeObject convertedChild = null;
 			if (child instanceof Group) {
-				convertedChild = convert((Group) child);
+				convertedChild = conversorGroup.convert((Group) child);
 			}
 			if (child instanceof Question) {
 				convertedChild = conversorQuestion.convert((Question) child);

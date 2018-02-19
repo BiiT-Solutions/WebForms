@@ -1,12 +1,12 @@
-package com.biit.webforms.utils.conversor;
+package com.biit.webforms.utils.conversor.abcd.exporter;
 
 import com.biit.abcd.persistence.entity.Question;
-import com.biit.form.entity.BaseAnswer;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.utils.conversor.abcd.importer.ConversorTreeObject;
 
 /**
  * Conversion from Abcd question to Webforms question. Not all types of abcd
@@ -15,19 +15,19 @@ import com.biit.webforms.logger.WebformsLogger;
  * default from the answer format if it applies.
  *
  */
-public class ConversorAbcdQuestionToQuestion extends ConversorTreeObject<Question, com.biit.webforms.persistence.entity.Question> {
+public class ConversorQuestionToAbcdQuestion extends ConversorTreeObject<com.biit.webforms.persistence.entity.Question, Question> {
 
 	private ConversorAnswerTypeAbcdToAnswerType conversorAnswerType = new ConversorAnswerTypeAbcdToAnswerType();
-	private ConversorAnswerFormatAbcdToAnswerFormat conversorAnswerFormat = new ConversorAnswerFormatAbcdToAnswerFormat();
-	private ConversorBaseAnswerToAnswer conversorAnswer = new ConversorBaseAnswerToAnswer();
+	private ConversorAnswerFormatToAbcdAnswerFormat conversorAnswerFormat = new ConversorAnswerFormatToAbcdAnswerFormat();
+	private ConversorAnswerToAbcdAnswer conversorAnswer = new ConversorAnswerToAbcdAnswer();
 
 	@Override
-	public com.biit.webforms.persistence.entity.Question createDestinyInstance() {
-		return new com.biit.webforms.persistence.entity.Question();
+	public Question createDestinyInstance() {
+		return new Question();
 	}
 
 	@Override
-	public void copyData(Question origin, com.biit.webforms.persistence.entity.Question destiny) {
+	public void copyData(com.biit.webforms.persistence.entity.Question origin, Question destiny) {
 		// Copy base data
 		super.copyData(origin, destiny);
 
@@ -41,8 +41,8 @@ public class ConversorAbcdQuestionToQuestion extends ConversorTreeObject<Questio
 
 		// Convert and assign children
 		for (TreeObject child : origin.getChildren()) {
-			if (child instanceof BaseAnswer) {
-				BaseAnswer convertedChild = conversorAnswer.convert((BaseAnswer) child);
+			if (child instanceof com.biit.webforms.persistence.entity.Answer) {
+				TreeObject convertedChild = conversorAnswer.convert((com.biit.webforms.persistence.entity.Answer) child);
 				try {
 					destiny.addChild(convertedChild);
 				} catch (NotValidChildException | ElementIsReadOnly e) {
