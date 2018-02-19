@@ -119,7 +119,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			}
 			for (TreeObject child : form.getChildren()) {
 				if (child instanceof BlockReference) {
-					Block block = ((BlockReference) child).getReference();
+					Block block = ((BlockReference) child).getReference();					
 					for (TreeObject linkedChild : convertBlockReference(block)) {
 						children.add(linkedChild);
 						updateHiddenElements(linkedChild);
@@ -174,14 +174,14 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			if (getForm() != null) {
 				for (TreeObject hiddenElement : getForm().getElementsToHide()) {
 					// Can be a copy. Compare by original reference.
-					if (hiddenElement != null && Objects.equals(hiddenElement.getOriginalReference(), linkedChild.getOriginalReference())) {
+					if (hiddenElement!=null && Objects.equals(hiddenElement.getOriginalReference(), linkedChild.getOriginalReference())) {
 						linkedChild.setHiddenElement(true);
 					}
 				}
 			}
 
 			// Check its children
-			if (hiddenElement != null && !linkedChild.isHiddenElement()) {
+			if (!linkedChild.isHiddenElement()) {
 				for (TreeObject child : linkedChild.getChildren()) {
 					updateHiddenElements(child);
 				}
