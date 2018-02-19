@@ -14,10 +14,10 @@ import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.utils.file.FileReader;
+import com.biit.webforms.exporters.json.BaseFormMetadataExporter;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.utils.exporters.json.BaseFormMetadataExporter;
 
 @Test(groups = { "jsonForms" })
 public class JsonExporterTests {

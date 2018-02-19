@@ -207,7 +207,7 @@
         original_reference varchar(190) not null,
         sort_sequence bigint not null,
         parent bigint,
-        reference_id bigint,
+        reference bigint,
         primary key (id)
     );
 
@@ -531,8 +531,8 @@
         references tree_blocks (id);
 
     alter table tree_dynamic_answer 
-        add constraint FK_thio6kqvdspy60mmod8x69xp7 
-        foreign key (reference_id) 
+        add constraint FK_3uhvwfo6guv4byfs5xi3kpjl8 
+        foreign key (reference) 
         references tree_questions (id);
 
     alter table tree_questions 

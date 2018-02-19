@@ -4,11 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import com.biit.webforms.exporters.json.BaseFormMetadataExporter;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.utils.exporters.json.BaseFormMetadataExporter;
 
 public class WindowDownloaderBaseFormMetadataJson extends WindowDownloader {
 

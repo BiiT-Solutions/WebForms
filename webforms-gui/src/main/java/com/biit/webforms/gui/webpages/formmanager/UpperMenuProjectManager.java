@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.exporters.xforms.XFormsSimpleFormExporter;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.IconButton;
@@ -13,7 +14,6 @@ import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.theme.ThemeIcons;
-import com.biit.webforms.xforms.XFormsSimpleFormExporter;
 import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickListener;

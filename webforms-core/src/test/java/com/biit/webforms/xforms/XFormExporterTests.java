@@ -11,6 +11,11 @@ import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.exporters.xforms.XFormsSimpleFormExporter;
+import com.biit.webforms.exporters.xforms.exceptions.InvalidDateException;
+import com.biit.webforms.exporters.xforms.exceptions.NotExistingDynamicFieldException;
+import com.biit.webforms.exporters.xforms.exceptions.PostCodeRuleSyntaxError;
+import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
@@ -22,11 +27,6 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceExceptio
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.utils.FormUtils;
 import com.biit.webforms.webservices.Webservice;
-import com.biit.webforms.xforms.XFormsSimpleFormExporter;
-import com.biit.webforms.xforms.exceptions.InvalidDateException;
-import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
-import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
-import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 
 @Test(groups = { "xforms" })
 public class XFormExporterTests {
