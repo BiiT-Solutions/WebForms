@@ -6,6 +6,7 @@ import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -26,6 +27,7 @@ public class DynamicAnswer extends BaseAnswer implements FlowConditionScript {
 	private static final Pattern NAME_ALLOWED = Pattern.compile(ANSWER_TAG_ALLOWED_CHARS);
 
 	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, fetch = FetchType.EAGER)
+	@JoinColumn(name = "reference")
 	private Question reference;
 
 	public Question getReference() {
