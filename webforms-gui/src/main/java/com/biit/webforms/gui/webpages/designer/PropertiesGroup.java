@@ -19,6 +19,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 	private TextArea label;
 
 	private CheckBox repeatable;
+	private CheckBox isTable;
 
 	public PropertiesGroup() {
 		super(Group.class);
@@ -37,6 +38,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		label.setMaxLength(TreeObject.MAX_LABEL_LENGTH);
 
 		repeatable = new CheckBox(LanguageCodes.CAPTION_REPETABLE.translation());
+		isTable = new CheckBox(LanguageCodes.CAPTION_TABLE.translation());
 
 		FormLayout commonProperties = new FormLayout();
 		commonProperties.setWidth(null);
@@ -44,9 +46,9 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
 		commonProperties.addComponent(repeatable);
+		commonProperties.addComponent(isTable);
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(),
-				UserSession.getUser());
+		boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_GROUP.translation(), true);
@@ -70,6 +72,11 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 
 		repeatable.setValue(getInstance().isRepeatable());
 		repeatable.setEnabled(!getInstance().isReadOnly());
+
+		isTable.setValue(getInstance().isShownAsTable());
+		isTable.setEnabled(!getInstance().isReadOnly());
+		isTable.addValidator(new ValidatorNestedTablesNotAllowed(getInstance()));
+		isTable.addValidator(new ValidatorTablesAllowesOnlyGroupsAsChildren(getInstance()));
 	}
 
 	@Override
@@ -82,7 +89,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		if (label.isValid()) {
 			tempLabel = label.getValue();
 		}
-		ApplicationUi.getController().updateGroup(getInstance(), tempName, tempLabel, repeatable.getValue());
+		ApplicationUi.getController().updateGroup(getInstance(), tempName, tempLabel, repeatable.getValue(), isTable.getValue());
 
 		super.updateElement();
 	}
