@@ -11,7 +11,6 @@ import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.json.serialization.BaseFormDeserializer;
-import com.biit.form.json.serialization.BaseRepeatableGroupDeserializer;
 import com.biit.form.json.serialization.StorableObjectDeserializer;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -60,7 +59,7 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 		gsonBuilder.registerTypeAdapter(StorableObject.class, new StorableObjectDeserializer<StorableObject>());
 		gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
 		gsonBuilder.registerTypeAdapter(Category.class, new CategoryDeserializer());
-		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupDeserializer<Group>(Group.class));
+		gsonBuilder.registerTypeAdapter(Group.class, new GroupDeserializer());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionDeserializer());
 		gsonBuilder.registerTypeAdapter(Text.class, new TextDeserializer());
 		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldDeserializer());

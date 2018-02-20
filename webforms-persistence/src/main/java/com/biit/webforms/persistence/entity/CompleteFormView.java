@@ -18,7 +18,6 @@ import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidParentException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
-import com.biit.form.json.serialization.BaseRepeatableGroupSerializer;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
@@ -41,6 +40,7 @@ import com.biit.webforms.serialization.CategorySerializer;
 import com.biit.webforms.serialization.DynamicAnswerSerializer;
 import com.biit.webforms.serialization.FlowSerializer;
 import com.biit.webforms.serialization.FormSerializer;
+import com.biit.webforms.serialization.GroupSerializer;
 import com.biit.webforms.serialization.QuestionSerializer;
 import com.biit.webforms.serialization.SystemFieldSerializer;
 import com.biit.webforms.serialization.TextSerializer;
@@ -119,7 +119,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			}
 			for (TreeObject child : form.getChildren()) {
 				if (child instanceof BlockReference) {
-					Block block = ((BlockReference) child).getReference();					
+					Block block = ((BlockReference) child).getReference();
 					for (TreeObject linkedChild : convertBlockReference(block)) {
 						children.add(linkedChild);
 						updateHiddenElements(linkedChild);
@@ -174,7 +174,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			if (getForm() != null) {
 				for (TreeObject hiddenElement : getForm().getElementsToHide()) {
 					// Can be a copy. Compare by original reference.
-					if (hiddenElement!=null && Objects.equals(hiddenElement.getOriginalReference(), linkedChild.getOriginalReference())) {
+					if (hiddenElement != null && Objects.equals(hiddenElement.getOriginalReference(), linkedChild.getOriginalReference())) {
 						linkedChild.setHiddenElement(true);
 					}
 				}
@@ -561,7 +561,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
 		gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
 		gsonBuilder.registerTypeAdapter(Category.class, new CategorySerializer());
-		gsonBuilder.registerTypeAdapter(Group.class, new BaseRepeatableGroupSerializer<Group>());
+		gsonBuilder.registerTypeAdapter(Group.class, new GroupSerializer());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
 		gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
 		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldSerializer());
