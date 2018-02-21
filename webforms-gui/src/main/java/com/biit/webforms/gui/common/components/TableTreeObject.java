@@ -187,9 +187,13 @@ public class TableTreeObject extends TreeTable {
 			}
 
 			// Update
-			((ComponentCellTreeObject) item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).getValue()).update(element);
-			for (TreeObject children : element.getChildren()) {
-				updateRow(children);
+			try {
+				((ComponentCellTreeObject) item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).getValue()).update(element);
+				for (TreeObject children : element.getChildren()) {
+					updateRow(children);
+				}
+			} catch (NullPointerException npe) {
+				// is collapsed
 			}
 		}
 	}
