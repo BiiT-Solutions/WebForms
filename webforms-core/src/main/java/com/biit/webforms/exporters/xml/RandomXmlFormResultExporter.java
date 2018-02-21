@@ -146,6 +146,7 @@ public class RandomXmlFormResultExporter {
 			case MULTIPLE_SELECTION:
 			case SINGLE_SELECTION_LIST:
 			case SINGLE_SELECTION_RADIO:
+			case SINGLE_SELECTION_SLIDER:
 				generateRandomQuestion(sb, question);
 				break;
 			case TEXT_AREA:

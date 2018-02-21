@@ -188,6 +188,9 @@ public class TableTreeObject extends TreeTable {
 
 			// Update
 			((ComponentCellTreeObject) item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).getValue()).update(element);
+			for (TreeObject children : element.getChildren()) {
+				updateRow(children);
+			}
 		}
 	}
 
@@ -308,8 +311,7 @@ public class TableTreeObject extends TreeTable {
 			if (item.getClass() == collapseFrom) {
 				this.setCollapsed(item, true);
 			} else {
-				if (this.getParent(getRowItem((TreeObject) item)) != null
-						&& this.isCollapsed(this.getParent(getRowItem((TreeObject) item)))) {
+				if (this.getParent(getRowItem((TreeObject) item)) != null && this.isCollapsed(this.getParent(getRowItem((TreeObject) item)))) {
 					this.setCollapsed(item, true);
 				}
 			}

@@ -123,6 +123,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 					break;
 				case SINGLE_SELECTION_LIST:
 				case SINGLE_SELECTION_RADIO:
+				case SINGLE_SELECTION_SLIDER:
 				case MULTIPLE_SELECTION:
 					defaultValueString.setVisible(false);
 					defaultValueString.setValue("");

@@ -61,6 +61,7 @@ public class FormUtils {
 	public static final String INPUT_TEXT_DATE_BIRTHDAY = "questionBirthday";
 	public static final String RADIO_BUTTON = "questionRadioButton";
 	public static final String MULTI_CHECKBOX = "questionMultiCheckbox";
+	public static final String SLIDER = "questionSlider";
 	public static final String LIST = "questionList";
 	public static final String ANSWER_A = "answerA";
 	public static final String ANSWER_B = "answerB";
@@ -72,19 +73,20 @@ public class FormUtils {
 	public static final String ANSWER_H = "answerH";
 	public static final String ANSWER_I = "answerI";
 	public static final String ANSWER_J = "answerJ";
+	public static final String ANSWER_K = "answerK";
+	public static final String ANSWER_L = "answerL";
+	public static final String ANSWER_M = "answerM";
+	public static final String ANSWER_N = "answerN";
 
-	public static Form createCompleteForm() throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
-			FlowNotAllowedException {
+	public static Form createCompleteForm() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException,
+			InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
+			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException {
 		return createCompleteForm(null);
 	}
 
-	public static Form createCompleteForm(Block withBlock) throws FieldTooLongException, NotValidChildException,
-			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
+	public static Form createCompleteForm(Block withBlock) throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
+			InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
 			FlowNotAllowedException {
 		return createCompleteForm(withBlock, FORM_COMPLETE_LABEL);
 	}
@@ -109,11 +111,10 @@ public class FormUtils {
 	 * @throws ElementIsReadOnly
 	 * @throws FlowNotAllowedException
 	 */
-	public static Form createCompleteForm(Block withBlock, String label) throws FieldTooLongException,
-			NotValidChildException, CharacterNotAllowedException, InvalidAnswerFormatException,
-			InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
-			NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException {
+	public static Form createCompleteForm(Block withBlock, String label) throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
+			InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException,
+			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
+			FlowNotAllowedException {
 		Form form = new Form();
 		form.setOrganizationId(ORGANIZATION_ID);
 		form.setLabel(label);
@@ -129,24 +130,21 @@ public class FormUtils {
 		((Group) form.getChild(CATEGORY_2, GROUP_1)).setRepeatable(true);
 
 		// Create empty go to end form
-		form.addFlow(createEndFormflow((BaseQuestion) form.getChild(CATEGORY_1, SYSTEM_FIELD_1), false,
-				emptyCondition()));
+		form.addFlow(createEndFormflow((BaseQuestion) form.getChild(CATEGORY_1, SYSTEM_FIELD_1), false, emptyCondition()));
 		// Create others flow
 		form.addFlow(createEndFormflow((BaseQuestion) form.getChild(CATEGORY_1, SYSTEM_FIELD_1), true, emptyCondition()));
 		// Create flow from A to B empty condition.
-		form.addFlow(createFlow((BaseQuestion) form.getChild(CATEGORY_1, SYSTEM_FIELD_1),
-				(BaseQuestion) form.getChild(CATEGORY_1, INFO_TEXT_1), false, emptyCondition()));
+		form.addFlow(createFlow((BaseQuestion) form.getChild(CATEGORY_1, SYSTEM_FIELD_1), (BaseQuestion) form.getChild(CATEGORY_1, INFO_TEXT_1), false,
+				emptyCondition()));
 		// Create flow from A to B empty condition.
-		Token token1 = token(form.getChild(CATEGORY_1, GROUP_1, INPUT_TEXT_NUMBER_FLOAT), TokenTypes.LT, "3.0",
-				AnswerSubformat.FLOAT);
-		form.addFlow(createFlow((BaseQuestion) form.getChild(CATEGORY_2, SYSTEM_FIELD_1),
-				(BaseQuestion) form.getChild(CATEGORY_2, INFO_TEXT_1), false, condition(token1)));
+		Token token1 = token(form.getChild(CATEGORY_1, GROUP_1, INPUT_TEXT_NUMBER_FLOAT), TokenTypes.LT, "3.0", AnswerSubformat.FLOAT);
+		form.addFlow(createFlow((BaseQuestion) form.getChild(CATEGORY_2, SYSTEM_FIELD_1), (BaseQuestion) form.getChild(CATEGORY_2, INFO_TEXT_1), false,
+				condition(token1)));
 
 		return form;
 	}
 
-	public static Token token(TreeObject question, TokenTypes type, String value, AnswerSubformat subformat)
-			throws NotValidTokenType {
+	public static Token token(TreeObject question, TokenTypes type, String value, AnswerSubformat subformat) throws NotValidTokenType {
 		TokenComparationValue token = new TokenComparationValue(type);
 		token.setQuestion((Question) question);
 		token.setValue(value);
@@ -162,33 +160,29 @@ public class FormUtils {
 		return Arrays.asList(tokens);
 	}
 
-	public static Flow createFlow(BaseQuestion origin, BaseQuestion destiny, boolean others, List<Token> conditions)
-			throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
+	public static Flow createFlow(BaseQuestion origin, BaseQuestion destiny, boolean others, List<Token> conditions) throws BadFlowContentException,
+			FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		Flow flow = new Flow();
 		flow.setContent(origin, FlowType.NORMAL, destiny, others, conditions);
 		return flow;
 	}
 
-	public static Flow createEndFormflow(BaseQuestion origin, boolean others, List<Token> condition)
-			throws BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException,
-			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
+	public static Flow createEndFormflow(BaseQuestion origin, boolean others, List<Token> condition) throws BadFlowContentException,
+			FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException {
 		Flow flow = new Flow();
 		flow.setContent(origin, FlowType.END_FORM, null, others, condition);
 		return flow;
 	}
 
-	public static BlockReference createReferencedBlock(String name, Block block) throws NotValidChildException,
-			FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
-			InvalidAnswerSubformatException {
+	public static BlockReference createReferencedBlock(String name, Block block) throws NotValidChildException, FieldTooLongException,
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
 		BlockReference blockReference = new BlockReference();
 		blockReference.setReference(block);
 		return blockReference;
 	}
 
-	public static Block createBlock() throws NotValidChildException, FieldTooLongException,
-			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-			ElementIsReadOnly {
+	public static Block createBlock() throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
+			InvalidAnswerSubformatException, ElementIsReadOnly {
 		Block block = new Block();
 		Category category = createCategory(CATEGORY_IN_BLOCK_1);
 		block.addChild(category);
@@ -211,8 +205,8 @@ public class FormUtils {
 	 * @throws InvalidAnswerFormatException
 	 * @throws ElementIsReadOnly
 	 */
-	public static Category createCategory(String name) throws FieldTooLongException, CharacterNotAllowedException,
-			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly {
+	public static Category createCategory(String name) throws FieldTooLongException, CharacterNotAllowedException, NotValidChildException,
+			InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly {
 		Category category = new Category();
 		category.setName(name);
 		category.setLabel(name);
@@ -224,8 +218,8 @@ public class FormUtils {
 		return category;
 	}
 
-	private static TreeObject createGroup(String name) throws FieldTooLongException, CharacterNotAllowedException,
-			NotValidChildException, InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly {
+	private static TreeObject createGroup(String name) throws FieldTooLongException, CharacterNotAllowedException, NotValidChildException,
+			InvalidAnswerFormatException, InvalidAnswerSubformatException, ElementIsReadOnly {
 		Group group = new Group();
 		group.setName(name);
 		group.setLabel(name);
@@ -235,18 +229,16 @@ public class FormUtils {
 		group.addChild(createTextField(INPUT_TEXT_POSTAL_CODE, AnswerFormat.POSTAL_CODE, AnswerSubformat.POSTAL_CODE));
 		group.addChild(createTextField(INPUT_TEXT_TEXT_BSN, AnswerFormat.TEXT, AnswerSubformat.BSN));
 		group.addChild(createTextField(INPUT_TEXT_DATE_BIRTHDAY, AnswerFormat.DATE, AnswerSubformat.DATE_BIRTHDAY));
-		group.addChild(createQuestionAnswers(RADIO_BUTTON, AnswerType.SINGLE_SELECTION_RADIO, ANSWER_A, ANSWER_B,
-				ANSWER_C));
-		group.addChild(createQuestionAnswers(MULTI_CHECKBOX, AnswerType.MULTIPLE_SELECTION, ANSWER_D, ANSWER_E,
-				ANSWER_F, ANSWER_G));
+		group.addChild(createQuestionAnswers(RADIO_BUTTON, AnswerType.SINGLE_SELECTION_RADIO, ANSWER_A, ANSWER_B, ANSWER_C));
+		group.addChild(createQuestionAnswers(MULTI_CHECKBOX, AnswerType.MULTIPLE_SELECTION, ANSWER_D, ANSWER_E, ANSWER_F, ANSWER_G));
 		group.addChild(createQuestionAnswers(LIST, AnswerType.SINGLE_SELECTION_LIST, ANSWER_H, ANSWER_I, ANSWER_J));
+		group.addChild(createQuestionAnswers(SLIDER, AnswerType.SINGLE_SELECTION_SLIDER, ANSWER_K, ANSWER_L, ANSWER_M, ANSWER_N));
 
 		return group;
 	}
 
-	private static TreeObject createTextField(String name, AnswerFormat format, AnswerSubformat subformat)
-			throws FieldTooLongException, CharacterNotAllowedException, InvalidAnswerFormatException,
-			InvalidAnswerSubformatException {
+	private static TreeObject createTextField(String name, AnswerFormat format, AnswerSubformat subformat) throws FieldTooLongException,
+			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
 		Question question = new Question();
 		question.setName(name);
 		question.setLabel(name);
@@ -265,8 +257,8 @@ public class FormUtils {
 		return answer;
 	}
 
-	public static TreeObject createQuestionAnswers(String name, AnswerType answerType, String... answers)
-			throws NotValidChildException, FieldTooLongException, CharacterNotAllowedException, ElementIsReadOnly {
+	public static TreeObject createQuestionAnswers(String name, AnswerType answerType, String... answers) throws NotValidChildException, FieldTooLongException,
+			CharacterNotAllowedException, ElementIsReadOnly {
 		Question question = new Question();
 		question.setName(name);
 		question.setLabel(name);
@@ -278,16 +270,14 @@ public class FormUtils {
 		return question;
 	}
 
-	private static TreeObject createSystemField(String systemField1) throws FieldTooLongException,
-			CharacterNotAllowedException {
+	private static TreeObject createSystemField(String systemField1) throws FieldTooLongException, CharacterNotAllowedException {
 		SystemField systemField = new SystemField();
 		systemField.setName(systemField1);
 		systemField.setFieldName(SYSTEM_FIELD_1_NAME);
 		return systemField;
 	}
 
-	private static TreeObject createInfoText(String infoText) throws FieldTooLongException,
-			CharacterNotAllowedException {
+	private static TreeObject createInfoText(String infoText) throws FieldTooLongException, CharacterNotAllowedException {
 		Text text = new Text();
 		text.setName(infoText);
 		text.setDescription(IPSUM_LOREM);

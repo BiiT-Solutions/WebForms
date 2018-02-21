@@ -106,6 +106,7 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<com.biit.abcd
 			return checkCompatibilityAnswerFormat(question, abcdQuestion);
 		case SINGLE_SELECTION_LIST:
 		case SINGLE_SELECTION_RADIO:
+		case SINGLE_SELECTION_SLIDER:
 			if (abcdQuestion.getAnswerType() != null
 					&& abcdQuestion.getAnswerType().equals(com.biit.abcd.persistence.entity.AnswerType.RADIO)) {
 				return true;

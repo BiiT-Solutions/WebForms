@@ -17,8 +17,8 @@ import com.biit.webforms.validators.reports.FormGroupRepeatableStatusIsDifferent
 import com.biit.webforms.validators.reports.QuestionCompatibilityError;
 
 /**
- * Compares the differences between webforms form and abcd. Return a list of elements that exists in webforms and does
- * not exists in abcd.
+ * Compares the differences between webforms form and abcd. Return a list of
+ * elements that exists in webforms and does not exists in abcd.
  */
 public class CompareFormAbcdStructure extends SimpleValidator<com.biit.abcd.persistence.entity.Form> {
 
@@ -45,11 +45,9 @@ public class CompareFormAbcdStructure extends SimpleValidator<com.biit.abcd.pers
 		}
 	}
 
-	private void validateStructure(BaseForm webformsForm, BaseForm abcdForm, BaseGroup abcdElement,
-			BaseGroup webformsElement) {
+	private void validateStructure(BaseForm webformsForm, BaseForm abcdForm, BaseGroup abcdElement, BaseGroup webformsElement) {
 		if (webformsElement instanceof BaseRepeatableGroup && abcdElement instanceof BaseRepeatableGroup) {
-			if (((BaseRepeatableGroup) webformsElement).isRepeatable() != ((BaseRepeatableGroup) abcdElement)
-					.isRepeatable()) {
+			if (((BaseRepeatableGroup) webformsElement).isRepeatable() != ((BaseRepeatableGroup) abcdElement).isRepeatable()) {
 				assertTrue(false, new FormGroupRepeatableStatusIsDifferent(webform, abcdForm, webformsElement));
 			}
 		}
@@ -77,13 +75,9 @@ public class CompareFormAbcdStructure extends SimpleValidator<com.biit.abcd.pers
 		}
 	}
 
-	private void validateStructure(BaseForm webformsForm, BaseForm abcdForm, BaseQuestion abcdQuestion,
-			BaseQuestion webformsQuestion) {
-		assertTrue(
-				checkCompatibility((Question) webformsQuestion,
-						(com.biit.abcd.persistence.entity.Question) abcdQuestion), new QuestionCompatibilityError(
-						(com.biit.abcd.persistence.entity.Question) abcdQuestion, webformsForm,
-						(Question) webformsQuestion));
+	private void validateStructure(BaseForm webformsForm, BaseForm abcdForm, BaseQuestion abcdQuestion, BaseQuestion webformsQuestion) {
+		assertTrue(checkCompatibility((Question) webformsQuestion, (com.biit.abcd.persistence.entity.Question) abcdQuestion), new QuestionCompatibilityError(
+				(com.biit.abcd.persistence.entity.Question) abcdQuestion, webformsForm, (Question) webformsQuestion));
 
 		for (TreeObject webformsChild : webformsQuestion.getChildren()) {
 			TreeObject abcdChild = abcdQuestion.getChild(webformsChild.getName());
@@ -93,8 +87,7 @@ public class CompareFormAbcdStructure extends SimpleValidator<com.biit.abcd.pers
 			}
 			// Also subanswers
 			for (TreeObject webformsGrandChild : webformsChild.getChildren()) {
-				TreeObject abcdGrandChild = abcdQuestion.getChild(webformsChild.getName()
-						+ TreeObject.DEFAULT_PATH_SEPARATOR + webformsGrandChild.getName());
+				TreeObject abcdGrandChild = abcdQuestion.getChild(webformsChild.getName() + TreeObject.DEFAULT_PATH_SEPARATOR + webformsGrandChild.getName());
 				if (abcdGrandChild == null) {
 					assertTrue(false, new FormAnswerNotFound(webform, abcdForm, webformsGrandChild));
 					continue;
@@ -108,15 +101,14 @@ public class CompareFormAbcdStructure extends SimpleValidator<com.biit.abcd.pers
 		case INPUT:
 			return checkCompatibilityAnswerFormat(webformsQuestion, abcdQuestion);
 		case SINGLE_SELECTION_LIST:
+		case SINGLE_SELECTION_SLIDER:
 		case SINGLE_SELECTION_RADIO:
-			if (abcdQuestion.getAnswerType() != null
-					&& abcdQuestion.getAnswerType().equals(com.biit.abcd.persistence.entity.AnswerType.RADIO)) {
+			if (abcdQuestion.getAnswerType() != null && abcdQuestion.getAnswerType().equals(com.biit.abcd.persistence.entity.AnswerType.RADIO)) {
 				return true;
 			}
 			return false;
 		case MULTIPLE_SELECTION:
-			if (abcdQuestion.getAnswerType() != null
-					&& abcdQuestion.getAnswerType().equals(com.biit.abcd.persistence.entity.AnswerType.MULTI_CHECKBOX)) {
+			if (abcdQuestion.getAnswerType() != null && abcdQuestion.getAnswerType().equals(com.biit.abcd.persistence.entity.AnswerType.MULTI_CHECKBOX)) {
 				return true;
 			}
 			return false;
@@ -126,30 +118,25 @@ public class CompareFormAbcdStructure extends SimpleValidator<com.biit.abcd.pers
 		return false;
 	}
 
-	private boolean checkCompatibilityAnswerFormat(Question question,
-			com.biit.abcd.persistence.entity.Question abcdQuestion) {
+	private boolean checkCompatibilityAnswerFormat(Question question, com.biit.abcd.persistence.entity.Question abcdQuestion) {
 		switch (question.getAnswerFormat()) {
 		case DATE:
-			if (abcdQuestion.getAnswerFormat() != null
-					&& abcdQuestion.getAnswerFormat().equals(com.biit.abcd.persistence.entity.AnswerFormat.DATE)) {
+			if (abcdQuestion.getAnswerFormat() != null && abcdQuestion.getAnswerFormat().equals(com.biit.abcd.persistence.entity.AnswerFormat.DATE)) {
 				return true;
 			}
 			return false;
 		case NUMBER:
-			if (abcdQuestion.getAnswerFormat() != null
-					&& abcdQuestion.getAnswerFormat().equals(com.biit.abcd.persistence.entity.AnswerFormat.NUMBER)) {
+			if (abcdQuestion.getAnswerFormat() != null && abcdQuestion.getAnswerFormat().equals(com.biit.abcd.persistence.entity.AnswerFormat.NUMBER)) {
 				return true;
 			}
 			return false;
 		case TEXT:
-			if (abcdQuestion.getAnswerFormat() != null
-					&& abcdQuestion.getAnswerFormat().equals(com.biit.abcd.persistence.entity.AnswerFormat.TEXT)) {
+			if (abcdQuestion.getAnswerFormat() != null && abcdQuestion.getAnswerFormat().equals(com.biit.abcd.persistence.entity.AnswerFormat.TEXT)) {
 				return true;
 			}
 			return false;
 		case POSTAL_CODE:
-			if (abcdQuestion.getAnswerFormat() != null
-					&& abcdQuestion.getAnswerFormat().equals(com.biit.abcd.persistence.entity.AnswerFormat.POSTAL_CODE)) {
+			if (abcdQuestion.getAnswerFormat() != null && abcdQuestion.getAnswerFormat().equals(com.biit.abcd.persistence.entity.AnswerFormat.POSTAL_CODE)) {
 				return true;
 			}
 			return false;

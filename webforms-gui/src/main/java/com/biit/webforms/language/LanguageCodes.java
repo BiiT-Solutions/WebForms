@@ -60,6 +60,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_ANSWER_TYPE_SINGLE_SELECT_RADIO("caption.answerType.singleSelectRadio"),
 	CAPTION_ANSWER_TYPE_MULTI_SELECT("caption.answerType.multiSelect"),
 	CAPTION_ANSWER_TYPE_TEXT_AREA("caption.answer.type.text.area"),
+	CAPTION_ANSWER_TYPE_SLIDER("caption.answer.type.slider"),
 	
 	CAPTION_ANSWER_FORMAT_TEXT("caption.answerFormat.text"),
 	CAPTION_ANSWER_FORMAT_NUMBER("caption.answerFormat.number"),

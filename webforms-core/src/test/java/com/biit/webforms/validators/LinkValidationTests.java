@@ -194,12 +194,31 @@ public class LinkValidationTests {
 		el_23.setLabel("B");
 		// ques
 		el_21.addChild(el_23);
+		Question el_24 = new Question();
+		el_24.setName("Slider");
+		el_24.setLabel("Slider");
+		el_24.setAnswerType(AnswerType.SINGLE_SELECTION_SLIDER);
+		el_24.setHorizontal(false);
+		el_24.setMandatory(true);
+		Answer el_25 = new Answer();
+		el_25.setName("1");
+		el_25.setLabel("1");
+		// ques
+		el_24.addChild(el_25);
+		Answer el_26 = new Answer();
+		el_26.setName("2");
+		el_26.setLabel("2");
+		// ques
+		el_24.addChild(el_26);
+		// group
+		el_11.addChild(el_24);
 		// group
 		el_11.addChild(el_21);
 		// cat
 		el_6.addChild(el_11);
 		// form
 		form.addChild(el_6);
+	
 
 		return form;
 	}
