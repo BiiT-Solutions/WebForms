@@ -2,7 +2,6 @@ package com.biit.webforms.gui.webpages.designer;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.IconProvider;
-import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.common.theme.IThemeIcon;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Group;
@@ -42,14 +41,14 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject> {
 			}
 		} else if (object instanceof Group) {
 			Group group = (Group) object;
-			if (group.isRepeatable()) {
-				return CommonThemeIcon.TREE_OBJECT_GROUP_LOOP;
+			if (group.isShownAsTable()) {
+				return ThemeIcons.DESIGNER_GROUP_TABLE;
 			}
 		} else if (object instanceof Text) {
 			return ThemeIcons.DESIGNER_INFO_TEXT;
 		} else if (object instanceof SystemField) {
 			return ThemeIcons.DESIGNER_SYSTEM_FIELD;
-		} else if (object instanceof DynamicAnswer){
+		} else if (object instanceof DynamicAnswer) {
 			return ThemeIcons.DESIGNER_DYNAMIC_ANSWER;
 		}
 		return null;

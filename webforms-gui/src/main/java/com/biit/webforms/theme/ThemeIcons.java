@@ -37,6 +37,8 @@ public enum ThemeIcons implements IThemeIcon {
 	DESIGNER_QUESTION_TYPE_POSTALCODE("question.postcode.svg"), 
 	DESIGNER_QUESTION_TYPE_TEXT("question.textbox.letters.svg"), 
 	DESIGNER_QUESTION_TYPE_DROPDOWN("question.dropdown.svg"),
+	DESIGNER_GROUP_TABLE("group.table.svg"),
+	DESIGNER_GROUP_LOOP("group.loop.svg"),
 	DESIGNER_INFO_TEXT("infotext.svg"),
 	DESIGNER_SYSTEM_FIELD("systemfield.svg"),
 	DESIGNER_NEW_CATEGORY("form.category.add.svg"),
