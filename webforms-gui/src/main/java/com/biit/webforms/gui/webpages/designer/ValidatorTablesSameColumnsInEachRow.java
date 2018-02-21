@@ -1,11 +1,12 @@
 package com.biit.webforms.gui.webpages.designer;
 
+import java.util.Objects;
+
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Question;
-import com.google.gwt.thirdparty.guava.common.base.Objects;
 import com.vaadin.data.Validator;
 
 public class ValidatorTablesSameColumnsInEachRow implements Validator {
@@ -24,7 +25,7 @@ public class ValidatorTablesSameColumnsInEachRow implements Validator {
 			for (TreeObject group1 : treeObject.getChildren()) {
 				for (TreeObject group2 : treeObject.getChildren()) {
 					// Different groups
-					if (!Objects.equal(group1.getComparationId(), group2.getComparationId())) {
+					if (!Objects.equals(group1.getComparationId(), group2.getComparationId())) {
 						if (group1.getChildren().size() != group2.getChildren().size()) {
 							throw new InvalidValueException(LanguageCodes.CAPTION_VALIDATE_TABLE_DIFFERENT_NUMBER_OF_COLUMNS.translation());
 						}
@@ -49,9 +50,9 @@ public class ValidatorTablesSameColumnsInEachRow implements Validator {
 	}
 
 	private boolean compare(Question object1, Question object2) {
-		return Objects.equal(object1.getName(), object2.getName()) && Objects.equal(object1.isMandatory(), object2.isMandatory())
-				&& Objects.equal(object1.getAnswerType(), object2.getAnswerType()) && Objects.equal(object1.getAnswerFormat(), object2.getAnswerFormat())
-				&& Objects.equal(object1.getAnswerSubformat(), object2.getAnswerSubformat())
-				&& Objects.equal(object1.getDefaultValue(), object2.getDefaultValue());
+		return Objects.equals(object1.getName(), object2.getName()) && Objects.equals(object1.isMandatory(), object2.isMandatory())
+				&& Objects.equals(object1.getAnswerType(), object2.getAnswerType()) && Objects.equals(object1.getAnswerFormat(), object2.getAnswerFormat())
+				&& Objects.equals(object1.getAnswerSubformat(), object2.getAnswerSubformat())
+				&& Objects.equals(object1.getDefaultValue(), object2.getDefaultValue());
 	}
 }
