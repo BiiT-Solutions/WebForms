@@ -21,7 +21,9 @@ import javax.persistence.Table;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
+import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -32,6 +34,7 @@ import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidRangeException;
 
 @Entity
 @Table(name = "tree_questions")
@@ -500,5 +503,34 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	@Override
 	public TreeObjectImage getImage() {
 		return image;
+	}
+
+	public List<Answer> createAnswers(float lowerValueRange, float upperValueRange, float increment) throws InvalidRangeException {
+		List<Answer> answers = new ArrayList<>();
+		// lowerValueRange < lowerValueRange + increment because increment must
+		// > 0
+		if (!(lowerValueRange < lowerValueRange + increment && lowerValueRange + increment <= upperValueRange)) {
+			throw new InvalidRangeException("Invalid answer range definition with lower value '" + lowerValueRange + "', upper value '" + upperValueRange
+					+ "' and increment '" + increment + "'.");
+		}
+		for (float i = lowerValueRange; i <= upperValueRange; i += increment) {
+			try {
+				Answer answer = new Answer();
+				answer.setValue(Float.toString(i));
+				if (((int) i) == i) {
+					answer.setName("" + (int) i);
+					answer.setLabel("" + (int) i);
+				} else {
+					answer.setName("" + i);
+					answer.setLabel("" + i);
+				}
+				answer.setDescription(Float.toString(i));
+				addChild(answer);
+				answers.add(answer);
+			} catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException | ElementIsReadOnly e) {
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+		}
+		return answers;
 	}
 }

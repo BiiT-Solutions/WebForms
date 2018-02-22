@@ -272,6 +272,8 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_LINKED_FORM("caption.linked.form"),
 	CAPTION_NEW_DYNAMIC_ANSWER("caption.new.dynamic.answer"),
 	TOOLTIP_NEW_DYNAMIC_ANSWER("tooltip.new.dynamic.answer"),
+	CAPTION_NEW_RANGED_ANSWER("caption.new.ranged.answer"),
+	TOOLTIP_NEW_RANGED_ANSWER("tooltip.new.ranged.answer"),
 	
 	TOOLTIP_NEW_CATEGORY("tooltip.new.category"),
 	TOOLTIP_NEW_SUBCATEGORY("tooltip.new.subcategory"),
@@ -289,6 +291,8 @@ public enum LanguageCodes implements ILanguageCode {
 	ERROR_QUESTION_NOT_INSERTED("error.question.not.inserted"),
 	ERROR_TEXT_NOT_INSERTED("error.text.not.inserted"),
 	ERROR_ANSWER_NOT_INSERTED("error.answer.not.inserted"),
+	ERROR_ANSWERS_NOT_CREATED("error.answers.not.created"),
+	ERROR_ANSWERS_NOT_CREATED_DESCRIPTION("error.answers.not.created.description"),
 	ERROR_SYSTEM_FIELD_NOT_INSERTED("error.system.field.not.inserted"),
 	ERROR_FORM_NOT_VALID("error.form.not.valid"),
 	ERROR_TREE_OBJECT_FLOW_DEPENDENCY("error.tree.object.flow.dependency"),
@@ -691,6 +695,11 @@ public enum LanguageCodes implements ILanguageCode {
 	INPUT_PROMPT_POSITIVE_FLOAT("input.prompt.positive.float"), 
 	CAPTION_ANSWER_SUBFORMAT_NEGATIVE_FLOAT("caption.answer.subformat.negative.float"), 
 	INPUT_PROMPT_NEGATIVE_FLOAT("input.prompt.negative.float"), 
+	
+	WINDOW_ANSWER_RANGE_CAPTION("window.answer.range.caption"),
+	ANSWER_RANGE_LOWER_VALUE("answer.range.lower.value"),
+	ANSWER_RANGE_UPPER_VALUE("answer.range.upper.value"),
+	ANSWER_RANGE_STEAP_VALUE("answer.range.steap.value"),
 	;
 
 	private String value;

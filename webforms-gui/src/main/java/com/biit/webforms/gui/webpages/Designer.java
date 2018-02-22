@@ -47,6 +47,7 @@ import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectImage;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
 import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.designer.WindowBlocks;
+import com.biit.webforms.gui.webpages.designer.WindowCreateAnswerRanges;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.entity.Answer;
@@ -61,6 +62,7 @@ import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidRangeException;
 import com.biit.webforms.persistence.entity.exceptions.WebserviceDependencyExistException;
 import com.biit.webforms.security.WebformsActivity;
 import com.vaadin.data.Property.ReadOnlyException;
@@ -500,6 +502,39 @@ public class Designer extends SecuredWebPage {
 				}
 			}
 		});
+		upperMenu.addNewAnswerRangeListener(new ClickListener() {
+			private static final long serialVersionUID = -2843480387625002041L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				final WindowCreateAnswerRanges windowCreateAnswerRanges = new WindowCreateAnswerRanges();
+				windowCreateAnswerRanges.addAcceptActionListener(new AcceptActionListener() {
+
+					@Override
+					public void acceptAction(WindowAcceptCancel window) {
+						WebformsUiLogger.debug(this.getClass().getName(), "Ranges defined are: lowevalue '" + windowCreateAnswerRanges.getLowerValue()
+								+ "', uppervalue '" + windowCreateAnswerRanges.getUpperValue() + "' and steap '" + windowCreateAnswerRanges.getSteapValue()
+								+ "'.");
+						TreeObject treeObject = table.getSelectedRow();
+						if (treeObject instanceof Question) {
+							Question question = (Question) treeObject;
+							try {
+								List<Answer> answers = question.createAnswers(windowCreateAnswerRanges.getLowerValue(),
+										windowCreateAnswerRanges.getUpperValue(), windowCreateAnswerRanges.getSteapValue());
+								for (Answer answer : answers) {
+									table.addRow(answer, question);
+								}
+								windowCreateAnswerRanges.close();
+							} catch (InvalidRangeException e) {
+								MessageManager.showError(LanguageCodes.ERROR_ANSWERS_NOT_CREATED, LanguageCodes.ERROR_ANSWERS_NOT_CREATED_DESCRIPTION);
+							}
+						}
+
+					}
+				});
+				windowCreateAnswerRanges.showCentered();
+			}
+		});
 
 		return upperMenu;
 	}
@@ -643,6 +678,8 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getOtherElementsMenu().setEnabled(
 						upperMenu.getNewSubanswerButton().isEnabled() || upperMenu.getNewTextButton().isEnabled()
 								|| upperMenu.getNewSystemFieldButton().isEnabled());
+
+				upperMenu.getAnswerRangeButton().setEnabled(selectedRowHierarchyAllows(Answer.class));
 			} else {
 				disableMenu();
 			}
