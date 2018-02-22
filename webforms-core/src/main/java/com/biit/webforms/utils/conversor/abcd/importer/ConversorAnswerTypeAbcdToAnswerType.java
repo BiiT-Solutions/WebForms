@@ -5,10 +5,8 @@ import com.biit.webforms.logger.WebformsLogger;
 
 /**
  * Conversor of Answer Types
- *
  */
-public class ConversorAnswerTypeAbcdToAnswerType implements
-		Conversor<AnswerType, com.biit.webforms.enumerations.AnswerType> {
+public class ConversorAnswerTypeAbcdToAnswerType implements Conversor<AnswerType, com.biit.webforms.enumerations.AnswerType> {
 
 	@Override
 	public com.biit.webforms.enumerations.AnswerType convert(AnswerType origin) {

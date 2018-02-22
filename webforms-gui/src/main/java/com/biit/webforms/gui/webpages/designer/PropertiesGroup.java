@@ -74,9 +74,12 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 		repeatable.setEnabled(!getInstance().isReadOnly());
 
 		isTable.setValue(getInstance().isShownAsTable());
-		isTable.setEnabled(!getInstance().isReadOnly());
+		isTable.setEnabled(!getInstance().isReadOnly()
+				&& (!(getInstance().getParent() instanceof Group) || !((Group) getInstance().getParent()).isShownAsTable()));
 		isTable.addValidator(new ValidatorNestedTablesNotAllowed(getInstance()));
-		isTable.addValidator(new ValidatorTablesAllowesOnlyGroupsAsChildren(getInstance()));
+		isTable.addValidator(new ValidatorTablesAllowesOnlyGroupsAsRows(getInstance()));
+		isTable.addValidator(new ValidatorTablesAllowesOnlyQuestionsAsColumns(getInstance()));
+		isTable.addValidator(new ValidatorTablesSameColumnsInEachRow(getInstance()));
 	}
 
 	@Override

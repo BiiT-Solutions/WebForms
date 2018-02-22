@@ -20,6 +20,7 @@ public class ConversorAnswerTypeAbcdToAnswerType implements Conversor<com.biit.w
 			return AnswerType.MULTI_CHECKBOX;
 		case SINGLE_SELECTION_RADIO:
 		case SINGLE_SELECTION_LIST:
+		case SINGLE_SELECTION_SLIDER:
 			return AnswerType.RADIO;
 		}
 		WebformsLogger.severe(this.getClass().getName(), "Unexpected behaviour");
