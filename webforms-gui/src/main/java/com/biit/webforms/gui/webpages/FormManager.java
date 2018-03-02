@@ -23,6 +23,12 @@ import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.exporters.xforms.XFormsMultiplesFormsExporter;
+import com.biit.webforms.exporters.xforms.XFormsSimpleFormExporter;
+import com.biit.webforms.exporters.xforms.exceptions.InvalidDateException;
+import com.biit.webforms.exporters.xforms.exceptions.NotExistingDynamicFieldException;
+import com.biit.webforms.exporters.xforms.exceptions.PostCodeRuleSyntaxError;
+import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
@@ -66,14 +72,9 @@ import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
+import com.biit.webforms.utils.conversor.abcd.exporter.ConversorFormToAbcdForm;
 import com.biit.webforms.utils.ZipTools;
 import com.biit.webforms.validators.ValidateFormComplete;
-import com.biit.webforms.xforms.XFormsMultiplesFormsExporter;
-import com.biit.webforms.xforms.XFormsSimpleFormExporter;
-import com.biit.webforms.xforms.exceptions.InvalidDateException;
-import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
-import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
-import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -194,12 +195,10 @@ public class FormManager extends SecuredWebPage {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
-						getSelectedForm().getOrganizationId());
+				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(), getSelectedForm().getOrganizationId());
 				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
 						XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
-				upperMenu.getOpener()
-						.setParameter(OrbeonPreviewFrame.FORM_VERSION_PARAMETER_TAG, getSelectedForm().getVersion().toString());
+				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_VERSION_PARAMETER_TAG, getSelectedForm().getVersion().toString());
 			}
 		});
 		upperMenu.addExportXmlListener(new ClickListener() {
@@ -277,6 +276,14 @@ public class FormManager extends SecuredWebPage {
 				exportJson();
 			}
 		});
+		upperMenu.addExportAbcdListener(new ClickListener() {
+			private static final long serialVersionUID = 2815280910647730087L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				exportAbcdJson();
+			}
+		});
 		upperMenu.addExportBaseFormMetadataJsonListener(new ClickListener() {
 			private static final long serialVersionUID = -2359606371849802798L;
 
@@ -314,8 +321,8 @@ public class FormManager extends SecuredWebPage {
 			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE);
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		} catch (FormIsUsedAsReferenceException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE,
-					LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_FORM_DESCRIPTION);
+			MessageManager
+					.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_LINKED_FORM_DESCRIPTION);
 		}
 	}
 
@@ -378,11 +385,11 @@ public class FormManager extends SecuredWebPage {
 					@Override
 					public InputStream getInputStream() {
 						try {
-							return new XFormsSimpleFormExporter(completeFormView, getWebformsSecurityService().getOrganization(
-									UserSession.getUser(), getSelectedForm().getOrganizationId()), ApplicationUi.getController()
-									.getAllWebservices(), false, false).generateXFormsLanguage();
-						} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException
-								| StringRuleSyntaxError | PostCodeRuleSyntaxError | NotValidChildException | UnsupportedEncodingException e) {
+							return new XFormsSimpleFormExporter(completeFormView, getWebformsSecurityService().getOrganization(UserSession.getUser(),
+									getSelectedForm().getOrganizationId()), ApplicationUi.getController().getAllWebservices(), false, false)
+									.generateXFormsLanguage();
+						} catch (NotValidTreeObjectException | NotExistingDynamicFieldException | InvalidDateException | StringRuleSyntaxError
+								| PostCodeRuleSyntaxError | NotValidChildException | UnsupportedEncodingException e) {
 							MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 							WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 							return null;
@@ -393,8 +400,7 @@ public class FormManager extends SecuredWebPage {
 				window.setFilename(completeFormView.getLabel() + ".xml");
 				window.showCentered();
 			} else {
-				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS,
-						LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
+				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS, LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
 			}
 		}
 	}
@@ -411,8 +417,8 @@ public class FormManager extends SecuredWebPage {
 						try {
 							List<String> xmlFiles = new ArrayList<>();
 							List<String> xmlFileNames = new ArrayList<>();
-							XFormsMultiplesFormsExporter formExporter = new XFormsMultiplesFormsExporter(form, getWebformsSecurityService()
-									.getOrganization(UserSession.getUser(), getSelectedForm().getOrganizationId()));
+							XFormsMultiplesFormsExporter formExporter = new XFormsMultiplesFormsExporter(form, getWebformsSecurityService().getOrganization(
+									UserSession.getUser(), getSelectedForm().getOrganizationId()));
 							xmlFiles.add(formExporter.getInitialInstancePage());
 							xmlFileNames.add("initial-instance.xml");
 							xmlFiles.add(formExporter.getCategoriesFlowPage());
@@ -423,8 +429,8 @@ public class FormManager extends SecuredWebPage {
 							byte[] zipFile = ZipTools.zipFiles(xmlFiles, xmlFileNames, formExporter.getOrbeonAppFolder());
 
 							return new ByteArrayInputStream(zipFile);
-						} catch (IOException | NotValidTreeObjectException | NotValidChildException | NotExistingDynamicFieldException
-								| InvalidDateException | StringRuleSyntaxError | PostCodeRuleSyntaxError e) {
+						} catch (IOException | NotValidTreeObjectException | NotValidChildException | NotExistingDynamicFieldException | InvalidDateException
+								| StringRuleSyntaxError | PostCodeRuleSyntaxError e) {
 							MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 							WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 							return null;
@@ -435,8 +441,7 @@ public class FormManager extends SecuredWebPage {
 				window.setFilename(form.getLabel() + ".zip");
 				window.showCentered();
 			} else {
-				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS,
-						LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
+				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS, LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
 			}
 		}
 	}
@@ -451,8 +456,7 @@ public class FormManager extends SecuredWebPage {
 					MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
 				}
 			} else {
-				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS,
-						LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
+				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS, LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
 			}
 		}
 	}
@@ -469,8 +473,7 @@ public class FormManager extends SecuredWebPage {
 					// upperMenu.getOpener().getUI()).closePopUp();
 				}
 			} else {
-				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS,
-						LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
+				MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS, LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
 			}
 		}
 	}
@@ -495,10 +498,25 @@ public class FormManager extends SecuredWebPage {
 		new WindowDownloaderJson(completeFormView, completeFormView.getLabel() + ".json");
 	}
 
+	private void exportAbcdJson() {
+		CompleteFormView completeFormView = loadCompleteForm(getSelectedForm());
+
+		com.biit.abcd.persistence.entity.Form abcdForm = new com.biit.abcd.persistence.entity.Form();
+		ConversorFormToAbcdForm conversor = new ConversorFormToAbcdForm();
+		com.biit.abcd.persistence.entity.Form abcdConvertedForm = conversor.convert(completeFormView);
+		try {
+			abcdForm.addChildren(abcdConvertedForm.getChildren());
+		} catch (NotValidChildException | ElementIsReadOnly e) {
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+		}
+
+		new WindowDownloaderJson(abcdForm, completeFormView.getLabel() + ".json");
+	}
+
 	private void exportBaseFormMetadataJson() {
 		Form form = loadForm(getSelectedForm());
-		new WindowDownloaderBaseFormMetadataJson(new CompleteFormView(form), getSelectedForm().getLabel() + "_metadata_v"
-				+ getSelectedForm().getVersion() + ".json");
+		new WindowDownloaderBaseFormMetadataJson(new CompleteFormView(form), getSelectedForm().getLabel() + "_metadata_v" + getSelectedForm().getVersion()
+				+ ".json");
 	}
 
 	private void exportFlowPdf() {
@@ -564,8 +582,7 @@ public class FormManager extends SecuredWebPage {
 		// Let user choose the version.
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
 		for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
-			if (getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), simpleFormView.getOrganizationId(),
-					WebformsActivity.FORM_EDITING)) {
+			if (getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
 				linkAbcdForm.add(simpleFormView);
 			}
 		}
@@ -597,8 +614,7 @@ public class FormManager extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				} catch (ElementCannotBePersistedException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
-							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
@@ -607,8 +623,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void importAbcdForm() {
-		final WindowImportAbcdForms importAbcdForm = new WindowImportAbcdForms(ApplicationUi.getController()
-				.getTreeTableSimpleAbcdFormsProvider());
+		final WindowImportAbcdForms importAbcdForm = new WindowImportAbcdForms(ApplicationUi.getController().getTreeTableSimpleAbcdFormsProvider());
 		importAbcdForm.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
@@ -630,8 +645,7 @@ public class FormManager extends SecuredWebPage {
 					formTable.selectForm(importedForm);
 					window.close();
 				} catch (NotValidAbcdForm e) {
-					MessageManager
-							.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED, LanguageCodes.ERROR_DESCRIPTION_NOT_VALID_ABCD_FORM);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED, LanguageCodes.ERROR_DESCRIPTION_NOT_VALID_ABCD_FORM);
 				} catch (FieldTooLongException | CharacterNotAllowedException e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_IMPORT_FAILED, LanguageCodes.ERROR_DESCRIPTION_NAME_NOT_VALID);
 				} catch (FormWithSameNameException e) {
@@ -641,8 +655,7 @@ public class FormManager extends SecuredWebPage {
 				} catch (ElementIsReadOnly e) {
 					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				} catch (ElementCannotBePersistedException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
-							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				}
 
@@ -677,8 +690,7 @@ public class FormManager extends SecuredWebPage {
 					return;
 				}
 				if (newFormWindow.getValue() == null || newFormWindow.getValue().isEmpty()) {
-					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_FORM_NOT_CREATED,
-							LanguageCodes.COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME);
+					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_FORM_NOT_CREATED, LanguageCodes.COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME);
 					return;
 				}
 				try {
@@ -750,14 +762,12 @@ public class FormManager extends SecuredWebPage {
 					return;
 				}
 				if (newFormWindow.getValue() == null || newFormWindow.getValue().isEmpty()) {
-					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_FORM_NOT_CREATED,
-							LanguageCodes.COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME);
+					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_FORM_NOT_CREATED, LanguageCodes.COMMON_WARNING_DESCRIPTION_FORM_NEEDS_NAME);
 					return;
 				}
 				try {
 					if (newFormWindow.getOrganization() != null) {
-						Form newForm = ApplicationUi.getController().createFormAndPersist(newFormWindow.getValue(),
-								newFormWindow.getOrganization().getId());
+						Form newForm = ApplicationUi.getController().createFormAndPersist(newFormWindow.getValue(), newFormWindow.getOrganization().getId());
 						newForm.setLastVersion(true);
 						addFormToTable(newForm);
 						newFormWindow.close();
@@ -772,8 +782,7 @@ public class FormManager extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				} catch (ElementCannotBePersistedException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
-							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
@@ -808,18 +817,15 @@ public class FormManager extends SecuredWebPage {
 
 			boolean rowInstanceOfRootForm = row instanceof RootForm;
 			boolean rowNotNullAndForm = rowNotNull && !rowInstanceOfRootForm;
-			boolean canCreateForms = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(),
-					WebformsActivity.FORM_EDITING);
+			boolean canCreateForms = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.FORM_EDITING);
 			boolean canCreateNewVersion = getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), selectedForm,
 					WebformsActivity.FORM_NEW_VERSION);
-			boolean canLinkVersion = getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), selectedForm,
-					WebformsActivity.FORM_EDITING);
+			boolean canLinkVersion = getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), selectedForm, WebformsActivity.FORM_EDITING);
 
 			upperMenu.setEnabled(true);
 			upperMenu.getNewForm().setEnabled(canCreateForms);
 			upperMenu.getNewFormVersion().setEnabled(
-					rowNotNull && canCreateNewVersion && selectedForm.isLastVersion()
-							&& !selectedForm.getStatus().equals(FormWorkStatus.DESIGN));
+					rowNotNull && canCreateNewVersion && selectedForm.isLastVersion() && !selectedForm.getStatus().equals(FormWorkStatus.DESIGN));
 
 			upperMenu.getWebformReference().setEnabled(rowNotNullAndForm && (((SimpleFormView) row).getFormReferenceId() == null));
 
@@ -834,9 +840,7 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.getRemoveForm().setVisible(
 					getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.FORM_REMOVE));
 			upperMenu.getRemoveForm().setEnabled(
-					rowNotNullAndForm
-							&& getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), selectedForm,
-									WebformsActivity.FORM_REMOVE));
+					rowNotNullAndForm && getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), selectedForm, WebformsActivity.FORM_REMOVE));
 
 			// Bottom menu
 			bottomMenu.getEditFormButton().setEnabled(rowNotNullAndForm);

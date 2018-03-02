@@ -59,6 +59,7 @@ public class FormUtils {
 	public static final String RADIO_BUTTON = "questionRadioButton";
 	public static final String MULTI_CHECKBOX = "questionMultiCheckbox";
 	public static final String LIST = "questionList";
+	public static final String SLIDER = "questionSlider";
 	public static final String ANSWER_A = "answerA";
 	public static final String ANSWER_B = "answerB";
 	public static final String ANSWER_C = "answerC";
@@ -69,6 +70,10 @@ public class FormUtils {
 	public static final String ANSWER_H = "answerH";
 	public static final String ANSWER_I = "answerI";
 	public static final String ANSWER_J = "answerJ";
+	public static final String ANSWER_K = "answerK";
+	public static final String ANSWER_L = "answerL";
+	public static final String ANSWER_M = "answerM";
+	public static final String ANSWER_N = "answerN";
 
 	public static Form createCompleteForm() throws FieldTooLongException, NotValidChildException,
 			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
@@ -204,6 +209,7 @@ public class FormUtils {
 		group.addChild(createQuestionAnswers(MULTI_CHECKBOX, AnswerType.MULTIPLE_SELECTION, ANSWER_D, ANSWER_E,
 				ANSWER_F, ANSWER_G));
 		group.addChild(createQuestionAnswers(LIST, AnswerType.SINGLE_SELECTION_LIST, ANSWER_H, ANSWER_I, ANSWER_J));
+		group.addChild(createQuestionAnswers(SLIDER, AnswerType.SINGLE_SELECTION_SLIDER, ANSWER_K, ANSWER_L, ANSWER_M, ANSWER_N));
 
 		return group;
 	}

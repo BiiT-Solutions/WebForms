@@ -83,6 +83,7 @@ public class ParagraphGenerator {
 		case MULTIPLE_SELECTION:
 		case SINGLE_SELECTION_LIST:
 		case SINGLE_SELECTION_RADIO:
+		case SINGLE_SELECTION_SLIDER:
 			return new Paragraph("(" + question.getAnswerType().toString() + ")", PdfFont.SMALL_FONT.getFont());
 		default:
 			return new Paragraph("-", PdfFont.SMALL_FONT.getFont());

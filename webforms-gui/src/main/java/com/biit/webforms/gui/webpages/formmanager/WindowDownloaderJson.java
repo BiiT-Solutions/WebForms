@@ -29,4 +29,22 @@ public class WindowDownloaderJson extends WindowDownloader {
 		setFilename(filename);
 		showCentered();
 	}
+
+	public WindowDownloaderJson(final com.biit.abcd.persistence.entity.Form form, String filename) {
+		super(new WindowDownloaderProcess() {
+
+			@Override
+			public InputStream getInputStream() {
+				try {
+					return new ByteArrayInputStream(form.toJson().getBytes("UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+					return null;
+				}
+			}
+		});
+		setIndeterminate(true);
+		setFilename(filename);
+		showCentered();
+	}
 }

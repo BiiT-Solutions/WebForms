@@ -47,6 +47,7 @@ import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectImage;
 import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
 import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
 import com.biit.webforms.gui.webpages.designer.WindowBlocks;
+import com.biit.webforms.gui.webpages.designer.WindowCreateAnswerRanges;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.entity.Answer;
@@ -61,6 +62,7 @@ import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidRangeException;
 import com.biit.webforms.persistence.entity.exceptions.WebserviceDependencyExistException;
 import com.biit.webforms.security.WebformsActivity;
 import com.vaadin.data.Property.ReadOnlyException;
@@ -201,18 +203,15 @@ public class Designer extends SecuredWebPage {
 					clearAndUpdateFormTable();
 
 					if (ApplicationUi.getController().getFormInUse() instanceof Block) {
-						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
-								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
 					} else {
-						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE,
-								LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
 					}
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				} catch (ElementCannotBePersistedException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
-							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
@@ -384,8 +383,7 @@ public class Designer extends SecuredWebPage {
 					// Do not remove an element of a block if is in use in any
 					// flow.
 					try {
-						if ((ApplicationUi.getController().getFormInUse() instanceof Block)
-								&& ApplicationUi.getController().existFormThatUseElementInFlow(row)) {
+						if ((ApplicationUi.getController().getFormInUse() instanceof Block) && ApplicationUi.getController().existFormThatUseElementInFlow(row)) {
 							MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE,
 									LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_BLOCK_ELEMENT_DESCRIPTION);
 						} else {
@@ -411,12 +409,10 @@ public class Designer extends SecuredWebPage {
 							}
 						}
 					} catch (ReadOnlyException | UnexpectedDatabaseException e) {
-						MessageManager
-								.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+						MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 					}
 				} else {
-					MessageManager.showError(LanguageCodes.ERROR_FORM_WITH_BLOCK_IS_IN_USE,
-							LanguageCodes.ERROR_FORM_WITH_BLOCK_IS_IN_USE_DESCRIPTION);
+					MessageManager.showError(LanguageCodes.ERROR_FORM_WITH_BLOCK_IS_IN_USE, LanguageCodes.ERROR_FORM_WITH_BLOCK_IS_IN_USE_DESCRIPTION);
 				}
 			}
 		});
@@ -506,6 +502,39 @@ public class Designer extends SecuredWebPage {
 				}
 			}
 		});
+		upperMenu.addNewAnswerRangeListener(new ClickListener() {
+			private static final long serialVersionUID = -2843480387625002041L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				final WindowCreateAnswerRanges windowCreateAnswerRanges = new WindowCreateAnswerRanges();
+				windowCreateAnswerRanges.addAcceptActionListener(new AcceptActionListener() {
+
+					@Override
+					public void acceptAction(WindowAcceptCancel window) {
+						WebformsUiLogger.debug(this.getClass().getName(), "Ranges defined are: lowevalue '" + windowCreateAnswerRanges.getLowerValue()
+								+ "', uppervalue '" + windowCreateAnswerRanges.getUpperValue() + "' and steap '" + windowCreateAnswerRanges.getSteapValue()
+								+ "'.");
+						TreeObject treeObject = table.getSelectedRow();
+						if (treeObject instanceof Question) {
+							Question question = (Question) treeObject;
+							try {
+								List<Answer> answers = question.createAnswers(windowCreateAnswerRanges.getLowerValue(),
+										windowCreateAnswerRanges.getUpperValue(), windowCreateAnswerRanges.getSteapValue());
+								for (Answer answer : answers) {
+									table.addRow(answer, question);
+								}
+								windowCreateAnswerRanges.close();
+							} catch (InvalidRangeException e) {
+								MessageManager.showError(LanguageCodes.ERROR_ANSWERS_NOT_CREATED, LanguageCodes.ERROR_ANSWERS_NOT_CREATED_DESCRIPTION);
+							}
+						}
+
+					}
+				});
+				windowCreateAnswerRanges.showCentered();
+			}
+		});
 
 		return upperMenu;
 	}
@@ -516,22 +545,18 @@ public class Designer extends SecuredWebPage {
 			// Do not hide an element of a form reference if it is in use in any
 			// external flow.
 			if (ApplicationUi.getController().existDefinedFlowToReferencedElementOrItsChildren(element)) {
-				MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
-						LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
+				MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
 				// Do not remove an element of a block if it is in use in any
 				// external flow of the block.
-			} else if (blockReference != null
-					&& ApplicationUi.getController().existExternalFlowToReferencedElementOrItsChildren(element, blockReference)) {
-				MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE,
-						LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
+			} else if (blockReference != null && ApplicationUi.getController().existExternalFlowToReferencedElementOrItsChildren(element, blockReference)) {
+				MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_TITLE, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_HIDDEN_DESCRIPTION);
 			} else {
 				// It is not an element or it is a form reference element.
 				if (element.isHiddenElement()) {
 					if (ApplicationUi.getController().getCompleteFormView().showElement(element)) {
 						element.setHiddenElement(false);
 						if (blockReference != null) {
-							WebformsUiLogger.info(this.getClass().getName(), "Has show element '" + element + "' of block '"
-									+ blockReference + "'.");
+							WebformsUiLogger.info(this.getClass().getName(), "Has show element '" + element + "' of block '" + blockReference + "'.");
 						} else {
 							WebformsUiLogger.info(this.getClass().getName(), "Has show element '" + element + "'.");
 						}
@@ -544,8 +569,7 @@ public class Designer extends SecuredWebPage {
 						if (ApplicationUi.getController().getCompleteFormView().hideElement(element)) {
 							element.setHiddenElement(true);
 							if (blockReference != null) {
-								WebformsUiLogger.info(this.getClass().getName(), "Has hide element '" + element + "' of block '"
-										+ blockReference + "'.");
+								WebformsUiLogger.info(this.getClass().getName(), "Has hide element '" + element + "' of block '" + blockReference + "'.");
 							} else {
 								WebformsUiLogger.info(this.getClass().getName(), "Has hide element '" + element + "'.");
 							}
@@ -580,8 +604,7 @@ public class Designer extends SecuredWebPage {
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
 				} catch (ElementCannotBePersistedException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
-							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
@@ -606,8 +629,7 @@ public class Designer extends SecuredWebPage {
 
 				boolean rowIsBlockReferenceCategory = rowIsElementReference && (selectedElement instanceof BaseCategory)
 						&& ApplicationUi.getController().getCompleteFormView().getBlockReference(selectedElement) != null;
-				boolean canEdit = getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(),
-						UserSession.getUser());
+				boolean canEdit = getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
 				boolean canStoreBlock = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(),
 						WebformsActivity.BUILDING_BLOCK_ADD_FROM_FORM);
 				boolean selectedRowIsAnswer = (table.getSelectedRow() != null) && (table.getSelectedRow() instanceof Answer);
@@ -621,38 +643,32 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getInsertBlockButton().setVisible(!formIsBlock && !formHasLinkedForm);
 				upperMenu.getNewCategoryButton().setEnabled(
 						canEdit && (formIsBlockAndNoCategories || (!formIsBlock)) && !rowIsElementReference && !formHasLinkedForm);
-				upperMenu.getNewGroupButton().setEnabled(
-						canEdit && selectedRowHierarchyAllows(Group.class) && !rowIsElementReference && !formHasLinkedForm);
+				upperMenu.getNewGroupButton().setEnabled(canEdit && selectedRowHierarchyAllows(Group.class) && !rowIsElementReference && !formHasLinkedForm);
 				upperMenu.getNewQuestionButton().setEnabled(
-						canEdit && selectedRowHierarchyAllows(Question.class) && !rowIsElementReference && !formHasLinkedForm);
+						canEdit && selectedRowHierarchyAllows(Question.class) && !rowIsElementReference && !formHasLinkedForm && !isTableRowDefinition());
 				upperMenu.getNewSystemFieldButton().setEnabled(
-						canEdit && selectedRowHierarchyAllows(SystemField.class) && !rowIsElementReference && !formHasLinkedForm);
+						canEdit && selectedRowHierarchyAllows(SystemField.class) && !rowIsElementReference && !formHasLinkedForm && !isTableRowDefinition());
 				upperMenu.getNewTextButton().setEnabled(
-						canEdit && selectedRowHierarchyAllows(Text.class) && !rowIsElementReference && !formHasLinkedForm);
+						canEdit && selectedRowHierarchyAllows(Text.class) && !rowIsElementReference && !formHasLinkedForm && !isTableRowDefinition());
 				upperMenu.getNewAnswerButton().setEnabled(
-						canEdit && selectedRowHierarchyAllows(Answer.class) && !rowIsElementReference && !formHasLinkedForm);
+						canEdit && selectedRowHierarchyAllows(Answer.class) && !rowIsElementReference && !formHasLinkedForm && !isTableRowDefinition());
 				upperMenu.getNewDynamicAnswer().setEnabled(
-						canEdit && selectedRowHierarchyAllows(DynamicAnswer.class) && !rowIsElementReference && !formHasLinkedForm);
-				upperMenu
-						.getNewSubanswerButton()
-						.setEnabled(
-								canEdit
-										&& !formHasLinkedForm
-										&& !rowIsElementReference
-										&& selectedRowIsAnswer
-										&& selectedRowHierarchyAllows(Answer.class)
-										&& (isParentQuestionOfType(table.getSelectedRow(), AnswerType.SINGLE_SELECTION_RADIO) || isParentQuestionOfType(
-												table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
+						canEdit && selectedRowHierarchyAllows(DynamicAnswer.class) && !rowIsElementReference && !formHasLinkedForm && !isTableRowDefinition());
+				upperMenu.getNewSubanswerButton().setEnabled(
+						canEdit
+								&& !formHasLinkedForm
+								&& !rowIsElementReference
+								&& selectedRowIsAnswer
+								&& selectedRowHierarchyAllows(Answer.class)
+								&& (isParentQuestionOfType(table.getSelectedRow(), AnswerType.SINGLE_SELECTION_RADIO) || isParentQuestionOfType(
+										table.getSelectedRow(), AnswerType.MULTIPLE_SELECTION)));
 				upperMenu.getMoveButton().setEnabled(canEdit && !rowIsNull && !rowIsForm && !rowIsElementReference && !formHasLinkedForm);
 				upperMenu.getDeleteButton().setEnabled(
-						canEdit && !rowIsNull && !rowIsForm && !formHasLinkedForm
-								&& (!rowIsElementReference || selectedElement instanceof Category));
+						canEdit && !rowIsNull && !rowIsForm && !formHasLinkedForm && (!rowIsElementReference || selectedElement instanceof Category));
 				upperMenu.getUpButton().setEnabled(
-						canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory)
-								&& !formHasLinkedForm);
+						canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory) && !formHasLinkedForm);
 				upperMenu.getDownButton().setEnabled(
-						canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory)
-								&& !formHasLinkedForm);
+						canEdit && !rowIsNull && !rowIsForm && (!rowIsElementReference || rowIsBlockReferenceCategory) && !formHasLinkedForm);
 				upperMenu.getFinish().setVisible(!formIsBlock);
 				upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 				upperMenu.getDeleteButton().setVisible(!rowIsElementReference || rowIsBlockReferenceCategory);
@@ -662,6 +678,8 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getOtherElementsMenu().setEnabled(
 						upperMenu.getNewSubanswerButton().isEnabled() || upperMenu.getNewTextButton().isEnabled()
 								|| upperMenu.getNewSystemFieldButton().isEnabled());
+
+				upperMenu.getAnswerRangeButton().setEnabled(selectedRowHierarchyAllows(Answer.class));
 			} else {
 				disableMenu();
 			}
@@ -687,6 +705,17 @@ public class Designer extends SecuredWebPage {
 		upperMenu.getUpButton().setEnabled(false);
 		upperMenu.getDownButton().setEnabled(false);
 		upperMenu.getFinish().setEnabled(false);
+	}
+
+	private boolean isTableRowDefinition() {
+		TreeObject selectedRow = table.getSelectedRow();
+		if (selectedRow != null && selectedRow instanceof Group) {
+			// parent is a group defining a table.
+			if (((Group) selectedRow).isShownAsTable()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean selectedRowHierarchyAllows(Class<? extends TreeObject> cls) {
@@ -722,21 +751,17 @@ public class Designer extends SecuredWebPage {
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				if (newBlockWindow.getValue() == null || newBlockWindow.getValue().isEmpty()) {
-					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_BLOCK_NOT_CREATED,
-							LanguageCodes.COMMON_WARNING_DESCRIPTION_BLOCK_NEEDS_NAME);
+					MessageManager.showError(LanguageCodes.COMMON_WARNING_TITLE_BLOCK_NOT_CREATED, LanguageCodes.COMMON_WARNING_DESCRIPTION_BLOCK_NEEDS_NAME);
 					return;
 				}
 				try {
-					ApplicationUi.getController().saveAsBlock(table.getSelectedRow(), newBlockWindow.getValue(),
-							newBlockWindow.getOrganization().getId());
+					ApplicationUi.getController().saveAsBlock(table.getSelectedRow(), newBlockWindow.getValue(), newBlockWindow.getOrganization().getId());
 					newBlockWindow.close();
 
 					if (ApplicationUi.getController().getFormInUse() instanceof Block) {
-						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
-								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
 					} else {
-						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE,
-								LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
 					}
 
 				} catch (FieldTooLongException e) {
@@ -749,8 +774,7 @@ public class Designer extends SecuredWebPage {
 					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_REMOVED_TITLE);
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				} catch (ElementCannotBePersistedException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
-							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				}
 			}
@@ -779,8 +803,7 @@ public class Designer extends SecuredWebPage {
 						MessageManager.showError(LanguageCodes.ERROR_SELECT_BLOCK);
 					}
 				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
-					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
-							LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED, LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
 				} catch (EmptyBlockCannotBeInserted e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED, LanguageCodes.WARNING_DESCRIPTION_EMPTY_BLOCK);
 				} catch (ElementIsReadOnly e) {
@@ -807,8 +830,7 @@ public class Designer extends SecuredWebPage {
 					table.setValue(linkedElement);
 					window.close();
 				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
-					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED,
-							LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED, LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
 				} catch (EmptyBlockCannotBeInserted e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED, LanguageCodes.WARNING_DESCRIPTION_EMPTY_BLOCK);
 				} catch (ElementIsReadOnly e) {
@@ -824,8 +846,7 @@ public class Designer extends SecuredWebPage {
 	 * Opens move element window.
 	 */
 	private void openMoveWindow() {
-		final WindowTreeObject moveWindow = new WindowTreeObject(LanguageCodes.CAPTION_WINDOW_MOVE, getCurrentForm(), Form.class,
-				Category.class, Group.class);
+		final WindowTreeObject moveWindow = new WindowTreeObject(LanguageCodes.CAPTION_WINDOW_MOVE, getCurrentForm(), Form.class, Category.class, Group.class);
 		moveWindow.showCentered();
 		moveWindow.addAcceptActionListener(new AcceptActionListener() {
 
@@ -858,8 +879,7 @@ public class Designer extends SecuredWebPage {
 				} catch (SameOriginAndDestinationException e) {
 					MessageManager.showError(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN, LanguageCodes.WARNING_DESCRIPTION_SAME_ORIGIN);
 				} catch (DestinyIsContainedAtOrigin | ChildrenNotFoundException e) {
-					MessageManager.showError(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN,
-							LanguageCodes.WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY);
+					MessageManager.showError(LanguageCodes.WARNING_CAPTION_SAME_ORIGIN, LanguageCodes.WARNING_DESCRIPTION_ORIGIN_INCLUDED_IN_DESTINY);
 				} catch (ElementIsReadOnly e) {
 					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
 				}

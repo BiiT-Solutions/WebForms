@@ -253,6 +253,7 @@
         sort_sequence bigint not null,
         parent bigint,
         repeatable bit not null,
+        is_table bit not null,
         primary key (id)
     );
 

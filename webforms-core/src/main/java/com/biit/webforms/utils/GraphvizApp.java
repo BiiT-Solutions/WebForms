@@ -7,14 +7,14 @@ import java.io.IOException;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.computed.FilteredForm;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.exporters.dotgraph.ExporterDotFilteredForm;
+import com.biit.webforms.exporters.dotgraph.ExporterDotForm;
+import com.biit.webforms.exporters.dotgraph.impact.ExporterDotFormAddedElements;
+import com.biit.webforms.exporters.dotgraph.impact.ExporterDotFormRemovedElements;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.exceptions.ExecutableCanNotBeExecuted;
 import com.biit.webforms.utils.exceptions.PathToExecutableNotFound;
-import com.biit.webforms.utils.exporters.dotgraph.ExporterDotFilteredForm;
-import com.biit.webforms.utils.exporters.dotgraph.ExporterDotForm;
-import com.biit.webforms.utils.exporters.dotgraph.impact.ExporterDotFormAddedElements;
-import com.biit.webforms.utils.exporters.dotgraph.impact.ExporterDotFormRemovedElements;
 
 /**
  * Helper class to generate the graphviz

@@ -94,7 +94,7 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkE
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
-import com.biit.webforms.utils.conversor.ConversorAbcdFormToForm;
+import com.biit.webforms.utils.conversor.abcd.importer.ConversorAbcdFormToForm;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.webservice.rest.client.AbcdRestClient;
 import com.biit.webforms.webservices.Webservice;
@@ -206,7 +206,7 @@ public class ApplicationController {
 		// Reset ids before persisting buf after removing incorrect
 		// webservices.
 		newForm.resetIds();
-		formDao.makePersistent(newForm);
+		newForm = formDao.makePersistent(newForm);
 		if (!webservicesToRemove.isEmpty()) {
 			MessageManager.showWarning(LanguageCodes.WARNING_WRONG_WEBSERVICE_CONFIGURATION);
 		}
@@ -987,16 +987,17 @@ public class ApplicationController {
 	 * @param label
 	 * @param repeatable
 	 */
-	public void updateGroup(Group group, String name, String label, boolean repeatable) {
+	public void updateGroup(Group group, String name, String label, boolean repeatable, boolean isTable) {
 		try {
-			if (!group.getName().equals(name) || !group.getLabel().equals(label) || group.isRepeatable() != repeatable) {
+			if (!group.getName().equals(name) || !group.getLabel().equals(label) || group.isRepeatable() != repeatable || group.isShownAsTable() != isTable) {
 				setUnsavedFormChanges(true);
 				group.setName(name);
 				group.setLabel(label);
 				group.setRepeatable(repeatable);
+				group.setShownAsTable(isTable);
 				group.setUpdatedBy(UserSession.getUser());
 				group.setUpdateTime();
-				logInfoStart("updateGroup", group, name, label, repeatable);
+				logInfoStart("updateGroup", group, name, label, repeatable, isTable);
 			}
 		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);

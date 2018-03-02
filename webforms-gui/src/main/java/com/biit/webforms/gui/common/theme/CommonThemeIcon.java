@@ -8,8 +8,6 @@ public enum CommonThemeIcon implements IThemeIcon {
 
 	CANCEL("button.cancel.svg"),
 
-	TREE_OBJECT_GROUP_LOOP("group.loop.svg"),
-
 	ELEMENT_EXPAND("element.expand.svg"),
 
 	ELEMENT_COLLAPSE("element.collapse.svg"), 

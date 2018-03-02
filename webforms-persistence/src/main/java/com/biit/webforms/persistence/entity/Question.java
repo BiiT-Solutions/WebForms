@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -20,7 +21,9 @@ import javax.persistence.Table;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
+import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -31,6 +34,7 @@ import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidRangeException;
 
 @Entity
 @Table(name = "tree_questions")
@@ -165,7 +169,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	 * @throws InvalidAnswerFormatException
 	 */
 	public void setAnswerFormat(AnswerFormat answerFormat) throws InvalidAnswerFormatException {
-		if (answerType.isInputField()) {
+		if (Objects.equals(answerType, AnswerType.INPUT)) {
 			if (answerFormat == null) {
 				throw new InvalidAnswerFormatException("Input fields must define an answer format.");
 			}
@@ -340,91 +344,12 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
 		switch (answerType) {
 		case INPUT:
-			sb.append(idName).append(".setAnswerType(AnswerType.INPUT);").append(System.lineSeparator());
-			switch (answerFormat) {
-			case DATE:
-				sb.append(idName).append(".setAnswerFormat(AnswerFormat.DATE);").append(System.lineSeparator());
-				break;
-			case NUMBER:
-				sb.append(idName).append(".setAnswerFormat(AnswerFormat.NUMBER);").append(System.lineSeparator());
-				break;
-			case POSTAL_CODE:
-				sb.append(idName).append(".setAnswerFormat(AnswerFormat.POSTAL_CODE);").append(System.lineSeparator());
-				break;
-			case TEXT:
-				sb.append(idName).append(".setAnswerFormat(AnswerFormat.TEXT);").append(System.lineSeparator());
-				break;
-			}
-			switch (answerSubformat) {
-			case AMOUNT:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.AMOUNT);").append(System.lineSeparator());
-				break;
-			case BSN:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.BSN);").append(System.lineSeparator());
-				break;
-			case DATE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE);").append(System.lineSeparator());
-				break;
-			case DATE_BIRTHDAY:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_BIRTHDAY);").append(System.lineSeparator());
-				break;
-			case DATE_FUTURE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_FUTURE);").append(System.lineSeparator());
-				break;
-			case DATE_PAST:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PAST);").append(System.lineSeparator());
-				break;
-			case DATE_PERIOD:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.DATE_PERIOD);").append(System.lineSeparator());
-				break;
-			case EMAIL:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.EMAIL);").append(System.lineSeparator());
-				break;
-			case FLOAT:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.FLOAT);").append(System.lineSeparator());
-				break;
-			case IBAN:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.IBAN);").append(System.lineSeparator());
-				break;
-			case NUMBER:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.NUMBER);").append(System.lineSeparator());
-				break;
-			case PHONE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.PHONE);").append(System.lineSeparator());
-				break;
-			case POSTAL_CODE:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSTAL_CODE);").append(System.lineSeparator());
-				break;
-			case TEXT:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.TEXT);").append(System.lineSeparator());
-				break;
-			case NEGATIVE_FLOAT:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.NEGATIVE_FLOAT);").append(System.lineSeparator());
-				break;
-			case NEGATIVE_NUMBER:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.NEGATIVE_NUMBER);").append(System.lineSeparator());
-				break;
-			case POSITIVE_FLOAT:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSITIVE_FLOAT);").append(System.lineSeparator());
-				break;
-			case POSITIVE_NUMBER:
-				sb.append(idName).append(".setAnswerSubformat(AnswerSubformat.POSITIVE_NUMBER);").append(System.lineSeparator());
-				break;
-			default:
-				break;
-			}
+			sb.append(idName).append(".setAnswerType(AnswerType." + answerType + ");").append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerFormat(AnswerFormat." + answerFormat + ");").append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerSubformat(AnswerSubformat." + answerSubformat + ");").append(System.lineSeparator());
 			break;
-		case MULTIPLE_SELECTION:
-			sb.append(idName).append(".setAnswerType(AnswerType.MULTIPLE_SELECTION);").append(System.lineSeparator());
-			break;
-		case SINGLE_SELECTION_LIST:
-			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_LIST);").append(System.lineSeparator());
-			break;
-		case SINGLE_SELECTION_RADIO:
-			sb.append(idName).append(".setAnswerType(AnswerType.SINGLE_SELECTION_RADIO);").append(System.lineSeparator());
-			break;
-		case TEXT_AREA:
-			sb.append(idName).append(".setAnswerType(AnswerType.TEXT_AREA);").append(System.lineSeparator());
+		default:
+			sb.append(idName).append(".setAnswerType(AnswerType." + answerType + ");").append(System.lineSeparator());
 			break;
 		}
 
@@ -578,5 +503,34 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	@Override
 	public TreeObjectImage getImage() {
 		return image;
+	}
+
+	public List<Answer> createAnswers(float lowerValueRange, float upperValueRange, float increment) throws InvalidRangeException {
+		List<Answer> answers = new ArrayList<>();
+		// lowerValueRange < lowerValueRange + increment because increment must
+		// > 0
+		if (!(lowerValueRange < lowerValueRange + increment && lowerValueRange + increment <= upperValueRange)) {
+			throw new InvalidRangeException("Invalid answer range definition with lower value '" + lowerValueRange + "', upper value '" + upperValueRange
+					+ "' and increment '" + increment + "'.");
+		}
+		for (float i = lowerValueRange; i <= upperValueRange; i += increment) {
+			try {
+				Answer answer = new Answer();
+				answer.setValue(Float.toString(i));
+				if (((int) i) == i) {
+					answer.setName("" + (int) i);
+					answer.setLabel("" + (int) i);
+				} else {
+					answer.setName("" + i);
+					answer.setLabel("" + i);
+				}
+				answer.setDescription(Float.toString(i));
+				addChild(answer);
+				answers.add(answer);
+			} catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException | ElementIsReadOnly e) {
+				WebformsLogger.errorMessage(this.getClass().getName(), e);
+			}
+		}
+		return answers;
 	}
 }

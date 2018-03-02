@@ -26,8 +26,9 @@ public class WebformsXsdElement extends XsdElement {
 					putMaxOccurs(1);
 					if (element instanceof Question) {
 						Question question = (Question) element;
-						if (!question.containsDynamicAnswer() && (question.getAnswerType() == AnswerType.SINGLE_SELECTION_LIST
-								|| question.getAnswerType() == AnswerType.SINGLE_SELECTION_RADIO)) {
+						if (!question.containsDynamicAnswer()
+								&& (question.getAnswerType() == AnswerType.SINGLE_SELECTION_LIST
+										|| question.getAnswerType() == AnswerType.SINGLE_SELECTION_RADIO || question.getAnswerType() == AnswerType.SINGLE_SELECTION_SLIDER)) {
 							addChild(new XsdSimpleType(new WebformsXsdQuestionAnswerRestriction(question)));
 						}
 					} else {

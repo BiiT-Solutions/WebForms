@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -15,6 +16,9 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 public class Group extends BaseRepeatableGroup {
 	private static final long serialVersionUID = 5363295280240190378L;
 	private static final boolean DEFAULT_REPEATABLE = false;
+
+	@Column(name = "is_table", nullable = false)
+	private boolean showAsTable = false;
 
 	public Group() {
 		super();
@@ -65,5 +69,13 @@ public class Group extends BaseRepeatableGroup {
 			return super.isContentEqual(treeObject);
 		}
 		return false;
+	}
+
+	public boolean isShownAsTable() {
+		return showAsTable;
+	}
+
+	public void setShownAsTable(boolean isTable) {
+		this.showAsTable = isTable;
 	}
 }

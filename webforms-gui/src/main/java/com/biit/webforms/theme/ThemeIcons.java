@@ -37,6 +37,16 @@ public enum ThemeIcons implements IThemeIcon {
 	DESIGNER_QUESTION_TYPE_POSTALCODE("question.postcode.svg"), 
 	DESIGNER_QUESTION_TYPE_TEXT("question.textbox.letters.svg"), 
 	DESIGNER_QUESTION_TYPE_DROPDOWN("question.dropdown.svg"),
+	DESIGNER_QUESTION_TYPE_SLIDER("question.slider.svg"),
+	DESIGNER_GROUP_TABLE("group.table.svg"),
+	DESIGNER_GROUP_TABLE_ROW("group.table.row.svg"),
+	DESIGNER_GROUP_TABLE_COLUMN("group.table.column.svg"),
+	DESIGNER_CATEGORY("category.svg"),
+	DESIGNER_GROUP("group.svg"),
+	DESIGNER_GROUP_LOOP("group.loop.svg"),
+	DESIGNER_NEW_DYNAMIC_ANSWER("form.dynamic.element.svg"),
+	DESIGNER_NEW_RANGED_ANSWERS("form.ranged.answer.svg"),
+	DESIGNER_DYNAMIC_ANSWER("form.dynamic.element.svg"),
 	DESIGNER_INFO_TEXT("infotext.svg"),
 	DESIGNER_SYSTEM_FIELD("systemfield.svg"),
 	DESIGNER_NEW_CATEGORY("form.category.add.svg"),
@@ -128,10 +138,7 @@ public enum ThemeIcons implements IThemeIcon {
 	PAGE_NOT_FOUND("page.not.found.svg"),
 	
 	ELEMENT_SHOW("element.show.svg"),
-	ELEMENT_HIDE("element.hide.svg"), 
-	
-	DESIGNER_NEW_DYNAMIC_ANSWER("form.dynamic.element.svg"), 
-	DESIGNER_DYNAMIC_ANSWER("form.dynamic.element.svg"), 
+	ELEMENT_HIDE("element.hide.svg"),  
 	
 	FORM_MANAGER_FORM_LINKED("form.link.svg"),
 	

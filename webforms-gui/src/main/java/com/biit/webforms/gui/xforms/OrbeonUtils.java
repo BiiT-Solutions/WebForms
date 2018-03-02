@@ -8,6 +8,11 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.exporters.xforms.XFormsSimpleFormExporter;
+import com.biit.webforms.exporters.xforms.exceptions.InvalidDateException;
+import com.biit.webforms.exporters.xforms.exceptions.NotExistingDynamicFieldException;
+import com.biit.webforms.exporters.xforms.exceptions.PostCodeRuleSyntaxError;
+import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
@@ -17,11 +22,6 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.persistence.xforms.exceptions.AccessNotAllowed;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedXFormException;
-import com.biit.webforms.xforms.XFormsSimpleFormExporter;
-import com.biit.webforms.xforms.exceptions.InvalidDateException;
-import com.biit.webforms.xforms.exceptions.NotExistingDynamicFieldException;
-import com.biit.webforms.xforms.exceptions.PostCodeRuleSyntaxError;
-import com.biit.webforms.xforms.exceptions.StringRuleSyntaxError;
 import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 
 public class OrbeonUtils {

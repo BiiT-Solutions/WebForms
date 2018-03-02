@@ -12,7 +12,7 @@ public class PdfColGenerator {
 
 	private static final int RADIO_FIELD_NAME_COL = 1;
 
-	public static PdfCol generateMultiFieldNameCol(Question question,int rowSpan) throws BadBlockException {
+	public static PdfCol generateMultiFieldNameColumn(Question question,int rowSpan) throws BadBlockException {
 
 		PdfCol nameCol = new PdfCol(rowSpan, RADIO_FIELD_NAME_COL);
 		
