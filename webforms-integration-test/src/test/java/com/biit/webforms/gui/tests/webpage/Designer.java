@@ -3,6 +3,7 @@ package com.biit.webforms.gui.tests.webpage;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.server.handler.GetWindowPosition;
 import org.testng.Assert;
 
 import com.biit.gui.tester.VaadinGuiTester;
@@ -16,6 +17,7 @@ import com.biit.webforms.gui.tests.webpage.designer.GroupPropertiesView;
 import com.biit.webforms.gui.tests.webpage.designer.QuestionPropertiesView;
 import com.biit.webforms.gui.tests.webpage.designer.SubanswerPropertiesView;
 import com.biit.webforms.gui.tests.webpage.designer.TextPropertiesView;
+import com.biit.webforms.gui.tests.window.AnswerRangesWindow;
 import com.biit.webforms.gui.tests.window.LinkBlockWindow;
 import com.biit.webforms.gui.tests.window.NewBlockWindow;
 import com.vaadin.testbench.elements.ButtonElement;
@@ -46,6 +48,7 @@ public class Designer extends VaadinGuiWebpage {
 	private static final String SHOW_BUTTON_CAPTION = "Show";
 	private static final String FINISH_BUTTON_CAPTION = "Finish";
 	private static final Integer RIGHT_SCROLL_PIXELS = 500;
+	private static final String RANGE_BUTTON_CAPTION = "Range";
 
 	private static final String FORM_NAME_EDITED = "new_form_test";
 	private static final String FORM_VERSION = "1";
@@ -56,6 +59,7 @@ public class Designer extends VaadinGuiWebpage {
 	private static final String ANSWER_TYPE_COMBOBOX_MULTI_CHECKBOX_CAPTION = "Multi Checkbox";
 	private static final String ANSWER_TYPE_COMBOBOX_INPUT_FIELD_CAPTION = "Input Field";
 	private static final String ANSWER_TYPE_COMBOBOX_TEXT_AREA_CAPTION = "Text Area";
+	private static final String ANSWER_TYPE_COMBOBOX_SLIDER_CAPTION = "Slider";
 
 	private static final String ANSWER_FORMAT_TEXT_COMBOBOX_CAPTION = "Text";
 	private static final String ANSWER_FORMAT_NUMBER_COMBOBOX_CAPTION = "Number";
@@ -89,6 +93,11 @@ public class Designer extends VaadinGuiWebpage {
 	private static final String ANSWER1_NAME = "Q1Answer1";
 	private static final String ANSWER2_NAME = "Q1Answer2";
 
+	private static final String ANSWER_RANGE_LOWER_VALUE = "0";
+	private static final String ANSWER_RANGE_UPPER_VALUE = "10";
+	private static final String ANSWER_RANGE_STEAP_VALUE = "1";
+	private static final String ANSWER_RANGE_DEFAULT_VALUE = "5";
+
 	private static final Integer TREE_TABLE_INIT_ROW = 0;
 
 	private final FormPropertiesView formPropertiesView;
@@ -101,6 +110,7 @@ public class Designer extends VaadinGuiWebpage {
 	private final FieldPropertiesView fieldPropertiesView;
 	private final NewBlockWindow newBlockWindow;
 	private final LinkBlockWindow linkBlockWindow;
+	private final AnswerRangesWindow answerRangesWindow;
 
 	public Designer() {
 		super();
@@ -124,6 +134,8 @@ public class Designer extends VaadinGuiWebpage {
 		addWindow(newBlockWindow);
 		linkBlockWindow = new LinkBlockWindow();
 		addWindow(linkBlockWindow);
+		answerRangesWindow = new AnswerRangesWindow();
+		addWindow(answerRangesWindow);
 	}
 
 	public void addAnswers(int numberOfAnswers) {
@@ -265,6 +277,18 @@ public class Designer extends VaadinGuiWebpage {
 
 	public void addNewQuestion() {
 		getQuestionButton().click();
+	}
+
+	public void addNewSliderQuestion(Integer row) throws FieldNotEditableException {
+		addNewQuestion();
+		getQuestionPropertiesView().setAnswerTypeComboBoxValue(ANSWER_TYPE_COMBOBOX_SLIDER_CAPTION);
+		getOthersButton().click();
+		getButtonElement(RANGE_BUTTON_CAPTION).click();
+		getNewAnswerRangesWindow().fillRangeWindow(ANSWER_RANGE_LOWER_VALUE, ANSWER_RANGE_UPPER_VALUE,
+				ANSWER_RANGE_STEAP_VALUE);
+		clickAcceptButtonIfExists();
+		clickInTreeTableRow(row);
+		getQuestionPropertiesView().setAnswerDefaultValueComboBoxValue(ANSWER_RANGE_DEFAULT_VALUE);
 	}
 
 	public void addNewRadioButtonQuestion() throws FieldNotEditableException {
@@ -587,6 +611,10 @@ public class Designer extends VaadinGuiWebpage {
 		return newBlockWindow;
 	}
 
+	public AnswerRangesWindow getNewAnswerRangesWindow() {
+		return answerRangesWindow;
+	}
+
 	public ButtonElement getQuestionButton() {
 		return getButtonElement(QUESTION_BUTTON_CAPTION);
 	}
@@ -665,13 +693,13 @@ public class Designer extends VaadinGuiWebpage {
 	public void saveDesign() {
 		getSaveButton().click();
 		getSaveButton().waitForVaadin();
-		
-		try{
+
+		try {
 			NotificationElement notification = $(NotificationElement.class).first();
 			VaadinGuiTester.checkNotificationIsHumanized(notification);
 			VaadinGuiTester.closeNotification(notification);
-		}catch(NoSuchElementException e){
-			//Notification closed			
+		} catch (NoSuchElementException e) {
+			// Notification closed
 		}
 	}
 
