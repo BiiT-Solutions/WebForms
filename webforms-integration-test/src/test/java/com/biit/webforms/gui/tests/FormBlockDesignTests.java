@@ -175,6 +175,23 @@ public class FormBlockDesignTests extends WebFormsTester {
 		logOut();
 		deleteBlock();
 	}
+	
+	@Test(groups = { "formBlockDesign" })
+	public void createQuestionInputSliderAtBlockCategoryLevel() throws FieldNotEditableException {
+		printTestNameInDebugTrace("createQuestionInputSliderAtBlockCategoryLevel");
+		createNewBlockAndCategory();
+		getDesignerPage().addNewSliderQuestion(TREE_TABLE_CATEGORY_QUESTION_ROW_INDEX);
+		saveDesignAndRemoveBlock();
+	}
+	
+	@Test(groups = { "formBlockDesign" })
+	public void createQuestionInputSliderAtBlockGroupLevel() throws FieldNotEditableException {
+		printTestNameInDebugTrace("createQuestionInputSliderAtBlockGroupLevel");
+		createNewBlockAndCategory();
+		getDesignerPage().addNewGroup();
+		getDesignerPage().addNewSliderQuestion(TREE_TABLE_CATEGORY_GROUP_QUESTION_ROW_INDEX);
+		saveDesignAndRemoveBlock();
+	}
 
 	@Test(groups = { "formBlockDesign" })
 	public void checkAnswerSubanswerAtBlockCategoryGroupQuestionInput() throws FieldNotEditableException {
@@ -1389,4 +1406,5 @@ public class FormBlockDesignTests extends WebFormsTester {
 		getFormManagerPage().deleteForm(1);
 		logOut();
 	}
+	
 }

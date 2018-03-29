@@ -8,6 +8,7 @@ public class QuestionPropertiesView extends CommonCategoryGroupQuestionPropertie
 	private static final String ANSWER_TYPE_COMBOBOX_CAPTION = "Answer type";
 	private static final String ANSWER_FORMAT_COMBOBOX_CAPTION = "Answer format";
 	private static final String ANSWER_SUBFORMAT_COMBOBOX_CAPTION = "Answer subformat";
+	private static final String ANSWER_DEFAULT_VALUE_COMBOBOX_CAPTION = "Default value";
 	private static final String HORIZONTAL_CHECKBOX_CAPTION = "Horizontal";
 	private static final String MANDATORY_CHECKBOX_CAPTION = "Mandatory";
 
@@ -41,6 +42,14 @@ public class QuestionPropertiesView extends CommonCategoryGroupQuestionPropertie
 
 	public void setAnswerSubformatComboBoxValue(String value) throws FieldNotEditableException {
 		setComboBoxValue(ANSWER_SUBFORMAT_COMBOBOX_CAPTION, value);
+	}
+	
+	public String getAnswerDefaultValueComboBoxValue() {
+		return getComboBoxValue(ANSWER_DEFAULT_VALUE_COMBOBOX_CAPTION);
+	}
+	
+	public void setAnswerDefaultValueComboBoxValue(String value) throws FieldNotEditableException {
+		setComboBoxValue(ANSWER_DEFAULT_VALUE_COMBOBOX_CAPTION, value);
 	}
 
 	public String getHorizontalCheckBoxValue() {
