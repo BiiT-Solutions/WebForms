@@ -416,7 +416,7 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 			return null;
 		}
 		TreeObjectImage image = new TreeObjectImage();
-		image.setCreatedBy(UserSession.getUser().getId());
+		image.setCreatedBy(UserSession.getUser().getUniqueId());
 		try {
 			image.setWidth(Integer.parseInt(imageWidth.getValue()));
 		} catch (NumberFormatException e) {

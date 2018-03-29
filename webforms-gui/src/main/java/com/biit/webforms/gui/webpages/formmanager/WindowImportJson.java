@@ -131,7 +131,7 @@ public class WindowImportJson extends WindowAcceptCancel {
 	protected boolean acceptAction() {
 		try {
 			ApplicationUi.getController().importFormFromJson(textArea.getValue(), textField.getValue(),
-					((IGroup<Long>) organizationField.getValue()).getId());
+					((IGroup<Long>) organizationField.getValue()).getUniqueId());
 			return true;
 		} catch (UnexpectedDatabaseException e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);

@@ -212,7 +212,7 @@ public class BlockManager extends SecuredWebPage {
 				try {
 					if (newBlockWindow.getOrganization() != null) {
 						Block newBlock = ApplicationUi.getController().createBlock(newBlockWindow.getValue(),
-								newBlockWindow.getOrganization().getId());
+								newBlockWindow.getOrganization().getUniqueId());
 						addBlockToTable(newBlock);
 						newBlockWindow.close();
 					}

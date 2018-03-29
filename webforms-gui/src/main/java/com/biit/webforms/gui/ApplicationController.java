@@ -191,7 +191,7 @@ public class ApplicationController {
 		Form newForm = Form.fromJson(json);
 		newForm.setOrganizationId(organizationId);
 		newForm.setLabel(formLabel);
-		newForm.resetUserTimestampInfo(UserSession.getUser().getId());
+		newForm.resetUserTimestampInfo(UserSession.getUser().getUniqueId());
 
 		Set<WebserviceCall> webservicesToRemove = new HashSet<>();
 		for (WebserviceCall call : newForm.getWebserviceCalls()) {
@@ -260,7 +260,7 @@ public class ApplicationController {
 
 		// Create new form
 		Form newform = createForm(formLabel, organizationId);
-		newform.setCreatedBy(UserSession.getUser().getId());
+		newform.setCreatedBy(UserSession.getUser().getUniqueId());
 
 		// Persist form.
 		try {
@@ -1410,7 +1410,7 @@ public class ApplicationController {
 				Set<IGroup<Long>> userOrganizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(UserSession.getUser(),
 						WebformsActivity.READ);
 				for (IGroup<Long> organization : userOrganizations) {
-					forms.addAll(getFormsFromAbcdByOrganization(organization.getId()));
+					forms.addAll(getFormsFromAbcdByOrganization(organization.getUniqueId()));
 				}
 				return forms;
 			}
@@ -1438,7 +1438,7 @@ public class ApplicationController {
 
 				for (com.biit.webforms.persistence.entity.SimpleFormView form : simpleForms) {
 					for (IGroup<Long> organization : userOrganizations) {
-						if (form.getOrganizationId().equals(organization.getId())) {
+						if (form.getOrganizationId().equals(organization.getUniqueId())) {
 							userForms.add(form);
 						}
 					}

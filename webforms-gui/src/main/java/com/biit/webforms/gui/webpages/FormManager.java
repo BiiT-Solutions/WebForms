@@ -697,7 +697,7 @@ public class FormManager extends SecuredWebPage {
 					if (newFormWindow.getOrganization() != null) {
 						Form newForm;
 						newForm = ApplicationUi.getController().createNewLinkedForm(loadForm(getSelectedForm()), newFormWindow.getValue(),
-								newFormWindow.getOrganization().getId());
+								newFormWindow.getOrganization().getUniqueId());
 						addFormToTable(newForm);
 						formTable.selectForm(newForm);
 						newFormWindow.close();
@@ -767,7 +767,7 @@ public class FormManager extends SecuredWebPage {
 				}
 				try {
 					if (newFormWindow.getOrganization() != null) {
-						Form newForm = ApplicationUi.getController().createFormAndPersist(newFormWindow.getValue(), newFormWindow.getOrganization().getId());
+						Form newForm = ApplicationUi.getController().createFormAndPersist(newFormWindow.getValue(), newFormWindow.getOrganization().getUniqueId());
 						newForm.setLastVersion(true);
 						addFormToTable(newForm);
 						newFormWindow.close();

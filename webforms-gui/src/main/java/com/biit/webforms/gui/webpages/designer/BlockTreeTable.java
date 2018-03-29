@@ -52,7 +52,7 @@ public class BlockTreeTable extends TableTreeObjectLabel {
 		List<Block> blocks = new ArrayList<>();
 		try {
 			for (IGroup<Long> organization : organizations) {
-				blocks.addAll(blockDao.getAll(organization.getId()));
+				blocks.addAll(blockDao.getAll(organization.getUniqueId()));
 			}
 			Collections.sort(blocks, new TreeObjectUpdateDateComparator());
 

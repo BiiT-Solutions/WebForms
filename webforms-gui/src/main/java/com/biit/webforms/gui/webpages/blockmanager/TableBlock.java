@@ -58,7 +58,7 @@ public class TableBlock extends Table {
 				WebformsActivity.READ);
 		try {
 			for (IGroup<Long> organization : userOrganizations) {
-				blocks.addAll(simpleBlockDao.getAll(organization.getId()));
+				blocks.addAll(simpleBlockDao.getAll(organization.getUniqueId()));
 			}
 
 			for (SimpleBlockView block : blocks) {

@@ -317,7 +317,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 	}
 
 	public Form createNewVersion(IUser<Long> user) throws NotValidStorableObjectException, CharacterNotAllowedException {
-		return createNewVersion(user.getId());
+		return createNewVersion(user.getUniqueId());
 	}
 
 	/**

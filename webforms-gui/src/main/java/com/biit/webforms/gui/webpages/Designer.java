@@ -755,7 +755,7 @@ public class Designer extends SecuredWebPage {
 					return;
 				}
 				try {
-					ApplicationUi.getController().saveAsBlock(table.getSelectedRow(), newBlockWindow.getValue(), newBlockWindow.getOrganization().getId());
+					ApplicationUi.getController().saveAsBlock(table.getSelectedRow(), newBlockWindow.getValue(), newBlockWindow.getOrganization().getUniqueId());
 					newBlockWindow.close();
 
 					if (ApplicationUi.getController().getFormInUse() instanceof Block) {
