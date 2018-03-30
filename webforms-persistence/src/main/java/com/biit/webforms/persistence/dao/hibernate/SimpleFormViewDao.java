@@ -69,11 +69,11 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 			formView.setLabel((String) row[2]);
 			formView.setVersion((Integer) row[3]);
 			formView.setCreationTime((Timestamp) row[4]);
-			if (row[4] != null) {
+			if (row[5] != null) {
 				formView.setCreatedBy(((Double) row[5]).longValue());
 			}
 			formView.setUpdateTime((Timestamp) row[6]);
-			if (row[6] != null) {
+			if (row[7] != null) {
 				formView.setUpdatedBy(((Double) row[7]).longValue());
 			}
 			formView.setComparationId((String) row[8]);
