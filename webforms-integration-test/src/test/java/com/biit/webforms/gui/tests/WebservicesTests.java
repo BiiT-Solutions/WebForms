@@ -12,7 +12,7 @@ public class WebservicesTests extends WebFormsTester {
 	private static final String NAME_SURNAME = "surname";
 	private static final String NAME_ADDRESS = "address";
 	private static final String WEBSERVICE_CALL_NAME = "bsn_call";
-	private static final int WEBSERVICE_ROW = 1;
+	private static final int WEBSERVICE_ROW = 2;
 
 	@Test(groups = "webservices")
 	public void generateFormWithWebservices() throws FieldNotEditableException {
