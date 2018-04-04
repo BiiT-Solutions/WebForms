@@ -91,5 +91,27 @@
 		<init-param> <param-name>mimeTypes</param-name> <param-value>text/html,text/plain,text/xml,application/xhtml+xml,text/css,application/javascript,image/svg+xml</param-value> 
 		</init-param> </filter> <filter-mapping> <filter-name>GzipFilter</filter-name> 
 		<url-pattern>/*</url-pattern> </filter-mapping> -->
+		
+	<servlet>
+		<servlet-name>Webforms REST Service</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>com.biit.webforms.rest</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Webforms REST Service</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+	<filter>
+		<filter-name>AuthenticationFilter</filter-name>
+		<filter-class>com.biit.webforms.rest.securityWebformsRestAuthenticationFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<url-pattern>/rest/*</url-pattern>
+	</filter-mapping>
 
 </web-app>

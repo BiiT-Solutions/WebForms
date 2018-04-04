@@ -86,6 +86,7 @@
 		<biit-common-utils.version>[0.4,0.5)</biit-common-utils.version>
 		<form-structure.version>[1.0,1.1)</form-structure.version>
 		<jpa-schema-exporter.version>[0.3,0.4)</jpa-schema-exporter.version>
+		<rest-services-security.version>[0.2,0.3)</rest-services-security.version>
 	</properties>  
 
 	<dependencies>
