@@ -107,7 +107,7 @@
 	</servlet-mapping>
 	<filter>
 		<filter-name>AuthenticationFilter</filter-name>
-		<filter-class>com.biit.webforms.rest.securityWebformsRestAuthenticationFilter</filter-class>
+		<filter-class>com.biit.webforms.rest.security.WebformsRestAuthenticationFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>

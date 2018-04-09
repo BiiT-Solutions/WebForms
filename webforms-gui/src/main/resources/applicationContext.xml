@@ -19,7 +19,7 @@
 		as Spring beans. For example @Component, @Controller and @Service. Make sure 
 		to set the correct base-package -->
 	<context:annotation-config />
-	<context:component-scan base-package="com.biit.webforms.persistence, com.biit.webforms.security, com.biit.liferay.security, com.biit.liferay.access" />
+	<context:component-scan base-package="com.biit.webforms.persistence, com.biit.webforms.security, com.biit.liferay.security, com.biit.liferay.access, com.biit.webforms.rest" />
 
 	<!-- Read any *.properties file in project and override some of them with 
 		files outside of the project -->
