@@ -10,20 +10,17 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 
 import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.w3c.dom.Node;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 import org.xml.sax.SAXException;
 
 import com.biit.webforms.logger.WebformsLogger;
@@ -33,27 +30,12 @@ public class XmlUtils {
 
 	public static StringWriter formatToStringWriter(String xml) {
 		try {
-			final InputStream source = new ByteArrayInputStream(xml.getBytes(XML_CODIFICATION));
-			final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(source).getDocumentElement();
-
-			StringWriter result = new StringWriter();
-			DOMSource domSource = new DOMSource(document);
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-
-			// Indentation
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "8");
-			// XML header
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-			// t.setOutputProperty(OutputKeys.STANDALONE, "yes");
-
-			// Forcing to not replace the html references to special characters.
-			// https://stackoverflow.com/questions/27915445/how-to-retain-special-characters-after-transformation
-			transformer.setOutputProperty(OutputKeys.ENCODING, "US-ASCII");
-
-			// Create data
-			transformer.transform(domSource, new StreamResult(result));
-			return result;
+			final OutputFormat format = OutputFormat.createPrettyPrint();
+			final Document document = DocumentHelper.parseText(xml);
+			StringWriter sw = new StringWriter();
+			final XMLWriter writer = new XMLWriter(sw, format);
+			writer.write(document);
+			return sw;
 		} catch (Exception e) {
 			WebformsLogger.warning(XmlUtils.class.getName(),
 					"Unexpected failure while processing xml file. Dumping content to a temporaly file 'webforms_xml_prettify'.");
