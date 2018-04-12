@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.biit.usermanager.entity.IRole;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.IRoleActivities;
+import com.biit.webservice.rest.RestServiceActivity;
 
 @Repository
 public class RoleActivities implements IRoleActivities {
@@ -59,7 +60,8 @@ public class RoleActivities implements IRoleActivities {
 	};
 
 	/**
-	 * Activities that only administrator user can do. Import/Export Json, remove
+	 * Activities that only administrator user can do. Import/Export Json,
+	 * remove
 	 */
 	private static final WebformsActivity[] FORMS_ADMINISTRATOR_EXTRA_PERMISSIONS = {
 
@@ -70,7 +72,7 @@ public class RoleActivities implements IRoleActivities {
 	WebformsActivity.FORM_STATUS_DOWNGRADE,
 
 	WebformsActivity.FORM_REMOVE,
-	
+
 	WebformsActivity.EXPORT_ABCD,
 
 	};
@@ -84,12 +86,19 @@ public class RoleActivities implements IRoleActivities {
 
 	};
 
+	private static final RestServiceActivity[] WEB_SERVICES_PERMISSIONS = {
+
+	RestServiceActivity.USE_WEB_SERVICE
+
+	};
+
 	private static List<IActivity> buildingBlockManagerPermissions = new ArrayList<IActivity>();
 	private static List<IActivity> formManagerPermissions = new ArrayList<IActivity>();
 	private static List<IActivity> readOnlyPermissions = new ArrayList<IActivity>();
 	private static List<IActivity> formAdministratorPermissions = new ArrayList<IActivity>();
 	private static List<IActivity> blockAdministratorPermissions = new ArrayList<IActivity>();
 	private static List<IActivity> applicationAdministratorPermissions = new ArrayList<IActivity>();
+	private static List<IActivity> webServiceUserPermissions = new ArrayList<IActivity>();
 
 	static {
 		for (IActivity activity : READ_ONLY) {
@@ -109,6 +118,9 @@ public class RoleActivities implements IRoleActivities {
 		}
 		for (IActivity activity : APPLICATION_ADMINISTRATOR) {
 			applicationAdministratorPermissions.add(activity);
+		}
+		for (RestServiceActivity activity : WEB_SERVICES_PERMISSIONS) {
+			webServiceUserPermissions.add(activity);
 		}
 	}
 
@@ -143,6 +155,9 @@ public class RoleActivities implements IRoleActivities {
 			activities.addAll(applicationAdministratorPermissions);
 			break;
 		case NULL:
+			break;
+		case WEB_SERVICE_USER:
+			activities.addAll(webServiceUserPermissions);
 			break;
 		}
 		return activities;

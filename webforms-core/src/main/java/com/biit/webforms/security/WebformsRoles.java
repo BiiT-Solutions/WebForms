@@ -17,7 +17,9 @@ public enum WebformsRoles {
 	
 	FORM_ADMIN("webforms2_manage-forms_administration"),
 	
-	APPLICATION_ADMIN("webforms2_application-administration");
+	APPLICATION_ADMIN("webforms2_application-administration"),
+	
+	WEB_SERVICE_USER("webforms2_web-service-user");
 	
 	private String stringTag;
 	
