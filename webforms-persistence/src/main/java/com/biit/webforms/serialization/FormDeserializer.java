@@ -140,8 +140,12 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 		}.getType();
 		JsonElement pathsJson = jobject.get(name);
 		if (pathsJson != null) {
-			List<String> path = context.deserialize(pathsJson, listType);
-			return form.getChild(path);
+			try {
+				List<String> path = context.deserialize(pathsJson, listType);
+				return form.getChild(path);
+			} catch (NullPointerException npe) {
+				// Not in the json.
+			}
 		}
 		return null;
 	}
