@@ -291,7 +291,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			constraints.append("<xf:constraint id=\"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation\" ");
 			constraints.append("value=\"");
 			constraints.append(value);
-			value.append("\"/>");
+			constraints.append("\"/>");
 		}
 
 	}
