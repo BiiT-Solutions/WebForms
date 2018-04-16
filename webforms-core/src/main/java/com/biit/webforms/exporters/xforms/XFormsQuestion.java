@@ -80,7 +80,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	@Override
 	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// Add form image binding
-		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
+		if (getXFormsHelper().isImagesEnabled() && (getSource() instanceof ElementWithImage) && ((ElementWithImage) getSource()).getImage() != null) {
 			XFormsImage.getBinding(this.getParent(), ((ElementWithImage) getSource()).getImage(), binding, getRelevantStructure(), getXFormsHelper(),
 					getSource());
 		}

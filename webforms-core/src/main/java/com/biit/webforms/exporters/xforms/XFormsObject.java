@@ -116,7 +116,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	private void addWebserviceValidationField(BaseQuestion child) throws NotValidTreeObjectException, NotValidChildException {
 		// Webservice validation
-		XformsWebserviceValidationField webformsValidation = xFormsHelper.getWebserviceValidationField(child);
+		XFormsWebserviceValidationField webformsValidation = xFormsHelper.getWebserviceValidationField(child);
 		webformsValidation.setParent(this);
 		children.add(webformsValidation);
 	}

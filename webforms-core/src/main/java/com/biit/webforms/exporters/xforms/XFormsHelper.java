@@ -45,7 +45,7 @@ class XFormsHelper {
 	private HashMap<BaseQuestion, WebserviceCallOutputLink> webserviceOuput;
 	private HashMap<BaseQuestion, Set<WebserviceCallInputLink>> webserviceInputs;
 	private Set<String> usedCallNames;
-	private HashMap<BaseQuestion, XformsWebserviceValidationField> webserviceValidationField;
+	private HashMap<BaseQuestion, XFormsWebserviceValidationField> webserviceValidationField;
 
 	private HashMap<WebserviceCall, String> callNames;
 
@@ -105,7 +105,7 @@ class XFormsHelper {
 				}
 				webserviceInputs.get(link.getFormElement()).add(link);
 				try {
-					webserviceValidationField.put(link.getFormElement(), new XformsWebserviceValidationField(this, link.getFormElement()));
+					webserviceValidationField.put(link.getFormElement(), new XFormsWebserviceValidationField(this, link.getFormElement()));
 				} catch (NotValidTreeObjectException | NotValidChildException e) {
 					// This should never happen.
 					WebformsLogger.errorMessage(this.getClass().getName(), e);
@@ -337,7 +337,7 @@ class XFormsHelper {
 		return defaultFlows;
 	}
 
-	public XformsWebserviceValidationField getWebserviceValidationField(BaseQuestion formElement) {
+	public XFormsWebserviceValidationField getWebserviceValidationField(BaseQuestion formElement) {
 		return webserviceValidationField.get(formElement);
 	}
 

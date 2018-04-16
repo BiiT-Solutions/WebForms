@@ -12,9 +12,9 @@ import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
  * to make work validation at the same time as repeated elements.
  *
  */
-public class XformsWebserviceValidationField extends XFormsQuestion {
+public class XFormsWebserviceValidationField extends XFormsQuestion {
 
-	public XformsWebserviceValidationField(XFormsHelper xFormsHelper, BaseQuestion question)
+	public XFormsWebserviceValidationField(XFormsHelper xFormsHelper, BaseQuestion question)
 			throws NotValidTreeObjectException, NotValidChildException {
 		super(xFormsHelper, new WebserviceValidationField(question));
 	}
