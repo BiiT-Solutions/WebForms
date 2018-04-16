@@ -225,9 +225,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			return;
 		}
 
-		// We define constraint as subtype-constraint-[unique name]
-		constraints.append("<xf:constraint id=\"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation\" ");
-		constraints.append("value=\"");
+		// Validation
+		StringBuilder value = new StringBuilder();
 		// Add condition depending on answer subformat.
 
 		// Aditional notes:
@@ -241,43 +240,43 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 		switch (((Question) getSource()).getAnswerSubformat()) {
 		case PHONE:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPhone()).append("$')");
+			value.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPhone()).append("$')");
 			break;
 		case POSTAL_CODE:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPostalCode()).append("$')");
+			value.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexPostalCode()).append("$')");
 			break;
 		case BSN:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexBsn()).append("$')");
+			value.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexBsn()).append("$')");
 			break;
 		case IBAN:
-			constraints.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexIban()).append("$')");
+			value.append(". = '' or matches(., '^").append(WebformsConfigurationReader.getInstance().getRegexIban()).append("$')");
 			break;
 		case DATE_FUTURE:
-			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &gt;= adjust-date-to-timezone(current-date(), ())");
+			value.append("string-length(" + sourceXpath + "/text())=0 or . &gt;= adjust-date-to-timezone(current-date(), ())");
 			break;
 		case DATE_PAST:
-			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ())");
+			value.append("string-length(" + sourceXpath + "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ())");
 			break;
 		case DATE_BIRTHDAY:
-			constraints.append("string-length(" + sourceXpath + "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ()) ");
-			constraints.append("and (year-from-date(current-date()) - year-from-date(.) &lt;= ");
-			constraints.append(MAX_YEARS_BIRTHDAY).append(")");
+			value.append("string-length(" + sourceXpath + "/text())=0 or . &lt;= adjust-date-to-timezone(current-date(), ()) ");
+			value.append("and (year-from-date(current-date()) - year-from-date(.) &lt;= ");
+			value.append(MAX_YEARS_BIRTHDAY).append(")");
 			break;
 		case DATE_PERIOD:
 			// Do nothing this type will never arrive here
 			break;
 		case POSITIVE_FLOAT:
-			constraints.append(". &gt;= 0");
+		case POSITIVE_NUMBER:
+			value.append(". &gt;= 0");
 			break;
 		case NEGATIVE_FLOAT:
-			constraints.append(". &lt;= 0");
+		case NEGATIVE_NUMBER:
+			value.append(". &lt;= 0");
 			break;
 		case TEXT:
 		case DATE:
 		case EMAIL:
 		case NUMBER:
-		case POSITIVE_NUMBER:
-		case NEGATIVE_NUMBER:
 		case FLOAT:
 			// No constraint, type handles restriction.
 			break;
@@ -285,7 +284,15 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			// Not used type
 			break;
 		}
-		constraints.append("\"/>");
+
+		// If we have some constraints defined, add it.
+		if (value.length() > 0) {
+			// We define constraint as subtype-constraint-[unique name]
+			constraints.append("<xf:constraint id=\"subtype-constraint-" + getXFormsHelper().getUniqueName(getSource()) + "-validation\" ");
+			constraints.append("value=\"");
+			constraints.append(value);
+			value.append("\"/>");
+		}
 
 	}
 
@@ -469,6 +476,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			return "select1";
 		case MULTIPLE_SELECTION:
 			return "select";
+		case SINGLE_SELECTION_SLIDER:
+			return "select1";
 		}
 		return "";
 	}
@@ -494,6 +503,10 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 			return "appearance=\"minimal\"";
 		case MULTIPLE_SELECTION:
 			return "appearance=\"full\"";
+		case SINGLE_SELECTION_SLIDER:
+			return "appearance=\"full\"";
+		default:
+			break;
 		}
 		return " ";
 	}
