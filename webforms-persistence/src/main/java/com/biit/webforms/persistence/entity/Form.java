@@ -483,7 +483,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 	 * @return
 	 */
 	public ComputedFlowView getComputedFlowsView() {
-		LinkedHashSet<TreeObject> allBaseQuestions = getAllChildrenInHierarchy(BaseQuestion.class);
+		LinkedHashSet<TreeObject> allBaseQuestions = getAllNotHiddenChildrenInHierarchy(BaseQuestion.class);
 		ComputedFlowView computedView = new ComputedFlowView();
 
 		if (!allBaseQuestions.isEmpty()) {
