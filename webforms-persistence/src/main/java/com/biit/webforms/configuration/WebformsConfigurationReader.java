@@ -79,6 +79,10 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_XFORMS_DATABASE_HOST = "localhost";
 	private static final String DEFAULT_XFORMS_FORM_RUNNER = "http://127.0.0.1:8080/orbeon/fr";
 	private static final String DEFAULT_XFORMS_AVAILABLE_LANGUAGES = "en";
+	
+	// FormrunnerJS
+	private static final String FORMRUNNERJS_REST_SERVICE = "formrunner.rest.service";
+	private static final String DEFAULT_FORMRUNNERJS_REST_SERVICE = "http://127.0.0.1:8080/formrunner";
 
 	// Abcd Rest service
 	private static final String ABCD_REST_SERVICE_USER = "abcd.rest.user";
@@ -146,6 +150,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		addProperty(ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION,
 				DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION);
 		addProperty(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION, DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
+		addProperty(FORMRUNNERJS_REST_SERVICE, DEFAULT_FORMRUNNERJS_REST_SERVICE);
 
 		addPropertiesSource(new PropertiesSourceFile(CONFIG_FILE));
 		addPropertiesSource(new SystemVariablePropertiesSourceFile(WEBFORMS_SYSTEM_VARIABLE_CONFIG, CONFIG_FILE));
@@ -331,6 +336,10 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	public String[] getOrbeonAvailableLanguages() {
 		String languages = getPropertyLogException(ID_XFORMS_AVAILABLE_LANGUAGES);
 		return languages.replace(" ", "").split(",");
+	}
+	
+	public String getFormrunnerJSRestService() {
+		return getPropertyLogException(FORMRUNNERJS_REST_SERVICE);
 	}
 
 	public boolean isImagesEnabled() {
