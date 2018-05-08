@@ -11,6 +11,7 @@ import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
+import com.biit.webforms.gui.xforms.FormRunnerPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.theme.ThemeIcons;
@@ -81,7 +82,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_EXPORT_FORM_METADATA, IconSize.BIG);
 		exportBaseFormMetadataJson.setVisible(enableExportJson);
 
-		opener = new BrowserWindowOpener(OrbeonPreviewFrame.class);
+		//opener = new BrowserWindowOpener(FormRunnerPreviewFrame.class);
+		opener = new BrowserWindowOpener(FormRunnerPreviewFrame.class);
 		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsSimpleFormExporter.APP_NAME);
 		opener.setFeatures("target=_new");
 		previewXForms = new IconButton(LanguageCodes.CAPTION_PREVIEW_XFORMS, ThemeIcons.PREVIEW_XFORMS, LanguageCodes.TOOLTIP_PREVIEW_XFORMS, IconSize.BIG);

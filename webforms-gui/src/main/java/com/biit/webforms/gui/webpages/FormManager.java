@@ -58,6 +58,8 @@ import com.biit.webforms.gui.webpages.formmanager.WindowImpactAnalysis;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportJson;
 import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
+import com.biit.webforms.gui.xforms.FormRunnerPreviewFrame;
+import com.biit.webforms.gui.xforms.FormRunnerUtils;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.gui.xforms.OrbeonUtils;
 import com.biit.webforms.language.LanguageCodes;
@@ -198,6 +200,8 @@ public class FormManager extends SecuredWebPage {
 				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(), getSelectedForm().getOrganizationId());
 				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
 						XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
+				upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_NAME_TAG,
+						getSelectedForm().getLabel());
 				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_VERSION_PARAMETER_TAG, getSelectedForm().getVersion().toString());
 			}
 		});
@@ -467,7 +471,10 @@ public class FormManager extends SecuredWebPage {
 			// Orbeon fails if a form has no categories.
 			if (!form.getChildren().isEmpty()) {
 				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(), form.getOrganizationId());
-				if (!OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization, true, true)) {
+				//String formName = form.getName();
+				//if (!FormRunnerUtils.saveFormInFormRunner(new CompleteFormView(form), organization, true, true)) {
+				//if (!OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization, true, true)) {
+				if (!FormRunnerUtils.saveFormInFormRunner(form, organization, true, true)) {
 					// If xforms is not generated, close the popup.
 					// ((OrbeonPreviewFrame)
 					// upperMenu.getOpener().getUI()).closePopUp();
