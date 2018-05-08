@@ -28,8 +28,9 @@ public class WebformsSchemaExporter extends com.biit.persistence.JpaSchemaExport
 	 * @param directory
 	 */
 	@Override
-	public void createDatabaseScript(HibernateDialect dialect, String directory, String outputFile, boolean onlyCreation) {
-		super.createDatabaseScript(dialect, directory, outputFile, onlyCreation);
+	public void createDatabaseScript(HibernateDialect dialect, String directory, String outputFile, String host, String port, String username, String password,
+			String databaseName, boolean onlyCreation) {
+		super.createDatabaseScript(dialect, directory, outputFile, host, port, username, password, databaseName, onlyCreation);
 		updateTables(directory, outputFile);
 	}
 
@@ -93,7 +94,7 @@ public class WebformsSchemaExporter extends com.biit.persistence.JpaSchemaExport
 
 		// Launch the JpaSchemaExporter
 		JpaSchemaExporter gen = new WebformsSchemaExporter(getPacketsToScan(), getClassesToIgnoreWhenCreatingDatabase());
-		gen.createDatabaseScript(HibernateDialect.MYSQL, getDirectory(), getOutputFile(), true);
+		gen.createDatabaseScript(HibernateDialect.MYSQL, getDirectory(), getOutputFile(), getHost(), getPort(), getUser(), getPassword(), getDatabaseName(), true);
 		gen = new WebformsSchemaExporter(getPacketsToScan(), getClassesToIgnoreWhenUpdatingDatabase());
 		gen.updateDatabaseScript(HibernateDialect.MYSQL, getDirectory(), getHost(), getPort(), getUser(), getPassword(), getDatabaseName());
 
