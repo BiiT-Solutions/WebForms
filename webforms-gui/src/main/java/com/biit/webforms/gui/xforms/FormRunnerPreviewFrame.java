@@ -34,11 +34,11 @@ public class FormRunnerPreviewFrame extends UI {
 		getPage().setTitle("Preview");
 		String form_name = request.getParameter(FORM_NAME_TAG).trim();
 		String parsedFormName = parseName(form_name);
-		this.form = "?preview=" + parsedFormName;
+		String form_version = request.getParameter(FORM_VERSION_PARAMETER_TAG);
+		this.form = "?preview=" + parsedFormName + "&version=" + form_version;
 		// this.application = request.getParameter(APPLICATION_PARAMETER_TAG);
 		this.application = "formrunner";
 		// this.version = request.getParameter(FORM_VERSION_PARAMETER_TAG);
-		// String url3 = "https://testing.biit-solutions.com";// put in your url
 		String url = WebformsConfigurationReader.getInstance().getFormrunnerJSRestService();
 
 		WebformsLogger.debug(this.getClass().getName(), "Opening URL: " + url + "/" + form);

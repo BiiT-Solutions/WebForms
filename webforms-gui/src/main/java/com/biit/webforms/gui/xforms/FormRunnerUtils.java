@@ -12,14 +12,12 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
-
 import org.apache.http.client.ClientProtocolException;
 import org.glassfish.jersey.SslConfigurator;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.persistence.entity.Form;
-
 
 public class FormRunnerUtils {
 
@@ -34,41 +32,47 @@ public class FormRunnerUtils {
 		try {
 			saveForm(form);
 		} catch (ClientProtocolException e) {
-			//MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+			// MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			WebformsUiLogger.errorMessage(FormRunnerUtils.class.getName(), e);
 			return false;
 		} catch (IOException e) {
-			//MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+			// MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			WebformsUiLogger.errorMessage(FormRunnerUtils.class.getName(), e);
 			return false;
 		}
 		return true;
 	}
 
-	private static void saveForm(Form form) throws ClientProtocolException, IOException {		
+	private static void saveForm(Form form) throws ClientProtocolException, IOException {
 		String jsonForm = form.toJson();
 		String url = WebformsConfigurationReader.getInstance().getFormrunnerJSRestService();
-		
-		//String url2 = "https://testing.biit-solutions.com/formrunner";
-		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "URL to save: "+	url);
+
+		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "URL to save: " + url);
 		String service = "/savePreviewForm";
 		String message = "{\"json\":" + jsonForm + "}";
-		String response = post(false, url, service, message, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, false, null);
-		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "Respose from the server: "+	response);
+		String response = post(false, url, service, message, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
+				false, null);
+		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "Response from the server: " + response);
 	}
-	
-	public static String post(boolean ssl, String target, String path, String message, String requestType, String messageType, boolean authentication,
-			Map<String, Object> parameters) //throws UnprocessableEntityException, EmptyResultException 
+
+	public static String post(boolean ssl, String target, String path, String message, String requestType,
+			String messageType, boolean authentication, Map<String, Object> parameters) // throws
+																						// UnprocessableEntityException,
+																						// EmptyResultException
 	{
 
-		//HttpAuthenticationFeature authenticationFeature = null;
+		// HttpAuthenticationFeature authenticationFeature = null;
 		if (authentication) {
-			//authenticationFeature = HttpAuthenticationFeature.basic(UsmoConfigurationReader.getInstance().getRestServiceUser(), UsmoConfigurationReader.getInstance()
-				//	.getRestServicePassword());
+			// authenticationFeature =
+			// HttpAuthenticationFeature.basic(UsmoConfigurationReader.getInstance().getRestServiceUser(),
+			// UsmoConfigurationReader.getInstance()
+			// .getRestServicePassword());
 		}
 
 		String response = null;
-		//RestClientLogger.debug(RestGenericClient.class.getName(), "Calling rest service (post) '" + target + "/" + path + "' with message:\n '" + message + "'.");
+		// RestClientLogger.debug(RestGenericClient.class.getName(), "Calling rest
+		// service (post) '" + target + "/" + path + "' with message:\n '" + message +
+		// "'.");
 		try {
 			ClientBuilder builder = ClientBuilder.newBuilder();
 
@@ -79,9 +83,10 @@ public class FormRunnerUtils {
 			}
 
 			// Enable authentication
-			/*if (authentication && authenticationFeature != null) {
-				builder = builder.register(authenticationFeature);
-			}*/
+			/*
+			 * if (authentication && authenticationFeature != null) { builder =
+			 * builder.register(authenticationFeature); }
+			 */
 
 			// Add Parameters
 			WebTarget webTarget = builder.build().target(UriBuilder.fromUri(target).build()).path(path);
@@ -95,22 +100,26 @@ public class FormRunnerUtils {
 			// Call the webservice
 			response = webTarget.request(requestType).post(Entity.entity(message, messageType), String.class);
 
-			//RestClientLogger.debug(RestGenericClient.class.getName(), "Service returns '" + response + "'.");
+			// RestClientLogger.debug(RestGenericClient.class.getName(), "Service returns '"
+			// + response + "'.");
 			return response;
 		} catch (Exception e) {
 			if (e instanceof ClientErrorException) {
 				if (e.getMessage().contains("HTTP 422")) {
-					//UnprocessableEntityException uee = new UnprocessableEntityException(e.getMessage());
-					//uee.setStackTrace(e.getStackTrace());
-					//throw uee;
+					// UnprocessableEntityException uee = new
+					// UnprocessableEntityException(e.getMessage());
+					// uee.setStackTrace(e.getStackTrace());
+					// throw uee;
 				} else if (e.getMessage().contains("HTTP 406")) {
-					//EmptyResultException uee = new EmptyResultException(e.getMessage());
-					//uee.setStackTrace(e.getStackTrace());
-					//throw uee;
+					// EmptyResultException uee = new EmptyResultException(e.getMessage());
+					// uee.setStackTrace(e.getStackTrace());
+					// throw uee;
 				}
 			}
-			//RestClientLogger.severe(RestGenericClient.class.getName(), "Calling rest service '" + target + "/" + path + "' with message:\n '" + message + "' error!");
-			//RestClientLogger.errorMessage(RestGenericClient.class.getName(), e);
+			// RestClientLogger.severe(RestGenericClient.class.getName(), "Calling rest
+			// service '" + target + "/" + path + "' with message:\n '" + message + "'
+			// error!");
+			// RestClientLogger.errorMessage(RestGenericClient.class.getName(), e);
 		}
 		return "";
 	}
