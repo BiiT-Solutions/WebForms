@@ -1,174 +1,0 @@
-[INFO] Scanning for projects...
-[WARNING] 
-[WARNING] Some problems were encountered while building the effective model for com.biit:webforms-gui:war:2.10.2-SNAPSHOT
-[WARNING] Reporting configuration should be done in <reporting> section, not in maven-site-plugin <configuration> as reportPlugins parameter.
-[WARNING] 
-[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
-[WARNING] 
-[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
-[WARNING] 
-[INFO] 
-[INFO] ------------------------------------------------------------------------
-[INFO] Building Den Haag SZW - Pilot Agile Testing for WebForms (GUI) 2.10.2-SNAPSHOT
-[INFO] ------------------------------------------------------------------------
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/webforms-core/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/webforms-core/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/webforms-core/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/webforms/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/webforms/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/webforms/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/webforms-parser/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/webforms-parser/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/webforms-parser/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/webforms-persistence/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/webforms-persistence/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/webforms-persistence/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/jpa-schema-exporter/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/jpa-schema-exporter/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/jpa-schema-exporter/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/jpa-schema-exporter/maven-metadata.xml
-Progress (1): 522 B                   Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/jpa-schema-exporter/maven-metadata.xml (522 B at 2.0 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/common-utils/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/common-utils/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/common-utils/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/common-utils/maven-metadata.xml
-Progress (1): 1.7 kB                    Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/common-utils/maven-metadata.xml (1.7 kB at 11 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/form-structure/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/form-structure/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/form-structure/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/form-structure/maven-metadata.xml
-Progress (1): 1.4 kB                    Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/form-structure/maven-metadata.xml (1.4 kB at 4.9 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/storableobject-persistence-manager/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/storableobject-persistence-manager/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/storableobject-persistence-manager/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/storableobject-persistence-manager/maven-metadata.xml
-Progress (1): 1.1 kB                    Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/storableobject-persistence-manager/maven-metadata.xml (1.1 kB at 7.5 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/user-manager/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/user-manager/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/user-manager/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/user-manager/maven-metadata.xml
-Progress (1): 2.0 kB                    Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/user-manager/maven-metadata.xml (2.0 kB at 15 kB/s)
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/user-manager/0.1.62-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/user-manager/0.1.62-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/user-manager/0.1.62-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/user-manager/0.1.66-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/user-manager/0.1.66-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/user-manager/0.1.66-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/form-structure-drools/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/form-structure-drools/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/form-structure-drools/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/form-structure-drools/maven-metadata.xml
-Progress (1): 1.0 kB                    Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/form-structure-drools/maven-metadata.xml (1.0 kB at 4.3 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/form-structure-submitted/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/form-structure-submitted/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/form-structure-submitted/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/form-structure-submitted/maven-metadata.xml
-Progress (1): 653 B                   Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/form-structure-submitted/maven-metadata.xml (653 B at 4.8 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/liferay/liferay-service-common/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/liferay/liferay-service-common/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/liferay/liferay-service-common/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/liferay/liferay-service-common/maven-metadata.xml
-Progress (1): 1.1 kB                    Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/liferay/liferay-service-common/maven-metadata.xml (1.1 kB at 7.6 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/webforms-logger/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/webforms-logger/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/webforms-logger/2.10.2-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/liferay/liferay-authentication-client/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/liferay/liferay-authentication-client/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/liferay/liferay-authentication-client/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/liferay/liferay-authentication-client/maven-metadata.xml
-Progress (1): 1.8 kB                    Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/liferay/liferay-authentication-client/maven-metadata.xml (1.8 kB at 6.9 kB/s)
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/liferay/liferay-authentication-client/0.9.4-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/liferay/liferay-authentication-client/0.9.4-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/liferay/liferay-authentication-client/0.9.4-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/abcd-persistence/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/abcd-persistence/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/abcd-persistence/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/abcd-persistence/maven-metadata.xml
-Progress (1): 1.1 kB                    Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/abcd-persistence/maven-metadata.xml (1.1 kB at 3.7 kB/s)
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/abcd-persistence/1.7.1-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/abcd-persistence/1.7.1-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/abcd-persistence/1.7.1-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/abcd-tool/1.7.1-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/abcd-tool/1.7.1-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/abcd-tool/1.7.1-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/abcd-logger/1.7.1-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/abcd-logger/1.7.1-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/abcd-logger/1.7.1-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/drools-engine-interfaces/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/drools-engine-interfaces/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/drools-engine-interfaces/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/drools-engine-interfaces/maven-metadata.xml
-Progress (1): 594 B                   Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/drools-engine-interfaces/maven-metadata.xml (594 B at 1.9 kB/s)
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/abcd-persistence/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/abcd-persistence/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/abcd-persistence/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/abcd-tool/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/abcd-tool/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/abcd-tool/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/abcd-logger/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/abcd-logger/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/abcd-logger/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/abcd-core/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/abcd-core/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/abcd-core/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/abcd-core/maven-metadata.xml
-Progress (1): 1.1 kB                    Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/abcd-core/maven-metadata.xml (1.1 kB at 4.3 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/drools-engine-core/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/drools-engine-core/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/drools-engine-core/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/drools-engine-core/maven-metadata.xml
-Progress (1): 556 B                   Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/drools-engine-core/maven-metadata.xml (556 B at 2.3 kB/s)
-Downloading: http://maven.vaadin.com/vaadin-addons/org/jboss/dashboard-builder/dashboard-builder-bom/6.4.0.Final/dashboard-builder-bom-6.4.0.Final.pom
-Downloading: https://repo.maven.apache.org/maven2/org/jboss/dashboard-builder/dashboard-builder-bom/6.4.0.Final/dashboard-builder-bom-6.4.0.Final.pom
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/form-structure-orbeon/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/form-structure-orbeon/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/form-structure-orbeon/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/form-structure-orbeon/maven-metadata.xml
-Progress (1): 495 B                   Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/form-structure-orbeon/maven-metadata.xml (495 B at 3.2 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/orbeon-form-reader/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/orbeon-form-reader/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/orbeon-form-reader/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/orbeon-form-reader/maven-metadata.xml
-Progress (1): 652 B                   Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/orbeon-form-reader/maven-metadata.xml (652 B at 2.5 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/plugins/plugin-manager/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/plugins/plugin-manager/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/plugins/plugin-manager/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/plugins/plugin-manager/maven-metadata.xml
-Progress (1): 530 B                   Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/plugins/plugin-manager/maven-metadata.xml (530 B at 3.2 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/rest-services-security/maven-metadata.xml
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/rest-services-security/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/rest-services-security/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/rest-services-security/maven-metadata.xml
-Progress (1): 1.6 kB                    Downloaded: https://artifactory.biit-solutions.com:8443/artifactory/libs-release/com/biit/rest-services-security/maven-metadata.xml (1.6 kB at 11 kB/s)
-Downloading: https://artifactory.biit-solutions.com:8443/artifactory/libs-snapshot/com/biit/abcd-core/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.vaadin.com/vaadin-addons/com/biit/abcd-core/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://oss.sonatype.org/content/repositories/vaadin-snapshots/com/biit/abcd-core/1.7.2-SNAPSHOT/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/jpa-schema-exporter/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/common-utils/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/form-structure/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/storableobject-persistence-manager/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/user-manager/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/form-structure-drools/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/form-structure-submitted/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/liferay/liferay-service-common/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/drools-engine-interfaces/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/drools-engine-core/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/form-structure-orbeon/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/orbeon-form-reader/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/plugins/plugin-manager/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/rest-services-security/maven-metadata.xml
-Downloading: http://repository.jboss.org/nexus/content/groups/public/com/biit/liferay/liferay-authentication-client/maven-metadata.xml
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD FAILURE
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 31.546 s
-[INFO] Finished at: 2018-01-17T10:24:28+01:00
-[INFO] Final Memory: 16M/232M
-[INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal on project webforms-gui: Could not resolve dependencies for project com.biit:webforms-gui:war:2.10.2-SNAPSHOT: Failed to collect dependencies at com.biit:abcd-core:jar:1.7.1 -> com.biit:drools-engine-core:jar:0.3.32 -> org.drools:drools-core:jar:6.4.0.Final: Failed to read artifact descriptor for org.drools:drools-core:jar:6.4.0.Final: Could not find artifact org.jboss.dashboard-builder:dashboard-builder-bom:pom:6.4.0.Final in vaadin-addons (http://maven.vaadin.com/vaadin-addons) -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/DependencyResolutionException
