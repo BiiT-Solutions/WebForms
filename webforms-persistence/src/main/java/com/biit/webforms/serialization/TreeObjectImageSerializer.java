@@ -18,6 +18,7 @@ public class TreeObjectImageSerializer extends StorableObjectSerializer<TreeObje
 		jsonObject.add("width", context.serialize(src.getWidth()));
 		jsonObject.add("height", context.serialize(src.getHeight()));
 		jsonObject.add("data", context.serialize(src.toBase64()));
+		jsonObject.add("imageUrl", context.serialize(src.getUrl()));
 
 		return jsonObject;
 
