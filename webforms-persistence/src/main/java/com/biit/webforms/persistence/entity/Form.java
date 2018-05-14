@@ -43,6 +43,7 @@ import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.form.json.serialization.hibernate.HibernateProxyTypeAdapter;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -50,7 +51,6 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
@@ -806,6 +806,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 	public String toJson() {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
+		gsonBuilder.registerTypeAdapterFactory(HibernateProxyTypeAdapter.FACTORY);
 		gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
 		gsonBuilder.registerTypeAdapter(Category.class, new CategorySerializer());
 		gsonBuilder.registerTypeAdapter(Group.class, new GroupSerializer());
