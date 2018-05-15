@@ -42,6 +42,11 @@
 			"subformat": "TEXT"
 		},
 		{
+			"name": "gender",
+			"xpath": "/PersonalInfo/gender",
+			"type": "SINGLE_SELECTION_RADIO"
+		},
+		{
 			"name": "birthdate",
 			"xpath": "/PersonalInfo/birthday",
 			"type": "INPUT",
