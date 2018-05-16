@@ -30,7 +30,12 @@ public class FormRunnerUtils {
 			boolean includeImages) {
 		// Save it.
 		try {
-			saveForm(form);
+			if (preview) {
+				savePreviewForm(form);
+			}
+			else {
+				saveForm(form);
+			}
 		} catch (ClientProtocolException e) {
 			// MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
 			WebformsUiLogger.errorMessage(FormRunnerUtils.class.getName(), e);
@@ -43,12 +48,24 @@ public class FormRunnerUtils {
 		return true;
 	}
 
+	private static void savePreviewForm(Form form) throws ClientProtocolException, IOException {
+		String jsonForm = form.toJson();
+		String url = WebformsConfigurationReader.getInstance().getFormrunnerJSRestService();
+
+		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "URL to save in preview: " + url);
+		String service = "/savePreviewForm";
+		String message = "{\"json\":" + jsonForm + "}";
+		String response = post(false, url, service, message, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
+				false, null);
+		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "Response from the server: " + response);
+	}
+	
 	private static void saveForm(Form form) throws ClientProtocolException, IOException {
 		String jsonForm = form.toJson();
 		String url = WebformsConfigurationReader.getInstance().getFormrunnerJSRestService();
 
-		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "URL to save: " + url);
-		String service = "/savePreviewForm";
+		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "URL to save in published: " + url);
+		String service = "/saveForm";
 		String message = "{\"json\":" + jsonForm + "}";
 		String response = post(false, url, service, message, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
 				false, null);

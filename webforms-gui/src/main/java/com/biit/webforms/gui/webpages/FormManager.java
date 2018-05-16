@@ -61,7 +61,7 @@ import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
 import com.biit.webforms.gui.xforms.FormRunnerPreviewFrame;
 import com.biit.webforms.gui.xforms.FormRunnerUtils;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
-import com.biit.webforms.gui.xforms.OrbeonUtils;
+//import com.biit.webforms.gui.xforms.OrbeonUtils;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
@@ -456,7 +456,13 @@ public class FormManager extends SecuredWebPage {
 			// Orbeon fails if a form has no categories.
 			if (!form.getChildren().isEmpty()) {
 				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(), form.getOrganizationId());
-				if (OrbeonUtils.saveFormInOrbeon(form, organization, false, true)) {
+				/*if (OrbeonUtils.saveFormInOrbeon(form, organization, false, true)) {
+					MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
+				}*/
+				if (!FormRunnerUtils.saveFormInFormRunner(form, organization, false, true)) {
+					// If xforms is not generated, close the popup.
+					// ((OrbeonPreviewFrame)
+					// upperMenu.getOpener().getUI()).closePopUp();
 					MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
 				}
 			} else {
