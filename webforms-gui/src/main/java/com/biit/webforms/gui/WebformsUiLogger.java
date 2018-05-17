@@ -54,6 +54,7 @@ public class WebformsUiLogger {
 	public static void errorMessage(String className, Throwable throwable) {
 		String message = getStackTrace(throwable);
 		WebformsLogger.errorMessage(className, formatMessage(message));
+		WebformsLogger.errorMessage(className, throwable);
 	}
 
 	/**
@@ -72,20 +73,20 @@ public class WebformsUiLogger {
 		String sessionStart = UNKNOWN;
 		String numberOfUi = UNKNOWN;
 		VaadinSession currentSession = VaadinSession.getCurrent();
-		if(currentSession!=null && currentSession.getSession()!=null){
+		if (currentSession != null && currentSession.getSession() != null) {
 			sessionId = currentSession.getSession().getId();
-			try{
+			try {
 				sessionStart = new Timestamp(currentSession.getSession().getCreationTime()).toString();
-			}catch(IllegalStateException e){
-				//Do nothing
+			} catch (IllegalStateException e) {
+				// Do nothing
 			}
-			numberOfUi = currentSession.getUIs().size()+"";
+			numberOfUi = currentSession.getUIs().size() + "";
 		}
 		String uiid = null;
 		String userMail = null;
 
 		try {
-			uiid = UI.getCurrent().getUIId()+"";
+			uiid = UI.getCurrent().getUIId() + "";
 		} catch (Exception e) {
 			uiid = UNKNOWN;
 		}
@@ -95,8 +96,9 @@ public class WebformsUiLogger {
 		} catch (Exception e) {
 			userMail = UNKNOWN;
 		}
-		
-		return "Session '"+sessionId+"' active since '"+sessionStart+"' TotalUi '"+numberOfUi+"' UI '"+uiid+"', user '"+userMail+"': "+message;
+
+		return "Session '" + sessionId + "' active since '" + sessionStart + "' TotalUi '" + numberOfUi + "' UI '" + uiid + "', user '" + userMail + "': "
+				+ message;
 	}
 
 	public static String getStackTrace(Throwable throwable) {
