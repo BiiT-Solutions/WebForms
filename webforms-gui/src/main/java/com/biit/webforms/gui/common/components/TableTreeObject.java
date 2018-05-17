@@ -136,8 +136,10 @@ public class TableTreeObject extends TreeTable {
 
 	@SuppressWarnings("unchecked")
 	protected void setValuesToItem(Item item, TreeObject element) {
-		Object treeObjectIcon = createElementWithIcon(element);
-		item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).setValue(treeObjectIcon);
+		if (item != null && element != null) {
+			Object treeObjectIcon = createElementWithIcon(element);
+			item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).setValue(treeObjectIcon);
+		}
 	}
 
 	/**
