@@ -33,9 +33,10 @@ public class FormRunnerPreviewFrame extends UI {
 	protected void init(VaadinRequest request) {
 		getPage().setTitle("Preview");
 		String form_name = request.getParameter(FORM_NAME_TAG).trim();
-		String parsedFormName = parseName(form_name);
+		
+		//String parsedFormName = form_name;
 		String form_version = request.getParameter(FORM_VERSION_PARAMETER_TAG);
-		this.form = "?preview=" + parsedFormName + "&version=" + form_version;
+		this.form = "?preview=" + form_name + "&version=" + form_version;
 		// this.application = request.getParameter(APPLICATION_PARAMETER_TAG);
 		this.application = "formrunner";
 		// this.version = request.getParameter(FORM_VERSION_PARAMETER_TAG);
@@ -50,6 +51,7 @@ public class FormRunnerPreviewFrame extends UI {
 		setContent(browser);
 	}
 
+	@SuppressWarnings("unused")
 	private String parseName(String formName) {
 		String[] splittedName = formName.split(" ");
 		String parsedName = "";
