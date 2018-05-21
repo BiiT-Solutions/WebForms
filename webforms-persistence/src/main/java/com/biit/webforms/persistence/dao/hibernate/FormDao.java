@@ -44,7 +44,6 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 			form.initializeSets();
 			initializeAndUnproxy(form);
 		}
-		form.print();
 		return form;
 	}
 
