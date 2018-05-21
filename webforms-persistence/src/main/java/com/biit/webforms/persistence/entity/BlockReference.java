@@ -142,7 +142,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	@Override
 	public String toString() {
 		if (reference != null) {
-			return "[" + reference.getLabel() + "]";
+			return "*" + reference.getLabel() + "*";
 		}
 		return "[empty]";
 	}
@@ -175,6 +175,9 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 
 	@Override
 	public Set<StorableObject> getAllInnerStorableObjects() {
+		if (reference != null) {
+			return reference.getAllInnerStorableObjects();
+		}
 		return new HashSet<>();
 	}
 
@@ -253,4 +256,12 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 		return null;
 	}
 
+	@Override
+	public void print(int indent) {
+		for (int i = 0; i < indent; i++) {
+			System.out.print("\t");
+		}
+		System.out.println(this + " -- " + this.getClass().getName());
+		reference.print(indent);
+	}
 }

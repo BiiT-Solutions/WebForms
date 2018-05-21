@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.Hibernate;
+
 import com.biit.form.entity.BaseForm;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
@@ -136,6 +138,9 @@ public class TableTreeObject extends TreeTable {
 
 	@SuppressWarnings("unchecked")
 	protected void setValuesToItem(Item item, TreeObject element) {
+		// System.out.println(element.getClass().getName());
+		// System.out.println(Hibernate.unproxy(element).getClass().getName());
+		// element = (TreeObject) Hibernate.unproxy(element);
 		if (item != null && element != null) {
 			Object treeObjectIcon = createElementWithIcon(element);
 			item.getItemProperty(TreeObjectTableProperties.ELEMENT_NAME).setValue(treeObjectIcon);

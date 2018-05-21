@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -8,6 +9,8 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,8 +20,12 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.biit.form.entity.TreeObject;
+import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Form;
 
 @Repository
@@ -35,8 +42,44 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 		Form form = super.get(id);
 		if (form != null) {
 			form.initializeSets();
+			initializeAndUnproxy(form);
 		}
+		form.print();
 		return form;
+	}
+
+	/**
+	 * Hibernate 5 stores the proxy class longer. Must be removed or causes
+	 * problems later.
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends TreeObject> T initializeAndUnproxy(T entity) {
+		if (entity == null) {
+			throw new NullPointerException("Entity passed for initialization is null");
+		}
+
+		Hibernate.initialize(entity);
+		if (entity instanceof HibernateProxy) {
+			entity = (T) Hibernate.unproxy(entity);
+		}
+
+		if (entity instanceof BlockReference) {
+			((BlockReference) entity).setReference(initializeAndUnproxy(((BlockReference) entity).getReference()));
+		} else if (!entity.getChildren().isEmpty()) {
+			List<TreeObject> children = new ArrayList<>();
+			for (TreeObject child : new ArrayList<>(entity.getChildren())) {
+				children.add(initializeAndUnproxy(child));
+			}
+			try {
+				entity.setChildren(children);
+			} catch (NotValidChildException e) {
+				WebformsLogger.errorMessage(FormDao.class.getName(), e);
+			}
+		}
+		return entity;
 	}
 
 	@Override
