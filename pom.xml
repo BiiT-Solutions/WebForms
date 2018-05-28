@@ -62,7 +62,7 @@
 		<h2.version>1.4.182</h2.version>
 		<ehcache.version>2.6.9</ehcache.version>
 		<c3p0.version>0.9.2.1</c3p0.version>
-		<jbool_expressions.version>1.6</jbool_expressions.version>
+		<jbool_expressions.version>1.8</jbool_expressions.version>
 		<gson.version>2.3.1</gson.version>
 		<stepper.version>2.3.0</stepper.version>
 		<maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
