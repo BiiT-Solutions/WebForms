@@ -459,7 +459,7 @@ public class FormManager extends SecuredWebPage {
 				/*if (OrbeonUtils.saveFormInOrbeon(form, organization, false, true)) {
 					MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
 				}*/
-				if (!FormRunnerUtils.saveFormInFormRunner(form, organization, false, true)) {
+				if (FormRunnerUtils.saveFormInFormRunner(form, organization, false, true)) {
 					// If xforms is not generated, close the popup.
 					// ((OrbeonPreviewFrame)
 					// upperMenu.getOpener().getUI()).closePopUp();
