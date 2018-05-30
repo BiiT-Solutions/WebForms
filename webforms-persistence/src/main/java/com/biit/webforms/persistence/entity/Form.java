@@ -438,7 +438,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 		}
 		Set<TreeObject> newElementsToHide = new HashSet<>();
 		for (TreeObject elementToHide : elementsToHide) {
-			newElementsToHide.add(elements.get(elementToHide.getOriginalReference()));
+			if (elements.get(elementToHide.getOriginalReference()) != null) {
+				newElementsToHide.add(elements.get(elementToHide.getOriginalReference()));
+			}
 		}
 		setElementsToHide(newElementsToHide);
 	}
