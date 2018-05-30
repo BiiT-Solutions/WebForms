@@ -42,10 +42,10 @@ public class FormWalker {
 		HashMap<BaseQuestion, Set<List<BaseQuestion>>> exploredQuestions = new HashMap<>();
 
 		// Get reverse list of elements from origin to destiny.
-		List<TreeObject> selectedObjects = form.getAll(BaseQuestion.class);
+		List<BaseQuestion> selectedObjects = form.getAll(BaseQuestion.class);
 		List<BaseQuestion> selectedElements = new ArrayList<BaseQuestion>();
 		for (int i = selectedObjects.indexOf(destiny); i >= selectedObjects.indexOf(origin); i--) {
-			selectedElements.add((BaseQuestion) selectedObjects.get(i));
+			selectedElements.add(selectedObjects.get(i));
 		}
 
 		for (BaseQuestion element : selectedElements) {

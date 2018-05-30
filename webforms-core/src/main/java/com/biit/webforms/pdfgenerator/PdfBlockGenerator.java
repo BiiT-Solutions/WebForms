@@ -72,9 +72,9 @@ public class PdfBlockGenerator {
 	public static List<PdfTableBlock> generateAnnexFormTableBlocks(Form form) {
 		List<PdfTableBlock> blocks = new ArrayList<PdfTableBlock>();
 
-		List<TreeObject> treeObjects = new ArrayList<>(form.getAll(BaseQuestion.class));
+		List<BaseQuestion> treeObjects = new ArrayList<>(form.getAll(BaseQuestion.class));
 
-		for (TreeObject object : treeObjects) {
+		for (BaseQuestion object : treeObjects) {
 			if (!object.isHiddenElement() && !(object instanceof SystemField)) {
 				if (object instanceof Text) {
 					blocks.add(generateAnnexQuestionTableBlock((Text) object));
