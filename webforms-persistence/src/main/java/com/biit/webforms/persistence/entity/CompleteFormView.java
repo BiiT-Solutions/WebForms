@@ -127,6 +127,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 					}
 				} else {
 					children.add(child);
+					updateHiddenElements(child);
 				}
 			}
 		}

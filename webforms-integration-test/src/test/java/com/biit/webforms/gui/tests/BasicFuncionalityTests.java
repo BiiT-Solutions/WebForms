@@ -1,9 +1,12 @@
 package com.biit.webforms.gui.tests;
 
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.biit.webforms.gui.tests.exceptions.FieldNotEditableException;
 import com.biit.webforms.gui.tests.exceptions.OrganizationNotEditableException;
+import com.vaadin.testbench.elements.TreeTableElement;
 
 public class BasicFuncionalityTests extends WebFormsTester {
 
@@ -106,5 +109,68 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		getInfoButton().click();
 		clickCloseButtonIfExists();
 		logOut();
+	}
+	
+	@Test(groups = "basicFunctionality")
+	public void createFormWithHiddenElements() throws FieldNotEditableException {
+		printTestNameInDebugTrace("createFormWithHiddenElements");
+		loginFormAdmin1();
+		getFormManagerPage().createNewForm(NEW_FORM_NAME);
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
+		getDesignerPage().getHideButton().click();
+		getDesignerPage().addNewInputQuestion();
+		getDesignerPage().saveDesign();
+		//clickDeleteButton
+		logOut();
+		deleteForm();
+	}
+	
+	@Test(groups = "basicFunctionality", expectedExceptions = NullPointerException.class)
+	public void deleteHiddenElementFromForm() throws FieldNotEditableException {
+		printTestNameInDebugTrace("deleteHiddenElementFromForm");
+		loginFormAdmin1();
+		getFormManagerPage().createNewForm(NEW_FORM_NAME);
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
+		getDesignerPage().getHideButton().click();
+		getDesignerPage().addNewInputQuestion();
+		getDesignerPage().getHideButton().click();
+		getDesignerPage().saveDesign();
+		getDesignerPage().clickDeleteButton();
+		getDesignerPage().addNewInputQuestion();
+		getDesignerPage().saveDesign();
+		try {
+			getFormTable().getCell(1, 0).click();
+			getDesignerPage().getHideButton().click();
+		} finally {
+			logOut();
+			deleteForm();
+		}
+	}
+	
+	@Test(groups = "basicFunctionality", expectedExceptions = NullPointerException.class)
+	public void checkHiddenButtonDisabled() throws FieldNotEditableException {
+		printTestNameInDebugTrace("checkHiddenButtonDisabled");
+		loginFormAdmin1();
+		getFormManagerPage().createNewForm(NEW_FORM_NAME);
+		goToDesignerPage();
+		getDesignerPage().addNewCategory();
+		getDesignerPage().getHideButton().click();
+		getDesignerPage().addNewInputQuestion();
+		getDesignerPage().saveDesign();
+		logOut();
+		loginFormAdmin1();
+		goToDesignerPage();
+		try {
+			getFormTable().getCell(1, 0).click();
+			getDesignerPage().getHideButton().click();
+		} finally {
+			logOut();
+			deleteForm();
+		}
+	}
+	public TreeTableElement getFormTable() {
+		return $(TreeTableElement.class).first();
 	}
 }
