@@ -389,6 +389,8 @@ public class Designer extends SecuredWebPage {
 						} else {
 							try {
 								table.selectPreviousRow();
+								ApplicationUi.getController().getCompleteFormView().showElement(row);
+								row.setHiddenElement(false);
 								ApplicationUi.getController().removeTreeObject(row);
 								table.updateRow(table.getParentRowItem(row));
 							} catch (DependencyExistException | ChildrenNotFoundException e) {
@@ -673,8 +675,9 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 				upperMenu.getDeleteButton().setVisible(!rowIsElementReference || rowIsBlockReferenceCategory);
 				upperMenu.updateHideButton(isHidden);
-				upperMenu.getHideButton().setVisible(!upperMenu.getDeleteButton().isVisible());
-				upperMenu.getHideButton().setEnabled(rowIsElementReference && !rowIsBlockReferenceCategory && canEdit);
+				//upperMenu.getHideButton().setVisible(!upperMenu.getDeleteButton().isVisible());
+				//upperMenu.getHideButton().setEnabled(rowIsElementReference && !rowIsBlockReferenceCategory && canEdit);
+				upperMenu.getHideButton().setEnabled(canEdit);
 				upperMenu.getOtherElementsMenu().setEnabled(
 						upperMenu.getNewSubanswerButton().isEnabled() || upperMenu.getNewTextButton().isEnabled()
 								|| upperMenu.getNewSystemFieldButton().isEnabled());
