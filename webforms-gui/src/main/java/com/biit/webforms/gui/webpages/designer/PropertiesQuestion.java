@@ -261,6 +261,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 		// AnswerFormat enabled is controlled in other part of the code.
 		answerFormat.setValue(getInstance().getAnswerFormat());
 		answerSubformat.setValue(getInstance().getAnswerSubformat());
+		answerSubformat.setEnabled(!getInstance().isReadOnly());
 
 		horizontal.setValue(getInstance().isHorizontal());
 		horizontal.setEnabled(getInstance().getAnswerType().isHorizontalEnabled() && !getInstance().isReadOnly());
@@ -277,6 +278,12 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 		}
 		defaultValueAnswer.setValue(getInstance().getDefaultValueAnswer());
 		disableEdition.setValue(getInstance().isEditionDisabled());
+		
+		disableEdition.setEnabled(!getInstance().isReadOnly());
+		
+		defaultValueDate.setEnabled(!getInstance().isReadOnly());
+		defaultValueString.setEnabled(!getInstance().isReadOnly());
+		defaultValueAnswer.setEnabled(!getInstance().isReadOnly());
 	}
 
 	@Override
