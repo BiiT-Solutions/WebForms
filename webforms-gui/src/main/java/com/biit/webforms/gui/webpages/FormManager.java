@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.biit.form.entity.IBaseFormView;
@@ -74,8 +75,8 @@ import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
-import com.biit.webforms.utils.conversor.abcd.exporter.ConversorFormToAbcdForm;
 import com.biit.webforms.utils.ZipTools;
+import com.biit.webforms.utils.conversor.abcd.exporter.ConversorFormToAbcdForm;
 import com.biit.webforms.validators.ValidateFormComplete;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -593,6 +594,7 @@ public class FormManager extends SecuredWebPage {
 		}
 
 		// Let user choose the version.
+		Collections.sort(availableForms);
 		WindowLinkAbcdForm linkAbcdForm = new WindowLinkAbcdForm();
 		for (com.biit.abcd.persistence.entity.SimpleFormView simpleFormView : availableForms) {
 			if (getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), simpleFormView.getOrganizationId(), WebformsActivity.FORM_EDITING)) {
