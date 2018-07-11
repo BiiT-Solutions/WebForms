@@ -7,6 +7,7 @@ import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.BaseRepeatableGroup;
 import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.SimpleValidator;
+import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Form;
@@ -109,7 +110,7 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<com.biit.abcd
 	private boolean checkCompatibility(Question question, com.biit.abcd.persistence.entity.Question abcdQuestion) {
 		switch (question.getAnswerType()) {
 		case INPUT:
-			return checkCompatibilityAnswerFormat(question, abcdQuestion);
+			return checkCompatibilityAnswerFormat(question.getAnswerFormat(), abcdQuestion);
 		case SINGLE_SELECTION_LIST:
 		case SINGLE_SELECTION_RADIO:
 		case SINGLE_SELECTION_SLIDER:
@@ -123,13 +124,13 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<com.biit.abcd
 			}
 			return false;
 		case TEXT_AREA:
-			return false;
+			return checkCompatibilityAnswerFormat(AnswerFormat.TEXT, abcdQuestion);
 		}
 		return false;
 	}
 
-	private boolean checkCompatibilityAnswerFormat(Question question, com.biit.abcd.persistence.entity.Question abcdQuestion) {
-		switch (question.getAnswerFormat()) {
+	private boolean checkCompatibilityAnswerFormat(AnswerFormat answerFormat, com.biit.abcd.persistence.entity.Question abcdQuestion) {
+		switch (answerFormat) {
 		case DATE:
 			if (abcdQuestion.getAnswerFormat() != null && abcdQuestion.getAnswerFormat().equals(com.biit.abcd.persistence.entity.AnswerFormat.DATE)) {
 				return true;

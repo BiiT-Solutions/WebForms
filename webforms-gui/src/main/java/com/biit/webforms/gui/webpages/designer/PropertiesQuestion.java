@@ -39,7 +39,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 
 	private CheckBox mandatory;
 
-	private ComboBox answerTypeComboBox;
+	private ComboBox answerType;
 
 	private ComboBox answerFormat;
 
@@ -81,19 +81,19 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 		defaultValueAnswer = new ComboBox(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
 		defaultValueAnswer.setWidth(WIDTH);
 
-		answerTypeComboBox = new ComboBox(LanguageCodes.CAPTION_ANSWER_TYPE.translation());
-		answerTypeComboBox.setWidth(WIDTH);
+		answerType = new ComboBox(LanguageCodes.CAPTION_ANSWER_TYPE.translation());
+		answerType.setWidth(WIDTH);
 		for (AnswerTypeUi type : AnswerTypeUi.values()) {
-			answerTypeComboBox.addItem(type.getAnswerType());
-			answerTypeComboBox.setItemCaption(type.getAnswerType(), type.getLanguageCode().translation());
+			answerType.addItem(type.getAnswerType());
+			answerType.setItemCaption(type.getAnswerType(), type.getLanguageCode().translation());
 		}
-		answerTypeComboBox.setNullSelectionAllowed(false);
-		answerTypeComboBox.addValueChangeListener(new ValueChangeListener() {
+		answerType.setNullSelectionAllowed(false);
+		answerType.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -7743742253650945202L;
 
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				AnswerType selectedType = (AnswerType) answerTypeComboBox.getValue();
+				AnswerType selectedType = (AnswerType) answerType.getValue();
 				// No Input fields must put the format to null or input fields
 				// that has not any format already selected
 				if (selectedType.getDefaultAnswerFormat() == null || getInstance().getAnswerFormat() == null) {
@@ -186,7 +186,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
 		commonProperties.addComponent(description);
-		commonProperties.addComponent(answerTypeComboBox);
+		commonProperties.addComponent(answerType);
 		commonProperties.addComponent(answerFormat);
 		commonProperties.addComponent(answerSubformat);
 		commonProperties.addComponent(defaultValueString);
@@ -196,8 +196,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 		commonProperties.addComponent(mandatory);
 		commonProperties.addComponent(disableEdition);
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(),
-				UserSession.getUser());
+		boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
 		commonProperties.setEnabled(canEdit);
 
 		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_QUESTION.translation(), true);
@@ -231,7 +230,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 				answerSubformat.addItem(subformat.getSubformat());
 				answerSubformat.setItemCaption(subformat.getSubformat(), subformat.getLanguageCode().translation());
 			}
-			answerSubformat.setEnabled(!getInstance().isReadOnly());
+			answerSubformat.setEnabled(isAnswerSubformatEnabled());
 			answerSubformat.setValue(format.getDefaultSubformat());
 		}
 	}
@@ -255,13 +254,13 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 		mandatory.setValue(getInstance().isMandatory());
 		mandatory.setEnabled(!getInstance().isReadOnly());
 
-		answerTypeComboBox.setValue(getInstance().getAnswerType());
-		answerTypeComboBox.setEnabled(!getInstance().isReadOnly());
+		answerType.setValue(getInstance().getAnswerType());
+		answerType.setEnabled(!getInstance().isReadOnly());
 
 		// AnswerFormat enabled is controlled in other part of the code.
 		answerFormat.setValue(getInstance().getAnswerFormat());
 		answerSubformat.setValue(getInstance().getAnswerSubformat());
-		answerSubformat.setEnabled(!getInstance().isReadOnly());
+		answerSubformat.setEnabled(isAnswerSubformatEnabled());
 
 		horizontal.setValue(getInstance().isHorizontal());
 		horizontal.setEnabled(getInstance().getAnswerType().isHorizontalEnabled() && !getInstance().isReadOnly());
@@ -278,9 +277,9 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 		}
 		defaultValueAnswer.setValue(getInstance().getDefaultValueAnswer());
 		disableEdition.setValue(getInstance().isEditionDisabled());
-		
+
 		disableEdition.setEnabled(!getInstance().isReadOnly());
-		
+
 		defaultValueDate.setEnabled(!getInstance().isReadOnly());
 		defaultValueString.setEnabled(!getInstance().isReadOnly());
 		defaultValueAnswer.setEnabled(!getInstance().isReadOnly());
@@ -289,6 +288,10 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 	@Override
 	protected void firePropertyUpdateOnExitListener() {
 		updateElement();
+	}
+
+	private boolean isAnswerSubformatEnabled() {
+		return !getInstance().isReadOnly() && ((AnswerType) answerType.getValue() != AnswerType.TEXT_AREA);
 	}
 
 	@Override
@@ -313,9 +316,8 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 		}
 
 		ApplicationUi.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(), mandatory.getValue(),
-				(AnswerType) answerTypeComboBox.getValue(), (AnswerFormat) answerFormat.getValue(),
-				(AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue, disableEdition.getValue(),
-				getImage());
+				(AnswerType) answerType.getValue(), (AnswerFormat) answerFormat.getValue(), (AnswerSubformat) answerSubformat.getValue(),
+				horizontal.getValue(), tempDefaultValue, disableEdition.getValue(), getImage());
 
 		super.updateElement();
 	}
