@@ -28,8 +28,8 @@ public class TableSimpleFormNameOrganization extends Table {
 
 	private void configureDataSource() {
 		addContainerProperty(Properties.FORM_NAME, String.class, null, LanguageCodes.CAPTION_NAME.translation(), null, Align.CENTER);
-		addContainerProperty(Properties.FORM_ORGANIZATION, String.class, null, LanguageCodes.CAPTION_ORGANIZATION.translation(), null,
-				Align.CENTER);
+		addContainerProperty(Properties.FORM_ORGANIZATION, String.class, null, LanguageCodes.CAPTION_ORGANIZATION.translation(), null, Align.CENTER);
+		sortByName();
 	}
 
 	public void add(IBaseFormView form) {
@@ -46,5 +46,9 @@ public class TableSimpleFormNameOrganization extends Table {
 		if (organization != null) {
 			item.getItemProperty(Properties.FORM_ORGANIZATION).setValue(organization.getUniqueName());
 		}
+	}
+
+	public void sortByName() {
+		sort(new Object[] { Properties.FORM_NAME }, new boolean[] { true });
 	}
 }
