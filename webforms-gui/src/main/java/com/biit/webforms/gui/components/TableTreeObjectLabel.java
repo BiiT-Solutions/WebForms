@@ -23,8 +23,7 @@ public class TableTreeObjectLabel extends TableTreeObject {
 	@Override
 	protected void initContainerProperties() {
 		super.initContainerProperties();
-		addContainerProperty(TreeObjectTableDesignerProperties.ELEMENT_LABEL, String.class, null,
-				LanguageCodes.CAPTION_LABEL.translation(), null, Align.LEFT);
+		addContainerProperty(TreeObjectTableDesignerProperties.ELEMENT_LABEL, String.class, null, LanguageCodes.CAPTION_LABEL.translation(), null, Align.LEFT);
 	}
 
 	public void updateRow(TreeObject element) {
@@ -34,11 +33,11 @@ public class TableTreeObjectLabel extends TableTreeObject {
 		if (label == null) {
 			label = new String();
 		}
-		if(item!=null){
+		if (item != null) {
 			setLabelToItem(item, label);
 		}
 	}
-	
+
 	@Override
 	protected void setValuesToItem(Item item, TreeObject element) {
 		super.setValuesToItem(item, element);
@@ -70,7 +69,7 @@ public class TableTreeObjectLabel extends TableTreeObject {
 	 * @param whereToMove
 	 */
 	public void expand(TreeObject treeObject) {
-		if(treeObject==null){
+		if (treeObject == null) {
 			throw new NullPointerException();
 		}
 		// Disable fix to avoid select wrong element caused by triggers of
@@ -107,7 +106,7 @@ public class TableTreeObjectLabel extends TableTreeObject {
 		setCollapsedStatusImplementation(treeObject, collapsedStatus);
 		enableFixForJumpingTableWhenExpandOrCollapse();
 	}
-	
+
 	public void setCollapsedStatusImplementation(TreeObject treeObject, Set<Object> collapsedStatus) {
 		setCollapsed(treeObject, false);
 		for (TreeObject child : treeObject.getChildren()) {

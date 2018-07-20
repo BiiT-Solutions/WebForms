@@ -675,8 +675,9 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getFinish().setEnabled(!formIsBlock && canEdit);
 				upperMenu.getDeleteButton().setVisible(!rowIsElementReference || rowIsBlockReferenceCategory);
 				upperMenu.updateHideButton(isHidden);
-				//upperMenu.getHideButton().setVisible(!upperMenu.getDeleteButton().isVisible());
-				//upperMenu.getHideButton().setEnabled(rowIsElementReference && !rowIsBlockReferenceCategory && canEdit);
+				// upperMenu.getHideButton().setVisible(!upperMenu.getDeleteButton().isVisible());
+				// upperMenu.getHideButton().setEnabled(rowIsElementReference &&
+				// !rowIsBlockReferenceCategory && canEdit);
 				upperMenu.getHideButton().setEnabled(canEdit);
 				upperMenu.getOtherElementsMenu().setEnabled(
 						upperMenu.getNewSubanswerButton().isEnabled() || upperMenu.getNewTextButton().isEnabled()
@@ -758,7 +759,8 @@ public class Designer extends SecuredWebPage {
 					return;
 				}
 				try {
-					ApplicationUi.getController().saveAsBlock(table.getSelectedRow(), newBlockWindow.getValue(), newBlockWindow.getOrganization().getUniqueId());
+					ApplicationUi.getController()
+							.saveAsBlock(table.getSelectedRow(), newBlockWindow.getValue(), newBlockWindow.getOrganization().getUniqueId());
 					newBlockWindow.close();
 
 					if (ApplicationUi.getController().getFormInUse() instanceof Block) {
@@ -828,10 +830,12 @@ public class Designer extends SecuredWebPage {
 				// Insert block in form
 				try {
 					TreeObject linkedElement = ApplicationUi.getController().linkBlock(windowBlocks.getSelectedBlock());
-					clearAndUpdateFormTable();
-					table.expand(linkedElement);
-					table.setValue(linkedElement);
-					window.close();
+					if (linkedElement != null) {
+						clearAndUpdateFormTable();
+						table.expand(linkedElement);
+						table.setValue(linkedElement);
+						window.close();
+					}
 				} catch (CategoryWithSameNameAlreadyExistsInForm e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED, LanguageCodes.WARNING_DESCRIPTION_REPEATED_CATEGORY_NAME);
 				} catch (EmptyBlockCannotBeInserted e) {
