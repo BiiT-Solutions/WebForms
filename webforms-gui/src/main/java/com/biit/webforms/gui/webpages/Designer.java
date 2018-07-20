@@ -623,8 +623,7 @@ public class Designer extends SecuredWebPage {
 			if (ApplicationUi.getController().getFormInUse() != null) {
 				boolean formIsBlock = getCurrentForm() instanceof Block;
 				boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
-				boolean formHasLinkedForm;
-				formHasLinkedForm = ApplicationUi.getController().getFormInUse().getFormReference() != null;
+				boolean formHasLinkedForm = ApplicationUi.getController().getFormInUse().getFormReference() != null;
 				boolean rowIsNull = (selectedElement == null);
 				boolean rowIsForm = (selectedElement != null && selectedElement instanceof Form);
 				boolean rowIsElementReference = (selectedElement != null && selectedElement.isReadOnly());
@@ -638,6 +637,7 @@ public class Designer extends SecuredWebPage {
 				boolean isHidden = selectedElement != null && selectedElement.isHiddenElement();
 
 				upperMenu.getSaveButton().setEnabled(canEdit);
+				upperMenu.getBlockMenu().setVisible(!formIsBlock);
 				upperMenu.getBlockMenu().setEnabled(canEdit && !formHasLinkedForm);
 				upperMenu.getOtherElementsMenu().setEnabled(canEdit && !formHasLinkedForm);
 				upperMenu.getSaveAsBlockButton().setEnabled(canStoreBlock && !rowIsForm);
