@@ -54,6 +54,7 @@ import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
@@ -621,7 +622,12 @@ public class Designer extends SecuredWebPage {
 			TreeObject selectedElement = table.getSelectedRow();
 
 			if (ApplicationUi.getController().getFormInUse() != null) {
-				boolean formIsBlock = getCurrentForm() instanceof Block;
+				boolean formIsBlock;
+				if (getCurrentForm() instanceof CompleteFormView) {
+					formIsBlock = ((CompleteFormView) getCurrentForm()).getForm() instanceof Block;
+				} else {
+					formIsBlock = getCurrentForm() instanceof Block;
+				}
 				boolean formIsBlockAndNoCategories = formIsBlock && getCurrentForm().getChildren().isEmpty();
 				boolean formHasLinkedForm = ApplicationUi.getController().getFormInUse().getFormReference() != null;
 				boolean rowIsNull = (selectedElement == null);
