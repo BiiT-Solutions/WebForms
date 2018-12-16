@@ -53,7 +53,7 @@ public class FormRunnerUtils {
 		String url = WebformsConfigurationReader.getInstance().getFormrunnerJSRestService();
 
 		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "URL to save in preview: " + url);
-		String service = "/savePreviewForm";
+		String service = "/forms/preview";
 		String message = "{\"json\":" + jsonForm + "}";
 		String response = post(false, url, service, message, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
 				false, null);
@@ -65,7 +65,7 @@ public class FormRunnerUtils {
 		String url = WebformsConfigurationReader.getInstance().getFormrunnerJSRestService();
 
 		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "URL to save in published: " + url);
-		String service = "/saveForm";
+		String service = "/forms";
 		String message = "{\"json\":" + jsonForm + "}";
 		String response = post(false, url, service, message, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
 				false, null);
