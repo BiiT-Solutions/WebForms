@@ -51,6 +51,7 @@ import com.biit.webforms.gui.webpages.designer.WindowCreateAnswerRanges;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.AttachedFiles;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Category;
@@ -314,9 +315,24 @@ public class Designer extends SecuredWebPage {
 			public void buttonClick(ClickEvent event) {
 				try {
 					TreeObject selectedRow = table.getSelectedRow();
-					Text newText;
-					newText = ApplicationUi.getController().addNewText(selectedRow.getAncestorThatAccepts(Text.class));
+					Text newText = ApplicationUi.getController().addNewText(selectedRow.getAncestorThatAccepts(Text.class));
 					table.addRow(newText, newText.getParent());
+				} catch (NotValidChildException e) {
+					MessageManager.showError(LanguageCodes.ERROR_TEXT_NOT_INSERTED);
+				} catch (ElementIsReadOnly e) {
+					MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+				}
+			}
+		});
+		upperMenu.addNewAttachFileButtonListener(new ClickListener() {
+			private static final long serialVersionUID = -1675448045103359337L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				try {
+					TreeObject selectedRow = table.getSelectedRow();
+					AttachedFiles attachedFiles = ApplicationUi.getController().addNewAttachedFiles(selectedRow.getAncestorThatAccepts(AttachedFiles.class));
+					table.addRow(attachedFiles, attachedFiles.getParent());
 				} catch (NotValidChildException e) {
 					MessageManager.showError(LanguageCodes.ERROR_TEXT_NOT_INSERTED);
 				} catch (ElementIsReadOnly e) {
@@ -658,6 +674,8 @@ public class Designer extends SecuredWebPage {
 						canEdit && selectedRowHierarchyAllows(SystemField.class) && !rowIsElementReference && !formHasLinkedForm && !isTableRowDefinition());
 				upperMenu.getNewTextButton().setEnabled(
 						canEdit && selectedRowHierarchyAllows(Text.class) && !rowIsElementReference && !formHasLinkedForm && !isTableRowDefinition());
+				upperMenu.getNewAttachFilesButton().setEnabled(
+						canEdit && selectedRowHierarchyAllows(AttachedFiles.class) && !rowIsElementReference && !formHasLinkedForm && !isTableRowDefinition());
 				upperMenu.getNewAnswerButton().setEnabled(
 						canEdit && selectedRowHierarchyAllows(Answer.class) && !rowIsElementReference && !formHasLinkedForm && !isTableRowDefinition());
 				upperMenu.getNewDynamicAnswer().setEnabled(
@@ -687,7 +705,7 @@ public class Designer extends SecuredWebPage {
 				upperMenu.getHideButton().setEnabled(canEdit);
 				upperMenu.getOtherElementsMenu().setEnabled(
 						upperMenu.getNewSubanswerButton().isEnabled() || upperMenu.getNewTextButton().isEnabled()
-								|| upperMenu.getNewSystemFieldButton().isEnabled());
+								|| upperMenu.getNewAttachFilesButton().isEnabled() || upperMenu.getNewSystemFieldButton().isEnabled());
 
 				upperMenu.getAnswerRangeButton().setEnabled(selectedRowHierarchyAllows(Answer.class));
 			} else {
@@ -709,6 +727,7 @@ public class Designer extends SecuredWebPage {
 		upperMenu.getNewQuestionButton().setEnabled(false);
 		upperMenu.getNewSystemFieldButton().setEnabled(false);
 		upperMenu.getNewTextButton().setEnabled(false);
+		upperMenu.getNewAttachFilesButton().setEnabled(false);
 		upperMenu.getNewAnswerButton().setEnabled(false);
 		upperMenu.getMoveButton().setEnabled(false);
 		upperMenu.getDeleteButton().setEnabled(false);

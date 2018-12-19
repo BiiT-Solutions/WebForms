@@ -1,5 +1,8 @@
 package com.biit.webforms.persistence.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -77,6 +80,11 @@ public class SystemField extends WebformsBaseQuestion {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	protected List<Class<? extends TreeObject>> getAllowedChildren() {
+		return new ArrayList<Class<? extends TreeObject>>();
 	}
 
 	@Override

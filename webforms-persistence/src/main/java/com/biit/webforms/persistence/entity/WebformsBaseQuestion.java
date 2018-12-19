@@ -33,7 +33,8 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
 	}
 
 	@Override
-	public void checkDependencies() throws DependencyExistException, DependencyDynamicAnswerExistException, FlowDependencyExistException, WebserviceDependencyExistException {
+	public void checkDependencies() throws DependencyExistException, DependencyDynamicAnswerExistException, FlowDependencyExistException,
+			WebserviceDependencyExistException {
 		Form form = (Form) this.getAncestor(Form.class);
 		if (form == null) {
 			return;
@@ -42,8 +43,7 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
 		for (TreeObject child : form.getAllChildrenInHierarchy(DynamicAnswer.class)) {
 			DynamicAnswer dynamicAnswer = (DynamicAnswer) child;
 			if (Objects.equals(dynamicAnswer.getReference(), this)) {
-				throw new DependencyDynamicAnswerExistException("Question '" + dynamicAnswer.getReference()
-						+ "' depends of element + '" + this + "'");
+				throw new DependencyDynamicAnswerExistException("Question '" + dynamicAnswer.getReference() + "' depends of element + '" + this + "'");
 			}
 		}
 
@@ -52,9 +52,9 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
 				throw new FlowDependencyExistException("Flow '" + flow + "' depends of element '" + this + "'");
 			}
 		}
-		
-		for (WebserviceCall call: form.getWebserviceCalls()){
-			if(call.isUsing(this)){
+
+		for (WebserviceCall call : form.getWebserviceCalls()) {
+			if (call.isUsing(this)) {
 				throw new WebserviceDependencyExistException("Webservice call '" + call.getName() + "' depends of element '" + this + "'");
 			}
 		}
@@ -67,5 +67,7 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
 	public abstract AnswerType getAnswerType();
 
 	public abstract boolean isMandatory();
+
+	public abstract int exportToJavaCode(StringBuilder sb, int counter);
 
 }

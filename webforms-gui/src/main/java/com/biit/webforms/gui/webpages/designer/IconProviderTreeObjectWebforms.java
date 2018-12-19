@@ -3,6 +3,7 @@ package com.biit.webforms.gui.webpages.designer;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.IconProvider;
 import com.biit.webforms.gui.common.theme.IThemeIcon;
+import com.biit.webforms.persistence.entity.AttachedFiles;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Group;
@@ -60,6 +61,8 @@ public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject> {
 			return ThemeIcons.DESIGNER_DYNAMIC_ANSWER;
 		} else if (object instanceof Category) {
 			return ThemeIcons.DESIGNER_CATEGORY;
+		} else if (object instanceof AttachedFiles) {
+			return ThemeIcons.DESIGNER_ATTACHED_FILES;
 		}
 		return null;
 	}

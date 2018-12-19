@@ -65,6 +65,7 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
 import com.biit.webforms.serialization.AnswerSerializer;
+import com.biit.webforms.serialization.AttachedFilesSerializer;
 import com.biit.webforms.serialization.CategorySerializer;
 import com.biit.webforms.serialization.DynamicAnswerSerializer;
 import com.biit.webforms.serialization.FlowSerializer;
@@ -815,6 +816,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 		gsonBuilder.registerTypeAdapter(Group.class, new GroupSerializer());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
 		gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
+		gsonBuilder.registerTypeAdapter(AttachedFiles.class, new AttachedFilesSerializer());
 		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldSerializer());
 		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerSerializer());
 		gsonBuilder.registerTypeAdapter(DynamicAnswer.class, new DynamicAnswerSerializer());

@@ -84,14 +84,8 @@ public class Category extends BaseCategory implements ElementWithImage {
 			if (child instanceof Group) {
 				currentCounter = ((Group) child).exportToJavaCode(sb, currentCounter + 1);
 			}
-			if (child instanceof Question) {
-				currentCounter = ((Question) child).exportToJavaCode(sb, currentCounter + 1);
-			}
-			if (child instanceof Text) {
-				currentCounter = ((Text) child).exportToJavaCode(sb, currentCounter + 1);
-			}
-			if (child instanceof SystemField) {
-				currentCounter = ((SystemField) child).exportToJavaCode(sb, currentCounter + 1);
+			if (child instanceof WebformsBaseQuestion) {
+				currentCounter = ((WebformsBaseQuestion) child).exportToJavaCode(sb, currentCounter + 1);
 			}
 
 			sb.append("//cat").append(System.lineSeparator());

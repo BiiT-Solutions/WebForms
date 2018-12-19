@@ -20,7 +20,7 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 	private final IconButton blockMenu, saveAsBlockButton, insertBlockButton, linkBlockButton;
 	private final IconButton otherElementsMenu, newSubanswerButton, newTextButton, newSystemFieldButton, answerRangeButton;
 	private final IconButton newCategoryButton, newGroupButton, newQuestionButton, newAnswerButton, moveButton, deleteButton, upButton, downButton, finish,
-			exportToJavaCode, hideButton, newDynamicAnswer;
+			exportToJavaCode, hideButton, newDynamicAnswer, newAttachFilesButton;
 
 	public UpperMenuDesigner() {
 		saveButton = new IconButton(LanguageCodes.COMMON_CAPTION_SAVE, ThemeIcons.FORM_SAVE, LanguageCodes.COMMON_TOOLTIP_SAVE, IconSize.BIG);
@@ -39,6 +39,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		newAnswerButton = new IconButton(LanguageCodes.CAPTION_NEW_ANSWER, ThemeIcons.DESIGNER_NEW_ANSWER, LanguageCodes.TOOLTIP_NEW_ANSWER);
 		newSubanswerButton = new IconButton(LanguageCodes.CAPTION_NEW_SUBANSWER, ThemeIcons.DESIGNER_NEW_SUBANSWER, LanguageCodes.TOOLTIP_NEW_SUBANSWER);
 		newTextButton = new IconButton(LanguageCodes.CAPTION_NEW_TEXT, ThemeIcons.DESIGNER_NEW_INFOTEXT, LanguageCodes.TOOLTIP_NEW_TEXT);
+		newAttachFilesButton = new IconButton(LanguageCodes.CAPTION_NEW_ATTACHED_FILES, ThemeIcons.DESIGNER_NEW_ATTACHED_FILES,
+				LanguageCodes.TOOLTIP_NEW_ATTACHED_FILES);
 		newSystemFieldButton = new IconButton(LanguageCodes.CAPTION_NEW_SYSTEM_FIELD, ThemeIcons.DESIGNER_NEW_SYSTEM_FIELD,
 				LanguageCodes.TOOLTIP_NEW_SYSTEM_FIELD);
 		newDynamicAnswer = new IconButton(LanguageCodes.CAPTION_NEW_DYNAMIC_ANSWER, ThemeIcons.DESIGNER_NEW_DYNAMIC_ANSWER,
@@ -79,8 +81,8 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 		addIconButton(newAnswerButton);
 
 		otherElementsMenu = addSubMenu(ThemeIcons.OTHER_ELEMENTS_MENU, LanguageCodes.COMMON_CAPTION_OTHER_ELEMENTS_SUBMENU,
-				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, newSubanswerButton, newDynamicAnswer, newTextButton, newSystemFieldButton,
-				answerRangeButton);
+				LanguageCodes.COMMON_TOOLTIP_BUILDING_BLOCK_MANAGER, newSubanswerButton, newDynamicAnswer, newTextButton, newAttachFilesButton,
+				newSystemFieldButton, answerRangeButton);
 
 		addIconButton(moveButton);
 		addIconButton(upButton);
@@ -128,6 +130,10 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public void addNewTextButtonListener(ClickListener listener) {
 		newTextButton.addClickListener(listener);
+	}
+
+	public void addNewAttachFileButtonListener(ClickListener listener) {
+		newAttachFilesButton.addClickListener(listener);
 	}
 
 	public void addNewAnswerButtonListener(ClickListener listener) {
@@ -268,5 +274,9 @@ public class UpperMenuDesigner extends UpperMenuWebforms {
 
 	public IconButton getAnswerRangeButton() {
 		return answerRangeButton;
+	}
+
+	public IconButton getNewAttachFilesButton() {
+		return newAttachFilesButton;
 	}
 }

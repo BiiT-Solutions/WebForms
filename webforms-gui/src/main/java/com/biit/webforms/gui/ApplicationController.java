@@ -61,6 +61,7 @@ import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.dao.IWebserviceDao;
 import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.AttachedFiles;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Category;
@@ -644,6 +645,19 @@ public class ApplicationController {
 	}
 
 	/**
+	 * Adds new Attached Files to parent
+	 * 
+	 * @param parent
+	 * @return
+	 * @throws NotValidChildException
+	 * @throws ElementIsReadOnly
+	 */
+	public AttachedFiles addNewAttachedFiles(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
+		setUnsavedFormChanges(true);
+		return (AttachedFiles) insertTreeObject(AttachedFiles.class, parent, "AttachedFiles");
+	}
+
+	/**
 	 * Adds new answer to parent
 	 * 
 	 * @param parent
@@ -1046,6 +1060,24 @@ public class ApplicationController {
 						image != null ? image.getFileName() : null);
 			}
 		} catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException | InvalidAnswerSubformatException e) {
+			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+		}
+	}
+
+	public void updateAttachedFiles(AttachedFiles attachedFiles, String name, String label, boolean mandatory, boolean editionDisabled) {
+		try {
+			if (!attachedFiles.getLabel().equals(label) || !attachedFiles.getName().equals(name) || attachedFiles.isMandatory() != mandatory
+					|| (attachedFiles.isEditionDisabled() != editionDisabled)) {
+				setUnsavedFormChanges(true);
+				attachedFiles.setName(name);
+				attachedFiles.setLabel(label);
+				attachedFiles.setMandatory(mandatory);
+				attachedFiles.setUpdatedBy(UserSession.getUser());
+				attachedFiles.setUpdateTime();
+				attachedFiles.setEditionDisabled(editionDisabled);
+				logInfoStart("updateAttachedFile", attachedFiles, name, label, mandatory);
+			}
+		} catch (FieldTooLongException | CharacterNotAllowedException e) {
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}

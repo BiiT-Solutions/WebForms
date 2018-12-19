@@ -15,6 +15,7 @@ import com.biit.form.json.serialization.StorableObjectDeserializer;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.AttachedFiles;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Flow;
@@ -62,6 +63,7 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 		gsonBuilder.registerTypeAdapter(Group.class, new GroupDeserializer());
 		gsonBuilder.registerTypeAdapter(Question.class, new QuestionDeserializer());
 		gsonBuilder.registerTypeAdapter(Text.class, new TextDeserializer());
+		gsonBuilder.registerTypeAdapter(AttachedFiles.class, new AttachedFilesDeserializer());
 		gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldDeserializer());
 		gsonBuilder.registerTypeAdapter(Answer.class, new AnswerDeserializer());
 		gsonBuilder.registerTypeAdapter(DynamicAnswer.class, new DynamicAnswerDeserializer(mapper));

@@ -161,6 +161,23 @@
         primary key (id)
     ) engine=InnoDB;
 
+    create table tree_attached_files (
+       id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime(6) not null,
+        update_time datetime(6),
+        updated_by DOUBLE,
+        label varchar(1000),
+        name varchar(190),
+        original_reference varchar(190) not null,
+        sort_sequence bigint not null,
+        parent bigint,
+        edition_disabled bit,
+        mandatory bit not null,
+        primary key (id)
+    ) engine=InnoDB;
+
     create table tree_blocks (
        id bigint not null,
         comparation_id varchar(190) not null,
@@ -430,6 +447,12 @@
 
     alter table tree_answers 
        add constraint UK_novq229qj7ibt96gyqw251biu unique (comparation_id);
+
+    alter table tree_attached_files 
+       add constraint UK_bdku5oqe5h31rqfvrtrqih6mh unique (id);
+
+    alter table tree_attached_files 
+       add constraint UK_ntgqwc8vjm9nlv4f5s1bb2v3h unique (comparation_id);
 
     alter table tree_blocks 
        add constraint UK_kfl0ygxd3kmomv1x5s3uy1ro4 unique (id);
