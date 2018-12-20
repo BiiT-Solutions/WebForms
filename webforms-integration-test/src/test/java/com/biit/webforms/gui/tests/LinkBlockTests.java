@@ -17,8 +17,8 @@ public class LinkBlockTests extends WebFormsTester {
 	private static final Integer BLOCK_TABLE_ROW = 0;
 	private static final Integer BLOCK_TABLE_COLUMN = 0;
 
-	private static final String QUESTION1_NAME = "Question1";
-	private static final String QUESTION2_NAME = "Question2";
+	private static final String QUESTION1_NAME = "question1";
+	private static final String QUESTION2_NAME = "question2";
 
 	private static final Integer FORM_ROW = 0;
 

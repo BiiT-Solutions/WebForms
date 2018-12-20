@@ -3,7 +3,6 @@ package com.biit.webforms.gui.tests.webpage;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.server.handler.GetWindowPosition;
 import org.testng.Assert;
 
 import com.biit.gui.tester.VaadinGuiTester;

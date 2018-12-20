@@ -370,17 +370,15 @@ public class FlowEditor extends SecuredWebPage {
 					formFlowViewer.setFormAndFilter(ApplicationUi.getController().getCompleteFormView(), null);
 
 					if (ApplicationUi.getController().getFormInUse() instanceof Block) {
-						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE,
-								LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
 					} else {
-						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE,
-								LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
+						MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
 					}
 				} catch (UnexpectedDatabaseException e) {
 					MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				} catch (ElementCannotBePersistedException e) {
-					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED,
-							LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+					MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 				}
 
@@ -464,13 +462,13 @@ public class FlowEditor extends SecuredWebPage {
 		if (!flowCleaner.getOtherFlowsRemoved().isEmpty() || !flowCleaner.getUselessFlowRemoved().isEmpty()) {
 			StringBuilder report = new StringBuilder();
 			for (Flow flow : flowCleaner.getOtherFlowsRemoved()) {
-				report.append(ServerTranslate.translate(LanguageCodes.CLEAN_FLOW_REPORT_OTHERS_RULE, new Object[] {
-						flow.getOrigin().getPathName(), flow.getDestiny().getPathName() }));
+				report.append(ServerTranslate.translate(LanguageCodes.CLEAN_FLOW_REPORT_OTHERS_RULE, new Object[] { flow.getOrigin().getPathName(),
+						flow.getDestiny().getPathName() }));
 				report.append(System.lineSeparator());
 			}
 			for (Flow flow : flowCleaner.getUselessFlowRemoved()) {
-				report.append(ServerTranslate.translate(LanguageCodes.CLEAN_FLOW_REPORT_USELESS_FLOW, new Object[] {
-						flow.getOrigin().getPathName(), flow.getDestiny().getPathName() }));
+				report.append(ServerTranslate.translate(LanguageCodes.CLEAN_FLOW_REPORT_USELESS_FLOW, new Object[] { flow.getOrigin().getPathName(),
+						flow.getDestiny().getPathName() }));
 				report.append(System.lineSeparator());
 			}
 			WindowTextArea reportWindow = new WindowTextArea(LanguageCodes.CLEAN_FLOW_REPORT_CAPTION.translation());
@@ -535,12 +533,10 @@ public class FlowEditor extends SecuredWebPage {
 				try {
 					WindowFlow windowFlow = (WindowFlow) window;
 					if (!windowFlow.isConditionValid()) {
-						MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
-								LanguageCodes.ERROR_DESCRIPTION_CONDITION_BAD_FORMED);
+						MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT, LanguageCodes.ERROR_DESCRIPTION_CONDITION_BAD_FORMED);
 					} else {
-						ApplicationUi.getController().updateFlowContent(flow, (BaseQuestion) windowFlow.getOrigin(),
-								windowFlow.getFlowType(), (BaseQuestion) windowFlow.getDestiny(), windowFlow.isOthers(),
-								windowFlow.getCondition());
+						ApplicationUi.getController().updateFlowContent(flow, (BaseQuestion) windowFlow.getOrigin(), windowFlow.getFlowType(),
+								(BaseQuestion) windowFlow.getDestiny(), windowFlow.isOthers(), windowFlow.getCondition());
 						addOrUpdateFlowInTableAction(flow);
 						window.close();
 					}
@@ -550,11 +546,9 @@ public class FlowEditor extends SecuredWebPage {
 				} catch (FlowWithoutSourceException e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT, LanguageCodes.ERROR_DESCRIPTION_ORIGIN_IS_NULL);
 				} catch (FlowSameOriginAndDestinyException e) {
-					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.ERROR_DESCRIPTION_SAME_ORIGIN_AND_DESTINY);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT, LanguageCodes.ERROR_DESCRIPTION_SAME_ORIGIN_AND_DESTINY);
 				} catch (FlowDestinyIsBeforeOriginException e) {
-					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT,
-							LanguageCodes.ERROR_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN);
+					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT, LanguageCodes.ERROR_DESCRIPTION_DESTINY_IS_BEFORE_ORIGIN);
 				} catch (FlowWithoutDestinyException e) {
 					MessageManager.showError(LanguageCodes.ERROR_CAPTION_RULE_NOT_CORRECT, LanguageCodes.ERROR_DESCRIPTION_DESTINY_IS_NULL);
 				} catch (FlowNotAllowedException e) {
