@@ -928,7 +928,7 @@ public class ApplicationController {
 	 */
 	public void updateForm(Form form, String label, String description, TreeObjectImage image, boolean editionDisabled) {
 		try {
-			if (!form.getLabel().equals(label) || !form.getDescription().equals(description) || !Objects.equals(form.getImage(), image)
+			if (!Objects.equals(form.getLabel(), label) || !Objects.equals(form.getDescription(), description) || !Objects.equals(form.getImage(), image)
 					|| (form.isEditionDisabled() != editionDisabled)) {
 				setUnsavedFormChanges(true);
 				form.setDescription(description);
@@ -954,7 +954,7 @@ public class ApplicationController {
 	 */
 	public void updateAnswer(Answer answer, String value, String label, String description, TreeObjectImage image) {
 		try {
-			if (!answer.getLabel().equals(label) || !answer.getDescription().equals(description) || !answer.getValue().equals(value)
+			if (!Objects.equals(answer.getLabel(), label) || !Objects.equals(answer.getDescription(), description) || !Objects.equals(answer.getValue(), value)
 					|| !Objects.equals(answer.getImage(), image)) {
 				setUnsavedFormChanges(true);
 				answer.setValue(value);
@@ -979,7 +979,7 @@ public class ApplicationController {
 	 */
 	public void updateCategory(Category category, String name, String label, TreeObjectImage image) {
 		try {
-			if (!category.getName().equals(name) || !category.getLabel().equals(label) || !Objects.equals(category.getImage(), image)) {
+			if (!Objects.equals(category.getName(), name) || !Objects.equals(category.getLabel(), label) || !Objects.equals(category.getImage(), image)) {
 				setUnsavedFormChanges(true);
 				category.setName(name);
 				category.setLabel(label);
@@ -1003,7 +1003,8 @@ public class ApplicationController {
 	 */
 	public void updateGroup(Group group, String name, String label, boolean repeatable, boolean isTable) {
 		try {
-			if (!group.getName().equals(name) || !group.getLabel().equals(label) || group.isRepeatable() != repeatable || group.isShownAsTable() != isTable) {
+			if (!Objects.equals(group.getName(), name) || !Objects.equals(group.getLabel(), label) || group.isRepeatable() != repeatable
+					|| group.isShownAsTable() != isTable) {
 				setUnsavedFormChanges(true);
 				group.setName(name);
 				group.setLabel(label);
@@ -1035,10 +1036,11 @@ public class ApplicationController {
 	public void updateQuestion(Question question, String name, String label, String description, boolean mandatory, AnswerType answerType,
 			AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled, TreeObjectImage image) {
 		try {
-			if (!question.getLabel().equals(label) || !question.getDescription().equals(description) || !question.getName().equals(name)
-					|| question.isMandatory() != mandatory || (question.getAnswerType() != null && !question.getAnswerType().equals(answerType))
-					|| (question.getAnswerFormat() != null && !question.getAnswerFormat().equals(answerFormat))
-					|| (question.getAnswerSubformat() != null && !question.getAnswerSubformat().equals(answerSubformat))
+			if (!Objects.equals(question.getLabel(), label) || !Objects.equals(question.getDescription(), description)
+					|| !Objects.equals(question.getName(), name) || question.isMandatory() != mandatory
+					|| (question.getAnswerType() != null && !question.getAnswerType().equals(answerType))
+					|| (question.getAnswerFormat() != null && !Objects.equals(question.getAnswerFormat(), answerFormat))
+					|| (question.getAnswerSubformat() != null && !Objects.equals(question.getAnswerSubformat(), answerSubformat))
 					|| question.isHorizontal() != horizontal || (defaultValue == null && question.getDefaultValue() != "")
 					|| (defaultValue != null && !Objects.equals(question.getDefaultValue(), defaultValue.toString()))
 					|| (question.isEditionDisabled() != editionDisabled) || !Objects.equals(question.getImage(), image)) {
@@ -1066,8 +1068,9 @@ public class ApplicationController {
 
 	public void updateAttachedFiles(AttachedFiles attachedFiles, String name, String label, String description, boolean mandatory, boolean editionDisabled) {
 		try {
-			if (!attachedFiles.getLabel().equals(label) || !attachedFiles.getName().equals(name) || !attachedFiles.getDescription().equals(description)
-					|| attachedFiles.isMandatory() != mandatory || (attachedFiles.isEditionDisabled() != editionDisabled)) {
+			if (!Objects.equals(attachedFiles.getLabel(), label) || !Objects.equals(attachedFiles.getName(), name)
+					|| !Objects.equals(attachedFiles.getDescription(), description) || attachedFiles.isMandatory() != mandatory
+					|| (attachedFiles.isEditionDisabled() != editionDisabled)) {
 				setUnsavedFormChanges(true);
 				attachedFiles.setName(name);
 				attachedFiles.setLabel(label);
