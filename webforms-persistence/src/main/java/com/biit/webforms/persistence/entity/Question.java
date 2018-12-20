@@ -50,7 +50,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	private boolean horizontal;
 
 	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
-	private String description;
+	private String description = "";
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "answer_type")

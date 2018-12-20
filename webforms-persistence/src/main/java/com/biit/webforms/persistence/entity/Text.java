@@ -31,7 +31,7 @@ public class Text extends WebformsBaseQuestion implements ElementWithImage {
 	// Label is ignored
 	// Description holds the text.
 	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
-	private String description;
+	private String description = "";
 
 	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private TreeObjectImage image;

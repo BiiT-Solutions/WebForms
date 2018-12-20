@@ -32,11 +32,10 @@ public class AttachedFiles extends WebformsBaseQuestion {
 	private boolean editionDisabled = false;
 
 	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
-	private String description;
+	private String description = "";
 
 	public AttachedFiles() {
 		super();
-		description = new String();
 		mandatory = DEFAULT_MANDATORY;
 	}
 

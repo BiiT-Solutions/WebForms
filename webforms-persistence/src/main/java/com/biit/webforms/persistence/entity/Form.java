@@ -108,7 +108,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 	private FormWorkStatus status;
 
 	@Lob
-	private String description;
+	private String description = "";
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
 	private Set<Flow> rules;
