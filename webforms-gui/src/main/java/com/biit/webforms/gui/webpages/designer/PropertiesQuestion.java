@@ -291,7 +291,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 	}
 
 	private boolean isAnswerSubformatEnabled() {
-		return !getInstance().isReadOnly() && ((AnswerType) answerType.getValue() != AnswerType.TEXT_AREA);
+		return !getInstance().isReadOnly() && ((AnswerType) answerType.getValue() == AnswerType.INPUT);
 	}
 
 	@Override
