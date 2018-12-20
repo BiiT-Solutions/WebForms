@@ -7,6 +7,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.AttachedFiles;
 
 /**
  * Dot graph exporter for base questions.
@@ -35,6 +36,7 @@ public class ExporterDotBaseQuestion extends ExporterDot<BaseQuestion> {
 
 	/**
 	 * Returns the code with the title of the question.
+	 * 
 	 * @param baseQuestion
 	 * @return
 	 */
@@ -44,28 +46,29 @@ public class ExporterDotBaseQuestion extends ExporterDot<BaseQuestion> {
 
 			if (question.getAnswerType() == AnswerType.MULTIPLE_SELECTION) {
 				return getDotId(question) + " [label=\"" + filterDotLanguage(question.getName()) + " \\n ("
-						+ filterDotLanguage(question.getAnswerType().toString()) + ")\", color="
-						+ getFontColor(baseQuestion.isReadOnly()) + ", penwidth=" + getPenWidth() + ", fontcolor="
-						+ getFontColor(baseQuestion.isReadOnly()) + "]";
+						+ filterDotLanguage(question.getAnswerType().toString()) + ")\", color=" + getFontColor(baseQuestion.isReadOnly()) + ", penwidth="
+						+ getPenWidth() + ", fontcolor=" + getFontColor(baseQuestion.isReadOnly()) + "]";
 			} else {
-				return getDotId(question) + " [label=\"" + filterDotLanguage(question.getName()) + "\", color="
-						+ getFontColor(baseQuestion.isReadOnly()) + ", penwidth=" + getPenWidth() + ", fontcolor="
-						+ getFontColor(baseQuestion.isReadOnly()) + "]";
+				return getDotId(question) + " [label=\"" + filterDotLanguage(question.getName()) + "\", color=" + getFontColor(baseQuestion.isReadOnly())
+						+ ", penwidth=" + getPenWidth() + ", fontcolor=" + getFontColor(baseQuestion.isReadOnly()) + "]";
 			}
 		}
 		if (baseQuestion instanceof SystemField) {
-			return getDotId(baseQuestion) + " [label=\"" + filterDotLanguage(baseQuestion.getName()) + " \\n ("
-					+ "system-field" + ")\", color=" + getFontColor(baseQuestion.isReadOnly()) + ", penwidth="
-					+ getPenWidth() + ", fontcolor=" + getFontColor(baseQuestion.isReadOnly()) + "]";
+			return getDotId(baseQuestion) + " [label=\"" + filterDotLanguage(baseQuestion.getName()) + " \\n (" + "system-field" + ")\", color="
+					+ getFontColor(baseQuestion.isReadOnly()) + ", penwidth=" + getPenWidth() + ", fontcolor=" + getFontColor(baseQuestion.isReadOnly()) + "]";
 		}
 		if (baseQuestion instanceof Text) {
-			return getDotId(baseQuestion) + " [label=\"" + filterDotLanguage(baseQuestion.getName()) + " \\n ("
-					+ "info-text" + ")\", color=" + getFontColor(baseQuestion.isReadOnly()) + ", penwidth="
-					+ getPenWidth() + ", fontcolor=" + getFontColor(baseQuestion.isReadOnly()) + "]";
+			return getDotId(baseQuestion) + " [label=\"" + filterDotLanguage(baseQuestion.getName()) + " \\n (" + "info-text" + ")\", color="
+					+ getFontColor(baseQuestion.isReadOnly()) + ", penwidth=" + getPenWidth() + ", fontcolor=" + getFontColor(baseQuestion.isReadOnly()) + "]";
 		}
-		WebformsLogger.severe(this.getClass().getName(), "received not known base question class "
-				+ baseQuestion.getClass().getName() + " '" + baseQuestion + "'");
-		return new String();
+		if (baseQuestion instanceof AttachedFiles) {
+			return getDotId(baseQuestion) + " [label=\"" + filterDotLanguage(baseQuestion.getName()) + " \\n (" + "attached-files" + ")\", color="
+					+ getFontColor(baseQuestion.isReadOnly()) + ", penwidth=" + getPenWidth() + ", fontcolor=" + getFontColor(baseQuestion.isReadOnly()) + "]";
+		}
+		WebformsLogger.severe(this.getClass().getName(), "received not known base question class " + baseQuestion.getClass().getName() + " '" + baseQuestion
+				+ "'");
+		return getDotId(baseQuestion) + " [label=\"" + filterDotLanguage(baseQuestion.getName()) + " \\n (" + "<<unknown>>" + ")\", color="
+		+ getFontColor(baseQuestion.isReadOnly()) + ", penwidth=" + getPenWidth() + ", fontcolor=" + getFontColor(baseQuestion.isReadOnly()) + "]";
 	}
 
 	protected String getDotId(TreeObject treeObject) {
