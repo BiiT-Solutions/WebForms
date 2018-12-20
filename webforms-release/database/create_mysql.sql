@@ -173,6 +173,7 @@
         original_reference varchar(190) not null,
         sort_sequence bigint not null,
         parent bigint,
+        description TEXT,
         edition_disabled bit,
         mandatory bit not null,
         primary key (id)

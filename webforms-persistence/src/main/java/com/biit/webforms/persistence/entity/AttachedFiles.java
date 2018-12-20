@@ -21,6 +21,8 @@ import com.biit.webforms.enumerations.AnswerType;
 @Cacheable(true)
 public class AttachedFiles extends WebformsBaseQuestion {
 	private static final long serialVersionUID = 275419152896656379L;
+	public static final int MAX_DESCRIPTION_LENGTH = 10000;
+	public static final boolean DEFAULT_MANDATORY = true;
 
 	private boolean mandatory;
 
@@ -28,6 +30,15 @@ public class AttachedFiles extends WebformsBaseQuestion {
 	// new form in orbeon is enabled, but when editing is disabled.
 	@Column(name = "edition_disabled")
 	private boolean editionDisabled = false;
+
+	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
+	private String description;
+
+	public AttachedFiles() {
+		super();
+		description = new String();
+		mandatory = DEFAULT_MANDATORY;
+	}
 
 	@Override
 	public AnswerFormat getAnswerFormat() {
@@ -90,6 +101,14 @@ public class AttachedFiles extends WebformsBaseQuestion {
 
 	public void setEditionDisabled(boolean editionDisabled) {
 		this.editionDisabled = editionDisabled;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

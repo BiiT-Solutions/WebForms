@@ -570,7 +570,7 @@ public class ApplicationController {
 	 */
 	public Category addNewCategory() throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
-		return (Category) insertTreeObject(Category.class, getFormInUse(), "Category");
+		return (Category) insertTreeObject(Category.class, getFormInUse(), "category");
 	}
 
 	/**
@@ -583,7 +583,7 @@ public class ApplicationController {
 	 */
 	public Group addNewGroup(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
-		return (Group) insertTreeObject(Group.class, parent, "Group");
+		return (Group) insertTreeObject(Group.class, parent, "group");
 	}
 
 	/**
@@ -596,7 +596,7 @@ public class ApplicationController {
 	 */
 	public Question addNewQuestion(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
-		return (Question) insertTreeObject(Question.class, parent, "Question");
+		return (Question) insertTreeObject(Question.class, parent, "question");
 	}
 
 	/**
@@ -609,7 +609,7 @@ public class ApplicationController {
 	 */
 	public DynamicAnswer addNewDynamicQuestion(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
-		DynamicAnswer answer = (DynamicAnswer) insertTreeObject(DynamicAnswer.class, parent, "Dynamic");
+		DynamicAnswer answer = (DynamicAnswer) insertTreeObject(DynamicAnswer.class, parent, "dynamic");
 		try {
 			answer.setLabel(LanguageCodes.DYNAMIC_ANSWER_LABEL.translation());
 		} catch (FieldTooLongException e) {
@@ -628,7 +628,7 @@ public class ApplicationController {
 	 */
 	public SystemField addNewSystemField(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
-		return (SystemField) insertTreeObject(SystemField.class, parent, "SystemField");
+		return (SystemField) insertTreeObject(SystemField.class, parent, "system_field");
 	}
 
 	/**
@@ -641,7 +641,7 @@ public class ApplicationController {
 	 */
 	public Text addNewText(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
-		return (Text) insertTreeObject(Text.class, parent, "Text");
+		return (Text) insertTreeObject(Text.class, parent, "info_text");
 	}
 
 	/**
@@ -654,7 +654,7 @@ public class ApplicationController {
 	 */
 	public AttachedFiles addNewAttachedFiles(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
-		return (AttachedFiles) insertTreeObject(AttachedFiles.class, parent, "AttachedFiles");
+		return (AttachedFiles) insertTreeObject(AttachedFiles.class, parent, "attached_files");
 	}
 
 	/**
@@ -667,7 +667,7 @@ public class ApplicationController {
 	 */
 	public Answer addNewAnswer(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
 		setUnsavedFormChanges(true);
-		return (Answer) insertTreeObject(Answer.class, parent, "Answer");
+		return (Answer) insertTreeObject(Answer.class, parent, "answer");
 	}
 
 	/**
@@ -1064,13 +1064,14 @@ public class ApplicationController {
 		}
 	}
 
-	public void updateAttachedFiles(AttachedFiles attachedFiles, String name, String label, boolean mandatory, boolean editionDisabled) {
+	public void updateAttachedFiles(AttachedFiles attachedFiles, String name, String label, String description, boolean mandatory, boolean editionDisabled) {
 		try {
-			if (!attachedFiles.getLabel().equals(label) || !attachedFiles.getName().equals(name) || attachedFiles.isMandatory() != mandatory
-					|| (attachedFiles.isEditionDisabled() != editionDisabled)) {
+			if (!attachedFiles.getLabel().equals(label) || !attachedFiles.getName().equals(name) || !attachedFiles.getDescription().equals(description)
+					|| attachedFiles.isMandatory() != mandatory || (attachedFiles.isEditionDisabled() != editionDisabled)) {
 				setUnsavedFormChanges(true);
 				attachedFiles.setName(name);
 				attachedFiles.setLabel(label);
+				attachedFiles.setDescription(description);
 				attachedFiles.setMandatory(mandatory);
 				attachedFiles.setUpdatedBy(UserSession.getUser());
 				attachedFiles.setUpdateTime();

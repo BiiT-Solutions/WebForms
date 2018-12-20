@@ -6,6 +6,7 @@ import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.AttachedFiles;
+import com.biit.webforms.persistence.entity.Question;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
@@ -17,6 +18,8 @@ public class PropertiesAttachedFiles extends StorableObjectProperties<AttachedFi
 
 	private TextField name;
 	private TextArea label;
+	
+	private TextArea description;
 
 	private CheckBox mandatory;
 
@@ -43,6 +46,10 @@ public class PropertiesAttachedFiles extends StorableObjectProperties<AttachedFi
 		label.setWidth(WIDTH);
 		label.setMaxLength(TreeObject.MAX_LABEL_LENGTH);
 		label.setImmediate(true);
+		
+		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
+		description.setWidth(WIDTH);
+		description.setMaxLength(Question.MAX_DESCRIPTION_LENGTH);
 
 		mandatory = new CheckBox(LanguageCodes.CAPTION_MANDATORY.translation());
 
@@ -54,6 +61,7 @@ public class PropertiesAttachedFiles extends StorableObjectProperties<AttachedFi
 		commonProperties.setHeight(null);
 		commonProperties.addComponent(name);
 		commonProperties.addComponent(label);
+		commonProperties.addComponent(description);
 		commonProperties.addComponent(mandatory);
 		commonProperties.addComponent(disableEdition);
 
@@ -78,6 +86,9 @@ public class PropertiesAttachedFiles extends StorableObjectProperties<AttachedFi
 		label.setValue(getInstance().getLabel());
 		label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
 		label.setEnabled(!getInstance().isReadOnly());
+		
+		description.setValue(getInstance().getDescription());
+		description.setEnabled(!getInstance().isReadOnly());
 
 		mandatory.setValue(getInstance().isMandatory());
 		mandatory.setEnabled(!getInstance().isReadOnly());
@@ -97,7 +108,7 @@ public class PropertiesAttachedFiles extends StorableObjectProperties<AttachedFi
 			tempLabel = label.getValue();
 		}
 
-		ApplicationUi.getController().updateAttachedFiles(getInstance(), tempName, tempLabel, mandatory.getValue(), disableEdition.getValue());
+		ApplicationUi.getController().updateAttachedFiles(getInstance(), tempName, tempLabel, description.getValue(), mandatory.getValue(), disableEdition.getValue());
 
 		super.updateElement();
 	}
