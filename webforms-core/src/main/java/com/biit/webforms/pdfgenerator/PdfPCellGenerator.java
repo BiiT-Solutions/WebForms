@@ -59,6 +59,12 @@ public class PdfPCellGenerator {
 		return nameCell;
 	}
 
+	public static PdfPCell generateFormAttachedFilesNameCell(AttachedFiles attachedFiles) {
+		PdfPCell nameCell = new PdfPCell(ParagraphGenerator.generateFieldName(attachedFiles));
+		nameCell.setBorder(BORDER);
+		return nameCell;
+	}
+
 	public static PdfPCell generateText(String text, int span) {
 		PdfPCell labelCell = new PdfPCell(new Phrase(text));
 		labelCell.setBorder(BORDER);

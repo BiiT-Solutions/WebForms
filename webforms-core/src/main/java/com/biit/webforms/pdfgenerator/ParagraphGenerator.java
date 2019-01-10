@@ -6,6 +6,7 @@ import java.util.List;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.AttachedFiles;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Text;
@@ -109,6 +110,11 @@ public class ParagraphGenerator {
 
 	public static Paragraph generateFieldName(Question question) {
 		String label = question.isMandatory() && question.getAnswerType() != AnswerType.MULTIPLE_SELECTION ? question.getLabel() + "*" : question.getLabel();
+		return new Paragraph(label, PdfFont.NORMAL_FONT.getFont());
+	}
+
+	public static Paragraph generateFieldName(AttachedFiles attachedFiles) {
+		String label = attachedFiles.isMandatory() ? attachedFiles.getLabel() + "*" : attachedFiles.getLabel();
 		return new Paragraph(label, PdfFont.NORMAL_FONT.getFont());
 	}
 

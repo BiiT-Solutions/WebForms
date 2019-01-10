@@ -29,8 +29,8 @@ public class PdfRowGenerator {
 
 	protected static final int RADIO_FIELD_ROW = 1;
 	private static final int RADIO_FIELD_COL = 1;
-	private static int TEXT_FIELD_ROW = 1;
-	private static int TEXT_FIELD_COL = 2;
+	private final static int TEXT_FIELD_ROW = 1;
+	private final static int TEXT_FIELD_COL = 2;
 	private final static float PADDING = 20;
 	private static final int ANSWER_DESCRIPTION_ROW = 1;
 	private static final int ANSWER_DESCRIPTION_COL = 1;
@@ -121,7 +121,7 @@ public class PdfRowGenerator {
 
 	public static PdfRow generateAttachedFilesRow(PdfWriter writer, AttachedFiles attachedFiles) throws BadBlockException {
 		PdfRow row = new PdfRow(TEXT_FIELD_ROW, TEXT_FIELD_COL);
-		row.addCell(PdfPCellGenerator.generateLabelCell(attachedFiles));
+		row.addCell(PdfPCellGenerator.generateFormAttachedFilesNameCell(attachedFiles));
 		row.addCell(PdfPCellGenerator.generateAttachedFilesCell(writer, attachedFiles));
 		return row;
 	}
