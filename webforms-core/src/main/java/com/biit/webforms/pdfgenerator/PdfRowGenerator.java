@@ -121,7 +121,7 @@ public class PdfRowGenerator {
 
 	public static PdfRow generateAttachedFilesRow(PdfWriter writer, AttachedFiles attachedFiles) throws BadBlockException {
 		PdfRow row = new PdfRow(TEXT_FIELD_ROW, TEXT_FIELD_COL);
-		row.addCell(PdfPCellGenerator.generateNameCell(attachedFiles));
+		row.addCell(PdfPCellGenerator.generateLabelCell(attachedFiles));
 		row.addCell(PdfPCellGenerator.generateAttachedFilesCell(writer, attachedFiles));
 		return row;
 	}
