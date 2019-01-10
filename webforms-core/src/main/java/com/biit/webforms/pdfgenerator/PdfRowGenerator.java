@@ -14,7 +14,6 @@ import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.ElementWithDescription;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Text;
-import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.lowagie.text.pdf.BaseField;
 import com.lowagie.text.pdf.PdfBorderDictionary;
 import com.lowagie.text.pdf.PdfFormField;
@@ -84,6 +83,23 @@ public class PdfRowGenerator {
 
 		PdfPCell cellLabel = PdfPCellGenerator.generateLabelCell(infoText);
 		PdfPCell cellName = PdfPCellGenerator.generateNameCell(infoText);
+
+		try {
+			row.addCell(cellLabel);
+			cellName.setColspan(4);
+			row.addCell(cellName);
+		} catch (BadBlockException e) {
+			WebformsLogger.errorMessage(PdfRowGenerator.class.getName(), e);
+		}
+
+		return row;
+	}
+
+	public static PdfRow generateAnnexQuestion(AttachedFiles attachedFiles) {
+		PdfRow row = new PdfRow(PdfBlockGenerator.ANNEX_QUESTION_ROWS, PdfBlockGenerator.ANNEX_COLS);
+
+		PdfPCell cellLabel = PdfPCellGenerator.generateLabelCell(attachedFiles);
+		PdfPCell cellName = PdfPCellGenerator.generateNameCell(attachedFiles);
 
 		try {
 			row.addCell(cellLabel);

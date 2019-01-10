@@ -70,6 +70,17 @@ public class PdfBlockGenerator {
 		}
 		return block;
 	}
+	
+	public static PdfTableBlock generateAnnexQuestionTableBlock(AttachedFiles attachedFiles) {
+		PdfTableBlock block = null;
+		try {
+			block = new PdfTableBlock(ANNEX_QUESTION_ROWS, ANNEX_COLS);
+			block.insertRow(PdfRowGenerator.generateAnnexQuestion(attachedFiles));
+		} catch (BadBlockException e) {
+			WebformsLogger.errorMessage(PdfRowGenerator.class.getName(), e);
+		}
+		return block;
+	}
 
 	public static List<PdfTableBlock> generateAnnexFormTableBlocks(Form form) {
 		List<PdfTableBlock> blocks = new ArrayList<PdfTableBlock>();
@@ -80,6 +91,8 @@ public class PdfBlockGenerator {
 			if (!object.isHiddenElement() && !(object instanceof SystemField)) {
 				if (object instanceof Text) {
 					blocks.add(generateAnnexQuestionTableBlock((Text) object));
+				} else if(object instanceof AttachedFiles) {
+					blocks.add(generateAnnexQuestionTableBlock((AttachedFiles) object));
 				} else {
 					blocks.add(generateAnnexQuestionTableBlock((Question) object));
 				}
