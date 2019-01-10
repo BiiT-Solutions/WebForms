@@ -8,6 +8,8 @@ import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
+import com.biit.webforms.persistence.entity.AttachedFiles;
+import com.biit.webforms.persistence.entity.ElementWithDescription;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
@@ -103,6 +105,12 @@ public class PdfBlockGenerator {
 		return null;
 	}
 
+	private static PdfTableBlock generateAttachedFilesdBlock(PdfWriter writer, AttachedFiles attachedFiles) throws BadBlockException {
+		PdfTableBlock block = new PdfTableBlock(FORM_SINGLE_SELECTION_ROW, FORM_QUESTION_COLUMN);
+		block.insertRow(PdfRowGenerator.generateAttachedFilesRow(writer, attachedFiles));
+		return block;
+	}
+
 	private static PdfTableBlock generateInputFieldBlock(PdfWriter writer, Question question) throws BadBlockException {
 		PdfTableBlock block = new PdfTableBlock(FORM_SINGLE_SELECTION_ROW, FORM_QUESTION_COLUMN);
 		block.insertRow(PdfRowGenerator.generateTextFieldRow(writer, question));
@@ -173,6 +181,19 @@ public class PdfBlockGenerator {
 		return tableBlocks;
 	}
 
+	public static List<PdfTableBlock> generateFormAttachedFilesTableBlocks(PdfWriter writer, AttachedFiles attachedFiles) throws BadBlockException {
+		List<PdfTableBlock> tableBlocks = new ArrayList<PdfTableBlock>();
+
+		tableBlocks.add(generateAttachedFilesdBlock(writer, attachedFiles));
+
+		// Add description to document.
+		if (attachedFiles.getDescription() != null && !attachedFiles.getDescription().isEmpty()) {
+			tableBlocks.add(generateQuestionDescriptionBlock(attachedFiles));
+		}
+
+		return tableBlocks;
+	}
+
 	private static PdfTableBlock generateIsHorizontalBlock() throws BadBlockException {
 		PdfTableBlock block = new PdfTableBlock(IS_HORIZONTAL_BLOC_ROW, IS_HORIZONTAL_BLOC_COL);
 		block.insertRow(PdfRowGenerator.generateIsHorizontalBlock(IS_HORIZONTAL_BLOC_ROW, IS_HORIZONTAL_BLOC_COL));
@@ -180,7 +201,7 @@ public class PdfBlockGenerator {
 
 	}
 
-	private static PdfTableBlock generateQuestionDescriptionBlock(Question question) throws BadBlockException {
+	private static PdfTableBlock generateQuestionDescriptionBlock(ElementWithDescription question) throws BadBlockException {
 		PdfTableBlock block = new PdfTableBlock(DESCRIPTION_BLOC_ROW, DESCRIPTION_BLOC_COL);
 		block.insertRow(PdfRowGenerator.generateQuestionDescription(question));
 		return block;

@@ -9,9 +9,12 @@ import com.biit.form.entity.TreeObject;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.AttachedFiles;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
+import com.biit.webforms.persistence.entity.ElementWithDescription;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.lowagie.text.pdf.BaseField;
 import com.lowagie.text.pdf.PdfBorderDictionary;
 import com.lowagie.text.pdf.PdfFormField;
@@ -43,8 +46,8 @@ public class PdfRowGenerator {
 		PdfPCell nameCell = PdfPCellGenerator.generateNameCell(answer);
 		nameCell.setColspan(2);
 
-		//Annex answer have one column less than the questions.
-		PdfRow answerRow = new PdfRow(PdfBlockGenerator.ANNEX_QUESTION_ROWS, PdfBlockGenerator.ANNEX_COLS-1);
+		// Annex answer have one column less than the questions.
+		PdfRow answerRow = new PdfRow(PdfBlockGenerator.ANNEX_QUESTION_ROWS, PdfBlockGenerator.ANNEX_COLS - 1);
 		try {
 			answerRow.addCell(labelCell);
 			answerRow.addCell(nameCell);
@@ -100,6 +103,13 @@ public class PdfRowGenerator {
 		return row;
 	}
 
+	public static PdfRow generateAttachedFilesRow(PdfWriter writer, AttachedFiles attachedFiles) throws BadBlockException {
+		PdfRow row = new PdfRow(TEXT_FIELD_ROW, TEXT_FIELD_COL);
+		row.addCell(PdfPCellGenerator.generateNameCell(attachedFiles));
+		row.addCell(PdfPCellGenerator.generateAttachedFilesCell(writer, attachedFiles));
+		return row;
+	}
+
 	/**
 	 * Generates the list of rows needed to generate a Radio button field
 	 * 
@@ -126,8 +136,8 @@ public class PdfRowGenerator {
 		return rows;
 	}
 
-	public static List<PdfRow> generateRadioFieldRows(PdfWriter writer, PdfFormField radioGroup, Question question,
-			BaseAnswer baseAnswer) throws BadBlockException {
+	public static List<PdfRow> generateRadioFieldRows(PdfWriter writer, PdfFormField radioGroup, Question question, BaseAnswer baseAnswer)
+			throws BadBlockException {
 		List<PdfRow> rows = new ArrayList<PdfRow>();
 
 		PdfRow row = new PdfRow(RADIO_FIELD_ROW, RADIO_FIELD_COL);
@@ -144,12 +154,10 @@ public class PdfRowGenerator {
 		// are subanswers.
 		if (!(baseAnswer.getParent() instanceof Answer)) {
 			field.setPaddingLeft(PADDING);
-			field.setCellEvent(new FormRadioField(writer, question.getComparationId(), baseAnswer.getComparationId(),
-					radioGroup, 0));
+			field.setCellEvent(new FormRadioField(writer, question.getComparationId(), baseAnswer.getComparationId(), radioGroup, 0));
 		} else {
 			field.setPaddingLeft(PADDING * 2);
-			field.setCellEvent(new FormRadioField(writer, question.getComparationId(), baseAnswer.getComparationId(),
-					radioGroup, PADDING));
+			field.setCellEvent(new FormRadioField(writer, question.getComparationId(), baseAnswer.getComparationId(), radioGroup, PADDING));
 		}
 		field.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
 		row.addCell(field);
@@ -189,8 +197,7 @@ public class PdfRowGenerator {
 		return rows;
 	}
 
-	public static List<PdfRow> generateCheckFieldRows(PdfWriter writer, Question question, BaseAnswer baseAnswer)
-			throws BadBlockException {
+	public static List<PdfRow> generateCheckFieldRows(PdfWriter writer, Question question, BaseAnswer baseAnswer) throws BadBlockException {
 		List<PdfRow> rows = new ArrayList<PdfRow>();
 
 		PdfRow row = new PdfRow(CHECK_FIELD_ROW, CHECK_FIELD_COL);
@@ -233,8 +240,7 @@ public class PdfRowGenerator {
 	private static PdfRow generateAnswerDescriptionRow(Answer answer) throws BadBlockException {
 		PdfRow answerDescriptionRow = new PdfRow(ANSWER_DESCRIPTION_ROW, ANSWER_DESCRIPTION_COL);
 
-		PdfPCell descriptionField = PdfPCellGenerator.generateDescription(answer.getDescription(),
-				ANSWER_DESCRIPTION_COL);
+		PdfPCell descriptionField = PdfPCellGenerator.generateDescription(answer.getDescription(), ANSWER_DESCRIPTION_COL);
 		if (answer.getChildren().isEmpty()) {
 			descriptionField.setPaddingLeft(PADDING);
 		} else {
@@ -246,7 +252,7 @@ public class PdfRowGenerator {
 		return answerDescriptionRow;
 	}
 
-	public static PdfRow generateQuestionDescription(Question question) throws BadBlockException {
+	public static PdfRow generateQuestionDescription(ElementWithDescription question) throws BadBlockException {
 		PdfRow row = new PdfRow(QUESTION_DESCRIPTION_ROW, QUESTION_DESCRIPTION_COL);
 		row.addCell(PdfPCellGenerator.generateDescription(question.getDescription(), QUESTION_DESCRIPTION_COL));
 		return row;
@@ -258,15 +264,14 @@ public class PdfRowGenerator {
 		return row;
 	}
 
-	public static PdfRow createTextRow(String description, int textBlockRow, int textBlockCol)
-			throws BadBlockException {
+	public static PdfRow createTextRow(String description, int textBlockRow, int textBlockCol) throws BadBlockException {
 		PdfRow row = new PdfRow(textBlockRow, textBlockCol);
 		row.addCell(PdfPCellGenerator.generateText(description, textBlockCol));
 		return row;
 	}
 
-	public static PdfRow generateSelectionListRow(PdfWriter writer, Question question, int selectionListBlockRow,
-			int selectionListBlockCol) throws BadBlockException {
+	public static PdfRow generateSelectionListRow(PdfWriter writer, Question question, int selectionListBlockRow, int selectionListBlockCol)
+			throws BadBlockException {
 		PdfRow row = new PdfRow(selectionListBlockRow, selectionListBlockCol);
 		row.addCell(PdfPCellGenerator.generateFormQuestionNameCell(question));
 		row.addCell(PdfPCellGenerator.generateComboBoxQuestion(writer, question));

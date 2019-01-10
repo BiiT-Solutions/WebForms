@@ -2,6 +2,7 @@ package com.biit.webforms.pdfgenerator;
 
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.persistence.entity.AttachedFiles;
 import com.biit.webforms.persistence.entity.Question;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
@@ -42,6 +43,13 @@ public class PdfPCellGenerator {
 			cell.setCellEvent(textArea);
 			cell.setFixedHeight(textArea.getHeight());
 		}
+		return cell;
+	}
+
+	public static PdfPCell generateAttachedFilesCell(PdfWriter writer, AttachedFiles attachedFiles) {
+		PdfPCell cell = new PdfPCell();
+		cell.setBorder(BORDER);
+		cell.setCellEvent(new FormTextField(writer, attachedFiles.getComparationId()));
 		return cell;
 	}
 

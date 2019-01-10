@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
+import com.biit.webforms.persistence.entity.AttachedFiles;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.Text;
@@ -73,6 +74,15 @@ public class PdfTableGenerator {
 
 	public static PdfPTable generateQuestionTable(PdfWriter writer, Question question) throws BadBlockException {
 		PdfPTable questionTable = generateTable(formColumnRatios, PdfBlockGenerator.generateFormQuestionTableBlocks(writer, question));
+		questionTable.getDefaultCell().setBorder(BORDER);
+		questionTable.setKeepTogether(true);
+		questionTable.setSpacingAfter(QUESTION_TABLE_PADDING);
+
+		return questionTable;
+	}
+	
+	public static PdfPTable generateAttachedFileTable(PdfWriter writer, AttachedFiles attachedFiles) throws BadBlockException {
+		PdfPTable questionTable = generateTable(formColumnRatios, PdfBlockGenerator.generateFormAttachedFilesTableBlocks(writer, attachedFiles));
 		questionTable.getDefaultCell().setBorder(BORDER);
 		questionTable.setKeepTogether(true);
 		questionTable.setSpacingAfter(QUESTION_TABLE_PADDING);

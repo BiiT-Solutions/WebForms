@@ -19,7 +19,7 @@ import com.biit.webforms.enumerations.AnswerType;
 @Entity
 @Table(name = "tree_attached_files")
 @Cacheable(true)
-public class AttachedFiles extends WebformsBaseQuestion {
+public class AttachedFiles extends WebformsBaseQuestion implements ElementWithDescription {
 	private static final long serialVersionUID = 275419152896656379L;
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 	public static final boolean DEFAULT_MANDATORY = true;
@@ -102,10 +102,12 @@ public class AttachedFiles extends WebformsBaseQuestion {
 		this.editionDisabled = editionDisabled;
 	}
 
+	@Override
 	public String getDescription() {
 		return description;
 	}
 
+	@Override
 	public void setDescription(String description) {
 		this.description = description;
 	}

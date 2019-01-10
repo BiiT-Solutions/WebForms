@@ -39,7 +39,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidRangeException;
 @Entity
 @Table(name = "tree_questions")
 @Cacheable(true)
-public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithImage {
+public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithImage, ElementWithDescription {
 	private static final long serialVersionUID = -7243001035969348318L;
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 	public static final int MAX_DEFAULT_VALUE = 10000;
@@ -263,6 +263,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		this.horizontal = horizontal;
 	}
 
+	@Override
 	public String getDescription() {
 		if (description != null) {
 			return description;
@@ -271,6 +272,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		}
 	}
 
+	@Override
 	public void setDescription(String description) {
 		if (description == null) {
 			this.description = new String();

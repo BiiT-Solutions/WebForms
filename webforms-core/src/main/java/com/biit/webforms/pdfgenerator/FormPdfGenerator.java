@@ -4,6 +4,7 @@ import com.biit.form.entity.TreeObject;
 import com.biit.utils.date.DateManager;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
+import com.biit.webforms.persistence.entity.AttachedFiles;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
@@ -66,6 +67,8 @@ public class FormPdfGenerator extends DocumentGenerator {
 				generateAndAddText(document, (Text) object);
 			} else if (object instanceof SystemField) {
 				// System fields are not added to PDF. Only in the annex table.
+			} else if (object instanceof AttachedFiles){
+				generateAndAddAttachedFiles(document, (AttachedFiles) object);
 			} else {
 				throw new DocumentException("Structure not recognized");
 			}
@@ -85,6 +88,15 @@ public class FormPdfGenerator extends DocumentGenerator {
 	private void generateAndAddQuestion(Document document, Question question) throws DocumentException {
 		try {
 			PdfPTable questionTable = PdfTableGenerator.generateQuestionTable(getWriter(), question);
+			document.add(questionTable);
+		} catch (BadBlockException e) {
+			WebformsLogger.errorMessage(this.getClass().getName(), e);
+		}
+	}
+	
+	private void generateAndAddAttachedFiles(Document document, AttachedFiles attachedFiles) throws DocumentException {
+		try {
+			PdfPTable questionTable = PdfTableGenerator.generateAttachedFileTable(getWriter(), attachedFiles);
 			document.add(questionTable);
 		} catch (BadBlockException e) {
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
