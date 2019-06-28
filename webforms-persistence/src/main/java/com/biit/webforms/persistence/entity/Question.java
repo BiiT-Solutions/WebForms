@@ -307,10 +307,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 	}
 
 	public LinkedHashSet<Answer> getFinalAnswers() {
-		LinkedHashSet<TreeObject> childAnswers = getAllChildrenInHierarchy(Answer.class);
+		LinkedHashSet<Answer> childAnswers = getAllChildrenInHierarchy(Answer.class);
 		LinkedHashSet<Answer> finalAnswers = new LinkedHashSet<>();
-		for (TreeObject childAnswer : childAnswers) {
-			Answer answer = (Answer) childAnswer;
+		for (Answer answer : childAnswers) {
 			if (answer.getChildren() == null || answer.getChildren().isEmpty()) {
 				finalAnswers.add(answer);
 			}

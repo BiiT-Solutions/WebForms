@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.biit.webforms.condition.parser.parselets.BetweenParselet;
 import com.biit.webforms.condition.parser.parselets.BinaryOperationParselet;
 import com.biit.webforms.condition.parser.parselets.ComparationClusterParselet;
+import com.biit.webforms.condition.parser.parselets.EmptyParselet;
 import com.biit.webforms.condition.parser.parselets.InParselet;
 import com.biit.webforms.condition.parser.parselets.ParenthesisParselet;
 import com.biit.webforms.condition.parser.parselets.PrefixOperatorParselet;
@@ -40,6 +41,8 @@ public class WebformsParser extends Parser {
 		register(TokenTypes.NE, new ComparationClusterParselet());
 		register(TokenTypes.IN, new InParselet());
 		register(TokenTypes.BETWEEN, new BetweenParselet());
+		//registerTokenToSkip(TokenTypes.EMPTY);
+		register(TokenTypes.EMPTY, new EmptyParselet());
 		// Grouping
 		register(TokenTypes.LEFT_PAR, new ParenthesisParselet());
 

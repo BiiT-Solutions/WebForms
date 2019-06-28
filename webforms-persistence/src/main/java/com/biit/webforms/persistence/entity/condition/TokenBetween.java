@@ -27,14 +27,14 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 	@Enumerated(EnumType.STRING)
 	private AnswerSubformat subformat;
 
-	@Column(name="date_period_unit")
+	@Column(name = "date_period_unit")
 	@Enumerated(EnumType.STRING)
 	private DatePeriodUnit datePeriodUnit;
 
-	@Column(name="value_start")
+	@Column(name = "value_start")
 	private String valueStart;
 
-	@Column(name="value_end")
+	@Column(name = "value_end")
 	private String valueEnd;
 
 	@Override
@@ -132,7 +132,7 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 	}
 
 	public void setContent(DatePeriodUnit datePeriodUnit, String valueStart, String valueEnd) {
-		if (datePeriodUnit == null) {
+		if (datePeriodUnit == null && getQuestion() != null) {
 			subformat = getQuestion().getAnswerSubformat();
 		} else {
 			subformat = AnswerSubformat.DATE_PERIOD;

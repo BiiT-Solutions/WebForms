@@ -29,15 +29,15 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 	// Date format used to store in database
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
-	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.LT, TokenTypes.GT, TokenTypes.LE,
-			TokenTypes.GE };
+	private static final TokenTypes TOKEN_TYPES[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE, TokenTypes.LT,
+			TokenTypes.GT, TokenTypes.LE, TokenTypes.GE, TokenTypes.EMPTY };
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private AnswerSubformat subformat;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name="date_period_unit")
+	@Column(name = "date_period_unit")
 	private DatePeriodUnit datePeriodUnit;
 
 	private String value;
@@ -55,11 +55,11 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 
 	@Override
 	public TokenTypes[] getValidTokenTypes() {
-		return tokenTypes;
+		return TOKEN_TYPES;
 	}
 
-	public void setContent(WebformsBaseQuestion reference, TokenTypes tokenType, AnswerSubformat subformat, DatePeriodUnit datePeriodUnit,
-			String value) throws NotValidTokenType {
+	public void setContent(WebformsBaseQuestion reference, TokenTypes tokenType, AnswerSubformat subformat,
+			DatePeriodUnit datePeriodUnit, String value) throws NotValidTokenType {
 		setType(tokenType);
 		setQuestion(reference);
 		this.subformat = subformat;
@@ -72,8 +72,8 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		setContent(getQuestion(), tokenType, subformat, datePeriodUnit, value);
 	}
 
-	public static TokenComparationValue getToken(TokenTypes tokenType, WebformsBaseQuestion reference, AnswerSubformat subformat,
-			DatePeriodUnit datePeriodUnit, String value) {
+	public static TokenComparationValue getToken(TokenTypes tokenType, WebformsBaseQuestion reference,
+			AnswerSubformat subformat, DatePeriodUnit datePeriodUnit, String value) {
 		try {
 			TokenComparationValue token = new TokenComparationValue();
 			token.setContent(reference, tokenType, subformat, datePeriodUnit, value);
@@ -114,6 +114,11 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		return getToken(TokenTypes.GE, reference, subformat, datePeriodUnit, value);
 	}
 
+	public static TokenComparationValue getTokenEmpty(WebformsBaseQuestion reference, AnswerSubformat subformat,
+			String value) {
+		return getToken(TokenTypes.EMPTY, reference, subformat, null, value);
+	}
+
 	@Override
 	public String toString() {
 		String referenceString = null;
@@ -125,7 +130,10 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 			return referenceString + " (" + datePeriodUnit + ")" + getType() + value.substring(0, value.length());
 		}
 
-		return referenceString + getType() + value;
+		if (value != null) {
+			return referenceString + getType() + value;
+		}
+		return referenceString + getType();
 	}
 
 	public String getLocalizedString(String localizedDatePeriodUnit) {
@@ -135,10 +143,14 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 		}
 
 		if (subformat == AnswerSubformat.DATE_PERIOD) {
-			return referenceString + " (" + localizedDatePeriodUnit + ")" + getType() + value.substring(0, value.length());
+			return referenceString + " (" + localizedDatePeriodUnit + ")" + getType()
+					+ value.substring(0, value.length());
 		}
 
-		return referenceString + getType() + value;
+		if (value != null) {
+			return referenceString + getType() + value;
+		}
+		return referenceString + getType();
 	}
 
 	@Override
@@ -229,12 +241,12 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 	}
 
 	public void evaluate(String value) {
-		if(value == null || value.isEmpty()){
+		if (value == null || value.isEmpty()) {
 			evaluationValue = null;
 			return;
 		}
-		
-		evaluationValue = false;		
+
+		evaluationValue = false;
 		switch (getQuestion().getAnswerFormat()) {
 		case DATE:
 			if (subformat == AnswerSubformat.DATE_PERIOD) {
@@ -269,6 +281,8 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 			return Objects.equals(this.value, value);
 		case NE:
 			return !Objects.equals(this.value, value);
+		case EMPTY:
+			return this.value.isEmpty();
 		default:
 			throw new UnsupportedOperationException();
 		}
@@ -291,6 +305,8 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 			return evaluationValue == tokenValue;
 		case NE:
 			return evaluationValue != tokenValue;
+		case EMPTY:
+			return this.value.isEmpty();
 		default:
 			throw new UnsupportedOperationException();
 		}
@@ -315,6 +331,8 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 				return Objects.equals(condition, userInput);
 			case NE:
 				return !Objects.equals(condition, userInput);
+			case EMPTY:
+				return this.value.isEmpty();
 			default:
 				throw new UnsupportedOperationException();
 			}
@@ -366,6 +384,8 @@ public class TokenComparationValue extends TokenWithQuestion implements ITokenQu
 				return Objects.equals(calendar.getTime(), userInput);
 			case NE:
 				return !Objects.equals(calendar.getTime(), userInput);
+			case EMPTY:
+				return this.value.isEmpty();
 			default:
 				throw new UnsupportedOperationException();
 			}

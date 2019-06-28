@@ -21,7 +21,8 @@ import com.biit.webforms.validators.reports.ConditionWithNotMandatoryQuestion;
 import com.biit.webforms.validators.reports.InvalidFlowCondition;
 
 /**
- * Validate flow condition. We skip others flow to avoid marking them as possible error.
+ * Validate flow condition. We skip others flow to avoid marking them as
+ * possible error.
  * 
  *
  */

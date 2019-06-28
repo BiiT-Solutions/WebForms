@@ -59,7 +59,8 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 	}
 
 	/**
-	 * In groups the default visibility is the default visibility of the first element.
+	 * In groups the default visibility is the default visibility of the first
+	 * element.
 	 */
 	@Override
 	protected String getDefaultVisibility() throws InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
@@ -85,10 +86,10 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 
 	@Override
 	public Set<Flow> getFlowsTo() {
-		LinkedHashSet<TreeObject> questionsInGroup = getSource().getAllChildrenInHierarchy(BaseQuestion.class);
+		LinkedHashSet<BaseQuestion> questionsInGroup = getSource().getAllChildrenInHierarchy(BaseQuestion.class);
 		Set<Flow> flowsToGroup = new HashSet<>();
 		// Get all flows from outside to any question of the group.
-		for (TreeObject questionInGroup : questionsInGroup) {
+		for (BaseQuestion questionInGroup : questionsInGroup) {
 			Set<Flow> flowsToQuestion = getXFormsHelper().getFlowsWithDestiny(questionInGroup);
 			for (Flow flow : flowsToQuestion) {
 				// Is a flow from outside of the group...
@@ -115,7 +116,7 @@ public class XFormsGroup extends XFormsObject<BaseGroup> {
 	}
 
 	@Override
-	protected String getVisibilityStructure()  {
+	protected String getVisibilityStructure() {
 		String section = "<" + getUniqueName() + ">";
 		section += "0";
 		section += "</" + getUniqueName() + ">";

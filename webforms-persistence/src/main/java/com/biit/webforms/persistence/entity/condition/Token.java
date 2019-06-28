@@ -188,8 +188,38 @@ public class Token extends StorableObject {
 			case NE:
 				copiedToken.setType(TokenTypes.EQ);
 				break;
+			case AND:
+				copiedToken.setType(TokenTypes.AND);
+				break;
+			case BETWEEN:
+				copiedToken.setType(TokenTypes.BETWEEN);
+				break;
+			case EMPTY:
+				copiedToken.setType(TokenTypes.EMPTY);
+				break;
+			case IN:
+				copiedToken.setType(TokenTypes.IN);
+				break;
+			case LEFT_PAR:
+				copiedToken.setType(TokenTypes.LEFT_PAR);
+				break;
+			case NOT:
+				copiedToken.setType(TokenTypes.NOT);
+				break;
+			case OR:
+				copiedToken.setType(TokenTypes.OR);
+				break;
+			case RETURN:
+				copiedToken.setType(TokenTypes.RETURN);
+				break;
+			case RIGHT_PAR:
+				copiedToken.setType(TokenTypes.RIGHT_PAR);
+				break;
+			case WHITESPACE:
+				copiedToken.setType(TokenTypes.WHITESPACE);
+				break;
 			default:
-				return null;
+				break;
 			}
 
 			return copiedToken;

@@ -20,6 +20,7 @@ import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenEmpty;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.validator.NullValidator;
@@ -56,7 +57,8 @@ public class ComponentInsertValue extends CustomComponent {
 
 	private ComboBox datePeriodUnit;
 	private AbstractField<?> value;
-	private Button insertEqValue, insertNeValue, insertLtValue, insertGtValue, insertLeValue, insertGeValue, insertBetweenButton;
+	private Button insertEqValue, insertNeValue, insertLtValue, insertGtValue, insertLeValue, insertGeValue,
+			insertBetweenButton, insertEmptyButton;
 
 	private List<InsertTokenListener> insertTokenListeners;
 
@@ -119,9 +121,10 @@ public class ComponentInsertValue extends CustomComponent {
 		insertLeValue = createTokenComparationValueButton(TokenTypes.LT.toString(), TokenTypes.LT);
 		insertGeValue = createTokenComparationValueButton(TokenTypes.GT.toString(), TokenTypes.GT);
 		insertBetweenButton = createBetweenButton();
+		insertEmptyButton = createEmptyButton();
 
-		GridLayout buttonLayout = new GridLayout(VALUE_BUTTON_COLS, VALUE_BUTTON_ROWS, insertEqValue, insertLeValue, insertLtValue,
-				insertBetweenButton, insertNeValue, insertGeValue, insertGtValue);
+		GridLayout buttonLayout = new GridLayout(VALUE_BUTTON_COLS, VALUE_BUTTON_ROWS, insertEqValue, insertLeValue,
+				insertLtValue, insertBetweenButton, insertEmptyButton, insertNeValue, insertGeValue, insertGtValue);
 		buttonLayout.setWidth(FULL);
 
 		insertValueLayout.addComponent(datePeriodUnit);
@@ -168,6 +171,7 @@ public class ComponentInsertValue extends CustomComponent {
 		insertLtValue.setEnabled(question.getAnswerFormat().isValidTokenType(TokenTypes.LT));
 		insertGtValue.setEnabled(question.getAnswerFormat().isValidTokenType(TokenTypes.GT));
 		insertBetweenButton.setEnabled(question.getAnswerFormat().isValidTokenType(TokenTypes.BETWEEN));
+		insertEmptyButton.setEnabled(true);
 	}
 
 	public WebformsBaseQuestion getCurrentQuestion() {
@@ -222,8 +226,8 @@ public class ComponentInsertValue extends CustomComponent {
 		if (getCurrentQuestion().getAnswerFormat().equals(AnswerFormat.DATE)
 				&& (getCurrentValueAnswerSubformat().equals(AnswerSubformat.DATE)
 						|| getCurrentValueAnswerSubformat().equals(AnswerSubformat.DATE_PAST)
-						|| getCurrentValueAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE) || getCurrentValueAnswerSubformat().equals(
-						AnswerSubformat.DATE_BIRTHDAY))) {
+						|| getCurrentValueAnswerSubformat().equals(AnswerSubformat.DATE_FUTURE) || getCurrentValueAnswerSubformat()
+						.equals(AnswerSubformat.DATE_BIRTHDAY))) {
 			value = new DateField();
 		} else {
 			value = new TextField();
@@ -272,18 +276,32 @@ public class ComponentInsertValue extends CustomComponent {
 		return button;
 	}
 
+	private Button createEmptyButton() {
+		Button button = new Button(TokenTypes.EMPTY.toString());
+		button.setWidth(FULL);
+		button.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 8499457213878436486L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				fireInsertTokenListeners(TokenEmpty.getTokenEmpty(getCurrentQuestion(), ""));
+			}
+		});
+		return button;
+	}
+
 	protected void openWindowTokenBetween() {
 		WindowTokenBetween window = new WindowTokenBetween();
-		window.setQuestion(getCurrentQuestion(), (DatePeriodUnit) datePeriodUnit.getValue(), value.getValue() != null ? value.getValue()
-				: null);
+		window.setQuestion(getCurrentQuestion(), (DatePeriodUnit) datePeriodUnit.getValue(),
+				value.getValue() != null ? value.getValue() : null);
 		window.addAcceptActionListener(new AcceptActionListener() {
 
 			@Override
 			public void acceptAction(WindowAcceptCancel window) {
 				WindowTokenBetween between = (WindowTokenBetween) window;
 				if (((WindowTokenBetween) window).isDataValid()) {
-					fireInsertTokenListeners(TokenBetween.getBetween(between.getQuestion(), between.getDatePeriodUnit(),
-							between.getValueStart(), between.getValueEnd()));
+					fireInsertTokenListeners(TokenBetween.getBetween(between.getQuestion(),
+							between.getDatePeriodUnit(), between.getValueStart(), between.getValueEnd()));
 					window.close();
 				} else {
 					MessageManager.showError(LanguageCodes.ERROR_MESSAGE_FIELDS_ARE_NOT_FILLED_CORRECTLY);

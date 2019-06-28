@@ -28,23 +28,24 @@ public class FlowCleaner {
 	}
 
 	public void cleanFlow() {
-		LinkedHashSet<TreeObject> questions = form.getAllChildrenInHierarchy(BaseQuestion.class);
-		Iterator<TreeObject> questionIterator = questions.iterator();
-		TreeObject question = null;
-		TreeObject nextQuestion = null;
+		LinkedHashSet<BaseQuestion> questions = form.getAllChildrenInHierarchy(BaseQuestion.class);
+		Iterator<BaseQuestion> questionIterator = questions.iterator();
+		BaseQuestion question = null;
+		BaseQuestion nextQuestion = null;
 		while (questionIterator.hasNext()) {
 			nextQuestion = questionIterator.next();
 			if (question != null) {
-				Set<Flow> flows = form.getFlowsFrom((BaseQuestion) question);
-				clearInvalidOthersFlow((BaseQuestion) question, flows);
-				removeUselessFlows((BaseQuestion) question, (BaseQuestion) nextQuestion, flows);
+				Set<Flow> flows = form.getFlowsFrom(question);
+				clearInvalidOthersFlow(question, flows);
+				removeUselessFlows(question, nextQuestion, flows);
 			}
 			question = nextQuestion;
 		}
 	}
 
 	/**
-	 * Clear all the single exit OTHER flows of a node. 
+	 * Clear all the single exit OTHER flows of a node.
+	 * 
 	 * @param question
 	 * @param flows
 	 */
@@ -62,6 +63,7 @@ public class FlowCleaner {
 
 	/**
 	 * Remove empty single flow flows to the next element
+	 * 
 	 * @param question
 	 * @param nextQuestion
 	 * @param flows

@@ -56,6 +56,10 @@ public abstract class RealRange<T extends Comparable<T>> {
 		}
 		addLimit(new RealLimitPair<T>(new RealLimit<T>(left, leftClosure), new RealLimit<T>(right, rightClosure)));
 	}
+	
+	public RealRange<T> empty(T value) {
+		return null;
+	}
 
 	public RealRange<T> eq(T value) {
 		try {
@@ -231,6 +235,8 @@ public abstract class RealRange<T extends Comparable<T>> {
 			return lt(value);
 		case LE:
 			return le(value);
+		case EMPTY:
+			return empty(value);
 		default:
 			// Unexpected
 			throw new RuntimeException("Unexpected default action at switch");

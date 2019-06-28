@@ -3,7 +3,6 @@ package com.biit.webforms.validators;
 import java.util.LinkedHashSet;
 
 import com.biit.form.entity.BaseQuestion;
-import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.Report;
 import com.biit.utils.validation.ReportLevel;
 import com.biit.utils.validation.SimpleValidator;
@@ -39,11 +38,11 @@ public class ValidateLogic extends SimpleValidator<Form> {
 
 	@Override
 	protected void validateImplementation(Form form) {
-		LinkedHashSet<TreeObject> elements = form.getAllChildrenInHierarchy(BaseQuestion.class);
-		for (TreeObject element : elements) {
+		LinkedHashSet<BaseQuestion> elements = form.getAllChildrenInHierarchy(BaseQuestion.class);
+		for (BaseQuestion element : elements) {
 			try {
 				try {
-					new FlowUnitDomain(form, (BaseQuestion) element);
+					new FlowUnitDomain(form, element);
 				} catch (BadFormedExpressions e) {
 					assertTrue(false, new NotValidCondition(e.getBadFormedExpression()));
 				} catch (IncompleteLogic e) {

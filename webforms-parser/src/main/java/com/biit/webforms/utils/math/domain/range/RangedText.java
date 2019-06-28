@@ -22,13 +22,15 @@ public class RangedText implements Comparable<RangedText> {
 		for (int i = 0; i <= BUFFER_MAX_SIZE; i++) {
 			buffer[i] = ' ';
 		}
-		// Put the text
-		for (int i = 0; i < text.length(); i++) {
-			if (i >= BUFFER_MAX_SIZE) {
-				// Cut large text at left.
-				break;
+		if (text != null) {
+			// Put the text
+			for (int i = 0; i < text.length(); i++) {
+				if (i >= BUFFER_MAX_SIZE) {
+					// Cut large text at left.
+					break;
+				}
+				buffer[BUFFER_MAX_SIZE - i] = text.charAt(text.length() - 1 - i);
 			}
-			buffer[BUFFER_MAX_SIZE - i] = text.charAt(text.length() - 1 - i);
 		}
 	}
 
