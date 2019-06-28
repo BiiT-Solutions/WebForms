@@ -10,7 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 import com.biit.webforms.enumerations.AnswerSubformat;
-import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;

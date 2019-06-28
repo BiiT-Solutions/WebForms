@@ -66,8 +66,8 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 	public IDomain intersect(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {
 			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
-				return new QuestionValueDomain<T>(question, completeDomain,
-						this.value.intersection(((QuestionValueDomain<T>) domain).value));
+				return new QuestionValueDomain<T>(question, completeDomain, value == null ? null
+						: this.value.intersection(((QuestionValueDomain<T>) domain).value));
 			} else {
 				return new DomainSetIntersection(this, (IDomainQuestion) domain);
 			}
@@ -80,19 +80,23 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 
 	@Override
 	public IDomain inverse() {
-		if (value != null) {
-			return new QuestionValueDomain<T>(question, completeDomain, value.inverse(completeDomain));
-		}
-		return this;
+		return new QuestionValueDomain<T>(question, completeDomain, value == null ? null
+				: value.inverse(completeDomain));
 	}
 
 	@Override
 	public boolean isComplete() {
+		if (value == null) {
+			return true;
+		}
 		return value.isComplete(completeDomain);
 	}
 
 	@Override
 	public boolean isEmpty() {
+		if (value == null) {
+			return true;
+		}
 		return value.isEmpty();
 	}
 

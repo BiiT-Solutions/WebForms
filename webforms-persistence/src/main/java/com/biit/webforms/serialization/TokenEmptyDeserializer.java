@@ -22,7 +22,6 @@ public class TokenEmptyDeserializer extends TokenDeserializer<TokenEmpty> {
 
 		element.setQuestion((Question) FormDeserializer.parseTreeObjectPath("question_id", form, jobject, context));
 		element.setSubformat(QuestionDeserializer.parseAnswerSubformat("subformat", jobject, context));
-		element.setDatePeriodUnit(parseDatePeriodUnit("datePeriodUnit", jobject, context));
 		element.setValue(parseString("value", jobject, context));
 
 		super.deserialize(json, context, element);

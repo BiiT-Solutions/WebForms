@@ -15,7 +15,6 @@ public class TokenEmptySerializer extends TokenSerializer<TokenEmpty> {
 
 		jsonObject.add("question_id", context.serialize(src.getQuestion().getPath()));
 		jsonObject.add("subformat", context.serialize(src.getSubformat()));
-		jsonObject.add("datePeriodUnit", context.serialize(src.getDatePeriodUnit()));
 		jsonObject.add("value", context.serialize(src.getValue()));
 
 		return jsonObject;

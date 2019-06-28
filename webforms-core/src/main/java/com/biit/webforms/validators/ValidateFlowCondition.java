@@ -23,8 +23,6 @@ import com.biit.webforms.validators.reports.InvalidFlowCondition;
 /**
  * Validate flow condition. We skip others flow to avoid marking them as
  * possible error.
- * 
- *
  */
 public class ValidateFlowCondition extends SimpleValidator<Flow> {
 

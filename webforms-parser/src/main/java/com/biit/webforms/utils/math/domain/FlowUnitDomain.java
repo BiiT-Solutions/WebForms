@@ -11,6 +11,7 @@ import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.condition.parser.expressions.WebformsExpression;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.flow.FormWalker;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
@@ -43,7 +44,7 @@ public class FlowUnitDomain {
 
 		checkUnicity(form, from, domains);
 		if (!containFlowOthers(flows)) {
-			checkCompleteness(domains);
+			checkCompleteness(domains, flows);
 		}
 	}
 
@@ -127,8 +128,19 @@ public class FlowUnitDomain {
 		return true;
 	}
 
-	private void checkCompleteness(List<IDomain> flowDomains) throws IncompleteLogic {
+	private void checkCompleteness(List<IDomain> flowDomains, Set<Flow> flows) throws IncompleteLogic {
 		IDomain unionflowDomain = null;
+
+		// Empty function is special. Only can be mixed with others or
+		// not(empty).
+		if (flowDomains.size() <= 1) {
+			for (Flow flow : flows) {
+				for (Token token : flow.getComputedCondition()) {
+					if (token.getType() == TokenTypes.EMPTY)
+						throw new IncompleteLogic();
+				}
+			}
+		}
 
 		if (flowDomains.isEmpty()) {
 			// There are no domains which means this is complete (automatic
@@ -176,7 +188,6 @@ public class FlowUnitDomain {
 		WebformsParser parser = new WebformsParser(flow.getConditionSimpleTokens().iterator());
 		try {
 			WebformsExpression expression = ((WebformsExpression) parser.parseExpression());
-			System.out.println("############################\n " + expression);
 
 			if (expression != null) {
 				return expression.getDomain();
