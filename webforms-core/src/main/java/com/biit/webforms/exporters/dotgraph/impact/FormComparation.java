@@ -70,34 +70,34 @@ public class FormComparation {
 	 * @param newForm
 	 */
 	private void searchUpdatedElements(Form oldForm, Form newForm) {
-		LinkedHashSet<TreeObject> newCategories = newForm.getAllChildrenInHierarchy(Category.class);
-		for (TreeObject newCategory : newCategories) {
+		LinkedHashSet<Category> newCategories = newForm.getAllChildrenInHierarchy(Category.class);
+		for (Category newCategory : newCategories) {
 			if (oldForm.getChild(newCategory.getPathName()) != null) {
 				TreeObject oldCategory = oldForm.getChild(newCategory.getPathName());
 				if (!oldCategory.isContentEqual(newCategory)) {
-					updatedCategories.add((Category) newCategory);
+					updatedCategories.add(newCategory);
 				}
 			}
 		}
-		LinkedHashSet<TreeObject> newGroups = newForm.getAllChildrenInHierarchy(Group.class);
-		for (TreeObject newGroup : newGroups) {
+		LinkedHashSet<Group> newGroups = newForm.getAllChildrenInHierarchy(Group.class);
+		for (Group newGroup : newGroups) {
 			if (oldForm.getChild(newGroup.getPathName()) != null) {
 				TreeObject oldGroup = oldForm.getChild(newGroup.getPathName());
 				if (!oldGroup.isContentEqual(newGroup)) {
-					updatedGroups.add((Group) newGroup);
+					updatedGroups.add(newGroup);
 					markParentsAsUpdated(newGroup);
 				}
 			}
 		}
-		LinkedHashSet<TreeObject> newBaseQuestions = newForm.getAllChildrenInHierarchy(BaseQuestion.class);
-		for (TreeObject newBaseQuestion : newBaseQuestions) {
+		LinkedHashSet<BaseQuestion> newBaseQuestions = newForm.getAllChildrenInHierarchy(BaseQuestion.class);
+		for (BaseQuestion newBaseQuestion : newBaseQuestions) {
 			if (oldForm.getChild(newBaseQuestion.getPathName()) != null) {
 				TreeObject oldBaseQuestion = oldForm.getChild(newBaseQuestion.getPathName());
 				if ((oldBaseQuestion instanceof Question && newBaseQuestion instanceof Question)
 						|| (oldBaseQuestion instanceof Text && newBaseQuestion instanceof Text)
 						|| (oldBaseQuestion instanceof SystemField && newBaseQuestion instanceof SystemField)) {
 					if (!oldBaseQuestion.isContentEqual(newBaseQuestion)) {
-						updatedBaseQuestions.add((BaseQuestion) newBaseQuestion);
+						updatedBaseQuestions.add(newBaseQuestion);
 						markParentsAsUpdated(newBaseQuestion);
 					}
 				}
@@ -114,22 +114,22 @@ public class FormComparation {
 	 * @param newForm
 	 */
 	private void searchNewElements(Form oldForm, Form newForm) {
-		LinkedHashSet<TreeObject> newCategories = newForm.getAllChildrenInHierarchy(Category.class);
-		for (TreeObject newCategory : newCategories) {
+		LinkedHashSet<Category> newCategories = newForm.getAllChildrenInHierarchy(Category.class);
+		for (Category newCategory : newCategories) {
 			if (oldForm.getChild(newCategory.getPathName()) == null) {
-				addedCategories.add((Category) newCategory);
+				addedCategories.add(newCategory);
 			}
 		}
-		LinkedHashSet<TreeObject> newGroups = newForm.getAllChildrenInHierarchy(Group.class);
-		for (TreeObject newGroup : newGroups) {
+		LinkedHashSet<Group> newGroups = newForm.getAllChildrenInHierarchy(Group.class);
+		for (Group newGroup : newGroups) {
 			if (oldForm.getChild(newGroup.getPathName()) == null) {
-				addedGroups.add((Group) newGroup);
+				addedGroups.add(newGroup);
 			}
 		}
-		LinkedHashSet<TreeObject> newBaseQuestions = newForm.getAllChildrenInHierarchy(BaseQuestion.class);
-		for (TreeObject newBaseQuestion : newBaseQuestions) {
+		LinkedHashSet<BaseQuestion> newBaseQuestions = newForm.getAllChildrenInHierarchy(BaseQuestion.class);
+		for (BaseQuestion newBaseQuestion : newBaseQuestions) {
 			if (oldForm.getChild(newBaseQuestion.getPathName()) == null) {
-				addedBaseQuestions.add((BaseQuestion) newBaseQuestion);
+				addedBaseQuestions.add(newBaseQuestion);
 			} else {
 				TreeObject oldBaseQuestion = oldForm.getChild(newBaseQuestion.getPathName());
 				if ((oldBaseQuestion instanceof Question && !(newBaseQuestion instanceof Question))
@@ -149,22 +149,22 @@ public class FormComparation {
 	 * @param newForm
 	 */
 	private void searchRemovedElements(Form oldForm, Form newForm) {
-		LinkedHashSet<TreeObject> oldCategories = oldForm.getAllChildrenInHierarchy(Category.class);
-		for (TreeObject oldCategory : oldCategories) {
+		LinkedHashSet<Category> oldCategories = oldForm.getAllChildrenInHierarchy(Category.class);
+		for (Category oldCategory : oldCategories) {
 			if (newForm.getChild(oldCategory.getPathName()) == null) {
-				removedCategories.add((Category) oldCategory);
+				removedCategories.add(oldCategory);
 			}
 		}
-		LinkedHashSet<TreeObject> oldGroups = oldForm.getAllChildrenInHierarchy(Group.class);
-		for (TreeObject oldGroup : oldGroups) {
+		LinkedHashSet<Group> oldGroups = oldForm.getAllChildrenInHierarchy(Group.class);
+		for (Group oldGroup : oldGroups) {
 			if (newForm.getChild(oldGroup.getPathName()) == null) {
-				removedGroups.add((Group) oldGroup);
+				removedGroups.add(oldGroup);
 			}
 		}
-		LinkedHashSet<TreeObject> oldBaseQuestions = oldForm.getAllChildrenInHierarchy(BaseQuestion.class);
-		for (TreeObject oldBaseQuestion : oldBaseQuestions) {
+		LinkedHashSet<BaseQuestion> oldBaseQuestions = oldForm.getAllChildrenInHierarchy(BaseQuestion.class);
+		for (BaseQuestion oldBaseQuestion : oldBaseQuestions) {
 			if (newForm.getChild(oldBaseQuestion.getPathName()) == null) {
-				removedBaseQuestions.add((BaseQuestion) oldBaseQuestion);
+				removedBaseQuestions.add(oldBaseQuestion);
 			} else {
 				TreeObject newBaseQuestion = newForm.getChild(oldBaseQuestion.getPathName());
 				if ((oldBaseQuestion instanceof Question && !(newBaseQuestion instanceof Question))

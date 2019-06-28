@@ -410,7 +410,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 		updateDynamicAnswers(getAllChildrenInHierarchy(Question.class));
 	}
 
-	private void updateDynamicAnswers(Set<TreeObject> allQuestionsInHierarchy) {
+	private void updateDynamicAnswers(Set<Question> allQuestionsInHierarchy) {
 		HashMap<String, Question> questions = new HashMap<>();
 		for (TreeObject child : allQuestionsInHierarchy) {
 			questions.put(child.getOriginalReference(), (Question) child);

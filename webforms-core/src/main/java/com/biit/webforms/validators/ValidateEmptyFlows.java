@@ -4,7 +4,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.biit.form.entity.BaseQuestion;
-import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.persistence.entity.Flow;
@@ -23,13 +22,14 @@ public class ValidateEmptyFlows extends SimpleValidator<Form> {
 	protected void validateImplementation(Form form) {
 		ComputedFlowView computedFlowView = form.getComputedFlowsView();
 
-		LinkedHashSet<TreeObject> baseQuestions = form.getAllChildrenInHierarchy(BaseQuestion.class);
+		LinkedHashSet<BaseQuestion> baseQuestions = form.getAllChildrenInHierarchy(BaseQuestion.class);
 
-		for (TreeObject baseQuestion : baseQuestions) {
+		for (BaseQuestion baseQuestion : baseQuestions) {
 			Set<Flow> flows = computedFlowView.getFlowsByOrigin(baseQuestion);
 			if (flows != null) {
 				for (Flow flow : flows) {
-					assertTrue(!(flow.getComputedCondition().isEmpty() && flows.size() > 1), new EmptyFlowIsNotAlone(flow));
+					assertTrue(!(flow.getComputedCondition().isEmpty() && flows.size() > 1), new EmptyFlowIsNotAlone(
+							flow));
 				}
 			}
 		}
