@@ -24,6 +24,7 @@ public class ValidateFormFlows extends SimpleValidator<Form> {
 		if (!validateFlow.validate(form.getFlows(), getReport()) && isStopOnFail()) {
 			return;
 		}
+
 		OthersOrphanAndUnicityValidator othersUnicityValidator = new OthersOrphanAndUnicityValidator();
 		othersUnicityValidator.validate(form, getReport());
 

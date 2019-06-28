@@ -118,6 +118,22 @@
         primary key (id)
     ) engine=InnoDB;
 
+    create table token_empty (
+       id bigint not null,
+        comparation_id varchar(190) not null,
+        created_by DOUBLE,
+        creation_time datetime(6) not null,
+        update_time datetime(6),
+        updated_by DOUBLE,
+        sort_sequence bigint not null,
+        type varchar(255) not null,
+        flow bigint not null,
+        question bigint,
+        subformat varchar(255) not null,
+        value varchar(255),
+        primary key (id)
+    ) engine=InnoDB;
+
     create table token_in (
        id bigint not null,
         comparation_id varchar(190) not null,
@@ -434,6 +450,12 @@
     alter table token_comparation_value 
        add constraint UK_f16xon5c6ikammnr4wtau299n unique (comparation_id);
 
+    alter table token_empty 
+       add constraint UK_ju10mhk2l40w0c9vah843iy6q unique (id);
+
+    alter table token_empty 
+       add constraint UK_eif5dp9meva9dbfbu1ybjuvbi unique (comparation_id);
+
     alter table token_in 
        add constraint UK_etg9s4o7mwaiicwejxjab260a unique (id);
 
@@ -552,6 +574,11 @@
 
     alter table token_comparation_value 
        add constraint FK_5ela5pdlkhjlbfeoip70ry7bf 
+       foreign key (flow) 
+       references flow (id);
+
+    alter table token_empty 
+       add constraint FK_pwqr169ufwb9buif8ts1nidvn 
        foreign key (flow) 
        references flow (id);
 

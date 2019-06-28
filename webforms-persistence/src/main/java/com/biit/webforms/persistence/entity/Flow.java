@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Cacheable;
@@ -35,6 +36,7 @@ import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.TokenComplex;
+import com.biit.webforms.persistence.entity.condition.TokenEmpty;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
@@ -51,14 +53,15 @@ public class Flow extends StorableObject {
 
 	private static final String TOKEN_SEPARATOR = " ";
 
-	// Hibernate changes name of column when you use a many-to-one relationship. If you want to add a constraint
+	// Hibernate changes name of column when you use a many-to-one relationship.
+	// If you want to add a constraint
 	// attached to that column, you have to state the name.
 	@ManyToOne
 	@JoinColumn(name = "origin_id")
 	private BaseQuestion origin;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name="flow_type")
+	@Column(name = "flow_type")
 	private FlowType flowType;
 
 	@ManyToOne
@@ -241,7 +244,8 @@ public class Flow extends StorableObject {
 
 	private List<Token> generateCopyCondition() {
 		List<Token> conditionCopy = new ArrayList<Token>();
-		// We only copy the real conditions tokens, we cannot use getCondition();
+		// We only copy the real conditions tokens, we cannot use
+		// getCondition();
 		for (Token token : condition) {
 			conditionCopy.add(token.generateCopy());
 		}
@@ -271,7 +275,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * Return condition that can computed. For example others is translated to Tokens.
+	 * Return condition that can computed. For example others is translated to
+	 * Tokens.
 	 * 
 	 * @return
 	 */
@@ -311,7 +316,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * Method to obtain simple version of the tokens. This has to be used by orbeon.
+	 * Method to obtain simple version of the tokens. This has to be used by
+	 * orbeon.
 	 * 
 	 * @return
 	 */
@@ -333,7 +339,8 @@ public class Flow extends StorableObject {
 	public void setCondition(List<Token> condition) {
 		this.condition.clear();
 		this.condition.addAll(condition);
-		// We only copy the real conditions tokens, we cannot use getCondition();
+		// We only copy the real conditions tokens, we cannot use
+		// getCondition();
 		for (Token token : condition) {
 			token.setFlow(this);
 		}
@@ -346,8 +353,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * This functions updates references to question and answers If a reference is missing it will throw a
-	 * {@code UpdateNullReferenceException}
+	 * This functions updates references to question and answers If a reference
+	 * is missing it will throw a {@code UpdateNullReferenceException}
 	 * 
 	 * @param mappedCopiedQuestions
 	 * @param mappedCopiedAnswers
@@ -426,27 +433,35 @@ public class Flow extends StorableObject {
 		for (Token token : condition) {
 			if (token instanceof TokenComparationAnswer) {
 				if (((TokenComparationAnswer) token).getQuestion() != null
-						&& ((TokenComparationAnswer) token).getQuestion().equals(question)) {
+						&& Objects.equals(((TokenComparationAnswer) token).getQuestion(), question)) {
 					return true;
 				}
 				continue;
 			}
 			if (token instanceof TokenComparationValue) {
 				if (((TokenComparationValue) token).getQuestion() != null
-						&& ((TokenComparationValue) token).getQuestion().equals(question)) {
+						&& Objects.equals(((TokenComparationValue) token).getQuestion(), question)) {
 					return true;
 				}
 				continue;
 			}
 			if (token instanceof TokenBetween) {
 				if (((TokenBetween) token).getQuestion() != null
-						&& ((TokenBetween) token).getQuestion().equals(question)) {
+						&& Objects.equals(((TokenBetween) token).getQuestion(), question)) {
+					return true;
+				}
+				continue;
+			}
+			if (token instanceof TokenEmpty) {
+				if (((TokenEmpty) token).getQuestion() != null
+						&& Objects.equals(((TokenEmpty) token).getQuestion(), question)) {
 					return true;
 				}
 				continue;
 			}
 			if (token instanceof TokenIn) {
-				if (((TokenIn) token).getQuestion() != null && ((TokenIn) token).getQuestion().equals(question)) {
+				if (((TokenIn) token).getQuestion() != null
+						&& Objects.equals(((TokenIn) token).getQuestion(), question)) {
 					return true;
 				}
 				continue;
@@ -529,7 +544,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * A flow is hidden if any of its element (origin, destination, condition) is hidden.
+	 * A flow is hidden if any of its element (origin, destination, condition)
+	 * is hidden.
 	 * 
 	 * @param block
 	 * @param flow

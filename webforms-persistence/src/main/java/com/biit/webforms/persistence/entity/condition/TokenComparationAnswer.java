@@ -23,7 +23,7 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQuestion {
 	private static final long serialVersionUID = 2099093205161281219L;
 
-	private static TokenTypes tokenTypes[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE };
+	private static final TokenTypes TOKEN_TYPES[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE };
 
 	// Evaluation value is false by default
 	private transient Boolean evaluationValue = null;
@@ -42,7 +42,7 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 
 	@Override
 	public TokenTypes[] getValidTokenTypes() {
-		return tokenTypes;
+		return TOKEN_TYPES;
 	}
 
 	public void setContent(WebformsBaseQuestion reference, TokenTypes tokenType, Answer answer) throws NotValidTokenType {

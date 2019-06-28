@@ -30,7 +30,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 	private static final long serialVersionUID = -1264101992865476909L;
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "tokenIn")
-	@BatchSize(size = 100)
+	@BatchSize(size = 10)
 	@OrderBy(value = "sort_seq ASC")
 	private List<TokenInValue> values;
 

@@ -49,7 +49,8 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 	public IDomain union(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {
 			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
-				return new QuestionValueDomain<T>(question, completeDomain, this.value.union(((QuestionValueDomain<T>) domain).value));
+				return new QuestionValueDomain<T>(question, completeDomain,
+						this.value.union(((QuestionValueDomain<T>) domain).value));
 			} else {
 				return new DomainSetUnion(this, (IDomainQuestion) domain);
 			}
@@ -65,8 +66,8 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 	public IDomain intersect(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {
 			if (this.question.equals(((IDomainQuestion) domain).getQuestion())) {
-				return new QuestionValueDomain<T>(question, completeDomain,
-						this.value.intersection(((QuestionValueDomain<T>) domain).value));
+				return new QuestionValueDomain<T>(question, completeDomain, value == null ? null
+						: this.value.intersection(((QuestionValueDomain<T>) domain).value));
 			} else {
 				return new DomainSetIntersection(this, (IDomainQuestion) domain);
 			}
@@ -79,16 +80,23 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 
 	@Override
 	public IDomain inverse() {
-		return new QuestionValueDomain<T>(question, completeDomain, value.inverse(completeDomain));
+		return new QuestionValueDomain<T>(question, completeDomain, value == null ? null
+				: value.inverse(completeDomain));
 	}
 
 	@Override
 	public boolean isComplete() {
+		if (value == null) {
+			return true;
+		}
 		return value.isComplete(completeDomain);
 	}
 
 	@Override
 	public boolean isEmpty() {
+		if (value == null) {
+			return true;
+		}
 		return value.isEmpty();
 	}
 
@@ -138,49 +146,62 @@ public class QuestionValueDomain<T extends Comparable<T>> implements IDomainQues
 
 	private static QuestionValueDomain<RangedText> generateRangedTextDomain(TokenComparationValue token, String value) {
 		RealRange<RangedText> generator = new RealStringRange();
-		return new QuestionValueDomain<RangedText>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(),
-				new RangedText(value)));
+		return new QuestionValueDomain<RangedText>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), new RangedText(value)));
 	}
 
-	private static QuestionValueDomain<PostalCode> generatePostalCodeQuestionValueDomain(TokenComparationValue token, String value) {
+	private static QuestionValueDomain<PostalCode> generatePostalCodeQuestionValueDomain(TokenComparationValue token,
+			String value) {
 		RealRange<PostalCode> generator = new RealRangePostalCode();
-		return new QuestionValueDomain<PostalCode>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(),
-				new PostalCode(value)));
+		return new QuestionValueDomain<PostalCode>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), new PostalCode(value)));
 	}
 
 	private static QuestionValueDomain<Float> generateFloatQuestionValueDomain(TokenComparationValue token, Float value) {
 		RealRange<Float> generator = new RealRangeFloat();
-		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
+		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), value));
 	}
 
-	private static QuestionValueDomain<Float> generateFloatQuestionValuePositiveDomain(TokenComparationValue token, Float value) {
+	private static QuestionValueDomain<Float> generateFloatQuestionValuePositiveDomain(TokenComparationValue token,
+			Float value) {
 		RealRange<Float> generator = new RealRangePositiveFloat();
-		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
+		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), value));
 	}
 
-	private static QuestionValueDomain<Float> generateFloatQuestionValueNegativeDomain(TokenComparationValue token, Float value) {
+	private static QuestionValueDomain<Float> generateFloatQuestionValueNegativeDomain(TokenComparationValue token,
+			Float value) {
 		RealRange<Float> generator = new RealRangeNegativeFloat();
-		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
+		return new QuestionValueDomain<Float>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), value));
 	}
 
 	private static QuestionValueDomain<Long> generateLongQuestionValueDomain(TokenComparationValue token, Long value) {
 		RealRange<Long> generator = new RealRangeLong();
-		return new QuestionValueDomain<Long>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
+		return new QuestionValueDomain<Long>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), value));
 	}
 
-	private static QuestionValueDomain<Integer> generateIntQuestionValueDomain(TokenComparationValue token, Integer value) {
+	private static QuestionValueDomain<Integer> generateIntQuestionValueDomain(TokenComparationValue token,
+			Integer value) {
 		RealRange<Integer> generator = new RealRangeInteger();
-		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
+		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), value));
 	}
 
-	private static QuestionValueDomain<Integer> generateIntQuestionValueNegativeDomain(TokenComparationValue token, Integer value) {
+	private static QuestionValueDomain<Integer> generateIntQuestionValueNegativeDomain(TokenComparationValue token,
+			Integer value) {
 		RealRange<Integer> generator = new RealRangeNegativeInteger();
-		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
+		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), value));
 	}
 
-	private static QuestionValueDomain<Integer> generateIntQuestionValuePositiveDomain(TokenComparationValue token, Integer value) {
+	private static QuestionValueDomain<Integer> generateIntQuestionValuePositiveDomain(TokenComparationValue token,
+			Integer value) {
 		RealRange<Integer> generator = new RealRangePositiveInteger();
-		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(), generator.generateValue(token.getType(), value));
+		return new QuestionValueDomain<Integer>(token.getQuestion(), generator.domain(), generator.generateValue(
+				token.getType(), value));
 	}
 
 	@Override

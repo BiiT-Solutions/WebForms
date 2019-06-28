@@ -34,7 +34,9 @@ public enum TokenTypes implements ITokenType {
 
 	BETWEEN("BETWEEN|between", 1, "BETWEEN", "between", "between", "BETWEEN"),
 
-	IN("IN|in", 1, "IN", "in", "in", "IN");
+	IN("IN|in", 1, "IN", "in", "in", "IN"),
+	
+	EMPTY("EMPTY|empty", 1, "EMPTY", "empty", "empty", "EMPTY");
 
 	private Pattern regexFilter;
 	private int preference;

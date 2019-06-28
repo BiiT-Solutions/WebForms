@@ -29,6 +29,7 @@ import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenEmpty;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
@@ -70,6 +71,7 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
 		gsonBuilder.registerTypeAdapter(Flow.class, new FlowDeserializer(element));
 		gsonBuilder.registerTypeAdapter(Token.class, new TokenDeserializer<Token>(Token.class));
 		gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenDeserializer(element));
+		gsonBuilder.registerTypeAdapter(TokenEmpty.class, new TokenEmptyDeserializer(element));
 		gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerDeserializer(element));
 		gsonBuilder.registerTypeAdapter(TokenComparationValue.class, new TokenComparationValueDeserializer(element));
 		gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInDeserializer(element));

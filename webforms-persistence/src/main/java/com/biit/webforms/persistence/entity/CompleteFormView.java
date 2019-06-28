@@ -29,6 +29,7 @@ import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenEmpty;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
@@ -49,6 +50,7 @@ import com.biit.webforms.serialization.TextSerializer;
 import com.biit.webforms.serialization.TokenBetweenSerializer;
 import com.biit.webforms.serialization.TokenComparationAnswerSerializer;
 import com.biit.webforms.serialization.TokenComparationValueSerializer;
+import com.biit.webforms.serialization.TokenEmptySerializer;
 import com.biit.webforms.serialization.TokenInSerializer;
 import com.biit.webforms.serialization.TokenInValueSerializer;
 import com.biit.webforms.serialization.TokenSerializer;
@@ -177,7 +179,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			if (getForm() != null) {
 				for (TreeObject hiddenElement : getForm().getElementsToHide()) {
 					// Can be a copy. Compare by original reference.
-					if (hiddenElement != null && Objects.equals(hiddenElement.getOriginalReference(), linkedChild.getOriginalReference())) {
+					if (hiddenElement != null
+							&& Objects.equals(hiddenElement.getOriginalReference(), linkedChild.getOriginalReference())) {
 						linkedChild.setHiddenElement(true);
 					}
 				}
@@ -369,7 +372,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 			BlockReference blockReferenceOfDestination = getBlockReference(rule.getDestiny());
 
 			// Flows in the same linked block are not allowed.
-			if (blockReferenceOfSource != null && blockReferenceOfDestination != null && blockReferenceOfSource.equals(blockReferenceOfDestination)) {
+			if (blockReferenceOfSource != null && blockReferenceOfDestination != null
+					&& blockReferenceOfSource.equals(blockReferenceOfDestination)) {
 				throw new FlowNotAllowedException("Flows in the same linked block are not allowed.");
 			}
 
@@ -402,7 +406,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 
 			for (int i = 0; i < numQuestions; i++) {
 				if (computedView.getFlowsByOrigin((TreeObject) baseQuestions[i]) == null) {
-					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i], (BaseQuestion) baseQuestions[i + 1]);
+					computedView.addNewNextElementFlow((BaseQuestion) baseQuestions[i],
+							(BaseQuestion) baseQuestions[i + 1]);
 				}
 			}
 			if (computedView.getFlowsByOrigin((BaseQuestion) baseQuestions[numQuestions]) == null) {
@@ -538,7 +543,8 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		createCopyOfBlocks();
 	}
 
-	public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException, ElementIsReadOnly {
+	public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException,
+			ElementIsReadOnly {
 		// Check if it is inside a linked block.
 		BlockReference blockReference = getBlockReference(element);
 		if (blockReference == null) {
@@ -575,13 +581,15 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 		gsonBuilder.registerTypeAdapter(Flow.class, new FlowSerializer());
 		gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<Token>());
 		gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenSerializer());
+		gsonBuilder.registerTypeAdapter(TokenEmpty.class, new TokenEmptySerializer());
 		gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerSerializer());
 		gsonBuilder.registerTypeAdapter(TokenComparationValue.class, new TokenComparationValueSerializer());
 		gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInSerializer());
 		gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCall.class, new WebserviceCallSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputLinkSerializer());
-		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class, new WebserviceCallInputLinkErrorsSerializer());
+		gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class,
+				new WebserviceCallInputLinkErrorsSerializer());
 		gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkSerializer());
 		gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageSerializer());
 		Gson gson = gsonBuilder.create();
@@ -607,8 +615,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 	@Override
 	public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
 		if (getForm() != null) {
-			if (element != null && (getForm().getFormReference() != null && !getForm().getFormReference().getAllInnerStorableObjects().contains(element))
-					&& (getBlockReference(element) != null)) {
+			if (element != null
+					&& (getForm().getFormReference() != null && !getForm().getFormReference()
+							.getAllInnerStorableObjects().contains(element)) && (getBlockReference(element) != null)) {
 				throw new ElementCannotBeRemovedException("Element '" + element + "' does not exists in the form.");
 			}
 			return getForm().hideElement(element);

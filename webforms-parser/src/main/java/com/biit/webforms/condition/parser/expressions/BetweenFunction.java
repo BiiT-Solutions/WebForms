@@ -21,7 +21,6 @@ public class BetweenFunction extends Expression {
 	@Override
 	public void getString(StringBuilder builder) {
 		builder.append(token.toString());
-
 	}
 
 	@Override
