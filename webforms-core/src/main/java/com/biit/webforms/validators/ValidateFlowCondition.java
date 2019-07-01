@@ -8,6 +8,7 @@ import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenEmpty;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
 import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
@@ -18,6 +19,7 @@ import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
 import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
 import com.biit.webforms.utils.parser.exceptions.ParseException;
 import com.biit.webforms.validators.reports.ConditionWithNotMandatoryQuestion;
+import com.biit.webforms.validators.reports.EmptyConditionWithMandatoryQuestion;
 import com.biit.webforms.validators.reports.InvalidFlowCondition;
 
 /**
@@ -51,6 +53,11 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 		}
 	}
 
+	/**
+	 * Only empty tokens are not mandatory and have a flow.
+	 * 
+	 * @param flow
+	 */
 	private void validateFlowConditionQuestionAreAllMandatory(Flow flow) {
 		for (Token token : flow.getComputedCondition()) {
 			if (token instanceof TokenWithQuestion && ((TokenWithQuestion) token).getQuestion() != null) {
@@ -70,6 +77,9 @@ public class ValidateFlowCondition extends SimpleValidator<Flow> {
 					assertTrue(((TokenBetween) token).getQuestion() instanceof SystemField
 							|| ((TokenBetween) token).getQuestion().isMandatory(),
 							new ConditionWithNotMandatoryQuestion(((TokenBetween) token).getQuestion(), flow));
+				} else if (token instanceof TokenEmpty) {
+					assertFalse(((TokenEmpty) token).getQuestion().isMandatory(), new EmptyConditionWithMandatoryQuestion(
+							flow));
 				}
 			}
 		}
