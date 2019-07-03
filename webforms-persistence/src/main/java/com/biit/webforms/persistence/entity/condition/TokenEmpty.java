@@ -55,7 +55,7 @@ public class TokenEmpty extends TokenComplex implements ITokenQuestion {
 	
 	@Override
 	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		if (object instanceof TokenBetween) {
+		if (object instanceof TokenEmpty) {
 			super.copyData(object);
 			TokenEmpty token = (TokenEmpty) object;
 			this.subformat = token.subformat;

@@ -247,7 +247,9 @@ public class Flow extends StorableObject {
 		// We only copy the real conditions tokens, we cannot use
 		// getCondition();
 		for (Token token : condition) {
-			conditionCopy.add(token.generateCopy());
+			if (token != null) {
+				conditionCopy.add(token.generateCopy());
+			}
 		}
 		return conditionCopy;
 	}
@@ -258,8 +260,10 @@ public class Flow extends StorableObject {
 
 		if (!isOthers()) {
 			for (Token token : getComputedCondition()) {
-				innerStorableObjects.add(token);
-				innerStorableObjects.addAll(token.getAllInnerStorableObjects());
+				if (token != null) {
+					innerStorableObjects.add(token);
+					innerStorableObjects.addAll(token.getAllInnerStorableObjects());
+				}
 			}
 		}
 
@@ -326,10 +330,12 @@ public class Flow extends StorableObject {
 		List<Token> simplifiedTokens = new ArrayList<Token>();
 
 		for (Token token : allTokens) {
-			if (token instanceof TokenComplex) {
-				simplifiedTokens.addAll(((TokenComplex) token).getSimpleTokens());
-			} else {
-				simplifiedTokens.add(token);
+			if (token != null) {
+				if (token instanceof TokenComplex) {
+					simplifiedTokens.addAll(((TokenComplex) token).getSimpleTokens());
+				} else {
+					simplifiedTokens.add(token);
+				}
 			}
 		}
 
@@ -342,13 +348,17 @@ public class Flow extends StorableObject {
 		// We only copy the real conditions tokens, we cannot use
 		// getCondition();
 		for (Token token : condition) {
-			token.setFlow(this);
+			if (token != null) {
+				token.setFlow(this);
+			}
 		}
 	}
 
 	public void updateConditionSortSeq() {
 		for (int i = 0; i < condition.size(); i++) {
-			condition.get(i).setSortSeq(i);
+			if (condition.get(i) != null) {
+				condition.get(i).setSortSeq(i);
+			}
 		}
 	}
 
@@ -368,7 +378,9 @@ public class Flow extends StorableObject {
 			setDestiny((BaseQuestion) mappedElements.get(getDestiny().getOriginalReference()));
 		}
 		for (Token token : getComputedCondition()) {
-			token.updateReferences(mappedElements);
+			if (token != null) {
+				token.updateReferences(mappedElements);
+			}
 		}
 	}
 
@@ -376,7 +388,9 @@ public class Flow extends StorableObject {
 	public void resetIds() {
 		super.resetIds();
 		for (Token token : getComputedCondition()) {
-			token.resetIds();
+			if (token != null) {
+				token.resetIds();
+			}
 		}
 	}
 
@@ -406,20 +420,22 @@ public class Flow extends StorableObject {
 
 	public boolean isDependent(Answer answer) {
 		for (Token token : condition) {
-			if (token instanceof TokenComparationAnswer) {
-				if (((TokenComparationAnswer) token).getAnswer() != null
-						&& ((TokenComparationAnswer) token).getAnswer().equals(answer)) {
-					return true;
-				}
-				continue;
-			}
-			if (token instanceof TokenIn) {
-				for (TokenInValue inValue : ((TokenIn) token).getValues()) {
-					if (inValue.getAnswerValue() != null && inValue.getAnswerValue().equals(answer)) {
+			if (token != null) {
+				if (token instanceof TokenComparationAnswer) {
+					if (((TokenComparationAnswer) token).getAnswer() != null
+							&& ((TokenComparationAnswer) token).getAnswer().equals(answer)) {
 						return true;
 					}
+					continue;
 				}
-				continue;
+				if (token instanceof TokenIn) {
+					for (TokenInValue inValue : ((TokenIn) token).getValues()) {
+						if (inValue.getAnswerValue() != null && inValue.getAnswerValue().equals(answer)) {
+							return true;
+						}
+					}
+					continue;
+				}
 			}
 		}
 		return false;
@@ -431,40 +447,42 @@ public class Flow extends StorableObject {
 		}
 
 		for (Token token : condition) {
-			if (token instanceof TokenComparationAnswer) {
-				if (((TokenComparationAnswer) token).getQuestion() != null
-						&& Objects.equals(((TokenComparationAnswer) token).getQuestion(), question)) {
-					return true;
+			if (token != null) {
+				if (token instanceof TokenComparationAnswer) {
+					if (((TokenComparationAnswer) token).getQuestion() != null
+							&& Objects.equals(((TokenComparationAnswer) token).getQuestion(), question)) {
+						return true;
+					}
+					continue;
 				}
-				continue;
-			}
-			if (token instanceof TokenComparationValue) {
-				if (((TokenComparationValue) token).getQuestion() != null
-						&& Objects.equals(((TokenComparationValue) token).getQuestion(), question)) {
-					return true;
+				if (token instanceof TokenComparationValue) {
+					if (((TokenComparationValue) token).getQuestion() != null
+							&& Objects.equals(((TokenComparationValue) token).getQuestion(), question)) {
+						return true;
+					}
+					continue;
 				}
-				continue;
-			}
-			if (token instanceof TokenBetween) {
-				if (((TokenBetween) token).getQuestion() != null
-						&& Objects.equals(((TokenBetween) token).getQuestion(), question)) {
-					return true;
+				if (token instanceof TokenBetween) {
+					if (((TokenBetween) token).getQuestion() != null
+							&& Objects.equals(((TokenBetween) token).getQuestion(), question)) {
+						return true;
+					}
+					continue;
 				}
-				continue;
-			}
-			if (token instanceof TokenEmpty) {
-				if (((TokenEmpty) token).getQuestion() != null
-						&& Objects.equals(((TokenEmpty) token).getQuestion(), question)) {
-					return true;
+				if (token instanceof TokenEmpty) {
+					if (((TokenEmpty) token).getQuestion() != null
+							&& Objects.equals(((TokenEmpty) token).getQuestion(), question)) {
+						return true;
+					}
+					continue;
 				}
-				continue;
-			}
-			if (token instanceof TokenIn) {
-				if (((TokenIn) token).getQuestion() != null
-						&& Objects.equals(((TokenIn) token).getQuestion(), question)) {
-					return true;
+				if (token instanceof TokenIn) {
+					if (((TokenIn) token).getQuestion() != null
+							&& Objects.equals(((TokenIn) token).getQuestion(), question)) {
+						return true;
+					}
+					continue;
 				}
-				continue;
 			}
 		}
 		return false;
@@ -539,7 +557,9 @@ public class Flow extends StorableObject {
 	public void resetUserTimestampInfo(Long userId) {
 		super.resetUserTimestampInfo(userId);
 		for (Token token : getComputedCondition()) {
-			token.resetUserTimestampInfo(userId);
+			if (token != null) {
+				token.resetUserTimestampInfo(userId);
+			}
 		}
 	}
 
@@ -560,14 +580,16 @@ public class Flow extends StorableObject {
 		// Check condition.
 		List<Token> tokens = getConditionSimpleTokens();
 		for (Token token : tokens) {
-			if (token instanceof TokenComparationAnswer) {
-				if (((TokenComparationAnswer) token).getQuestion().isHiddenElement()
-						|| ((TokenComparationAnswer) token).getAnswer().isHiddenElement()) {
-					return true;
-				}
-			} else if (token instanceof TokenComparationValue) {
-				if (((TokenComparationValue) token).getQuestion().isHiddenElement()) {
-					return true;
+			if (token != null) {
+				if (token instanceof TokenComparationAnswer) {
+					if (((TokenComparationAnswer) token).getQuestion().isHiddenElement()
+							|| ((TokenComparationAnswer) token).getAnswer().isHiddenElement()) {
+						return true;
+					}
+				} else if (token instanceof TokenComparationValue) {
+					if (((TokenComparationValue) token).getQuestion().isHiddenElement()) {
+						return true;
+					}
 				}
 			}
 		}
