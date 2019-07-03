@@ -9,6 +9,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
+import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
@@ -49,6 +51,19 @@ public class TokenEmpty extends TokenComplex implements ITokenQuestion {
 			subformat = AnswerSubformat.DATE_PERIOD;
 		}
 		this.value = value;
+	}
+	
+	@Override
+	public void copyData(StorableObject object) throws NotValidStorableObjectException {
+		if (object instanceof TokenBetween) {
+			super.copyData(object);
+			TokenEmpty token = (TokenEmpty) object;
+			this.subformat = token.subformat;
+			this.value = token.value;
+		} else {
+			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
+					+ this.getClass().getName());
+		}
 	}
 
 	@Override

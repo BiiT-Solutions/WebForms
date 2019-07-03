@@ -39,7 +39,8 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidRangeException;
 @Entity
 @Table(name = "tree_questions")
 @Cacheable(true)
-public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithImage, ElementWithDescription {
+public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithImage,
+		ElementWithDescription {
 	private static final long serialVersionUID = -7243001035969348318L;
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 	public static final int MAX_DEFAULT_VALUE = 10000;
@@ -181,7 +182,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		this.answerFormat = answerFormat;
 		if (answerFormat != null) {
 			// Answer subform is not valid for answerSubformat, change it.
-			if (answerSubformat == null || (answerSubformat.getAnswerFormat() != null && !answerSubformat.getAnswerFormat().equals(answerFormat))) {
+			if (answerSubformat == null
+					|| (answerSubformat.getAnswerFormat() != null && !answerSubformat.getAnswerFormat().equals(
+							answerFormat))) {
 				this.answerSubformat = answerFormat.getDefaultSubformat();
 			}
 		} else {
@@ -196,10 +199,12 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	public void setAnswerSubformat(AnswerSubformat answerSubformat) throws InvalidAnswerSubformatException {
 		if (answerFormat == null && answerSubformat != null) {
-			throw new InvalidAnswerSubformatException("Answer subformat can't be defined if the question doesn't have any format.");
+			throw new InvalidAnswerSubformatException(
+					"Answer subformat can't be defined if the question doesn't have any format.");
 		}
 		if (answerFormat != null && answerSubformat != null && !answerFormat.isSubformat(answerSubformat)) {
-			throw new InvalidAnswerSubformatException("Answer subformat " + answerSubformat + " is not compatible with answer format " + answerFormat);
+			throw new InvalidAnswerSubformatException("Answer subformat " + answerSubformat
+					+ " is not compatible with answer format " + answerFormat);
 		}
 		if (answerFormat != null && answerSubformat == null) {
 			this.answerSubformat = answerFormat.getDefaultSubformat();
@@ -242,7 +247,8 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 				setDefaultValueAnswer(getAnswer(question.getDefaultValueAnswer().getValue()));
 			}
 		} else {
-			throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy");
+			throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy. Type '"
+					+ object.getClass().getName() + "' not allowed.");
 		}
 	}
 
@@ -346,8 +352,10 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		switch (answerType) {
 		case INPUT:
 			sb.append(idName).append(".setAnswerType(AnswerType." + answerType + ");").append(System.lineSeparator());
-			sb.append(idName).append(".setAnswerFormat(AnswerFormat." + answerFormat + ");").append(System.lineSeparator());
-			sb.append(idName).append(".setAnswerSubformat(AnswerSubformat." + answerSubformat + ");").append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerFormat(AnswerFormat." + answerFormat + ");")
+					.append(System.lineSeparator());
+			sb.append(idName).append(".setAnswerSubformat(AnswerSubformat." + answerSubformat + ");")
+					.append(System.lineSeparator());
 			break;
 		default:
 			sb.append(idName).append(".setAnswerType(AnswerType." + answerType + ");").append(System.lineSeparator());
@@ -370,7 +378,8 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 			int tempCounter = currentCounter + 1;
 			currentCounter = ((Answer) child).exportToJavaCode(sb, currentCounter + 1);
 			sb.append("//ques").append(System.lineSeparator());
-			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
+			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");")
+					.append(System.lineSeparator());
 		}
 
 		return currentCounter;
@@ -506,13 +515,14 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 		return image;
 	}
 
-	public List<Answer> createAnswers(float lowerValueRange, float upperValueRange, float increment) throws InvalidRangeException {
+	public List<Answer> createAnswers(float lowerValueRange, float upperValueRange, float increment)
+			throws InvalidRangeException {
 		List<Answer> answers = new ArrayList<>();
 		// lowerValueRange < lowerValueRange + increment because increment must
 		// > 0
 		if (!(lowerValueRange < lowerValueRange + increment && lowerValueRange + increment <= upperValueRange)) {
-			throw new InvalidRangeException("Invalid answer range definition with lower value '" + lowerValueRange + "', upper value '" + upperValueRange
-					+ "' and increment '" + increment + "'.");
+			throw new InvalidRangeException("Invalid answer range definition with lower value '" + lowerValueRange
+					+ "', upper value '" + upperValueRange + "' and increment '" + increment + "'.");
 		}
 		for (float i = lowerValueRange; i <= upperValueRange; i += increment) {
 			try {

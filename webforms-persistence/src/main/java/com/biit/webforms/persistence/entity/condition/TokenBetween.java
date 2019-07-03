@@ -92,7 +92,7 @@ public class TokenBetween extends TokenComplex implements ITokenQuestion {
 			this.valueEnd = token.valueEnd;
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
-					+ TokenComparationAnswer.class.getName());
+					+ this.getClass().getName());
 		}
 	}
 

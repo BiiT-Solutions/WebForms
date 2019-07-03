@@ -67,7 +67,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 			}
 		} else {
 			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
-					+ TokenComparationAnswer.class.getName());
+					+ this.getClass().getName());
 		}
 	}
 
@@ -197,7 +197,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
 			value.resetUserTimestampInfo(userId);
 		}
 	}
-	
+
 	@Override
 	public Boolean evaluate() {
 		throw new UnsupportedOperationException();
