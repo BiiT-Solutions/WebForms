@@ -107,6 +107,12 @@
 			<artifactId>abcd-core</artifactId>
 			<version>${abcd.version}</version>
 			<type>jar</type>
+			<exclusions>
+                                <exclusion>
+                                        <groupId>com.biit</groupId>
+                                        <artifactId>common-utils</artifactId>
+                                </exclusion>
+                        </exclusions>
 		</dependency>
 		<!-- DESEncryption -->
 		<dependency>

@@ -30,6 +30,12 @@
 			<artifactId>abcd-persistence</artifactId>
 			<version>${abcd.version}</version>
 			<type>jar</type>
+		        <exclusions>
+                                <exclusion>
+                                        <groupId>com.biit</groupId>
+                                        <artifactId>common-utils</artifactId>
+                                </exclusion>
+                        </exclusions>
 		</dependency>
 		<!-- For SpringContextHelper -->
 		<dependency>
