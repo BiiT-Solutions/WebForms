@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.entity.condition;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,15 +21,15 @@ import com.biit.webforms.persistence.entity.Answer;
 public class TokenInValue extends StorableObject {
 	private static final long serialVersionUID = 4271257510746487089L;
 
-	@ManyToOne(optional=false)
-	@JoinColumn(name="token_in")
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "token_in")
 	private TokenIn tokenIn;
 
-	@Column(name="sort_seq", nullable = false)
+	@Column(name = "sort_seq", nullable = false)
 	private long sortSeq = 0;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="answer_value")
+	@JoinColumn(name = "answer_value")
 	private Answer answerValue;
 
 	public Answer getAnswerValue() {
@@ -51,17 +52,18 @@ public class TokenInValue extends StorableObject {
 			TokenInValue token = (TokenInValue) object;
 			this.answerValue = token.answerValue;
 		} else {
-			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
-					+ TokenInValue.class.getName());
+			throw new NotValidStorableObjectException(
+					object.getClass().getName() + " is not compatible with " + TokenInValue.class.getName());
 		}
 	}
 
 	public TokenInValue generateCopy() {
 		try {
-			TokenInValue newInstance = this.getClass().newInstance();
+			TokenInValue newInstance = this.getClass().getDeclaredConstructor().newInstance();
 			newInstance.copyData(this);
 			return newInstance;
-		} catch (InstantiationException | IllegalAccessException | NotValidStorableObjectException e) {
+		} catch (InstantiationException | IllegalAccessException | NotValidStorableObjectException
+				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			return null;
@@ -78,7 +80,7 @@ public class TokenInValue extends StorableObject {
 	}
 
 	public boolean isContentEqual(TokenInValue tokenInValue) {
-		if(answerValue.isContentEqual(tokenInValue.answerValue)){
+		if (answerValue.isContentEqual(tokenInValue.answerValue)) {
 			return true;
 		}
 		return false;

@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
@@ -45,7 +46,8 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 		return TOKEN_TYPES;
 	}
 
-	public void setContent(WebformsBaseQuestion reference, TokenTypes tokenType, Answer answer) throws NotValidTokenType {
+	public void setContent(WebformsBaseQuestion reference, TokenTypes tokenType, Answer answer)
+			throws NotValidTokenType {
 		setQuestion(reference);
 		setType(tokenType);
 		this.answer = answer;
@@ -98,7 +100,8 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 			TokenComparationAnswer token = (TokenComparationAnswer) object;
 			answer = token.getAnswer();
 		} else {
-			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with " + TokenComparationAnswer.class.getName());
+			throw new NotValidStorableObjectException(
+					object.getClass().getName() + " is not compatible with " + TokenComparationAnswer.class.getName());
 		}
 	}
 
@@ -143,8 +146,7 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 	}
 
 	/**
-	 * Compares two token ComparationAnswer. it must be of token comparation
-	 * type.
+	 * Compares two token ComparationAnswer. it must be of token comparation type.
 	 */
 	@Override
 	public boolean isContentEqual(Token token) {
@@ -174,6 +176,13 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 
 		evaluationValue = false;
 		for (String answer : answers) {
+			// Sliders store value as double but names are integer.
+			if (getQuestion().getAnswerType().equals(AnswerType.SINGLE_SELECTION_SLIDER)) {
+				if (Integer.parseInt(this.answer.getName()) == (int) (Double.parseDouble(answer))) {
+					evaluationValue = true;
+					return;
+				}
+			}
 			if (this.answer.getName().equals(answer)) {
 				evaluationValue = true;
 				return;

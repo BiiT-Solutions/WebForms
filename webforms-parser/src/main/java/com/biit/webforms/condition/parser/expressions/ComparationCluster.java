@@ -88,7 +88,7 @@ public class ComparationCluster extends Expression implements WebformsExpression
 
 	@Override
 	public Boolean evaluate() {
-		if(token instanceof ITokenQuestion){
+		if (token instanceof ITokenQuestion) {
 			return ((ITokenQuestion) token).evaluate();
 		}
 		return null;
