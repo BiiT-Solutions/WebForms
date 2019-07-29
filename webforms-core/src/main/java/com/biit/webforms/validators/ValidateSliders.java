@@ -1,5 +1,7 @@
 package com.biit.webforms.validators;
 
+import java.util.Objects;
+
 import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.enumerations.AnswerType;
@@ -18,12 +20,14 @@ public class ValidateSliders extends SimpleValidator<TreeObject> {
 	@Override
 	protected void validateImplementation(TreeObject element) {
 		if (element instanceof WebformsBaseQuestion) {
-			if (((WebformsBaseQuestion) element).getAnswerType().equals(AnswerType.SINGLE_SELECTION_SLIDER)) {
-				for (TreeObject child : element.getChildren()) {
-					try {
-						Integer.parseInt(child.getName());
-					} catch (NumberFormatException e) {
-						assertTrue(false, new OnlyNumbersInSliderAllowed((WebformsBaseQuestion) element, child));
+			if (element != null) {
+				if (Objects.equals(((WebformsBaseQuestion) element).getAnswerType(), AnswerType.SINGLE_SELECTION_SLIDER)) {
+					for (TreeObject child : element.getChildren()) {
+						try {
+							Integer.parseInt(child.getName());
+						} catch (NumberFormatException e) {
+							assertTrue(false, new OnlyNumbersInSliderAllowed((WebformsBaseQuestion) element, child));
+						}
 					}
 				}
 			}
