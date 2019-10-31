@@ -12,6 +12,8 @@ import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SystemField;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.validators.reports.FormAnswerNotFound;
 import com.biit.webforms.validators.reports.FormElementIsBaseGroupNotBaseQuestion;
 import com.biit.webforms.validators.reports.FormElementIsBaseQuestionNotBaseGroup;
@@ -89,7 +91,7 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<com.biit.abcd
 	private void validateStructure(BaseForm abcdForm, BaseQuestion webformsQuestion, BaseQuestion abcdQuestion) {
 		try {
 			assertTrue(
-					checkCompatibility((Question) webformsQuestion,
+					checkCompatibility((WebformsBaseQuestion) webformsQuestion,
 							(com.biit.abcd.persistence.entity.Question) abcdQuestion),
 					new QuestionCompatibilityError((Question) webformsQuestion,
 							(com.biit.abcd.persistence.entity.Form) abcdForm,
@@ -120,7 +122,7 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<com.biit.abcd
 		}
 	}
 
-	private boolean checkCompatibility(Question question, com.biit.abcd.persistence.entity.Question abcdQuestion) {
+	private boolean checkCompatibility(WebformsBaseQuestion question, com.biit.abcd.persistence.entity.Question abcdQuestion) {
 		switch (question.getAnswerType()) {
 		case INPUT:
 			return checkCompatibilityAnswerFormat(question.getAnswerFormat(), abcdQuestion);
@@ -143,7 +145,7 @@ public class ValidateFormAbcdCompatibility extends SimpleValidator<com.biit.abcd
 		}
 		return false;
 	}
-
+	
 	private boolean checkCompatibilityAnswerFormat(AnswerFormat answerFormat,
 			com.biit.abcd.persistence.entity.Question abcdQuestion) {
 		switch (answerFormat) {
