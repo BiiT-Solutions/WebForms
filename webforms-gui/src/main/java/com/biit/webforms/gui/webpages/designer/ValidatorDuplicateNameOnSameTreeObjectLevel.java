@@ -42,6 +42,9 @@ public class ValidatorDuplicateNameOnSameTreeObjectLevel implements Validator {
 				if (child.getName().equals(newName)) {
 					throw new InvalidValueException(LanguageCodes.CAPTION_VALIDATE_DUPLICATE_NAME.translation());
 				}
+				if (child.getName().equalsIgnoreCase(newName)) {
+					throw new InvalidValueException(LanguageCodes.CAPTION_VALIDATE_DUPLICATE_NAME_CASE.translation());
+				}
 			}
 		}
 	}

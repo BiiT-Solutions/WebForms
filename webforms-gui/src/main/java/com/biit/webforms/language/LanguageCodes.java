@@ -263,6 +263,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_WINDOW_MOVE("caption.window.move"),
 	CAPTION_ORGANIZATION("caption.organization"),
 	CAPTION_VALIDATE_DUPLICATE_NAME("caption.validate.duplicate.name"),
+	CAPTION_VALIDATE_DUPLICATE_NAME_CASE("caption.validate.duplicate.name.case"),
 	CAPTION_VALIDATE_DUPLICATE_ANSWER_VALUE("caption.validate.duplicate.answer.value"),
 	CAPTION_VALIDATE_NESTED_TABLE("caption.validate.nested.table"),
 	CAPTION_VALIDATE_TABLE_ONLY_GROUPS_AS_ROWS("caption.validate.table.only.groups.as.rows"),
