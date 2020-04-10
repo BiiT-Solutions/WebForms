@@ -8,6 +8,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.os.ProcessUtils.ProcessStillAliveException;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
@@ -26,11 +27,16 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	private static final String NOTIFICATION_TYPE_HUMANIZED = "humanized";
 	private static final String NOTIFICATION_TYPE_WARNING = "warning";
 	private static final String NOTIFICATION_TYPE_ERROR = "error";
+	private static final Integer WIDTH = 1920;
+	private static final Integer HEIGHT = 1080;
+	
 	// This parameter set to 'true' activates phantomJs driver instead of
 	// firefox driver
 	private boolean headlessTesting = false;
-	private static final Integer WIDTH = 1920;
-	private static final Integer HEIGHT = 1080;
+
+	// To debug last step on firefox
+	private boolean destroyDriver = false;
+
 
 	private final List<VaadinGuiWebpage> webpages;
 
@@ -56,9 +62,17 @@ public class VaadinGuiTester extends TestBenchTestCase {
 		}
 	}
 
-	@AfterClass(alwaysRun = true)
+	@AfterClass(inheritGroups = true, alwaysRun = true)
 	public void destroyDriver() {
-		getDriver().quit();
+		if (destroyDriver) {
+			try {
+				getDriver().quit();
+			} catch (ProcessStillAliveException psae) {
+				// Ignore
+			} catch (NullPointerException npe) {
+				// Already destroyed.
+			}
+		}
 	}
 
 	public void addWebpage(VaadinGuiWebpage webpage) {
@@ -78,16 +92,16 @@ public class VaadinGuiTester extends TestBenchTestCase {
 			$(NotificationElement.class).first().close();
 		}
 	}
-	
+
 	public static void closeNotification(NotificationElement notification) {
-		try{
-			try{
+		try {
+			try {
 				notification.close();
-			}catch(TimeoutException e){
-				//Do nothing.
+			} catch (TimeoutException e) {
+				// Do nothing.
 			}
-		}catch(StaleElementReferenceException e){
-			//Do nothing
+		} catch (StaleElementReferenceException e) {
+			// Do nothing
 		}
 	}
 
