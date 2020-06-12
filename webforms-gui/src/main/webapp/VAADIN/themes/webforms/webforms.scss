@@ -360,6 +360,15 @@ $open-sans-pathPrefix: "./fonts/";
 	.v-table-row:not(.v-selected) .v-table-cell-content-tree-cell-question, .v-table-row-odd:not(.v-selected) .v-table-cell-content-tree-cell-question {
 		color: rgb(90, 112, 151);
 	}
+	.v-table-row:not(.v-selected) .v-table-cell-content-tree-cell-answer, .v-table-row-odd:not(.v-selected) .v-table-cell-content-tree-cell-system-field {
+		color: rgb(80, 92, 101);
+	}
+	.v-table-row:not(.v-selected) .v-table-cell-content-tree-cell-answer, .v-table-row-odd:not(.v-selected) .v-table-cell-content-tree-cell-attached-file {
+		color: rgb(100, 70, 70);
+	}
+	.v-table-row:not(.v-selected) .v-table-cell-content-tree-cell-answer, .v-table-row-odd:not(.v-selected) .v-table-cell-content-tree-cell-info-text {
+		color: rgb(130, 130, 130);
+	}
 	.v-table-row:not(.v-selected) .v-table-cell-content-tree-cell-answer, .v-table-row-odd:not(.v-selected) .v-table-cell-content-tree-cell-answer {
 		color: rgb(165, 107, 124);
 	}

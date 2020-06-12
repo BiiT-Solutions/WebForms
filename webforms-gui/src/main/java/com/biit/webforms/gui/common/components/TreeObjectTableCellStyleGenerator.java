@@ -7,11 +7,15 @@ import com.biit.form.entity.BaseGroup;
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.TableTreeObject.TreeObjectTableProperties;
+import com.biit.webforms.persistence.entity.AttachedFiles;
+import com.biit.webforms.persistence.entity.SystemField;
+import com.biit.webforms.persistence.entity.Text;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.CellStyleGenerator;
 
 /**
- * Cell Style generator for FormTreeTable. Adds style for column name in each row depending on the itemId.
+ * Cell Style generator for FormTreeTable. Adds style for column name in each
+ * row depending on the itemId.
  * 
  */
 public class TreeObjectTableCellStyleGenerator implements CellStyleGenerator {
@@ -32,6 +36,12 @@ public class TreeObjectTableCellStyleGenerator implements CellStyleGenerator {
 				styles += "tree-cell-category";
 			} else if (itemId instanceof BaseGroup) {
 				styles += "tree-cell-group";
+			} else if (itemId instanceof SystemField) {
+				styles += "tree-cell-system-field";
+			} else if (itemId instanceof Text) {
+				styles += "tree-cell-info-text";
+			}else if (itemId instanceof AttachedFiles) {
+					styles += "tree-cell-attached-file";
 			} else if (itemId instanceof BaseQuestion) {
 				styles += "tree-cell-question";
 			} else if (itemId instanceof BaseAnswer) {

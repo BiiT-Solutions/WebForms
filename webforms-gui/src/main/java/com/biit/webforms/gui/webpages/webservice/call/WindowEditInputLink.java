@@ -17,16 +17,16 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-public class WindowEditInputLink extends WindowEditLink{
+public class WindowEditInputLink extends WindowEditLink {
 	private static final long serialVersionUID = -8577100119556278102L;
 	private static final String WINDOW_WIDTH = "600px";
 	private static final String WINDOW_HEIGHT = "280px";
 
 	private static final String ERROR_MESSAGES_LAYOUT = "v-error-messages-layout";
-	
+
 	private FormLayout errorMessages;
 	private VerticalLayout errorMessagesBorder;
-	
+
 	public WindowEditInputLink() {
 		super();
 	}
@@ -37,48 +37,48 @@ public class WindowEditInputLink extends WindowEditLink{
 		VerticalLayout rootLayout = new VerticalLayout();
 		rootLayout.setSizeFull();
 		rootLayout.setSpacing(true);
-				
+
 		rootLayout.addComponent(getSearchFormElement());
-		
+
 		errorMessages = new FormLayout();
 		errorMessages.setSpacing(true);
 		errorMessages.setMargin(true);
 		errorMessages.setWidth("100%");
 		errorMessages.setHeightUndefined();
-		
+
 		errorMessagesBorder = new VerticalLayout();
 		errorMessagesBorder.addStyleName(ERROR_MESSAGES_LAYOUT);
 		errorMessagesBorder.setCaption(LanguageCodes.CAPTION_WEBSERVICE_CALL_VALIDATION_LINK.translation());
 		errorMessagesBorder.setSizeFull();
-		
+
 		rootLayout.addComponent(errorMessagesBorder);
 		rootLayout.setExpandRatio(errorMessagesBorder, 1.0f);
 
 		errorMessagesBorder.addComponent(errorMessages);
-			
+
 		return rootLayout;
 	}
-	
+
 	@Override
-	public void updateValue(){
+	public void updateValue() {
 		super.updateValue();
 		HashMap<String, String> errorValues = new HashMap<>();
 		Iterator<Component> itr = errorMessages.iterator();
-		while(itr.hasNext()){
-			TextField field = (TextField)itr.next();
-			errorValues.put(field.getCaption(),field.getValue());
+		while (itr.hasNext()) {
+			TextField field = (TextField) itr.next();
+			errorValues.put(field.getCaption(), field.getValue());
 		}
 		WebserviceCallInputLink link = (WebserviceCallInputLink) getLink();
-		for(WebserviceCallInputLinkErrors error: link.getErrors()){
+		for (WebserviceCallInputLinkErrors error : link.getErrors()) {
 			error.setErrorMessage(errorValues.get(error.getErrorCode()));
 		}
 	}
-	
+
 	@Override
 	public void setValue(WebserviceCallLink value, WebservicePort port) {
-		super.setValue(value,port);
+		super.setValue(value, port);
 		WebserviceCallInputLink link = (WebserviceCallInputLink) value;
-		
+
 		List<WebserviceCallInputLinkErrors> orderedErrors = new ArrayList<>();
 		orderedErrors.addAll(link.getErrors());
 		Collections.sort(orderedErrors, new Comparator<WebserviceCallInputLinkErrors>() {
@@ -87,9 +87,9 @@ public class WindowEditInputLink extends WindowEditLink{
 			public int compare(WebserviceCallInputLinkErrors o1, WebserviceCallInputLinkErrors o2) {
 				return o1.getErrorCode().compareTo(o2.getErrorCode());
 			}
-		});		
-		
-		for(WebserviceCallInputLinkErrors error: orderedErrors){
+		});
+
+		for (WebserviceCallInputLinkErrors error : orderedErrors) {
 			TextField newField = new TextField();
 			newField.setCaption(error.getErrorCode());
 			newField.setValue(error.getErrorMessage());
@@ -104,7 +104,7 @@ public class WindowEditInputLink extends WindowEditLink{
 
 		setWidth(WINDOW_WIDTH);
 		setHeight(WINDOW_HEIGHT);
-		
+
 		setCaption(LanguageCodes.WINDOW_EDIT_INPUT_LINK.translation());
 	}
 }
