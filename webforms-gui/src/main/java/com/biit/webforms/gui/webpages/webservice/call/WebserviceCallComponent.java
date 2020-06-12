@@ -80,7 +80,7 @@ public class WebserviceCallComponent extends CustomComponent {
 
 		webserviceCallName = new TextField();
 		webserviceName = new TextField();
-		webserviceCallTrigger = new SearchFormElementField(Form.class, Category.class, Group.class, Question.class);
+		webserviceCallTrigger = new SearchFormElementField(Form.class, Category.class, Group.class, BaseQuestion.class);
 		webserviceCallTrigger.setSelectableFilter(Question.class);
 
 		inputValueChangeListener = new ValueChangeListener() {
@@ -122,7 +122,6 @@ public class WebserviceCallComponent extends CustomComponent {
 	}
 
 	private void initLayout() {
-
 		webserviceCallName.setCaption(LanguageCodes.CAPTION_WEBSERVICE_CALL_NAME.translation());
 		webserviceCallName.setWidth(FULL);
 		webserviceName.setCaption(LanguageCodes.CAPTION_WEBSERVICE_NAME.translation());
