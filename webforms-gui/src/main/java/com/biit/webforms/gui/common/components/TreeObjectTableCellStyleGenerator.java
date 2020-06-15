@@ -40,8 +40,8 @@ public class TreeObjectTableCellStyleGenerator implements CellStyleGenerator {
 				styles += "tree-cell-system-field";
 			} else if (itemId instanceof Text) {
 				styles += "tree-cell-info-text";
-			}else if (itemId instanceof AttachedFiles) {
-					styles += "tree-cell-attached-file";
+			} else if (itemId instanceof AttachedFiles) {
+				styles += "tree-cell-attached-file";
 			} else if (itemId instanceof BaseQuestion) {
 				styles += "tree-cell-question";
 			} else if (itemId instanceof BaseAnswer) {

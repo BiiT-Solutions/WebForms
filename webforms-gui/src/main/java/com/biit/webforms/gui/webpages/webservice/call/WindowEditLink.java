@@ -32,7 +32,7 @@ public class WindowEditLink extends WindowAcceptCancel {
 	public WindowEditLink() {
 		super();
 		rootLayout = new FormLayout();
-		searchFormElement = new SearchFormElementField(Form.class, Category.class, Group.class, BaseQuestion.class);
+		searchFormElement = new SearchFormElementField(Form.class, Category.class, Group.class, SystemField.class, Question.class);
 		configure();
 		setContent(generateContent());
 	}

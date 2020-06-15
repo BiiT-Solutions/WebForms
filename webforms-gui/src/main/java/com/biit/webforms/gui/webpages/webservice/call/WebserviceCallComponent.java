@@ -22,6 +22,7 @@ import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
@@ -80,8 +81,8 @@ public class WebserviceCallComponent extends CustomComponent {
 
 		webserviceCallName = new TextField();
 		webserviceName = new TextField();
-		webserviceCallTrigger = new SearchFormElementField(Form.class, Category.class, Group.class, BaseQuestion.class);
-		webserviceCallTrigger.setSelectableFilter(Question.class);
+		webserviceCallTrigger = new SearchFormElementField(Form.class, Category.class, Group.class, SystemField.class, Question.class);
+		webserviceCallTrigger.setSelectableFilter(SystemField.class, Question.class);
 
 		inputValueChangeListener = new ValueChangeListener() {
 			private static final long serialVersionUID = -6889903544916406512L;
