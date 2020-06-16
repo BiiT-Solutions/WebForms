@@ -134,7 +134,7 @@ public class WebserviceCallComponent extends CustomComponent {
 			@Override
 			public void currentElement(Object object) {
 				if (webserviceCall != null) {
-					webserviceCall.setFormElementTrigger((Question) object);
+					webserviceCall.setFormElementTrigger((BaseQuestion) object);
 				}
 			}
 		});

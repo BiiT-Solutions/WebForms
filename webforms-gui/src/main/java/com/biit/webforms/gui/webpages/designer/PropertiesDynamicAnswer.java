@@ -37,8 +37,10 @@ public class PropertiesDynamicAnswer extends StorableObjectProperties<DynamicAns
 
 			@Override
 			public void currentElement(Object object) {
-				getInstance().setReference((Question) object);
-				updateElement();
+				if (object instanceof Question) {
+					getInstance().setReference((Question) object);
+					updateElement();
+				}
 			}
 		});
 

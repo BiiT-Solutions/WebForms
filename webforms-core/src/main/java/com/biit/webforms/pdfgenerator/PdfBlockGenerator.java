@@ -40,12 +40,14 @@ public class PdfBlockGenerator {
 	public static PdfTableBlock generateAnnexQuestionTableBlock(Question question) {
 		PdfTableBlock block = null;
 		try {
-			block = new PdfTableBlock(ANNEX_QUESTION_ROWS + question.getAllChildrenInHierarchy(BaseAnswer.class).size(), ANNEX_COLS);
+			block = new PdfTableBlock(ANNEX_QUESTION_ROWS + question.getAllChildrenInHierarchy(BaseAnswer.class).size(),
+					ANNEX_COLS);
 
 			block.insertRow(PdfRowGenerator.generateAnnexQuestion(question));
 
 			if (!question.getChildren().isEmpty()) {
-				block.insertColumn(PdfCol.generateWhiteCol(question.getAllChildrenInHierarchy(BaseAnswer.class).size(), 1));
+				block.insertColumn(
+						PdfCol.generateWhiteCol(question.getAllChildrenInHierarchy(BaseAnswer.class).size(), 1));
 				for (TreeObject child : question.getChildren()) {
 					// They are all answers
 					block.insertRow(PdfRowGenerator.generateAnnexAnswer((BaseAnswer) child));
@@ -70,7 +72,7 @@ public class PdfBlockGenerator {
 		}
 		return block;
 	}
-	
+
 	public static PdfTableBlock generateAnnexQuestionTableBlock(AttachedFiles attachedFiles) {
 		PdfTableBlock block = null;
 		try {
@@ -91,10 +93,12 @@ public class PdfBlockGenerator {
 			if (!object.isHiddenElement() && !(object instanceof SystemField)) {
 				if (object instanceof Text) {
 					blocks.add(generateAnnexQuestionTableBlock((Text) object));
-				} else if(object instanceof AttachedFiles) {
+				} else if (object instanceof AttachedFiles) {
 					blocks.add(generateAnnexQuestionTableBlock((AttachedFiles) object));
-				} else {
+				} else if (object instanceof Question) {
 					blocks.add(generateAnnexQuestionTableBlock((Question) object));
+				} else {
+					WebformsLogger.warning(PdfBlockGenerator.class.getName(), "Ignoring element '" + object + "'.");
 				}
 			}
 		}
@@ -102,7 +106,8 @@ public class PdfBlockGenerator {
 		return blocks;
 	}
 
-	public static PdfTableBlock generateFormQuestionElement(PdfWriter writer, Question question) throws BadBlockException {
+	public static PdfTableBlock generateFormQuestionElement(PdfWriter writer, Question question)
+			throws BadBlockException {
 		switch (question.getAnswerType()) {
 		case MULTIPLE_SELECTION:
 			return generateMultipleSelectionBlock(writer, question);
@@ -118,7 +123,8 @@ public class PdfBlockGenerator {
 		return null;
 	}
 
-	private static PdfTableBlock generateAttachedFilesdBlock(PdfWriter writer, AttachedFiles attachedFiles) throws BadBlockException {
+	private static PdfTableBlock generateAttachedFilesdBlock(PdfWriter writer, AttachedFiles attachedFiles)
+			throws BadBlockException {
 		PdfTableBlock block = new PdfTableBlock(FORM_SINGLE_SELECTION_ROW, FORM_QUESTION_COLUMN);
 		block.insertRow(PdfRowGenerator.generateAttachedFilesRow(writer, attachedFiles));
 		return block;
@@ -130,7 +136,8 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	private static PdfTableBlock generateSingleSelectionBlock(PdfWriter writer, Question question) throws BadBlockException {
+	private static PdfTableBlock generateSingleSelectionBlock(PdfWriter writer, Question question)
+			throws BadBlockException {
 		List<PdfRow> rows = PdfRowGenerator.generateRadioFieldRows(writer, question);
 
 		int numberRows = getRowSizeOfRows(rows);
@@ -148,7 +155,8 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	private static PdfTableBlock generateSingleSelectionListBlock(PdfWriter writer, Question question) throws BadBlockException {
+	private static PdfTableBlock generateSingleSelectionListBlock(PdfWriter writer, Question question)
+			throws BadBlockException {
 		PdfRow row = PdfRowGenerator.generateSelectionListRow(writer, question, FORM_LIST_ROW, FORM_LIST_COL);
 
 		int numberRows = row.getNumberRows();
@@ -158,7 +166,8 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	private static PdfTableBlock generateMultipleSelectionBlock(PdfWriter writer, Question question) throws BadBlockException {
+	private static PdfTableBlock generateMultipleSelectionBlock(PdfWriter writer, Question question)
+			throws BadBlockException {
 		List<PdfRow> rows = PdfRowGenerator.generateCheckFieldRows(writer, question);
 
 		int numberRows = getRowSizeOfRows(rows);
@@ -176,7 +185,8 @@ public class PdfBlockGenerator {
 		return block;
 	}
 
-	public static List<PdfTableBlock> generateFormQuestionTableBlocks(PdfWriter writer, Question question) throws BadBlockException {
+	public static List<PdfTableBlock> generateFormQuestionTableBlocks(PdfWriter writer, Question question)
+			throws BadBlockException {
 		List<PdfTableBlock> tableBlocks = new ArrayList<PdfTableBlock>();
 
 		tableBlocks.add(generateFormQuestionElement(writer, question));
@@ -194,7 +204,8 @@ public class PdfBlockGenerator {
 		return tableBlocks;
 	}
 
-	public static List<PdfTableBlock> generateFormAttachedFilesTableBlocks(PdfWriter writer, AttachedFiles attachedFiles) throws BadBlockException {
+	public static List<PdfTableBlock> generateFormAttachedFilesTableBlocks(PdfWriter writer,
+			AttachedFiles attachedFiles) throws BadBlockException {
 		List<PdfTableBlock> tableBlocks = new ArrayList<PdfTableBlock>();
 
 		tableBlocks.add(generateAttachedFilesdBlock(writer, attachedFiles));
@@ -214,7 +225,8 @@ public class PdfBlockGenerator {
 
 	}
 
-	private static PdfTableBlock generateQuestionDescriptionBlock(ElementWithDescription question) throws BadBlockException {
+	private static PdfTableBlock generateQuestionDescriptionBlock(ElementWithDescription question)
+			throws BadBlockException {
 		PdfTableBlock block = new PdfTableBlock(DESCRIPTION_BLOC_ROW, DESCRIPTION_BLOC_COL);
 		block.insertRow(PdfRowGenerator.generateQuestionDescription(question));
 		return block;
