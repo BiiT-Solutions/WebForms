@@ -18,7 +18,6 @@ import com.biit.form.entity.BaseQuestion;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.webservices.Webservice;
 
@@ -166,7 +165,7 @@ public class WebserviceCall extends StorableObject {
 
 	public void updateReferences(HashMap<String, BaseQuestion> references) {
 		if (getFormElementTrigger() != null) {
-			setFormElementTrigger((Question) references.get(getFormElementTrigger().getOriginalReference()));
+			setFormElementTrigger((BaseQuestion) references.get(getFormElementTrigger().getOriginalReference()));
 		}
 		for (WebserviceCallLink link : getInputLinks()) {
 			link.updateReferences(references);
