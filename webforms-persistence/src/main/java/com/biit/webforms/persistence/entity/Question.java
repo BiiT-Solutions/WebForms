@@ -74,7 +74,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
 	// Disables in orbeon the edition of this field. Means that when creating a
 	// new form in orbeon is enabled, but when editing is disabled.
-	@Column(name = "edition_disabled")
+	@Column(name = "edition_disabled", nullable = false, columnDefinition = "bit default 1")
 	private boolean editionDisabled = false;
 
 	@Column(name = "default_value_time")

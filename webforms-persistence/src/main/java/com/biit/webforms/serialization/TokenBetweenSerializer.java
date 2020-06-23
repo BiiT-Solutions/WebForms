@@ -7,20 +7,29 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 
-public class TokenBetweenSerializer extends TokenSerializer<TokenBetween>{
+public class TokenBetweenSerializer extends TokenSerializer<TokenBetween> {
 
 	@Override
-	public JsonElement serialize(TokenBetween src, Type typeOfSrc,
-			JsonSerializationContext context) {
+	public JsonElement serialize(TokenBetween src, Type typeOfSrc, JsonSerializationContext context) {
 		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
-		
-		jsonObject.add("question_id", context.serialize(src.getQuestion().getPath()));
-		jsonObject.add("subformat", context.serialize(src.getSubformat()));
-		jsonObject.add("datePeriodUnit", context.serialize(src.getDatePeriodUnit()));
-		jsonObject.add("valueStart", context.serialize(src.getValueStart()));
-		jsonObject.add("valueEnd", context.serialize(src.getValueEnd()));
+
+		if (src != null && src.getQuestion() != null) {
+			jsonObject.add("question_id", context.serialize(src.getQuestion().getPath()));
+		}
+		if (src != null) {
+			jsonObject.add("subformat", context.serialize(src.getSubformat()));
+		}
+		if (src != null) {
+			jsonObject.add("datePeriodUnit", context.serialize(src.getDatePeriodUnit()));
+		}
+		if (src != null) {
+			jsonObject.add("valueStart", context.serialize(src.getValueStart()));
+		}
+		if (src != null) {
+			jsonObject.add("valueEnd", context.serialize(src.getValueEnd()));
+		}
 
 		return jsonObject;
 	}
-	
+
 }

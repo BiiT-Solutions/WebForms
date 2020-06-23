@@ -146,7 +146,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
 	// Disables in orbeon the edition of this field. Means that when creating a
 	// new form in orbeon is enabled, but when editing is disabled.
-	@Column(name = "edition_disabled")
+	@Column(name = "edition_disabled", nullable = false, columnDefinition = "bit default 0")
 	private boolean editionDisabled = false;
 
 	public Form() {
@@ -881,7 +881,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 		int index = 0;
 		Iterator<TreeObject> iterator = orderedQuestions.iterator();
 		while (iterator.hasNext()) {
-			questionIndex.put(iterator.next(), new Integer(index));
+			questionIndex.put(iterator.next(), Integer.valueOf(index));
 			index++;
 		}
 		return questionIndex;

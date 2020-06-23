@@ -7,15 +7,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 
-public class TokenComparationAnswerSerializer extends TokenSerializer<TokenComparationAnswer>{
+public class TokenComparationAnswerSerializer extends TokenSerializer<TokenComparationAnswer> {
 
 	@Override
-	public JsonElement serialize(TokenComparationAnswer src, Type typeOfSrc,
-			JsonSerializationContext context) {
+	public JsonElement serialize(TokenComparationAnswer src, Type typeOfSrc, JsonSerializationContext context) {
 		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
-		
-		jsonObject.add("question_id", context.serialize(src.getQuestion().getPath()));
-		jsonObject.add("answer_id", context.serialize(src.getAnswer().getPath()));
+
+		if (src != null && src.getQuestion() != null) {
+			jsonObject.add("question_id", context.serialize(src.getQuestion().getPath()));
+		}
+		if (src != null && src.getAnswer() != null) {
+			jsonObject.add("answer_id", context.serialize(src.getAnswer().getPath()));
+		}
 
 		return jsonObject;
 	}
