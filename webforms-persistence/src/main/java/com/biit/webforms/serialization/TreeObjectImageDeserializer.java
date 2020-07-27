@@ -1,5 +1,6 @@
 package com.biit.webforms.serialization;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
 import com.biit.form.json.serialization.StorableObjectDeserializer;
@@ -28,10 +29,11 @@ public class TreeObjectImageDeserializer extends StorableObjectDeserializer<Tree
 			throws JsonParseException {
 		TreeObjectImage instance;
 		try {
-			instance = TreeObjectImage.class.newInstance();
+			instance = TreeObjectImage.class.getDeclaredConstructor().newInstance();
 			deserialize(json, context, instance);
 			return instance;
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
 			throw new JsonParseException(e);
 		}
 	}

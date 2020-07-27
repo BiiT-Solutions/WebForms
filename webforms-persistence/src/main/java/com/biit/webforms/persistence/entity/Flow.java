@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.entity;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -217,8 +218,8 @@ public class Flow extends StorableObject {
 			this.setGenerated(flow.isGenerated());
 			this.setReadOnly(flow.isReadOnly());
 		} else {
-			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with "
-					+ Flow.class.getName());
+			throw new NotValidStorableObjectException(
+					object.getClass().getName() + " is not compatible with " + Flow.class.getName());
 		}
 	}
 
@@ -232,9 +233,10 @@ public class Flow extends StorableObject {
 
 		// Store object copy
 		try {
-			newInstance = this.getClass().newInstance();
+			newInstance = this.getClass().getDeclaredConstructor().newInstance();
 			newInstance.copyData(this);
-		} catch (InstantiationException | IllegalAccessException | NotValidStorableObjectException e) {
+		} catch (InstantiationException | IllegalAccessException | NotValidStorableObjectException
+				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -320,8 +322,7 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * Method to obtain simple version of the tokens. This has to be used by
-	 * orbeon.
+	 * Method to obtain simple version of the tokens. This has to be used by orbeon.
 	 * 
 	 * @return
 	 */
@@ -363,8 +364,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * This functions updates references to question and answers If a reference
-	 * is missing it will throw a {@code UpdateNullReferenceException}
+	 * This functions updates references to question and answers If a reference is
+	 * missing it will throw a {@code UpdateNullReferenceException}
 	 * 
 	 * @param mappedCopiedQuestions
 	 * @param mappedCopiedAnswers
@@ -564,8 +565,8 @@ public class Flow extends StorableObject {
 	}
 
 	/**
-	 * A flow is hidden if any of its element (origin, destination, condition)
-	 * is hidden.
+	 * A flow is hidden if any of its element (origin, destination, condition) is
+	 * hidden.
 	 * 
 	 * @param block
 	 * @param flow

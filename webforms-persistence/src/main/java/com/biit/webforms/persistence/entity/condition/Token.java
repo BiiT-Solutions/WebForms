@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.entity.condition;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -73,7 +74,8 @@ public class Token extends StorableObject {
 		if (isValidTokenType(tokenType)) {
 			this.type = tokenType;
 		} else {
-			throw new NotValidTokenType("Token type " + tokenType + " is not valid for token class " + this.getClass().getName());
+			throw new NotValidTokenType(
+					"Token type " + tokenType + " is not valid for token class " + this.getClass().getName());
 		}
 	}
 
@@ -95,16 +97,18 @@ public class Token extends StorableObject {
 			this.type = token.type;
 			this.sortSeq = token.sortSeq;
 		} else {
-			throw new NotValidStorableObjectException(object.getClass().getName() + " is not compatible with " + Token.class.getName());
+			throw new NotValidStorableObjectException(
+					object.getClass().getName() + " is not compatible with " + Token.class.getName());
 		}
 	}
 
 	public Token generateCopy() {
 		try {
-			Token newInstance = this.getClass().newInstance();
+			Token newInstance = this.getClass().getDeclaredConstructor().newInstance();
 			newInstance.copyData(this);
 			return newInstance;
-		} catch (InstantiationException | IllegalAccessException | NotValidStorableObjectException e) {
+		} catch (InstantiationException | IllegalAccessException | NotValidStorableObjectException
+				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 			return null;

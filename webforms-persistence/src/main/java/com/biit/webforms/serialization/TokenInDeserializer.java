@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.google.gson.JsonDeserializationContext;
@@ -26,7 +26,7 @@ public class TokenInDeserializer extends TokenDeserializer<TokenIn> {
 	public void deserialize(JsonElement json,JsonDeserializationContext context, TokenIn element){
 		JsonObject jobject = (JsonObject) json;
 		
-		element.setQuestion((Question) FormDeserializer.parseTreeObjectPath("question_id", form, jobject, context));
+		element.setQuestion((WebformsBaseQuestion) FormDeserializer.parseTreeObjectPath("question_id", form, jobject, context));
 		element.setValues(parseTokenInValues("values", jobject, context));
 		
 		super.deserialize(json, context, element);

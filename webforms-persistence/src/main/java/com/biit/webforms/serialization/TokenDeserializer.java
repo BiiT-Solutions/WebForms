@@ -1,5 +1,6 @@
 package com.biit.webforms.serialization;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
 import com.biit.form.json.serialization.StorableObjectDeserializer;
@@ -12,8 +13,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-public class TokenDeserializer<T extends Token> extends
-		StorableObjectDeserializer<T> {
+public class TokenDeserializer<T extends Token> extends StorableObjectDeserializer<T> {
 
 	Class<T> specificClass;
 
@@ -22,41 +22,42 @@ public class TokenDeserializer<T extends Token> extends
 	}
 
 	@Override
-	public void deserialize(JsonElement json,JsonDeserializationContext context, T element){
+	public void deserialize(JsonElement json, JsonDeserializationContext context, T element) {
 		JsonObject jobject = (JsonObject) json;
-		
+
 		try {
-			element.setType(parseTokenType("type",jobject,context));
+			element.setType(parseTokenType("type", jobject, context));
 		} catch (NotValidTokenType e) {
 			throw new JsonParseException(e);
 		}
-		
+
 		super.deserialize(json, context, element);
 	}
-	
+
 	public static TokenTypes parseTokenType(String name, JsonObject jobject, JsonDeserializationContext context) {
 		if (jobject.get(name) != null) {
-			return (TokenTypes) context.deserialize(jobject.get(name),TokenTypes.class);
+			return (TokenTypes) context.deserialize(jobject.get(name), TokenTypes.class);
 		}
 		return null;
 	}
 
-	public static DatePeriodUnit parseDatePeriodUnit(String name, JsonObject jobject, JsonDeserializationContext context) {
-		if(jobject.get(name)!=null){
+	public static DatePeriodUnit parseDatePeriodUnit(String name, JsonObject jobject,
+			JsonDeserializationContext context) {
+		if (jobject.get(name) != null) {
 			return (DatePeriodUnit) context.deserialize(jobject.get(name), DatePeriodUnit.class);
 		}
 		return null;
 	}
 
 	@Override
-	public T deserialize(JsonElement json, Type typeOfT,
-			JsonDeserializationContext context) throws JsonParseException {
+	public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		T instance;
 		try {
-			instance = specificClass.newInstance();
+			instance = specificClass.getDeclaredConstructor().newInstance();
 			deserialize(json, context, instance);
 			return instance;
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
 			throw new JsonParseException(e);
 		}
 	}
