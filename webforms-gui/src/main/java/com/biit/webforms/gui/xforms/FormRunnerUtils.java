@@ -17,6 +17,7 @@ import org.glassfish.jersey.SslConfigurator;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.WebformsUiLogger;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 
 public class FormRunnerUtils {
@@ -32,8 +33,7 @@ public class FormRunnerUtils {
 		try {
 			if (preview) {
 				savePreviewForm(form);
-			}
-			else {
+			} else {
 				saveForm(form);
 			}
 		} catch (ClientProtocolException e) {
@@ -52,21 +52,23 @@ public class FormRunnerUtils {
 		String jsonForm = form.toJson();
 		String url = WebformsConfigurationReader.getInstance().getFormrunnerJSRestService();
 
-		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "URL to save in preview: " + url);
 		String service = "/forms/preview";
 		String message = "{\"json\":" + jsonForm + "}";
+		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "URL to save in preview: " + url + service);
+		WebformsUiLogger.debug(FormRunnerUtils.class.getName(), "PUBLISHING PREVIEW:\n" + jsonForm);
 		String response = post(false, url, service, message, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
 				false, null);
 		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "Response from the server: " + response);
 	}
-	
+
 	private static void saveForm(Form form) throws ClientProtocolException, IOException {
 		String jsonForm = form.toJson();
 		String url = WebformsConfigurationReader.getInstance().getFormrunnerJSRestService();
 
-		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "URL to save in published: " + url);
 		String service = "/forms";
 		String message = "{\"json\":" + jsonForm + "}";
+		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "URL to save in published: " + url + service);
+		WebformsUiLogger.debug(FormRunnerUtils.class.getName(), "PUBLISHING FORM:\n" + jsonForm);
 		String response = post(false, url, service, message, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
 				false, null);
 		WebformsUiLogger.info(FormRunnerUtils.class.getName(), "Response from the server: " + response);
