@@ -9,7 +9,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.ITokenQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
+import com.biit.webforms.persistence.entity.condition.TokenEmpty;
 import com.biit.webforms.utils.math.domain.IDomain;
 import com.biit.webforms.utils.math.domain.range.QuestionValueDomain;
 import com.biit.webforms.utils.parser.Expression;
@@ -20,9 +20,9 @@ import com.biit.webforms.utils.parser.Expression;
  */
 public class EmptyFunction extends Expression implements WebformsExpression {
 
-	private Token token;
+	private TokenEmpty token;
 
-	public EmptyFunction(Token token) {
+	public EmptyFunction(TokenEmpty token) {
 		this.token = token;
 	}
 
@@ -61,13 +61,13 @@ public class EmptyFunction extends Expression implements WebformsExpression {
 
 	@Override
 	public IDomain getDomain() {
-		return QuestionValueDomain.generateQuestionValueDomain((TokenComparationValue) token);
+		return QuestionValueDomain.generateQuestionValueDomain(token);
 	}
 
 	@Override
 	public boolean checkBlockByMinTerms(Form form, BaseQuestion element) {
 		if (token instanceof ITokenQuestion) {
-			WebformsBaseQuestion question = ((ITokenQuestion) token).getQuestion();
+			WebformsBaseQuestion question = token.getQuestion();
 			if (FormWalker.anyPathFromOriginDoesntPassThrough(form, null, element, question)) {
 				return true;
 			}

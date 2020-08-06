@@ -1,8 +1,5 @@
 package com.biit.webforms.persistence.entity.condition;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,7 +16,7 @@ import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenTy
 
 @Entity
 @Table(name = "token_empty")
-public class TokenEmpty extends TokenComplex implements ITokenQuestion {
+public class TokenEmpty extends TokenComparationValue implements ITokenQuestion {
 	private static final long serialVersionUID = -1264101992865476909L;
 
 	@Column(nullable = false)
@@ -82,14 +79,7 @@ public class TokenEmpty extends TokenComplex implements ITokenQuestion {
 
 	@Override
 	public Boolean evaluate() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<Token> getSimpleTokens() {
-		List<Token> simpleTokens = new ArrayList<Token>();
-		simpleTokens.add(TokenComparationValue.getTokenEmpty(getQuestion(), subformat, value));
-		return simpleTokens;
+		return value == null || value.isEmpty();
 	}
 
 	public AnswerSubformat getSubformat() {

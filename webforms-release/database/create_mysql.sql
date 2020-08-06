@@ -129,6 +129,7 @@
         type varchar(255) not null,
         flow bigint not null,
         question bigint,
+        date_period_unit varchar(255),
         subformat varchar(255) not null,
         value varchar(255),
         primary key (id)
