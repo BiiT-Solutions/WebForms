@@ -9,7 +9,7 @@ public class EmptyFlowIsNotAlone extends Report {
 
 	public EmptyFlowIsNotAlone(Flow flow) {
 		super(ReportLevel.ERROR, "Element '" + flow.getOrigin().getPathName()
-				+ "' has a flow without condition and also other flows are defined.");
+				+ "' has a flow without any condition and also other flows are defined.");
 		this.flow = flow;
 	}
 

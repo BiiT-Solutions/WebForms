@@ -14,10 +14,10 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.http.client.ClientProtocolException;
 import org.glassfish.jersey.SslConfigurator;
+
 import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.gui.WebformsUiLogger;
-import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 
 public class FormRunnerUtils {
