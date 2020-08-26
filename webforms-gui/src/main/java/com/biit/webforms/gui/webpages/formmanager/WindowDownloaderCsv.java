@@ -2,7 +2,7 @@ package com.biit.webforms.gui.webpages.formmanager;
 
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
-import com.biit.webforms.gui.webpages.formmanager.decisiontable.SaveFormToCsvAction;
+import com.biit.webforms.gui.webpages.formmanager.savetocsv.SaveFormToCsvAction;
 import com.biit.webforms.persistence.entity.CompleteFormView;
 
 import java.io.ByteArrayInputStream;
