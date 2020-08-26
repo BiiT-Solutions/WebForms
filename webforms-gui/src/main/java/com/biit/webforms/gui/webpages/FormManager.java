@@ -48,17 +48,7 @@ import com.biit.webforms.gui.exceptions.BadAbcdLink;
 import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.gui.exceptions.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.gui.exceptions.NotValidAbcdForm;
-import com.biit.webforms.gui.webpages.formmanager.IconProviderFormLinked;
-import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
-import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
-import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderBaseFormMetadataJson;
-import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderJson;
-import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderXsd;
-import com.biit.webforms.gui.webpages.formmanager.WindowGenerateXml;
-import com.biit.webforms.gui.webpages.formmanager.WindowImpactAnalysis;
-import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
-import com.biit.webforms.gui.webpages.formmanager.WindowImportJson;
-import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
+import com.biit.webforms.gui.webpages.formmanager.*;
 import com.biit.webforms.gui.xforms.FormRunnerPreviewFrame;
 import com.biit.webforms.gui.xforms.FormRunnerUtils;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
@@ -313,6 +303,15 @@ public class FormManager extends SecuredWebPage {
 				}
 			}
 		});
+		upperMenu.addExportToCsvListener(new ClickListener() {
+			private static final long serialVersionUID = 2815280910647730087L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				exportToCsv();
+			}
+		});
+
 		return upperMenu;
 	}
 
@@ -875,5 +874,8 @@ public class FormManager extends SecuredWebPage {
 			bottomMenu.getValidateForm().setEnabled(false);
 			bottomMenu.getEditWebserviceCall().setEnabled(false);
 		}
+	}
+	private void exportToCsv () {
+		new WindowDownloaderCsv(loadCompleteForm(getSelectedForm()),  loadCompleteForm(getSelectedForm()).getLabel() + ".csv");
 	}
 }

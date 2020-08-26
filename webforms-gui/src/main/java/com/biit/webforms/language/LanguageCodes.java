@@ -157,6 +157,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_COMPARE_CONTENT("caption.compare.content"), 
 	CAPTION_REMOVE_FORM("caption.form.remove"),
 	CAPTION_REMOVE_BLOCK("caption.block.remove"),
+	CAPTION_EXPORT_TOCSV("caption.export.tocsv"),
 
 	CAPTION_WAITING_VALIDATION("caption.waiting.validation"),	
 	CAPTION_CONTENT_ANALYSIS("caption.content.analysis"),
@@ -175,6 +176,7 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_EXPORT_FORM_METADATA("tooltip.export.form.metadata"),
 	TOOLTIP_COMPARE_CONTENT("tooltip.compare.content"), 
 	TOOLTIP_CONTENT_ANALYSIS("tooltip.content.analysis"),
+	TOOLTIP_EXPORT_TOCSV("tooltip.export.tocsv"),
 	
 	NULL_VALUE_NEW_FORM("null.value.new.form"),
 	NULL_VALUE_NEW_BLOCK("null.value.new.block"),

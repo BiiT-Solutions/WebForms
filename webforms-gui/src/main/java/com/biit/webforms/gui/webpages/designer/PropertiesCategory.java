@@ -83,4 +83,7 @@ public class PropertiesCategory extends PropertiesForStorableObjectWithImages<Ca
 		updateElement();
 	}
 
+	public TextField getName() {
+		return name;
+	}
 }
