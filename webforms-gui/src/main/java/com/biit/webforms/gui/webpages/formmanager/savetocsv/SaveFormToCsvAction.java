@@ -12,10 +12,11 @@ import com.biit.webforms.logger.WebformsLogger;
  */
 public class SaveFormToCsvAction implements SaveAction {
 
-	private Form current_form;
+	private Form currentForm;
+	private final static String CSV_SEPARATOR = ";";
 
 	public SaveFormToCsvAction(Form form) {
-		this.current_form = form;
+		this.currentForm = form;
 	}
 
 	@Override
@@ -32,29 +33,31 @@ public class SaveFormToCsvAction implements SaveAction {
 	public byte[] getInformationData() {
 		try {
 			//store form children data -> Categories->Questions->Answers
-			String formToCsvDataString = "Form name: "+current_form.getLabel()+
-					"\n\nCategory technical name;Category label;Question technical name;Question label;Answer value;Answer label;Score\n";
-			if (current_form != null) {
-				for (TreeObject category : current_form.getChildren()) {
-					String category_technical_name = category.getName();
-					String category_label = category.getLabel();
+			StringBuilder formToCsvDataStringBuilder = new StringBuilder();
+			formToCsvDataStringBuilder.append("Form name: "+ currentForm.getLabel()+
+					"\n\nCategory technical name"+CSV_SEPARATOR+"Category label"+CSV_SEPARATOR+
+					"Question technical name"+CSV_SEPARATOR+"Question label"+CSV_SEPARATOR+"Answer value"+CSV_SEPARATOR+"Answer label"+CSV_SEPARATOR+"Score\n");
+			if (currentForm != null) {
+				for (TreeObject category : currentForm.getChildren()) {
+					String categoryTechnicalName = category.getName();
+					String categoryLabel = category.getLabel();
 					for (TreeObject question : category.getChildren()) {
-						String question_technical_name = question.getName();
-						String question_label = question.getLabel();
+						String questionTechnicalName = question.getName();
+						String questionLabel = question.getLabel();
 						if (question.getChildren() != null){
 							for (TreeObject answer : question.getChildren()) {
-								String answer_technical_name = answer.getName();
-								String answer_value = answer.getLabel();
-								formToCsvDataString += category_technical_name+";"+category_label+";"+
-										question_technical_name+";"+question_label+";"+answer_technical_name+";"+answer_value+"\n";
+								String answerTechnicalName = answer.getName();
+								String answerValue = answer.getLabel();
+								formToCsvDataStringBuilder.append(categoryTechnicalName+CSV_SEPARATOR+categoryLabel+CSV_SEPARATOR+
+										questionTechnicalName+CSV_SEPARATOR+questionLabel+CSV_SEPARATOR+answerTechnicalName+CSV_SEPARATOR+answerValue+"\n");
 							}
 						} else {
-							formToCsvDataString += category_technical_name+";"+category_label+";"+
-									question_technical_name+";"+question_label+"\n";
+							formToCsvDataStringBuilder.append(categoryTechnicalName+CSV_SEPARATOR+categoryLabel+CSV_SEPARATOR+
+									questionTechnicalName+CSV_SEPARATOR+questionLabel+"\n");
 						}
 					}
 				}
-				return formToCsvDataString.getBytes();
+				return formToCsvDataStringBuilder.toString().getBytes();
 			}
 		} catch (Exception e) {
 			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);

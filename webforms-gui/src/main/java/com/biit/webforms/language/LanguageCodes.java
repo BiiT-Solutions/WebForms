@@ -157,7 +157,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_COMPARE_CONTENT("caption.compare.content"), 
 	CAPTION_REMOVE_FORM("caption.form.remove"),
 	CAPTION_REMOVE_BLOCK("caption.block.remove"),
-	CAPTION_EXPORT_TOCSV("caption.export.tocsv"),
+	CAPTION_EXPORT_TO_CSV("caption.export.tocsv"),
 
 	CAPTION_WAITING_VALIDATION("caption.waiting.validation"),	
 	CAPTION_CONTENT_ANALYSIS("caption.content.analysis"),
@@ -691,7 +691,7 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	INVALID_JSON_CODE("invalid.json.code"),
 	INVALID_JSON_CODE_DESCRIPTION("invalid.json.code.description"), 
-	
+
 	CAPTION_ANSWER_SUBFORMAT_POSITIVE_NUMBER("caption.answer.subformat.positive.number"),
 	INPUT_PROMPT_POSITIVE_NUMBER("input.prompt.positive.number"),
 	CAPTION_ANSWER_SUBFORMAT_NEGATIVE_NUMBER("caption.answer.subformat.negative.number"),
