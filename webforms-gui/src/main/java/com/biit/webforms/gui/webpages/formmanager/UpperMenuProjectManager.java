@@ -47,7 +47,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 			enableExportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.EXPORT_JSON);
 			enableImportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.IMPORT_JSON);
 			enableExportsAbcd = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.EXPORT_ABCD);
-			enableExportsToCsv = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.EXPORT_TOCSV);
+			enableExportsToCsv = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.EXPORT_TO_CSV);
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -85,7 +85,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		exportBaseFormMetadataJson.setVisible(enableExportJson);
 
 		exportToCsv = new IconButton(LanguageCodes.CAPTION_EXPORT_TO_CSV, ThemeIcons.EXPORT_JSON, LanguageCodes.TOOLTIP_EXPORT_TOCSV, IconSize.BIG);
-		exportToCsv.setVisible(true);
+		exportToCsv.setVisible(enableExportsToCsv);
 
 		//opener = new BrowserWindowOpener(FormRunnerPreviewFrame.class);
 		opener = new BrowserWindowOpener(FormRunnerPreviewFrame.class);

@@ -75,6 +75,8 @@ public class RoleActivities implements IRoleActivities {
 
 	WebformsActivity.EXPORT_ABCD,
 
+	WebformsActivity.EXPORT_TO_CSV,
+
 	};
 
 	/**

@@ -47,7 +47,7 @@ public enum WebformsActivity implements IActivity {
 
 	EXPORT_ABCD("ExportAbcd"),
 
-	EXPORT_TOCSV("ExportToCsv"),
+	EXPORT_TO_CSV("ExportToCsv"),
 
 	;
 
