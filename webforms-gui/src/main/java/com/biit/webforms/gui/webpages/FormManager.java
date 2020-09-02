@@ -373,41 +373,22 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	private void exportXlsScorecard() {
-		StreamResource xlsFile = new StreamResource(new StreamSource() {
-			private static final long serialVersionUID = 887985268589086720L;
+		WindowDownloader window = new WindowDownloader(new WindowDownloaderProcess() {
 
 			@Override
-			public InputStream getStream() {
+			public InputStream getInputStream() {
 				try {
-					byte[] result = new ScorecardXlsGenerator().generate(loadCompleteForm(getSelectedForm()),
-							Page.getCurrent().getWebBrowser().getLocale());
-					return new ByteArrayInputStream(result);
+					return new ByteArrayInputStream(new ScorecardXlsGenerator().generate(
+							loadCompleteForm(getSelectedForm()), Page.getCurrent().getWebBrowser().getLocale()));
 				} catch (InvalidXlsElementException e) {
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);
-				}
-				return null;
-			}
-		}, "Form Scorecard.xls");
-
-		xlsFile.setMIMEType("application/vnd.ms-excel");
-		// We disable the button on click so it does not cut the stream and
-		// enable it again when the download is done
-		upperMenu.getExportScorecardXls().setDisableOnClick(true);
-		FileDownloader xlsDownloader = new FileDownloader(xlsFile) {
-			private static final long serialVersionUID = -6437436526574292928L;
-
-			@Override
-			public boolean handleConnectorRequest(VaadinRequest request, VaadinResponse response, String path)
-					throws IOException {
-				try {
-					boolean result = super.handleConnectorRequest(request, response, path);
-					return result;
-				} finally {
-					upperMenu.getExportScorecardXls().setEnabled(true);
+					return null;
 				}
 			}
-		};
-		xlsDownloader.extend(upperMenu.getExportScorecardXls());
+		});
+		window.setIndeterminate(true);
+		window.setFilename(getSelectedForm().getLabel() + ".pdf");
+		window.showCentered();
 	}
 
 	/**

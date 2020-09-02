@@ -30,8 +30,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 			importJsonForm;
 	private final IconButton linkAbcdForm;
 	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms, downloadXFormsMultiple;
-	private final IconButton export, exportScorecardXls, exportPdf, exportFlowPdf, exportXsd, exportJson, exportAbcd, exportXml,
-			exportBaseFormMetadataJson;
+	private final IconButton export, exportScorecardXls, exportPdf, exportFlowPdf, exportXsd, exportJson, exportAbcd,
+			exportXml, exportBaseFormMetadataJson;
 	private final IconButton impactAnalysis, compareContent;
 	private BrowserWindowOpener opener;
 	// Neede due to the existence of a second 'Flow' button at the same time in
@@ -134,7 +134,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		addIconButton(linkAbcdForm);
 
 		export = addSubMenu(ThemeIcons.EXPORT, LanguageCodes.CAPTION_EXPORT, LanguageCodes.TOOLTIP_EXPORT, exportPdf,
-				exportFlowPdf, exportXsd, exportXml, exportJson, exportAbcd, exportBaseFormMetadataJson);
+				exportFlowPdf, exportXsd, exportXml, exportScorecardXls, exportJson, exportAbcd,
+				exportBaseFormMetadataJson);
 		exportXForms = addSubMenu(ThemeIcons.EXPORT_FORM_TO_XFORMS, LanguageCodes.CAPTION_TO_XFORMS,
 				LanguageCodes.TOOLTIP_TO_XFORMS, previewXForms, publishXForms, downloadXForms, downloadXFormsMultiple);
 		opener.extend(previewXForms);
