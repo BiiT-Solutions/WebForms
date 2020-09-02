@@ -154,6 +154,8 @@ public enum ThemeIcons implements IThemeIcon {
 	
 	IMAGE("image.svg"),
 	
+	XML_SCORECARD("xml.scorecard.svg"),
+	
 	;
 
 	private String value;

@@ -46,6 +46,8 @@ public enum WebformsActivity implements IActivity {
 	EXPORT_JSON("ExportJson"),
 
 	EXPORT_ABCD("ExportAbcd"),
+	
+	EXPORT_SCORECARD_XLS("ExportScorecardXls"),
 
 	;
 

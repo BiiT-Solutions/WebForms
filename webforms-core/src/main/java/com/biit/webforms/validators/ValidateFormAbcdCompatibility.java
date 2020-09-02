@@ -12,7 +12,6 @@ import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.validators.reports.FormAnswerNotFound;
 import com.biit.webforms.validators.reports.FormElementIsBaseGroupNotBaseQuestion;

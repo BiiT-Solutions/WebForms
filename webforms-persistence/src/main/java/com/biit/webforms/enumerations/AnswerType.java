@@ -21,7 +21,7 @@ public enum AnswerType {
 	private final Boolean defaultMandatory;
 	private final boolean defaultValueEnabled;
 
-	AnswerType(AnswerFormat defaultAnswerType, boolean childrenAllowed, boolean subchildrenAllowed, Boolean defaultHorizontal, Boolean defaultMandatory,
+	private AnswerType(AnswerFormat defaultAnswerType, boolean childrenAllowed, boolean subchildrenAllowed, Boolean defaultHorizontal, Boolean defaultMandatory,
 			boolean defaultValueEnabled) {
 		this.defaultAnswerFormat = defaultAnswerType;
 		this.childrenAllowed = childrenAllowed;

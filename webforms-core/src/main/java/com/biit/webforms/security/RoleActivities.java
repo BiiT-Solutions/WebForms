@@ -56,6 +56,8 @@ public class RoleActivities implements IRoleActivities {
 	WebformsActivity.FORM_STATUS_UPGRADE,
 
 	WebformsActivity.FORM_NEW_VERSION,
+	
+	WebformsActivity.EXPORT_SCORECARD_XLS,
 
 	};
 

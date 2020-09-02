@@ -703,6 +703,9 @@ public enum LanguageCodes implements ILanguageCode {
 	ANSWER_RANGE_LOWER_VALUE("answer.range.lower.value"),
 	ANSWER_RANGE_UPPER_VALUE("answer.range.upper.value"),
 	ANSWER_RANGE_STEAP_VALUE("answer.range.steap.value"),
+	
+	EXPORT_XML_SCORECARD_CAPTION("export.xls.scorecard.caption"),
+	EXPORT_XML_SCORECARD_TOOLTIP("export.xls.scorecard.tooltip"),
 	;
 
 	private String value;
