@@ -153,7 +153,9 @@ public enum ThemeIcons implements IThemeIcon {
 	REMOVE_WEBSERVICE_PORT("webservice.clear.svg"), 
 	
 	IMAGE("image.svg"),
-	
+
+	EXPORT_CSV_FILE("appbar.page.csv.svg"),
+
 	;
 
 	private String value;

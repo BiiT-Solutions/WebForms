@@ -84,7 +84,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 				LanguageCodes.TOOLTIP_EXPORT_FORM_METADATA, IconSize.BIG);
 		exportBaseFormMetadataJson.setVisible(enableExportJson);
 
-		exportToCsv = new IconButton(LanguageCodes.CAPTION_EXPORT_TO_CSV, ThemeIcons.EXPORT_JSON, LanguageCodes.TOOLTIP_EXPORT_TOCSV, IconSize.BIG);
+		exportToCsv = new IconButton(LanguageCodes.CAPTION_EXPORT_TO_CSV, ThemeIcons.EXPORT_CSV_FILE, LanguageCodes.TOOLTIP_EXPORT_TO_CSV, IconSize.BIG);
 		exportToCsv.setVisible(enableExportsToCsv);
 
 		//opener = new BrowserWindowOpener(FormRunnerPreviewFrame.class);

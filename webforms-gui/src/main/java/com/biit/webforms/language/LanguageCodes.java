@@ -176,7 +176,7 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_EXPORT_FORM_METADATA("tooltip.export.form.metadata"),
 	TOOLTIP_COMPARE_CONTENT("tooltip.compare.content"), 
 	TOOLTIP_CONTENT_ANALYSIS("tooltip.content.analysis"),
-	TOOLTIP_EXPORT_TOCSV("tooltip.export.tocsv"),
+	TOOLTIP_EXPORT_TO_CSV("tooltip.export.tocsv"),
 	
 	NULL_VALUE_NEW_FORM("null.value.new.form"),
 	NULL_VALUE_NEW_BLOCK("null.value.new.block"),
