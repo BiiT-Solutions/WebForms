@@ -42,6 +42,7 @@ import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
 import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
 import com.biit.webforms.gui.components.WindowNameGroup;
@@ -83,12 +84,8 @@ import com.biit.webforms.validators.ValidateFormComplete;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.server.FileDownloader;
 import com.vaadin.server.Page;
-import com.vaadin.server.StreamResource;
-import com.vaadin.server.StreamResource.StreamSource;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinResponse;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
@@ -101,6 +98,8 @@ public class FormManager extends SecuredWebPage {
 	private TreeTableFormVersion formTable;
 	private UpperMenuProjectManager upperMenu;
 	private FormEditBottomMenu bottomMenu;
+
+	private static SpringContextHelper helper = null;
 
 	public FormManager() {
 		super();
@@ -134,6 +133,10 @@ public class FormManager extends SecuredWebPage {
 		updateMenus();
 
 		getWorkingArea().addComponent(formTable);
+
+		if (helper == null) {
+			helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+		}
 
 	}
 
@@ -378,7 +381,7 @@ public class FormManager extends SecuredWebPage {
 			@Override
 			public InputStream getInputStream() {
 				try {
-					return new ByteArrayInputStream(new ScorecardXlsGenerator().generate(
+					return new ByteArrayInputStream(new ScorecardXlsGenerator().generate(helper.getContext(),
 							loadCompleteForm(getSelectedForm()), Page.getCurrent().getWebBrowser().getLocale()));
 				} catch (InvalidXlsElementException e) {
 					WebformsUiLogger.errorMessage(this.getClass().getName(), e);

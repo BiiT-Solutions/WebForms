@@ -30,7 +30,7 @@ import com.biit.webforms.persistence.entity.Question;
 public class ScorecardXls {
 	private final static String[] COLUMNS_NAMES = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
 			"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-	private final static String[] TITLES_NAMES = { "xpath", "category", "question", "answer", "score" };
+	private final static String[] TITLES_NAMES = { "", "xpath", "category", "question", "answer", "score" };
 	private final static int XPATH_COLUMN = 1;
 	private final static int CATEGORY_COLUMN = 2;
 	private final static int QUESTION_COLUMN = 3;
@@ -88,13 +88,13 @@ public class ScorecardXls {
 		// sheet.autoSizeColumn(QUESTION_LABEL_COLUMN);
 		// sheet.setColumnWidth(APPOINTMENT_LABEL_COLUMN, 256 * 50);
 
-		for (int i = 0; i < TITLES_NAMES.length; i++) {
+		for (int i = 1; i <= TITLES_NAMES.length; i++) {
 			// Create titles
-			titleRow.createCell(i + 1).setCellValue(applicationContext
+			titleRow.createCell(i).setCellValue(applicationContext
 					.getMessage(LanguageLocalizationPrefix + TITLES_NAMES[i].toLowerCase(), null, getLocale()));
 
-			titleRow.getCell(i + 1).setCellStyle(getTitleStyle(workbook));
-			sheet.setColumnWidth(i + 1, 150 * 50);
+			titleRow.getCell(i).setCellStyle(getTitleStyle(workbook));
+			sheet.setColumnWidth(i, 150 * 50);
 		}
 	}
 
