@@ -19,3 +19,6 @@ release.properties
 
 burgerservicenumber2.json
 burgerservicenumber.json
+
+*.iml
+.idea/

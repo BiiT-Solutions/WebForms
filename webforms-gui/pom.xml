@@ -89,6 +89,12 @@
 	</profiles>
 
 	<dependencies>
+		<!-- XLS files -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${apache-poi.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>stepper</artifactId>
@@ -99,14 +105,12 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>webforms-core</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
 		</dependency>
 		<!-- ABCD persistency -->
 		<dependency>
 			<groupId>com.biit</groupId>
 			<artifactId>abcd-core</artifactId>
 			<version>${abcd.version}</version>
-			<type>jar</type>
 			<exclusions>
                                 <exclusion>
                                         <groupId>com.biit</groupId>

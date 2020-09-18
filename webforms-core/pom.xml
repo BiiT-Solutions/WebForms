@@ -22,7 +22,6 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>webforms-parser</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
 		</dependency>
 		<!-- Liferay Authentication -->
 		<dependency>
