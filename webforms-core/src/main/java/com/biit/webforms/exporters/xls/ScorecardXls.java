@@ -88,7 +88,7 @@ public class ScorecardXls {
 		// sheet.autoSizeColumn(QUESTION_LABEL_COLUMN);
 		// sheet.setColumnWidth(APPOINTMENT_LABEL_COLUMN, 256 * 50);
 
-		for (int i = 1; i <= TITLES_NAMES.length; i++) {
+		for (int i = 1; i < TITLES_NAMES.length; i++) {
 			// Create titles
 			titleRow.createCell(i).setCellValue(applicationContext
 					.getMessage(LanguageLocalizationPrefix + TITLES_NAMES[i].toLowerCase(), null, getLocale()));
