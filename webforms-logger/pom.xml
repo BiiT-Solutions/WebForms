@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>webforms-logger</artifactId>
 	<packaging>jar</packaging>
-	<name>Den Haag SZW - Pilot Agile Testing for WebForms (Logger)</name>
+	<name>Pilot Agile Testing for WebForms (Logger)</name>
 
 	<parent>
 		<groupId>com.biit</groupId>

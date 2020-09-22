@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>webforms-gui</artifactId>
 	<packaging>war</packaging>
-	<name>Den Haag SZW - Pilot Agile Testing for WebForms (GUI)</name>
+	<name>Pilot Agile Testing for WebForms (GUI)</name>
 
 	<parent>
 		<groupId>com.biit</groupId>

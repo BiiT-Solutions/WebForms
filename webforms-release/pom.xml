@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>webforms-release</artifactId>
 	<packaging>jar</packaging>
-	<name>Den Haag SZW - Pilot Agile Testing for WebForms (Release)</name>
+	<name>Pilot Agile Testing for WebForms (Release)</name>
 
 	<parent>
 		<groupId>com.biit</groupId>

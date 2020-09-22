@@ -390,7 +390,7 @@ public class FormManager extends SecuredWebPage {
 			}
 		});
 		window.setIndeterminate(true);
-		window.setFilename(getSelectedForm().getLabel() + ".pdf");
+		window.setFilename(getSelectedForm().getLabel() + ".xls");
 		window.showCentered();
 	}
 
