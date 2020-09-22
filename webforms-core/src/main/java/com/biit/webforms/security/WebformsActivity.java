@@ -49,6 +49,8 @@ public enum WebformsActivity implements IActivity {
 	
 	EXPORT_SCORECARD_XLS("ExportScorecardXls"),
 
+	EXPORT_TO_CSV("ExportToCsv"),
+
 	;
 
 	private String tag;

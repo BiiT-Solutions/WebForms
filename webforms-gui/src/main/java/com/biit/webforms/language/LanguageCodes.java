@@ -157,6 +157,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_COMPARE_CONTENT("caption.compare.content"), 
 	CAPTION_REMOVE_FORM("caption.form.remove"),
 	CAPTION_REMOVE_BLOCK("caption.block.remove"),
+	CAPTION_EXPORT_TO_CSV("caption.export.tocsv"),
 
 	CAPTION_WAITING_VALIDATION("caption.waiting.validation"),	
 	CAPTION_CONTENT_ANALYSIS("caption.content.analysis"),
@@ -175,6 +176,7 @@ public enum LanguageCodes implements ILanguageCode {
 	TOOLTIP_EXPORT_FORM_METADATA("tooltip.export.form.metadata"),
 	TOOLTIP_COMPARE_CONTENT("tooltip.compare.content"), 
 	TOOLTIP_CONTENT_ANALYSIS("tooltip.content.analysis"),
+	TOOLTIP_EXPORT_TO_CSV("tooltip.export.tocsv"),
 	
 	NULL_VALUE_NEW_FORM("null.value.new.form"),
 	NULL_VALUE_NEW_BLOCK("null.value.new.block"),
@@ -689,7 +691,7 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	INVALID_JSON_CODE("invalid.json.code"),
 	INVALID_JSON_CODE_DESCRIPTION("invalid.json.code.description"), 
-	
+
 	CAPTION_ANSWER_SUBFORMAT_POSITIVE_NUMBER("caption.answer.subformat.positive.number"),
 	INPUT_PROMPT_POSITIVE_NUMBER("input.prompt.positive.number"),
 	CAPTION_ANSWER_SUBFORMAT_NEGATIVE_NUMBER("caption.answer.subformat.negative.number"),
