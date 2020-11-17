@@ -1033,11 +1033,13 @@ public class ApplicationController {
 	 * @param horizontal
 	 * @param defaultValue
 	 */
-	public void updateQuestion(Question question, String name, String label, String description, boolean mandatory, AnswerType answerType,
+	public void updateQuestion(Question question, String name, String label, String abbreviature, String alias, String description, boolean mandatory, AnswerType answerType,
 			AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled, TreeObjectImage image) {
 		try {
 			if (!Objects.equals(question.getLabel(), label) || !Objects.equals(question.getDescription(), description)
 					|| !Objects.equals(question.getName(), name) || question.isMandatory() != mandatory
+					|| !Objects.equals(question.getAbbreviature(), abbreviature)
+					|| !Objects.equals(question.getAlias(), alias)
 					|| (question.getAnswerType() != null && !question.getAnswerType().equals(answerType))
 					|| (question.getAnswerFormat() != null && !Objects.equals(question.getAnswerFormat(), answerFormat))
 					|| (question.getAnswerSubformat() != null && !Objects.equals(question.getAnswerSubformat(), answerSubformat))
@@ -1047,6 +1049,8 @@ public class ApplicationController {
 				setUnsavedFormChanges(true);
 				question.setName(name);
 				question.setLabel(label);
+				question.setAlias(alias);
+				question.setAbbreviature(abbreviature);
 				question.setDescription(description);
 				question.setAnswerType(answerType);
 				question.setAnswerFormat(answerFormat);

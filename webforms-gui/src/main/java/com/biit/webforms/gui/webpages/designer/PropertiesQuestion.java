@@ -15,6 +15,7 @@ import com.biit.webforms.language.AnswerTypeUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.CheckBox;
@@ -25,300 +26,318 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
 public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Question> {
-	private static final long serialVersionUID = 7572463216386081265L;
-	private static final String WIDTH = "200px";
+    private static final long serialVersionUID = 7572463216386081265L;
+    private static final String WIDTH = "200px";
 
-	private TextField name;
-	private TextArea label;
+    private TextField name;
+    private TextArea label;
+    private TextField alias;
+    private TextField abbreviature;
 
-	private TextArea description;
+    private TextArea description;
 
-	private TextArea defaultValueString;
-	private DateField defaultValueDate;
-	private ComboBox defaultValueAnswer;
+    private TextArea defaultValueString;
+    private DateField defaultValueDate;
+    private ComboBox defaultValueAnswer;
 
-	private CheckBox mandatory;
+    private CheckBox mandatory;
 
-	private ComboBox answerType;
+    private ComboBox answerType;
 
-	private ComboBox answerFormat;
+    private ComboBox answerFormat;
 
-	private ComboBox answerSubformat;
+    private ComboBox answerSubformat;
 
-	private CheckBox horizontal;
+    private CheckBox horizontal;
 
-	// Disable the field if orbeon is in edition mode.
-	private CheckBox disableEdition;
+    // Disable the field if orbeon is in edition mode.
+    private CheckBox disableEdition;
 
-	public PropertiesQuestion() {
-		super(Question.class);
-	}
+    public PropertiesQuestion() {
+        super(Question.class);
+    }
 
-	@Override
-	protected void initElement() {
+    @Override
+    protected void initElement() {
 
-		name = new TextField(LanguageCodes.CAPTION_TECHNICAL_NAME.translation());
-		name.setWidth(WIDTH);
-		name.setRequired(true);
-		name.setMaxLength(TreeObject.MAX_UNIQUE_COLUMN_LENGTH);
+        name = new TextField(LanguageCodes.CAPTION_TECHNICAL_NAME.translation());
+        name.setWidth(WIDTH);
+        name.setRequired(true);
+        name.setMaxLength(TreeObject.MAX_UNIQUE_COLUMN_LENGTH);
 
-		label = new TextArea(LanguageCodes.CAPTION_LABEL.translation());
-		label.setWidth(WIDTH);
-		label.setMaxLength(TreeObject.MAX_LABEL_LENGTH);
-		label.setImmediate(true);
+        alias = new TextField(LanguageCodes.CAPTION_ALIAS_NAME.translation());
+        alias.setWidth(WIDTH);
+        alias.setMaxLength(WebformsBaseQuestion.MAX_ALIAS_LENGTH);
 
-		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
-		description.setWidth(WIDTH);
-		description.setMaxLength(Question.MAX_DESCRIPTION_LENGTH);
+        abbreviature = new TextField(LanguageCodes.CAPTION_ABBREVIATURE_NAME.translation());
+        abbreviature.setWidth(WIDTH);
+        abbreviature.setMaxLength(WebformsBaseQuestion.MAX_ABBREVIATURE_LENGTH);
 
-		defaultValueString = new TextArea(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
-		defaultValueString.setWidth(WIDTH);
-		defaultValueString.setMaxLength(Question.MAX_DEFAULT_VALUE);
+        label = new TextArea(LanguageCodes.CAPTION_LABEL.translation());
+        label.setWidth(WIDTH);
+        label.setMaxLength(TreeObject.MAX_LABEL_LENGTH);
+        label.setImmediate(true);
 
-		defaultValueDate = new DateField(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
-		defaultValueDate.setWidth(WIDTH);
+        description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
+        description.setWidth(WIDTH);
+        description.setMaxLength(Question.MAX_DESCRIPTION_LENGTH);
 
-		defaultValueAnswer = new ComboBox(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
-		defaultValueAnswer.setWidth(WIDTH);
+        defaultValueString = new TextArea(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
+        defaultValueString.setWidth(WIDTH);
+        defaultValueString.setMaxLength(Question.MAX_DEFAULT_VALUE);
 
-		answerType = new ComboBox(LanguageCodes.CAPTION_ANSWER_TYPE.translation());
-		answerType.setWidth(WIDTH);
-		for (AnswerTypeUi type : AnswerTypeUi.values()) {
-			answerType.addItem(type.getAnswerType());
-			answerType.setItemCaption(type.getAnswerType(), type.getLanguageCode().translation());
-		}
-		answerType.setNullSelectionAllowed(false);
-		answerType.addValueChangeListener(new ValueChangeListener() {
-			private static final long serialVersionUID = -7743742253650945202L;
+        defaultValueDate = new DateField(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
+        defaultValueDate.setWidth(WIDTH);
 
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				AnswerType selectedType = (AnswerType) answerType.getValue();
-				// No Input fields must put the format to null or input fields
-				// that has not any format already selected
-				if (selectedType.getDefaultAnswerFormat() == null || getInstance().getAnswerFormat() == null) {
-					answerFormat.setValue(selectedType.getDefaultAnswerFormat());
-					answerFormat.setEnabled(selectedType.isAnswerFormatEnabled() && !getInstance().isReadOnly());
-				}
-				if (!selectedType.getDefaultHorizontal()) {
-					horizontal.setValue(selectedType.getDefaultHorizontal());
-					horizontal.setEnabled(selectedType.isHorizontalEnabled());
-				}
-				if (!selectedType.isMandatoryEnabled()) {
-					mandatory.setValue(selectedType.getDefaultMandatory());
-					mandatory.setEnabled(selectedType.isMandatoryEnabled());
-				}
+        defaultValueAnswer = new ComboBox(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
+        defaultValueAnswer.setWidth(WIDTH);
 
-				switch (selectedType) {
-				case INPUT:
-					defaultValueAnswer.setVisible(false);
-					defaultValueAnswer.setValue(null);
-					break;
-				case TEXT_AREA:
-					defaultValueString.setVisible(true);
-					defaultValueDate.setVisible(false);
-					defaultValueDate.setValue(null);
-					defaultValueAnswer.setVisible(false);
-					defaultValueAnswer.setValue(null);
-					break;
-				case SINGLE_SELECTION_LIST:
-				case SINGLE_SELECTION_RADIO:
-				case SINGLE_SELECTION_SLIDER:
-				case MULTIPLE_SELECTION:
-					defaultValueString.setVisible(false);
-					defaultValueString.setValue("");
-					defaultValueDate.setVisible(false);
-					defaultValueDate.setValue(null);
-					refreshDefaultValueAnswerValues();
-					defaultValueAnswer.setVisible(true);
-					break;
-				}
-			}
-		});
+        answerType = new ComboBox(LanguageCodes.CAPTION_ANSWER_TYPE.translation());
+        answerType.setWidth(WIDTH);
+        for (AnswerTypeUi type : AnswerTypeUi.values()) {
+            answerType.addItem(type.getAnswerType());
+            answerType.setItemCaption(type.getAnswerType(), type.getLanguageCode().translation());
+        }
+        answerType.setNullSelectionAllowed(false);
+        answerType.addValueChangeListener(new ValueChangeListener() {
+            private static final long serialVersionUID = -7743742253650945202L;
 
-		answerFormat = new ComboBox(LanguageCodes.CAPTION_ANSWER_FORMAT.translation());
-		answerFormat.setWidth(WIDTH);
-		for (AnswerFormatUi format : AnswerFormatUi.values()) {
-			answerFormat.addItem(format.getAnswerFormat());
-			answerFormat.setItemCaption(format.getAnswerFormat(), format.getLanguageCode().translation());
-		}
-		answerFormat.setNullSelectionAllowed(false);
-		answerFormat.addValueChangeListener(new ValueChangeListener() {
-			private static final long serialVersionUID = -1366771633100053513L;
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                AnswerType selectedType = (AnswerType) answerType.getValue();
+                // No Input fields must put the format to null or input fields
+                // that has not any format already selected
+                if (selectedType.getDefaultAnswerFormat() == null || getInstance().getAnswerFormat() == null) {
+                    answerFormat.setValue(selectedType.getDefaultAnswerFormat());
+                    answerFormat.setEnabled(selectedType.isAnswerFormatEnabled() && !getInstance().isReadOnly());
+                }
+                if (!selectedType.getDefaultHorizontal()) {
+                    horizontal.setValue(selectedType.getDefaultHorizontal());
+                    horizontal.setEnabled(selectedType.isHorizontalEnabled());
+                }
+                if (!selectedType.isMandatoryEnabled()) {
+                    mandatory.setValue(selectedType.getDefaultMandatory());
+                    mandatory.setEnabled(selectedType.isMandatoryEnabled());
+                }
 
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				if (answerFormat.getValue() != null) {
-					AnswerFormat selectedFormat = (AnswerFormat) answerFormat.getValue();
-					switch (selectedFormat) {
-					case DATE:
-						defaultValueString.setVisible(false);
-						defaultValueString.setValue("");
-						defaultValueDate.setVisible(true);
-						break;
-					default:
-						defaultValueString.setVisible(true);
-						defaultValueDate.setVisible(false);
-						defaultValueDate.setValue(null);
-						break;
-					}
-				}
-				refreshAnswerSubformatOptions();
-			}
-		});
-		answerFormat.setImmediate(true);
+                switch (selectedType) {
+                    case INPUT:
+                        defaultValueAnswer.setVisible(false);
+                        defaultValueAnswer.setValue(null);
+                        break;
+                    case TEXT_AREA:
+                        defaultValueString.setVisible(true);
+                        defaultValueDate.setVisible(false);
+                        defaultValueDate.setValue(null);
+                        defaultValueAnswer.setVisible(false);
+                        defaultValueAnswer.setValue(null);
+                        break;
+                    case SINGLE_SELECTION_LIST:
+                    case SINGLE_SELECTION_RADIO:
+                    case SINGLE_SELECTION_SLIDER:
+                    case MULTIPLE_SELECTION:
+                        defaultValueString.setVisible(false);
+                        defaultValueString.setValue("");
+                        defaultValueDate.setVisible(false);
+                        defaultValueDate.setValue(null);
+                        refreshDefaultValueAnswerValues();
+                        defaultValueAnswer.setVisible(true);
+                        break;
+                }
+            }
+        });
 
-		answerSubformat = new ComboBox(LanguageCodes.CAPTION_ANSWER_SUBFORMAT.translation());
-		answerSubformat.setWidth(WIDTH);
-		answerSubformat.setNullSelectionAllowed(false);
-		refreshAnswerSubformatOptions();
+        answerFormat = new ComboBox(LanguageCodes.CAPTION_ANSWER_FORMAT.translation());
+        answerFormat.setWidth(WIDTH);
+        for (AnswerFormatUi format : AnswerFormatUi.values()) {
+            answerFormat.addItem(format.getAnswerFormat());
+            answerFormat.setItemCaption(format.getAnswerFormat(), format.getLanguageCode().translation());
+        }
+        answerFormat.setNullSelectionAllowed(false);
+        answerFormat.addValueChangeListener(new ValueChangeListener() {
+            private static final long serialVersionUID = -1366771633100053513L;
 
-		horizontal = new CheckBox(LanguageCodes.CAPTION_HORIZONTAL.translation());
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                if (answerFormat.getValue() != null) {
+                    AnswerFormat selectedFormat = (AnswerFormat) answerFormat.getValue();
+                    switch (selectedFormat) {
+                        case DATE:
+                            defaultValueString.setVisible(false);
+                            defaultValueString.setValue("");
+                            defaultValueDate.setVisible(true);
+                            break;
+                        default:
+                            defaultValueString.setVisible(true);
+                            defaultValueDate.setVisible(false);
+                            defaultValueDate.setValue(null);
+                            break;
+                    }
+                }
+                refreshAnswerSubformatOptions();
+            }
+        });
+        answerFormat.setImmediate(true);
 
-		mandatory = new CheckBox(LanguageCodes.CAPTION_MANDATORY.translation());
+        answerSubformat = new ComboBox(LanguageCodes.CAPTION_ANSWER_SUBFORMAT.translation());
+        answerSubformat.setWidth(WIDTH);
+        answerSubformat.setNullSelectionAllowed(false);
+        refreshAnswerSubformatOptions();
 
-		disableEdition = new CheckBox(LanguageCodes.CAPTION_DISABLE_EDITION.translation());
-		disableEdition.setDescription(LanguageCodes.CAPTION_DISABLE_EDITION_TOOLTIP.translation());
+        horizontal = new CheckBox(LanguageCodes.CAPTION_HORIZONTAL.translation());
 
-		FormLayout commonProperties = new FormLayout();
-		commonProperties.setWidth(null);
-		commonProperties.setHeight(null);
-		commonProperties.addComponent(name);
-		commonProperties.addComponent(label);
-		commonProperties.addComponent(description);
-		commonProperties.addComponent(answerType);
-		commonProperties.addComponent(answerFormat);
-		commonProperties.addComponent(answerSubformat);
-		commonProperties.addComponent(defaultValueString);
-		commonProperties.addComponent(defaultValueDate);
-		commonProperties.addComponent(defaultValueAnswer);
-		commonProperties.addComponent(horizontal);
-		commonProperties.addComponent(mandatory);
-		commonProperties.addComponent(disableEdition);
+        mandatory = new CheckBox(LanguageCodes.CAPTION_MANDATORY.translation());
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
-		commonProperties.setEnabled(canEdit);
+        disableEdition = new CheckBox(LanguageCodes.CAPTION_DISABLE_EDITION.translation());
+        disableEdition.setDescription(LanguageCodes.CAPTION_DISABLE_EDITION_TOOLTIP.translation());
 
-		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_QUESTION.translation(), true);
+        FormLayout commonProperties = new FormLayout();
+        commonProperties.setWidth(null);
+        commonProperties.setHeight(null);
+        commonProperties.addComponent(name);
+        commonProperties.addComponent(label);
+        commonProperties.addComponent(abbreviature);
+        commonProperties.addComponent(alias);
+        commonProperties.addComponent(description);
+        commonProperties.addComponent(answerType);
+        commonProperties.addComponent(answerFormat);
+        commonProperties.addComponent(answerSubformat);
+        commonProperties.addComponent(defaultValueString);
+        commonProperties.addComponent(defaultValueDate);
+        commonProperties.addComponent(defaultValueAnswer);
+        commonProperties.addComponent(horizontal);
+        commonProperties.addComponent(mandatory);
+        commonProperties.addComponent(disableEdition);
 
-		super.initElement();
-	}
+        boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
+        commonProperties.setEnabled(canEdit);
 
-	protected void refreshDefaultValueAnswerValues() {
-		defaultValueAnswer.removeAllItems();
-		for (Answer answer : getInstance().getFinalAnswers()) {
-			defaultValueAnswer.addItem(answer);
-			defaultValueAnswer.setItemCaption(answer, answer.getLabel());
-		}
-		defaultValueAnswer.setValue(getInstance().getDefaultValueAnswer());
-	}
+        addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_QUESTION.translation(), true);
 
-	protected void refreshAnswerSubformatOptions() {
-		if (answerFormat.getValue() == null) {
-			answerSubformat.setValue(null);
-			answerSubformat.removeAllItems();
-			answerSubformat.setEnabled(false);
-		} else {
-			answerSubformat.setValue(null);
-			answerSubformat.removeAllItems();
-			AnswerFormat format = (AnswerFormat) answerFormat.getValue();
-			for (AnswerSubformatUi subformat : AnswerSubformatUi.values(format)) {
-				// Skip the DATE_PERIOD value
-				if (format.equals(AnswerFormat.DATE) && subformat.equals(AnswerSubformatUi.DATE_PERIOD)) {
-					continue;
-				}
-				answerSubformat.addItem(subformat.getSubformat());
-				answerSubformat.setItemCaption(subformat.getSubformat(), subformat.getLanguageCode().translation());
-			}
-			answerSubformat.setEnabled(isAnswerSubformatEnabled());
-			answerSubformat.setValue(format.getDefaultSubformat());
-		}
-	}
+        super.initElement();
+    }
 
-	@Override
-	protected void initValues() {
-		super.initValues();
-		name.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
-		name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(getInstance()));
-		name.addValidator(new ValidatorTreeObjectNameLength());
-		name.setValue(getInstance().getName());
-		name.setEnabled(!getInstance().isReadOnly());
+    protected void refreshDefaultValueAnswerValues() {
+        defaultValueAnswer.removeAllItems();
+        for (Answer answer : getInstance().getFinalAnswers()) {
+            defaultValueAnswer.addItem(answer);
+            defaultValueAnswer.setItemCaption(answer, answer.getLabel());
+        }
+        defaultValueAnswer.setValue(getInstance().getDefaultValueAnswer());
+    }
 
-		label.setValue(getInstance().getLabel());
-		label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
-		label.setEnabled(!getInstance().isReadOnly());
+    protected void refreshAnswerSubformatOptions() {
+        if (answerFormat.getValue() == null) {
+            answerSubformat.setValue(null);
+            answerSubformat.removeAllItems();
+            answerSubformat.setEnabled(false);
+        } else {
+            answerSubformat.setValue(null);
+            answerSubformat.removeAllItems();
+            AnswerFormat format = (AnswerFormat) answerFormat.getValue();
+            for (AnswerSubformatUi subformat : AnswerSubformatUi.values(format)) {
+                // Skip the DATE_PERIOD value
+                if (format.equals(AnswerFormat.DATE) && subformat.equals(AnswerSubformatUi.DATE_PERIOD)) {
+                    continue;
+                }
+                answerSubformat.addItem(subformat.getSubformat());
+                answerSubformat.setItemCaption(subformat.getSubformat(), subformat.getLanguageCode().translation());
+            }
+            answerSubformat.setEnabled(isAnswerSubformatEnabled());
+            answerSubformat.setValue(format.getDefaultSubformat());
+        }
+    }
 
-		description.setValue(getInstance().getDescription());
-		description.setEnabled(!getInstance().isReadOnly());
+    @Override
+    protected void initValues() {
+        super.initValues();
+        name.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
+        name.addValidator(new ValidatorDuplicateNameOnSameTreeObjectLevel(getInstance()));
+        name.addValidator(new ValidatorTreeObjectNameLength());
+        name.setValue(getInstance().getName());
+        name.setEnabled(!getInstance().isReadOnly());
 
-		mandatory.setValue(getInstance().isMandatory());
-		mandatory.setEnabled(!getInstance().isReadOnly());
+        alias.setValue(getInstance().getAlias() != null ? getInstance().getAlias() : "");
+        alias.setEnabled(!getInstance().isReadOnly());
 
-		answerType.setValue(getInstance().getAnswerType());
-		answerType.setEnabled(!getInstance().isReadOnly());
+        abbreviature.setValue(getInstance().getAbbreviature() != null ? getInstance().getAbbreviature() : "");
+        abbreviature.setEnabled(!getInstance().isReadOnly());
 
-		// AnswerFormat enabled is controlled in other part of the code.
-		answerFormat.setValue(getInstance().getAnswerFormat());
-		answerSubformat.setValue(getInstance().getAnswerSubformat());
-		answerSubformat.setEnabled(isAnswerSubformatEnabled());
+        label.setValue(getInstance().getLabel());
+        label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
+        label.setEnabled(!getInstance().isReadOnly());
 
-		horizontal.setValue(getInstance().isHorizontal());
-		horizontal.setEnabled(getInstance().getAnswerType().isHorizontalEnabled() && !getInstance().isReadOnly());
+        description.setValue(getInstance().getDescription());
+        description.setEnabled(!getInstance().isReadOnly());
 
-		if (getInstance().getDefaultValueString() != null) {
-			defaultValueString.setValue(getInstance().getDefaultValueString());
-		} else {
-			defaultValueString.setValue("");
-		}
-		if (getInstance().getDefaultValueTime() != null) {
-			defaultValueDate.setValue(new Date(getInstance().getDefaultValueTime().getTime()));
-		} else {
-			defaultValueDate.setValue(null);
-		}
-		defaultValueAnswer.setValue(getInstance().getDefaultValueAnswer());
-		disableEdition.setValue(getInstance().isEditionDisabled());
+        mandatory.setValue(getInstance().isMandatory());
+        mandatory.setEnabled(!getInstance().isReadOnly());
 
-		disableEdition.setEnabled(!getInstance().isReadOnly());
+        answerType.setValue(getInstance().getAnswerType());
+        answerType.setEnabled(!getInstance().isReadOnly());
 
-		defaultValueDate.setEnabled(!getInstance().isReadOnly());
-		defaultValueString.setEnabled(!getInstance().isReadOnly());
-		defaultValueAnswer.setEnabled(!getInstance().isReadOnly());
-	}
+        // AnswerFormat enabled is controlled in other part of the code.
+        answerFormat.setValue(getInstance().getAnswerFormat());
+        answerSubformat.setValue(getInstance().getAnswerSubformat());
+        answerSubformat.setEnabled(isAnswerSubformatEnabled());
 
-	@Override
-	protected void firePropertyUpdateOnExitListener() {
-		updateElement();
-	}
+        horizontal.setValue(getInstance().isHorizontal());
+        horizontal.setEnabled(getInstance().getAnswerType().isHorizontalEnabled() && !getInstance().isReadOnly());
 
-	private boolean isAnswerSubformatEnabled() {
-		return !getInstance().isReadOnly() && ((AnswerType) answerType.getValue() == AnswerType.INPUT);
-	}
+        if (getInstance().getDefaultValueString() != null) {
+            defaultValueString.setValue(getInstance().getDefaultValueString());
+        } else {
+            defaultValueString.setValue("");
+        }
+        if (getInstance().getDefaultValueTime() != null) {
+            defaultValueDate.setValue(new Date(getInstance().getDefaultValueTime().getTime()));
+        } else {
+            defaultValueDate.setValue(null);
+        }
+        defaultValueAnswer.setValue(getInstance().getDefaultValueAnswer());
+        disableEdition.setValue(getInstance().isEditionDisabled());
 
-	@Override
-	public void updateElement() {
-		String tempName = getInstance().getName();
-		String tempLabel = getInstance().getLabel();
-		Object tempDefaultValue = null;
-		if (name.isValid()) {
-			tempName = name.getValue();
-		}
-		if (label.isValid()) {
-			tempLabel = label.getValue();
-		}
-		if (defaultValueString.getValue() != null && !defaultValueString.getValue().isEmpty()) {
-			tempDefaultValue = defaultValueString.getValue();
-		}
-		if (tempDefaultValue == null) {
-			tempDefaultValue = defaultValueDate.getValue();
-		}
-		if (tempDefaultValue == null) {
-			tempDefaultValue = defaultValueAnswer.getValue();
-		}
+        disableEdition.setEnabled(!getInstance().isReadOnly());
 
-		ApplicationUi.getController().updateQuestion(getInstance(), tempName, tempLabel, description.getValue(), mandatory.getValue(),
-				(AnswerType) answerType.getValue(), (AnswerFormat) answerFormat.getValue(), (AnswerSubformat) answerSubformat.getValue(),
-				horizontal.getValue(), tempDefaultValue, disableEdition.getValue(), getImage());
+        defaultValueDate.setEnabled(!getInstance().isReadOnly());
+        defaultValueString.setEnabled(!getInstance().isReadOnly());
+        defaultValueAnswer.setEnabled(!getInstance().isReadOnly());
+    }
 
-		super.updateElement();
-	}
+    @Override
+    protected void firePropertyUpdateOnExitListener() {
+        updateElement();
+    }
+
+    private boolean isAnswerSubformatEnabled() {
+        return !getInstance().isReadOnly() && ((AnswerType) answerType.getValue() == AnswerType.INPUT);
+    }
+
+    @Override
+    public void updateElement() {
+        String tempName = getInstance().getName();
+        String tempLabel = getInstance().getLabel();
+        Object tempDefaultValue = null;
+        if (name.isValid()) {
+            tempName = name.getValue();
+        }
+        if (label.isValid()) {
+            tempLabel = label.getValue();
+        }
+        if (defaultValueString.getValue() != null && !defaultValueString.getValue().isEmpty()) {
+            tempDefaultValue = defaultValueString.getValue();
+        }
+        if (tempDefaultValue == null) {
+            tempDefaultValue = defaultValueDate.getValue();
+        }
+        if (tempDefaultValue == null) {
+            tempDefaultValue = defaultValueAnswer.getValue();
+        }
+
+        ApplicationUi.getController().updateQuestion(getInstance(), tempName, tempLabel, abbreviature.getValue(), alias.getValue(),
+                description.getValue(), mandatory.getValue(), (AnswerType) answerType.getValue(), (AnswerFormat) answerFormat.getValue(),
+                (AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue, disableEdition.getValue(), getImage());
+
+        super.updateElement();
+    }
 }

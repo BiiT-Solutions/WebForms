@@ -2,6 +2,7 @@ package com.biit.webforms.persistence.entity;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -23,6 +24,14 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class WebformsBaseQuestion extends BaseQuestion {
 	private static final long serialVersionUID = 5749191470931873398L;
+	public static final int MAX_ABBREVIATURE_LENGTH = 100;
+	public static final int MAX_ALIAS_LENGTH = 100;
+	
+	@Column(length = MAX_ALIAS_LENGTH, columnDefinition = "varchar(" + MAX_ALIAS_LENGTH + ")")
+	private String alias;
+	
+	@Column(length = MAX_ABBREVIATURE_LENGTH, columnDefinition = "varchar(" + MAX_ABBREVIATURE_LENGTH + ")")
+	private String abbreviature;
 
 	public WebformsBaseQuestion() {
 		super();
@@ -69,5 +78,23 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
 	public abstract boolean isMandatory();
 
 	public abstract int exportToJavaCode(StringBuilder sb, int counter);
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+
+	public String getAbbreviature() {
+		return abbreviature;
+	}
+
+	public void setAbbreviature(String abbreviature) {
+		this.abbreviature = abbreviature;
+	}
+	
+	
 
 }

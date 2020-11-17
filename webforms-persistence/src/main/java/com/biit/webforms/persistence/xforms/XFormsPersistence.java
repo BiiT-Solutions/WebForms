@@ -15,8 +15,8 @@ import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.biit.webforms.persistence.xforms.exceptions.AccessNotAllowed;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedKeyException;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedXFormException;
-import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 
+import com.mysql.jdbc.CommunicationsException;
 import net.sf.ehcache.util.FindBugsSuppressWarnings;
 
 public class XFormsPersistence {

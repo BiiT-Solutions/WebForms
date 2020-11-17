@@ -227,6 +227,8 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_NAME("caption.name"),
 	REFERENCE_CAPTION_NAME("reference.caption.name"),
 	CAPTION_TECHNICAL_NAME("caption.technical.name"),
+	CAPTION_ALIAS_NAME("caption.alias.name"),
+	CAPTION_ABBREVIATURE_NAME("caption.abbreviature.name"),
 	CAPTION_VALUE("caption.value"),
 	CAPTION_LABEL("caption.label"),
 	CAPTION_FIELD("caption.field"),
