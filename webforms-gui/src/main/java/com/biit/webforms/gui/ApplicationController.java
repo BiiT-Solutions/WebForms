@@ -1038,7 +1038,7 @@ public class ApplicationController {
 		try {
 			if (!Objects.equals(question.getLabel(), label) || !Objects.equals(question.getDescription(), description)
 					|| !Objects.equals(question.getName(), name) || question.isMandatory() != mandatory
-					|| !Objects.equals(question.getAbbreviature(), abbreviature)
+					|| !Objects.equals(question.getAbbreviation(), abbreviature)
 					|| !Objects.equals(question.getAlias(), alias)
 					|| (question.getAnswerType() != null && !question.getAnswerType().equals(answerType))
 					|| (question.getAnswerFormat() != null && !Objects.equals(question.getAnswerFormat(), answerFormat))
@@ -1050,7 +1050,7 @@ public class ApplicationController {
 				question.setName(name);
 				question.setLabel(label);
 				question.setAlias(alias);
-				question.setAbbreviature(abbreviature);
+				question.setAbbreviation(abbreviature);
 				question.setDescription(description);
 				question.setAnswerType(answerType);
 				question.setAnswerFormat(answerFormat);

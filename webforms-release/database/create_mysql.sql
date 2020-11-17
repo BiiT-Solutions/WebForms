@@ -190,8 +190,6 @@
         original_reference varchar(190) not null,
         sort_sequence bigint not null,
         parent bigint,
-        abbreviature varchar(100),
-        alias varchar(100),
         description TEXT,
         edition_disabled bit,
         mandatory bit not null,
@@ -326,7 +324,7 @@
         original_reference varchar(190) not null,
         sort_sequence bigint not null,
         parent bigint,
-        abbreviature varchar(100),
+        abbreviation varchar(100),
         alias varchar(100),
         answer_format varchar(255),
         answer_subformat varchar(255),
@@ -353,8 +351,6 @@
         original_reference varchar(190) not null,
         sort_sequence bigint not null,
         parent bigint,
-        abbreviature varchar(100),
-        alias varchar(100),
         primary key (id)
     ) engine=InnoDB;
 
@@ -370,8 +366,6 @@
         original_reference varchar(190) not null,
         sort_sequence bigint not null,
         parent bigint,
-        abbreviature varchar(100),
-        alias varchar(100),
         description varchar(10000),
         primary key (id)
     ) engine=InnoDB;

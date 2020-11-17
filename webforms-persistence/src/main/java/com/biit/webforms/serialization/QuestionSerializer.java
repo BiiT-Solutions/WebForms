@@ -14,6 +14,8 @@ public class QuestionSerializer extends TreeObjectSerializer<Question> {
 	public JsonElement serialize(Question src, Type typeOfSrc, JsonSerializationContext context) {
 		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
 
+		jsonObject.add("abbreviation", context.serialize(src.getAbbreviation()));
+		jsonObject.add("alias", context.serialize(src.getAlias()));
 		jsonObject.add("answerType", context.serialize(src.getAnswerType()));
 		jsonObject.add("answerFormat", context.serialize(src.getAnswerFormat()));
 		jsonObject.add("answerSubformat", context.serialize(src.getAnswerSubformat()));

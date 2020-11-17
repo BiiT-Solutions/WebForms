@@ -23,78 +23,53 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class WebformsBaseQuestion extends BaseQuestion {
-	private static final long serialVersionUID = 5749191470931873398L;
-	public static final int MAX_ABBREVIATURE_LENGTH = 100;
-	public static final int MAX_ALIAS_LENGTH = 100;
-	
-	@Column(length = MAX_ALIAS_LENGTH, columnDefinition = "varchar(" + MAX_ALIAS_LENGTH + ")")
-	private String alias;
-	
-	@Column(length = MAX_ABBREVIATURE_LENGTH, columnDefinition = "varchar(" + MAX_ABBREVIATURE_LENGTH + ")")
-	private String abbreviature;
+    private static final long serialVersionUID = 5749191470931873398L;
 
-	public WebformsBaseQuestion() {
-		super();
-	}
+    public WebformsBaseQuestion() {
+        super();
+    }
 
-	public WebformsBaseQuestion(String name) throws FieldTooLongException, CharacterNotAllowedException {
-		super(name);
-	}
+    public WebformsBaseQuestion(String name) throws FieldTooLongException, CharacterNotAllowedException {
+        super(name);
+    }
 
-	@Override
-	public void checkDependencies() throws DependencyExistException, DependencyDynamicAnswerExistException, FlowDependencyExistException,
-			WebserviceDependencyExistException {
-		Form form = (Form) this.getAncestor(Form.class);
-		if (form == null) {
-			return;
-		}
+    @Override
+    public void checkDependencies() throws DependencyExistException, DependencyDynamicAnswerExistException, FlowDependencyExistException,
+            WebserviceDependencyExistException {
+        Form form = (Form) this.getAncestor(Form.class);
+        if (form == null) {
+            return;
+        }
 
-		for (TreeObject child : form.getAllChildrenInHierarchy(DynamicAnswer.class)) {
-			DynamicAnswer dynamicAnswer = (DynamicAnswer) child;
-			if (Objects.equals(dynamicAnswer.getReference(), this)) {
-				throw new DependencyDynamicAnswerExistException("Question '" + dynamicAnswer.getReference() + "' depends of element + '" + this + "'");
-			}
-		}
+        for (TreeObject child : form.getAllChildrenInHierarchy(DynamicAnswer.class)) {
+            DynamicAnswer dynamicAnswer = (DynamicAnswer) child;
+            if (Objects.equals(dynamicAnswer.getReference(), this)) {
+                throw new DependencyDynamicAnswerExistException("Question '" + dynamicAnswer.getReference() + "' depends of element + '" + this + "'");
+            }
+        }
 
-		for (Flow flow : form.getFlows()) {
-			if (flow.isDependent(this)) {
-				throw new FlowDependencyExistException("Flow '" + flow + "' depends of element '" + this + "'");
-			}
-		}
+        for (Flow flow : form.getFlows()) {
+            if (flow.isDependent(this)) {
+                throw new FlowDependencyExistException("Flow '" + flow + "' depends of element '" + this + "'");
+            }
+        }
 
-		for (WebserviceCall call : form.getWebserviceCalls()) {
-			if (call.isUsing(this)) {
-				throw new WebserviceDependencyExistException("Webservice call '" + call.getName() + "' depends of element '" + this + "'");
-			}
-		}
-	}
+        for (WebserviceCall call : form.getWebserviceCalls()) {
+            if (call.isUsing(this)) {
+                throw new WebserviceDependencyExistException("Webservice call '" + call.getName() + "' depends of element '" + this + "'");
+            }
+        }
+    }
 
-	public abstract AnswerFormat getAnswerFormat();
+    public abstract AnswerFormat getAnswerFormat();
 
-	public abstract AnswerSubformat getAnswerSubformat();
+    public abstract AnswerSubformat getAnswerSubformat();
 
-	public abstract AnswerType getAnswerType();
+    public abstract AnswerType getAnswerType();
 
-	public abstract boolean isMandatory();
+    public abstract boolean isMandatory();
 
-	public abstract int exportToJavaCode(StringBuilder sb, int counter);
+    public abstract int exportToJavaCode(StringBuilder sb, int counter);
 
-	public String getAlias() {
-		return alias;
-	}
-
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
-
-	public String getAbbreviature() {
-		return abbreviature;
-	}
-
-	public void setAbbreviature(String abbreviature) {
-		this.abbreviature = abbreviature;
-	}
-	
-	
 
 }

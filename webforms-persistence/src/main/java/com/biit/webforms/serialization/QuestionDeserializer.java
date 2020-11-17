@@ -30,7 +30,8 @@ public class QuestionDeserializer extends TreeObjectDeserializer<Question> {
 		} catch (InvalidAnswerFormatException | InvalidAnswerSubformatException e) {
 			throw new JsonParseException(e);
 		}
-
+		element.setAbbreviation(parseString("abbreviation", jobject, context));
+		element.setAlias(parseString("alias", jobject, context));
 		element.setMandatory(parseBoolean("mandatory", jobject, context));
 		element.setHorizontal(parseBoolean("horizontal", jobject, context));
 		element.setDescription(parseString("description", jobject, context));

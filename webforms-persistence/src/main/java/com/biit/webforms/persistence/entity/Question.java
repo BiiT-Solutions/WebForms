@@ -40,508 +40,533 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidRangeException;
 @Table(name = "tree_questions")
 @Cacheable(true)
 public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithImage,
-		ElementWithDescription {
-	private static final long serialVersionUID = -7243001035969348318L;
-	public static final int MAX_DESCRIPTION_LENGTH = 10000;
-	public static final int MAX_DEFAULT_VALUE = 10000;
-	public static final boolean DEFAULT_HORIZONTAL = false;
-	public static final boolean DEFAULT_MANDATORY = true;
+        ElementWithDescription {
+    private static final long serialVersionUID = -7243001035969348318L;
+    public static final int MAX_DESCRIPTION_LENGTH = 10000;
+    public static final int MAX_DEFAULT_VALUE = 10000;
+    public static final boolean DEFAULT_HORIZONTAL = false;
+    public static final boolean DEFAULT_MANDATORY = true;
+    public static final int MAX_ABBREVIATURE_LENGTH = 100;
+    public static final int MAX_ALIAS_LENGTH = 100;
 
-	private boolean mandatory;
-	private boolean horizontal;
+    private boolean mandatory;
+    private boolean horizontal;
 
-	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
-	private String description = "";
+    @Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
+    private String description = "";
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "answer_type")
-	private AnswerType answerType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "answer_type")
+    private AnswerType answerType;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "answer_format")
-	private AnswerFormat answerFormat;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "answer_format")
+    private AnswerFormat answerFormat;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "answer_subformat")
-	private AnswerSubformat answerSubformat;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "answer_subformat")
+    private AnswerSubformat answerSubformat;
 
-	@Column(name = "default_value_string", length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
-	private String defaultValueString;
+    @Column(name = "default_value_string", length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
+    private String defaultValueString;
 
-	@ManyToOne(optional = true)
-	@JoinColumn(name = "default_value_answer")
-	private Answer defaultValueAnswer;
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "default_value_answer")
+    private Answer defaultValueAnswer;
 
-	// Disables in orbeon the edition of this field. Means that when creating a
-	// new form in orbeon is enabled, but when editing is disabled.
-	@Column(name = "edition_disabled", nullable = false, columnDefinition = "bit default 1")
-	private boolean editionDisabled = false;
+    // Disables in orbeon the edition of this field. Means that when creating a
+    // new form in orbeon is enabled, but when editing is disabled.
+    @Column(name = "edition_disabled", nullable = false, columnDefinition = "bit default 1")
+    private boolean editionDisabled = false;
 
-	@Column(name = "default_value_time")
-	private Timestamp defaultValueTime;
+    @Column(name = "default_value_time")
+    private Timestamp defaultValueTime;
 
-	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-	private TreeObjectImage image;
+    @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private TreeObjectImage image;
 
-	public Question() {
-		super();
-		mandatory = DEFAULT_MANDATORY;
-		horizontal = DEFAULT_HORIZONTAL;
-		description = new String();
-		answerType = AnswerType.INPUT;
-		answerFormat = AnswerFormat.TEXT;
-		answerSubformat = AnswerSubformat.TEXT;
-	}
+    @Column(length = MAX_ALIAS_LENGTH, columnDefinition = "varchar(" + MAX_ALIAS_LENGTH + ")")
+    private String alias;
 
-	public Question(String name) throws FieldTooLongException, CharacterNotAllowedException {
-		super(name);
-		mandatory = DEFAULT_MANDATORY;
-		horizontal = DEFAULT_HORIZONTAL;
-		description = new String();
-		answerType = AnswerType.INPUT;
-		answerFormat = AnswerFormat.TEXT;
-		answerSubformat = AnswerSubformat.TEXT;
-	}
+    @Column(length = MAX_ABBREVIATURE_LENGTH, columnDefinition = "varchar(" + MAX_ABBREVIATURE_LENGTH + ")")
+    private String abbreviation;
 
-	@Override
-	public void resetIds() {
-		super.resetIds();
-		if (image != null) {
-			image.resetIds();
-		}
-	}
+    public Question() {
+        super();
+        mandatory = DEFAULT_MANDATORY;
+        horizontal = DEFAULT_HORIZONTAL;
+        description = new String();
+        answerType = AnswerType.INPUT;
+        answerFormat = AnswerFormat.TEXT;
+        answerSubformat = AnswerSubformat.TEXT;
+    }
 
-	@Override
-	protected void resetDatabaseIds() {
-		super.resetDatabaseIds();
-		if (image != null) {
-			image.resetDatabaseIds();
-		}
-	}
+    public Question(String name) throws FieldTooLongException, CharacterNotAllowedException {
+        super(name);
+        mandatory = DEFAULT_MANDATORY;
+        horizontal = DEFAULT_HORIZONTAL;
+        description = new String();
+        answerType = AnswerType.INPUT;
+        answerFormat = AnswerFormat.TEXT;
+        answerSubformat = AnswerSubformat.TEXT;
+    }
 
-	public AnswerType getAnswerType() {
-		return this.answerType;
-	}
+    @Override
+    public void resetIds() {
+        super.resetIds();
+        if (image != null) {
+            image.resetIds();
+        }
+    }
 
-	/**
-	 * This setter sets AnswerType and sets the answer format to the default
-	 * answer format for a type.
-	 * 
-	 * @param answerType
-	 */
-	public void setAnswerType(AnswerType answerType) {
-		AnswerType prevValue = this.answerType;
-		this.answerType = answerType;
-		try {
-			// If you change to input field, select the default value.
-			if (answerType != prevValue) {
-				setAnswerFormat(answerType.getDefaultAnswerFormat());
-				if (!answerType.isChildrenAllowed()) {
-					getChildren().clear();
-				}
-				// Dropdown list does not allow subanswers.
-				if (!answerType.isSubChildrenAllowed()) {
-					for (TreeObject child : getChildren()) {
-						child.getChildren().clear();
-					}
-				}
-			}
-			if (!answerType.isHorizontalEnabled()) {
-				horizontal = answerType.getDefaultHorizontal();
-			}
-			if (!answerType.isMandatoryEnabled()) {
-				mandatory = answerType.getDefaultMandatory();
-			}
-		} catch (InvalidAnswerFormatException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}
-	}
+    @Override
+    protected void resetDatabaseIds() {
+        super.resetDatabaseIds();
+        if (image != null) {
+            image.resetDatabaseIds();
+        }
+    }
 
-	@Override
-	public AnswerFormat getAnswerFormat() {
-		return this.answerFormat;
-	}
+    public AnswerType getAnswerType() {
+        return this.answerType;
+    }
 
-	/**
-	 * Setter of answer format. Sets the answer format and sets the default
-	 * answer subformat.
-	 * 
-	 * @param answerFormat
-	 * @throws InvalidAnswerFormatException
-	 */
-	public void setAnswerFormat(AnswerFormat answerFormat) throws InvalidAnswerFormatException {
-		if (Objects.equals(answerType, AnswerType.INPUT)) {
-			if (answerFormat == null) {
-				throw new InvalidAnswerFormatException("Input fields must define an answer format.");
-			}
-		} else {
-			if (answerFormat != null) {
-				throw new InvalidAnswerFormatException("Non Input fields cannot define an answer format.");
-			}
-		}
-		this.answerFormat = answerFormat;
-		if (answerFormat != null) {
-			// Answer subform is not valid for answerSubformat, change it.
-			if (answerSubformat == null
-					|| (answerSubformat.getAnswerFormat() != null && !answerSubformat.getAnswerFormat().equals(
-							answerFormat))) {
-				this.answerSubformat = answerFormat.getDefaultSubformat();
-			}
-		} else {
-			this.answerSubformat = null;
-		}
-	}
+    /**
+     * This setter sets AnswerType and sets the answer format to the default
+     * answer format for a type.
+     *
+     * @param answerType
+     */
+    public void setAnswerType(AnswerType answerType) {
+        AnswerType prevValue = this.answerType;
+        this.answerType = answerType;
+        try {
+            // If you change to input field, select the default value.
+            if (answerType != prevValue) {
+                setAnswerFormat(answerType.getDefaultAnswerFormat());
+                if (!answerType.isChildrenAllowed()) {
+                    getChildren().clear();
+                }
+                // Dropdown list does not allow subanswers.
+                if (!answerType.isSubChildrenAllowed()) {
+                    for (TreeObject child : getChildren()) {
+                        child.getChildren().clear();
+                    }
+                }
+            }
+            if (!answerType.isHorizontalEnabled()) {
+                horizontal = answerType.getDefaultHorizontal();
+            }
+            if (!answerType.isMandatoryEnabled()) {
+                mandatory = answerType.getDefaultMandatory();
+            }
+        } catch (InvalidAnswerFormatException e) {
+            WebformsLogger.errorMessage(this.getClass().getName(), e);
+        }
+    }
 
-	@Override
-	public AnswerSubformat getAnswerSubformat() {
-		return answerSubformat;
-	}
+    @Override
+    public AnswerFormat getAnswerFormat() {
+        return this.answerFormat;
+    }
 
-	public void setAnswerSubformat(AnswerSubformat answerSubformat) throws InvalidAnswerSubformatException {
-		if (answerFormat == null && answerSubformat != null) {
-			throw new InvalidAnswerSubformatException(
-					"Answer subformat can't be defined if the question doesn't have any format.");
-		}
-		if (answerFormat != null && answerSubformat != null && !answerFormat.isSubformat(answerSubformat)) {
-			throw new InvalidAnswerSubformatException("Answer subformat " + answerSubformat
-					+ " is not compatible with answer format " + answerFormat);
-		}
-		if (answerFormat != null && answerSubformat == null) {
-			this.answerSubformat = answerFormat.getDefaultSubformat();
-		} else {
-			this.answerSubformat = answerSubformat;
-		}
-	}
+    /**
+     * Setter of answer format. Sets the answer format and sets the default
+     * answer subformat.
+     *
+     * @param answerFormat
+     * @throws InvalidAnswerFormatException
+     */
+    public void setAnswerFormat(AnswerFormat answerFormat) throws InvalidAnswerFormatException {
+        if (Objects.equals(answerType, AnswerType.INPUT)) {
+            if (answerFormat == null) {
+                throw new InvalidAnswerFormatException("Input fields must define an answer format.");
+            }
+        } else {
+            if (answerFormat != null) {
+                throw new InvalidAnswerFormatException("Non Input fields cannot define an answer format.");
+            }
+        }
+        this.answerFormat = answerFormat;
+        if (answerFormat != null) {
+            // Answer subform is not valid for answerSubformat, change it.
+            if (answerSubformat == null
+                    || (answerSubformat.getAnswerFormat() != null && !answerSubformat.getAnswerFormat().equals(
+                    answerFormat))) {
+                this.answerSubformat = answerFormat.getDefaultSubformat();
+            }
+        } else {
+            this.answerSubformat = null;
+        }
+    }
 
-	@Override
-	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		if (object instanceof Question) {
-			copyBasicInfo(object);
+    @Override
+    public AnswerSubformat getAnswerSubformat() {
+        return answerSubformat;
+    }
 
-			Question question = (Question) object;
+    public void setAnswerSubformat(AnswerSubformat answerSubformat) throws InvalidAnswerSubformatException {
+        if (answerFormat == null && answerSubformat != null) {
+            throw new InvalidAnswerSubformatException(
+                    "Answer subformat can't be defined if the question doesn't have any format.");
+        }
+        if (answerFormat != null && answerSubformat != null && !answerFormat.isSubformat(answerSubformat)) {
+            throw new InvalidAnswerSubformatException("Answer subformat " + answerSubformat
+                    + " is not compatible with answer format " + answerFormat);
+        }
+        if (answerFormat != null && answerSubformat == null) {
+            this.answerSubformat = answerFormat.getDefaultSubformat();
+        } else {
+            this.answerSubformat = answerSubformat;
+        }
+    }
 
-			setDescription(new String(question.getDescription()));
-			// This need to be set on order or otherwise the assignment process
-			// will fail
-			setAnswerType(question.getAnswerType());
-			try {
-				setAnswerFormat(question.getAnswerFormat());
-			} catch (InvalidAnswerFormatException e) {
-				// Its a copy, it should never happen.
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			}
-			try {
-				setAnswerSubformat(question.getAnswerSubformat());
-			} catch (InvalidAnswerSubformatException e) {
-				// Its a copy, it should never happen.
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			}
-			setMandatory(question.isMandatory());
-			setHorizontal(question.isHorizontal());
+    @Override
+    public void copyData(StorableObject object) throws NotValidStorableObjectException {
+        if (object instanceof Question) {
+            copyBasicInfo(object);
 
-			setEditionDisabled(question.isEditionDisabled());
+            Question question = (Question) object;
 
-			setDefaultValueString(question.getDefaultValueString());
-			setDefaultValueTime(question.getDefaultValueTime());
-			if (question.getDefaultValueAnswer() != null) {
-				setDefaultValueAnswer(getAnswer(question.getDefaultValueAnswer().getValue()));
-			}
-		} else {
-			throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy. Type '"
-					+ object.getClass().getName() + "' not allowed.");
-		}
-	}
+            setDescription(new String(question.getDescription()));
+            // This need to be set on order or otherwise the assignment process
+            // will fail
+            setAnswerType(question.getAnswerType());
+            try {
+                setAnswerFormat(question.getAnswerFormat());
+            } catch (InvalidAnswerFormatException e) {
+                // Its a copy, it should never happen.
+                WebformsLogger.errorMessage(this.getClass().getName(), e);
+            }
+            try {
+                setAnswerSubformat(question.getAnswerSubformat());
+            } catch (InvalidAnswerSubformatException e) {
+                // Its a copy, it should never happen.
+                WebformsLogger.errorMessage(this.getClass().getName(), e);
+            }
+            setMandatory(question.isMandatory());
+            setHorizontal(question.isHorizontal());
 
-	@Override
-	public boolean isMandatory() {
-		return mandatory;
-	}
+            setEditionDisabled(question.isEditionDisabled());
 
-	public void setMandatory(boolean mandatory) {
-		this.mandatory = mandatory;
-	}
+            setDefaultValueString(question.getDefaultValueString());
+            setDefaultValueTime(question.getDefaultValueTime());
+            if (question.getDefaultValueAnswer() != null) {
+                setDefaultValueAnswer(getAnswer(question.getDefaultValueAnswer().getValue()));
+            }
+        } else {
+            throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy. Type '"
+                    + object.getClass().getName() + "' not allowed.");
+        }
+    }
 
-	public boolean isHorizontal() {
-		return horizontal;
-	}
+    @Override
+    public boolean isMandatory() {
+        return mandatory;
+    }
 
-	public void setHorizontal(boolean horizontal) {
-		this.horizontal = horizontal;
-	}
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
+    }
 
-	@Override
-	public String getDescription() {
-		if (description != null) {
-			return description;
-		} else {
-			return new String();
-		}
-	}
+    public boolean isHorizontal() {
+        return horizontal;
+    }
 
-	@Override
-	public void setDescription(String description) {
-		if (description == null) {
-			this.description = new String();
-		} else {
-			this.description = description;
-		}
-	}
+    public void setHorizontal(boolean horizontal) {
+        this.horizontal = horizontal;
+    }
 
-	@Override
-	public boolean isAllowedChildren(Class<? extends TreeObject> childClass) {
-		if (super.isAllowedChildren(childClass)) {
-			if (answerType.isChildrenAllowed()) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public String getDescription() {
+        if (description != null) {
+            return description;
+        } else {
+            return new String();
+        }
+    }
 
-	@Override
-	public String getScriptRepresentation() {
-		List<TreeObject> parents = new ArrayList<TreeObject>();
-		TreeObject tempParent = getParent();
-		while (tempParent != null && !(tempParent instanceof Form)) {
-			parents.add(tempParent);
-			tempParent = tempParent.getParent();
-		}
-		String representation = "<" + getName() + ">";
-		for (int i = 0; i < parents.size(); i++) {
-			representation = "<" + parents.get(i).getName() + ">" + representation;
-		}
-		return representation;
-	}
+    @Override
+    public void setDescription(String description) {
+        if (description == null) {
+            this.description = new String();
+        } else {
+            this.description = description;
+        }
+    }
 
-	public LinkedHashSet<Answer> getFinalAnswers() {
-		LinkedHashSet<Answer> childAnswers = getAllChildrenInHierarchy(Answer.class);
-		LinkedHashSet<Answer> finalAnswers = new LinkedHashSet<>();
-		for (Answer answer : childAnswers) {
-			if (answer.getChildren() == null || answer.getChildren().isEmpty()) {
-				finalAnswers.add(answer);
-			}
-		}
-		return finalAnswers;
-	}
+    @Override
+    public boolean isAllowedChildren(Class<? extends TreeObject> childClass) {
+        if (super.isAllowedChildren(childClass)) {
+            if (answerType.isChildrenAllowed()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public boolean containsDynamicAnswer() {
-		return !getAllChildrenInHierarchy(DynamicAnswer.class).isEmpty();
-	}
+    @Override
+    public String getScriptRepresentation() {
+        List<TreeObject> parents = new ArrayList<TreeObject>();
+        TreeObject tempParent = getParent();
+        while (tempParent != null && !(tempParent instanceof Form)) {
+            parents.add(tempParent);
+            tempParent = tempParent.getParent();
+        }
+        String representation = "<" + getName() + ">";
+        for (int i = 0; i < parents.size(); i++) {
+            representation = "<" + parents.get(i).getName() + ">" + representation;
+        }
+        return representation;
+    }
 
-	/**
-	 * Returns the answer with value == @answerValue otherwise returns null.
-	 * 
-	 * @param answerValue
-	 * @return
-	 */
-	public Answer getAnswer(String answerValue) {
-		LinkedHashSet<Answer> answers = getFinalAnswers();
-		for (Answer answer : answers) {
-			if (answer.getValue().equals(answerValue)) {
-				return answer;
-			}
-		}
-		return null;
-	}
+    public LinkedHashSet<Answer> getFinalAnswers() {
+        LinkedHashSet<Answer> childAnswers = getAllChildrenInHierarchy(Answer.class);
+        LinkedHashSet<Answer> finalAnswers = new LinkedHashSet<>();
+        for (Answer answer : childAnswers) {
+            if (answer.getChildren() == null || answer.getChildren().isEmpty()) {
+                finalAnswers.add(answer);
+            }
+        }
+        return finalAnswers;
+    }
 
-	public int exportToJavaCode(StringBuilder sb, int counter) {
-		String idName = "el_" + counter;
+    public boolean containsDynamicAnswer() {
+        return !getAllChildrenInHierarchy(DynamicAnswer.class).isEmpty();
+    }
 
-		sb.append("Question ").append(idName).append("  = new Question();").append(System.lineSeparator());
-		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
-		sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
-		switch (answerType) {
-		case INPUT:
-			sb.append(idName).append(".setAnswerType(AnswerType." + answerType + ");").append(System.lineSeparator());
-			sb.append(idName).append(".setAnswerFormat(AnswerFormat." + answerFormat + ");")
-					.append(System.lineSeparator());
-			sb.append(idName).append(".setAnswerSubformat(AnswerSubformat." + answerSubformat + ");")
-					.append(System.lineSeparator());
-			break;
-		default:
-			sb.append(idName).append(".setAnswerType(AnswerType." + answerType + ");").append(System.lineSeparator());
-			break;
-		}
+    /**
+     * Returns the answer with value == @answerValue otherwise returns null.
+     *
+     * @param answerValue
+     * @return
+     */
+    public Answer getAnswer(String answerValue) {
+        LinkedHashSet<Answer> answers = getFinalAnswers();
+        for (Answer answer : answers) {
+            if (answer.getValue().equals(answerValue)) {
+                return answer;
+            }
+        }
+        return null;
+    }
 
-		if (isHorizontal()) {
-			sb.append(idName).append(".setHorizontal(true);").append(System.lineSeparator());
-		} else {
-			sb.append(idName).append(".setHorizontal(false);").append(System.lineSeparator());
-		}
-		if (isMandatory()) {
-			sb.append(idName).append(".setMandatory(true);").append(System.lineSeparator());
-		} else {
-			sb.append(idName).append(".setMandatory(false);").append(System.lineSeparator());
-		}
+    public int exportToJavaCode(StringBuilder sb, int counter) {
+        String idName = "el_" + counter;
 
-		int currentCounter = counter;
-		for (TreeObject child : getChildren()) {
-			int tempCounter = currentCounter + 1;
-			currentCounter = ((Answer) child).exportToJavaCode(sb, currentCounter + 1);
-			sb.append("//ques").append(System.lineSeparator());
-			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");")
-					.append(System.lineSeparator());
-		}
+        sb.append("Question ").append(idName).append("  = new Question();").append(System.lineSeparator());
+        sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
+        sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
+        switch (answerType) {
+            case INPUT:
+                sb.append(idName).append(".setAnswerType(AnswerType." + answerType + ");").append(System.lineSeparator());
+                sb.append(idName).append(".setAnswerFormat(AnswerFormat." + answerFormat + ");")
+                        .append(System.lineSeparator());
+                sb.append(idName).append(".setAnswerSubformat(AnswerSubformat." + answerSubformat + ");")
+                        .append(System.lineSeparator());
+                break;
+            default:
+                sb.append(idName).append(".setAnswerType(AnswerType." + answerType + ");").append(System.lineSeparator());
+                break;
+        }
 
-		return currentCounter;
-	}
+        if (isHorizontal()) {
+            sb.append(idName).append(".setHorizontal(true);").append(System.lineSeparator());
+        } else {
+            sb.append(idName).append(".setHorizontal(false);").append(System.lineSeparator());
+        }
+        if (isMandatory()) {
+            sb.append(idName).append(".setMandatory(true);").append(System.lineSeparator());
+        } else {
+            sb.append(idName).append(".setMandatory(false);").append(System.lineSeparator());
+        }
 
-	/**
-	 * Compares the content of treeObject - Needs to be an instance of Question
-	 * 
-	 * @param treeObject
-	 * @return
-	 */
-	public boolean isContentEqual(TreeObject treeObject) {
-		if (treeObject instanceof Question) {
-			if (super.isContentEqual(treeObject)) {
-				Question question = (Question) treeObject;
-				if (this.getAnswerType() != question.getAnswerType()) {
-					return false;
-				}
-				if (this.getAnswerFormat() != question.getAnswerFormat()) {
-					return false;
-				}
-				if (this.getAnswerSubformat() != question.getAnswerSubformat()) {
-					return false;
-				}
-				if (this.isMandatory() != question.isMandatory()) {
-					return false;
-				}
-				if (this.isHorizontal() != question.isHorizontal()) {
-					return false;
-				}
-				if (this.isEditionDisabled() != question.isEditionDisabled()) {
-					return false;
-				}
-				return true;
-			}
-		}
-		return false;
-	}
+        int currentCounter = counter;
+        for (TreeObject child : getChildren()) {
+            int tempCounter = currentCounter + 1;
+            currentCounter = ((Answer) child).exportToJavaCode(sb, currentCounter + 1);
+            sb.append("//ques").append(System.lineSeparator());
+            sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");")
+                    .append(System.lineSeparator());
+        }
 
-	public String getDefaultValueString() {
-		return defaultValueString;
-	}
+        return currentCounter;
+    }
 
-	public void setDefaultValueString(String defaultValueString) {
-		this.defaultValueString = defaultValueString;
-	}
+    /**
+     * Compares the content of treeObject - Needs to be an instance of Question
+     *
+     * @param treeObject
+     * @return
+     */
+    public boolean isContentEqual(TreeObject treeObject) {
+        if (treeObject instanceof Question) {
+            if (super.isContentEqual(treeObject)) {
+                Question question = (Question) treeObject;
+                if (this.getAnswerType() != question.getAnswerType()) {
+                    return false;
+                }
+                if (this.getAnswerFormat() != question.getAnswerFormat()) {
+                    return false;
+                }
+                if (this.getAnswerSubformat() != question.getAnswerSubformat()) {
+                    return false;
+                }
+                if (this.isMandatory() != question.isMandatory()) {
+                    return false;
+                }
+                if (this.isHorizontal() != question.isHorizontal()) {
+                    return false;
+                }
+                if (this.isEditionDisabled() != question.isEditionDisabled()) {
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public Answer getDefaultValueAnswer() {
-		return defaultValueAnswer;
-	}
+    public String getDefaultValueString() {
+        return defaultValueString;
+    }
 
-	public void setDefaultValueAnswer(Answer defaultValueAnswer) {
-		this.defaultValueAnswer = defaultValueAnswer;
-	}
+    public void setDefaultValueString(String defaultValueString) {
+        this.defaultValueString = defaultValueString;
+    }
 
-	public Timestamp getDefaultValueTime() {
-		return defaultValueTime;
-	}
+    public Answer getDefaultValueAnswer() {
+        return defaultValueAnswer;
+    }
 
-	public void setDefaultValueTime(Timestamp defaultValueTime) {
-		this.defaultValueTime = defaultValueTime;
-	}
+    public void setDefaultValueAnswer(Answer defaultValueAnswer) {
+        this.defaultValueAnswer = defaultValueAnswer;
+    }
 
-	/**
-	 * Returns the default value as string. If no default value is defined
-	 * returns empty string.
-	 * 
-	 * @return
-	 */
-	public String getDefaultValue() {
-		if (getDefaultValueString() != null) {
-			return getDefaultValueString();
-		}
-		if (getDefaultValueAnswer() != null) {
-			return getDefaultValueAnswer().toString();
-		}
-		if (getDefaultValueTime() != null) {
-			return getDefaultValueTime().toString();
-		}
-		return "";
-	}
+    public Timestamp getDefaultValueTime() {
+        return defaultValueTime;
+    }
 
-	public void setDefaultValue(Object defaultValue) {
-		if (defaultValue == null) {
-			setDefaultValueString(null);
-			setDefaultValueTime(null);
-			setDefaultValueAnswer(null);
-		}
-		if (defaultValue instanceof String) {
-			setDefaultValueString((String) defaultValue);
-			setDefaultValueTime(null);
-			setDefaultValueAnswer(null);
-			return;
-		}
-		if (defaultValue instanceof Timestamp) {
-			setDefaultValueString(null);
-			setDefaultValueTime((Timestamp) defaultValue);
-			setDefaultValueAnswer(null);
-			return;
-		}
-		if (defaultValue instanceof Date) {
-			setDefaultValueString(null);
-			setDefaultValueTime(new Timestamp(((Date) defaultValue).getTime()));
-			setDefaultValueAnswer(null);
-			return;
-		}
-		if (defaultValue instanceof Answer) {
-			setDefaultValueString(null);
-			setDefaultValueTime(null);
-			setDefaultValueAnswer((Answer) defaultValue);
-			return;
-		}
-	}
+    public void setDefaultValueTime(Timestamp defaultValueTime) {
+        this.defaultValueTime = defaultValueTime;
+    }
 
-	public boolean isEditionDisabled() {
-		return editionDisabled;
-	}
+    /**
+     * Returns the default value as string. If no default value is defined
+     * returns empty string.
+     *
+     * @return
+     */
+    public String getDefaultValue() {
+        if (getDefaultValueString() != null) {
+            return getDefaultValueString();
+        }
+        if (getDefaultValueAnswer() != null) {
+            return getDefaultValueAnswer().toString();
+        }
+        if (getDefaultValueTime() != null) {
+            return getDefaultValueTime().toString();
+        }
+        return "";
+    }
 
-	public void setEditionDisabled(boolean editionDisabled) {
-		this.editionDisabled = editionDisabled;
-	}
+    public void setDefaultValue(Object defaultValue) {
+        if (defaultValue == null) {
+            setDefaultValueString(null);
+            setDefaultValueTime(null);
+            setDefaultValueAnswer(null);
+        }
+        if (defaultValue instanceof String) {
+            setDefaultValueString((String) defaultValue);
+            setDefaultValueTime(null);
+            setDefaultValueAnswer(null);
+            return;
+        }
+        if (defaultValue instanceof Timestamp) {
+            setDefaultValueString(null);
+            setDefaultValueTime((Timestamp) defaultValue);
+            setDefaultValueAnswer(null);
+            return;
+        }
+        if (defaultValue instanceof Date) {
+            setDefaultValueString(null);
+            setDefaultValueTime(new Timestamp(((Date) defaultValue).getTime()));
+            setDefaultValueAnswer(null);
+            return;
+        }
+        if (defaultValue instanceof Answer) {
+            setDefaultValueString(null);
+            setDefaultValueTime(null);
+            setDefaultValueAnswer((Answer) defaultValue);
+            return;
+        }
+    }
 
-	@Override
-	public void setImage(TreeObjectImage image) {
-		this.image = image;
-		if (image != null) {
-			image.setElement(this);
-		}
-	}
+    public boolean isEditionDisabled() {
+        return editionDisabled;
+    }
 
-	@Override
-	public TreeObjectImage getImage() {
-		return image;
-	}
+    public void setEditionDisabled(boolean editionDisabled) {
+        this.editionDisabled = editionDisabled;
+    }
 
-	public List<Answer> createAnswers(float lowerValueRange, float upperValueRange, float increment)
-			throws InvalidRangeException {
-		List<Answer> answers = new ArrayList<>();
-		// lowerValueRange < lowerValueRange + increment because increment must
-		// > 0
-		if (!(lowerValueRange < lowerValueRange + increment && lowerValueRange + increment <= upperValueRange)) {
-			throw new InvalidRangeException("Invalid answer range definition with lower value '" + lowerValueRange
-					+ "', upper value '" + upperValueRange + "' and increment '" + increment + "'.");
-		}
-		for (float i = lowerValueRange; i <= upperValueRange; i += increment) {
-			try {
-				Answer answer = new Answer();
-				answer.setValue(Float.toString(i));
-				if (((int) i) == i) {
-					answer.setName("" + (int) i);
-					answer.setLabel("" + (int) i);
-				} else {
-					answer.setName("" + i);
-					answer.setLabel("" + i);
-				}
-				answer.setDescription(Float.toString(i));
-				addChild(answer);
-				answers.add(answer);
-			} catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException | ElementIsReadOnly e) {
-				WebformsLogger.errorMessage(this.getClass().getName(), e);
-			}
-		}
-		return answers;
-	}
+    @Override
+    public void setImage(TreeObjectImage image) {
+        this.image = image;
+        if (image != null) {
+            image.setElement(this);
+        }
+    }
+
+    @Override
+    public TreeObjectImage getImage() {
+        return image;
+    }
+
+    public List<Answer> createAnswers(float lowerValueRange, float upperValueRange, float increment)
+            throws InvalidRangeException {
+        List<Answer> answers = new ArrayList<>();
+        // lowerValueRange < lowerValueRange + increment because increment must
+        // > 0
+        if (!(lowerValueRange < lowerValueRange + increment && lowerValueRange + increment <= upperValueRange)) {
+            throw new InvalidRangeException("Invalid answer range definition with lower value '" + lowerValueRange
+                    + "', upper value '" + upperValueRange + "' and increment '" + increment + "'.");
+        }
+        for (float i = lowerValueRange; i <= upperValueRange; i += increment) {
+            try {
+                Answer answer = new Answer();
+                answer.setValue(Float.toString(i));
+                if (((int) i) == i) {
+                    answer.setName("" + (int) i);
+                    answer.setLabel("" + (int) i);
+                } else {
+                    answer.setName("" + i);
+                    answer.setLabel("" + i);
+                }
+                answer.setDescription(Float.toString(i));
+                addChild(answer);
+                answers.add(answer);
+            } catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException | ElementIsReadOnly e) {
+                WebformsLogger.errorMessage(this.getClass().getName(), e);
+            }
+        }
+        return answers;
+    }
+
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
 }

@@ -67,11 +67,11 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 
         alias = new TextField(LanguageCodes.CAPTION_ALIAS_NAME.translation());
         alias.setWidth(WIDTH);
-        alias.setMaxLength(WebformsBaseQuestion.MAX_ALIAS_LENGTH);
+        alias.setMaxLength(Question.MAX_ALIAS_LENGTH);
 
         abbreviature = new TextField(LanguageCodes.CAPTION_ABBREVIATURE_NAME.translation());
         abbreviature.setWidth(WIDTH);
-        abbreviature.setMaxLength(WebformsBaseQuestion.MAX_ABBREVIATURE_LENGTH);
+        abbreviature.setMaxLength(Question.MAX_ABBREVIATURE_LENGTH);
 
         label = new TextArea(LanguageCodes.CAPTION_LABEL.translation());
         label.setWidth(WIDTH);
@@ -260,7 +260,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         alias.setValue(getInstance().getAlias() != null ? getInstance().getAlias() : "");
         alias.setEnabled(!getInstance().isReadOnly());
 
-        abbreviature.setValue(getInstance().getAbbreviature() != null ? getInstance().getAbbreviature() : "");
+        abbreviature.setValue(getInstance().getAbbreviation() != null ? getInstance().getAbbreviation() : "");
         abbreviature.setEnabled(!getInstance().isReadOnly());
 
         label.setValue(getInstance().getLabel());
