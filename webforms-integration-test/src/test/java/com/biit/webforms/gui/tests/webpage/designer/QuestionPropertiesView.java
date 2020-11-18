@@ -5,6 +5,8 @@ import com.biit.webforms.gui.tests.exceptions.FieldNotEditableException;
 public class QuestionPropertiesView extends CommonCategoryGroupQuestionProperties {
 
 	private static final String DESCRIPTION_TEXT_AREA_CAPTION = "Description";
+	private static final String ABBREVIATION_TEXT_FIELD_CAPTION = "Abbreviature";
+	private static final String ALIAS_TEXT_FIELD_CAPTION = "Alias";
 	private static final String ANSWER_TYPE_COMBOBOX_CAPTION = "Answer type";
 	private static final String ANSWER_FORMAT_COMBOBOX_CAPTION = "Answer format";
 	private static final String ANSWER_SUBFORMAT_COMBOBOX_CAPTION = "Answer subformat";
@@ -15,10 +17,27 @@ public class QuestionPropertiesView extends CommonCategoryGroupQuestionPropertie
 	public String getDescription() {
 		return getTextAreaValue(DESCRIPTION_TEXT_AREA_CAPTION);
 	}
-
+	
 	public void setDescription(String value) throws FieldNotEditableException {
 		setTextAreaValue(DESCRIPTION_TEXT_AREA_CAPTION, value);
 	}
+	
+	public String getAlias() {
+		return getTextFieldValue(ALIAS_TEXT_FIELD_CAPTION);
+	}
+	
+	public void setAlias(String value) throws FieldNotEditableException {
+		setTextFieldValue(ALIAS_TEXT_FIELD_CAPTION, value);
+	}
+	
+	public String getAbbreviation() {
+		return getTextFieldValue(ABBREVIATION_TEXT_FIELD_CAPTION);
+	}
+
+	public void setAbbreviation(String value) throws FieldNotEditableException {
+		setTextFieldValue(ABBREVIATION_TEXT_FIELD_CAPTION, value);
+	}
+
 
 	public String getAnswerTypeComboBoxValue() {
 		return getComboBoxValue(ANSWER_TYPE_COMBOBOX_CAPTION);

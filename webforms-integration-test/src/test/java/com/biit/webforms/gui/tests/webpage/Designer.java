@@ -228,6 +228,8 @@ public class Designer extends VaadinGuiWebpage {
 		// Although the type is already selected as default value, we select it
 		// again to check that is working properly
 		getQuestionPropertiesView().setAnswerTypeComboBoxValue(ANSWER_TYPE_COMBOBOX_INPUT_FIELD_CAPTION);
+		getQuestionPropertiesView().setAbbreviation("abbr1");
+		getQuestionPropertiesView().setAlias("alias1");
 	}
 
 	public void addNewInputTextQuestion() throws FieldNotEditableException {
@@ -272,6 +274,8 @@ public class Designer extends VaadinGuiWebpage {
 	public void addNewMultiCheckboxQuestion() throws FieldNotEditableException {
 		addNewQuestion();
 		getQuestionPropertiesView().setAnswerTypeComboBoxValue(ANSWER_TYPE_COMBOBOX_MULTI_CHECKBOX_CAPTION);
+		getQuestionPropertiesView().setAbbreviation("abbr2");
+		getQuestionPropertiesView().setAlias("alias2");
 	}
 
 	public void addNewQuestion() {
