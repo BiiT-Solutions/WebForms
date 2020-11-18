@@ -228,6 +228,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
             Question question = (Question) object;
 
+            setAbbreviation(question.getAbbreviation());
+            setAlias(question.getAlias());
+
             setDescription(new String(question.getDescription()));
             // This need to be set on order or otherwise the assignment process
             // will fail

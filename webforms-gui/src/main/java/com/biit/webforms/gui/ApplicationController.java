@@ -322,9 +322,6 @@ public class ApplicationController {
 	/**
 	 * Function to import abcd forms
 	 * 
-	 * @param abcdForm
-	 * @param importLabel
-	 * @param organization
 	 * @return
 	 * @throws NotValidAbcdForm
 	 * @throws CharacterNotAllowedException
@@ -851,7 +848,7 @@ public class ApplicationController {
 	 * Evicts from cache any form that uses the form as a reference to force the
 	 * update.
 	 * 
-	 * @param form
+	 * @param formId
 	 */
 	private void cleanFormReference(Long formId) {
 		if (formId != null) {
@@ -1095,7 +1092,7 @@ public class ApplicationController {
 	 * of the block using the element as hierarchy seed and introduces to
 	 * current form as a new category.
 	 * 
-	 * @param selectedRow
+	 * @param block
 	 * @return Inserted category
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
 	 * @throws EmptyBlockCannotBeInserted
@@ -1183,7 +1180,7 @@ public class ApplicationController {
 	 * of the block using the element as hierarchy seed and introduces to
 	 * current form as a new category.
 	 * 
-	 * @param selectedRow
+	 * @param block
 	 * @throws CategoryWithSameNameAlreadyExistsInForm
 	 * @throws EmptyBlockCannotBeInserted
 	 * @throws ElementIsReadOnly
@@ -1292,7 +1289,8 @@ public class ApplicationController {
 	 * @param origin
 	 * @param flowType
 	 * @param destiny
-	 * @param conditionString
+	 * @param others
+	 * @param condition
 	 * @throws BadFlowContentException
 	 * @throws FlowWithoutSourceException
 	 * @throws FlowSameOriginAndDestinyException
@@ -1336,7 +1334,7 @@ public class ApplicationController {
 	/**
 	 * Clones flows.
 	 * 
-	 * @param selectedFlowss
+	 * @param selectedFlows
 	 */
 	public Set<Flow> cloneFlows(Set<Flow> selectedFlows) {
 		logInfoStart("cloneFlows", selectedFlows);
