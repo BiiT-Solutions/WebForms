@@ -70,7 +70,7 @@ public class LinkBlockTests extends WebFormsTester {
 		}
 	}
 
-	private void addElementToBlock() {
+	private void addElementToBlock() throws FieldNotEditableException {
 		goToBlockManagerPage();
 		try {
 			getBlockManagerPage().getBlockTable().getCell(BLOCK_TABLE_ROW, BLOCK_TABLE_COLUMN);
