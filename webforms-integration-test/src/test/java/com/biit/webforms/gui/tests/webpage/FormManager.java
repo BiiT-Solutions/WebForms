@@ -174,7 +174,6 @@ public class FormManager extends VaadinGuiWebpage {
 	}
 
 	public void deleteAllCreatedForms() {
-
 		try {
 			while (true) {
 				getFormTable().getCell(FORM_ROW, 0);
@@ -187,7 +186,7 @@ public class FormManager extends VaadinGuiWebpage {
 
 	public void deleteForm(int row) {
 		// To avoid errors, first we select other element of the table
-		getFormTable().getCell(0, 0).click();
+		// getFormTable().getCell(0, 0).click();
 		getFormTable().getCell(row, 0).click();
 		Assert.assertNotNull(getRemoveForm());
 		getRemoveForm().click();
