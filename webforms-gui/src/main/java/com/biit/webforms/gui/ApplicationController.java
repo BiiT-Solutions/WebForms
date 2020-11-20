@@ -839,8 +839,8 @@ public class ApplicationController {
 				formDao.makePersistent(mergedForm);
 			}
 		}
-		setUnsavedFormChanges(false);
 		cleanFormReference(mergedForm.getId());
+		setUnsavedFormChanges(false);
 		return mergedForm;
 	}
 

@@ -39,6 +39,7 @@ public class LinkBlockTests extends WebFormsTester {
 		getDesignerPage().addNewQuestion();
 		getDesignerPage().saveDesign();
 		goToFormManagerPage();
+		clickAcceptButtonIfExists();
 	}
 
 	private void createSimpleBlockWithFlow() {
@@ -96,6 +97,7 @@ public class LinkBlockTests extends WebFormsTester {
 
 	private void deleteFormAndBlock() {
 		goToFormManagerPage();
+		clickAcceptButtonIfExists();
 		getFormManagerPage().deleteAllCreatedForms();
 		goToBlockManagerPage();
 		getBlockManagerPage().deleteAllCreatedBlocks();
@@ -166,6 +168,7 @@ public class LinkBlockTests extends WebFormsTester {
 		createSimpleBlock();
 		addLinkedBlockToForm();
 		goToFormManagerPage();
+		sleep();
 		getFormManagerPage().deleteForm(TREE_TABLE_ROW);
 		goToBlockManagerPage();
 		try {

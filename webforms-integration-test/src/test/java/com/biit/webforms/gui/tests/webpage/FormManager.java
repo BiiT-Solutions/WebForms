@@ -186,11 +186,18 @@ public class FormManager extends VaadinGuiWebpage {
 
 	public void deleteForm(int row) {
 		// To avoid errors, first we select other element of the table
-		// getFormTable().getCell(0, 0).click();
-		getFormTable().getCell(row, 0).click();
+		getFormTable().getCell(0, 0).click();
+		if(!getFormTable().getCell(row, 0).isSelected()) {
+			getFormTable().getCell(row, 0).click();
+		}
 		Assert.assertNotNull(getRemoveForm());
-		getRemoveForm().click();
-		clickAcceptButtonIfExists();
+		getRemoveForm().waitForVaadin();
+		try {
+			getRemoveForm().click();
+			clickAcceptButtonIfExists();
+		}catch(Exception e) {
+			//Form does not exists.
+		}
 	}
 
 	@Override
