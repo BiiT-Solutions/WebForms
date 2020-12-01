@@ -96,6 +96,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
 	public static void closeNotification(NotificationElement notification) {
 		try {
 			try {
+				notification.waitForVaadin();
 				notification.close();
 			} catch (TimeoutException e) {
 				// Do nothing.

@@ -19,7 +19,7 @@ public class LinkFormTests extends WebFormsTester {
 	private static final String NEW_FORM_REFERENCE_NAME = NEW_FORM_NAME + "_reference";
 
 	private static final String VALID_FLOW_TAG = "Valid";
-
+	
 	private void loginAndInitializeSimpleForm() {
 		loginFormAdmin1();
 		// Remove previous forms.
@@ -61,7 +61,7 @@ public class LinkFormTests extends WebFormsTester {
 	}
 
 	private void deleteFormAndFormReference() {
-		goToFormManagerPage();
+		//goToFormManagerPage();
 		try {
 			getFormManagerPage().deleteForm(3);
 			getFormManagerPage().deleteForm(1);
@@ -85,6 +85,7 @@ public class LinkFormTests extends WebFormsTester {
 		goToFormManagerPage();
 		getFormManagerPage().deleteForm(1);
 		checkNotificationIsError(getNotification());
+		sleep();
 		deleteFormAndFormReference();
 		logOut();
 	}

@@ -147,7 +147,8 @@ public class FormManager extends VaadinGuiWebpage {
 
 	/**
 	 * Workaround to close the popover.<br>
-	 * When the popover is displayed only the element inside the popover can be selected.<br>
+	 * When the popover is displayed only the element inside the popover can be
+	 * selected.<br>
 	 * To close it, we have focus it and send the close key defined.
 	 */
 	public void closeNewPopover() {
@@ -186,17 +187,17 @@ public class FormManager extends VaadinGuiWebpage {
 
 	public void deleteForm(int row) {
 		// To avoid errors, first we select other element of the table
-		getFormTable().getCell(0, 0).click();
-		if(!getFormTable().getCell(row, 0).isSelected()) {
-			getFormTable().getCell(row, 0).click();
+		if (!getFormTable().getCell(0, 0).isSelected()) {
+			getFormTable().getCell(0, 0).click();
 		}
+		getFormTable().getCell(row, 1).click();
+		getFormTable().getRow(row).click();
 		Assert.assertNotNull(getRemoveForm());
-		getRemoveForm().waitForVaadin();
 		try {
 			getRemoveForm().click();
 			clickAcceptButtonIfExists();
-		}catch(Exception e) {
-			//Form does not exists.
+		} catch (Exception e) {
+			// Form does not exists.
 		}
 	}
 

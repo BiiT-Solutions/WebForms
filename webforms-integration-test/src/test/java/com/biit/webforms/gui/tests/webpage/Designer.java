@@ -490,6 +490,19 @@ public class Designer extends VaadinGuiWebpage {
 		// Save
 		saveDesign();
 	}
+	
+	public void createAndSaveVerySimpleFormDesign() throws FieldNotEditableException {
+		// Category 1
+		addNewCategory();
+		addNewRadioButtonQuestion();
+		getQuestionPropertiesView().setTechnicalName(QUESTION1_NAME);
+		addNewAnswer();
+		getAnswerPropertiesView().setValue(ANSWER1_NAME);
+		addNewAnswer();
+		getAnswerPropertiesView().setValue(ANSWER2_NAME);
+		// Save
+		saveDesign();
+	}
 
 	public void createCompleteFormAndSave() throws FieldNotEditableException {
 		// Edit some form properties
