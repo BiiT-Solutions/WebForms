@@ -50,7 +50,7 @@ public class FormRunnerUtils {
 
 	private static void savePreviewForm(Form form) throws ClientProtocolException, IOException {
 		String jsonForm = form.toJson();
-		String url = WebformsConfigurationReader.getInstance().getFormrunnerJSRestService();
+		String url = WebformsConfigurationReader.getInstance().getFormrunnerRestUrl();
 
 		String service = "/forms/preview";
 		String message = "{\"json\":" + jsonForm + "}";
@@ -63,7 +63,7 @@ public class FormRunnerUtils {
 
 	private static void saveForm(Form form) throws ClientProtocolException, IOException {
 		String jsonForm = form.toJson();
-		String url = WebformsConfigurationReader.getInstance().getFormrunnerJSRestService();
+		String url = WebformsConfigurationReader.getInstance().getFormrunnerRestUrl();
 
 		String service = "/forms";
 		String message = "{\"json\":" + jsonForm + "}";

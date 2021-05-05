@@ -82,6 +82,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	
 	// FormrunnerJS
 	private static final String FORMRUNNERJS_REST_SERVICE = "formrunner.rest.service";
+	private static final String FORMRUNNERJS_REST_URL = "formrunner.rest.url";
 	private static final String DEFAULT_FORMRUNNERJS_REST_SERVICE = "http://127.0.0.1:8080/formrunner";
 
 	// Abcd Rest service
@@ -340,6 +341,10 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	
 	public String getFormrunnerJSRestService() {
 		return getPropertyLogException(FORMRUNNERJS_REST_SERVICE);
+	}
+
+	public String getFormrunnerRestUrl() {
+		return getPropertyLogException(FORMRUNNERJS_REST_URL);
 	}
 
 	public boolean isImagesEnabled() {
