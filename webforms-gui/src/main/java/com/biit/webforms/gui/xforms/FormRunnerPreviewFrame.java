@@ -40,7 +40,7 @@ public class FormRunnerPreviewFrame extends UI {
 		// this.application = request.getParameter(APPLICATION_PARAMETER_TAG);
 		this.application = "formrunner";
 		// this.version = request.getParameter(FORM_VERSION_PARAMETER_TAG);
-		String url = WebformsConfigurationReader.getInstance().getFormrunnerJSRestService();
+		String url = WebformsConfigurationReader.getInstance().getFormrunnerClientUrl();
 
 		WebformsLogger.debug(this.getClass().getName(), "Opening URL: " + url + "/" + form);
 		BrowserFrame browser = new BrowserFrame(null, new ExternalResource(url + "/" + form));
