@@ -206,6 +206,7 @@ public class FormManager extends SecuredWebPage {
 				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
 						XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
 				upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_NAME_TAG, getSelectedForm().getLabel());
+				upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_ORGANIZATION_PARAMETER_TAG, organization.getUniqueName());
 				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_VERSION_PARAMETER_TAG,
 						getSelectedForm().getVersion().toString());
 			}

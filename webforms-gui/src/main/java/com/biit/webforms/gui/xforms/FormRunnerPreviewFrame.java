@@ -15,6 +15,7 @@ public class FormRunnerPreviewFrame extends UI {
 	public final static String FORM_NAME_TAG = "form_name";
 	public final static String APPLICATION_PARAMETER_TAG = "application_param";
 	public final static String FORM_VERSION_PARAMETER_TAG = "form_version_param";
+	public final static String FORM_ORGANIZATION_PARAMETER_TAG = "form_organization_param";
 	private static final long serialVersionUID = -4957704029911500631L;
 	private String form;
 	private String application;
@@ -36,7 +37,8 @@ public class FormRunnerPreviewFrame extends UI {
 		
 		//String parsedFormName = form_name;
 		String form_version = request.getParameter(FORM_VERSION_PARAMETER_TAG);
-		this.form = "?preview=" + form_name + "&version=" + form_version;
+		String organization = request.getParameter(FORM_ORGANIZATION_PARAMETER_TAG);
+		this.form = "?preview=" + form_name + "&version=" + form_version + "&organization=" + organization;
 		// this.application = request.getParameter(APPLICATION_PARAMETER_TAG);
 		this.application = "formrunner";
 		// this.version = request.getParameter(FORM_VERSION_PARAMETER_TAG);
