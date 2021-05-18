@@ -34,7 +34,7 @@
 
 	<scm>
 		<connection>scm:git:git.biit-solutions.com:BiiT/WebForms.git</connection>
-		<connection>scm:git:git.biit-solutions.com:BiiT/WebForms.git</developerConnection>
+		<developerConnection>scm:git:git.biit-solutions.com:BiiT/WebForms.git</developerConnection>
 		<tag>webforms</tag>
 	</scm>
 
