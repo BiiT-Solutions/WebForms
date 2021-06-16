@@ -1,5 +1,6 @@
 package com.biit.webforms.persistence.entity;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -526,32 +527,28 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
         return image;
     }
 
-    public List<Answer> createAnswers(float lowerValueRange, float upperValueRange, float increment)
+    public List<Answer> createAnswers(BigDecimal lowerValueRange, BigDecimal upperValueRange, BigDecimal increment)
             throws InvalidRangeException {
         List<Answer> answers = new ArrayList<>();
-        // lowerValueRange < lowerValueRange + increment because increment must
-        // > 0
-        if (!(lowerValueRange < lowerValueRange + increment && lowerValueRange + increment <= upperValueRange)) {
+        // lowerValueRange < lowerValueRange + increment because increment must  > 0
+        if (!(lowerValueRange.doubleValue() < lowerValueRange.doubleValue() + increment.doubleValue() &&
+                lowerValueRange.doubleValue() + increment.doubleValue() <= upperValueRange.doubleValue())) {
             throw new InvalidRangeException("Invalid answer range definition with lower value '" + lowerValueRange
                     + "', upper value '" + upperValueRange + "' and increment '" + increment + "'.");
         }
-        for (float i = lowerValueRange; i <= upperValueRange; i += increment) {
+        while (lowerValueRange.compareTo(upperValueRange) <= 0) {
             try {
                 Answer answer = new Answer();
-                answer.setValue(Float.toString(i));
-                if (((int) i) == i) {
-                    answer.setName("" + (int) i);
-                    answer.setLabel("" + (int) i);
-                } else {
-                    answer.setName("" + i);
-                    answer.setLabel("" + i);
-                }
-                answer.setDescription(Float.toString(i));
+                answer.setValue(lowerValueRange.toString());
+                answer.setName("" + lowerValueRange.toString());
+                answer.setLabel("" + lowerValueRange.toString());
+                answer.setDescription(lowerValueRange.toString());
                 addChild(answer);
                 answers.add(answer);
             } catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException | ElementIsReadOnly e) {
                 WebformsLogger.errorMessage(this.getClass().getName(), e);
             }
+            lowerValueRange = lowerValueRange.add(increment);
         }
         return answers;
     }
