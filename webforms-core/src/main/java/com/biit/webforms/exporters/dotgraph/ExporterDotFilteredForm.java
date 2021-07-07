@@ -18,7 +18,7 @@ public class ExporterDotFilteredForm extends ExporterDotFormBasic<FilteredForm> 
 		String dotCode = new String();
 		dotCode += "digraph G {\n";
 		dotCode += "size=\"" + getSizeLimit() + "\";\n";
-		dotCode += "\tgraph [ resolution=60, fontsize=" + getSmallFontSize() + " ];\n";
+		dotCode += "\tgraph [ resolution=600, fontsize=" + getSmallFontSize() + " ];\n";
 		dotCode += "\tnode [ fontsize=" + getSmallFontSize() + "];\n";
 		dotCode += "\tedge [ fontsize=" + getSmallFontSize() + "];\n";
 		dotCode += "\tpagedir=\"TL\";\n";
