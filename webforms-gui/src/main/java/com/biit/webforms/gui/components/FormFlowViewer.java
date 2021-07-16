@@ -27,7 +27,7 @@ import com.vaadin.server.StreamResource;
 public class FormFlowViewer extends ImagePanel {
 	private final static long serialVersionUID = -4866123421361857895L;
 	private static ByteArrayInputStream defaultImage = null;
-	private ImgType imgType;
+	private final ImgType imgType;
 	private TreeObject filter;
 	private Form form;
 

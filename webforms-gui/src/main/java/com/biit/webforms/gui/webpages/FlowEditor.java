@@ -311,7 +311,7 @@ public class FlowEditor extends SecuredWebPage {
 		zoomSlider.setCaption(LanguageCodes.CAPTION_ZOOM_SLIDER.translation());
 		zoomSlider.setMin(FormFlowViewer.MIN_AUGMENT);
 		zoomSlider.setMax(FormFlowViewer.MAX_AUGMENT);
-		zoomSlider.setValue(FormFlowViewer.MIN_AUGMENT);
+		zoomSlider.setValue(FormFlowViewer.DEFAULT_AUGMENT);
 		zoomSlider.setWidth("100%");
 		zoomSlider.addValueChangeListener(zoomSliderValueChangeListener);
 

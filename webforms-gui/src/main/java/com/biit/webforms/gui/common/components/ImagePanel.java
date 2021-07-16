@@ -22,204 +22,205 @@ import elemental.json.JsonArray;
  * Panel that contains an image with zoom.
  */
 public abstract class ImagePanel extends Panel {
-	private static final long serialVersionUID = 1199493059375434311L;
-	public static final double MIN_AUGMENT = 1.0f;
-	public static final double MAX_AUGMENT = 50.0f;
+    private static final long serialVersionUID = 1199493059375434311L;
+    public static final double MIN_AUGMENT = 1.0f;
+    public static final double DEFAULT_AUGMENT = 1.0f;
+    public static final double MAX_AUGMENT = 50.0f;
 
-	private Image image = null;
-	private double resize = MIN_AUGMENT;
-	private StreamResource.StreamSource imagesource;
-	private HorizontalLayout imageLayout;
-	private List<ZoomChangedListener> listeners;
+    private Image image = null;
+    private double resize = MIN_AUGMENT;
+    private StreamResource.StreamSource imageSource;
+    private HorizontalLayout imageLayout;
+    private final List<ZoomChangedListener> listeners;
 
-	public ImagePanel(float resize) {
-		this.listeners = new ArrayList<ZoomChangedListener>();
-		setResize(resize);
-		init();
-	}
+    public ImagePanel(float resize) {
+        this.listeners = new ArrayList<>();
+        setResize(resize);
+        init();
+    }
 
-	public void addZoomChangedListener(ZoomChangedListener listener) {
-		listeners.add(listener);
-	}
+    public void addZoomChangedListener(ZoomChangedListener listener) {
+        listeners.add(listener);
+    }
 
-	public void removeZoomChangedListener(ZoomChangedListener listener) {
-		listeners.remove(listener);
-	}
+    public void removeZoomChangedListener(ZoomChangedListener listener) {
+        listeners.remove(listener);
+    }
 
-	public void fireZoomChangedListeners(double zoom) {
-		for (ZoomChangedListener listener : listeners) {
-			listener.zoomChanged(zoom);
-		}
-	}
+    public void fireZoomChangedListeners(double zoom) {
+        for (ZoomChangedListener listener : listeners) {
+            listener.zoomChanged(zoom);
+        }
+    }
 
-	private void init() {
-		setId("ImagePreviewPanel");
-		setImmediate(true);
+    private void init() {
+        setId("ImagePreviewPanel");
+        setImmediate(true);
 
-		imageLayout = new HorizontalLayout();
-		imageLayout.setId("ImagePreviewLayout");
-		imageLayout.addLayoutClickListener(new LayoutClickListener() {
-			private static final long serialVersionUID = 4564788374245664728L;
+        imageLayout = new HorizontalLayout();
+        imageLayout.setId("ImagePreviewLayout");
+        imageLayout.addLayoutClickListener(new LayoutClickListener() {
+            private static final long serialVersionUID = 4564788374245664728L;
 
-			@Override
-			public void layoutClick(LayoutClickEvent event) {
-				if (event.isDoubleClick()) {
-					return;
-				}
-				if (event.getButton() == MouseButton.LEFT) {
-					zoomInOut(event.getRelativeX(), event.getRelativeY(), 2.0f);
-				}
-				if (event.getButton() == MouseButton.RIGHT) {
-					zoomInOut(event.getRelativeX(), event.getRelativeY(), 1.0f / 2.0f);
-				}
-			}
-		});
-		setContent(imageLayout);
-		setSizeFull();
-	}
+            @Override
+            public void layoutClick(LayoutClickEvent event) {
+                if (event.isDoubleClick()) {
+                    return;
+                }
+                if (event.getButton() == MouseButton.LEFT) {
+                    zoomInOut(event.getRelativeX(), event.getRelativeY(), 2.0f);
+                }
+                if (event.getButton() == MouseButton.RIGHT) {
+                    zoomInOut(event.getRelativeX(), event.getRelativeY(), 1.0f / 2.0f);
+                }
+            }
+        });
+        setContent(imageLayout);
+        setSizeFull();
+    }
 
-	public void homeZoom() {
-		setResizeFactor(MIN_AUGMENT);
-	}
+    public void homeZoom() {
+        setResizeFactor(DEFAULT_AUGMENT);
+    }
 
-	/**
-	 * Creates an unique name for the image.
-	 * 
-	 * @return
-	 */
-	protected String getImageFilename() {
-		// Time stamp is used on image to force a reload on the client
-		// browser.
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-		return "image_" + df.format(new Date());
-	}
+    /**
+     * Creates an unique name for the image.
+     *
+     * @return the name of the file.
+     */
+    protected String getImageFilename() {
+        // Time stamp is used on image to force a reload on the client
+        // browser.
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        return "image_" + df.format(new Date());
+    }
 
-	protected abstract StreamResource.StreamSource getImage();
+    protected abstract StreamResource.StreamSource getImage();
 
-	public void redraw() {
-		imagesource = getImage();
+    public void redraw() {
+        imageSource = getImage();
 
-		String imageName = getImageFilename();
-		StreamResource resource = new StreamResource(imagesource, imageName);
-		resource.setFilename(getImageFilename());
-		// Instruct browser not to cache the image
-		resource.setCacheTime(0);
+        String imageName = getImageFilename();
+        StreamResource resource = new StreamResource(imageSource, imageName);
+        resource.setFilename(getImageFilename());
+        // Instruct browser not to cache the image
+        resource.setCacheTime(0);
 
-		image = new Image();
-		image.setSource(resource);
-		image.setSizeFull();
+        image = new Image();
+        image.setSource(resource);
+        image.setSizeFull();
 
-		addImage();
-	}
+        addImage();
+    }
 
-	/**
-	 * setter
-	 */
-	protected void setResize(double resizePercentage) {
-		resizePercentage = Math.max(resizePercentage, MIN_AUGMENT);
-		resizePercentage = Math.min(resizePercentage, MAX_AUGMENT);
-		this.resize = resizePercentage;
+    /**
+     * setter
+     */
+    protected void setResize(double resizePercentage) {
+        resizePercentage = Math.max(resizePercentage, MIN_AUGMENT);
+        resizePercentage = Math.min(resizePercentage, MAX_AUGMENT);
+        this.resize = resizePercentage;
 
-		fireZoomChangedListeners(resize);
-	}
+        fireZoomChangedListeners(resize);
+    }
 
-	private void setResizeFactor(double resize) {
-		setResize(resize);
-		if (imagesource != null) {
-			addImage();
-		}
-	}
+    private void setResizeFactor(double resize) {
+        setResize(resize);
+        if (imageSource != null) {
+            addImage();
+        }
+    }
 
-	public void setZoom(double zoomFactor) {
-		zoomInOut(zoomFactor);
-	}
+    public void setZoom(double zoomFactor) {
+        zoomInOut(zoomFactor);
+    }
 
-	private void zoomInOut(final double resizeFactor) {
-		JavaScript.getCurrent().addFunction("getElementAndZoom", new JavaScriptFunction() {
-			private static final long serialVersionUID = 6587969690665052777L;
+    private void zoomInOut(final double resizeFactor) {
+        JavaScript.getCurrent().addFunction("getElementAndZoom", new JavaScriptFunction() {
+            private static final long serialVersionUID = 6587969690665052777L;
 
-			@Override
-			public void call(JsonArray arguments) {
-				int panelX = (int) arguments.getNumber(0);
-				int panelY = (int) arguments.getNumber(1);
+            @Override
+            public void call(JsonArray arguments) {
+                int panelX = (int) arguments.getNumber(0);
+                int panelY = (int) arguments.getNumber(1);
 
-				int halfPanelX = (int) (panelX / 2.0f);
-				int halfPanelY = (int) (panelY / 2.0f);
-				int x = (int) ((getScrollLeft() + halfPanelX) / resize);
-				int y = (int) ((getScrollTop() + halfPanelY) / resize);
-				int newClickSizeX = (int) (x * resizeFactor);
-				int newClickSizeY = (int) (y * resizeFactor);
-				int positionX = newClickSizeX - halfPanelX;
-				int positionY = newClickSizeY - halfPanelY;
-				positionX = Math.max(positionX, 0);
-				positionY = Math.max(positionY, 0);
+                int halfPanelX = (int) (panelX / 2.0f);
+                int halfPanelY = (int) (panelY / 2.0f);
+                int x = (int) ((getScrollLeft() + halfPanelX) / resize);
+                int y = (int) ((getScrollTop() + halfPanelY) / resize);
+                int newClickSizeX = (int) (x * resizeFactor);
+                int newClickSizeY = (int) (y * resizeFactor);
+                int positionX = newClickSizeX - halfPanelX;
+                int positionY = newClickSizeY - halfPanelY;
+                positionX = Math.max(positionX, 0);
+                positionY = Math.max(positionY, 0);
 
-				setResizeFactor(resizeFactor);
-				setScrollLeft(positionX);
-				setScrollTop(positionY);
-			}
-		});
-		JavaScript.getCurrent().execute(
-				"getElementAndZoom(document.getElementById('" + this.getId() + "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
-	}
+                setResizeFactor(resizeFactor);
+                setScrollLeft(positionX);
+                setScrollTop(positionY);
+            }
+        });
+        JavaScript.getCurrent().execute(
+                "getElementAndZoom(document.getElementById('" + this.getId() + "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
+    }
 
-	private void zoomInOut(final int x, final int y, final double resizeFactor) {
+    private void zoomInOut(final int x, final int y, final double resizeFactor) {
 
-		JavaScript.getCurrent().addFunction("getElementAndZoom", new JavaScriptFunction() {
-			private static final long serialVersionUID = 6587969690665052777L;
+        JavaScript.getCurrent().addFunction("getElementAndZoom", new JavaScriptFunction() {
+            private static final long serialVersionUID = 6587969690665052777L;
 
-			@Override
-			public void call(JsonArray arguments) {
-				if (resize == MIN_AUGMENT && resizeFactor <= 1.0f) {
-					return;
-				}
-				if (resize == MAX_AUGMENT && resizeFactor >= 1.0f) {
-					return;
-				}
+            @Override
+            public void call(JsonArray arguments) {
+                if (resize == MIN_AUGMENT && resizeFactor <= 1.0f) {
+                    return;
+                }
+                if (resize == MAX_AUGMENT && resizeFactor >= 1.0f) {
+                    return;
+                }
 
-				double newResizeFactor = resize * resizeFactor;
-				double tempResizeFactor = resizeFactor;
-				if (newResizeFactor > MAX_AUGMENT) {
-					tempResizeFactor = MAX_AUGMENT / resize;
-					newResizeFactor = MAX_AUGMENT;
-				}
+                double newResizeFactor = resize * resizeFactor;
+                double tempResizeFactor = resizeFactor;
+                if (newResizeFactor > MAX_AUGMENT) {
+                    tempResizeFactor = MAX_AUGMENT / resize;
+                    newResizeFactor = MAX_AUGMENT;
+                }
 
-				if (newResizeFactor < MIN_AUGMENT) {
-					tempResizeFactor = MIN_AUGMENT / resize;
-					newResizeFactor = MIN_AUGMENT;
-				}
+                if (newResizeFactor < MIN_AUGMENT) {
+                    tempResizeFactor = MIN_AUGMENT / resize;
+                    newResizeFactor = MIN_AUGMENT;
+                }
 
-				int panelX = (int) arguments.getNumber(0);
-				int panelY = (int) arguments.getNumber(1);
+                int panelX = (int) arguments.getNumber(0);
+                int panelY = (int) arguments.getNumber(1);
 
-				int newClickSizeX = (int) (x * tempResizeFactor);
-				int newClickSizeY = (int) (y * tempResizeFactor);
-				int halfPanelX = (int) (panelX / 2.0f);
-				int halfPanelY = (int) (panelY / 2.0f);
-				int positionX = newClickSizeX - halfPanelX;
-				int positionY = newClickSizeY - halfPanelY;
-				positionX = Math.max(positionX, 0);
-				positionY = Math.max(positionY, 0);
+                int newClickSizeX = (int) (x * tempResizeFactor);
+                int newClickSizeY = (int) (y * tempResizeFactor);
+                int halfPanelX = (int) (panelX / 2.0f);
+                int halfPanelY = (int) (panelY / 2.0f);
+                int positionX = newClickSizeX - halfPanelX;
+                int positionY = newClickSizeY - halfPanelY;
+                positionX = Math.max(positionX, 0);
+                positionY = Math.max(positionY, 0);
 
-				setResizeFactor(newResizeFactor);
-				setScrollLeft(positionX);
-				setScrollTop(positionY);
-			}
+                setResizeFactor(newResizeFactor);
+                setScrollLeft(positionX);
+                setScrollTop(positionY);
+            }
 
-		});
-		JavaScript.getCurrent().execute(
-				"getElementAndZoom(document.getElementById('" + this.getId() + "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
-	}
+        });
+        JavaScript.getCurrent().execute(
+                "getElementAndZoom(document.getElementById('" + this.getId() + "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
+    }
 
-	private void addImage() {
-		setScrollLeft(0);
-		setScrollTop(0);
+    private void addImage() {
+        setScrollLeft(0);
+        setScrollTop(0);
 
-		imageLayout.removeAllComponents();
-		imageLayout.setWidth((float) (100.0f * resize), Unit.PERCENTAGE);
-		imageLayout.setHeight((float) (100.0f * resize), Unit.PERCENTAGE);
-		imageLayout.addComponent(image);
+        imageLayout.removeAllComponents();
+        imageLayout.setWidth((float) (100.0f * resize), Unit.PERCENTAGE);
+        imageLayout.setHeight((float) (100.0f * resize), Unit.PERCENTAGE);
+        imageLayout.addComponent(image);
 
-		image.markAsDirty();
-	}
+        image.markAsDirty();
+    }
 }
