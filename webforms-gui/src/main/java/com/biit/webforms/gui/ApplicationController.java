@@ -182,6 +182,12 @@ public class ApplicationController {
 	 */
 	public Form importFormFromJson(String json, String formLabel, Long organizationId) throws JsonParseException, FormWithSameNameException,
 			UnexpectedDatabaseException, FieldTooLongException, ElementCannotBePersistedException {
+
+
+		if (json == null || json.isEmpty() || json.length() < 10) {
+			throw new JsonParseException("Invalid provided json:\n" + json);
+		}
+
 		// Check if database contains a form with the same name.
 		if (formDao.exists(formLabel, organizationId)) {
 			FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel + " already exists");
