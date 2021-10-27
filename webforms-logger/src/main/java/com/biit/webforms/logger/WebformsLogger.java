@@ -1,8 +1,9 @@
 package com.biit.webforms.logger;
 
-import org.apache.log4j.Logger;
 
 import com.biit.logger.BiitLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Defines basic log behavior with log4j.properties. The info, warning, debug
@@ -11,7 +12,7 @@ import com.biit.logger.BiitLogger;
  */
 public class WebformsLogger extends BiitLogger {
 
-	private static Logger logger = Logger.getLogger(WebformsLogger.class);
+	private static Logger logger = LoggerFactory.getLogger(WebformsLogger.class);
 
 	/**
 	 * Events that have business meaning (i.e. creating category, deleting form,

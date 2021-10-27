@@ -8,16 +8,10 @@
 	<parent>
 		<groupId>com.biit</groupId>
 		<artifactId>webforms</artifactId>
-		<version>2.12.57-SNAPSHOT</version>
+		<version>2.13.1-SNAPSHOT</version>
 	</parent> 
 
 	<dependencies>
-		<!-- log4j -->
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>com.biit</groupId>
 			<artifactId>common-utils</artifactId>
