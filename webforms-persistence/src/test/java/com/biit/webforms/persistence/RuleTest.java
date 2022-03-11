@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.Assert;
-import net.sf.ehcache.util.FindBugsSuppressWarnings;
+import org.ehcache.util.FindBugsSuppressWarnings;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

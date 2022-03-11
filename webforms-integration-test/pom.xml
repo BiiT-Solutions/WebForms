@@ -98,31 +98,26 @@
 		<dependency>
 			<groupId>com.biit.liferay</groupId>
 			<artifactId>liferay-authentication-client</artifactId>
-			<version>${liferay-authentication-client.version}</version>
 		</dependency>
 		<!-- DESEncryption -->
 		<dependency>
 			<groupId>com.biit.security</groupId>
 			<artifactId>DES-encryption</artifactId>
-			<version>${DES-encryption.version}</version>
 		</dependency>
 		<!-- Vaadin plugins -->
 		<!-- Vaadin -->
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-server</artifactId>
-			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-client-compiled</artifactId>
-			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-client-compiler</artifactId>
 			<scope>provided</scope>
-			<version>${vaadin.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>commons-codec</groupId>
@@ -133,56 +128,41 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-client</artifactId>
-			<version>${vaadin.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-push</artifactId>
-			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-themes</artifactId>
-			<version>${vaadin.version}</version>
 		</dependency>
 		<!-- Spring framework -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>${org.springframework.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<version>${org.springframework.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>${org.springframework.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
-			<version>${org.springframework.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>${org.springframework.version}</version>
 		</dependency>
 		<!-- Vaadin TestBench (Requires license) -->
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-testbench</artifactId>
-			<version>${vaadin-testbench.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis</artifactId>
-			<version>${mybatis.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -341,7 +321,7 @@
 						<version>${maven-failsafe-plugin.version}</version>
 						<configuration>
 							<suiteXmlFiles>
-								<suiteXmlFile>src/test/config/testng.xml</suiteXmlFile>
+								<suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
 							</suiteXmlFiles>
 							<useSystemClassLoader>false</useSystemClassLoader>
 						</configuration>

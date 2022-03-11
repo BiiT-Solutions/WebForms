@@ -17,7 +17,7 @@ import com.biit.webforms.persistence.xforms.exceptions.DuplicatedKeyException;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedXFormException;
 
 import com.mysql.jdbc.CommunicationsException;
-import net.sf.ehcache.util.FindBugsSuppressWarnings;
+import org.ehcache.util.FindBugsSuppressWarnings;
 
 public class XFormsPersistence {
 	private static final String PREVIEW_PREFIX = "Preview_";
