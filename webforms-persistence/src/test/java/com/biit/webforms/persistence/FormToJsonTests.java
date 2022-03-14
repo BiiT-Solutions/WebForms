@@ -1,7 +1,6 @@
 package com.biit.webforms.persistence;
 
-import junit.framework.Assert;
-
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.biit.form.entity.TreeObject;
@@ -22,40 +21,40 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyExcepti
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 
-@Test(groups = { "jsonTests" })
+@Test(groups = {"jsonTests"})
 public class FormToJsonTests {
 
-	public void exportHiddenElementsInBlockToJson() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
-			InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
-			FlowNotAllowedException {
-		Block block = FormUtils.createBlock();
-		// Hide some elements.
-		TreeObject child = block.getChild("categoryInBlock1/questionInBlock1");
-		child.setHiddenElement(true);
+    public void exportHiddenElementsInBlockToJson() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
+            InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException,
+            FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
+            FlowNotAllowedException {
+        Block block = FormUtils.createBlock();
+        // Hide some elements.
+        TreeObject child = block.getChild("categoryInBlock1/questionInBlock1");
+        child.setHiddenElement(true);
 
-		// Block as json contains the hidden element.
-		Assert.assertTrue(block.toJson().contains("\"label\": \"questionInBlock1\","));
-		Assert.assertTrue(block.toJson().contains("\"hidden\": true,"));
-	}
+        // Block as json contains the hidden element.
+        Assert.assertTrue(block.toJson().contains("\"label\": \"questionInBlock1\","));
+        Assert.assertTrue(block.toJson().contains("\"hidden\": true,"));
+    }
 
-	public void exportHiddenElementsInFormToJson() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
-			InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException,
-			FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
-			FlowNotAllowedException {
-		Block block = FormUtils.createBlock();
-		// Hide some elements.
-		TreeObject child = block.getChild("categoryInBlock1/questionInBlock1");
-		child.setHiddenElement(true);
+    public void exportHiddenElementsInFormToJson() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
+            InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException, FlowWithoutSourceException,
+            FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly,
+            FlowNotAllowedException {
+        Block block = FormUtils.createBlock();
+        // Hide some elements.
+        TreeObject child = block.getChild("categoryInBlock1/questionInBlock1");
+        child.setHiddenElement(true);
 
-		Form form = FormUtils.createCompleteForm(block);
-		Assert.assertTrue(form.getChild("categoryInBlock1/questionInBlock1").isHiddenElement());
+        Form form = FormUtils.createCompleteForm(block);
+        Assert.assertTrue(form.getChild("categoryInBlock1/questionInBlock1").isHiddenElement());
 
-		CompleteFormView completeFormView = new CompleteFormView(form);
-		Assert.assertTrue(completeFormView.getChild("categoryInBlock1/questionInBlock1").isHiddenElement());
+        CompleteFormView completeFormView = new CompleteFormView(form);
+        Assert.assertTrue(completeFormView.getChild("categoryInBlock1/questionInBlock1").isHiddenElement());
 
-		// Form as json contains the hidden element.
-		Assert.assertTrue(completeFormView.toJson().contains("\"label\": \"questionInBlock1\","));
-		Assert.assertTrue(completeFormView.toJson().contains("\"hidden\": true,"));
-	}
+        // Form as json contains the hidden element.
+        Assert.assertTrue(completeFormView.toJson().contains("\"label\": \"questionInBlock1\","));
+        Assert.assertTrue(completeFormView.toJson().contains("\"hidden\": true,"));
+    }
 }

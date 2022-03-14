@@ -92,14 +92,10 @@
     </profiles>
 
     <dependencies>
-        <!-- XLS files -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>stepper</artifactId>
+            <version>${vaadin-stepper.version}</version>
         </dependency>
         <!-- Core -->
         <dependency>
@@ -111,13 +107,6 @@
         <dependency>
             <groupId>com.biit</groupId>
             <artifactId>abcd-core</artifactId>
-            <version>${abcd.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.biit</groupId>
-                    <artifactId>common-utils</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- DESEncryption -->
         <dependency>
@@ -129,14 +118,17 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-server</artifactId>
+            <version>${vaadin.version}</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-client-compiled</artifactId>
+            <version>${vaadin.version}</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-client-compiler</artifactId>
+            <version>${vaadin.version}</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -148,15 +140,18 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-client</artifactId>
+            <version>${vaadin.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-push</artifactId>
+            <version>${vaadin.version}</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-themes</artifactId>
+            <version>${vaadin.version}</version>
         </dependency>
         <!-- Spring  framework -->
         <dependency>

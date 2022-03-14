@@ -1,96 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>webforms-core</artifactId>
-	<packaging>jar</packaging>
-	<name>Pilot Agile Testing for WebForms (Core)</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>webforms-core</artifactId>
+    <packaging>jar</packaging>
+    <name>Pilot Agile Testing for WebForms (Core)</name>
 
-	<parent>
-		<groupId>com.biit</groupId>
-		<artifactId>webforms</artifactId>
-		<version>2.13.3-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>com.biit</groupId>
+        <artifactId>webforms</artifactId>
+        <version>2.13.3-SNAPSHOT</version>
+    </parent>
 
-	<dependencies>
-			<!-- XLS files -->
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>webforms-parser</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<!-- Liferay Authentication -->
-		<dependency>
-			<groupId>com.biit.liferay</groupId>
-			<artifactId>liferay-authentication-client</artifactId>
-		</dependency>
-		<!-- For SpringContextHelper -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<!-- Boolean Expressions Manipulation -->
-		<dependency>
-			<groupId>com.bpodgursky</groupId>
-			<artifactId>jbool_expressions</artifactId>
-		</dependency>
-		<!-- PDF generation -->
-		<dependency>
-			<groupId>com.github.librepdf</groupId>
-			<artifactId>openpdf</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<!-- Jersey Client, Jersey Container, Jersey + Spring -->
-		<dependency>
-			<groupId>org.glassfish.jersey.core</groupId>
-			<artifactId>jersey-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
-		<!-- Rest Authentication -->
-		<dependency>
-			<groupId>com.biit</groupId>
-			<artifactId>rest-services-security</artifactId>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <!-- XLS files -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi-ooxml.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>${dom4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>webforms-parser</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- Liferay Authentication -->
+        <dependency>
+            <groupId>com.biit.liferay</groupId>
+            <artifactId>liferay-authentication-client</artifactId>
+        </dependency>
+        <!-- For SpringContextHelper -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Boolean Expressions Manipulation -->
+        <dependency>
+            <groupId>com.bpodgursky</groupId>
+            <artifactId>jbool_expressions</artifactId>
+        </dependency>
+        <!-- PDF generation -->
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Jersey Client, Jersey Container, Jersey + Spring -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <!-- Rest Authentication -->
+        <dependency>
+            <groupId>com.biit</groupId>
+            <artifactId>rest-services-security</artifactId>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire.version}</version>
-				<configuration>
-					<useFile>false</useFile>
-					<trimStackTrace>false</trimStackTrace>
-					<suiteXmlFiles>
-						<suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
-					</suiteXmlFiles>
-					<useSystemClassLoader>false</useSystemClassLoader>
-				</configuration>
-			</plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire.version}</version>
+                <configuration>
+                    <useFile>false</useFile>
+                    <trimStackTrace>false</trimStackTrace>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                </configuration>
+            </plugin>
 
-		</plugins>
-	</build>
+        </plugins>
+    </build>
 
-	<!-- Skip unitary tests if this profile is selected. Jenkins Integration 
-		branch can disable tests of core -->
-	<profiles>
-		<profile>
-			<id>skipUnitaryTests</id>
-			<properties>
-				<maven.test.skip>true</maven.test.skip>
-			</properties>
-		</profile>
-	</profiles>
+    <!-- Skip unitary tests if this profile is selected. Jenkins Integration
+        branch can disable tests of core -->
+    <profiles>
+        <profile>
+            <id>skipUnitaryTests</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+    </profiles>
 </project>

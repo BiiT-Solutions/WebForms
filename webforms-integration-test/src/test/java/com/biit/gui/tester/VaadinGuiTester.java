@@ -7,8 +7,8 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.os.ProcessUtils.ProcessStillAliveException;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
@@ -21,107 +21,107 @@ import com.vaadin.testbench.elements.NotificationElement;
 
 public class VaadinGuiTester extends TestBenchTestCase {
 
-	private static final String FIREFOX_LANGUAGE_PROPERTY = "intl.accept_languages";
-	private static final String FIREFOX_LANGUAGE_VALUE = "en_US";
-	private static final String APPLICATION_URL_NEW_UI = "http://localhost:9081/?restartApplication";
-	private static final String NOTIFICATION_TYPE_HUMANIZED = "humanized";
-	private static final String NOTIFICATION_TYPE_WARNING = "warning";
-	private static final String NOTIFICATION_TYPE_ERROR = "error";
-	private static final Integer WIDTH = 1920;
-	private static final Integer HEIGHT = 1080;
-	
-	// This parameter set to 'true' activates phantomJs driver instead of
-	// firefox driver
-	private boolean headlessTesting = false;
+    private static final String FIREFOX_LANGUAGE_PROPERTY = "intl.accept_languages";
+    private static final String FIREFOX_LANGUAGE_VALUE = "en_US";
+    private static final String APPLICATION_URL_NEW_UI = "http://localhost:9081/?restartApplication";
+    private static final String NOTIFICATION_TYPE_HUMANIZED = "humanized";
+    private static final String NOTIFICATION_TYPE_WARNING = "warning";
+    private static final String NOTIFICATION_TYPE_ERROR = "error";
+    private static final Integer WIDTH = 1920;
+    private static final Integer HEIGHT = 1080;
 
-	// To debug last step on firefox
-	private boolean destroyDriver = false;
+    // This parameter set to 'true' activates phantomJs driver instead of
+    // firefox driver
+    private boolean headlessTesting = false;
+
+    // To debug last step on firefox
+    private boolean destroyDriver = false;
 
 
-	private final List<VaadinGuiWebpage> webpages;
+    private final List<VaadinGuiWebpage> webpages;
 
-	public VaadinGuiTester() {
-		webpages = new ArrayList<VaadinGuiWebpage>();
-	}
+    public VaadinGuiTester() {
+        webpages = new ArrayList<VaadinGuiWebpage>();
+    }
 
-	@BeforeClass(inheritGroups = true, alwaysRun = true)
-	public void createDriver() {
-		if (headlessTesting) {
-			DesiredCapabilities caps = new DesiredCapabilities();
-			caps.setJavascriptEnabled(true);
-			caps.setCapability("takesScreenshot", true);
-			setDriver(TestBench.createDriver(new PhantomJSDriver(caps)));
-		} else {
-			FirefoxProfile profile = new FirefoxProfile();
-			profile.setPreference(FIREFOX_LANGUAGE_PROPERTY, FIREFOX_LANGUAGE_VALUE);
-			setDriver(TestBench.createDriver(new FirefoxDriver(profile)));
-		}
-		getDriver().manage().window().setSize(new Dimension(WIDTH, HEIGHT));
-		for (VaadinGuiWebpage webpage : webpages) {
-			webpage.setDriver(getDriver());
-		}
-	}
+    @BeforeClass(inheritGroups = true, alwaysRun = true)
+    public void createDriver() {
+        if (headlessTesting) {
+            DesiredCapabilities caps = new DesiredCapabilities();
+            caps.setJavascriptEnabled(true);
+            caps.setCapability("takesScreenshot", true);
+            setDriver(TestBench.createDriver(new PhantomJSDriver(caps)));
+        } else {
+            FirefoxProfile profile = new FirefoxProfile();
+            profile.setPreference(FIREFOX_LANGUAGE_PROPERTY, FIREFOX_LANGUAGE_VALUE);
+            FirefoxOptions options = new FirefoxOptions();
+            options.setProfile(profile);
+            setDriver(TestBench.createDriver(new FirefoxDriver(options)));
+        }
+        getDriver().manage().window().setSize(new Dimension(WIDTH, HEIGHT));
+        for (VaadinGuiWebpage webpage : webpages) {
+            webpage.setDriver(getDriver());
+        }
+    }
 
-	@AfterClass(inheritGroups = true, alwaysRun = true)
-	public void destroyDriver() {
-		if (destroyDriver) {
-			try {
-				getDriver().quit();
-			} catch (ProcessStillAliveException psae) {
-				// Ignore
-			} catch (NullPointerException npe) {
-				// Already destroyed.
-			}
-		}
-	}
+    @AfterClass(inheritGroups = true, alwaysRun = true)
+    public void destroyDriver() {
+        if (destroyDriver) {
+            try {
+                getDriver().quit();
+            } catch (NullPointerException npe) {
+                // Already destroyed.
+            }
+        }
+    }
 
-	public void addWebpage(VaadinGuiWebpage webpage) {
-		webpages.add(webpage);
-	}
+    public void addWebpage(VaadinGuiWebpage webpage) {
+        webpages.add(webpage);
+    }
 
-	public void mainPage() {
-		getDriver().get(APPLICATION_URL_NEW_UI);
-	}
+    public void mainPage() {
+        getDriver().get(APPLICATION_URL_NEW_UI);
+    }
 
-	public NotificationElement getNotification() {
-		return $(NotificationElement.class).first();
-	}
+    public NotificationElement getNotification() {
+        return $(NotificationElement.class).first();
+    }
 
-	public void closeNotificationIfExists() {
-		if ($(NotificationElement.class).exists()) {
-			$(NotificationElement.class).first().close();
-		}
-	}
+    public void closeNotificationIfExists() {
+        if ($(NotificationElement.class).exists()) {
+            $(NotificationElement.class).first().close();
+        }
+    }
 
-	public static void closeNotification(NotificationElement notification) {
-		try {
-			try {
-				notification.waitForVaadin();
-				notification.close();
-			} catch (TimeoutException e) {
-				// Do nothing.
-			}
-		} catch (StaleElementReferenceException e) {
-			// Do nothing
-		}
-	}
+    public static void closeNotification(NotificationElement notification) {
+        try {
+            try {
+                notification.waitForVaadin();
+                notification.close();
+            } catch (TimeoutException e) {
+                // Do nothing.
+            }
+        } catch (StaleElementReferenceException e) {
+            // Do nothing
+        }
+    }
 
-	public static void checkNotificationIsError(NotificationElement notification) {
-		Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_ERROR);
-		closeNotification(notification);
-	}
+    public static void checkNotificationIsError(NotificationElement notification) {
+        Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_ERROR);
+        closeNotification(notification);
+    }
 
-	public static void checkNotificationIsWarning(NotificationElement notification) {
-		Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_WARNING);
-		closeNotification(notification);
-	}
+    public static void checkNotificationIsWarning(NotificationElement notification) {
+        Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_WARNING);
+        closeNotification(notification);
+    }
 
-	public static void checkNotificationIsHumanized(NotificationElement notification) {
-		Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_HUMANIZED);
-		closeNotification(notification);
-	}
+    public static void checkNotificationIsHumanized(NotificationElement notification) {
+        Assert.assertEquals(notification.getType(), NOTIFICATION_TYPE_HUMANIZED);
+        closeNotification(notification);
+    }
 
-	public boolean isHeadlessTesting() {
-		return headlessTesting;
-	}
+    public boolean isHeadlessTesting() {
+        return headlessTesting;
+    }
 }

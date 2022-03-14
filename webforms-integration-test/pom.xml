@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>stepper</artifactId>
-			<version>${stepper.version}</version>
+			<version>${vaadin-stepper.version}</version>
 		</dependency>
 		<!-- Core -->
 		<dependency>
@@ -109,14 +109,17 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-server</artifactId>
+			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-client-compiled</artifactId>
+			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-client-compiler</artifactId>
+			<version>${vaadin.version}</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
@@ -128,15 +131,18 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-client</artifactId>
+			<version>${vaadin.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-push</artifactId>
+			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-themes</artifactId>
+			<version>${vaadin.version}</version>
 		</dependency>
 		<!-- Spring framework -->
 		<dependency>
@@ -163,6 +169,7 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-testbench</artifactId>
+			<version>${vaadin-testbench.version}</version>
 		</dependency>
 	</dependencies>
 

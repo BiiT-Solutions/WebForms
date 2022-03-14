@@ -1,7 +1,7 @@
 package com.biit.webforms.configuration;
 
-import org.ehcache.util.FindBugsSuppressWarnings;
 
+import com.biit.utils.annotations.FindBugsSuppressWarnings;
 import com.biit.utils.configuration.ConfigurationReader;
 import com.biit.utils.configuration.PropertiesSourceFile;
 import com.biit.utils.configuration.SystemVariablePropertiesSourceFile;

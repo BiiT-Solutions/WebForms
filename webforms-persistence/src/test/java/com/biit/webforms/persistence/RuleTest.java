@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import junit.framework.Assert;
-import org.ehcache.util.FindBugsSuppressWarnings;
+import com.biit.utils.annotations.FindBugsSuppressWarnings;
+import org.testng.Assert;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package com.biit.webforms.xforms.expressions;
 
 import java.util.Collections;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
 import org.testng.annotations.Test;
 

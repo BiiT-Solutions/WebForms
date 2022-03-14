@@ -2,7 +2,7 @@ package com.biit.webforms.flow;
 
 import java.io.IOException;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.testng.annotations.Test;

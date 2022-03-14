@@ -17,38 +17,37 @@ import com.biit.webforms.persistence.entity.Form;
 public class ScorecardXlsGenerator {
 
 
-	public byte[] generate(ApplicationContext applicationContext, Form form, Locale locale) throws InvalidXlsElementException {
-		try {
-			if (form == null) {
-				return new byte[0];
-			}
+    public byte[] generate(ApplicationContext applicationContext, Form form, Locale locale) throws InvalidXlsElementException {
+        try {
+            if (form == null) {
+                return new byte[0];
+            }
 
-			HSSFWorkbook workbook = new HSSFWorkbook();
-			new ScorecardXls().createXlsDocument(workbook, applicationContext, form, locale);
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            new ScorecardXls().createXlsDocument(workbook, applicationContext, form, locale);
 
-			ByteArrayOutputStream fileOut = new ByteArrayOutputStream();
-			workbook.write(fileOut);
-			workbook.close();
+            ByteArrayOutputStream fileOut = new ByteArrayOutputStream();
+            workbook.write(fileOut);
 
-			try {
-				return fileOut.toByteArray();
-			} finally {
-				fileOut.close();
-			}
+            try {
+                return fileOut.toByteArray();
+            } finally {
+                fileOut.close();
+            }
 
-		} catch (Exception e) {
-			XlsExporterLog.errorMessage(this.getClass().getName(), e);
-			throw new InvalidXlsElementException(e);
-		}
-	}
+        } catch (Exception e) {
+            XlsExporterLog.errorMessage(this.getClass().getName(), e);
+            throw new InvalidXlsElementException(e);
+        }
+    }
 
-	public void createFile(ApplicationContext applicationContext, Form form, String path, Locale locale) throws IOException, InvalidXlsElementException {
-		if (!path.endsWith(".xls")) {
-			path += ".xls";
-		}
+    public void createFile(ApplicationContext applicationContext, Form form, String path, Locale locale) throws IOException, InvalidXlsElementException {
+        if (!path.endsWith(".xls")) {
+            path += ".xls";
+        }
 
-		try (FileOutputStream fos = new FileOutputStream(path)) {
-			fos.write(generate(applicationContext, form, locale));
-		}
-	}
+        try (FileOutputStream fos = new FileOutputStream(path)) {
+            fos.write(generate(applicationContext, form, locale));
+        }
+    }
 }

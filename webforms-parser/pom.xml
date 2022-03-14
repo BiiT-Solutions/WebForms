@@ -22,7 +22,6 @@
 		<dependency>
 			<groupId>com.biit.liferay</groupId>
 			<artifactId>liferay-authentication-client</artifactId>
-			<version>${liferay-authentication-client.version}</version>
 		</dependency>
 		<!-- ABCD persistence -->
 		<dependency>

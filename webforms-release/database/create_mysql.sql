@@ -20,20 +20,6 @@
 
     insert into hibernate_sequence values ( 1 );
 
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
-    insert into hibernate_sequence values ( 1 );
-
     create table images (
        id bigint not null,
         comparation_id varchar(190) not null,
@@ -485,9 +471,6 @@
 
     alter table tree_blocks 
        add constraint UK_lmu3cq3olf1t5gmi39cf1aac unique (comparation_id);
-
-    alter table tree_blocks 
-       add constraint UK_5cuv65mhqmelrdm4jmpejhqiv unique (label, version, organization_id);
 
     alter table tree_blocks_references 
        add constraint UK_h6705gqc3ly6jvk0gr2net9wk unique (id);

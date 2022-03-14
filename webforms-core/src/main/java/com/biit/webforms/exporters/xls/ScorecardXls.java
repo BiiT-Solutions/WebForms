@@ -1,31 +1,23 @@
 package com.biit.webforms.exporters.xls;
 
-import java.util.*;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.logger.XlsExporterLog;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFPalette;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.springframework.context.ApplicationContext;
-
-import com.biit.webforms.exporters.xls.exceptions.InvalidXlsElementException;
-import com.biit.webforms.logger.XlsExporterLog;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.springframework.context.ApplicationContext;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class ScorecardXls {
     private final static String[] COLUMNS_NAMES = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
@@ -47,20 +39,20 @@ public class ScorecardXls {
     private HSSFCellStyle contentStyle = null;
     private HSSFCellStyle scoreStyle = null;
 
-    private List<HSSFRow> scoreRows = new ArrayList<>();
+    private final List<HSSFRow> scoreRows = new ArrayList<>();
 
     private Locale locale = Locale.getDefault();
 
     private transient ApplicationContext applicationContext;
 
     public void createXlsDocument(HSSFWorkbook workbook, ApplicationContext applicationContext, Form form,
-                                  Locale locale) throws InvalidXlsElementException {
+                                  Locale locale) {
         this.applicationContext = applicationContext;
         setLocale(locale);
         // Override colors
-        setColor(workbook, HSSFColor.HSSFColorPredefined.RED, (byte) 0xEE, (byte) 0xAA, (byte) 0xAA);
-        setColor(workbook, HSSFColorPredefined.ORANGE, (byte) 0xF8, (byte) 0x99, (byte) 0x30);
-        setColor(workbook, HSSFColorPredefined.LIGHT_ORANGE, (byte) 0xFF, (byte) 0xCC, (byte) 0x7F);
+        setColor(workbook, IndexedColors.RED, (byte) 0xEE, (byte) 0xAA, (byte) 0xAA);
+        setColor(workbook, IndexedColors.ORANGE, (byte) 0xF8, (byte) 0x99, (byte) 0x30);
+        setColor(workbook, IndexedColors.LIGHT_ORANGE, (byte) 0xFF, (byte) 0xCC, (byte) 0x7F);
 
         createFormTables(workbook, form);
 
@@ -77,7 +69,7 @@ public class ScorecardXls {
             if (category instanceof Category) {
                 for (Question question : category.getAllChildrenInHierarchy(Question.class)) {
                     //Input text or text areas
-                    if (Objects.equals(question.getAnswerType(), AnswerType.INPUT) || Objects.equals(question.getAnswerType(), (AnswerType.INPUT))) {
+                    if (Objects.equals(question.getAnswerType(), AnswerType.INPUT)) {
                         createRow(workbook, sheet, (Category) category, question, null);
                     } else {
                         for (Answer answer : question.getAllChildrenInHierarchy(Answer.class)) {
@@ -95,9 +87,6 @@ public class ScorecardXls {
 
     private void createFormTitle(HSSFWorkbook workbook, HSSFSheet sheet) {
         HSSFRow titleRow = sheet.createRow(TITLE_ROW);
-
-        // sheet.autoSizeColumn(QUESTION_LABEL_COLUMN);
-        // sheet.setColumnWidth(APPOINTMENT_LABEL_COLUMN, 256 * 50);
 
         for (int i = 1; i < TITLES_NAMES.length; i++) {
             // Create titles
@@ -126,7 +115,7 @@ public class ScorecardXls {
         scoreRow.getCell(QUESTION_COLUMN).setCellStyle(getContentStyle(workbook));
         if (answer != null) {
             scoreRow.createCell(ANSWER_COLUMN).setCellValue(answer.getLabel());
-        }else{
+        } else {
             scoreRow.createCell(ANSWER_COLUMN);
         }
         scoreRow.getCell(ANSWER_COLUMN).setCellStyle(getContentStyle(workbook));
@@ -139,26 +128,26 @@ public class ScorecardXls {
             titleStyle = workbook.createCellStyle();
 
             // Border
-            titleStyle.setBorderRight(BorderStyle.THIN);
+            titleStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
             titleStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
-            titleStyle.setBorderBottom(BorderStyle.THIN);
+            titleStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
             titleStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-            titleStyle.setBorderLeft(BorderStyle.THIN);
+            titleStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
             titleStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
-            titleStyle.setBorderTop(BorderStyle.THIN);
+            titleStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
             titleStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
 
             // Background Color
-            titleStyle.setFillForegroundColor(HSSFColorPredefined.ORANGE.getIndex());
-            titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            titleStyle.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
+            titleStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 
             // Alignment
-            titleStyle.setAlignment(HorizontalAlignment.CENTER);
-            titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            titleStyle.setAlignment(CellStyle.ALIGN_CENTER);
+            titleStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
 
             // Font
             Font headerFont = workbook.createFont();
-            headerFont.setBold(true);
+            headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
             headerFont.setFontHeightInPoints((short) TITLE_FONT_SIZE);
             headerFont.setColor(IndexedColors.WHITE.getIndex());
             titleStyle.setFont(headerFont);
@@ -184,15 +173,15 @@ public class ScorecardXls {
         HSSFCellStyle contentStyle = workbook.createCellStyle();
 
         // Background Color
-        contentStyle.setFillForegroundColor(HSSFColorPredefined.LIGHT_ORANGE.getIndex());
-        contentStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        contentStyle.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
+        contentStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 
         // Alignment
-        contentStyle.setAlignment(HorizontalAlignment.LEFT);
-        contentStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        contentStyle.setAlignment(CellStyle.ALIGN_LEFT);
+        contentStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
 
         // Border
-        contentStyle.setBorderBottom(BorderStyle.THIN);
+        contentStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
         contentStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
 
         return contentStyle;
@@ -202,15 +191,15 @@ public class ScorecardXls {
         HSSFCellStyle contentStyle = workbook.createCellStyle();
 
         // Background Color
-        contentStyle.setFillForegroundColor(HSSFColorPredefined.CORAL.getIndex());
-        contentStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        contentStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
+        contentStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 
         // Alignment
-        contentStyle.setAlignment(HorizontalAlignment.CENTER);
-        contentStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        contentStyle.setAlignment(CellStyle.ALIGN_CENTER);
+        contentStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
 
         // Border
-        contentStyle.setBorderBottom(BorderStyle.THIN);
+        contentStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
         contentStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
 
         return contentStyle;
@@ -218,19 +207,19 @@ public class ScorecardXls {
 
     private HSSFSheet getSheet(HSSFWorkbook workbook) {
         if (sheet == null) {
-            sheet = workbook.createSheet(parseInvalidCharacters(SHEET_NAME));
+            sheet = workbook.createSheet(parseInvalidCharacters());
             sheet.setDefaultRowHeight((short) (20 * LABEL_FONT_SIZE * 1.5));
         }
         return sheet;
     }
 
-    private String parseInvalidCharacters(String text) {
+    private String parseInvalidCharacters() {
         // Sheets does not allows this characters.
-        return text.replace(":", "").replace("\\", "-").replace("/", "-").replace("*", "").replace("?", "")
+        return ScorecardXls.SHEET_NAME.replace(":", "").replace("\\", "-").replace("/", "-").replace("*", "").replace("?", "")
                 .replace("[", "(").replace("]", ")");
     }
 
-    private HSSFColor setColor(HSSFWorkbook workbook, HSSFColorPredefined color, byte r, byte g, byte b) {
+    private HSSFColor setColor(HSSFWorkbook workbook, IndexedColors color, byte r, byte g, byte b) {
         HSSFPalette palette = workbook.getCustomPalette();
         HSSFColor hssfColor = null;
         try {

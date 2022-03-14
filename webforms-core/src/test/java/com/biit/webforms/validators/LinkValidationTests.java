@@ -1,6 +1,6 @@
 package com.biit.webforms.validators;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
 import org.testng.annotations.Test;
 

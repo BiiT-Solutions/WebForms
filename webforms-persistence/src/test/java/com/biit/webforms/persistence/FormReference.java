@@ -1,6 +1,6 @@
 package com.biit.webforms.persistence;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
