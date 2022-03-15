@@ -1,14 +1,8 @@
 package com.biit.webforms.persistence.xforms;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Set;
-
-import com.biit.utils.annotations.FindBugsSuppressWarnings;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.entity.IUser;
+import com.biit.utils.annotations.FindBugsSuppressWarnings;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
@@ -16,7 +10,12 @@ import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.biit.webforms.persistence.xforms.exceptions.AccessNotAllowed;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedKeyException;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedXFormException;
-import com.mysql.cj.jdbc.exceptions.CommunicationsException;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Set;
 
 
 public class XFormsPersistence {
@@ -110,8 +109,6 @@ public class XFormsPersistence {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://" + server + ":" + port + "/" + database
                     + "?allowMultiQueries=true&noAccessToProcedureBodies=true&validationQuery=SELECT%201&testOnBorrow=true", user, password);
-        } catch (CommunicationsException ce) {
-            throw ce;
         } catch (SQLException ex) {
             if (ex.getErrorCode() == 1044) {
                 throw new AccessNotAllowed("IUser<Long> or password is wrong. Check your configuration file. ");

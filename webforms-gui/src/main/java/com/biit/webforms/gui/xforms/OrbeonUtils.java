@@ -22,7 +22,6 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.persistence.xforms.exceptions.AccessNotAllowed;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedXFormException;
-import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
 public class OrbeonUtils {
 
@@ -60,9 +59,6 @@ public class OrbeonUtils {
                 return false;
             }
             xformsConnection.disconnectDatabase();
-        } catch (CommunicationsException ce) {
-            MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-            WebformsUiLogger.errorMessage(OrbeonUtils.class.getName(), ce);
         } catch (SQLException e) {
             MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE);
             WebformsUiLogger.errorMessage(OrbeonUtils.class.getName(), e);
@@ -71,6 +67,9 @@ public class OrbeonUtils {
             MessageManager.showError(LanguageCodes.ERROR_XFORMS_USER_INVALID);
             WebformsUiLogger.errorMessage(OrbeonUtils.class.getName(), e1);
             return false;
+        } catch (Exception ce) {
+            MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+            WebformsUiLogger.errorMessage(OrbeonUtils.class.getName(), ce);
         }
         return true;
     }
