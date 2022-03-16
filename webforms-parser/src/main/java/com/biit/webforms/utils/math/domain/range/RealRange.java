@@ -19,7 +19,7 @@ import com.biit.webforms.utils.math.domain.exceptions.LimitInsertionException;
  */
 public abstract class RealRange<T extends Comparable<T>> {
 
-	protected static Random random = new Random();
+	protected static final Random random = new Random();
 	private final List<RealLimitPair<T>> limits;
 
 	public RealRange() {

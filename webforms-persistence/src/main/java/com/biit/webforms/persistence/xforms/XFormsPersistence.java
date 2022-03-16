@@ -263,9 +263,9 @@ public class XFormsPersistence {
 
     public void deleteImage(Form form, IGroup<Long> organization, TreeObjectImage image, boolean preview) {
         if (form != null && connection != null) {
-            try (PreparedStatement stmt = connection.prepareStatement("DELETE FROM orbeon_form_data_attach WHERE app='" + APP_NAME + "' and form='"
-                    + formatFormName(form, organization, preview) + "' and form_version=" + form.getVersion() + " and document_id='"
-                    + imageDocumentId(form, organization, image, preview) + "' and file_name='" + imageFileName(form, organization, image, preview) + "';")) {
+            final String sql = String.format("DELETE FROM orbeon_form_data_attach WHERE app='%s' and form='%s' and form_version=%d and document_id='%s' and file_name='%s';",
+                    APP_NAME, formatFormName(form, organization, preview), form.getVersion(), imageDocumentId(form, organization, image, preview), imageFileName(form, organization, image, preview));
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.executeUpdate();
             } catch (SQLException ex) {
                 WebformsLogger.errorMessage(this.getClass().getName(), ex);

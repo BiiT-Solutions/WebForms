@@ -1,10 +1,5 @@
 package com.biit.webforms.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.computed.FilteredForm;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
@@ -17,13 +12,17 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.utils.exceptions.ExecutableCanNotBeExecuted;
 import com.biit.webforms.utils.exceptions.PathToExecutableNotFound;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 /**
  * Helper class to generate the graphviz
  */
 public class GraphvizApp {
 
     /* Official variable name but it's not usually set */
-    public static String GRAPHVIZ_SYSVAR = "GVBINDIR";
+    public static final String GRAPHVIZ_SYSVAR = "GVBINDIR";
     public static String applicationPath = null;
 
     public enum ImgType {

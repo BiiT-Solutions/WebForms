@@ -1,9 +1,5 @@
 package com.biit.webforms.gui.xforms;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.sql.SQLException;
-
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.usermanager.entity.IGroup;
@@ -22,6 +18,11 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.persistence.xforms.exceptions.AccessNotAllowed;
 import com.biit.webforms.persistence.xforms.exceptions.DuplicatedXFormException;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 
 public class OrbeonUtils {
 
@@ -85,7 +86,7 @@ public class OrbeonUtils {
         int bytesRead = 0;
         String strFileContents = "";
         while ((bytesRead = in.read(contents)) != -1) {
-            strFileContents += new String(contents, 0, bytesRead);
+            strFileContents += new String(contents, 0, bytesRead, StandardCharsets.UTF_8);
         }
         return strFileContents;
     }

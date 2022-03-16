@@ -1,26 +1,12 @@
 package com.biit.webforms.exporters.xforms;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.exporters.xforms.exceptions.DateRuleSyntaxError;
-import com.biit.webforms.exporters.xforms.exceptions.InvalidDateException;
-import com.biit.webforms.exporters.xforms.exceptions.NotExistingDynamicFieldException;
-import com.biit.webforms.exporters.xforms.exceptions.PostCodeRuleSyntaxError;
-import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
+import com.biit.webforms.exporters.xforms.exceptions.*;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
@@ -32,6 +18,12 @@ import com.biit.webforms.webservices.Webservice;
 import com.biit.webforms.webservices.WebserviceValidatedPort;
 import com.biit.webforms.xml.XmlUtils;
 import com.biit.webforms.xml.XpathToXml;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Export the form in a XForms language file to be use with Orbeon. <br>
@@ -119,7 +111,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 			}
 
 			// get the content in bytes
-			byte[] contentInBytes = content.getBytes();
+			byte[] contentInBytes = content.getBytes(StandardCharsets.UTF_8);
 
 			fop.write(contentInBytes);
 			fop.flush();
@@ -144,7 +136,6 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	 * @param xFormsObject
 	 * 
 	 * @return
-	 * @throws InvalidFlowInForm
 	 */
 	@Override
 	protected String getBody(XFormsObject<?> xFormsObject) {

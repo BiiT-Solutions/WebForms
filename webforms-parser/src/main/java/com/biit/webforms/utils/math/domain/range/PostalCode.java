@@ -14,7 +14,7 @@ public class PostalCode implements Comparable<PostalCode> {
 
 	public static final PostalCode MIN_VALUE = new PostalCode(MIN_VALUE_STRING);
 	public static final PostalCode MAX_VALUE = new PostalCode(MAX_VALUE_STRING);
-	public static Random random = new Random();
+	public static final Random random = new Random();
 
 	private String postalCode;
 

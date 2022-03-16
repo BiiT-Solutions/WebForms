@@ -7,7 +7,6 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -41,7 +40,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
     private final List<VaadinGuiWebpage> webpages;
 
     public VaadinGuiTester() {
-        webpages = new ArrayList<VaadinGuiWebpage>();
+        webpages = new ArrayList<>();
     }
 
     @BeforeClass(inheritGroups = true, alwaysRun = true)
@@ -54,9 +53,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
         } else {
             FirefoxProfile profile = new FirefoxProfile();
             profile.setPreference(FIREFOX_LANGUAGE_PROPERTY, FIREFOX_LANGUAGE_VALUE);
-            FirefoxOptions options = new FirefoxOptions();
-            options.setProfile(profile);
-            setDriver(TestBench.createDriver(new FirefoxDriver(options)));
+            setDriver(TestBench.createDriver(new FirefoxDriver(profile)));
         }
         getDriver().manage().window().setSize(new Dimension(WIDTH, HEIGHT));
         for (VaadinGuiWebpage webpage : webpages) {
