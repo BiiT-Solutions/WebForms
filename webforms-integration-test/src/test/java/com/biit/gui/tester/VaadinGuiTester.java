@@ -49,6 +49,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
             DesiredCapabilities caps = new DesiredCapabilities();
             caps.setJavascriptEnabled(true);
             caps.setCapability("takesScreenshot", true);
+            caps.setCapability("phantomjs.page.customHeaders.Accept-Language", FIREFOX_LANGUAGE_VALUE);
             setDriver(TestBench.createDriver(new PhantomJSDriver(caps)));
         } else {
             FirefoxProfile profile = new FirefoxProfile();
