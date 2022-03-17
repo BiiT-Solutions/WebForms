@@ -299,7 +299,7 @@
 						<version>${maven-failsafe-plugin.version}</version>
 						<configuration>
 							<suiteXmlFiles>
-								<suiteXmlFile>src/test/config/testng.xml</suiteXmlFile>
+								<suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
 							</suiteXmlFiles>
 							<useSystemClassLoader>false</useSystemClassLoader>
 						</configuration>
