@@ -1,13 +1,13 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.biit.webforms.enumerations.TokenTypes;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class LineDisplay extends CustomComponent {
 	private static final long serialVersionUID = 1358931913511589916L;

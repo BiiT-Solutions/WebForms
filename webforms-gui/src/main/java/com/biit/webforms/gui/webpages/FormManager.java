@@ -1,14 +1,5 @@
 package com.biit.webforms.gui.webpages;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.biit.form.entity.IBaseFormView;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
@@ -35,12 +26,8 @@ import com.biit.webforms.exporters.xls.exceptions.InvalidXlsElementException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
-import com.biit.webforms.gui.common.components.SecuredWebPage;
-import com.biit.webforms.gui.common.components.WindowAcceptCancel;
+import com.biit.webforms.gui.common.components.*;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
-import com.biit.webforms.gui.common.components.WindowDownloader;
-import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
-import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
@@ -55,7 +42,6 @@ import com.biit.webforms.gui.webpages.formmanager.*;
 import com.biit.webforms.gui.xforms.FormRunnerPreviewFrame;
 import com.biit.webforms.gui.xforms.FormRunnerUtils;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
-//import com.biit.webforms.gui.xforms.OrbeonUtils;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
@@ -78,6 +64,15 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class FormManager extends SecuredWebPage {

@@ -1,8 +1,5 @@
 package com.biit.webforms.gui.webpages.webservice.call;
 
-import java.util.HashMap;
-import java.util.Set;
-
 import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.AnswerTypeUi;
@@ -11,6 +8,9 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
 import com.biit.webforms.webservices.WebservicePort;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
+
+import java.util.HashMap;
+import java.util.Set;
 
 public class TableInputLinks extends Table {
 	private static final long serialVersionUID = 561989680943245108L;

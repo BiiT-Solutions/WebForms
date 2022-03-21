@@ -1,11 +1,11 @@
 package com.biit.webforms.gui.common.components;
 
-import java.util.Iterator;
-
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+
+import java.util.Iterator;
 
 public class HorizontalButtonGroup extends CustomComponent {
 

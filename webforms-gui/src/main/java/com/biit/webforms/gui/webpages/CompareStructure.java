@@ -1,14 +1,5 @@
 package com.biit.webforms.gui.webpages;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
-
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.usermanager.security.IActivity;
 import com.biit.webforms.gui.ApplicationUi;
@@ -34,6 +25,13 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.VerticalLayout;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CompareStructure extends SecuredWebPage {
 	private static final long serialVersionUID = 6637808831858543345L;

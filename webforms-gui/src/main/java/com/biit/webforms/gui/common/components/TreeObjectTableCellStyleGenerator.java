@@ -1,11 +1,6 @@
 package com.biit.webforms.gui.common.components;
 
-import com.biit.form.entity.BaseAnswer;
-import com.biit.form.entity.BaseCategory;
-import com.biit.form.entity.BaseForm;
-import com.biit.form.entity.BaseGroup;
-import com.biit.form.entity.BaseQuestion;
-import com.biit.form.entity.TreeObject;
+import com.biit.form.entity.*;
 import com.biit.webforms.gui.common.components.TableTreeObject.TreeObjectTableProperties;
 import com.biit.webforms.persistence.entity.AttachedFiles;
 import com.biit.webforms.persistence.entity.SystemField;

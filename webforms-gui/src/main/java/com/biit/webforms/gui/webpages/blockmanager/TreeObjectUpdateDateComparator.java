@@ -1,8 +1,8 @@
 package com.biit.webforms.gui.webpages.blockmanager;
 
-import java.util.Comparator;
-
 import com.biit.webforms.persistence.entity.Form;
+
+import java.util.Comparator;
 
 /**
  * Comparator for form derived objects that orders the elements by update date.

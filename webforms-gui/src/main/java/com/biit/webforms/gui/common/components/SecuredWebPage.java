@@ -1,8 +1,5 @@
 package com.biit.webforms.gui.common.components;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
@@ -17,6 +14,9 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinServlet;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Before entering to the web page, the system checks user permissions to allow

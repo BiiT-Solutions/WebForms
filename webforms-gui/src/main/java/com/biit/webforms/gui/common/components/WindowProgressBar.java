@@ -1,11 +1,6 @@
 package com.biit.webforms.gui.common.components;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.*;
 
 public class WindowProgressBar extends Window {
 	private static final long serialVersionUID = 9010880290106574411L;

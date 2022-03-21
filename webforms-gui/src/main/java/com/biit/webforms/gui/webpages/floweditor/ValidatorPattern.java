@@ -1,9 +1,9 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import java.util.regex.Pattern;
-
 import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.data.Validator;
+
+import java.util.regex.Pattern;
 
 public class ValidatorPattern implements Validator {
 	private static final long serialVersionUID = -3158239634237872250L;

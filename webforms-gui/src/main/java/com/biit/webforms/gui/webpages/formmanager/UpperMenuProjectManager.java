@@ -1,7 +1,5 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import java.io.IOException;
-
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.exporters.xforms.XFormsSimpleFormExporter;
@@ -12,13 +10,14 @@ import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.gui.xforms.FormRunnerPreviewFrame;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
-import com.biit.webforms.gui.xforms.FormRunnerPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.theme.ThemeIcons;
 import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickListener;
+
+import java.io.IOException;
 
 /**
  * Upper menu for project manager web.

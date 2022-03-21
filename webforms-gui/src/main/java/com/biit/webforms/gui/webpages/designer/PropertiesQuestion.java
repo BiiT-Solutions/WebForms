@@ -1,7 +1,5 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import java.util.Date;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
@@ -15,15 +13,11 @@ import com.biit.webforms.language.AnswerTypeUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.*;
+
+import java.util.Date;
 
 public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Question> {
     private static final long serialVersionUID = 7572463216386081265L;

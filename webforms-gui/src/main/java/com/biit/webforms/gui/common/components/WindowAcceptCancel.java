@@ -1,20 +1,15 @@
 package com.biit.webforms.gui.common.components;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.biit.webforms.gui.common.language.CommonComponentsLanguageCodes;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.ui.Alignment;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class WindowAcceptCancel extends Window {
 

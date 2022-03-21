@@ -8,11 +8,7 @@ import com.biit.webforms.gui.components.utils.FilterByTreeObjectOrderLess;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.Category;
-import com.biit.webforms.persistence.entity.DynamicAnswer;
-import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Group;
-import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.*;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.VerticalLayout;
 

@@ -1,9 +1,5 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.WebformsUiLogger;
@@ -13,12 +9,11 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class TokenDisplay extends CustomComponent {
 	private static final long serialVersionUID = 5091855550351857003L;

@@ -1,11 +1,5 @@
 package com.biit.webforms.gui.common.components;
 
-import java.io.IOException;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-
-import javax.servlet.ServletContext;
-
 import com.biit.security.DESEncryptor;
 import com.biit.security.exceptions.DESEncryptorException;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
@@ -16,14 +10,14 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Alignment;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 public class WindowAboutUs extends Window {
 	private static final long serialVersionUID = -3852811369262597168L;

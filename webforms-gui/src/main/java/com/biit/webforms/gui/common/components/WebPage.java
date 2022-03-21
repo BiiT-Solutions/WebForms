@@ -2,11 +2,7 @@ package com.biit.webforms.gui.common.components;
 
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
-import com.vaadin.ui.AbstractOrderedLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 
 public abstract class WebPage extends WebPageComponent {
 	private static final long serialVersionUID = 5807470662051568616L;

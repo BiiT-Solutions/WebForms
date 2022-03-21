@@ -1,8 +1,5 @@
 package com.biit.webforms.gui.components;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.UserManagementException;
@@ -16,11 +13,10 @@ import com.biit.webforms.security.IWebformsSecurityService;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.*;
+
+import java.util.Iterator;
+import java.util.Set;
 
 public class WindowNameGroup extends WindowAcceptCancel {
 	private static final long serialVersionUID = -5944303129765599933L;

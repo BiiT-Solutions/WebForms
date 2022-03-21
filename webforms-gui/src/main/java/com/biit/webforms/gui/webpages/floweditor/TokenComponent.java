@@ -1,8 +1,5 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenDoubleClickListener;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenSingleClickListener;
 import com.biit.webforms.persistence.entity.condition.Token;
@@ -13,6 +10,9 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TokenComponent extends CustomComponent {
 

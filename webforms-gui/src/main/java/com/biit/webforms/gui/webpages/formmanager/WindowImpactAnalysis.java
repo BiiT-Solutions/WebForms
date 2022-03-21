@@ -1,11 +1,5 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -19,11 +13,13 @@ import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.biit.webforms.utils.ZipTools;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WindowImpactAnalysis extends WindowAcceptCancel {
 	private static final long serialVersionUID = -7240113029111810959L;

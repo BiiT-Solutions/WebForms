@@ -1,8 +1,8 @@
 package com.biit.gui.tester;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vaadin.testbench.TestBench;
+import com.vaadin.testbench.TestBenchTestCase;
+import com.vaadin.testbench.elements.NotificationElement;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
@@ -11,13 +11,15 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
+import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 
-import com.vaadin.testbench.TestBench;
-import com.vaadin.testbench.TestBenchTestCase;
-import com.vaadin.testbench.elements.NotificationElement;
+import java.util.ArrayList;
+import java.util.List;
 
+@Listeners({TestListener.class})
 public class VaadinGuiTester extends TestBenchTestCase {
 
     private static final String FIREFOX_LANGUAGE_PROPERTY = "intl.accept_languages";
@@ -44,7 +46,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
     }
 
     @BeforeClass(inheritGroups = true, alwaysRun = true)
-    public void createDriver() {
+    public void createDriver(ITestContext iTestContext) {
         if (headlessTesting) {
             DesiredCapabilities caps = new DesiredCapabilities();
             caps.setJavascriptEnabled(true);
@@ -60,6 +62,8 @@ public class VaadinGuiTester extends TestBenchTestCase {
         for (VaadinGuiWebpage webpage : webpages) {
             webpage.setDriver(getDriver());
         }
+
+        iTestContext.setAttribute("driver", driver);
     }
 
     @AfterClass(inheritGroups = true, alwaysRun = true)

@@ -1,8 +1,8 @@
 package com.biit.webforms.gui.common.components;
 
 import com.biit.form.entity.TreeObject;
-import com.vaadin.data.Item;
 import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Item;
 
 public class FilterByTreeObjectOrderLessEqual implements Filter {
 

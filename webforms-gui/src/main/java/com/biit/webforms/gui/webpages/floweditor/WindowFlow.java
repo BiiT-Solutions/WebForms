@@ -1,8 +1,5 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.FlowType;
@@ -19,12 +16,10 @@ import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Window to generate or edit a flow rule. This gui class can call the update

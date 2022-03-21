@@ -1,12 +1,5 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.vaadin.risto.stepper.IntStepper;
-
 import com.biit.webforms.exporters.xml.RandomXmlFormResultExporter;
 import com.biit.webforms.exporters.xml.exceptions.ElementWithoutNextElement;
 import com.biit.webforms.exporters.xml.exceptions.TooMuchIterationsWhileGeneratingPath;
@@ -23,6 +16,12 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import org.vaadin.risto.stepper.IntStepper;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 public class WindowGenerateXml extends WindowAcceptCancel {
 	private static final long serialVersionUID = -3167579242870259658L;

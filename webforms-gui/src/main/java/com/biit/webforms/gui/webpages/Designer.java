@@ -1,12 +1,5 @@
 package com.biit.webforms.gui.webpages;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.biit.abcd.core.SpringContextHelper;
 import com.biit.form.entity.BaseAnswer;
 import com.biit.form.entity.BaseCategory;
@@ -35,34 +28,11 @@ import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.TableTreeObjectLabel;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.WindowTreeObject;
-import com.biit.webforms.gui.exceptions.CategoryWithSameNameAlreadyExistsInForm;
-import com.biit.webforms.gui.exceptions.DestinyIsContainedAtOrigin;
-import com.biit.webforms.gui.exceptions.EmptyBlockCannotBeInserted;
-import com.biit.webforms.gui.exceptions.FormWithSameNameException;
-import com.biit.webforms.gui.exceptions.LinkCanOnlyBePerformedOnWholeBlock;
-import com.biit.webforms.gui.exceptions.SameOriginAndDestinationException;
-import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
-import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectExtraInformation;
-import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectImage;
-import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
-import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
-import com.biit.webforms.gui.webpages.designer.WindowBlocks;
-import com.biit.webforms.gui.webpages.designer.WindowCreateAnswerRanges;
+import com.biit.webforms.gui.exceptions.*;
+import com.biit.webforms.gui.webpages.designer.*;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
-import com.biit.webforms.persistence.entity.Answer;
-import com.biit.webforms.persistence.entity.AttachedFiles;
-import com.biit.webforms.persistence.entity.Block;
-import com.biit.webforms.persistence.entity.BlockReference;
-import com.biit.webforms.persistence.entity.Category;
-import com.biit.webforms.persistence.entity.CompleteFormView;
-import com.biit.webforms.persistence.entity.DynamicAnswer;
-import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Group;
-import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.SimpleFormView;
-import com.biit.webforms.persistence.entity.SystemField;
-import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.*;
 import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidRangeException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidValue;
@@ -79,6 +49,9 @@ import com.vaadin.ui.Tree.CollapseEvent;
 import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
+
+import java.io.IOException;
+import java.util.*;
 
 public class Designer extends SecuredWebPage {
     private static final long serialVersionUID = 9161313025929535348L;

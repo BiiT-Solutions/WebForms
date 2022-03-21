@@ -1,16 +1,5 @@
 package com.biit.webforms.gui.common.components;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.imageio.ImageIO;
-
 import com.biit.persistence.entity.StorableObject;
 import com.biit.utils.image.ImageTools;
 import com.biit.utils.image.exceptions.InvalidRemoteImageDefinition;
@@ -28,22 +17,16 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.ElementWithImage;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.vaadin.server.StreamResource.StreamSource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressBar;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.Upload;
-import com.vaadin.ui.Upload.FailedEvent;
-import com.vaadin.ui.Upload.FinishedEvent;
-import com.vaadin.ui.Upload.Receiver;
-import com.vaadin.ui.Upload.StartedEvent;
-import com.vaadin.ui.Upload.SucceededEvent;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Upload.*;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class PropertiesForStorableObjectWithImages<T extends StorableObject & ElementWithImage> extends
 		StorableObjectProperties<T> {

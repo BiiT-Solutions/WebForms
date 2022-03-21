@@ -1,8 +1,5 @@
 package com.biit.webforms.gui.common.components;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
@@ -15,6 +12,9 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchButtonField extends CustomComponent {
 	private static final long serialVersionUID = -2865532209097063977L;

@@ -1,8 +1,5 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -22,13 +19,10 @@ import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
 import com.google.gson.JsonParseException;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+
+import java.util.Iterator;
+import java.util.Set;
 
 public class WindowImportJson extends WindowAcceptCancel {
 	private static final long serialVersionUID = 8945502504922675754L;

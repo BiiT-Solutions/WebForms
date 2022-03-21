@@ -1,7 +1,5 @@
 package com.biit.webforms.gui;
 
-import java.util.Objects;
-
 import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.usermanager.security.exceptions.InvalidCredentialsException;
@@ -23,6 +21,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.UI;
+
+import java.util.Objects;
 
 /**
  * Main Ui class of application. Ui has been configured to preserve the Ui when

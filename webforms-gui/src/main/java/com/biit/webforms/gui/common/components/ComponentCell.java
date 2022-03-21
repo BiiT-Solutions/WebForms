@@ -1,21 +1,16 @@
 package com.biit.webforms.gui.common.components;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import com.biit.webforms.gui.common.theme.IThemeIcon;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.LayoutEvents.LayoutClickNotifier;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
+
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class ComponentCell extends CustomComponent implements LayoutClickNotifier {
 	private static final long serialVersionUID = -3071199876634808049L;

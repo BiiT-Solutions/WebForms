@@ -1,13 +1,13 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import com.biit.utils.image.ImageTools;
 import com.biit.webforms.gui.common.components.ImagePanel;
 import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 public class ImagePreview extends ImagePanel {
 	private static final long serialVersionUID = -2464554146921469606L;

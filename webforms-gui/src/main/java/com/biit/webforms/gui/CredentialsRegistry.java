@@ -1,10 +1,10 @@
 package com.biit.webforms.gui;
 
-import java.util.HashMap;
-
 import com.biit.usermanager.entity.IUser;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
+
+import java.util.HashMap;
 
 public class CredentialsRegistry {
 

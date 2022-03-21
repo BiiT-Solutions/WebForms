@@ -1,9 +1,5 @@
 package com.biit.webforms.gui.webpages.blockmanager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import com.biit.form.entity.IBaseFormView;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.entity.IUser;
@@ -24,6 +20,10 @@ import com.biit.webforms.security.WebformsActivity;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Table;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Specialized table for block elements.

@@ -1,15 +1,14 @@
 package com.biit.webforms.gui.common.language;
 
-import java.util.Locale;
-
-import org.springframework.util.StringUtils;
-
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
+import org.springframework.util.StringUtils;
+
+import java.util.Locale;
 
 public class ServerTranslate {
 

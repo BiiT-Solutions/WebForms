@@ -1,7 +1,5 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import java.util.Set;
-
 import com.biit.form.entity.BaseForm;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
@@ -9,6 +7,8 @@ import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Component;
+
+import java.util.Set;
 
 public class WindowBlocks extends WindowAcceptCancel {
 	private static final long serialVersionUID = -359502175714054679L;

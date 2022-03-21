@@ -1,8 +1,11 @@
 package com.biit.webforms.gui.xforms;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
+import com.biit.usermanager.entity.IGroup;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.gui.WebformsUiLogger;
+import com.biit.webforms.persistence.entity.Form;
+import org.apache.http.client.ClientProtocolException;
+import org.glassfish.jersey.SslConfigurator;
 
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.ClientErrorException;
@@ -11,14 +14,9 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
-
-import org.apache.http.client.ClientProtocolException;
-import org.glassfish.jersey.SslConfigurator;
-
-import com.biit.usermanager.entity.IGroup;
-import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.gui.WebformsUiLogger;
-import com.biit.webforms.persistence.entity.Form;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class FormRunnerUtils {
 

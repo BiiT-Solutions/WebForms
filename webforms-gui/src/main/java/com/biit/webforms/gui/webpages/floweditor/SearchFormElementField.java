@@ -1,8 +1,5 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.common.components.OpenSearchComponentListener;
@@ -12,6 +9,9 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionLi
 import com.biit.webforms.gui.components.WindowTreeObject;
 import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.data.Container.Filter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchFormElementField extends SearchButtonField {
 	private static final long serialVersionUID = -2774946945994290636L;

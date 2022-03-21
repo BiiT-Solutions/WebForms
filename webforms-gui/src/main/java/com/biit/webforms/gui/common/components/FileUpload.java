@@ -1,17 +1,11 @@
 package com.biit.webforms.gui.common.components;
 
-import java.io.ByteArrayOutputStream;
-
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.biit.webforms.gui.common.utils.UploadedFile;
 import com.biit.webforms.language.LanguageCodes;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.*;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Custom component to signal the upload of a file from user to server.

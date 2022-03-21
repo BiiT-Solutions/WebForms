@@ -1,11 +1,5 @@
 package com.biit.webforms.gui.webpages;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
@@ -25,27 +19,14 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormFlowViewer;
 import com.biit.webforms.gui.components.ZoomChangedListener;
-import com.biit.webforms.gui.webpages.floweditor.DestinyFilter;
-import com.biit.webforms.gui.webpages.floweditor.OriginFilter;
-import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField;
+import com.biit.webforms.gui.webpages.floweditor.*;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
-import com.biit.webforms.gui.webpages.floweditor.TableFlows;
 import com.biit.webforms.gui.webpages.floweditor.TableFlows.NewItemAction;
-import com.biit.webforms.gui.webpages.floweditor.UpperMenuFlowEditor;
-import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.gui.webpages.floweditor.listeners.EditItemAction;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.Block;
-import com.biit.webforms.persistence.entity.Category;
-import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Group;
-import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
-import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
-import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
+import com.biit.webforms.persistence.entity.*;
+import com.biit.webforms.persistence.entity.exceptions.*;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.theme.ThemeIcons;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
@@ -54,14 +35,11 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.ui.Alignment;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Slider;
-import com.vaadin.ui.VerticalLayout;
+
+import java.util.*;
 
 public class FlowEditor extends SecuredWebPage {
 	private static final long serialVersionUID = -6257723403353946354L;

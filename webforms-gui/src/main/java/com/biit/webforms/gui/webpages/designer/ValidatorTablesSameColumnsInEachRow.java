@@ -1,13 +1,13 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import java.util.Objects;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Question;
 import com.vaadin.data.Validator;
+
+import java.util.Objects;
 
 public class ValidatorTablesSameColumnsInEachRow implements Validator {
 	private static final long serialVersionUID = -5320539195645056658L;

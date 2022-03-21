@@ -1,10 +1,5 @@
 package com.biit.webforms.gui.common.components;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
 import com.biit.webforms.gui.common.language.ILanguageCode;
 import com.biit.webforms.gui.common.theme.IThemeIcon;
 import com.biit.webforms.gui.popover.Popover;
@@ -15,6 +10,11 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class UpperMenu extends HorizontalButtonGroup {
 	private static final long serialVersionUID = 3501103183357307175L;

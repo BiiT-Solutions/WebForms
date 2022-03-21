@@ -1,12 +1,5 @@
 package com.biit.webforms.gui.common.components;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import javax.ws.rs.ProcessingException;
-
 import com.biit.form.entity.IBaseFormView;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.usermanager.entity.IGroup;
@@ -24,6 +17,12 @@ import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TreeTable;
+
+import javax.ws.rs.ProcessingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Base tree table. This generic table needs a dataProvider to initialize the

@@ -1,9 +1,9 @@
 package com.biit.webforms.gui.common.utils;
 
-import javax.servlet.ServletContext;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import javax.servlet.ServletContext;
 
 /**
  * As suggested in https://vaadin.com/wiki/-/wiki/Main/Spring%20Integration, to access your Spring managed beans, you

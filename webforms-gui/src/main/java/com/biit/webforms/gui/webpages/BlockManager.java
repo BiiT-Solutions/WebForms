@@ -1,10 +1,5 @@
 package com.biit.webforms.gui.webpages;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.biit.abcd.core.SpringContextHelper;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
@@ -38,6 +33,11 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BlockManager extends SecuredWebPage {
 	private static final long serialVersionUID = -2939326703361794764L;

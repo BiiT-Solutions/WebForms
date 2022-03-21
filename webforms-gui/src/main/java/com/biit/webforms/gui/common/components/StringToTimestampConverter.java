@@ -1,12 +1,12 @@
 package com.biit.webforms.gui.common.components;
 
+import com.vaadin.data.util.converter.Converter;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.util.Date;
 import java.util.Locale;
-
-import com.vaadin.data.util.converter.Converter;
 
 /**
  * String-timestamp conversor for vaadin containers. Uses default locale.

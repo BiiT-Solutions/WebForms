@@ -1,22 +1,17 @@
 package com.biit.webforms.gui.common.components;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.biit.webforms.gui.components.ZoomChangedListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.JavaScript;
-import com.vaadin.ui.JavaScriptFunction;
-import com.vaadin.ui.Panel;
-
+import com.vaadin.ui.*;
 import elemental.json.JsonArray;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Panel that contains an image with zoom.

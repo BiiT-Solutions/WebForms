@@ -1,11 +1,5 @@
 package com.biit.webforms.gui.components;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.utils.image.ImageTools;
 import com.biit.webforms.gui.WebformsUiLogger;
@@ -17,6 +11,12 @@ import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.vaadin.server.Scrollable;
 import com.vaadin.server.StreamResource;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * A layout that contains an image representing the flow of a form.

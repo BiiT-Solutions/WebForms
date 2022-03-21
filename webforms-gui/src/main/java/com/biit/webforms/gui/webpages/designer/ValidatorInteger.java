@@ -1,8 +1,8 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import java.util.regex.Pattern;
-
 import com.vaadin.data.Validator;
+
+import java.util.regex.Pattern;
 
 public class ValidatorInteger implements Validator {
 	private static final long serialVersionUID = 8591363723969902840L;

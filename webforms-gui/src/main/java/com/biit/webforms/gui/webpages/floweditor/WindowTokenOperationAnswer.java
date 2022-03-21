@@ -8,11 +8,7 @@ import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 
 public class WindowTokenOperationAnswer extends WindowAcceptCancel {
 	private static final long serialVersionUID = 697691525922280194L;

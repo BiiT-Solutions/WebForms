@@ -3,13 +3,7 @@ package com.biit.webforms.gui.webpages.designer;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.IconProvider;
 import com.biit.webforms.gui.common.theme.IThemeIcon;
-import com.biit.webforms.persistence.entity.AttachedFiles;
-import com.biit.webforms.persistence.entity.Category;
-import com.biit.webforms.persistence.entity.DynamicAnswer;
-import com.biit.webforms.persistence.entity.Group;
-import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.SystemField;
-import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.*;
 import com.biit.webforms.theme.ThemeIcons;
 
 public class IconProviderTreeObjectWebforms extends IconProvider<TreeObject> {

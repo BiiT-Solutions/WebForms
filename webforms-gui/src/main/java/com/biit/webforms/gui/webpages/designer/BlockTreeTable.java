@@ -1,10 +1,5 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.usermanager.entity.IGroup;
 import com.biit.webforms.gui.UserSession;
@@ -20,6 +15,11 @@ import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinServlet;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public class BlockTreeTable extends TableTreeObjectLabel {
 

@@ -1,18 +1,12 @@
 package com.biit.webforms.gui.common.components;
 
-import java.util.Collection;
-import java.util.HashMap;
-
 import com.biit.webforms.gui.common.theme.CommonThemeIcon;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+
+import java.util.Collection;
+import java.util.HashMap;
 
 public class AccordionMultiple extends CustomComponent {
 	private static final long serialVersionUID = 5129178526197426807L;

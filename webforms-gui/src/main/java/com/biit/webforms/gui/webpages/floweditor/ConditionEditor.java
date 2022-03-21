@@ -1,7 +1,5 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import java.util.List;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.gui.WebformsUiLogger;
@@ -13,29 +11,17 @@ import com.biit.webforms.gui.webpages.floweditor.TokenDisplay.ValidationListener
 import com.biit.webforms.gui.webpages.floweditor.listeners.InsertTokenListener;
 import com.biit.webforms.gui.webpages.floweditor.listeners.TokenDoubleClickListener;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.persistence.entity.condition.TokenBetween;
-import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
-import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
-import com.biit.webforms.persistence.entity.condition.TokenIn;
+import com.biit.webforms.persistence.entity.condition.*;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
-import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
-import com.biit.webforms.utils.parser.exceptions.ExpectedTokenNotFound;
-import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
-import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
-import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
-import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
-import com.biit.webforms.utils.parser.exceptions.ParseException;
+import com.biit.webforms.utils.parser.exceptions.*;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+
+import java.util.List;
 
 /**
  * token conditions. Contains the right side controls and the current token

@@ -1,8 +1,5 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.TokenTypes;
@@ -12,28 +9,20 @@ import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.gui.common.components.TableWithSearch;
 import com.biit.webforms.gui.webpages.floweditor.listeners.InsertTokenListener;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Group;
-import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.SystemField;
-import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
+import com.biit.webforms.persistence.entity.*;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.theme.ThemeIcons;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.Filterable;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.AbstractField;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.VerticalSplitPanel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class holds the right side controls in the Window Flow.

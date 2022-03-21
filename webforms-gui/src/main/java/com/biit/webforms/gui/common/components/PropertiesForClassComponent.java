@@ -1,18 +1,13 @@
 package com.biit.webforms.gui.common.components;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.biit.webforms.gui.UserSession;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.AbstractComponentContainer;
-import com.vaadin.ui.AbstractField;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 	private static final long serialVersionUID = 4900379725073491238L;

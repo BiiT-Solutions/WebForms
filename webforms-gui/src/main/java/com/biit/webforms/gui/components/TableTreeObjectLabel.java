@@ -1,12 +1,12 @@
 package com.biit.webforms.gui.components;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.common.components.TableTreeObject;
 import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.data.Item;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Table tree object with a label property added.

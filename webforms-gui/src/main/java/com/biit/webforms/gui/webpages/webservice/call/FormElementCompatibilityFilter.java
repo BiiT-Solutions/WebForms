@@ -1,7 +1,5 @@
 package com.biit.webforms.gui.webpages.webservice.call;
 
-import java.util.Objects;
-
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
@@ -9,6 +7,8 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;
+
+import java.util.Objects;
 
 public class FormElementCompatibilityFilter implements Filter {
 	private static final long serialVersionUID = 6762055574561628797L;

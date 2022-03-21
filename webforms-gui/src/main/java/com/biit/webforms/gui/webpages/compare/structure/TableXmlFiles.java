@@ -1,7 +1,5 @@
 package com.biit.webforms.gui.webpages.compare.structure;
 
-import java.io.UnsupportedEncodingException;
-
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
@@ -13,6 +11,8 @@ import com.biit.webforms.xml.XmlUtils;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
+
+import java.io.UnsupportedEncodingException;
 
 public class TableXmlFiles extends Table {
 	private static final long serialVersionUID = 490387849893506016L;

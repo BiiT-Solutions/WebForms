@@ -1,13 +1,13 @@
 package com.biit.webforms.gui;
 
+import com.biit.webforms.logger.WebformsLogger;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.UI;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.sql.Timestamp;
-
-import com.biit.webforms.logger.WebformsLogger;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.UI;
 
 public class WebformsUiLogger {
 
