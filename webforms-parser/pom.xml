@@ -35,7 +35,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>${javax.servlet.version}</version>
+            <version>${javax-servlet.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- Boolean Expressions Manipulation -->
