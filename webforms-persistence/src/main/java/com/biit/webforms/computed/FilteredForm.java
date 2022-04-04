@@ -1,9 +1,5 @@
 package com.biit.webforms.computed;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
@@ -13,14 +9,18 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class FilteredForm {
 
-	private Form originalForm;
-	private TreeObject filter;
-	private LinkedHashSet<TreeObject> filteredElements;
-	private Set<Flow> filteredFlows;
+	private final Form originalForm;
+	private final TreeObject filter;
+	private final LinkedHashSet<TreeObject> filteredElements;
+	private final Set<Flow> filteredFlows;
 	private ComputedFlowView flows;
-	private Set<TreeObject> dependantElements;
+	private final Set<TreeObject> dependantElements;
 	private Form filteredForm;
 
 	public FilteredForm(Form originalForm, TreeObject filter) {
@@ -43,7 +43,7 @@ public class FilteredForm {
 		}
 
 		// Get all elements with flow in or out of the selected elements
-		dependantElements = new HashSet<TreeObject>();
+		dependantElements = new HashSet<>();
 		for (Flow filteredFlow : filteredFlows) {
 			if (!filteredElements.contains(filteredFlow.getOrigin())) {
 				dependantElements.add(filteredFlow.getOrigin());
@@ -53,11 +53,11 @@ public class FilteredForm {
 			}
 		}
 
-		Set<TreeObject> selectedChilds = new HashSet<TreeObject>();
-		selectedChilds.addAll(filteredElements);
-		selectedChilds.addAll(dependantElements);
+		Set<TreeObject> selectedChildren = new HashSet<>();
+		selectedChildren.addAll(filteredElements);
+		selectedChildren.addAll(dependantElements);
 		try {
-			filteredForm = (Form) originalForm.generateCopyWithChilds(selectedChilds);
+			filteredForm = (Form) originalForm.generateCopyWithChildren(selectedChildren);
 		} catch (NotValidStorableObjectException | CharacterNotAllowedException e) {
 			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);

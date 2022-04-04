@@ -9,9 +9,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
@@ -128,26 +126,26 @@ public class ScorecardXls {
             titleStyle = workbook.createCellStyle();
 
             // Border
-            titleStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
+            titleStyle.setBorderRight(BorderStyle.THIN);
             titleStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
-            titleStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+            titleStyle.setBorderBottom(BorderStyle.THIN);
             titleStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-            titleStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+            titleStyle.setBorderLeft(BorderStyle.THIN);
             titleStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
-            titleStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
+            titleStyle.setBorderTop(BorderStyle.THIN);
             titleStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
 
             // Background Color
             titleStyle.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
-            titleStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+            titleStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
             // Alignment
-            titleStyle.setAlignment(CellStyle.ALIGN_CENTER);
-            titleStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+            titleStyle.setAlignment(HorizontalAlignment.CENTER);
+            titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
             // Font
             Font headerFont = workbook.createFont();
-            headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+            headerFont.setBold(true);
             headerFont.setFontHeightInPoints((short) TITLE_FONT_SIZE);
             headerFont.setColor(IndexedColors.WHITE.getIndex());
             titleStyle.setFont(headerFont);
@@ -174,14 +172,14 @@ public class ScorecardXls {
 
         // Background Color
         contentStyle.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
-        contentStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        contentStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         // Alignment
-        contentStyle.setAlignment(CellStyle.ALIGN_LEFT);
-        contentStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        contentStyle.setAlignment(HorizontalAlignment.LEFT);
+        contentStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
         // Border
-        contentStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        contentStyle.setBorderBottom(BorderStyle.THIN);
         contentStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
 
         return contentStyle;
@@ -192,14 +190,14 @@ public class ScorecardXls {
 
         // Background Color
         contentStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
-        contentStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        contentStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         // Alignment
-        contentStyle.setAlignment(CellStyle.ALIGN_CENTER);
-        contentStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        contentStyle.setAlignment(HorizontalAlignment.CENTER);
+        contentStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
         // Border
-        contentStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        contentStyle.setBorderBottom(BorderStyle.THIN);
         contentStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
 
         return contentStyle;
