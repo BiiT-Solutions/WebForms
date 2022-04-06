@@ -1,6 +1,5 @@
 package com.biit.webforms.gui.webpages;
 
-import com.biit.abcd.core.SpringContextHelper;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
@@ -16,6 +15,7 @@ import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
 import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
 import com.biit.webforms.gui.components.WindowNameGroup;

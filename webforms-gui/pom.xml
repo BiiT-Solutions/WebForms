@@ -103,10 +103,16 @@
             <artifactId>webforms-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- ABCD persistency -->
+        <!-- ABCD persistence -->
         <dependency>
             <groupId>com.biit</groupId>
-            <artifactId>abcd-core</artifactId>
+            <artifactId>abcd-persistence</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.biit</groupId>
+                    <artifactId>drools-engine-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- DESEncryption -->
         <dependency>
