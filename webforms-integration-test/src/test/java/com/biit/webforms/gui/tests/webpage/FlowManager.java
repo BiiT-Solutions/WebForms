@@ -188,12 +188,4 @@ public class FlowManager extends VaadinGuiWebpage {
 		getSelectFormElementWindow().selectElementInTable(endNodeName);
 		getSelectFormElementWindow().clickAccept();
 	}
-	
-	private void sleep(long milis) {
-		try {
-			Thread.sleep(milis);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}	
-	}
 }
