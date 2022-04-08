@@ -36,7 +36,7 @@ public class VaadinGuiTester extends TestBenchTestCase {
     private boolean headlessTesting = false;
 
     // To debug last step on firefox
-    private boolean destroyDriver = false;
+    private boolean destroyDriver = true;
 
 
     private final List<VaadinGuiWebpage> webpages;
