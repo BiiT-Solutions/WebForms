@@ -185,11 +185,14 @@ public class FormManager extends VaadinGuiWebpage {
     }
 
     public void deleteForm(int row) {
+        takeScreenshot("Selected_0_" + LocalDateTime.now().toString());
+        getFormTable().getCell(0, 0).click();
+        takeScreenshot("Selected_1_" + LocalDateTime.now().toString());
         if (!getFormTable().getCell(row, 0).isSelected()) {
             getFormTable().getCell(row, 0).click();
         }
         getRemoveForm().waitForVaadin();
-        takeScreenshot("Selected_" + LocalDateTime.now().toString());
+        takeScreenshot("Selected_2_" + LocalDateTime.now().toString());
         try {
             getRemoveForm().click();
             takeScreenshot("Deleting_forms_" + LocalDateTime.now().toString());
