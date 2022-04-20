@@ -173,6 +173,7 @@ public class FormManager extends VaadinGuiWebpage {
     public void deleteAllCreatedForms() {
         try {
             while (true) {
+                getFormTable().waitForVaadin();
                 getFormTable().getCell(FORM_ROW, 0);
                 deleteForm(FORM_ROW);
                 IntegrationTestLogging.debug(this.getClass().getName(), "Form deleted!");

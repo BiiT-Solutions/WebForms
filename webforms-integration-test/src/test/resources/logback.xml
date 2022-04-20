@@ -43,11 +43,15 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="DAILY"/>
     </logger>
-    <logger name="com.biit.webforms.logger.AbstractLogging" additivity="false" level="ALL">
+    <logger name="com.biit.webforms.logger.AbstractLogging" additivity="false" level="DEBUG">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="DAILY"/>
     </logger>
-    <logger name="com.biit.webforms.logger.WebformsLogger" additivity="false" level="ALL">
+    <logger name="com.biit.webforms.logger.WebformsLogger" additivity="false" level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="DAILY"/>
+    </logger>
+    <logger name="com.biit.gui.tester.IntegrationTestLogging" additivity="false" level="DEBUG">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="DAILY"/>
     </logger>
