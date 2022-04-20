@@ -14,6 +14,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
+import java.time.LocalDateTime;
+
 public class FormManager extends VaadinGuiWebpage {
 
     private static final String NEW_BUTTON_CAPTION = "New";
@@ -174,7 +176,9 @@ public class FormManager extends VaadinGuiWebpage {
         try {
             while (true) {
                 getFormTable().waitForVaadin();
+                takeScreenshot("Deleting_forms_" + LocalDateTime.now().toString());
                 getFormTable().getCell(FORM_ROW, 0);
+                takeScreenshot("Selecting_forms_" + LocalDateTime.now().toString());
                 deleteForm(FORM_ROW);
                 IntegrationTestLogging.debug(this.getClass().getName(), "Form deleted!");
             }
