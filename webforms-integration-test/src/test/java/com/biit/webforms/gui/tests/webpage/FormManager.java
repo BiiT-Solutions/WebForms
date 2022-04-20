@@ -12,7 +12,6 @@ import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;
-import org.testng.Assert;
 
 import java.time.LocalDateTime;
 
@@ -176,7 +175,6 @@ public class FormManager extends VaadinGuiWebpage {
         try {
             while (true) {
                 getFormTable().waitForVaadin();
-                takeScreenshot("Deleting_forms_" + LocalDateTime.now().toString());
                 getFormTable().getCell(FORM_ROW, 0);
                 takeScreenshot("Selecting_forms_" + LocalDateTime.now().toString());
                 deleteForm(FORM_ROW);
@@ -187,15 +185,14 @@ public class FormManager extends VaadinGuiWebpage {
     }
 
     public void deleteForm(int row) {
-        // To avoid errors, first we select other element of the table
-        if (!getFormTable().getCell(0, 0).isSelected()) {
-            getFormTable().getCell(0, 0).click();
+        if (!getFormTable().getCell(row, 0).isSelected()) {
+            getFormTable().getCell(row, 0).click();
         }
-        getFormTable().getCell(row, 1).click();
-        getFormTable().getRow(row).click();
-        Assert.assertNotNull(getRemoveForm());
+        getRemoveForm().waitForVaadin();
+        takeScreenshot("Selected_" + LocalDateTime.now().toString());
         try {
             getRemoveForm().click();
+            takeScreenshot("Deleting_forms_" + LocalDateTime.now().toString());
             clickAcceptButtonIfExists();
         } catch (Exception e) {
             // Form does not exists.
