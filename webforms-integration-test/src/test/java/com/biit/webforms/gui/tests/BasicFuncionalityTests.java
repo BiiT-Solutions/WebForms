@@ -17,7 +17,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 	
 	@Test(groups = "basicFunctionality")
 	public void createFormfinishFormCheckStatus() {
-		printTestNameInDebugTrace("createFormfinishFormCheckStatus");
 		loginFormEdit1();
 		getFormManagerPage().createNewForm(NEW_FORM_NAME);
 		goToDesignerPage();
@@ -31,7 +30,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 	
 	@Test(groups = "basicFunctionality")
 	public void editBlockWithoutPermissions() {
-		printTestNameInDebugTrace("editBlockWithoutPermissions");
 		// For testing the block edition we need a to create a block
 		createNewBlockAndLogout(NEW_BLOCK_NAME);
 		// Starting the real test
@@ -46,7 +44,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 
 	@Test(groups = "basicFunctionality")
 	public void editBlockWithPermissions() {
-		printTestNameInDebugTrace("editBlockWithPermissions");
 		// For testing the block edition we need a to create a block
 		createNewBlockAndLogout(NEW_BLOCK_NAME);
 		// Starting the real test
@@ -61,7 +58,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 
 	@Test(groups = "basicFunctionality")
 	public void editFormOrganizationWithoutPermissions() {
-		printTestNameInDebugTrace("editFormOrganizationWithoutPermissions");
 		loginFormAdmin1();
 		try {
 			getFormManagerPage().createNewFormWithOrganization(NEW_FORM_NAME, ORGANIZATION_NAME);
@@ -76,7 +72,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 
 	@Test(groups = "basicFunctionality")
 	public void editFormWithoutPermissions() {
-		printTestNameInDebugTrace("editFormWithoutPermissions");
 		// For testing the form edition we need a to create a form
 		createNewFormAndLogout(NEW_FORM_NAME);
 		// Starting the real test
@@ -90,7 +85,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 
 	@Test(groups = "basicFunctionality")
 	public void editFormWithPermissions() {
-		printTestNameInDebugTrace("editFormWithPermissions");
 		// For testing the form edition we need a to create a form
 		createNewFormAndLogout(NEW_FORM_NAME);
 		// Starting the real test
@@ -104,7 +98,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 
 	@Test(groups = "basicFunctionality")
 	public void testInfoWindow() {
-		printTestNameInDebugTrace("testInfoWindow");
 		loginRead1();
 		getInfoButton().click();
 		clickCloseButtonIfExists();
@@ -113,7 +106,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 	
 	@Test(groups = "basicFunctionality")
 	public void createFormWithHiddenElements() throws FieldNotEditableException {
-		printTestNameInDebugTrace("createFormWithHiddenElements");
 		loginFormAdmin1();
 		getFormManagerPage().createNewForm(NEW_FORM_NAME);
 		goToDesignerPage();
@@ -128,7 +120,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 	
 	@Test(groups = "basicFunctionality", expectedExceptions = NullPointerException.class)
 	public void deleteHiddenElementFromForm() throws FieldNotEditableException {
-		printTestNameInDebugTrace("deleteHiddenElementFromForm");
 		loginFormAdmin1();
 		getFormManagerPage().createNewForm(NEW_FORM_NAME);
 		goToDesignerPage();
@@ -151,7 +142,6 @@ public class BasicFuncionalityTests extends WebFormsTester {
 	
 	@Test(groups = "basicFunctionality", expectedExceptions = NullPointerException.class)
 	public void checkHiddenButtonDisabled() throws FieldNotEditableException {
-		printTestNameInDebugTrace("checkHiddenButtonDisabled");
 		loginFormAdmin1();
 		getFormManagerPage().createNewForm(NEW_FORM_NAME);
 		goToDesignerPage();
