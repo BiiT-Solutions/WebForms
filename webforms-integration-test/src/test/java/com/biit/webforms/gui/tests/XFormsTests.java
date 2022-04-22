@@ -35,13 +35,7 @@ public class XFormsTests extends WebFormsTester {
 			getFlowManagerPage().getFlowRuleWindow().clickInButton();
 			Assert.assertEquals(getFlowManagerPage().getFlowRuleWindow().getValidInvalidTagValue(), VALID_FLOW_TAG);
 			getFlowManagerPage().getFlowRuleWindow().clickAccept();
-			
-			getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION3_NAME);
-			getFlowManagerPage().getFlowRulesTable().getCell(1, FIRST_COLUMN).click();
-			getFlowManagerPage().clickEditRuleButton();
-			// Select "Others" option
-			getFlowManagerPage().getFlowRuleWindow().clickOthersCheckBox();
-			getFlowManagerPage().getFlowRuleWindow().clickAccept();
+
 			
 			// Redraw the graph
 			getFlowManagerPage().clickRedrawButton();
