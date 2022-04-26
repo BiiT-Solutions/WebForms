@@ -11,6 +11,7 @@ public class XFormsTests extends WebFormsTester {
     private static final String NEW_FORM_NAME = "new_form_1";
     private static final String QUESTION1_NAME = "Question1";
     private static final String QUESTION2_NAME = "Question2";
+    private static final String QUESTION3_NAME = "Question3";
     private static final String ANSWER1_NAME = "Q1Answer1";
 
     private static final Integer FIRST_ROW = 0;
@@ -27,6 +28,7 @@ public class XFormsTests extends WebFormsTester {
 			// Create a flow
 			goToFlowManagerPage();
 			getFlowManagerPage().createSimpleFlowRule(QUESTION1_NAME, QUESTION2_NAME);
+			getFlowManagerPage().createOthersFlow(QUESTION1_NAME, QUESTION3_NAME);
 			getFlowManagerPage().getFlowRulesTable().getCell(FIRST_ROW, FIRST_COLUMN).click();
 			getFlowManagerPage().clickEditRuleButton();
 			// Add the question IN [answer1 answer2] condition
