@@ -1,12 +1,12 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
 import com.biit.form.json.serialization.BaseRepeatableGroupSerializer;
 import com.biit.webforms.persistence.entity.Group;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
+
+import java.lang.reflect.Type;
 
 public class GroupSerializer extends BaseRepeatableGroupSerializer<Group> {
 
@@ -15,6 +15,7 @@ public class GroupSerializer extends BaseRepeatableGroupSerializer<Group> {
 		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
 
 		jsonObject.add("isTable", context.serialize(src.isShownAsTable()));
+		jsonObject.add("numberOfColumn", context.serialize(src.getNumberOfColumns()));
 
 		return jsonObject;
 	}

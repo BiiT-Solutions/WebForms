@@ -1,14 +1,14 @@
 package com.biit.webforms.persistence.entity;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import com.biit.form.entity.BaseRepeatableGroup;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "tree_groups")
@@ -19,6 +19,9 @@ public class Group extends BaseRepeatableGroup {
 
 	@Column(name = "is_table", nullable = false)
 	private boolean showAsTable = false;
+
+	@Column(name = "number_of_column", nullable = false)
+	private int numberOfColumns = 1;
 
 	public Group() {
 		super();
@@ -77,5 +80,13 @@ public class Group extends BaseRepeatableGroup {
 
 	public void setShownAsTable(boolean isTable) {
 		this.showAsTable = isTable;
+	}
+
+	public int getNumberOfColumns() {
+		return numberOfColumns;
+	}
+
+	public void setNumberOfColumns(int numberOfColumns) {
+		this.numberOfColumns = numberOfColumns;
 	}
 }

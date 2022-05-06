@@ -242,6 +242,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_DISABLE_EDITION_TOOLTIP("caption.disable.edition.tooltip"),
 	CAPTION_REPETABLE("caption.repetable"),
 	CAPTION_TABLE("caption.table"),
+	CAPTION_NUMBER_OF_COLUMNS("caption.number.of.columns"),
 	CAPTION_TEXT("caption.text"),
 	CAPTION_VERSION("caption.version"),
 	REFERENCE_CAPTION_VERSION("reference.caption.version"),

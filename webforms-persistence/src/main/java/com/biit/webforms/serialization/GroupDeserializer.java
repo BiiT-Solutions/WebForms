@@ -8,20 +8,27 @@ import com.google.gson.JsonObject;
 
 public class GroupDeserializer extends BaseRepeatableGroupDeserializer<Group> {
 
-	public GroupDeserializer() {
-		super(Group.class);
-	}
+    public GroupDeserializer() {
+        super(Group.class);
+    }
 
-	public void deserialize(JsonElement json, JsonDeserializationContext context, Group element) {
-		JsonObject jobject = (JsonObject) json;
+    public void deserialize(JsonElement json, JsonDeserializationContext context, Group element) {
+        JsonObject jobject = (JsonObject) json;
 
-		try {
-			element.setShownAsTable((Boolean) context.deserialize(jobject.get("isTable"), Boolean.class));
-		} catch (NullPointerException npe) {
-			// Not defined.
-		}
+        try {
+            element.setShownAsTable((Boolean) context.deserialize(jobject.get("isTable"), Boolean.class));
+        } catch (Exception npe) {
+            // Not defined.
+        }
 
-		super.deserialize(json, context, element);
-	}
+        try {
+            element.setNumberOfColumns((Integer) context.deserialize(jobject.get("numberOfColumn"), Integer.class));
+        } catch (Exception npe) {
+            // Not defined.
+            element.setNumberOfColumns(1);
+        }
+
+        super.deserialize(json, context, element);
+    }
 
 }
