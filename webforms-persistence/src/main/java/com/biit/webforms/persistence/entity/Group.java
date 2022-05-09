@@ -14,79 +14,79 @@ import javax.persistence.Table;
 @Table(name = "tree_groups")
 @Cacheable(true)
 public class Group extends BaseRepeatableGroup {
-	private static final long serialVersionUID = 5363295280240190378L;
-	private static final boolean DEFAULT_REPEATABLE = false;
+    private static final long serialVersionUID = 5363295280240190378L;
+    private static final boolean DEFAULT_REPEATABLE = false;
 
-	@Column(name = "is_table", nullable = false)
-	private boolean showAsTable = false;
+    @Column(name = "is_table", nullable = false)
+    private boolean showAsTable = false;
 
-	@Column(name = "number_of_column", nullable = false)
-	private int numberOfColumns = 1;
+    @Column(name = "number_of_column", nullable = false, columnDefinition = "int default 1")
+    private int numberOfColumns = 1;
 
-	public Group() {
-		super();
-		setRepeatable(DEFAULT_REPEATABLE);
-	}
+    public Group() {
+        super();
+        setRepeatable(DEFAULT_REPEATABLE);
+    }
 
-	public Group(String name) throws FieldTooLongException, CharacterNotAllowedException {
-		super(name);
-		setRepeatable(DEFAULT_REPEATABLE);
-	}
+    public Group(String name) throws FieldTooLongException, CharacterNotAllowedException {
+        super(name);
+        setRepeatable(DEFAULT_REPEATABLE);
+    }
 
-	public int exportToJavaCode(StringBuilder sb, int counter) {
-		String idName = "el_" + counter;
+    public int exportToJavaCode(StringBuilder sb, int counter) {
+        String idName = "el_" + counter;
 
-		sb.append("Group ").append(idName).append("  = new Group();").append(System.lineSeparator());
-		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
-		sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
-		if (isRepeatable()) {
-			sb.append(idName).append(".setRepeatable(true);").append(System.lineSeparator());
-		} else {
-			sb.append(idName).append(".setRepeatable(false);").append(System.lineSeparator());
-		}
+        sb.append("Group ").append(idName).append("  = new Group();").append(System.lineSeparator());
+        sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
+        sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
+        if (isRepeatable()) {
+            sb.append(idName).append(".setRepeatable(true);").append(System.lineSeparator());
+        } else {
+            sb.append(idName).append(".setRepeatable(false);").append(System.lineSeparator());
+        }
 
-		int currentCounter = counter;
-		for (TreeObject child : getChildren()) {
-			int tempCounter = currentCounter + 1;
-			if (child instanceof Group) {
-				currentCounter = ((Group) child).exportToJavaCode(sb, currentCounter + 1);
-			}
-			if (child instanceof Question) {
-				currentCounter = ((Question) child).exportToJavaCode(sb, currentCounter + 1);
-			}
-			if (child instanceof Text) {
-				currentCounter = ((Text) child).exportToJavaCode(sb, currentCounter + 1);
-			}
-			if (child instanceof SystemField) {
-				currentCounter = ((SystemField) child).exportToJavaCode(sb, currentCounter + 1);
-			}
-			sb.append("//group").append(System.lineSeparator());
-			sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
-		}
-		return currentCounter;
-	}
+        int currentCounter = counter;
+        for (TreeObject child : getChildren()) {
+            int tempCounter = currentCounter + 1;
+            if (child instanceof Group) {
+                currentCounter = ((Group) child).exportToJavaCode(sb, currentCounter + 1);
+            }
+            if (child instanceof Question) {
+                currentCounter = ((Question) child).exportToJavaCode(sb, currentCounter + 1);
+            }
+            if (child instanceof Text) {
+                currentCounter = ((Text) child).exportToJavaCode(sb, currentCounter + 1);
+            }
+            if (child instanceof SystemField) {
+                currentCounter = ((SystemField) child).exportToJavaCode(sb, currentCounter + 1);
+            }
+            sb.append("//group").append(System.lineSeparator());
+            sb.append(idName).append(".addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
+        }
+        return currentCounter;
+    }
 
-	@Override
-	public boolean isContentEqual(TreeObject treeObject) {
-		if (treeObject instanceof Group) {
-			return super.isContentEqual(treeObject);
-		}
-		return false;
-	}
+    @Override
+    public boolean isContentEqual(TreeObject treeObject) {
+        if (treeObject instanceof Group) {
+            return super.isContentEqual(treeObject);
+        }
+        return false;
+    }
 
-	public boolean isShownAsTable() {
-		return showAsTable;
-	}
+    public boolean isShownAsTable() {
+        return showAsTable;
+    }
 
-	public void setShownAsTable(boolean isTable) {
-		this.showAsTable = isTable;
-	}
+    public void setShownAsTable(boolean isTable) {
+        this.showAsTable = isTable;
+    }
 
-	public int getNumberOfColumns() {
-		return numberOfColumns;
-	}
+    public int getNumberOfColumns() {
+        return numberOfColumns;
+    }
 
-	public void setNumberOfColumns(int numberOfColumns) {
-		this.numberOfColumns = numberOfColumns;
-	}
+    public void setNumberOfColumns(int numberOfColumns) {
+        this.numberOfColumns = Math.max(numberOfColumns, 1);
+    }
 }
