@@ -100,11 +100,6 @@
             <artifactId>webforms-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>webforms-persistence</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <!-- ABCD persistence -->
         <dependency>
             <groupId>com.biit</groupId>
