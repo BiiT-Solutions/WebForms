@@ -51,6 +51,8 @@ public enum WebformsActivity implements IActivity {
 
 	EXPORT_TO_CSV("ExportToCsv"),
 
+	PUBLISH_TO_KM("PublishToKm"),
+
 	;
 
 	private String tag;

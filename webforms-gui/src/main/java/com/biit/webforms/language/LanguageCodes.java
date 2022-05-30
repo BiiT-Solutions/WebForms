@@ -711,6 +711,8 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	EXPORT_XML_SCORECARD_CAPTION("export.xls.scorecard.caption"),
 	EXPORT_XML_SCORECARD_TOOLTIP("export.xls.scorecard.tooltip"),
+	CAPTION_PUBLISH_KM("caption.publish.km"),
+	TOOLTIP_CAPTION_PUBLISH_KM("tooltip.caption.publish.km"),
 	;
 
 	private String value;

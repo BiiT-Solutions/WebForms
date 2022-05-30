@@ -19,15 +19,15 @@ import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.*;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.exceptions.*;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
+import com.biit.webforms.gui.webpages.formmanager.WindowLoginKnowledgeManager;
+import com.biit.webforms.gui.webpages.webservice.call.KnowledgeManagerService;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.dao.IBlockDao;
-import com.biit.webforms.persistence.dao.IFormDao;
-import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
-import com.biit.webforms.persistence.dao.IWebserviceDao;
+import com.biit.webforms.persistence.dao.*;
 import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
 import com.biit.webforms.persistence.entity.*;
 import com.biit.webforms.persistence.entity.condition.Token;
@@ -48,10 +48,14 @@ import com.biit.webforms.webservices.WebserviceValidatedPort;
 import com.google.gson.JsonParseException;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.jws.soap.SOAPBinding;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * User Session data handler.
@@ -61,6 +65,7 @@ public class ApplicationController {
     private IBlockDao blockDao;
     private ISimpleFormViewDao simpleFormDaoWebforms;
     private IWebserviceDao webserviceDao;
+    private IUserTokenDao userTokenDao;
 
     private Form lastEditedForm;
     private Form formInUse;
@@ -79,6 +84,7 @@ public class ApplicationController {
         simpleFormDaoWebforms = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms"));
         webserviceDao = (IWebserviceDao) helper.getBean("webserviceDao");
         webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
+        userTokenDao = (IUserTokenDao) helper.getBean("userTokenDao");
     }
 
     /**
@@ -1834,4 +1840,43 @@ public class ApplicationController {
     public Webservice findWebservice(String webserviceName) throws WebserviceNotFoundException {
         return webserviceDao.findWebservice(webserviceName);
     }
+
+    public void publishToKnowledgeManager(String value) {
+        KnowledgeManagerService kmService = new KnowledgeManagerService();
+        String authToken = userTokenDao.get(UserSession.getUser().getUniqueId()).getKnowledgeManagerAuthToken();
+        int result;
+        if(authToken != null) {
+            result = kmService.publishToKnowledgeManager(value, authToken, UserSession.getUser().getEmailAddress());
+            if(result == 200) {
+                System.out.println("Published");
+            } else if (result == 401) {
+                System.out.println("Unauthorized");
+                WindowLoginKnowledgeManager loginKnowledgeManager = new WindowLoginKnowledgeManager();
+                loginKnowledgeManager.showCentered();
+                loginKnowledgeManager.addAcceptActionListener(new WindowAcceptCancel.AcceptActionListener() {
+                    @Override
+                    public void acceptAction(WindowAcceptCancel window) {
+                        loginKnowledgeManager.close();
+                    }
+                });
+            } else {
+                System.out.println("Knowledege Manager Server is not up");
+            }
+        } else {
+
+        }
+    }
+
+    public int loginToKnowledgeManager(String username, String password) {
+        KnowledgeManagerService kmService = new KnowledgeManagerService();
+        CloseableHttpResponse response = kmService.login(username, password);
+        if(response.getStatusLine().getStatusCode() == 200) {
+            UserToken userToken = new UserToken();
+            userToken.setUserId(UserSession.getUser().getUniqueId());
+            userToken.setKnowledgeManagerAuthToken(response.getFirstHeader("Authorization").getValue());
+            userTokenDao.merge(userToken);
+        }
+        return response.getStatusLine().getStatusCode();
+    }
+
 }
