@@ -711,8 +711,13 @@ public enum LanguageCodes implements ILanguageCode {
 	
 	EXPORT_XML_SCORECARD_CAPTION("export.xls.scorecard.caption"),
 	EXPORT_XML_SCORECARD_TOOLTIP("export.xls.scorecard.tooltip"),
-	CAPTION_PUBLISH_KM("caption.publish.km"),
-	TOOLTIP_CAPTION_PUBLISH_KM("tooltip.caption.publish.km"),
+	CAPTION_PUBLISH_KNOWLEDGE_MANAGER("caption.publish.knowledge.manager"),
+	TOOLTIP_CAPTION_PUBLISH_KNOWLEDGE_MANAGER("tooltip.caption.publish.knowledge.manager"),
+	CAPTION_BAD_LOGIN_KNOWLEDGE_MANAGER("caption.bad.login.knowledge.manager"),
+	CAPTION_ERROR_LOGIN_KNOWLEDGE_MANAGER("caption.error.login.knowledge.manager"),
+	WINDOW_LOGIN_KNOWLEDGE_MANAGER_USERNAME_LABEL_CONTENT("window.login.knowledge.manager.username.label.content"),
+	WINDOW_LOGIN_KNOWLEDGE_MANAGER_PASSWORD_LABEL_CONTENT("window.login.knowledge.manager.password.label.content"),
+	SUCCESS_PUBLISH_KNOWLEDGE_MANAGER("tooltip.caption.publish.knowledge.manager"),
 	;
 
 	private String value;

@@ -25,8 +25,9 @@ import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.exceptions.*;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.gui.webpages.formmanager.WindowLoginKnowledgeManager;
-import com.biit.webforms.gui.webpages.webservice.call.KnowledgeManagerService;
+import com.biit.webforms.webservice.rest.client.KnowledgeManagerService;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.*;
 import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
 import com.biit.webforms.persistence.entity.*;
@@ -47,13 +48,12 @@ import com.biit.webforms.webservices.Webservice;
 import com.biit.webforms.webservices.WebserviceValidatedPort;
 import com.google.gson.JsonParseException;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.jws.soap.SOAPBinding;
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -66,7 +66,7 @@ public class ApplicationController {
     private ISimpleFormViewDao simpleFormDaoWebforms;
     private IWebserviceDao webserviceDao;
     private IUserTokenDao userTokenDao;
-
+    private KnowledgeManagerService knowledgeManagerService;
     private Form lastEditedForm;
     private Form formInUse;
     private CompleteFormView completeFormView;
@@ -85,6 +85,7 @@ public class ApplicationController {
         webserviceDao = (IWebserviceDao) helper.getBean("webserviceDao");
         webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
         userTokenDao = (IUserTokenDao) helper.getBean("userTokenDao");
+        knowledgeManagerService = (KnowledgeManagerService) helper.getBean("knowledgeManagerService");
     }
 
     /**
@@ -1842,41 +1843,34 @@ public class ApplicationController {
     }
 
     public void publishToKnowledgeManager(String value) {
-        KnowledgeManagerService kmService = new KnowledgeManagerService();
         String authToken = userTokenDao.get(UserSession.getUser().getUniqueId()).getKnowledgeManagerAuthToken();
-        int result;
         if(authToken != null) {
-            result = kmService.publishToKnowledgeManager(value, authToken, UserSession.getUser().getEmailAddress());
-            if(result == 200) {
-                System.out.println("Published");
+            int result = knowledgeManagerService.publishToKnowledgeManager(value, authToken, UserSession.getUser().getEmailAddress());
+            if(result >= 200 && result <= 300) {
+                WebformsUiLogger.info(ApplicationController.class.toString(),
+                        LanguageCodes.SUCCESS_PUBLISH_KNOWLEDGE_MANAGER.translation());
             } else if (result == 401) {
-                System.out.println("Unauthorized");
-                WindowLoginKnowledgeManager loginKnowledgeManager = new WindowLoginKnowledgeManager();
-                loginKnowledgeManager.showCentered();
-                loginKnowledgeManager.addAcceptActionListener(new WindowAcceptCancel.AcceptActionListener() {
-                    @Override
-                    public void acceptAction(WindowAcceptCancel window) {
-                        loginKnowledgeManager.close();
-                    }
-                });
+                WebformsLogger.debug(ApplicationController.class.toString(),
+                        "Unauthorized token");
+                openLoginKnowledgeManagerWindow();
             } else {
-                System.out.println("Knowledege Manager Server is not up");
+                WebformsLogger.errorMessage(ApplicationController.class.toString(),
+                        "Server Error");
             }
         } else {
-
+            openLoginKnowledgeManagerWindow();
         }
     }
 
-    public int loginToKnowledgeManager(String username, String password) {
-        KnowledgeManagerService kmService = new KnowledgeManagerService();
-        CloseableHttpResponse response = kmService.login(username, password);
-        if(response.getStatusLine().getStatusCode() == 200) {
-            UserToken userToken = new UserToken();
-            userToken.setUserId(UserSession.getUser().getUniqueId());
-            userToken.setKnowledgeManagerAuthToken(response.getFirstHeader("Authorization").getValue());
-            userTokenDao.merge(userToken);
-        }
-        return response.getStatusLine().getStatusCode();
+    private void openLoginKnowledgeManagerWindow() {
+        WindowLoginKnowledgeManager loginKnowledgeManager = new WindowLoginKnowledgeManager();
+        loginKnowledgeManager.showCentered();
+        loginKnowledgeManager.addAcceptActionListener(new WindowAcceptCancel.AcceptActionListener() {
+            @Override
+            public void acceptAction(WindowAcceptCancel window) {
+                loginKnowledgeManager.close();
+            }
+        });
     }
 
 }

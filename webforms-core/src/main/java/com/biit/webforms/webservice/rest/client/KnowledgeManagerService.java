@@ -1,52 +1,56 @@
-package com.biit.webforms.gui.webpages.webservice.call;
+package com.biit.webforms.webservice.rest.client;
 
-import com.biit.usermanager.entity.IUser;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.persistence.dao.IUserTokenDao;
+import com.biit.webforms.persistence.entity.UserToken;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+@Service
 public class KnowledgeManagerService {
 
     @Autowired
-    private Environment environment;
+    private IUserTokenDao userTokenDao;
 
-    private final String LOGIN_URL = "/api/public/login";
-    private final String PUBLISH_URL = "/forms/addForm";
 
-    public KnowledgeManagerService() {
 
-    }
-    public CloseableHttpResponse login(String username, String password) {
-        String baseUrl = environment.getProperty("knowledge-manager.url");
-        System.out.println(baseUrl);
+    public int login(String username, String password, Long userId) {
+        String url = WebformsConfigurationReader.getInstance().getKnowledgeManagerServiceLoginUrl();
         String jsonInputString = "{\"username\":" + "\"" + username + "\"" + ",\"password\":" + "\"" + password + "\"" + "}";
         try {
             CloseableHttpClient client = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost(baseUrl + LOGIN_URL);
+            HttpPost httpPost = new HttpPost(url);
 
             httpPost.setEntity(new StringEntity(jsonInputString));
             httpPost.setHeader("Content-Type", "application/json");
-            return client.execute(httpPost);
+            CloseableHttpResponse response = client.execute(httpPost);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                UserToken userToken = new UserToken();
+                userToken.setUserId(userId);
+                userToken.setKnowledgeManagerAuthToken(response.getFirstHeader("Authorization").getValue());
+                userTokenDao.merge(userToken);
+            }
+            return response.getStatusLine().getStatusCode();
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return 500;
         }
     }
 
     public int publishToKnowledgeManager(String value, String authToken, String email) {
-        String baseUrl = environment.getProperty("knowledge-manager.url");
-        System.out.println(baseUrl);
+        String url = WebformsConfigurationReader.getInstance().getKnowledgeManagerServicePublishUrl();
         String jsonInputString = "{\"value\":" + value + ",\"email\":" + email + "}";
         try {
             CloseableHttpClient client = HttpClientBuilder.create().build();
-            HttpPost httpPost = new HttpPost(baseUrl + PUBLISH_URL);
+            HttpPost httpPost = new HttpPost(url);
 
             httpPost.setEntity(new StringEntity(jsonInputString));
             httpPost.setHeader("Content-Type", "application/json");
@@ -54,7 +58,7 @@ public class KnowledgeManagerService {
             CloseableHttpResponse response = client.execute(httpPost);
             return response.getStatusLine().getStatusCode();
         } catch (IOException e) {
-            return 0;
+            return 500;
         }
     }
 }

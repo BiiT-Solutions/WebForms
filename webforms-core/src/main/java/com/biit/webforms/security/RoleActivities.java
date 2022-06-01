@@ -79,7 +79,7 @@ public class RoleActivities implements IRoleActivities {
 
 	WebformsActivity.EXPORT_TO_CSV,
 
-	WebformsActivity.PUBLISH_TO_KM
+	WebformsActivity.PUBLISH_TO_KNOWLEDGE_MANAGER
 
 	};
 

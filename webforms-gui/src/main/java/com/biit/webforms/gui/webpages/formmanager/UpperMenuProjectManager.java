@@ -60,7 +60,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 			enableExportsScorecardXls = getWebformsSecurityService()
 					.isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.EXPORT_SCORECARD_XLS);
 			enablePublishToKnowledgeManager = getWebformsSecurityService()
-					.isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.PUBLISH_TO_KM);
+					.isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.PUBLISH_TO_KNOWLEDGE_MANAGER);
 
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
@@ -132,8 +132,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		compareContent = new IconButton(LanguageCodes.CAPTION_COMPARE_CONTENT, ThemeIcons.COMPARE_CONTENT,
 				LanguageCodes.TOOLTIP_COMPARE_CONTENT, IconSize.BIG);
 
-		publishToKnowledgeManager = new IconButton(LanguageCodes.CAPTION_PUBLISH_KM, ThemeIcons.COMPARE_CONTENT,
-				LanguageCodes.TOOLTIP_CAPTION_PUBLISH_KM);
+		publishToKnowledgeManager = new IconButton(LanguageCodes.CAPTION_PUBLISH_KNOWLEDGE_MANAGER, ThemeIcons.COMPARE_CONTENT,
+				LanguageCodes.TOOLTIP_CAPTION_PUBLISH_KNOWLEDGE_MANAGER);
 		publishToKnowledgeManager.setEnabled(enablePublishToKnowledgeManager);
 
 		submenuNew = addSubMenu(ThemeIcons.NEW, LanguageCodes.CAPTION_NEW, LanguageCodes.TOOLTIP_NEW, newForm,

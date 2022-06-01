@@ -359,7 +359,7 @@
 
     create table user_tokens (
        userId bigint not null,
-        km_auth_token varchar(255),
+        knowledge_manager_auth_token varchar(255),
         primary key (userId)
     ) engine=InnoDB;
 

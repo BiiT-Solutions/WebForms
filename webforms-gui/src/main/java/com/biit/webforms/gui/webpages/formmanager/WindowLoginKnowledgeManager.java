@@ -1,32 +1,33 @@
 package com.biit.webforms.gui.webpages.formmanager;
 
-import com.biit.webforms.gui.ApplicationUi;
+import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
-import com.biit.webforms.security.IWebformsSecurityService;
+import com.biit.webforms.webservice.rest.client.KnowledgeManagerService;
+import com.biit.webforms.language.LanguageCodes;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class WindowLoginKnowledgeManager extends WindowAcceptCancel {
 
     private static final String WINDOW_WIDTH = "400px";
     private static final String WINDOW_HEIGHT = "300px";
-    private static final String USERNAME_LABEL_CONTENT = "Username:";
-    private static final String PASSWORD_LABEL_CONTENT = "Password:";
-
-    private IWebformsSecurityService webformsSecurityService;
-
+    private static final String USERNAME_LABEL_CONTENT = LanguageCodes.WINDOW_LOGIN_KNOWLEDGE_MANAGER_USERNAME_LABEL_CONTENT.translation();
+    private static final String PASSWORD_LABEL_CONTENT = LanguageCodes.WINDOW_LOGIN_KNOWLEDGE_MANAGER_PASSWORD_LABEL_CONTENT.translation();
     private TextField usernameField;
     private PasswordField passwordField;
     private Label usernameLabel;
     private Label passwordLabel;
 
+    private KnowledgeManagerService knowledgeManagerService;
+
     public WindowLoginKnowledgeManager() {
-        SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-        webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
         configure();
         setContent(generate());
+        SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+        knowledgeManagerService = (KnowledgeManagerService) helper.getBean("knowledgeManagerService");
     }
 
     private void configure() {
@@ -65,14 +66,14 @@ public class WindowLoginKnowledgeManager extends WindowAcceptCancel {
 
     @Override
     protected boolean acceptAction() {
-        int result = ApplicationUi.getController().loginToKnowledgeManager(usernameField.getValue(), passwordField.getValue());
+        int result = knowledgeManagerService.login(usernameField.getValue(), passwordField.getValue(), UserSession.getUser().getUniqueId());
         if (result == 200) {
             return true;
         } else {
             if(result == 401) {
-                MessageManager.showError("Bad username or password");
+                MessageManager.showError(LanguageCodes.CAPTION_BAD_LOGIN_KNOWLEDGE_MANAGER);
             } else {
-                MessageManager.showError("Some rare error ocurred");
+                MessageManager.showError(LanguageCodes.CAPTION_ERROR_LOGIN_KNOWLEDGE_MANAGER);
             }
         }
         return false;

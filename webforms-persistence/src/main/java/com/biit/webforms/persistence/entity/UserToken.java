@@ -14,7 +14,7 @@ public class UserToken {
     @Id
     Long userId;
 
-    @Column(name = "km_auth_token")
+    @Column(name = "knowledge_manager_auth_token")
     String knowledgeManagerAuthToken;
 
     public Long getUserId() {
