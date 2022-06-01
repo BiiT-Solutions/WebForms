@@ -22,33 +22,27 @@ public class KnowledgeManagerService {
 
 
 
-    public int login(String username, String password, Long userId) {
+    public CloseableHttpResponse login(String username, String password, Long userId) throws IOException{
         String url = WebformsConfigurationReader.getInstance().getKnowledgeManagerServiceLoginUrl();
         String jsonInputString = "{\"username\":" + "\"" + username + "\"" + ",\"password\":" + "\"" + password + "\"" + "}";
-        try {
             CloseableHttpClient client = HttpClientBuilder.create().build();
             HttpPost httpPost = new HttpPost(url);
 
             httpPost.setEntity(new StringEntity(jsonInputString));
             httpPost.setHeader("Content-Type", "application/json");
             CloseableHttpResponse response = client.execute(httpPost);
-            if (response.getStatusLine().getStatusCode() == 200) {
+            if (response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() <= 300) {
                 UserToken userToken = new UserToken();
                 userToken.setUserId(userId);
                 userToken.setKnowledgeManagerAuthToken(response.getFirstHeader("Authorization").getValue());
                 userTokenDao.merge(userToken);
             }
-            return response.getStatusLine().getStatusCode();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 500;
-        }
+            return response;
     }
 
-    public int publishToKnowledgeManager(String value, String authToken, String email) {
+    public CloseableHttpResponse publishToKnowledgeManager(String value, String authToken, String email) throws IOException{
         String url = WebformsConfigurationReader.getInstance().getKnowledgeManagerServicePublishUrl();
         String jsonInputString = "{\"value\":" + value + ",\"email\":" + email + "}";
-        try {
             CloseableHttpClient client = HttpClientBuilder.create().build();
             HttpPost httpPost = new HttpPost(url);
 
@@ -56,9 +50,6 @@ public class KnowledgeManagerService {
             httpPost.setHeader("Content-Type", "application/json");
             httpPost.setHeader("Authorization", "Bearer " + authToken);
             CloseableHttpResponse response = client.execute(httpPost);
-            return response.getStatusLine().getStatusCode();
-        } catch (IOException e) {
-            return 500;
-        }
+            return response;
     }
 }

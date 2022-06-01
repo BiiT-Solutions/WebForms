@@ -51,7 +51,7 @@ public enum WebformsActivity implements IActivity {
 
 	EXPORT_TO_CSV("ExportToCsv"),
 
-	PUBLISH_TO_KNOWLEDGE_MANAGER("PublishToKm"),
+	PUBLISH_TO_KNOWLEDGE_MANAGER("PublishToKnowledgeManager"),
 
 	;
 

@@ -50,10 +50,12 @@ import com.google.gson.JsonParseException;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -1845,17 +1847,22 @@ public class ApplicationController {
     public void publishToKnowledgeManager(String value) {
         String authToken = userTokenDao.get(UserSession.getUser().getUniqueId()).getKnowledgeManagerAuthToken();
         if(authToken != null) {
-            int result = knowledgeManagerService.publishToKnowledgeManager(value, authToken, UserSession.getUser().getEmailAddress());
-            if(result >= 200 && result <= 300) {
-                WebformsUiLogger.info(ApplicationController.class.toString(),
-                        LanguageCodes.SUCCESS_PUBLISH_KNOWLEDGE_MANAGER.translation());
-            } else if (result == 401) {
-                WebformsLogger.debug(ApplicationController.class.toString(),
-                        "Unauthorized token");
-                openLoginKnowledgeManagerWindow();
-            } else {
-                WebformsLogger.errorMessage(ApplicationController.class.toString(),
-                        "Server Error");
+            try {
+                CloseableHttpResponse response = knowledgeManagerService.publishToKnowledgeManager(value, authToken,
+                        UserSession.getUser().getEmailAddress());
+                if (response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() <= 300) {
+                    WebformsUiLogger.info(ApplicationController.class.toString(),
+                            LanguageCodes.SUCCESS_PUBLISH_KNOWLEDGE_MANAGER.translation());
+                } else if (response.getStatusLine().getStatusCode() >= 400 && response.getStatusLine().getStatusCode() <= 404) {
+                    WebformsLogger.debug(ApplicationController.class.toString(),
+                            "Unauthorized token");
+                    openLoginKnowledgeManagerWindow();
+                } else {
+                    WebformsLogger.errorMessage(ApplicationController.class.toString(),
+                            "Knowledge Manager Service Internal Error");
+                }
+            } catch (IOException e) {
+                WebformsLogger.errorMessage(ApplicationController.class.toString(), e.toString());
             }
         } else {
             openLoginKnowledgeManagerWindow();
