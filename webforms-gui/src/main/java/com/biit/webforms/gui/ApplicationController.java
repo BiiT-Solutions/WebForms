@@ -19,15 +19,16 @@ import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
 import com.biit.webforms.enumerations.*;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.exceptions.*;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
+import com.biit.webforms.gui.webpages.formmanager.WindowLoginKnowledgeManager;
+import com.biit.webforms.webservice.rest.client.KnowledgeManagerService;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.dao.IBlockDao;
-import com.biit.webforms.persistence.dao.IFormDao;
-import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
-import com.biit.webforms.persistence.dao.IWebserviceDao;
+import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.dao.*;
 import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
 import com.biit.webforms.persistence.entity.*;
 import com.biit.webforms.persistence.entity.condition.Token;
@@ -47,11 +48,16 @@ import com.biit.webforms.webservices.Webservice;
 import com.biit.webforms.webservices.WebserviceValidatedPort;
 import com.google.gson.JsonParseException;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 /**
  * User Session data handler.
@@ -61,7 +67,8 @@ public class ApplicationController {
     private IBlockDao blockDao;
     private ISimpleFormViewDao simpleFormDaoWebforms;
     private IWebserviceDao webserviceDao;
-
+    private IUserTokenDao userTokenDao;
+    private KnowledgeManagerService knowledgeManagerService;
     private Form lastEditedForm;
     private Form formInUse;
     private CompleteFormView completeFormView;
@@ -79,6 +86,8 @@ public class ApplicationController {
         simpleFormDaoWebforms = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms"));
         webserviceDao = (IWebserviceDao) helper.getBean("webserviceDao");
         webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
+        userTokenDao = (IUserTokenDao) helper.getBean("userTokenDao");
+        knowledgeManagerService = (KnowledgeManagerService) helper.getBean("knowledgeManagerService");
     }
 
     /**
@@ -1834,4 +1843,41 @@ public class ApplicationController {
     public Webservice findWebservice(String webserviceName) throws WebserviceNotFoundException {
         return webserviceDao.findWebservice(webserviceName);
     }
+
+    public void publishToKnowledgeManager(String value) {
+        String authToken = userTokenDao.get(UserSession.getUser().getUniqueId()).getKnowledgeManagerAuthToken();
+        if(authToken != null) {
+            try {
+                CloseableHttpResponse response = knowledgeManagerService.publishToKnowledgeManager(value, authToken,
+                        UserSession.getUser().getEmailAddress());
+                if (response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() <= 300) {
+                    WebformsUiLogger.info(ApplicationController.class.toString(),
+                            LanguageCodes.SUCCESS_PUBLISH_KNOWLEDGE_MANAGER.translation());
+                } else if (response.getStatusLine().getStatusCode() >= 400 && response.getStatusLine().getStatusCode() <= 404) {
+                    WebformsLogger.debug(ApplicationController.class.toString(),
+                            "Unauthorized token");
+                    openLoginKnowledgeManagerWindow();
+                } else {
+                    WebformsLogger.errorMessage(ApplicationController.class.toString(),
+                            "Knowledge Manager Service Internal Error");
+                }
+            } catch (IOException e) {
+                WebformsLogger.errorMessage(ApplicationController.class.toString(), e.toString());
+            }
+        } else {
+            openLoginKnowledgeManagerWindow();
+        }
+    }
+
+    private void openLoginKnowledgeManagerWindow() {
+        WindowLoginKnowledgeManager loginKnowledgeManager = new WindowLoginKnowledgeManager();
+        loginKnowledgeManager.showCentered();
+        loginKnowledgeManager.addAcceptActionListener(new WindowAcceptCancel.AcceptActionListener() {
+            @Override
+            public void acceptAction(WindowAcceptCancel window) {
+                loginKnowledgeManager.close();
+            }
+        });
+    }
+
 }

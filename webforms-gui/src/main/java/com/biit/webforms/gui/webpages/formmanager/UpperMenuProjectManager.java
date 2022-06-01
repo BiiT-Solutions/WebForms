@@ -17,6 +17,7 @@ import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickListener;
 
+import javax.swing.*;
 import java.io.IOException;
 
 /**
@@ -32,6 +33,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private final IconButton exportXForms, previewXForms, publishXForms, downloadXForms, downloadXFormsMultiple;
 	private final IconButton export, exportScorecardXls, exportPdf, exportFlowPdf, exportXsd, exportJson, exportAbcd,
 			exportXml, exportBaseFormMetadataJson;
+
+	private final IconButton publishToKnowledgeManager;
+
 	private final IconButton impactAnalysis, compareContent;
 	private BrowserWindowOpener opener;
 	// Neede due to the existence of a second 'Flow' button at the same time in
@@ -45,6 +49,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		boolean enableImportJson = false;
 		boolean enableExportsAbcd = false;
 		boolean enableExportsScorecardXls = false;
+		boolean enablePublishToKnowledgeManager = false;
 		try {
 			enableExportJson = getWebformsSecurityService().isUserAuthorizedInAnyOrganization(UserSession.getUser(),
 					WebformsActivity.EXPORT_JSON);
@@ -54,6 +59,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 					WebformsActivity.EXPORT_ABCD);
 			enableExportsScorecardXls = getWebformsSecurityService()
 					.isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.EXPORT_SCORECARD_XLS);
+			enablePublishToKnowledgeManager = getWebformsSecurityService()
+					.isUserAuthorizedInAnyOrganization(UserSession.getUser(), WebformsActivity.PUBLISH_TO_KNOWLEDGE_MANAGER);
+
 		} catch (IOException | AuthenticationRequired e) {
 			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
 		}
@@ -124,6 +132,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		compareContent = new IconButton(LanguageCodes.CAPTION_COMPARE_CONTENT, ThemeIcons.COMPARE_CONTENT,
 				LanguageCodes.TOOLTIP_COMPARE_CONTENT, IconSize.BIG);
 
+		publishToKnowledgeManager = new IconButton(LanguageCodes.CAPTION_PUBLISH_KNOWLEDGE_MANAGER, ThemeIcons.COMPARE_CONTENT,
+				LanguageCodes.TOOLTIP_CAPTION_PUBLISH_KNOWLEDGE_MANAGER);
+		publishToKnowledgeManager.setEnabled(enablePublishToKnowledgeManager);
+
 		submenuNew = addSubMenu(ThemeIcons.NEW, LanguageCodes.CAPTION_NEW, LanguageCodes.TOOLTIP_NEW, newForm,
 				webformReference, newFormVersion, importAbcdForm, importJsonForm);
 
@@ -142,6 +154,7 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 		addIconButton(impactAnalysis);
 		addIconButton(compareContent);
+		addIconButton(publishToKnowledgeManager);
 	}
 
 	public void addNewFormListener(ClickListener listener) {
@@ -222,6 +235,10 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 		removeForm.addClickListener(listener);
 	}
 
+	public void addPublishToKmListener(ClickListener listener) {
+		publishToKnowledgeManager.addClickListener(listener);
+	}
+
 	public IconButton getNewForm() {
 		return newForm;
 	}
@@ -292,5 +309,9 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 	public IconButton getExportScorecardXls() {
 		return exportScorecardXls;
+	}
+
+	public IconButton getPublishToKnowledgeManager() {
+		return publishToKnowledgeManager;
 	}
 }

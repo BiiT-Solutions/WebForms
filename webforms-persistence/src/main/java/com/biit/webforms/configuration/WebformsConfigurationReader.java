@@ -104,6 +104,13 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION = "form";
 	private static final String DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION = "form";
 
+
+	private static final String KNOWLEDGE_MANAGER_SERVICE_PUBLISH_URL = "knowledge-manager.publish.url";
+	private static final String KNOWLEDGE_MANAGER_SERVICE_LOGIN_URL = "knowledge-manager.login.url";
+
+	private static final String DEFAULT_KNOWLEDGE_MANAGER_SERVICE_PUBLISH_URL = "http://localhost:8085/knowledge-manager/forms/add-form";
+	private static final String DEFAULT_KNOWLEDGE_MANAGER_SERVICE_LOGIN_URL = "http://localhost:8085/knowledge-manager/api/public/login";
+
 	private static WebformsConfigurationReader instance;
 
 	private WebformsConfigurationReader() {
@@ -153,6 +160,8 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		addProperty(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION, DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
 		addProperty(FORMRUNNER_URL, DEFAULT_FORMRUNNERJS_REST_SERVICE);
 		addProperty(FORMRUNNER_REST_URL, DEFAULT_FORMRUNNERJS_REST_SERVICE);
+		addProperty(KNOWLEDGE_MANAGER_SERVICE_LOGIN_URL, DEFAULT_KNOWLEDGE_MANAGER_SERVICE_LOGIN_URL);
+		addProperty(KNOWLEDGE_MANAGER_SERVICE_PUBLISH_URL, DEFAULT_KNOWLEDGE_MANAGER_SERVICE_PUBLISH_URL);
 
 		addPropertiesSource(new PropertiesSourceFile(CONFIG_FILE));
 		addPropertiesSource(new SystemVariablePropertiesSourceFile(WEBFORMS_SYSTEM_VARIABLE_CONFIG, CONFIG_FILE));
@@ -350,6 +359,14 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 
 	public boolean isImagesEnabled() {
 		return Boolean.parseBoolean(getPropertyLogException(ID_IMAGES_ENABLED));
+	}
+
+	public String getKnowledgeManagerServiceLoginUrl() {
+		return getPropertyLogException(KNOWLEDGE_MANAGER_SERVICE_LOGIN_URL);
+	}
+
+	public String getKnowledgeManagerServicePublishUrl() {
+		return getPropertyLogException(KNOWLEDGE_MANAGER_SERVICE_PUBLISH_URL);
 	}
 
 }

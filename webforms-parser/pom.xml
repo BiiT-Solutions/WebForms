@@ -16,7 +16,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>webforms-persistence</artifactId>
             <version>${project.version}</version>
-            <type>jar</type>
         </dependency>
         <!-- Liferay Authentication -->
         <dependency>
@@ -28,7 +27,6 @@
             <groupId>com.biit</groupId>
             <artifactId>abcd-persistence</artifactId>
             <version>${abcd.version}</version>
-            <type>jar</type>
         </dependency>
         <!-- For SpringContextHelper -->
         <dependency>

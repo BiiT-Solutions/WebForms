@@ -294,7 +294,7 @@
         sort_sequence bigint not null,
         parent bigint,
         repeatable bit not null,
-        number_of_column integer not null,
+        number_of_column int default 1 not null,
         is_table bit not null,
         primary key (id)
     ) engine=InnoDB;
@@ -355,6 +355,12 @@
         parent bigint,
         description varchar(10000),
         primary key (id)
+    ) engine=InnoDB;
+
+    create table user_tokens (
+       userId bigint not null,
+        knowledge_manager_auth_token varchar(255),
+        primary key (userId)
     ) engine=InnoDB;
 
     create table webservice_call (
