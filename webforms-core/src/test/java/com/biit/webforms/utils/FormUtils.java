@@ -1,9 +1,5 @@
 package com.biit.webforms.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
@@ -11,37 +7,22 @@ import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.webforms.enumerations.AnswerFormat;
-import com.biit.webforms.enumerations.AnswerSubformat;
-import com.biit.webforms.enumerations.AnswerType;
-import com.biit.webforms.enumerations.FlowType;
-import com.biit.webforms.enumerations.TokenTypes;
-import com.biit.webforms.persistence.entity.Answer;
-import com.biit.webforms.persistence.entity.Block;
-import com.biit.webforms.persistence.entity.BlockReference;
-import com.biit.webforms.persistence.entity.Category;
-import com.biit.webforms.persistence.entity.Flow;
-import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.Group;
-import com.biit.webforms.persistence.entity.Question;
-import com.biit.webforms.persistence.entity.SystemField;
-import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.enumerations.*;
+import com.biit.webforms.persistence.entity.*;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
-import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
-import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
-import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
-import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+import com.biit.webforms.persistence.entity.exceptions.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class FormUtils {
 
 	private static final Long ORGANIZATION_ID = 0L;
-	private static final String FORM_COMPLETE_LABEL = "complete form test";
+	public static final String FORM_COMPLETE_LABEL = "complete form test";
 	public static final String BLOCK_1 = "block1";
 	public static final String CATEGORY_1 = "category1";
 	public static final String CATEGORY_2 = "category2";

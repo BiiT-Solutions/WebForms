@@ -1,48 +1,7 @@
 package com.biit.webforms.persistence.entity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
-
-import com.biit.form.entity.BaseCategory;
-import com.biit.form.entity.BaseForm;
-import com.biit.form.entity.BaseFormMetadata;
-import com.biit.form.entity.BaseGroup;
-import com.biit.form.entity.BaseQuestion;
-import com.biit.form.entity.IBaseFormView;
-import com.biit.form.entity.TreeObject;
-import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.form.exceptions.ChildrenNotFoundException;
-import com.biit.form.exceptions.ElementIsReadOnly;
-import com.biit.form.exceptions.NotValidChildException;
-import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.form.entity.*;
+import com.biit.form.exceptions.*;
 import com.biit.form.json.serialization.hibernate.HibernateProxyTypeAdapter;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
@@ -52,47 +11,21 @@ import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.persistence.entity.condition.TokenBetween;
-import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
-import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
-import com.biit.webforms.persistence.entity.condition.TokenEmpty;
-import com.biit.webforms.persistence.entity.condition.TokenIn;
-import com.biit.webforms.persistence.entity.condition.TokenInValue;
+import com.biit.webforms.persistence.entity.condition.*;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToFormException;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
-import com.biit.webforms.serialization.AnswerSerializer;
-import com.biit.webforms.serialization.AttachedFilesSerializer;
-import com.biit.webforms.serialization.CategorySerializer;
-import com.biit.webforms.serialization.DynamicAnswerSerializer;
-import com.biit.webforms.serialization.FlowSerializer;
-import com.biit.webforms.serialization.FormDeserializer;
-import com.biit.webforms.serialization.FormSerializer;
-import com.biit.webforms.serialization.GroupSerializer;
-import com.biit.webforms.serialization.QuestionSerializer;
-import com.biit.webforms.serialization.SystemFieldSerializer;
-import com.biit.webforms.serialization.TextSerializer;
-import com.biit.webforms.serialization.TokenBetweenSerializer;
-import com.biit.webforms.serialization.TokenComparationAnswerSerializer;
-import com.biit.webforms.serialization.TokenComparationValueSerializer;
-import com.biit.webforms.serialization.TokenEmptySerializer;
-import com.biit.webforms.serialization.TokenInSerializer;
-import com.biit.webforms.serialization.TokenInValueSerializer;
-import com.biit.webforms.serialization.TokenSerializer;
-import com.biit.webforms.serialization.TreeObjectImageDeserializer;
-import com.biit.webforms.serialization.TreeObjectImageSerializer;
-import com.biit.webforms.serialization.WebserviceCallInputLinkErrorsSerializer;
-import com.biit.webforms.serialization.WebserviceCallInputLinkSerializer;
-import com.biit.webforms.serialization.WebserviceCallOutputLinkSerializer;
-import com.biit.webforms.serialization.WebserviceCallSerializer;
+import com.biit.webforms.serialization.*;
 import com.biit.webforms.webservices.Webservice;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Table(name = "tree_forms", uniqueConstraints = {@UniqueConstraint(columnNames = {"label", "version", "organization_id"})})
@@ -152,7 +85,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     public Form() {
         super();
         status = FormWorkStatus.DESIGN;
-        description = new String();
+        description = "";
         rules = new HashSet<>();
         linkedFormVersions = new HashSet<>();
         webserviceCalls = new HashSet<>();
@@ -163,7 +96,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     public Form(String label, IUser<Long> user, Long organizationId) throws FieldTooLongException, CharacterNotAllowedException {
         super(label);
         status = FormWorkStatus.DESIGN;
-        description = new String();
+        description = "";
         rules = new HashSet<>();
         webserviceCalls = new HashSet<>();
         linkedFormVersions = new HashSet<>();

@@ -1,8 +1,16 @@
 package com.biit.webforms.persistence;
 
-import javax.transaction.Transactional;
-
-
+import com.biit.form.entity.TreeObject;
+import com.biit.form.exceptions.*;
+import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.persistence.dao.IBlockDao;
+import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.entity.Block;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
+import com.biit.webforms.persistence.entity.exceptions.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -12,29 +20,7 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.biit.form.entity.TreeObject;
-import com.biit.form.exceptions.CharacterNotAllowedException;
-import com.biit.form.exceptions.ChildrenNotFoundException;
-import com.biit.form.exceptions.ElementIsReadOnly;
-import com.biit.form.exceptions.InvalidAnswerFormatException;
-import com.biit.form.exceptions.NotValidChildException;
-import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
-import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
-import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
-import com.biit.persistence.entity.exceptions.FieldTooLongException;
-import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
-import com.biit.webforms.persistence.dao.IBlockDao;
-import com.biit.webforms.persistence.dao.IFormDao;
-import com.biit.webforms.persistence.entity.Block;
-import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
-import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
-import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
-import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
-import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+import javax.transaction.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContextTest.xml"})
@@ -55,7 +41,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
     @Transactional
     public void createBuildingBlock() throws NotValidChildException, FieldTooLongException,
             CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-            UnexpectedDatabaseException, ElementIsReadOnly, ElementCannotBePersistedException, ChildrenNotFoundException {
+            ElementIsReadOnly {
         block = FormUtils.createBlock();
         Assert.assertNotNull(block);
         blockDao.makePersistent(block);
@@ -67,10 +53,10 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
     @Transactional
     public void testPersistCompleteForm() throws FieldTooLongException, NotValidChildException,
             CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
-            UnexpectedDatabaseException, ChildrenNotFoundException, BadFlowContentException,
+            ChildrenNotFoundException, BadFlowContentException,
             FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
             FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
-            ElementCannotBeRemovedException, ElementCannotBePersistedException {
+            ElementCannotBeRemovedException {
         int prevForms = formDao.getRowCount();
         Form form = FormUtils.createCompleteForm(block);
         formDao.makePersistent(form);
@@ -84,6 +70,12 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
         checkEquals(form, dbForm);
         Assert.assertTrue(form.isContentEqual(dbForm));
 
+        //Check search by name and version.
+        Assert.assertNotNull(formDao.get(FormUtils.FORM_COMPLETE_LABEL, 1, 0));
+        Assert.assertNull(formDao.get("Incorrect Label", 1, 0));
+        Assert.assertNull(formDao.get(FormUtils.FORM_COMPLETE_LABEL, 2, 0));
+        Assert.assertNull(formDao.get(FormUtils.FORM_COMPLETE_LABEL, 1, 1));
+
         formDao.makeTransient(dbForm);
         Assert.assertEquals(prevForms, formDao.getRowCount());
     }
@@ -92,11 +84,10 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
     @Rollback(value = true)
     @Transactional
     public void testNewVersion() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
-            InvalidAnswerFormatException, InvalidAnswerSubformatException, UnexpectedDatabaseException,
+            InvalidAnswerFormatException, InvalidAnswerSubformatException,
             ChildrenNotFoundException, BadFlowContentException, FlowWithoutSourceException,
             FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException,
-            NotValidStorableObjectException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
-            ElementCannotBePersistedException, ElementCannotBeRemovedException {
+            NotValidStorableObjectException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException {
         Form form = FormUtils.createCompleteForm(block);
         Form formV2 = form.createNewVersion(USER_ID);
 
