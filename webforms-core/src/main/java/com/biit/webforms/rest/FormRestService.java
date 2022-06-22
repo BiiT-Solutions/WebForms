@@ -2,6 +2,7 @@ package com.biit.webforms.rest;
 
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
 import com.biit.webforms.persistence.entity.Form;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -42,6 +43,10 @@ public class FormRestService {
         } catch (JsonSyntaxException ex) {
             WebformsLogger.errorMessage(this.getClass().getName(), ex);
             return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\":\"Json syntax error\"}").build();
+        } catch (MultiplesFormsFoundException e) {
+            WebformsLogger.errorMessage(this.getClass().getName(), e);
+            return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\":\"Multiples forms match the search criteria. " +
+                    "Please define some extra parameters\"}").build();
         }
 
 
@@ -56,8 +61,14 @@ public class FormRestService {
 
     static class FormDescription {
         private String formName;
-        private int version;
-        private int organizationId;
+        private Integer version;
+        private Long organizationId;
+
+        public FormDescription(String formName, Integer version, Long organizationId) {
+            this.formName = formName;
+            this.version = version;
+            this.organizationId = organizationId;
+        }
 
         public String getFormName() {
             return formName;
@@ -67,19 +78,19 @@ public class FormRestService {
             this.formName = formName;
         }
 
-        public int getVersion() {
+        public Integer getVersion() {
             return version;
         }
 
-        public void setVersion(int version) {
+        public void setVersion(Integer version) {
             this.version = version;
         }
 
-        public int getOrganizationId() {
+        public Long getOrganizationId() {
             return organizationId;
         }
 
-        public void setOrganizationId(int organizationId) {
+        public void setOrganizationId(Long organizationId) {
             this.organizationId = organizationId;
         }
     }

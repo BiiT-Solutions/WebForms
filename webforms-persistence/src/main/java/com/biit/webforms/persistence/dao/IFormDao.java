@@ -1,6 +1,7 @@
 package com.biit.webforms.persistence.dao;
 
 import com.biit.persistence.dao.IJpaGenericDao;
+import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
 import com.biit.webforms.persistence.entity.Form;
 
 public interface IFormDao extends IJpaGenericDao<Form, Long> {
@@ -9,7 +10,7 @@ public interface IFormDao extends IJpaGenericDao<Form, Long> {
 
     boolean exists(String label, int version, long organizationId, long skipForm);
 
-    Form get(String label, int version, long organizationId);
+    Form get(String label, Integer version, Long organizationId) throws MultiplesFormsFoundException;
 
     void evictCache(Long id);
 

@@ -7,6 +7,7 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
@@ -56,7 +57,7 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
             ChildrenNotFoundException, BadFlowContentException,
             FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
             FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException,
-            ElementCannotBeRemovedException {
+            ElementCannotBeRemovedException, MultiplesFormsFoundException {
         int prevForms = formDao.getRowCount();
         Form form = FormUtils.createCompleteForm(block);
         formDao.makePersistent(form);
@@ -71,10 +72,13 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
         Assert.assertTrue(form.isContentEqual(dbForm));
 
         //Check search by name and version.
-        Assert.assertNotNull(formDao.get(FormUtils.FORM_COMPLETE_LABEL, 1, 0));
-        Assert.assertNull(formDao.get("Incorrect Label", 1, 0));
-        Assert.assertNull(formDao.get(FormUtils.FORM_COMPLETE_LABEL, 2, 0));
-        Assert.assertNull(formDao.get(FormUtils.FORM_COMPLETE_LABEL, 1, 1));
+        Assert.assertNotNull(formDao.get(FormUtils.FORM_COMPLETE_LABEL, 1, 0L));
+        Assert.assertNotNull(formDao.get(FormUtils.FORM_COMPLETE_LABEL, 1, null));
+        Assert.assertNotNull(formDao.get(FormUtils.FORM_COMPLETE_LABEL, null, null));
+        Assert.assertNull(formDao.get("Incorrect Label", 1, 0L));
+        Assert.assertNull(formDao.get("Incorrect Label", null, null));
+        Assert.assertNull(formDao.get(FormUtils.FORM_COMPLETE_LABEL, 2, 0L));
+        Assert.assertNull(formDao.get(FormUtils.FORM_COMPLETE_LABEL, 1, 1L));
 
         formDao.makeTransient(dbForm);
         Assert.assertEquals(prevForms, formDao.getRowCount());

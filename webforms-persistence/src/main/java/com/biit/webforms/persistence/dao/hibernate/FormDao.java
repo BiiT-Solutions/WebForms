@@ -5,6 +5,7 @@ import com.biit.form.exceptions.NotValidChildException;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
 import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Form;
 import org.hibernate.Hibernate;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
@@ -139,23 +141,36 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 
     @Override
     @Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
-    public Form get(String label, int version, long organizationId) {
-        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Form> criteriaQuery = cb.createQuery(Form.class);
+    public Form get(String label, Integer version, Long organizationId) throws MultiplesFormsFoundException {
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Form> criteriaQuery = criteriaBuilder.createQuery(Form.class);
         // Metamodel of the entity table
         Metamodel metamodel = getEntityManager().getMetamodel();
         EntityType<Form> formMetamodel = metamodel.entity(Form.class);
-        Root<Form> form = criteriaQuery.from(Form.class);
+        Root<Form> typesRoot = criteriaQuery.from(Form.class);
 
+        final List<Predicate> predicates = new ArrayList<>();
+        predicates.add(criteriaBuilder.equal(typesRoot.get(formMetamodel.getSingularAttribute("label", String.class)), label));
 
-        criteriaQuery.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), label),
-                cb.equal(form.get(formMetamodel.getSingularAttribute("version", Integer.class)), version),
-                cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
+        if (version != null) {
+            predicates.add(criteriaBuilder.equal(typesRoot.get(formMetamodel.getSingularAttribute("version", Integer.class)), version));
+        }
+
+        if (organizationId != null) {
+            predicates.add(criteriaBuilder.equal(typesRoot.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId));
+        }
+
+        criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
 
         try {
-            Form resultForm = getEntityManager().createQuery(criteriaQuery).getSingleResult();
-            resultForm.initializeSets();
-            return resultForm;
+            List<Form> resultForms = getEntityManager().createQuery(criteriaQuery).getResultList();
+
+            if (resultForms.size() > 1) {
+                throw new MultiplesFormsFoundException();
+            } else if (resultForms.isEmpty()) {
+                return null;
+            }
+            return resultForms.get(0);
         } catch (NoResultException e) {
             return null;
         }
