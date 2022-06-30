@@ -32,7 +32,9 @@ public class FormRestService {
         WebformsLogger.info(FormRestService.class.getName(), "Requesting Form using endpoint '/forms/json' with payload '{}'.", petition);
         try {
             parsedPetition = parsePetition(petition);
+            WebformsLogger.debug(FormRestService.class.getName(), "Payload obtained '{}'.", parsedPetition);
             Form form = formDao.get(parsedPetition.formName, parsedPetition.getVersion(), parsedPetition.getOrganizationId());
+            WebformsLogger.debug(FormRestService.class.getName(), "Form obtained '{}'.", form);
             if (form == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"Unknown form with name '" + parsedPetition.getFormName() +
                         "' and version '" + parsedPetition.getVersion() + "' in organization '" + parsedPetition.getOrganizationId() + "'.\"}").build();
@@ -92,6 +94,15 @@ public class FormRestService {
 
         public void setOrganizationId(Long organizationId) {
             this.organizationId = organizationId;
+        }
+
+        @Override
+        public String toString() {
+            return "FormDescription{" +
+                    "formName='" + formName + '\'' +
+                    ", version=" + version +
+                    ", organizationId=" + organizationId +
+                    '}';
         }
     }
 }
