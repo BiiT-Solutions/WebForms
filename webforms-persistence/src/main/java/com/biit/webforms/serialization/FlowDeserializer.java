@@ -1,9 +1,5 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.json.serialization.StorableObjectDeserializer;
 import com.biit.persistence.entity.StorableObject;
@@ -17,6 +13,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 public class FlowDeserializer extends StorableObjectDeserializer<Flow> {
 
 	private final Form form;
@@ -25,9 +25,9 @@ public class FlowDeserializer extends StorableObjectDeserializer<Flow> {
 	public void deserialize(JsonElement json, JsonDeserializationContext context, Flow element) {
 		JsonObject jobject = (JsonObject) json;
 
-		element.setOrigin((BaseQuestion) FormDeserializer.parseTreeObjectPath("origin_id", form, jobject, context));
+		element.setOrigin((BaseQuestion) FormDeserializer.parseTreeObjectPath("originId", form, jobject, context));
 		element.setFlowType(parseFlowType("flowType", jobject, context));
-		element.setDestiny((BaseQuestion) FormDeserializer.parseTreeObjectPath("destiny_id", form, jobject, context));
+		element.setDestiny((BaseQuestion) FormDeserializer.parseTreeObjectPath("destinyId", form, jobject, context));
 		element.setOthers(parseBoolean("others", jobject, context));
 
 		if (!element.isOthers()) {
