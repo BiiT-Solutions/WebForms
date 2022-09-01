@@ -1,12 +1,12 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
 import com.biit.form.json.serialization.StorableObjectSerializer;
 import com.biit.webforms.persistence.entity.Flow;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
+
+import java.lang.reflect.Type;
 
 public class FlowSerializer extends StorableObjectSerializer<Flow>{
 
@@ -15,10 +15,10 @@ public class FlowSerializer extends StorableObjectSerializer<Flow>{
 			JsonSerializationContext context) {
 		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
 		
-		jsonObject.add("origin_id", context.serialize(src.getOrigin().getPath()));
+		jsonObject.add("originId", context.serialize(src.getOrigin().getPath()));
 		jsonObject.add("flowType", context.serialize(src.getFlowType()));
 		if(src.getDestiny()!=null){
-			jsonObject.add("destiny_id", context.serialize(src.getDestiny().getPath()));
+			jsonObject.add("destinyId", context.serialize(src.getDestiny().getPath()));
 		}
 		jsonObject.add("others", context.serialize(src.isOthers()));
 		//If is a others flow, getCondition returns the negation of the sum of all other conditions.
