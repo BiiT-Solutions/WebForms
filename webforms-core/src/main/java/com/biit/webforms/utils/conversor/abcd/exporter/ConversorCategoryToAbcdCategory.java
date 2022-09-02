@@ -31,7 +31,9 @@ public class ConversorCategoryToAbcdCategory extends ConversorTreeObject<com.bii
 		// Create copy of the childs and assign.
 		for (TreeObject child : origin.getChildren()) {
 			if (!(child instanceof com.biit.webforms.persistence.entity.Group || child instanceof com.biit.webforms.persistence.entity.Question)) {
-				WebformsLogger.errorMessage(this.getClass().getName(), new Throwable("Child type not expected"));
+				if(!(child instanceof com.biit.webforms.persistence.entity.SystemField) && !(child instanceof com.biit.webforms.persistence.entity.Text)) {
+					WebformsLogger.errorMessage(this.getClass().getName(), new Throwable("Child type not expected"));
+				}
 				continue;
 			}
 			TreeObject convertedChild = null;

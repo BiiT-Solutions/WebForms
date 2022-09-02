@@ -178,7 +178,7 @@
       "updateTime": "Feb 26, 2015 1:02:01 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question5"
       ],
@@ -193,12 +193,12 @@
       "updateTime": "Feb 26, 2015 1:00:45 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question3"
       ],
@@ -229,12 +229,12 @@
       "updateTime": "Feb 26, 2015 1:00:30 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question2"
       ],
@@ -265,12 +265,12 @@
       "updateTime": "Feb 26, 2015 1:01:30 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question3"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question5"
       ],
@@ -301,7 +301,7 @@
       "updateTime": "Feb 26, 2015 1:01:53 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question4"
       ],
@@ -316,12 +316,12 @@
       "updateTime": "Feb 26, 2015 1:01:40 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question3"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question6"
       ],
@@ -352,12 +352,12 @@
       "updateTime": "Feb 26, 2015 1:01:14 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question3"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question4"
       ],

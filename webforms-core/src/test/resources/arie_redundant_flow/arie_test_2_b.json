@@ -190,12 +190,12 @@
       "updateTime": "Feb 26, 2015 1:06:22 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question3"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question4"
       ],
@@ -226,12 +226,12 @@
       "updateTime": "Feb 26, 2015 1:06:30 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question3"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question5"
       ],
@@ -262,7 +262,7 @@
       "updateTime": "Feb 27, 2015 4:47:59 PM",
       "createdBy": 15785,
       "updatedBy": 15785,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question3"
       ],
@@ -276,7 +276,7 @@
       "updateTime": "Feb 26, 2015 1:06:01 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question5"
       ],
@@ -291,7 +291,7 @@
       "updateTime": "Feb 26, 2015 1:05:53 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question4"
       ],
@@ -306,12 +306,12 @@
       "updateTime": "Feb 26, 2015 1:06:35 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question3"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question6"
       ],
@@ -342,12 +342,12 @@
       "updateTime": "Feb 26, 2015 1:04:59 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question2"
       ],
@@ -378,12 +378,12 @@
       "updateTime": "Feb 26, 2015 1:03:23 PM",
       "createdBy": 15771,
       "updatedBy": 15771,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question3"
       ],

@@ -110,13 +110,13 @@
       "updateTime": "Dec 15, 2014 12:19:03 PM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Question"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Group",
         "Text2"
@@ -171,13 +171,13 @@
       "updateTime": "Dec 15, 2014 12:11:59 PM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Question"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Group",
         "Text"

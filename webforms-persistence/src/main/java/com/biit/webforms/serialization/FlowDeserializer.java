@@ -38,14 +38,14 @@ public class FlowDeserializer extends StorableObjectDeserializer<Flow> {
 	}
 
 	protected List<Token> parseCondition(String name, JsonObject jobject, JsonDeserializationContext context) {
-		List<Token> condition = new ArrayList<Token>();
+		List<Token> condition = new ArrayList<>();
 
 		JsonElement valuesJson = jobject.get(name);
 		if (valuesJson != null) {
 			Type listType = new TypeToken<List<StorableObject>>() {
 			}.getType();
 			@SuppressWarnings("unchecked")
-			List<StorableObject> tokens = (List<StorableObject>) context.deserialize(valuesJson, listType);
+			List<StorableObject> tokens = context.deserialize(valuesJson, listType);
 			if (tokens != null) {
 				for (StorableObject token : tokens) {
 					condition.add((Token) token);
@@ -58,7 +58,7 @@ public class FlowDeserializer extends StorableObjectDeserializer<Flow> {
 
 	public static FlowType parseFlowType(String name, JsonObject jobject, JsonDeserializationContext context) {
 		if (jobject.get(name) != null) {
-			return (FlowType) context.deserialize(jobject.get(name), FlowType.class);
+			return context.deserialize(jobject.get(name), FlowType.class);
 		}
 		return null;
 	}

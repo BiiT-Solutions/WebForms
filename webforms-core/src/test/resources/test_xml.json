@@ -492,13 +492,13 @@
       "updateTime": "Dec 17, 2014 10:04:44 AM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "childrenData",
         "tutela"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "childrenData",
         "tutor"
@@ -532,12 +532,12 @@
       "updateTime": "Dec 17, 2014 10:20:59 AM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Text"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "questionOld"
       ],
@@ -568,12 +568,12 @@
       "updateTime": "Dec 17, 2014 10:19:41 AM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "questionYoung"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Text2"
       ],
@@ -587,13 +587,13 @@
       "updateTime": "Dec 17, 2014 10:05:19 AM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "childrenData",
         "tutela"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "civilState"
       ],
@@ -626,12 +626,12 @@
       "updateTime": "Dec 17, 2014 10:19:26 AM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Text"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "questionYoung"
       ],
@@ -662,12 +662,12 @@
       "updateTime": "Dec 17, 2014 10:03:30 AM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "hasChildren"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "childrenData",
         "name"
@@ -699,12 +699,12 @@
       "updateTime": "Dec 17, 2014 10:19:59 AM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "questionMiddleAge"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Text2"
       ],
@@ -718,12 +718,12 @@
       "updateTime": "Dec 17, 2014 10:13:11 AM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Text"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "questionMiddleAge"
       ],
@@ -753,12 +753,12 @@
       "updateTime": "Dec 17, 2014 10:03:56 AM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "hasChildren"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "civilState"
       ],

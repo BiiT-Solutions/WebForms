@@ -1,30 +1,5 @@
 package com.biit.webforms.persistence.entity;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.BatchSize;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
@@ -32,19 +7,13 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.persistence.entity.condition.TokenBetween;
-import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
-import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
-import com.biit.webforms.persistence.entity.condition.TokenComplex;
-import com.biit.webforms.persistence.entity.condition.TokenEmpty;
-import com.biit.webforms.persistence.entity.condition.TokenIn;
-import com.biit.webforms.persistence.entity.condition.TokenInValue;
-import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
-import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
+import com.biit.webforms.persistence.entity.condition.*;
+import com.biit.webforms.persistence.entity.exceptions.*;
+import org.hibernate.annotations.BatchSize;
+
+import javax.persistence.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 @Entity
 @Table(name = "flow")
@@ -58,7 +27,7 @@ public class Flow extends StorableObject {
 	// If you want to add a constraint
 	// attached to that column, you have to state the name.
 	@ManyToOne
-	@JoinColumn(name = "origin_id")
+	@JoinColumn(name = "originId")
 	private BaseQuestion origin;
 
 	@Enumerated(EnumType.STRING)
@@ -66,7 +35,7 @@ public class Flow extends StorableObject {
 	private FlowType flowType;
 
 	@ManyToOne
-	@JoinColumn(name = "destiny_id")
+	@JoinColumn(name = "destinyId")
 	private BaseQuestion destiny;
 
 	private boolean others;

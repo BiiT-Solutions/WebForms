@@ -16,7 +16,7 @@ import com.biit.webforms.utils.conversor.abcd.importer.ConversorTreeObject;
  */
 public class ConversorFormToAbcdForm extends ConversorTreeObject<com.biit.webforms.persistence.entity.Form, Form> {
 
-	private ConversorCategoryToAbcdCategory conversorCategory = new ConversorCategoryToAbcdCategory();
+	private final ConversorCategoryToAbcdCategory conversorCategory = new ConversorCategoryToAbcdCategory();
 
 	@Override
 	public Form createDestinyInstance() {
@@ -33,7 +33,7 @@ public class ConversorFormToAbcdForm extends ConversorTreeObject<com.biit.webfor
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 
-		// Create copy of the childs and assign.
+		// Create copy of the children and assign.
 		for (TreeObject child : origin.getChildren()) {
 			if (!(child instanceof com.biit.webforms.persistence.entity.Category)) {
 				WebformsLogger.errorMessage(this.getClass().getName(), new Throwable("Child type not expected"));

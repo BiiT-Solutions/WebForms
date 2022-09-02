@@ -152,12 +152,12 @@
       "updateTime": "Jan 16, 2015 1:11:26 PM",
       "createdBy": 10195,
       "updatedBy": 10195,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question2"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question3"
       ],
@@ -170,12 +170,12 @@
       "updateTime": "Jan 16, 2015 1:10:45 PM",
       "createdBy": 10195,
       "updatedBy": 10195,
-      "origin_id": [
+      "originId": [
         "Category",
         "Question"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Question2"
       ],

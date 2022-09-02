@@ -8,9 +8,9 @@
         updated_by DOUBLE,
         flow_type varchar(255),
         others bit not null,
-        destiny_id bigint,
+        destinyId bigint,
         form_id bigint not null,
-        origin_id bigint,
+        originId bigint,
         primary key (id)
     ) engine=InnoDB;
 

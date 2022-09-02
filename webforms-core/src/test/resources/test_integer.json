@@ -139,13 +139,13 @@
       "updateTime": "Dec 14, 2014 11:45:07 PM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Question"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Group",
         "Question2"
@@ -177,7 +177,7 @@
       "updateTime": "Dec 14, 2014 11:51:58 PM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Text4"
@@ -210,13 +210,13 @@
       "updateTime": "Dec 14, 2014 11:46:58 PM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Text"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Group",
         "Text2"
@@ -271,13 +271,13 @@
       "updateTime": "Dec 14, 2014 11:49:28 PM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Text2"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Group",
         "Text4"
@@ -332,13 +332,13 @@
       "updateTime": "Dec 14, 2014 11:45:54 PM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Question"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Group",
         "Text2"
@@ -370,13 +370,13 @@
       "updateTime": "Dec 14, 2014 11:48:04 PM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Text"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Group",
         "Text3"
@@ -431,13 +431,13 @@
       "updateTime": "Dec 14, 2014 11:51:03 PM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Text3"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Group",
         "Text4"
@@ -492,13 +492,13 @@
       "updateTime": "Dec 15, 2014 1:26:06 AM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Text4"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Group",
         "Text5"
@@ -553,13 +553,13 @@
       "updateTime": "Dec 14, 2014 11:49:44 PM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Text2"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Group",
         "Text3"
@@ -614,13 +614,13 @@
       "updateTime": "Dec 14, 2014 11:45:34 PM",
       "createdBy": 10735,
       "updatedBy": 10735,
-      "origin_id": [
+      "originId": [
         "Category",
         "Group",
         "Question"
       ],
       "flowType": "NORMAL",
-      "destiny_id": [
+      "destinyId": [
         "Category",
         "Group",
         "Text"
