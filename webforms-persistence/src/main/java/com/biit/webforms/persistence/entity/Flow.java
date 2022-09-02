@@ -27,7 +27,7 @@ public class Flow extends StorableObject {
 	// If you want to add a constraint
 	// attached to that column, you have to state the name.
 	@ManyToOne
-	@JoinColumn(name = "originId")
+	@JoinColumn(name = "origin_id")
 	private BaseQuestion origin;
 
 	@Enumerated(EnumType.STRING)
@@ -35,7 +35,7 @@ public class Flow extends StorableObject {
 	private FlowType flowType;
 
 	@ManyToOne
-	@JoinColumn(name = "destinyId")
+	@JoinColumn(name = "destiny_id")
 	private BaseQuestion destiny;
 
 	private boolean others;
