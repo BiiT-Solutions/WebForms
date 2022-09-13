@@ -23,15 +23,15 @@ public class TableFlows extends Table {
 	private static final String EMPTY_TEXT = "--------";
 
 	public interface NewItemAction {
-		public void newItemAction();
-	};
+		void newItemAction();
+	}
 
 	public enum TableRuleProperties {
 		ORIGIN, TYPE, DESTINY, CONDITION, CREATION_DATE, UPDATE_DATE
-	};
+	}
 
-	private List<NewItemAction> newItemListeners;
-	private List<EditItemAction> editItemListeners;
+	private final List<NewItemAction> newItemListeners;
+	private final List<EditItemAction> editItemListeners;
 
 	public Object getNewFlowId() {
 		return NEW_RULE_ID;
@@ -54,7 +54,6 @@ public class TableFlows extends Table {
 				}
 				if (!itemId.equals(NEW_RULE_ID) && event.isDoubleClick()) {
 					fireEditItemActionListener((Flow) event.getItemId());
-					return;
 				}
 			}
 		});
@@ -127,7 +126,7 @@ public class TableFlows extends Table {
 		setColumnCollapsed(TableRuleProperties.UPDATE_DATE, true);
 
 		((IndexedContainer) getContainerDataSource()).setItemSorter(new TableRulesSorter());
-		
+
 		setCellStyleGenerator(new FlowTableCellStyleGenerator());
 	}
 
@@ -145,8 +144,8 @@ public class TableFlows extends Table {
 
 	/**
 	 * Adds a new row, moves the 'insert new rule' to the end and selects as current value the new row.
-	 * 
-	 * @param newRule
+	 *
+	 * @param newRule the rule.
 	 */
 	public void addRow(Flow newRule) {
 		addRow(newRule, true, true);
@@ -182,15 +181,22 @@ public class TableFlows extends Table {
 
 	/**
 	 * Sets item properties values from the given rule.
-	 * 
-	 * @param rule
-	 * @param item
+	 *
+	 * @param rule the rule
+	 * @param item the vaadin item
 	 */
 	@SuppressWarnings("unchecked")
 	public void setItemProperties(Flow rule, Item item) {
-		item.getItemProperty(TableRuleProperties.ORIGIN).setValue(rule.getOrigin().getPathName());
+		if (rule==null) {
+            return;
+        }
+		if (item.getItemProperty(TableRuleProperties.ORIGIN) != null && rule.getOrigin() != null) {
+			item.getItemProperty(TableRuleProperties.ORIGIN).setValue(rule.getOrigin().getPathName());
+		}
 
-		item.getItemProperty(TableRuleProperties.TYPE).setValue(RuleTypeUi.getTranslation(rule.getFlowType()));
+		if (item.getItemProperty(TableRuleProperties.TYPE) != null) {
+			item.getItemProperty(TableRuleProperties.TYPE).setValue(RuleTypeUi.getTranslation(rule.getFlowType()));
+		}
 
 		String destiny = "";
 		if (rule.getDestiny() != null) {
@@ -198,7 +204,7 @@ public class TableFlows extends Table {
 		}
 		item.getItemProperty(TableRuleProperties.DESTINY).setValue(destiny);
 
-		String condition = "";
+		String condition;
 		if (rule.isOthers()) {
 			condition = "OTHERS";
 		} else {
@@ -216,8 +222,8 @@ public class TableFlows extends Table {
 
 	/**
 	 * Updates values of the row from the given rule.
-	 * 
-	 * @param rule
+	 *
+	 * @param rule the rule.
 	 */
 	public void updateRow(Flow rule) {
 		Item item = getItem(rule);
@@ -232,11 +238,11 @@ public class TableFlows extends Table {
 
 	/**
 	 * Custom Item sorter.
-	 * 
+	 *
 	 * @author joriz_000
-	 * 
+	 *
 	 */
-	public class TableRulesSorter extends DefaultItemSorter {
+	public static class TableRulesSorter extends DefaultItemSorter {
 		private static final long serialVersionUID = 132410424035740848L;
 
 		@Override
