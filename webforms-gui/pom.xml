@@ -20,11 +20,11 @@
     <repositories>
         <repository>
             <id>vaadin-addons</id>
-            <url>http://maven.vaadin.com/vaadin-addons</url>
+            <url>https://maven.vaadin.com/vaadin-addons</url>
         </repository>
         <repository>
             <id>vaadin-snapshots</id>
-            <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+            <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -36,7 +36,7 @@
         <repository>
             <id>jboss-public-repository-group</id>
             <name>JBoss Public Repository Group</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
             <layout>default</layout>
             <releases>
                 <enabled>true</enabled>
@@ -48,7 +48,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>vaadin-snapshots</id>
-            <url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+            <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
