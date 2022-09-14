@@ -102,6 +102,8 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
             form.setCreationTime();
         }
 
+        form.setJsonCode(form.toJson());
+
         Form mergedForm = super.merge(form);
         if (mergedForm != null) {
             mergedForm.initializeSets();
@@ -117,6 +119,7 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
         if (form.getCreationTime() == null) {
             form.setCreationTime();
         }
+        form.setJsonCode(form.toJson());
         return super.makePersistent(form);
     }
 
@@ -190,6 +193,28 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
         cq.where(cb.and(cb.equal(form.get(formMetamodel.getSingularAttribute("label", String.class)), label),
                 cb.equal(form.get(formMetamodel.getSingularAttribute("organizationId", Long.class)), organizationId)));
         return getEntityManager().createQuery(cq).getSingleResult() > 0;
+    }
+
+    @Override
+    @Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+    public String getJson(Long formId) {
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
+        // Metamodel of the entity table
+        Metamodel metamodel = getEntityManager().getMetamodel();
+        EntityType<Form> formMetamodel = metamodel.entity(Form.class);
+        Root<Form> typesRoot = criteriaQuery.from(Form.class);
+
+        final List<Predicate> predicates = new ArrayList<>();
+        predicates.add(criteriaBuilder.equal(typesRoot.get(formMetamodel.getSingularAttribute("id", Long.class)), formId));
+
+        criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
+
+        try {
+            return getEntityManager().createQuery(criteriaQuery).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override

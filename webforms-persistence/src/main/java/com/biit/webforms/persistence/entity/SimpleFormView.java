@@ -1,11 +1,11 @@
 package com.biit.webforms.persistence.entity;
 
+import com.biit.form.entity.IBaseFormView;
+import com.biit.webforms.enumerations.FormWorkStatus;
+
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.biit.form.entity.IBaseFormView;
-import com.biit.webforms.enumerations.FormWorkStatus;
 
 public class SimpleFormView implements IWebformsFormView {
 	private String name;
@@ -24,6 +24,8 @@ public class SimpleFormView implements IWebformsFormView {
 	private FormWorkStatus status;
 	private boolean isLastVersion;
 	private Long formReferenceId;
+
+	private boolean hasJson;
 
 	@Override
 	public String getName() {
@@ -236,7 +238,7 @@ public class SimpleFormView implements IWebformsFormView {
 		this.isLastVersion = isLastVersion;
 	}
 
-	public IBaseFormView generateCopy(boolean copyParentHierarchy, boolean copyChilds) {
+	public IBaseFormView generateCopy(boolean copyParentHierarchy, boolean copyChildren) {
 		return SimpleFormView.getSimpleFormView(this);
 	}
 
@@ -251,5 +253,15 @@ public class SimpleFormView implements IWebformsFormView {
 	@Override
 	public Set<TreeObjectImage> getAllImages() {
 		return new HashSet<>();
+	}
+
+	@Override
+	public boolean hasJson() {
+		return hasJson;
+	}
+
+	@Override
+	public void setHasJson(boolean hasJson) {
+		this.hasJson = hasJson;
 	}
 }

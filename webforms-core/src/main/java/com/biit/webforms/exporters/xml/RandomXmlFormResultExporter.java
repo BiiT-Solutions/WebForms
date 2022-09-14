@@ -109,9 +109,9 @@ public class RandomXmlFormResultExporter {
 		String xmlBaseAddress = WebformsConfigurationReader.getInstance().getXmlBaseAddress();
 
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		sb.append("<" + form.getLabelWithouthSpaces() + " xmlns=\"" + xmlBaseAddress + "" + form.getLabelWithouthSpaces()
+		sb.append("<" + form.getLabelWithoutSpaces() + " xmlns=\"" + xmlBaseAddress + "" + form.getLabelWithoutSpaces()
 				+ "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"" + xmlBaseAddress + " schema.xsd"
-				+ form.getLabelWithouthSpaces() + "\">");
+				+ form.getLabelWithoutSpaces() + "\">");
 		for (Flow flow : path) {
 			if (flow.getOrigin() instanceof Text || flow.getOrigin() instanceof SystemField) {
 				continue;
@@ -122,7 +122,7 @@ public class RandomXmlFormResultExporter {
 			generateQuestion(sb, (WebformsBaseQuestion) flow.getOrigin(), valuesOfPath);
 		}
 		closeGroups(sb, currentElement);
-		sb.append("</" + form.getLabelWithouthSpaces() + ">");
+		sb.append("</" + form.getLabelWithoutSpaces() + ">");
 
 		return XmlUtils.format(sb.toString());
 	}

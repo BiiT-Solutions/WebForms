@@ -8,9 +8,9 @@
         updated_by DOUBLE,
         flow_type varchar(255),
         others bit not null,
-        destinyId bigint,
+        destiny_id bigint,
         form_id bigint not null,
-        originId bigint,
+        origin_id bigint,
         primary key (id)
     ) engine=InnoDB;
 
@@ -198,6 +198,7 @@
         version integer,
         description longtext,
         edition_disabled bit default 0 not null,
+        json longtext,
         linked_form_label varchar(255),
         linked_form_organization_id bigint,
         status varchar(255),
@@ -268,6 +269,7 @@
         version integer,
         description longtext,
         edition_disabled bit default 0 not null,
+        json longtext,
         linked_form_label varchar(255),
         linked_form_organization_id bigint,
         status varchar(255),

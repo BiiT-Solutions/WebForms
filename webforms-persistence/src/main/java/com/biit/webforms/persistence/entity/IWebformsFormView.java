@@ -1,23 +1,27 @@
 package com.biit.webforms.persistence.entity;
 
-import java.util.Set;
-
 import com.biit.form.entity.IBaseFormView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 
+import java.util.Set;
+
 public interface IWebformsFormView extends IBaseFormView {
 
-	public void setStatus(FormWorkStatus status);
+    public void setStatus(FormWorkStatus status);
 
-	public FormWorkStatus getStatus();
+    public FormWorkStatus getStatus();
 
-	public Set<Integer> getLinkedFormVersions();
+    public Set<Integer> getLinkedFormVersions();
 
-	public Long getLinkedFormOrganizationId();
+    public Long getLinkedFormOrganizationId();
 
-	public String getLinkedFormLabel();
+    public String getLinkedFormLabel();
 
-	public boolean isLastVersion();
+    public boolean isLastVersion();
 
-	public Set<TreeObjectImage> getAllImages();
+    public Set<TreeObjectImage> getAllImages();
+
+    boolean hasJson();
+
+    void setHasJson(boolean hasJson);
 }

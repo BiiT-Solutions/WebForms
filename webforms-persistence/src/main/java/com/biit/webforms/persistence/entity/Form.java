@@ -31,10 +31,12 @@ import java.util.*;
 @Table(name = "tree_forms", uniqueConstraints = {@UniqueConstraint(columnNames = {"label", "version", "organization_id"})})
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
         + StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
-@Cacheable(true)
+@Cacheable()
 public class Form extends BaseForm implements IWebformsFormView, ElementWithImage {
     private static final long serialVersionUID = 5220239269341014315L;
-    private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(BaseCategory.class,
+    private static final int MAX_JSON_LENGTH = 1000000;
+
+    private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>(Arrays.asList(BaseCategory.class,
             BlockReference.class));
 
     public static final int MAX_DESCRIPTION_LENGTH = 30000;
@@ -43,13 +45,13 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     private FormWorkStatus status;
 
     @Lob
-    private String description = "";
+    private String description;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
-    private Set<Flow> rules;
+    private final Set<Flow> rules;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
-    private Set<WebserviceCall> webserviceCalls;
+    private final Set<WebserviceCall> webserviceCalls;
 
     @Column(name = "linked_form_label")
     private String linkedFormLabel;
@@ -58,7 +60,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     @CollectionTable(name = "linked_form_versions", joinColumns = @JoinColumn(name = "form_id"), uniqueConstraints = @UniqueConstraint(columnNames = {
             "form_id", "linked_form_versions"}))
     @Column(name = "linked_form_versions")
-    private Set<Integer> linkedFormVersions;
+    private final Set<Integer> linkedFormVersions;
 
     @Column(name = "linked_form_organization_id")
     private Long linkedFormOrganizationId;
@@ -81,6 +83,11 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     // new form in orbeon is enabled, but when editing is disabled.
     @Column(name = "edition_disabled", nullable = false, columnDefinition = "bit default 0")
     private boolean editionDisabled = false;
+
+    @ExcludeFromJson
+    @Lob
+    @Column(name = "json", length = MAX_JSON_LENGTH)
+    private transient String jsonCode;
 
     public Form() {
         super();
@@ -119,6 +126,14 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         }
     }
 
+    public String getJsonCode() {
+        return jsonCode;
+    }
+
+    public void setJsonCode(String jsonCode) {
+        this.jsonCode = jsonCode;
+    }
+
     public void addLinkedFormVersion(Integer versionNumber) {
         getLinkedFormVersions().add(versionNumber);
     }
@@ -131,7 +146,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     public void copyData(StorableObject object) throws NotValidStorableObjectException {
         super.copyData(object);
         if (object instanceof Form) {
-            description = new String(((Form) object).getDescription());
+            description = ((Form) object).getDescription();
             status = ((Form) object).getStatus();
             setEditionDisabled(((Form) object).isEditionDisabled());
 
@@ -154,7 +169,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
     /**
      * Returns all elements that the user has selected to hide and the elements
-     * that are children of this elements.
+     * that are children of these elements.
      *
      * @return
      */
@@ -176,6 +191,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
      */
     public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
         // If parent is hidden, do not hide this element.
+        if (element == null) {
+            return false;
+        }
         boolean toHide = true;
         for (TreeObject ancestor : element.getAncestors()) {
             if (elementsToHide.contains(ancestor)) {
@@ -222,7 +240,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
         for (Flow rule : form.getFlows()) {
             Flow copiedRule = rule.generateCopy();
-            // If rule origin is not in the list of current elements or it has
+            // If rule origin is not in the list of current elements, or it has
             // destiny and is not in the list.
             if (discard) {
                 if (!mappedElements.containsKey(copiedRule.getOrigin().getComparationId())
@@ -276,17 +294,12 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
         StorableObject other = (StorableObject) obj;
         if (getComparationId() == null) {
-            if (other.getComparationId() != null) {
-                return false;
-            }
-        } else if (!getComparationId().equals(other.getComparationId())) {
-            return false;
-        }
-        return true;
+            return other.getComparationId() == null;
+        } else return getComparationId().equals(other.getComparationId());
     }
 
     public String exportToJavaCode(StringBuilder sb) {
-        Integer counter = 0;
+        int counter = 0;
 
         sb.append("Form form = new Form();").append(System.lineSeparator());
         sb.append("form.setLabel(\"").append(getLabel()).append("\");").append(System.lineSeparator());
@@ -296,20 +309,20 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
             int tempCounter = counter + 1;
             counter = ((Category) child).exportToJavaCode(sb, counter + 1);
             sb.append("//form").append(System.lineSeparator());
-            sb.append("form.addChild(").append("el_" + tempCounter).append(");").append(System.lineSeparator());
+            sb.append("form.addChild(").append("el_").append(tempCounter).append(");").append(System.lineSeparator());
         }
 
         return sb.toString();
     }
 
     /**
-     * Overriden version of generate Copy to generate a copy of the flow rules.
+     * Overridden version of generate Copy to generate a copy of the flow rules.
      */
     @Override
-    public TreeObject generateCopy(boolean copyParentHierarchy, boolean copyChilds) throws NotValidStorableObjectException, CharacterNotAllowedException {
-        Form copy = (Form) super.generateCopy(copyParentHierarchy, copyChilds);
+    public TreeObject generateCopy(boolean copyParentHierarchy, boolean copyChildren) throws NotValidStorableObjectException, CharacterNotAllowedException {
+        Form copy = (Form) super.generateCopy(copyParentHierarchy, copyChildren);
 
-        if (copyChilds) {
+        if (copyChildren) {
             copy.setFormReference(getFormReference());
             copy.updateElementsToHide(getElementsToHide());
             copy.copyRules(this, false);
@@ -324,9 +337,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     }
 
     private void updateWebserviceCallReferences() {
-        HashMap<String, BaseQuestion> references = new HashMap<String, BaseQuestion>();
-        for (TreeObject object : this.getAll(BaseQuestion.class)) {
-            references.put(object.getOriginalReference(), (BaseQuestion) object);
+        HashMap<String, BaseQuestion> references = new HashMap<>();
+        for (BaseQuestion object : this.getAll(BaseQuestion.class)) {
+            references.put(object.getOriginalReference(), object);
         }
         for (WebserviceCall call : getWebserviceCalls()) {
             call.updateReferences(references);
@@ -347,13 +360,12 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
     private void updateDynamicAnswers(Set<Question> allQuestionsInHierarchy) {
         HashMap<String, Question> questions = new HashMap<>();
-        for (TreeObject child : allQuestionsInHierarchy) {
-            questions.put(child.getOriginalReference(), (Question) child);
+        for (Question child : allQuestionsInHierarchy) {
+            questions.put(child.getOriginalReference(), child);
         }
 
-        for (TreeObject child : getAllChildrenInHierarchy(DynamicAnswer.class)) {
-            DynamicAnswer answer = (DynamicAnswer) child;
-            answer.setReference(questions.get(answer.getReference().getOriginalReference()));
+        for (DynamicAnswer child : getAllChildrenInHierarchy(DynamicAnswer.class)) {
+            child.setReference(questions.get(child.getReference().getOriginalReference()));
         }
     }
 
@@ -401,8 +413,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
     @Override
     public Set<StorableObject> getAllInnerStorableObjects() {
-        Set<StorableObject> innerStorableObjects = new HashSet<>();
-        innerStorableObjects.addAll(super.getAllInnerStorableObjects());
+        Set<StorableObject> innerStorableObjects = new HashSet<>(super.getAllInnerStorableObjects());
         for (Flow rule : getFlows()) {
             innerStorableObjects.add(rule);
             innerStorableObjects.addAll(rule.getAllInnerStorableObjects());
@@ -412,7 +423,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
     @Override
     protected List<Class<? extends TreeObject>> getAllowedChildren() {
-        return ALLOWED_CHILDS;
+        return ALLOWED_CHILDREN;
     }
 
     /**
@@ -446,7 +457,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
     public String getDescription() {
         if (description == null) {
-            return new String();
+            return "";
         } else {
             return description;
         }
@@ -468,7 +479,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
      * @return
      */
     public Set<Flow> getFlows(TreeObject origin, TreeObject destiny) {
-        Set<Flow> selectedFlows = new HashSet<Flow>();
+        Set<Flow> selectedFlows = new HashSet<>();
         for (Flow flow : getFlows()) {
             if (flow.getOrigin().getOriginalReference().equals(origin.getOriginalReference())
                     && ((flow.getDestiny() != null && destiny != null && flow.getDestiny().getOriginalReference().equals(destiny.getOriginalReference())) || (flow
@@ -480,7 +491,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     }
 
     public Set<Flow> getFlowsFrom(BaseQuestion from) {
-        Set<Flow> flows = new HashSet<Flow>();
+        Set<Flow> flows = new HashSet<>();
         for (Flow flow : getFlows()) {
             if (from != null && from.equals(flow.getOrigin())) {
                 flows.add(flow);
@@ -490,17 +501,17 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     }
 
     public Set<Flow> getFlowsTo(BaseGroup to) {
-        Set<Flow> flows = new HashSet<Flow>();
+        Set<Flow> flows = new HashSet<>();
         if (to != null) {
-            for (TreeObject children : to.getAllChildrenInHierarchy(BaseQuestion.class)) {
-                flows.addAll(getFlowsTo((BaseQuestion) children));
+            for (BaseQuestion children : to.getAllChildrenInHierarchy(BaseQuestion.class)) {
+                flows.addAll(getFlowsTo(children));
             }
         }
         return flows;
     }
 
     public Set<Flow> getFlowsTo(BaseQuestion to) {
-        Set<Flow> flows = new HashSet<Flow>();
+        Set<Flow> flows = new HashSet<>();
         for (Flow flow : getFlows()) {
             if (to != null && flow.getDestiny() != null && to.equals(flow.getDestiny())) {
                 flows.add(flow);
@@ -520,7 +531,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         return metadata;
     }
 
-    public String getLabelWithouthSpaces() {
+    public String getLabelWithoutSpaces() {
         return getLabel().replace(" ", "_");
     }
 
@@ -549,9 +560,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
             throw new ReferenceNotPertainsToFormException("TreeObject: '" + element + "' doesn't belong to '" + this + "'");
         }
 
-        String reference = "<" + element.getName() + ">";
+        StringBuilder reference = new StringBuilder("<" + element.getName() + ">");
         for (TreeObject listedParent : parentList) {
-            reference = "<" + listedParent.getName() + ">" + reference;
+            reference.insert(0, "<" + listedParent.getName() + ">");
         }
         return "${" + reference + "}";
     }
@@ -584,7 +595,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
                 }
 
                 // They have the same number of rules
-                if (rules != null && form.rules != null && rules.size() != form.rules.size()) {
+                if (rules != null && rules.size() != form.rules.size()) {
                     return false;
                 }
 
@@ -687,7 +698,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         if (description.length() > MAX_DESCRIPTION_LENGTH) {
             throw new FieldTooLongException("Description is longer than maximum: " + MAX_DESCRIPTION_LENGTH);
         }
-        this.description = new String(description);
+        this.description = description;
     }
 
     public void setLastVersion(boolean isLastVersion) {
@@ -716,7 +727,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
             setLinkedFormVersions(null);
             setLinkedFormOrganizationId(null);
         } else {
-            Set<Integer> versionNumbers = new HashSet<Integer>();
+            Set<Integer> versionNumbers = new HashSet<>();
             for (IBaseFormView linkedForm : linkedForms) {
                 setLinkedFormLabel(linkedForm.getLabel());
                 versionNumbers.add(linkedForm.getVersion());
@@ -744,6 +755,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
     public String toJson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.addSerializationExclusionStrategy(GsonUtils.getStrategyToAvoidAnnotation());
         gsonBuilder.setPrettyPrinting();
         gsonBuilder.registerTypeAdapterFactory(HibernateProxyTypeAdapter.FACTORY);
         gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
@@ -756,7 +768,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         gsonBuilder.registerTypeAdapter(Answer.class, new AnswerSerializer());
         gsonBuilder.registerTypeAdapter(DynamicAnswer.class, new DynamicAnswerSerializer());
         gsonBuilder.registerTypeAdapter(Flow.class, new FlowSerializer());
-        gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<Token>());
+        gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<>());
         gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenSerializer());
         gsonBuilder.registerTypeAdapter(TokenEmpty.class, new TokenEmptySerializer());
         gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerSerializer());
@@ -779,7 +791,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
     public Set<List<Flow>> getAllFlowsFromOriginToDestiny(BaseQuestion origin, BaseQuestion destiny, HashMap<TreeObject, Integer> questionIndex,
                                                           ComputedFlowView computedFlowsView) {
-        Set<List<Flow>> availablePaths = new HashSet<List<Flow>>();
+        Set<List<Flow>> availablePaths = new HashSet<>();
         Set<Flow> flowsTo = computedFlowsView.getFlowsByDestiny(destiny);
         for (Flow flow : flowsTo) {
             // Flows that comes from question hat are previous to the origin,
@@ -812,9 +824,8 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         }
         orderedQuestions.addAll(getAllChildrenInHierarchy(BaseQuestion.class));
         int index = 0;
-        Iterator<TreeObject> iterator = orderedQuestions.iterator();
-        while (iterator.hasNext()) {
-            questionIndex.put(iterator.next(), Integer.valueOf(index));
+        for (TreeObject orderedQuestion : orderedQuestions) {
+            questionIndex.put(orderedQuestion, index);
             index++;
         }
         return questionIndex;
@@ -874,19 +885,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
      */
     @Override
     public Integer getIndex(TreeObject child) {
-        // Form references are at the beginning.
-        // if (getFormReference() != null) {
-        // int index = getFormReference().getIndex(child);
-        // if (index >= 0) {
-        // return index;
-        // }
-        // }
         // Standard form element.
         int index = getChildren().indexOf(child);
         if (index >= 0) {
-            // if (getFormReference() != null) {
-            // return index + getFormReference().getChildren().size();
-            // }
             return index;
         }
         // Child not found. Maybe is a category of a block reference.
@@ -914,7 +915,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         if (getFormReference() == null) {
             return getIndex(child);
         }
-        int index = -1;
+        int index;
         if (((index = getFormReference().getIndex(child)) >= 0)) {
             return index;
         }
@@ -985,9 +986,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         return webserviceCalls;
     }
 
-    public void addWebserviceCall(WebserviceCall webservviceCall) {
-        webserviceCalls.add(webservviceCall);
-        webservviceCall.setForm(this);
+    public void addWebserviceCall(WebserviceCall webserviceCall) {
+        webserviceCalls.add(webserviceCall);
+        webserviceCall.setForm(this);
     }
 
     public void addWebserviceCalls(Set<WebserviceCall> webserviceCalls) {
@@ -1037,6 +1038,16 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
             }
         }
         return images;
+    }
+
+    @Override
+    public boolean hasJson() {
+        return getJsonCode() != null;
+    }
+
+    @Override
+    public void setHasJson(boolean hasJson) {
+        throw new UnsupportedOperationException();
     }
 
     public boolean isEditionDisabled() {

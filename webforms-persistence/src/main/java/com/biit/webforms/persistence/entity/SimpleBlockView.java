@@ -169,7 +169,7 @@ public class SimpleBlockView extends SimpleFormView implements IWebformsBlockVie
 		this.isLastVersion = isLastVersion;
 	}
 
-	public IBaseFormView generateCopy(boolean copyParentHierarchy, boolean copyChilds) {
+	public IBaseFormView generateCopy(boolean copyParentHierarchy, boolean copyChildren) {
 		return SimpleBlockView.getSimpleBlockView(this);
 	}
 

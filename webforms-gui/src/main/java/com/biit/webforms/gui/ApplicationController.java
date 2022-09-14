@@ -25,7 +25,6 @@ import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.exceptions.*;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.gui.webpages.formmanager.WindowLoginKnowledgeManager;
-import com.biit.webforms.webservice.rest.client.KnowledgeManagerService;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.*;
@@ -44,20 +43,18 @@ import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.utils.conversor.abcd.importer.ConversorAbcdFormToForm;
 import com.biit.webforms.validators.ValidateFormAbcdCompatibility;
 import com.biit.webforms.webservice.rest.client.AbcdRestClient;
+import com.biit.webforms.webservice.rest.client.KnowledgeManagerService;
 import com.biit.webforms.webservices.Webservice;
 import com.biit.webforms.webservices.WebserviceValidatedPort;
 import com.google.gson.JsonParseException;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 
 /**
  * User Session data handler.
@@ -663,7 +660,8 @@ public class ApplicationController {
             setUnsavedFormChanges(true);
             WebformsUiLogger
                     .info(ApplicationController.class.getName(), "inserted '" + treeObject + "' into '" + parent + "' ('" + parent.getPathName() + "')");
-        } catch (FieldTooLongException | InstantiationException | IllegalAccessException | CharacterNotAllowedException e) {
+        } catch (FieldTooLongException | InstantiationException | IllegalAccessException |
+                 CharacterNotAllowedException e) {
             // Impossible
             WebformsUiLogger.errorMessage(this.getClass().getName(), e);
         } catch (NotValidChildException e) {
@@ -1026,7 +1024,8 @@ public class ApplicationController {
                 logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat, answerSubformat, horizontal,
                         image != null ? image.getFileName() : null);
             }
-        } catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException | InvalidAnswerSubformatException e) {
+        } catch (FieldTooLongException | InvalidAnswerFormatException | CharacterNotAllowedException |
+                 InvalidAnswerSubformatException e) {
             WebformsUiLogger.errorMessage(this.getClass().getName(), e);
         }
     }
@@ -1404,21 +1403,16 @@ public class ApplicationController {
      * @return
      */
     public TreeTableProvider<com.biit.abcd.persistence.entity.Form> getTreeTableAbcdFormsProvider() {
-        TreeTableProvider<com.biit.abcd.persistence.entity.Form> provider = new TreeTableProvider<com.biit.abcd.persistence.entity.Form>() {
 
-            @Override
-            public Collection<com.biit.abcd.persistence.entity.Form> getAll() throws UnexpectedDatabaseException {
-                List<com.biit.abcd.persistence.entity.Form> forms = new ArrayList<>();
-                Set<IGroup<Long>> userOrganizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(UserSession.getUser(),
-                        WebformsActivity.READ);
-                for (IGroup<Long> organization : userOrganizations) {
-                    forms.addAll(getFormsFromAbcdByOrganization(organization.getUniqueId()));
-                }
-                return forms;
+        return () -> {
+            List<com.biit.abcd.persistence.entity.Form> forms = new ArrayList<>();
+            Set<IGroup<Long>> userOrganizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(UserSession.getUser(),
+                    WebformsActivity.READ);
+            for (IGroup<Long> organization : userOrganizations) {
+                forms.addAll(getFormsFromAbcdByOrganization(organization.getUniqueId()));
             }
+            return forms;
         };
-
-        return provider;
     }
 
     /**
@@ -1427,29 +1421,24 @@ public class ApplicationController {
      * @return
      */
     public TreeTableProvider<com.biit.webforms.persistence.entity.SimpleFormView> getTreeTableFormsProvider() {
-        TreeTableProvider<com.biit.webforms.persistence.entity.SimpleFormView> provider = new TreeTableProvider<com.biit.webforms.persistence.entity.SimpleFormView>() {
+        return () -> {
+            List<SimpleFormView> userForms = new ArrayList<>();
 
-            @Override
-            public Collection<com.biit.webforms.persistence.entity.SimpleFormView> getAll() throws UnexpectedDatabaseException {
-                List<com.biit.webforms.persistence.entity.SimpleFormView> userForms = new ArrayList<>();
+            List<SimpleFormView> simpleForms = simpleFormDaoWebforms.getAll();
 
-                List<com.biit.webforms.persistence.entity.SimpleFormView> simpleForms = simpleFormDaoWebforms.getAll();
+            Set<IGroup<Long>> userOrganizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(UserSession.getUser(),
+                    WebformsActivity.READ);
 
-                Set<IGroup<Long>> userOrganizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(UserSession.getUser(),
-                        WebformsActivity.READ);
-
-                for (com.biit.webforms.persistence.entity.SimpleFormView form : simpleForms) {
-                    for (IGroup<Long> organization : userOrganizations) {
-                        if (form.getOrganizationId().equals(organization.getUniqueId())) {
-                            userForms.add(form);
-                        }
+            for (SimpleFormView form : simpleForms) {
+                for (IGroup<Long> organization : userOrganizations) {
+                    if (form.getOrganizationId().equals(organization.getUniqueId())) {
+                        userForms.add(form);
                     }
                 }
-
-                return userForms;
             }
+
+            return userForms;
         };
-        return provider;
     }
 
     /**
@@ -1587,6 +1576,13 @@ public class ApplicationController {
     }
 
     public Form loadForm(IWebformsFormView formView) {
+        if (formView.hasJson()) {
+            String jsonCode = formDao.getJson(formView.getId());
+            if (jsonCode != null) {
+                WebformsLogger.debug(this.getClass().getName(), "Obtaining form with id '{}' using json code", formView.getId());
+                return Form.fromJson(jsonCode);
+            }
+        }
         return formDao.get(formView.getId());
     }
 
@@ -1846,7 +1842,7 @@ public class ApplicationController {
 
     public void publishToKnowledgeManager(String value) {
         String authToken = userTokenDao.get(UserSession.getUser().getUniqueId()).getKnowledgeManagerAuthToken();
-        if(authToken != null) {
+        if (authToken != null) {
             try {
                 CloseableHttpResponse response = knowledgeManagerService.publishToKnowledgeManager(value, authToken,
                         UserSession.getUser().getEmailAddress());

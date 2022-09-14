@@ -12,6 +12,8 @@ public interface IFormDao extends IJpaGenericDao<Form, Long> {
 
     Form get(String label, Integer version, Long organizationId) throws MultiplesFormsFoundException;
 
+    String getJson(Long formId);
+
     void evictCache(Long id);
 
     // TODO

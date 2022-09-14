@@ -1,5 +1,15 @@
 package com.biit.webforms.persistence.dao.hibernate;
 
+import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
+import com.biit.webforms.persistence.entity.Block;
+import com.biit.webforms.persistence.entity.SimpleFormView;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -7,164 +17,158 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Repository;
-
-import com.biit.webforms.enumerations.FormWorkStatus;
-import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
-import com.biit.webforms.persistence.entity.Block;
-import com.biit.webforms.persistence.entity.SimpleFormView;
-
 @Repository
 public class SimpleFormViewDao implements ISimpleFormViewDao {
 
-	private Class<SimpleFormView> type;
+    private Class<SimpleFormView> type;
 
-	@PersistenceContext(unitName = "webformsPersistenceUnit")
-	@Qualifier(value = "webformsManagerFactory")
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = "webformsPersistenceUnit")
+    @Qualifier(value = "webformsManagerFactory")
+    private EntityManager entityManager;
 
-	public SimpleFormViewDao() {
-		this.type = SimpleFormView.class;
-	}
+    public SimpleFormViewDao() {
+        this.type = SimpleFormView.class;
+    }
 
-	public Class<SimpleFormView> getType() {
-		return type;
-	}
+    public Class<SimpleFormView> getType() {
+        return type;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public int getRowCount() {
-		Query query = entityManager.createNativeQuery("SELECT COUNT(*) FROM tree_forms");
+    @SuppressWarnings("unchecked")
+    @Override
+    public int getRowCount() {
+        Query query = entityManager.createNativeQuery("SELECT COUNT(*) FROM tree_forms");
 
-		List<Object[]> rows = query.getResultList();
+        List<Object[]> rows = query.getResultList();
 
-		for (Object[] row : rows) {
-			return (int) row[0];
-		}
-		return 0;
-	}
+        for (Object[] row : rows) {
+            return (int) row[0];
+        }
+        return 0;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<SimpleFormView> getAll() {
-		Query query = entityManager
-				.createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, tf.linked_form_label, tf.linked_form_organization_id, tf.status, tf.form_reference, max.maxversion "
-						+ "FROM tree_forms tf INNER JOIN "
-						+ "(SELECT MAX(version) AS maxversion, label, organization_id FROM tree_forms "
-						+ "GROUP BY label, organization_id) AS max  ON max.label = tf.label and max.organization_id = tf.organization_id "
-						+ "ORDER BY label, tf.version DESC;");
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<SimpleFormView> getAll() {
+        Query query = entityManager
+                .createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, tf.linked_form_label, tf.linked_form_organization_id, tf.status, tf.form_reference, max.maxversion, json is not null "
+                        + "FROM tree_forms tf INNER JOIN "
+                        + "(SELECT MAX(version) AS maxversion, label, organization_id FROM tree_forms "
+                        + "GROUP BY label, organization_id) AS max  ON max.label = tf.label and max.organization_id = tf.organization_id "
+                        + "ORDER BY label, tf.version DESC;");
 
-		List<Object[]> rows = query.getResultList();
+        List<Object[]> rows = query.getResultList();
 
-		List<SimpleFormView> formViews = new ArrayList<>();
-		for (Object[] row : rows) {
-			SimpleFormView formView = new SimpleFormView();
-			formView.setId(((BigInteger) row[0]).longValue());
-			formView.setName((String) row[1]);
-			formView.setLabel((String) row[2]);
-			formView.setVersion((Integer) row[3]);
-			formView.setCreationTime((Timestamp) row[4]);
-			if (row[5] != null) {
-				formView.setCreatedBy(((Double) row[5]).longValue());
-			}
-			formView.setUpdateTime((Timestamp) row[6]);
-			if (row[7] != null) {
-				formView.setUpdatedBy(((Double) row[7]).longValue());
-			}
-			formView.setComparationId((String) row[8]);
-			formView.setOrganizationId(((Double) row[9]).longValue());
-			if (row[10] != null) {
-				formView.setLinkedFormLabel((String) row[10]);
-			}
-			if (row[11] != null) {
-				formView.setLinkedFormOrganizationId(((BigInteger) row[11]).longValue());
-			}
+        List<SimpleFormView> formViews = new ArrayList<>();
+        for (Object[] row : rows) {
+            SimpleFormView formView = new SimpleFormView();
+            formView.setId(((BigInteger) row[0]).longValue());
+            formView.setName((String) row[1]);
+            formView.setLabel((String) row[2]);
+            formView.setVersion((Integer) row[3]);
+            formView.setCreationTime((Timestamp) row[4]);
+            if (row[5] != null) {
+                formView.setCreatedBy(((Double) row[5]).longValue());
+            }
+            formView.setUpdateTime((Timestamp) row[6]);
+            if (row[7] != null) {
+                formView.setUpdatedBy(((Double) row[7]).longValue());
+            }
+            formView.setComparationId((String) row[8]);
+            formView.setOrganizationId(((Double) row[9]).longValue());
+            if (row[10] != null) {
+                formView.setLinkedFormLabel((String) row[10]);
+            }
+            if (row[11] != null) {
+                formView.setLinkedFormOrganizationId(((BigInteger) row[11]).longValue());
+            }
 
-			if (row[12] != null) {
-				formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
-			}
+            if (row[12] != null) {
+                formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
+            }
 
-			if (row[13] != null) {
-				formView.setFormReferenceId(((BigInteger) row[13]).longValue());
-			}
+            if (row[13] != null) {
+                formView.setFormReferenceId(((BigInteger) row[13]).longValue());
+            }
 
-			formView.setLastVersion(((Integer) row[14]).equals((Integer) row[3]));
+            formView.setLastVersion(row[14].equals(row[3]));
 
-			formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
+            if (row[15] != null) {
+                formView.setHasJson((Boolean) row[15]);
+            } else {
+                formView.setHasJson(false);
+            }
 
-			formViews.add(formView);
-		}
+            formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 
-		return formViews;
-	}
+            formViews.add(formView);
+        }
 
-	@SuppressWarnings("unchecked")
-	private Set<Integer> getLinkedFormVersions(long formId) {
-		Set<Integer> linkedVersions = new HashSet<>();
+        return formViews;
+    }
 
-		Query query = entityManager.createNativeQuery("SELECT linked_form_versions FROM linked_form_versions WHERE form_id=" + formId);
-		List<Object> rows = query.getResultList();
+    @SuppressWarnings("unchecked")
+    private Set<Integer> getLinkedFormVersions(long formId) {
+        Set<Integer> linkedVersions = new HashSet<>();
 
-		for (Object row : rows) {
-			linkedVersions.add((Integer) row);
-		}
-		return linkedVersions;
-	}
+        Query query = entityManager.createNativeQuery("SELECT linked_form_versions FROM linked_form_versions WHERE form_id=" + formId);
+        List<Object> rows = query.getResultList();
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<SimpleFormView> getFormsThatUse(Block block) {
-		Query query = entityManager
-				.createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, tf.linked_form_label, tf.linked_form_organization_id, tf.status, max.maxversion "
-						+ " FROM tree_forms tf "
-						+ " INNER JOIN (SELECT MAX(version) AS maxversion, label, organization_id FROM tree_forms "
-						+ " GROUP BY label, organization_id) AS max  ON max.label = tf.label and max.organization_id = tf.organization_id "
-						+ " WHERE EXISTS "
-						+ " (SELECT * FROM tree_blocks_references tr WHERE tr.parent=tf.id AND EXISTS "
-						+ " (SELECT * FROM tree_blocks tb WHERE tr.reference=" + block.getId() + ")) " + " ORDER BY label, tf.version DESC;");
+        for (Object row : rows) {
+            linkedVersions.add((Integer) row);
+        }
+        return linkedVersions;
+    }
 
-		List<Object[]> rows = query.getResultList();
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<SimpleFormView> getFormsThatUse(Block block) {
+        Query query = entityManager
+                .createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, tf.linked_form_label, tf.linked_form_organization_id, tf.status, max.maxversion "
+                        + " FROM tree_forms tf "
+                        + " INNER JOIN (SELECT MAX(version) AS maxversion, label, organization_id FROM tree_forms "
+                        + " GROUP BY label, organization_id) AS max  ON max.label = tf.label and max.organization_id = tf.organization_id "
+                        + " WHERE EXISTS "
+                        + " (SELECT * FROM tree_blocks_references tr WHERE tr.parent=tf.id AND EXISTS "
+                        + " (SELECT * FROM tree_blocks tb WHERE tr.reference=" + block.getId() + ")) " + " ORDER BY label, tf.version DESC;");
 
-		List<SimpleFormView> formViews = new ArrayList<>();
-		for (Object[] row : rows) {
-			SimpleFormView formView = new SimpleFormView();
-			formView.setId(((BigInteger) row[0]).longValue());
-			formView.setName((String) row[1]);
-			formView.setLabel((String) row[2]);
-			formView.setVersion((Integer) row[3]);
-			formView.setCreationTime((Timestamp) row[4]);
-			if (row[4] != null) {
-				formView.setCreatedBy(((Double) row[5]).longValue());
-			}
-			formView.setUpdateTime((Timestamp) row[6]);
-			if (row[6] != null) {
-				formView.setUpdatedBy(((Double) row[7]).longValue());
-			}
-			formView.setComparationId((String) row[8]);
-			formView.setOrganizationId(((Double) row[9]).longValue());
-			if (row[10] != null) {
-				formView.setLinkedFormLabel((String) row[10]);
-			}
-			if (row[11] != null) {
-				formView.setLinkedFormOrganizationId(((BigInteger) row[11]).longValue());
-			}
+        List<Object[]> rows = query.getResultList();
 
-			if (row[12] != null) {
-				formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
-			}
+        List<SimpleFormView> formViews = new ArrayList<>();
+        for (Object[] row : rows) {
+            SimpleFormView formView = new SimpleFormView();
+            formView.setId(((BigInteger) row[0]).longValue());
+            formView.setName((String) row[1]);
+            formView.setLabel((String) row[2]);
+            formView.setVersion((Integer) row[3]);
+            formView.setCreationTime((Timestamp) row[4]);
+            if (row[4] != null) {
+                formView.setCreatedBy(((Double) row[5]).longValue());
+            }
+            formView.setUpdateTime((Timestamp) row[6]);
+            if (row[6] != null) {
+                formView.setUpdatedBy(((Double) row[7]).longValue());
+            }
+            formView.setComparationId((String) row[8]);
+            formView.setOrganizationId(((Double) row[9]).longValue());
+            if (row[10] != null) {
+                formView.setLinkedFormLabel((String) row[10]);
+            }
+            if (row[11] != null) {
+                formView.setLinkedFormOrganizationId(((BigInteger) row[11]).longValue());
+            }
 
-			formView.setLastVersion(((Integer) row[13]).equals((Integer) row[3]));
+            if (row[12] != null) {
+                formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
+            }
 
-			formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
+            formView.setLastVersion(row[13].equals(row[3]));
 
-			formViews.add(formView);
-		}
+            formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 
-		return formViews;
-	}
+            formViews.add(formView);
+        }
+
+        return formViews;
+    }
 }
