@@ -87,7 +87,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     @ExcludeFromJson
     @Lob
     @Column(name = "json", length = MAX_JSON_LENGTH)
-    private transient String jsonCode;
+    private String jsonCode;
 
     public Form() {
         super();

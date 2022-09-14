@@ -93,11 +93,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 
             formView.setLastVersion(row[14].equals(row[3]));
 
-            if (row[15] != null) {
-                formView.setHasJson((Boolean) row[15]);
-            } else {
-                formView.setHasJson(false);
-            }
+            formView.setHasJson(row[15] != null && ((Integer) row[15]) > 0);
 
             formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 

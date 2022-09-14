@@ -1580,7 +1580,9 @@ public class ApplicationController {
             String jsonCode = formDao.getJson(formView.getId());
             if (jsonCode != null) {
                 WebformsLogger.debug(this.getClass().getName(), "Obtaining form with id '{}' using json code", formView.getId());
-                return Form.fromJson(jsonCode);
+                Form form = Form.fromJson(jsonCode);
+                form.setId(formView.getId());
+                return form;
             }
         }
         return formDao.get(formView.getId());

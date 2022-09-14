@@ -210,6 +210,7 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 
         criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
 
+        criteriaQuery.select(typesRoot.get("jsonCode"));
         try {
             return getEntityManager().createQuery(criteriaQuery).getSingleResult();
         } catch (NoResultException e) {
