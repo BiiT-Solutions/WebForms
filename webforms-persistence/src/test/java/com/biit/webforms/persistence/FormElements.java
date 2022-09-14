@@ -85,6 +85,17 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
     }
 
     @Test(dependsOnMethods = {"createBuildingBlock"})
+    @Rollback(value = false)
+    @Transactional
+    public void testSerializeForm() throws FieldTooLongException, NotValidChildException,
+            CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException,
+            BadFlowContentException, FlowWithoutSourceException, FlowSameOriginAndDestinyException, FlowDestinyIsBeforeOriginException,
+            FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException {
+        Form form = FormUtils.createCompleteForm(block);
+        Assert.assertNotNull(form.toJson());
+    }
+
+    @Test(dependsOnMethods = {"createBuildingBlock"})
     @Rollback(value = true)
     @Transactional
     public void testNewVersion() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
