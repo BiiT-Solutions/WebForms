@@ -74,7 +74,7 @@ public class FormUtils {
 
 	/**
 	 * Creates a form with two categories.
-	 * 
+	 *
 	 * @param withBlock
 	 * @param label
 	 * @return
@@ -99,12 +99,12 @@ public class FormUtils {
 		Form form = new Form();
 		form.setOrganizationId(ORGANIZATION_ID);
 		form.setLabel(label);
-		form.setCreatedBy(0l);
-		form.setUpdatedBy(0l);
+		form.setCreatedBy(0L);
+		form.setUpdatedBy(0L);
 
 		form.addChild(createCategory(CATEGORY_1));
 		if (withBlock != null) {
-			form.addChild(createReferencedBlock(BLOCK_1, withBlock));
+			form.addChild(createReferencedBlock(withBlock));
 		}
 		form.addChild(createCategory(CATEGORY_2));
 
@@ -155,8 +155,7 @@ public class FormUtils {
 		return flow;
 	}
 
-	public static BlockReference createReferencedBlock(String name, Block block) throws NotValidChildException, FieldTooLongException,
-			CharacterNotAllowedException, InvalidAnswerFormatException, InvalidAnswerSubformatException {
+	public static BlockReference createReferencedBlock(Block block)  {
 		BlockReference blockReference = new BlockReference();
 		blockReference.setReference(block);
 		return blockReference;
@@ -176,7 +175,7 @@ public class FormUtils {
 
 	/**
 	 * Creates a category with @param{name} as name and label.
-	 * 
+	 *
 	 * @param name
 	 * @return
 	 * @throws CharacterNotAllowedException

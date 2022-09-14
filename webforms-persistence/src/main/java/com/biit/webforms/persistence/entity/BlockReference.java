@@ -1,17 +1,5 @@
 package com.biit.webforms.persistence.entity;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.DependencyExistException;
@@ -21,14 +9,20 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.persistence.utils.IdGenerator;
 import com.biit.webforms.enumerations.FormWorkStatus;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name = "tree_blocks_references")
-@Cacheable(true)
+@Cacheable()
 public class BlockReference extends TreeObject implements IWebformsBlockView {
 	private static final long serialVersionUID = -4300039254232003868L;
 
 	public static final String DEFAULT_TECHNICAL_NAME = "block_reference";
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>();
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>();
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "reference")
@@ -131,7 +125,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 
 	@Override
 	protected List<Class<? extends TreeObject>> getAllowedChildren() {
-		return ALLOWED_CHILDS;
+		return ALLOWED_CHILDREN;
 	}
 
 	@Override
@@ -160,7 +154,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 		// Returns the name of the first category of the block
 		try {
 			return reference.getChild(0).getName();
-		} catch (IndexOutOfBoundsException | ChildrenNotFoundException e) {
+		} catch (IndexOutOfBoundsException | ChildrenNotFoundException | NullPointerException e) {
 			return "";
 		}
 	}
@@ -168,7 +162,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	@Override
 	public List<TreeObject> getChildren() {
 		if (reference == null) {
-			return new ArrayList<TreeObject>();
+			return new ArrayList<>();
 		}
 		return reference.getChildren();
 	}
@@ -184,8 +178,6 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 	/**
 	 * For some cases, i.e. using Springcache we need to initialize all sets
 	 * (disabling the Lazy loading).
-	 * 
-	 * @param elements
 	 */
 	@Override
 	public void initializeSets() {

@@ -747,6 +747,8 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         gsonBuilder.setPrettyPrinting();
         gsonBuilder.registerTypeAdapterFactory(HibernateProxyTypeAdapter.FACTORY);
         gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
+        gsonBuilder.registerTypeAdapter(Block.class, new BlockSerializer());
+        gsonBuilder.registerTypeAdapter(BlockReference.class, new BlockReferenceSerializer());
         gsonBuilder.registerTypeAdapter(Category.class, new CategorySerializer());
         gsonBuilder.registerTypeAdapter(Group.class, new GroupSerializer());
         gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
@@ -756,7 +758,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         gsonBuilder.registerTypeAdapter(Answer.class, new AnswerSerializer());
         gsonBuilder.registerTypeAdapter(DynamicAnswer.class, new DynamicAnswerSerializer());
         gsonBuilder.registerTypeAdapter(Flow.class, new FlowSerializer());
-        gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<Token>());
+        gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<>());
         gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenSerializer());
         gsonBuilder.registerTypeAdapter(TokenEmpty.class, new TokenEmptySerializer());
         gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerSerializer());
