@@ -29,11 +29,12 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
     public void deserialize(JsonElement json, JsonDeserializationContext context, Form element) {
         JsonObject jobject = (JsonObject) json;
 
-        HashMap<DynamicAnswer, List<String>> mapper = new HashMap<DynamicAnswer, List<String>>();
+        HashMap<DynamicAnswer, List<String>> mapper = new HashMap<>();
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         // Redirects to proper deserializers.
-        gsonBuilder.registerTypeAdapter(StorableObject.class, new StorableObjectDeserializer<StorableObject>());
+        gsonBuilder.registerTypeAdapter(StorableObject.class, new StorableObjectDeserializer<>());
+        gsonBuilder.registerTypeAdapter(BlockReference.class, new BlockReferenceDeserializer());
         gsonBuilder.registerTypeAdapter(TreeObject.class, new StorableObjectDeserializer<TreeObject>());
         gsonBuilder.registerTypeAdapter(Category.class, new CategoryDeserializer());
         gsonBuilder.registerTypeAdapter(Group.class, new GroupDeserializer());
@@ -44,7 +45,7 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
         gsonBuilder.registerTypeAdapter(Answer.class, new AnswerDeserializer());
         gsonBuilder.registerTypeAdapter(DynamicAnswer.class, new DynamicAnswerDeserializer(mapper));
         gsonBuilder.registerTypeAdapter(Flow.class, new FlowDeserializer(element));
-        gsonBuilder.registerTypeAdapter(Token.class, new TokenDeserializer<Token>(Token.class));
+        gsonBuilder.registerTypeAdapter(Token.class, new TokenDeserializer<>(Token.class));
         gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenDeserializer(element));
         gsonBuilder.registerTypeAdapter(TokenEmpty.class, new TokenEmptyDeserializer(element));
         gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerDeserializer(element));
@@ -111,7 +112,7 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
             element.addWebserviceCalls(calls);
         }
 
-        element.setImage((TreeObjectImage) context.deserialize(jobject.get("image"), TreeObjectImage.class));
+        element.setImage(context.deserialize(jobject.get("image"), TreeObjectImage.class));
     }
 
     public static TreeObject parseTreeObjectPath(String name, Form form, JsonObject jobject, JsonDeserializationContext context) {

@@ -12,10 +12,9 @@ public class BlockReferenceSerializer extends TreeObjectSerializer<BlockReferenc
 
     @Override
     public JsonElement serialize(BlockReference src, Type typeOfSrc, JsonSerializationContext context) {
-        if (src.getReference() != null) {
-            return new BlockSerializer().serialize(src.getReference(), typeOfSrc, context);
-        }
-        return new JsonObject();
+        final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
+        jsonObject.add("blockReferencedId", context.serialize(src.getReference().getId()));
+        return jsonObject;
     }
 
 }

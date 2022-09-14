@@ -9,6 +9,7 @@ import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
 import com.biit.webforms.persistence.entity.Block;
+import com.biit.webforms.persistence.entity.BlockReference;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
 import com.biit.webforms.persistence.entity.exceptions.*;
@@ -93,6 +94,15 @@ public class FormElements extends AbstractTransactionalTestNGSpringContextTests 
             FlowWithoutDestinyException, NotValidTokenType, ElementIsReadOnly, FlowNotAllowedException {
         Form form = FormUtils.createCompleteForm(block);
         Assert.assertNotNull(form.toJson());
+        //Check the linked block.
+        boolean hasBuildingBlock = false;
+        for (TreeObject child : form.getChildren()) {
+            if (child instanceof BlockReference) {
+                Assert.assertEquals(((BlockReference) child).getReference().getComparationId(), block.getComparationId());
+                hasBuildingBlock = true;
+            }
+        }
+        Assert.assertTrue(hasBuildingBlock);
     }
 
     @Test(dependsOnMethods = {"createBuildingBlock"})

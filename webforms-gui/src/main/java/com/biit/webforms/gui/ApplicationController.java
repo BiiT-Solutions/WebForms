@@ -1581,7 +1581,15 @@ public class ApplicationController {
             if (jsonCode != null) {
                 WebformsLogger.debug(this.getClass().getName(), "Obtaining form with id '{}' using json code", formView.getId());
                 Form form = Form.fromJson(jsonCode);
+                //Json does not include the Id sometimes, as is generated before be stored on database.
                 form.setId(formView.getId());
+                //BlockReferences are not stored on json. Must be reloaded.
+                for (TreeObject children : form.getChildren()) {
+                    if (children instanceof BlockReference) {
+                        BlockReference blockReference = (BlockReference) children;
+                        blockReference.setReference(blockDao.get(blockReference.getBlockReferencedId()));
+                    }
+                }
                 return form;
             }
         }

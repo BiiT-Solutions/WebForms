@@ -22,11 +22,14 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
     private static final long serialVersionUID = -4300039254232003868L;
 
     public static final String DEFAULT_TECHNICAL_NAME = "block_reference";
-    private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<Class<? extends TreeObject>>();
+    private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "reference")
     private Block reference;
+
+    //Used mainly for json deserialize.
+    private transient Long blockReferencedId;
 
     public BlockReference() {
         super();
@@ -34,7 +37,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 
     public BlockReference(Block reference) {
         super();
-        this.reference = reference;
+        setReference(reference);
     }
 
     public Block getReference() {
@@ -43,6 +46,9 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
 
     public void setReference(Block reference) {
         this.reference = reference;
+        if (reference != null) {
+            this.blockReferencedId = reference.getId();
+        }
     }
 
     @Override
@@ -73,6 +79,14 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
     @Override
     public String getLinkedFormLabel() {
         return null;
+    }
+
+    public Long getBlockReferencedId() {
+        return blockReferencedId;
+    }
+
+    public void setBlockReferencedId(Long blockReferencedId) {
+        this.blockReferencedId = blockReferencedId;
     }
 
     @Override
@@ -162,7 +176,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
     @Override
     public List<TreeObject> getChildren() {
         if (reference == null) {
-            return new ArrayList<TreeObject>();
+            return new ArrayList<>();
         }
         return reference.getChildren();
     }
@@ -178,8 +192,6 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
     /**
      * For some cases, i.e. using Springcache we need to initialize all sets
      * (disabling the Lazy loading).
-     *
-     * @param elements
      */
     @Override
     public void initializeSets() {

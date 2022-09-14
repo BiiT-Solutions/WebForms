@@ -1,9 +1,5 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.json.serialization.StorableObjectDeserializer;
 import com.biit.webforms.persistence.entity.Form;
@@ -15,6 +11,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.HashSet;
+import java.util.Set;
 
 public class WebserviceCallDeserializer extends StorableObjectDeserializer<WebserviceCall> {
 
@@ -55,7 +55,7 @@ public class WebserviceCallDeserializer extends StorableObjectDeserializer<Webse
 			Type listType = new TypeToken<Set<WebserviceCallOutputLink>>() {
 			}.getType();
 			@SuppressWarnings("unchecked")
-			Set<WebserviceCallOutputLink> links = (Set<WebserviceCallOutputLink>) context.deserialize(valuesJson, listType);
+			Set<WebserviceCallOutputLink> links = context.deserialize(valuesJson, listType);
 			if (links != null) {
 				for (WebserviceCallOutputLink link : links) {
 					outputLinks.add(link);
@@ -74,7 +74,7 @@ public class WebserviceCallDeserializer extends StorableObjectDeserializer<Webse
 			Type listType = new TypeToken<Set<WebserviceCallInputLink>>() {
 			}.getType();
 			@SuppressWarnings("unchecked")
-			Set<WebserviceCallInputLink> links = (Set<WebserviceCallInputLink>) context.deserialize(valuesJson, listType);
+			Set<WebserviceCallInputLink> links = context.deserialize(valuesJson, listType);
 			if (links != null) {
 				for (WebserviceCallInputLink link : links) {
 					inputLinks.add(link);
