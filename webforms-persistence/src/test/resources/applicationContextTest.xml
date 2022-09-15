@@ -123,6 +123,10 @@
 		<entry key="hibernate.cache.provider_class" value="${hibernate.cache.provider_class}" />
 		<entry key="hibernate.cache.use_query_cache" value="${hibernate.cache.use_query_cache}" />
 		<entry key="hibernate.check_nullability" value="${hibernate.check_nullability}" />
+
+		<!-- Require for criteriaUpdate avoid generate temporary tables (https://in.relation.to/2017/02/01/non-temporary-table-bulk-id-strategies/) -->
+		<entry key="hibernate.hql.bulk_id_strategy"
+			   value="org.hibernate.hql.spi.id.inline.InlineIdsOrClauseBulkIdStrategy"/>
 		
 	</util:map>
 

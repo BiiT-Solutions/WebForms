@@ -3,6 +3,9 @@ package com.biit.webforms.persistence.dao;
 import com.biit.persistence.dao.IJpaGenericDao;
 import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
 import com.biit.webforms.persistence.entity.Form;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface IFormDao extends IJpaGenericDao<Form, Long> {
 
@@ -13,6 +16,9 @@ public interface IFormDao extends IJpaGenericDao<Form, Long> {
     Form get(String label, Integer version, Long organizationId) throws MultiplesFormsFoundException;
 
     String getJson(Long formId);
+
+    @Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+    int setJson(Long formId, String json);
 
     void evictCache(Long id);
 

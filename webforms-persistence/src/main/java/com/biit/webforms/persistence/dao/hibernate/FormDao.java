@@ -20,10 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import java.util.ArrayList;
@@ -95,17 +92,19 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 
     @Override
     @CachePut(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null")
-    @Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+    @Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
     public Form merge(Form form) {
         form.updateChildrenSortSeqs();
         if (form.getCreationTime() == null) {
             form.setCreationTime();
         }
 
-        form.setJsonCode(form.toJson());
-
         Form mergedForm = super.merge(form);
         if (mergedForm != null) {
+            //Store the IDs on the JSON.
+            mergedForm.setJsonCode(mergedForm.toJson());
+            setJson(mergedForm.getId(), mergedForm.getJsonCode());
+
             mergedForm.initializeSets();
         }
         return mergedForm;
@@ -113,14 +112,17 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
 
     @Override
     @CachePut(value = "webformsforms", key = "#form.getId()", condition = "#form.getId() != null")
-    @Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+    @Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
     public Form makePersistent(Form form) {
         form.updateChildrenSortSeqs();
         if (form.getCreationTime() == null) {
             form.setCreationTime();
         }
-        form.setJsonCode(form.toJson());
-        return super.makePersistent(form);
+        Form formDB = super.makePersistent(form);
+        //Store it again as we need the obtained IDs to be on JSON code.
+        formDB.setJsonCode(formDB.toJson());
+        setJson(formDB.getId(), formDB.getJsonCode());
+        return formDB;
     }
 
     @Override
@@ -216,6 +218,21 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    @Override
+    @Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
+    public int setJson(Long formId, String json) {
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaUpdate<Form> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Form.class);
+        Root<Form> typesRoot = criteriaUpdate.from(Form.class);
+
+        final List<Predicate> predicates = new ArrayList<>();
+        predicates.add(criteriaBuilder.equal(typesRoot.get("id"), formId));
+
+        criteriaUpdate.set(typesRoot.get("jsonCode"), json);
+        criteriaUpdate.where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
+        return getEntityManager().createQuery(criteriaUpdate).executeUpdate();
     }
 
     @Override

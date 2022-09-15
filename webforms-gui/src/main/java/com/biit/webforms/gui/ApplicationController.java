@@ -150,6 +150,7 @@ public class ApplicationController {
         }
 
         Form newForm = Form.fromJson(json);
+        //Remove any id if exists.
         newForm.setOrganizationId(organizationId);
         newForm.setLabel(formLabel);
         newForm.resetUserTimestampInfo(UserSession.getUser().getUniqueId());
@@ -164,7 +165,7 @@ public class ApplicationController {
             newForm.removeWebserviceCall(call);
         }
 
-        // Reset ids before persisting buf after removing incorrect
+        // Reset ids before persisting but after removing incorrect
         // webservices.
         newForm.resetIds();
         newForm = formDao.makePersistent(newForm);
@@ -1581,8 +1582,6 @@ public class ApplicationController {
             if (jsonCode != null) {
                 WebformsLogger.debug(this.getClass().getName(), "Obtaining form with id '{}' using json code", formView.getId());
                 Form form = Form.fromJson(jsonCode);
-                //Json does not include the Id sometimes, as is generated before be stored on database.
-                form.setId(formView.getId());
                 //BlockReferences are not stored on json. Must be reloaded.
                 for (TreeObject children : form.getChildren()) {
                     if (children instanceof BlockReference) {

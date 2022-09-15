@@ -59,6 +59,7 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
         gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageDeserializer());
         Gson gson = gsonBuilder.create();
 
+        element.setId(this.parseLong("id", jobject, context));
         element.setComparationId(parseString("comparationId", jobject, context));
         element.setCreationTime(parseTimestamp("creationTime", jobject, context));
         element.setUpdateTime(parseTimestamp("updateTime", jobject, context));
