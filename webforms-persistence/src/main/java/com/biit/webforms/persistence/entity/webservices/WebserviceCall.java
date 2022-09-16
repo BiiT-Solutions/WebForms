@@ -1,25 +1,17 @@
 package com.biit.webforms.persistence.entity.webservices;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.webservices.Webservice;
+
+import javax.persistence.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "webservice_call")
@@ -36,15 +28,15 @@ public class WebserviceCall extends StorableObject {
 	@Column(name="webservice_name")
 	private String webserviceName;
 
-	@ManyToOne(optional = true)
+	@ManyToOne()
 	@JoinColumn(name="form_element_trigger")
 	private BaseQuestion formElementTrigger;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "webserviceCall")
-	private Set<WebserviceCallInputLink> inputLinks;
+	private final Set<WebserviceCallInputLink> inputLinks;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "webserviceCall")
-	private Set<WebserviceCallOutputLink> outputLinks;
+	private final Set<WebserviceCallOutputLink> outputLinks;
 
 	private transient boolean readOnly;
 
@@ -64,7 +56,7 @@ public class WebserviceCall extends StorableObject {
 
 	@Override
 	public Set<StorableObject> getAllInnerStorableObjects() {
-		return new HashSet<StorableObject>();
+		return new HashSet<>();
 	}
 
 	@Override
@@ -142,8 +134,7 @@ public class WebserviceCall extends StorableObject {
 
 	/**
 	 * Question that run the web service.
-	 * 
-	 * @return
+	 *
 	 */
 	public BaseQuestion getFormElementTrigger() {
 		return formElementTrigger;
@@ -165,7 +156,7 @@ public class WebserviceCall extends StorableObject {
 
 	public void updateReferences(HashMap<String, BaseQuestion> references) {
 		if (getFormElementTrigger() != null) {
-			setFormElementTrigger((BaseQuestion) references.get(getFormElementTrigger().getOriginalReference()));
+			setFormElementTrigger(references.get(getFormElementTrigger().getOriginalReference()));
 		}
 		for (WebserviceCallLink link : getInputLinks()) {
 			link.updateReferences(references);

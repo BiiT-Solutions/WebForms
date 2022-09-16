@@ -1,31 +1,19 @@
 package com.biit.webforms.utils.parser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.utils.parser.exceptions.EmptyParenthesisException;
-import com.biit.webforms.utils.parser.exceptions.ExpectedTokenNotFound;
-import com.biit.webforms.utils.parser.exceptions.ExpressionNotWellFormedException;
-import com.biit.webforms.utils.parser.exceptions.IncompleteBinaryOperatorException;
-import com.biit.webforms.utils.parser.exceptions.MissingParenthesisException;
-import com.biit.webforms.utils.parser.exceptions.NoMoreTokensException;
-import com.biit.webforms.utils.parser.exceptions.ParseException;
+import com.biit.webforms.utils.parser.exceptions.*;
 import com.biit.webforms.utils.parser.parselets.InfixParselet;
 import com.biit.webforms.utils.parser.parselets.PrefixParselet;
+
+import java.util.*;
 
 public class Parser {
 
 	protected final Iterator<Token> tokens;
-	private final List<Token> read = new ArrayList<Token>();
+	private final List<Token> read = new ArrayList<>();
 	private final Set<ITokenType> ignore = new HashSet<>();
-	private final Map<ITokenType, PrefixParselet> prefixParselets = new HashMap<ITokenType, PrefixParselet>();
-	private final Map<ITokenType, InfixParselet> infixParselets = new HashMap<ITokenType, InfixParselet>();
+	private final Map<ITokenType, PrefixParselet> prefixParselets = new HashMap<>();
+	private final Map<ITokenType, InfixParselet> infixParselets = new HashMap<>();
 
 	public Parser(Iterator<Token> tokens) {
 		this.tokens = tokens;
@@ -33,9 +21,7 @@ public class Parser {
 
 	/**
 	 * Register a new prefix parselet.
-	 * 
-	 * @param tokenType
-	 * @param parselet
+	 *
 	 */
 	public void register(ITokenType tokenType, PrefixParselet parselet) {
 		prefixParselets.put(tokenType, parselet);
@@ -43,9 +29,7 @@ public class Parser {
 
 	/**
 	 * Register a new infix parselet (They are also used for postfix expressions).
-	 * 
-	 * @param tokenType
-	 * @param parselet
+	 *
 	 */
 	public void register(ITokenType tokenType, InfixParselet parselet) {
 		infixParselets.put(tokenType, parselet);
@@ -88,15 +72,7 @@ public class Parser {
 
 	/**
 	 * Method to parse the expression fully. It will raise an exception if there are no consumed tokens
-	 * 
-	 * @return
-	 * @throws MissingParenthesisException
-	 * @throws IncompleteBinaryOperatorException
-	 * @throws NoMoreTokensException
-	 * @throws ExpectedTokenNotFound
-	 * @throws ParseException
-	 * @throws ExpressionNotWellFormedException
-	 * @throws EmptyParenthesisException
+	 *
 	 */
 	public Expression parseCompleteExpression() throws ParseException, ExpectedTokenNotFound, NoMoreTokensException,
 			IncompleteBinaryOperatorException, MissingParenthesisException, ExpressionNotWellFormedException,

@@ -1,17 +1,5 @@
 package com.biit.webforms.persistence.entity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import com.biit.form.entity.BaseAnswer;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
@@ -22,25 +10,30 @@ import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.FlowConditionScript;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Answer is a class that contains the information of a defined and possible
  * answer to a multiple choice question.
- * 
+ * <p>
  * -Has the next properties: name (value for client purposes, the method get/set
  * name and value affect the same parameter)
- * 
+ * <p>
  * -label
- * 
+ * <p>
  * -description
- * 
+ * <p>
  * 
  */
 @Entity
 @Table(name = "tree_answers")
-@Cacheable(true)
+@Cacheable()
 public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithImage {
 	private static final long serialVersionUID = 7614678800982506178L;
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(Answer.class));
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>(Collections.singletonList(Answer.class));
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 
 	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
@@ -51,13 +44,13 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
 
 	public Answer() {
 		super();
-		description = new String();
+		description = "";
 	}
 
 	public Answer(String name) throws FieldTooLongException, CharacterNotAllowedException {
 		super(name);
 		setValue(name);
-		description = new String();
+		description = "";
 	}
 
 	@Override
@@ -86,7 +79,7 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
 		if (object instanceof Answer) {
 			copyBasicInfo(object);
 			if (((Answer) object).getDescription() != null) {
-				description = new String(((Answer) object).getDescription());
+				description = ((Answer) object).getDescription();
 			}
 		} else {
 			throw new NotValidTreeObjectException("Copy data for Answer only supports the same type copy");
@@ -95,10 +88,7 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
 
 	/**
 	 * Set value is an alias for {@link Answer#setLabel(String)}
-	 * 
-	 * @param value
-	 * @throws FieldTooLongException
-	 * @throws CharacterNotAllowedException
+	 *
 	 */
 	public void setValue(String value) throws FieldTooLongException, CharacterNotAllowedException {
 		setName(value);
@@ -106,8 +96,7 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
 
 	/**
 	 * Get Value is an alias for {@link Answer#getName()}
-	 * 
-	 * @return
+	 *
 	 */
 	public String getValue() {
 		return getName();
@@ -132,15 +121,11 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
 
 	/**
 	 * Checks if this answer is a subanswer by looking if it has a parent and if
-	 * it has if is an answer.
-	 * 
-	 * @return
+	 * it has it, if is an answer.
+	 *
 	 */
 	public boolean isSubanswer() {
-		if (getParent() == null || !(getParent() instanceof Answer)) {
-			return false;
-		}
-		return true;
+		return getParent() != null && getParent() instanceof Answer;
 	}
 
 	public String getPathAnswerValue() {
@@ -157,9 +142,8 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
 	}
 
 	/**
-	 * A final answer is an answer that doesn't contain childs
-	 * 
-	 * @return
+	 * A final answer is an answer that doesn't contain children
+	 *
 	 */
 	public boolean isFinalAnswer() {
 		return getChildren().isEmpty();

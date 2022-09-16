@@ -1,31 +1,26 @@
 package com.biit.webforms.computed;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.FlowType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Flow;
-import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
-import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
-import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
-import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
+import com.biit.webforms.persistence.entity.exceptions.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ComputedFlowView {
 
 	private TreeObject firstElement;
-	private Set<Flow> flows;
-	private HashMap<TreeObject, Set<Flow>> flowsByOrigin;
-	private HashMap<TreeObject, Set<Flow>> flowsByDestiny;
+	private final Set<Flow> flows;
+	private final HashMap<TreeObject, Set<Flow>> flowsByOrigin;
+	private final HashMap<TreeObject, Set<Flow>> flowsByDestiny;
 
 	public ComputedFlowView() {
-		flows = new HashSet<Flow>();
+		flows = new HashSet<>();
 		flowsByOrigin = new HashMap<>();
 		flowsByDestiny = new HashMap<>();
 	}
@@ -44,12 +39,12 @@ public class ComputedFlowView {
 
 	private void updateMapsAddFlow(Flow flow) {
 		if (!flowsByOrigin.containsKey(flow.getOrigin())) {
-			flowsByOrigin.put(flow.getOrigin(), new HashSet<Flow>());
+			flowsByOrigin.put(flow.getOrigin(), new HashSet<>());
 		}
 		flowsByOrigin.get(flow.getOrigin()).add(flow);
 		if (flow.getDestiny() != null) {
 			if (!flowsByDestiny.containsKey(flow.getDestiny())) {
-				flowsByDestiny.put(flow.getDestiny(), new HashSet<Flow>());
+				flowsByDestiny.put(flow.getDestiny(), new HashSet<>());
 			}
 			flowsByDestiny.get(flow.getDestiny()).add(flow);
 		}
@@ -77,14 +72,12 @@ public class ComputedFlowView {
 
 	/**
 	 * Creates a new computed go to next element Flow. Type normal, condition = '' -> true
-	 * 
-	 * @param origin
-	 * @param destiny
+	 *
 	 */
 	public void addNewNextElementFlow(BaseQuestion origin, BaseQuestion destiny) {
 		Flow flow = new Flow();
 		try {
-			flow.setContent(origin, FlowType.NORMAL, destiny, false, new ArrayList<Token>());
+			flow.setContent(origin, FlowType.NORMAL, destiny, false, new ArrayList<>());
 			flow.setGenerated(true);
 			flow.setReadOnly(origin.isReadOnly() && destiny.isReadOnly());
 			addFlow(flow);
@@ -98,12 +91,12 @@ public class ComputedFlowView {
 	public void addNewEndFormFlow(BaseQuestion origin) {
 		Flow flow = new Flow();
 		try {
-			flow.setContent(origin, FlowType.END_FORM, null, false, new ArrayList<Token>());
+			flow.setContent(origin, FlowType.END_FORM, null, false, new ArrayList<>());
 			flow.setGenerated(true);
 			addFlow(flow);
 		} catch (BadFlowContentException | FlowWithoutSourceException | FlowSameOriginAndDestinyException
 				| FlowDestinyIsBeforeOriginException | FlowWithoutDestinyException e) {
-			// Imposible
+			// Impossible
 			WebformsLogger.errorMessage(this.getClass().getName(), e);
 		}
 	}

@@ -1,8 +1,8 @@
 package com.biit.webforms.utils.parser;
 
-import java.util.List;
-
 import com.biit.webforms.persistence.entity.condition.Token;
+
+import java.util.List;
 
 /**
  * Interface for all expression recognized by the PRATT parser. 
@@ -14,13 +14,13 @@ public abstract class Expression {
 	
 	/**
 	 * Creates a copy of current expression "flattened"
-	 * @return
+	 * @return returns the expression
 	 */
 	public abstract Expression flatten();
 	
 	/**
 	 * Returns a copy of current expression negated.
-	 * @return
+	 * @return returns the expression
 	 */
 	public abstract Expression negate();
 
@@ -33,15 +33,15 @@ public abstract class Expression {
 	
 	/**
 	 * Returns all clazz members in the expression 
-	 * @param clazz
-	 * @return
+	 * @param clazz the filter
+	 * @return returns the expressions
 	 */
 	public abstract List<Expression> getAll(Class<?> clazz);
 	
 	/**
 	 * Returns all token clazz elements
-	 * @param tokenClazz
-	 * @return
+	 * @param tokenClazz the filter
+	 * @return returns the tokens
 	 */
 	public abstract List<Token> getAllTokens(Class<? extends Token> tokenClazz);
 }

@@ -161,7 +161,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     /**
      * Returns all elements that the user has selected to hide.
      *
-     * @return
      */
     public Set<TreeObject> getElementsToHide() {
         return elementsToHide;
@@ -171,7 +170,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
      * Returns all elements that the user has selected to hide and the elements
      * that are children of these elements.
      *
-     * @return
      */
     public Set<TreeObject> getAllElementsToHide() {
         Set<TreeObject> elementsToHide = new HashSet<>();
@@ -185,9 +183,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     /**
      * Mark an element as hidden.
      *
-     * @param element
      * @return true if the element has change its state to hidden.
-     * @throws ElementCannotBeRemovedException
      */
     public boolean hideElement(TreeObject element) throws ElementCannotBeRemovedException {
         // If parent is hidden, do not hide this element.
@@ -210,7 +206,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     /**
      * Shows a hidden element.
      *
-     * @param element
      * @return true if the element has change its state to not hidden.
      */
     public boolean showElement(TreeObject element) {
@@ -229,7 +224,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     /**
      * Copy to this element the rules in form
      *
-     * @param form
      */
     private void copyRules(Form form, boolean discard) {
         LinkedHashSet<TreeObject> currentElements = getAllChildrenInHierarchy(TreeObject.class);
@@ -372,7 +366,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     /**
      * Update references for a new copy, version... of the form.
      *
-     * @param elementsToHide
      */
     private void updateElementsToHide(Set<TreeObject> elementsToHide) {
         HashMap<String, TreeObject> elements = new HashMap<>();
@@ -396,10 +389,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     /**
      * Generate copy used to remove all rule elements that are not in the view.
      *
-     * @param seed
-     * @return
-     * @throws NotValidTreeObjectException
-     * @throws CharacterNotAllowedException
      */
     public Form generateFormCopiedSimplification(TreeObject seed) throws NotValidStorableObjectException, CharacterNotAllowedException {
         TreeObject copiedSeed = seed.generateCopy(true, true);
@@ -430,7 +419,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
      * This method creates a ComputeRuleView with all the current rules and the
      * implicit rules (question without rule goes to the next element)
      *
-     * @return
      */
     public ComputedFlowView getComputedFlowsView() {
         LinkedHashSet<TreeObject> allBaseQuestions = getAllNotHiddenChildrenInHierarchy(BaseQuestion.class);
@@ -474,9 +462,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     /**
      * Gets all flows that has as source and destiny the input parameters.
      *
-     * @param origin
-     * @param destiny
-     * @return
      */
     public Set<Flow> getFlows(TreeObject origin, TreeObject destiny) {
         Set<Flow> selectedFlows = new HashSet<>();
@@ -574,8 +559,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     /**
      * Compares the content of treeObject - Needs to be an instance of Form
      *
-     * @param treeObject
-     * @return
      */
     @Override
     public boolean isContentEqual(TreeObject treeObject) {
@@ -719,7 +702,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
      * time or not when modifying data. It is assumed that all linked forms have
      * the same name and organization.
      *
-     * @param linkedForms
      */
     public void setLinkedForms(Set<IBaseFormView> linkedForms) {
         if (linkedForms == null || linkedForms.isEmpty()) {
@@ -816,7 +798,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     /**
      * Gets the relationship between questions and the global index in the form.
      *
-     * @return
      */
     public HashMap<TreeObject, Integer> getQuestionsInOrder() {
         HashMap<TreeObject, Integer> questionIndex = new HashMap<>();
@@ -882,8 +863,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
      * Get index of child. If the element is a category of a LinkedBuildingBlock
      * try to find it in the Block References.
      *
-     * @param child
-     * @return
      */
     @Override
     public Integer getIndex(TreeObject child) {
@@ -908,8 +887,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     /**
      * Real index taking in account the form reference elements.
      *
-     * @param child
-     * @return
      */
     @Override
     public Integer getRelativeIndex(TreeObject child) {
@@ -931,11 +908,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     /**
      * Moves an object of the tree to last position in @toParent returns @objectToMove
      *
-     * @param objectToMove
-     * @param toParent
-     * @throws ChildrenNotFoundException
-     * @throws NotValidChildException
-     * @throws ElementIsReadOnly
      */
     public static synchronized TreeObject move(TreeObject objectToMove, TreeObject toParent) throws ChildrenNotFoundException, NotValidChildException,
             ElementIsReadOnly {

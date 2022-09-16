@@ -270,7 +270,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	 * Enable or disable the boolean simplification for reduce the length of
 	 * Orbeon relevant rules.
 	 * 
-	 * @return
+	 * @return true if enabled
 	 */
 	public boolean isBooleanSimplificationEnabled() {
 		return Boolean.parseBoolean(getPropertyLogException(ID_BOOLEAN_SIMPLIFICATION_ENABLED));

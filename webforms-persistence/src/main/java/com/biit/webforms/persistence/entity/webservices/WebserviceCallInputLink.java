@@ -1,20 +1,12 @@
 package com.biit.webforms.persistence.entity.webservices;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.webservices.WebserviceValidatedPort;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "webservice_call_input_link")
@@ -26,7 +18,7 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 	protected WebserviceCall webserviceCall;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "webserviceCallInputLink")
-	private Set<WebserviceCallInputLinkErrors> errors;
+	private final Set<WebserviceCallInputLinkErrors> errors;
 
 	@Column(name="validation_xpath")
 	private String validationXpath;
@@ -80,8 +72,7 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 	/**
 	 * Filters error list and returns only the error codes with a message for
 	 * the user.
-	 * 
-	 * @return
+	 *
 	 */
 	public Set<WebserviceCallInputLinkErrors> getValidErrors() {
 		Set<WebserviceCallInputLinkErrors> validErrors = new HashSet<>();

@@ -1,18 +1,19 @@
 package com.biit.webforms.persistence;
 
+import com.biit.persistence.HibernateDialect;
+import com.biit.persistence.JpaSchemaExporter;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.logger.WebformsLogger;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-
-import com.biit.persistence.HibernateDialect;
-import com.biit.persistence.JpaSchemaExporter;
-import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.logger.WebformsLogger;
 
 public class WebformsSchemaExporter extends com.biit.persistence.JpaSchemaExporter {
 	private static final String[] TABLES_TO_MODIFY = new String[] { "tree_forms", "tree_blocks", "tree_blocks_references" };
@@ -23,9 +24,7 @@ public class WebformsSchemaExporter extends com.biit.persistence.JpaSchemaExport
 
 	/**
 	 * Create a script that can generate a database for the selected dialect
-	 * 
-	 * @param dialect
-	 * @param directory
+	 *
 	 */
 	@Override
 	public void createDatabaseScript(HibernateDialect dialect, String directory, String outputFile, String host, String port, String username, String password,
@@ -55,11 +54,8 @@ public class WebformsSchemaExporter extends com.biit.persistence.JpaSchemaExport
 			for (int i = 0; i < lines.size(); i++) {
 				if (lines.get(i).contains("create table ")) {
 					// Starting of a table.
-					correctTable = false;
-					if (lines.get(i).contains("create table " + tableName + " (")) {
-						// Starting of the correct table.
-						correctTable = true;
-					}
+					// Starting of the correct table.
+					correctTable = lines.get(i).contains("create table " + tableName + " (");
 				}
 				if (correctTable && lines.get(i).contains("label varchar(1000)")) {
 					lines.set(i, lines.get(i).replace("label varchar(1000)", "label varchar(190)"));
@@ -100,8 +96,8 @@ public class WebformsSchemaExporter extends com.biit.persistence.JpaSchemaExport
 
 		// Add hibernate sequence table.
 		//addTextToFile(createHibernateSequenceTable(), getDirectory() + File.separator + getOutputFile());
-		// Add extra information from a external script.
-		addTextToFile(readFile(getScriptsToAdd(), Charset.forName("UTF-8")), getDirectory() + File.separator + getOutputFile());
+		// Add extra information from an external script.
+		addTextToFile(readFile(getScriptsToAdd(), StandardCharsets.UTF_8), getDirectory() + File.separator + getOutputFile());
 
 		//Close file watchers to ensure that the thread ends and maven exec is not frozen. 
 		WebformsConfigurationReader.getInstance().stopFileWatchers();
