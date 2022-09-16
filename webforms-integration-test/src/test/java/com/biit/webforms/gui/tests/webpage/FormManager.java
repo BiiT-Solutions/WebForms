@@ -173,7 +173,8 @@ public class FormManager extends VaadinGuiWebpage {
 
     public void deleteAllCreatedForms() {
         try {
-            while (true) {
+            int counter = 0;
+            while (counter++ < 10) {
                 getFormTable().waitForVaadin();
                 getFormTable().getCell(FORM_ROW, 0);
                 takeScreenshot("Selecting_forms_" + LocalDateTime.now());
@@ -189,7 +190,8 @@ public class FormManager extends VaadinGuiWebpage {
 
     public void deleteAllBuildingBlocks() {
         try {
-            while (true) {
+            int counter = 0;
+            while (counter++ < 10) {
                 getFormTable().waitForVaadin();
                 getFormTable().getCell(FORM_ROW, 0);
                 takeScreenshot("Selecting_blocks_" + LocalDateTime.now());
@@ -204,18 +206,19 @@ public class FormManager extends VaadinGuiWebpage {
     }
 
     public int deleteForm(int row) {
-        takeScreenshot("Selected_0_" + LocalDateTime.now().toString());
+        takeScreenshot(LocalDateTime.now() + "_Selected_0");
         if (row != 0) {
             getFormTable().getCell(0, 0).click();
         }
-        takeScreenshot("Selected_1_" + LocalDateTime.now().toString());
+        takeScreenshot(LocalDateTime.now() + "_Selected_1");
         getFormTable().getCell(row, 0).click();
         getRemoveForm().waitForVaadin();
-        takeScreenshot("Selected_2_" + LocalDateTime.now().toString());
+        takeScreenshot(LocalDateTime.now() + "_Selected_2");
         try {
             getRemoveForm().click();
-            takeScreenshot("Deleting_forms_" + LocalDateTime.now().toString());
+            takeScreenshot(LocalDateTime.now() + "_Deleting_forms");
             clickAcceptButtonIfExists();
+            takeScreenshot(LocalDateTime.now() + "_Deleted_forms_");
         } catch (Exception e) {
             // Form does not exist.
             return 0;

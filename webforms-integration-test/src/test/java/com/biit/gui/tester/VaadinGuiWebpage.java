@@ -60,6 +60,7 @@ public abstract class VaadinGuiWebpage extends TestBenchTestCase {
     }
 
     public void clickAcceptButtonIfExists() {
+        sleep(500);
         if (getAcceptButton() != null) {
             getAcceptButton().click();
         }
