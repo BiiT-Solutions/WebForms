@@ -62,6 +62,7 @@ public class LinkFormTests extends WebFormsTester {
         getFormManagerPage().deleteAllCreatedForms();
         goToBlockManagerPage();
         getFormManagerPage().deleteAllBuildingBlocks();
+        goToFormManagerPage();
     }
 
     @Test(groups = "linkedForms")
