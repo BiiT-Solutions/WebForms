@@ -176,15 +176,34 @@ public class FormManager extends VaadinGuiWebpage {
             while (true) {
                 getFormTable().waitForVaadin();
                 getFormTable().getCell(FORM_ROW, 0);
-                takeScreenshot("Selecting_forms_" + LocalDateTime.now().toString());
-                deleteForm(FORM_ROW);
+                takeScreenshot("Selecting_forms_" + LocalDateTime.now());
+                if (deleteForm(FORM_ROW) == 0) {
+                    IntegrationTestLogging.debug(this.getClass().getName(), "Nothing deleted!");
+                    return;
+                }
                 IntegrationTestLogging.debug(this.getClass().getName(), "Form deleted!");
             }
         } catch (NoSuchElementException | InvalidElementStateException ignore) {
         }
     }
 
-    public void deleteForm(int row) {
+    public void deleteAllBuildingBlocks() {
+        try {
+            while (true) {
+                getFormTable().waitForVaadin();
+                getFormTable().getCell(FORM_ROW, 0);
+                takeScreenshot("Selecting_blocks_" + LocalDateTime.now());
+                if (deleteForm(FORM_ROW) == 0) {
+                    IntegrationTestLogging.debug(this.getClass().getName(), "Nothing deleted!");
+                    return;
+                }
+                IntegrationTestLogging.debug(this.getClass().getName(), "Block deleted!");
+            }
+        } catch (NoSuchElementException | InvalidElementStateException ignore) {
+        }
+    }
+
+    public int deleteForm(int row) {
         takeScreenshot("Selected_0_" + LocalDateTime.now().toString());
         if (row != 0) {
             getFormTable().getCell(0, 0).click();
@@ -198,8 +217,10 @@ public class FormManager extends VaadinGuiWebpage {
             takeScreenshot("Deleting_forms_" + LocalDateTime.now().toString());
             clickAcceptButtonIfExists();
         } catch (Exception e) {
-            // Form does not exists.
+            // Form does not exist.
+            return 0;
         }
+        return 1;
     }
 
     @Override

@@ -1,12 +1,10 @@
 package com.biit.webforms.gui.tests;
 
-import org.openqa.selenium.NoSuchElementException;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import com.biit.webforms.gui.tests.exceptions.FieldNotEditableException;
 import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.testbench.By;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class LinkFormTests extends WebFormsTester {
 
@@ -24,7 +22,6 @@ public class LinkFormTests extends WebFormsTester {
         loginFormAdmin1();
         // Remove previous forms.
         deleteFormAndFormReference();
-        getFormManagerPage().deleteAllCreatedForms();
 
         getFormManagerPage().createNewForm(NEW_FORM_NAME);
         // Create a couple of categories and questions
@@ -61,13 +58,10 @@ public class LinkFormTests extends WebFormsTester {
     }
 
     private void deleteFormAndFormReference() {
-        //goToFormManagerPage();
-        try {
-            getFormManagerPage().deleteForm(3);
-            getFormManagerPage().deleteForm(1);
-        } catch (NoSuchElementException e) {
-            return;
-        }
+        goToFormManagerPage();
+        getFormManagerPage().deleteAllCreatedForms();
+        goToBlockManagerPage();
+        getFormManagerPage().deleteAllBuildingBlocks();
     }
 
     @Test(groups = "linkedForms")
@@ -146,6 +140,8 @@ public class LinkFormTests extends WebFormsTester {
         // Launch event.
         getFormManagerPage().getFormTable().getCell(0, 0).click();
         getDesignerPage().saveDesign();
+
+        System.out.println("1 -------------------");
 
         // Check the element in the other form.
         goToFormManagerPage();
