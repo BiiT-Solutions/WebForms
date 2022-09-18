@@ -6,6 +6,8 @@ import com.biit.webforms.logger.WebformsLogger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.time.LocalDateTime;
+
 public class ImpactAnalysisTests extends WebFormsTester {
 
     private static final String NEW_FORM_NAME = "new_form_1";
@@ -54,6 +56,7 @@ public class ImpactAnalysisTests extends WebFormsTester {
         try {
             createFormElementsFlowAndFinishDesign();
             getFormManagerPage().clickNewButton();
+            takeScreenshot(LocalDateTime.now() + "_Clicking_new_version");
             getFormManagerPage().clickNewVersionButton();
             // Modify the form
             goToDesignerPage();
@@ -83,8 +86,7 @@ public class ImpactAnalysisTests extends WebFormsTester {
             getFormManagerPage().getImpactWindow().closeWindow();
             logOut();
             // Delete the two versions of the form
-            deleteForm();
-            deleteForm();
+            getFormManagerPage().deleteAllCreatedForms();
         } catch (FieldNotEditableException | IncorrectFileGenerationException e) {
             WebformsLogger.errorMessage(this.getClass().getName(), e);
             Assert.fail();
