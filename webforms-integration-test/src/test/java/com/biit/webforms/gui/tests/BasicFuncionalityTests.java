@@ -8,6 +8,8 @@ import com.biit.webforms.gui.tests.exceptions.FieldNotEditableException;
 import com.biit.webforms.gui.tests.exceptions.OrganizationNotEditableException;
 import com.vaadin.testbench.elements.TreeTableElement;
 
+import java.time.LocalDateTime;
+
 public class BasicFuncionalityTests extends WebFormsTester {
 
 	private static final String NEW_FORM_NAME = "new_form_1";
@@ -154,6 +156,7 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		goToDesignerPage();
 		try {
 			getFormTable().getCell(1, 0).click();
+			takeScreenshot(LocalDateTime.now() + "_Hidding_button");
 			getDesignerPage().getHideButton().click();
 		} finally {
 			logOut();
