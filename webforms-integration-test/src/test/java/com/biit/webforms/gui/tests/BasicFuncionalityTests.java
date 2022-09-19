@@ -18,7 +18,7 @@ public class BasicFuncionalityTests extends WebFormsTester {
 	private static final String STATUS_FINISHED = "Final Design";
 	
 	@Test(groups = "basicFunctionality")
-	public void createFormfinishFormCheckStatus() {
+	public void createFormFinishFormCheckStatus() {
 		loginFormEdit1();
 		getFormManagerPage().createNewForm(NEW_FORM_NAME);
 		goToDesignerPage();
@@ -148,7 +148,9 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		getFormManagerPage().createNewForm(NEW_FORM_NAME);
 		goToDesignerPage();
 		getDesignerPage().addNewCategory();
+		takeScreenshot(LocalDateTime.now() + "_before_hidding_button");
 		getDesignerPage().getHideButton().click();
+		takeScreenshot(LocalDateTime.now() + "_after_hidding_button");
 		getDesignerPage().addNewInputQuestion();
 		getDesignerPage().saveDesign();
 		logOut();
@@ -156,7 +158,7 @@ public class BasicFuncionalityTests extends WebFormsTester {
 		goToDesignerPage();
 		try {
 			getFormTable().getCell(1, 0).click();
-			takeScreenshot(LocalDateTime.now() + "_Hidding_button");
+			takeScreenshot(LocalDateTime.now() + "_loaded_hidding_button");
 			getDesignerPage().getHideButton().click();
 		} finally {
 			logOut();

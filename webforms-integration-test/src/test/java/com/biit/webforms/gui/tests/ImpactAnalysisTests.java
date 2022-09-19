@@ -56,10 +56,12 @@ public class ImpactAnalysisTests extends WebFormsTester {
         try {
             createFormElementsFlowAndFinishDesign();
             getFormManagerPage().clickNewButton();
-            takeScreenshot(LocalDateTime.now() + "_Clicking_new_version");
+            takeScreenshot(LocalDateTime.now() + "_before_clicking_new_version");
             getFormManagerPage().clickNewVersionButton();
+            takeScreenshot(LocalDateTime.now() + "_after_clicking_new_version");
             // Modify the form
             goToDesignerPage();
+            takeScreenshot(LocalDateTime.now() + "_after_clicking_new_version_new_category");
             getDesignerPage().addNewCategory();
             getDesignerPage().addNewGroup();
             getDesignerPage().addNewInputPostalCodeQuestion();

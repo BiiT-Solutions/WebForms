@@ -390,8 +390,6 @@ public class Designer extends SecuredWebPage {
                                     MessageManager.showError(LanguageCodes.ERROR_DYNAMIC_ANSWER_DEPENDENCY);
                                 } else if (e instanceof DependencyExistException) {
                                     MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
-                                } else if (e instanceof WebserviceDependencyExistException) {
-                                    MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_WEBSERVICE_CALL_DEPENDENCY);
                                 } else {
                                     MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
                                     WebformsUiLogger.errorMessage(this.getClass().getName(), e);
@@ -552,9 +550,9 @@ public class Designer extends SecuredWebPage {
                     if (ApplicationUi.getController().getCompleteFormView().showElement(element)) {
                         element.setHiddenElement(false);
                         if (blockReference != null) {
-                            WebformsUiLogger.info(this.getClass().getName(), "Has show element '" + element + "' of block '" + blockReference + "'.");
+                            WebformsUiLogger.info(this.getClass().getName(), "Has shown element '" + element + "' from block '" + blockReference + "'.");
                         } else {
-                            WebformsUiLogger.info(this.getClass().getName(), "Has show element '" + element + "'.");
+                            WebformsUiLogger.info(this.getClass().getName(), "Has shown element '" + element + "'.");
                         }
                         ApplicationUi.getController().setUnsavedFormChanges(true);
                     } else {
@@ -565,9 +563,9 @@ public class Designer extends SecuredWebPage {
                         if (ApplicationUi.getController().getCompleteFormView().hideElement(element)) {
                             element.setHiddenElement(true);
                             if (blockReference != null) {
-                                WebformsUiLogger.info(this.getClass().getName(), "Has hide element '" + element + "' of block '" + blockReference + "'.");
+                                WebformsUiLogger.info(this.getClass().getName(), "Has hidden element '" + element + "' from block '" + blockReference + "'.");
                             } else {
-                                WebformsUiLogger.info(this.getClass().getName(), "Has hide element '" + element + "'.");
+                                WebformsUiLogger.info(this.getClass().getName(), "Has hidden element '" + element + "'.");
                             }
                             ApplicationUi.getController().setUnsavedFormChanges(true);
                         }

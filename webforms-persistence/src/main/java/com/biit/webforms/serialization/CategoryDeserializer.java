@@ -12,7 +12,7 @@ public class CategoryDeserializer extends TreeObjectDeserializer<Category> {
 	public void deserialize(JsonElement json, JsonDeserializationContext context, Category element) {
 		JsonObject jobject = (JsonObject) json;
 
-		element.setImage((TreeObjectImage) context.deserialize(jobject.get("image"), TreeObjectImage.class));
+		element.setImage(context.deserialize(jobject.get("image"), TreeObjectImage.class));
 
 		super.deserialize(json, context, element);
 	}
