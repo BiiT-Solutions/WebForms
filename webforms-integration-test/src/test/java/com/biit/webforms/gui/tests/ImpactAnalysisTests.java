@@ -48,6 +48,7 @@ public class ImpactAnalysisTests extends WebFormsTester {
             getDesignerPage().finishForm();
             takeScreenshot(LocalDateTime.now() + "_after_finishing");
             clickAcceptButtonIfExists();
+            takeScreenshot(LocalDateTime.now() + "_after_finishing_accept");
         } catch (FieldNotEditableException e) {
             WebformsLogger.errorMessage(this.getClass().getName(), e);
             Assert.fail();
