@@ -57,9 +57,6 @@ import com.biit.webforms.utils.GraphvizApp.ImgType;
 import com.biit.webforms.utils.ZipTools;
 import com.biit.webforms.utils.conversor.abcd.exporter.ConversorFormToAbcdForm;
 import com.biit.webforms.validators.ValidateFormComplete;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 import com.lowagie.text.DocumentException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -67,28 +64,11 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import elemental.json.JsonObject;
-import jdk.nashorn.api.scripting.JSObject;
-import org.apache.http.Header;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -908,8 +888,7 @@ public class FormManager extends SecuredWebPage {
 	}
 
 	public IWebformsFormView getSelectedForm() {
-		IWebformsFormView form = (IWebformsFormView) formTable.getValue();
-		return form;
+		return (IWebformsFormView) formTable.getValue();
 	}
 
 	private void updateMenus() {

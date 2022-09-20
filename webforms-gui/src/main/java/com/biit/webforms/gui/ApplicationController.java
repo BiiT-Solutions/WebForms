@@ -60,12 +60,12 @@ import java.util.*;
  * User Session data handler.
  */
 public class ApplicationController {
-    private IFormDao formDao;
-    private IBlockDao blockDao;
-    private ISimpleFormViewDao simpleFormDaoWebforms;
-    private IWebserviceDao webserviceDao;
-    private IUserTokenDao userTokenDao;
-    private KnowledgeManagerService knowledgeManagerService;
+    private final IFormDao formDao;
+    private final IBlockDao blockDao;
+    private final ISimpleFormViewDao simpleFormViewDao;
+    private final IWebserviceDao webserviceDao;
+    private final IUserTokenDao userTokenDao;
+    private final KnowledgeManagerService knowledgeManagerService;
     private Form lastEditedForm;
     private Form formInUse;
     private CompleteFormView completeFormView;
@@ -73,14 +73,14 @@ public class ApplicationController {
     private boolean unsavedFormChanges = false;
     private Set<Object> collapsedStatus;
 
-    private IWebformsSecurityService webformsSecurityService;
+    private final IWebformsSecurityService webformsSecurityService;
 
     public ApplicationController() {
         super();
         SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
         formDao = (IFormDao) helper.getBean("webformsFormDao");
         blockDao = (IBlockDao) helper.getBean("blockDao");
-        simpleFormDaoWebforms = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms"));
+        simpleFormViewDao = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms"));
         webserviceDao = (IWebserviceDao) helper.getBean("webserviceDao");
         webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
         userTokenDao = (IUserTokenDao) helper.getBean("userTokenDao");
@@ -1425,7 +1425,7 @@ public class ApplicationController {
         return () -> {
             List<SimpleFormView> userForms = new ArrayList<>();
 
-            List<SimpleFormView> simpleForms = simpleFormDaoWebforms.getAll();
+            List<SimpleFormView> simpleForms = simpleFormViewDao.getAll();
 
             Set<IGroup<Long>> userOrganizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(UserSession.getUser(),
                     WebformsActivity.READ);
@@ -1572,8 +1572,8 @@ public class ApplicationController {
         unsavedFormChanges = value;
     }
 
-    public ISimpleFormViewDao getSimpleFormDaoWebforms() {
-        return simpleFormDaoWebforms;
+    public ISimpleFormViewDao getSimpleFormViewDao() {
+        return simpleFormViewDao;
     }
 
     public Form loadForm(IWebformsFormView formView) {
@@ -1588,6 +1588,10 @@ public class ApplicationController {
                         BlockReference blockReference = (BlockReference) children;
                         blockReference.setReference(blockDao.get(blockReference.getBlockReferencedId()));
                     }
+                }
+                //Form reference.
+                if (form.getFormReferenceId() != null) {
+                    form.setFormReference(loadForm(simpleFormViewDao.get(form.getFormReferenceId())));
                 }
                 return form;
             }
@@ -1609,7 +1613,7 @@ public class ApplicationController {
      */
     public List<com.biit.webforms.persistence.entity.SimpleFormView> getSimpleFormVersionsWebforms(String label, Long organizationId) {
         List<com.biit.webforms.persistence.entity.SimpleFormView> filteredForms = new ArrayList<>();
-        List<com.biit.webforms.persistence.entity.SimpleFormView> forms = simpleFormDaoWebforms.getAll();
+        List<com.biit.webforms.persistence.entity.SimpleFormView> forms = simpleFormViewDao.getAll();
 
         for (com.biit.webforms.persistence.entity.SimpleFormView form : forms) {
             if (form.getLabel().equals(label) && form.getOrganizationId().equals(organizationId)) {
@@ -1821,7 +1825,7 @@ public class ApplicationController {
 
     private Set<SimpleFormView> getFormsUsesAsReference(Long formId) {
         Set<SimpleFormView> formsThatReference = new HashSet<>();
-        for (SimpleFormView simpleFormView : simpleFormDaoWebforms.getAll()) {
+        for (SimpleFormView simpleFormView : simpleFormViewDao.getAll()) {
             if (simpleFormView.getFormReferenceId() != null && simpleFormView.getFormReferenceId().equals(formId)) {
                 formsThatReference.add(simpleFormView);
             }

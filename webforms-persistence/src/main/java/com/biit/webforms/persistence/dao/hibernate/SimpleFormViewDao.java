@@ -103,6 +103,53 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
         return formViews;
     }
 
+    @Override
+    public SimpleFormView get(Long id) {
+        Query query = entityManager
+                .createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, tf.linked_form_label, tf.linked_form_organization_id, tf.status, tf.form_reference, json is not null "
+                        + "FROM tree_forms tf WHERE tf.id='" + id + "'");
+
+        Object[] row = (Object[]) query.getSingleResult();
+
+        SimpleFormView formView = new SimpleFormView();
+        formView.setId(id);
+        formView.setName((String) row[1]);
+        formView.setLabel((String) row[2]);
+        formView.setVersion((Integer) row[3]);
+        formView.setCreationTime((Timestamp) row[4]);
+        if (row[5] != null) {
+            formView.setCreatedBy(((Double) row[5]).longValue());
+        }
+        formView.setUpdateTime((Timestamp) row[6]);
+        if (row[7] != null) {
+            formView.setUpdatedBy(((Double) row[7]).longValue());
+        }
+        formView.setComparationId((String) row[8]);
+        formView.setOrganizationId(((Double) row[9]).longValue());
+        if (row[10] != null) {
+            formView.setLinkedFormLabel((String) row[10]);
+        }
+        if (row[11] != null) {
+            formView.setLinkedFormOrganizationId(((BigInteger) row[11]).longValue());
+        }
+
+        if (row[12] != null) {
+            formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
+        }
+
+        if (row[13] != null) {
+            formView.setFormReferenceId(((BigInteger) row[13]).longValue());
+        }
+
+        formView.setLastVersion(row[14].equals(row[3]));
+
+        formView.setHasJson(row[15] != null && ((Integer) row[15]) > 0);
+
+        formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
+
+        return formView;
+    }
+
     @SuppressWarnings("unchecked")
     private Set<Integer> getLinkedFormVersions(long formId) {
         Set<Integer> linkedVersions = new HashSet<>();

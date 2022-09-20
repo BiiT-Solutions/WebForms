@@ -86,7 +86,6 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
         form.getFlows().clear();
         Form mergedForm = getEntityManager().contains(form) ? form : getEntityManager().merge(form);
         makePersistent(mergedForm);
-
         super.makeTransient(mergedForm);
     }
 

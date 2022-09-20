@@ -7,6 +7,7 @@ import com.biit.form.json.serialization.BaseFormDeserializer;
 import com.biit.form.json.serialization.StorableObjectDeserializer;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.persistence.entity.*;
 import com.biit.webforms.persistence.entity.condition.*;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
@@ -67,6 +68,26 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
         element.setUpdatedBy(parseLong("updatedBy", jobject, context));
         element.setVersion(parseInteger("version", jobject, context));
         element.setOrganizationId(parseLong("organizationId", jobject, context));
+        element.setStatus(FormWorkStatus.getFromString(parseString("status", jobject, context)));
+        element.setLinkedFormLabel(parseString("linkedFormLabel", jobject, context));
+        element.setLinkedFormOrganizationId(parseLong("linkedFormOrganizationId", jobject, context));
+        element.setFormReferenceId(parseLong("formReferenceId", jobject, context));
+
+        //LinkedFormVersions
+        JsonElement formVersions = jobject.get("linkedFormVersions");
+        if (formVersions != null) {
+            Set<Integer> versions = gson.fromJson(formVersions, new TypeToken<HashSet<Integer>>() {
+            }.getType());
+            element.setLinkedFormVersions(versions);
+        }
+
+        // Deserializes elementsToHide
+        JsonElement elementsToHide = jobject.get("elementsToHide");
+        if (elementsToHide != null) {
+            Set<TreeObject> toHide = gson.fromJson(elementsToHide, new TypeToken<HashSet<TreeObject>>() {
+            }.getType());
+            element.setElementsToHide(toHide);
+        }
 
         try {
             element.setLabel(parseString("label", jobject, context));
