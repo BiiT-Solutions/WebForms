@@ -422,7 +422,7 @@ public class ApplicationController {
             UnexpectedDatabaseException, ElementCannotBePersistedException {
         WebformsUiLogger.info(ApplicationController.class.getName(), "createNewFormVersion " + form);
 
-        if (form.getStatus() == FormWorkStatus.DESIGN) {
+        if (form.getStatus() == null || form.getStatus() == FormWorkStatus.DESIGN) {
             WebformsUiLogger.info(ApplicationController.class.getName(), "createNewFormVersion " + form
                     + " tried to create a new form version that is still in design");
             throw new NewVersionWithoutFinalDesignException();
@@ -1637,7 +1637,7 @@ public class ApplicationController {
         // Can downgrade
         boolean userCanDowngradeStatus = webformsSecurityService.isAuthorizedActivity(UserSession.getUser(), formView, WebformsActivity.FORM_STATUS_DOWNGRADE);
 
-        if (!formView.getStatus().isMovingForward(value)) {
+        if (formView.getStatus() != null && !formView.getStatus().isMovingForward(value)) {
             if (!(userCanDowngradeStatus)) {
                 throw new NotEnoughRightsToChangeStatusException();
             }

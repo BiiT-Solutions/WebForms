@@ -8,7 +8,6 @@ import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.IAuthenticationService;
 import com.biit.usermanager.security.IAuthorizationService;
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
-import com.biit.usermanager.security.exceptions.UserDoesNotExistException;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
@@ -140,12 +139,12 @@ public class SecurityService implements ISecurityService {
 			return isAuthorizedActivity(user, form, WebformsActivity.BUILDING_BLOCK_EDITING);
 		} else {
 			return isAuthorizedActivity(user, form, WebformsActivity.FORM_EDITING)
-					&& (((IWebformsFormView) form).getStatus() == FormWorkStatus.DESIGN);
+					&& (((IWebformsFormView) form).getStatus()==null || (((IWebformsFormView) form).getStatus() == FormWorkStatus.DESIGN));
 		}
 	}
 
 	@Override
-	public IUser<Long> getUserById(Long userId) throws UserDoesNotExistException {
+	public IUser<Long> getUserById(Long userId) {
 		if (userId != null) {
 			try {
 				return getAuthenticationService().getUserById(userId);

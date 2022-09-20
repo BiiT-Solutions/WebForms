@@ -913,7 +913,7 @@ public class FormManager extends SecuredWebPage {
 			upperMenu.setEnabled(true);
 			upperMenu.getNewForm().setEnabled(canCreateForms);
 			upperMenu.getNewFormVersion().setEnabled(rowNotNull && canCreateNewVersion && selectedForm.isLastVersion()
-					&& !selectedForm.getStatus().equals(FormWorkStatus.DESIGN));
+					&& selectedForm.getStatus() != null && !selectedForm.getStatus().equals(FormWorkStatus.DESIGN));
 
 			upperMenu.getWebformReference()
 					.setEnabled(rowNotNullAndForm && (((SimpleFormView) row).getFormReferenceId() == null));

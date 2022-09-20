@@ -139,8 +139,8 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 
 			@Override
 			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-				if (form.getStatus().equals(statusComboBox.getValue())) {
-					// Its the same status. Don't do anything.
+				if (form.getStatus() != null && form.getStatus().equals(statusComboBox.getValue())) {
+					// It's the same status. Don't do anything.
 					return;
 				}
 
@@ -200,7 +200,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 	/**
 	 * This function returns an string with read only if the form can't be
 	 * edited by the user
-	 * 
+	 *
 	 * @param form
 	 * @return
 	 */
@@ -209,7 +209,8 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 			return LanguageCodes.CAPTION_IN_USE.translation();
 		}
 
-		if (!getWebformsSecurityService().isAuthorizedToForm(form, UserSession.getUser()) && form.getStatus().equals(FormWorkStatus.DESIGN)) {
+		if (!getWebformsSecurityService().isAuthorizedToForm(form, UserSession.getUser()) && (form.getStatus() == null
+                || form.getStatus().equals(FormWorkStatus.DESIGN))) {
 			return LanguageCodes.CAPTION_READ_ONLY.translation();
 		}
 		return "";
