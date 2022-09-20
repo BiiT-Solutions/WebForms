@@ -13,9 +13,8 @@ public class ExporterDotForm extends ExporterDotFormBasic<Form> {
 
     @Override
     public String export(Form form) {
-        String dotCode = new String();
+        String dotCode = "";
         dotCode += "digraph G {\n";
-        //dotCode += "size=\"" + getSizeLimit() + "\";\n";
         dotCode += "\tgraph [ fontsize=" + getSmallFontSize() + " ];\n";
         dotCode += "\tnode [ fontsize=" + getSmallFontSize() + "];\n";
         dotCode += "\tedge [ fontsize=" + getSmallFontSize() + "];\n";
@@ -37,25 +36,24 @@ public class ExporterDotForm extends ExporterDotFormBasic<Form> {
 
     @Override
     public String generateDotNodeFlow(Form form) {
-        String dotFlow = new String();
+        StringBuilder dotFlow = new StringBuilder("");
         ComputedFlowView computedRuleView = form.getComputedFlowsView();
         if (computedRuleView.getFirstElement() != null) {
-            dotFlow += "\tstart -> " + getDotId(computedRuleView.getFirstElement()) + "[color=" + getLinkColor(false)
-                    + "];\n";
+            dotFlow.append("\tstart -> ").append(getDotId(computedRuleView.getFirstElement())).append("[color=").append(getLinkColor(false)).append("];\n");
         }
         for (Flow rule : computedRuleView.getFlows()) {
-            dotFlow += generateDotRule(rule);
+            dotFlow.append(generateDotRule(rule));
         }
 
-        return dotFlow;
+        return dotFlow.toString();
     }
 
     @Override
     public String generateDotNodeChilds(Form form) {
-        String dotNodes = new String();
+        StringBuilder dotNodes = new StringBuilder("");
         for (TreeObject child : form.getChildren()) {
-            dotNodes += (new ExporterDotCategory()).generateDotNodeList((Category) child);
+            dotNodes.append((new ExporterDotCategory()).generateDotNodeList((Category) child));
         }
-        return dotNodes;
+        return dotNodes.toString();
     }
 }

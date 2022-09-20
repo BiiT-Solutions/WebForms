@@ -40,7 +40,7 @@ public class GraphvizApp {
     }
 
     /**
-     * Finds path to application. In order we give precedente to the path on the
+     * Finds path to application. In order, we give precedence to the path on the
      * config file. If not found, (If there was no file we don't say anything
      *
      * @throws PathToExecutableNotFound
@@ -120,7 +120,7 @@ public class GraphvizApp {
      */
     public static byte[] generateImage(Form form, TreeObject filter, ImgType imgType) throws IOException, InterruptedException {
         // Generate DotCode
-        String dotCode = null;
+        String dotCode;
         if (filter == null) {
             ExporterDotForm exporter = new ExporterDotForm();
             dotCode = exporter.export(form);

@@ -6,7 +6,6 @@ import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.*;
-import elemental.json.JsonArray;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,9 +17,9 @@ import java.util.List;
  */
 public abstract class ImagePanel extends Panel {
     private static final long serialVersionUID = 1199493059375434311L;
-    public static final double MIN_AUGMENT = 1.0f;
+    public static final double MIN_AUGMENT = 0.25f;
     public static final double DEFAULT_AUGMENT = 1.0f;
-    public static final double MAX_AUGMENT = 50.0f;
+    public static final double MAX_AUGMENT = 200.0f;
 
     private Image image = null;
     private double resize = MIN_AUGMENT;
@@ -131,29 +130,24 @@ public abstract class ImagePanel extends Panel {
     }
 
     private void zoomInOut(final double resizeFactor) {
-        JavaScript.getCurrent().addFunction("getElementAndZoom", new JavaScriptFunction() {
-            private static final long serialVersionUID = 6587969690665052777L;
+        JavaScript.getCurrent().addFunction("getElementAndZoom", (JavaScriptFunction) arguments -> {
+            int panelX = (int) arguments.getNumber(0);
+            int panelY = (int) arguments.getNumber(1);
 
-            @Override
-            public void call(JsonArray arguments) {
-                int panelX = (int) arguments.getNumber(0);
-                int panelY = (int) arguments.getNumber(1);
+            int halfPanelX = (int) (panelX / 2.0f);
+            int halfPanelY = (int) (panelY / 2.0f);
+            int x = (int) ((getScrollLeft() + halfPanelX) / resize);
+            int y = (int) ((getScrollTop() + halfPanelY) / resize);
+            int newClickSizeX = (int) (x * resizeFactor);
+            int newClickSizeY = (int) (y * resizeFactor);
+            int positionX = newClickSizeX - halfPanelX;
+            int positionY = newClickSizeY - halfPanelY;
+            positionX = Math.max(positionX, 0);
+            positionY = Math.max(positionY, 0);
 
-                int halfPanelX = (int) (panelX / 2.0f);
-                int halfPanelY = (int) (panelY / 2.0f);
-                int x = (int) ((getScrollLeft() + halfPanelX) / resize);
-                int y = (int) ((getScrollTop() + halfPanelY) / resize);
-                int newClickSizeX = (int) (x * resizeFactor);
-                int newClickSizeY = (int) (y * resizeFactor);
-                int positionX = newClickSizeX - halfPanelX;
-                int positionY = newClickSizeY - halfPanelY;
-                positionX = Math.max(positionX, 0);
-                positionY = Math.max(positionY, 0);
-
-                setResizeFactor(resizeFactor);
-                setScrollLeft(positionX);
-                setScrollTop(positionY);
-            }
+            setResizeFactor(resizeFactor);
+            setScrollLeft(positionX);
+            setScrollTop(positionY);
         });
         JavaScript.getCurrent().execute(
                 "getElementAndZoom(document.getElementById('" + this.getId() + "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
@@ -161,47 +155,41 @@ public abstract class ImagePanel extends Panel {
 
     private void zoomInOut(final int x, final int y, final double resizeFactor) {
 
-        JavaScript.getCurrent().addFunction("getElementAndZoom", new JavaScriptFunction() {
-            private static final long serialVersionUID = 6587969690665052777L;
-
-            @Override
-            public void call(JsonArray arguments) {
-                if (resize == MIN_AUGMENT && resizeFactor <= 1.0f) {
-                    return;
-                }
-                if (resize == MAX_AUGMENT && resizeFactor >= 1.0f) {
-                    return;
-                }
-
-                double newResizeFactor = resize * resizeFactor;
-                double tempResizeFactor = resizeFactor;
-                if (newResizeFactor > MAX_AUGMENT) {
-                    tempResizeFactor = MAX_AUGMENT / resize;
-                    newResizeFactor = MAX_AUGMENT;
-                }
-
-                if (newResizeFactor < MIN_AUGMENT) {
-                    tempResizeFactor = MIN_AUGMENT / resize;
-                    newResizeFactor = MIN_AUGMENT;
-                }
-
-                int panelX = (int) arguments.getNumber(0);
-                int panelY = (int) arguments.getNumber(1);
-
-                int newClickSizeX = (int) (x * tempResizeFactor);
-                int newClickSizeY = (int) (y * tempResizeFactor);
-                int halfPanelX = (int) (panelX / 2.0f);
-                int halfPanelY = (int) (panelY / 2.0f);
-                int positionX = newClickSizeX - halfPanelX;
-                int positionY = newClickSizeY - halfPanelY;
-                positionX = Math.max(positionX, 0);
-                positionY = Math.max(positionY, 0);
-
-                setResizeFactor(newResizeFactor);
-                setScrollLeft(positionX);
-                setScrollTop(positionY);
+        JavaScript.getCurrent().addFunction("getElementAndZoom", (JavaScriptFunction) arguments -> {
+            if (resize == MIN_AUGMENT && resizeFactor <= 1.0f) {
+                return;
+            }
+            if (resize == MAX_AUGMENT && resizeFactor >= 1.0f) {
+                return;
             }
 
+            double newResizeFactor = resize * resizeFactor;
+            double tempResizeFactor = resizeFactor;
+            if (newResizeFactor > MAX_AUGMENT) {
+                tempResizeFactor = MAX_AUGMENT / resize;
+                newResizeFactor = MAX_AUGMENT;
+            }
+
+            if (newResizeFactor < MIN_AUGMENT) {
+                tempResizeFactor = MIN_AUGMENT / resize;
+                newResizeFactor = MIN_AUGMENT;
+            }
+
+            int panelX = (int) arguments.getNumber(0);
+            int panelY = (int) arguments.getNumber(1);
+
+            int newClickSizeX = (int) (x * tempResizeFactor);
+            int newClickSizeY = (int) (y * tempResizeFactor);
+            int halfPanelX = (int) (panelX / 2.0f);
+            int halfPanelY = (int) (panelY / 2.0f);
+            int positionX = newClickSizeX - halfPanelX;
+            int positionY = newClickSizeY - halfPanelY;
+            positionX = Math.max(positionX, 0);
+            positionY = Math.max(positionY, 0);
+
+            setResizeFactor(newResizeFactor);
+            setScrollLeft(positionX);
+            setScrollTop(positionY);
         });
         JavaScript.getCurrent().execute(
                 "getElementAndZoom(document.getElementById('" + this.getId() + "').clientWidth,document.getElementById('" + this.getId() + "').clientHeight);");
