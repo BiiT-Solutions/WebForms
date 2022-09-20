@@ -78,6 +78,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tree_forms_references_hidden_elements", joinColumns = @JoinColumn(name = "form", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "element_to_hide", referencedColumnName = "id"))
     private Set<TreeObject> elementsToHide;
+    private transient Set<Long> elementsToHideId;
 
     @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private TreeObjectImage image;
@@ -1029,6 +1030,14 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
     public void setEditionDisabled(boolean editionDisabled) {
         this.editionDisabled = editionDisabled;
+    }
+
+    public Set<Long> getElementsToHideId() {
+        return elementsToHideId;
+    }
+
+    public void setElementsToHideId(Set<Long> elementsToHideId) {
+        this.elementsToHideId = elementsToHideId;
     }
 
     @Override

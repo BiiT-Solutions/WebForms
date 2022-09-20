@@ -8,6 +8,7 @@ import com.biit.form.json.serialization.StorableObjectDeserializer;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.*;
 import com.biit.webforms.persistence.entity.condition.*;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
@@ -84,9 +85,13 @@ public class FormDeserializer extends BaseFormDeserializer<Form> {
         // Deserializes elementsToHide
         JsonElement elementsToHide = jobject.get("elementsToHide");
         if (elementsToHide != null) {
-            Set<TreeObject> toHide = gson.fromJson(elementsToHide, new TypeToken<HashSet<TreeObject>>() {
-            }.getType());
-            element.setElementsToHide(toHide);
+            try {
+                Set<Long> toHide = gson.fromJson(elementsToHide, new TypeToken<HashSet<Long>>() {
+                }.getType());
+                element.setElementsToHideId(toHide);
+            } catch (Exception e) {
+                WebformsLogger.errorMessage(this.getClass().getName(), e);
+            }
         }
 
         try {

@@ -1593,6 +1593,15 @@ public class ApplicationController {
                 if (form.getFormReferenceId() != null) {
                     form.setFormReference(loadForm(simpleFormViewDao.get(form.getFormReferenceId())));
                 }
+                //Elements to hide.
+                if (form.getElementsToHideId() != null && !form.getElementsToHideId().isEmpty()) {
+                    Set<TreeObject> elementsToHide = new HashSet<>();
+                    form.getElementsToHideId().forEach(id -> {
+                        Optional<TreeObject> element = form.getChildren().stream().filter(treeObject -> Objects.equals(treeObject.getId(), id)).findAny();
+                        element.ifPresent(elementsToHide::add);
+                    });
+                    form.setElementsToHide(elementsToHide);
+                }
                 return form;
             }
         }

@@ -6,8 +6,6 @@ import com.biit.webforms.logger.WebformsLogger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.time.LocalDateTime;
-
 public class ImpactAnalysisTests extends WebFormsTester {
 
     private static final String NEW_FORM_NAME = "new_form_1";
@@ -41,14 +39,10 @@ public class ImpactAnalysisTests extends WebFormsTester {
             // Redraw the graph
             getFlowManagerPage().clickRedrawButton();
             getFlowManagerPage().saveFlow();
-            takeScreenshot(LocalDateTime.now() + "_saved_flow");
             goToFormManagerPage();
             goToDesignerPage();
-            takeScreenshot(LocalDateTime.now() + "_before_finishing");
             getDesignerPage().finishForm();
-            takeScreenshot(LocalDateTime.now() + "_after_finishing");
             clickAcceptButtonIfExists();
-            takeScreenshot(LocalDateTime.now() + "_after_finishing_accept");
         } catch (FieldNotEditableException e) {
             WebformsLogger.errorMessage(this.getClass().getName(), e);
             Assert.fail();
@@ -60,12 +54,9 @@ public class ImpactAnalysisTests extends WebFormsTester {
         try {
             createFormElementsFlowAndFinishDesign();
             getFormManagerPage().clickNewButton();
-            takeScreenshot(LocalDateTime.now() + "_before_clicking_new_version");
             getFormManagerPage().clickNewVersionButton();
-            takeScreenshot(LocalDateTime.now() + "_after_clicking_new_version");
             // Modify the form
             goToDesignerPage();
-            takeScreenshot(LocalDateTime.now() + "_after_clicking_new_version_new_category");
             getDesignerPage().addNewCategory();
             getDesignerPage().addNewGroup();
             getDesignerPage().addNewInputPostalCodeQuestion();

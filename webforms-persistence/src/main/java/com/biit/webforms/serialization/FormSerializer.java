@@ -1,12 +1,14 @@
 package com.biit.webforms.serialization;
 
 import com.biit.form.json.serialization.BaseFormSerializer;
+import com.biit.persistence.entity.BaseStorableObject;
 import com.biit.webforms.persistence.entity.Form;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 
 import java.lang.reflect.Type;
+import java.util.stream.Collectors;
 
 public class FormSerializer extends BaseFormSerializer<Form> {
 
@@ -22,7 +24,8 @@ public class FormSerializer extends BaseFormSerializer<Form> {
         jsonObject.add("linkedFormVersions", context.serialize(src.getLinkedFormVersions()));
         jsonObject.add("linkedFormOrganizationId", context.serialize(src.getLinkedFormOrganizationId()));
         jsonObject.add("formReferenceId", context.serialize(src.getFormReferenceId()));
-        jsonObject.add("elementsToHide", context.serialize(src.getElementsToHide()));
+        jsonObject.add("elementsToHide", context.serialize(src.getElementsToHide().stream()
+                .map(BaseStorableObject::getId).collect(Collectors.toSet())));
         if (src.getImage() != null) {
             jsonObject.add("image", context.serialize(src.getImage()));
         } else {
