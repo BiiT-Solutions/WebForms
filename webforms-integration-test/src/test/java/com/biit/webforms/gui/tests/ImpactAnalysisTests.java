@@ -41,9 +41,12 @@ public class ImpactAnalysisTests extends WebFormsTester {
             // Redraw the graph
             getFlowManagerPage().clickRedrawButton();
             getFlowManagerPage().saveFlow();
+            takeScreenshot(LocalDateTime.now() + "_saved_flow");
             goToFormManagerPage();
             goToDesignerPage();
+            takeScreenshot(LocalDateTime.now() + "_before_finishing");
             getDesignerPage().finishForm();
+            takeScreenshot(LocalDateTime.now() + "_after_finishing");
             clickAcceptButtonIfExists();
         } catch (FieldNotEditableException e) {
             WebformsLogger.errorMessage(this.getClass().getName(), e);
