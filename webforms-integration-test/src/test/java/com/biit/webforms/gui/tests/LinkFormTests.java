@@ -7,6 +7,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.time.LocalDateTime;
+
 public class LinkFormTests extends WebFormsTester {
 
     private static final String NEW_FORM_NAME = "new_form_1";
@@ -111,6 +113,7 @@ public class LinkFormTests extends WebFormsTester {
 
         // hide element.
         sleep();
+        takeScreenshot(LocalDateTime.now() + "_before_hide_button");
         Assert.assertTrue(getDesignerPage().getHideButton().isEnabled());
         getDesignerPage().getHideButton().click();
         getDesignerPage().saveDesign();
@@ -144,6 +147,7 @@ public class LinkFormTests extends WebFormsTester {
         // Click on a row sometimes fails. Use cell better.
         getDesignerPage().getTreeTable().getCell(2, 0).click();
         getDesignerPage().getTreeTable().waitForVaadin();
+        takeScreenshot(LocalDateTime.now() + "_before_modify_question");
         getDesignerPage().getQuestionPropertiesView().setTechnicalName(QUESTION1_NAME + "_modif");
         // Launch event.
         getFormManagerPage().getFormTable().getCell(0, 0).click();

@@ -141,9 +141,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
             formView.setFormReferenceId(((BigInteger) row[13]).longValue());
         }
 
-        formView.setLastVersion(row[14].equals(row[3]));
-
-        formView.setHasJson(row[15] != null && ((Integer) row[15]) > 0);
+        formView.setHasJson(row[14] != null && ((BigInteger) row[14]).intValue() > 0);
 
         formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 

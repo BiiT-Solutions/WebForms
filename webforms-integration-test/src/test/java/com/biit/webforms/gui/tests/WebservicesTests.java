@@ -3,6 +3,8 @@ package com.biit.webforms.gui.tests;
 import com.biit.webforms.gui.tests.exceptions.FieldNotEditableException;
 import org.testng.annotations.Test;
 
+import java.time.LocalDateTime;
+
 public class WebservicesTests extends WebFormsTester {
 
     private static final String NEW_FORM_NAME = "webservice form";
@@ -16,7 +18,9 @@ public class WebservicesTests extends WebFormsTester {
     @Test(groups = "webservices")
     public void generateFormWithWebservices() throws FieldNotEditableException {
         loginFormAdmin1();
+        takeScreenshot(LocalDateTime.now() + "_before_delete_forms");
         getFormManagerPage().deleteAllCreatedForms();
+        takeScreenshot(LocalDateTime.now() + "_after_delete_forms");
 
         getFormManagerPage().createNewForm(NEW_FORM_NAME);
         goToDesignerPage();
