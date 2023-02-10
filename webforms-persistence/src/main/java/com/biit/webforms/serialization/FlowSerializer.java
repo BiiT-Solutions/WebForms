@@ -15,27 +15,27 @@ public class FlowSerializer extends StorableObjectSerializer<Flow> {
     public JsonElement serialize(Flow src, Type typeOfSrc,
                                  JsonSerializationContext context) {
         final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
-
-        if (src.getOrigin() != null) {
-            jsonObject.add("originId", context.serialize(src.getOrigin().getPath()));
-        } else {
-            WebformsLogger.errorMessage(this.getClass().getName(), "Flow without originId!");
+        if (src != null) {
+            if (src.getOrigin() != null) {
+                jsonObject.add("originId", context.serialize(src.getOrigin().getPath()));
+            } else {
+                WebformsLogger.errorMessage(this.getClass().getName(), "Flow without originId!");
+            }
+            if (src.getOrigin() != null) {
+                jsonObject.add("flowType", context.serialize(src.getFlowType()));
+            } else {
+                WebformsLogger.errorMessage(this.getClass().getName(), "Flow without flowtype!");
+            }
+            if (src.getDestiny() != null) {
+                jsonObject.add("destinyId", context.serialize(src.getDestiny().getPath()));
+            }
+            jsonObject.add("others", context.serialize(src.isOthers()));
+            //If is an others flow, getCondition returns the negation of the sum of all other conditions.
+            //While the condition inner value is null.
+            if (!src.isOthers()) {
+                jsonObject.add("condition", context.serialize(src.getComputedCondition()));
+            }
         }
-        if (src.getOrigin() != null) {
-            jsonObject.add("flowType", context.serialize(src.getFlowType()));
-        } else {
-            WebformsLogger.errorMessage(this.getClass().getName(), "Flow without flowtype!");
-        }
-        if (src.getDestiny() != null) {
-            jsonObject.add("destinyId", context.serialize(src.getDestiny().getPath()));
-        }
-        jsonObject.add("others", context.serialize(src.isOthers()));
-        //If is an others flow, getCondition returns the negation of the sum of all other conditions.
-        //While the condition inner value is null.
-        if (!src.isOthers()) {
-            jsonObject.add("condition", context.serialize(src.getComputedCondition()));
-        }
-
         return jsonObject;
     }
 
