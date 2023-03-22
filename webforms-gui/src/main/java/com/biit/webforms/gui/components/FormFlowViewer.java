@@ -31,7 +31,7 @@ public class FormFlowViewer extends ImagePanel {
 	private TreeObject filter;
 	private Form form;
 
-	public FormFlowViewer(GraphvizApp.ImgType imgType, float resize) {
+	public FormFlowViewer(ImgType imgType, float resize) {
 		super(resize);
 		this.imgType = imgType;
 	}

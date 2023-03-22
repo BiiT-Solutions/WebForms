@@ -21,8 +21,6 @@ import com.biit.webforms.gui.components.FormFlowViewer;
 import com.biit.webforms.gui.components.ZoomChangedListener;
 import com.biit.webforms.gui.webpages.floweditor.*;
 import com.biit.webforms.gui.webpages.floweditor.SearchFormElementField.SearchFormElementChanged;
-import com.biit.webforms.gui.webpages.floweditor.TableFlows.NewItemAction;
-import com.biit.webforms.gui.webpages.floweditor.listeners.EditItemAction;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.*;
@@ -43,7 +41,7 @@ import java.util.*;
 
 public class FlowEditor extends SecuredWebPage {
 	private static final long serialVersionUID = -6257723403353946354L;
-	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(Arrays.asList(WebformsActivity.READ));
+	private static final List<IActivity> activityPermissions = new ArrayList<IActivity>(Collections.singletonList(WebformsActivity.READ));
 
 	private UpperMenuFlowEditor upperMenu;
 	private TableFlows tableFlows;
@@ -102,20 +100,8 @@ public class FlowEditor extends SecuredWebPage {
 		tableFlows = new TableFlows();
 		tableFlows.setMultiSelect(true);
 		tableFlows.setSizeFull();
-		tableFlows.addNewItemActionListener(new NewItemAction() {
-
-			@Override
-			public void newItemAction() {
-				addNewFlowAction();
-			}
-		});
-		tableFlows.addEditItemActionListener(new EditItemAction() {
-
-			@Override
-			public void editItemAction(Flow flow) {
-				editFlowAction(flow);
-			}
-		});
+		tableFlows.addNewItemActionListener(this::addNewFlowAction);
+		tableFlows.addEditItemActionListener(this::editFlowAction);
 		tableFlows.addValueChangeListener(new ValueChangeListener() {
 			private static final long serialVersionUID = -4525037694598967266L;
 
@@ -202,7 +188,7 @@ public class FlowEditor extends SecuredWebPage {
 		if (somethingSelected) {
 			selectedRow = itemIds.iterator().next();
 		}
-		boolean elementIsReadOnly = (selectedRow != null) && (selectedRow instanceof Flow) && ((Flow) selectedRow).isReadOnly();
+		boolean elementIsReadOnly = (selectedRow instanceof Flow) && ((Flow) selectedRow).isReadOnly();
 
 		// Top button state
 		upperMenu.getSaveButton().setEnabled(canEdit);
@@ -263,13 +249,7 @@ public class FlowEditor extends SecuredWebPage {
 		flowViewerFilter = new SearchFormElementField(Form.class, Category.class, Group.class);
 		flowViewerFilter.setCaption(LanguageCodes.CAPTION_FILTER.translation());
 		flowViewerFilter.setSelectableFilter(Category.class, Group.class);
-		flowViewerFilter.addValueChangeListener(new SearchFormElementChanged() {
-
-			@Override
-			public void currentElement(Object object) {
-				filterFlowDiagram((TreeObject) object);
-			}
-		});
+		flowViewerFilter.addValueChangeListener(object -> filterFlowDiagram((TreeObject) object));
 
 		IconButton redrawButton = new IconButton(LanguageCodes.CAPTION_REDRAW, ThemeIcons.RULE_DIAGRAM_REDRAW, LanguageCodes.TOOLTIP_REDRAW);
 		redrawButton.addClickListener(new ClickListener() {

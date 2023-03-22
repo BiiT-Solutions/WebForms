@@ -225,6 +225,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
+            <version>${jsoup-vaadin7.version}</version>
         </dependency>
     </dependencies>
 
