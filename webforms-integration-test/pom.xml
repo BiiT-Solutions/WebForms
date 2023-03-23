@@ -79,25 +79,17 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>webforms-core</artifactId>
             <version>${project.version}</version>
-            <type>jar</type>
         </dependency>
-        <!-- ABCD persistency -->
+        <!-- ABCD persistence -->
         <dependency>
             <groupId>com.biit</groupId>
             <artifactId>abcd-persistence</artifactId>
-            <version>${abcd.version}</version>
-            <type>jar</type>
             <exclusions>
                 <exclusion>
                     <groupId>com.biit</groupId>
                     <artifactId>drools-engine-core</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <!-- Liferay Authentication -->
-        <dependency>
-            <groupId>com.biit.liferay</groupId>
-            <artifactId>liferay-authentication-client</artifactId>
         </dependency>
         <!-- DESEncryption -->
         <dependency>
@@ -116,11 +108,6 @@
                     <artifactId>jsoup</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>${jsoup-vaadin7.version}</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -176,6 +163,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup-vaadin7.version}</version>
+        </dependency>
+
         <!-- Vaadin TestBench (Requires license) -->
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -221,11 +214,6 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-htmlunit-driver</artifactId>
             <version>${vaadin-selenium.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>${jsoup-vaadin7.version}</version>
         </dependency>
     </dependencies>
 

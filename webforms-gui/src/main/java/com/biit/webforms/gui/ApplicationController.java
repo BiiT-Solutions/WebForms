@@ -149,7 +149,12 @@ public class ApplicationController {
             throw ex;
         }
 
-        Form newForm = Form.fromJson(json);
+        Form newForm;
+        try {
+            newForm = Form.fromJson(json);
+        } catch (Exception e) {
+            throw new JsonParseException("Invalid provided json:\n" + json);
+        }
         //Remove any id if exists.
         newForm.setOrganizationId(organizationId);
         newForm.setLabel(formLabel);
