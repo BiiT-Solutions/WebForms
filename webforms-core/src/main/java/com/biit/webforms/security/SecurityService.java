@@ -5,10 +5,10 @@ import com.biit.usermanager.entity.IGroup;
 import com.biit.usermanager.entity.IRole;
 import com.biit.usermanager.entity.IUser;
 import com.biit.usermanager.security.IActivity;
+import com.biit.usermanager.security.IActivityManager;
 import com.biit.usermanager.security.IAuthenticationService;
 import com.biit.usermanager.security.IAuthorizationService;
-import com.biit.usermanager.security.exceptions.AuthenticationRequired;
-import com.biit.usermanager.security.exceptions.UserManagementException;
+import com.biit.usermanager.security.exceptions.*;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Block;
@@ -32,6 +32,9 @@ public class SecurityService implements ISecurityService {
     @Autowired
     private IAuthorizationService<Long, Long, Long> authorizationService;
 
+    @Autowired
+    private IActivityManager<Long, Long, Long> activityManager;
+
     public SecurityService() {
         super();
     }
@@ -40,7 +43,11 @@ public class SecurityService implements ISecurityService {
     public Set<IActivity> getActivitiesOfRoles(List<IRole<Long>> roles) {
         Set<IActivity> activities = new HashSet<>();
         for (IRole<Long> role : roles) {
-            activities.addAll(getAuthorizationService().getRoleActivities(role));
+            try {
+                activities.addAll(getActivityManager().getRoleActivities(role));
+            } catch (InvalidCredentialsException e) {
+                WebformsLogger.errorMessage(this.getClass().getName(), e);
+            }
         }
         return activities;
     }
@@ -148,7 +155,7 @@ public class SecurityService implements ISecurityService {
         if (userId != null) {
             try {
                 return getAuthenticationService().getUserById(userId);
-            } catch (UserManagementException e) {
+            } catch (UserManagementException | UserDoesNotExistException | InvalidCredentialsException e) {
                 WebformsLogger.warning(this.getClass().getName(), "No user exists with id '" + userId + "'.");
             }
         }
@@ -157,12 +164,20 @@ public class SecurityService implements ISecurityService {
 
     @Override
     public Set<IGroup<Long>> getUserOrganizations(IUser<Long> user) throws UserManagementException {
-        return getAuthorizationService().getUserOrganizations(user);
+        try {
+            return getAuthorizationService().getUserOrganizations(user);
+        } catch (UserDoesNotExistException | InvalidCredentialsException e) {
+            throw new UserManagementException("Error connecting to the User Manager System", e);
+        }
     }
 
     @Override
     public boolean isAuthorizedActivity(IUser<Long> user, IActivity activity) throws UserManagementException {
-        return getAuthorizationService().isAuthorizedActivity(user, activity);
+        try {
+            return getActivityManager().isAuthorizedActivity(user, activity);
+        } catch (InvalidCredentialsException | UserDoesNotExistException e) {
+            throw new UserManagementException("Error connecting to the User Manager System", e);
+        }
     }
 
     @Override
@@ -172,13 +187,21 @@ public class SecurityService implements ISecurityService {
 
     @Override
     public IGroup<Long> getOrganization(long organizationId) throws UserManagementException {
-        return getAuthorizationService().getOrganization(organizationId);
+        try {
+            return getAuthorizationService().getOrganization(organizationId);
+        } catch (InvalidCredentialsException | OrganizationDoesNotExistException e) {
+            throw new UserManagementException("Error connecting to the User Manager System", e);
+        }
     }
 
     @Override
     public boolean isAuthorizedActivity(IUser<Long> user, IGroup<Long> organization, IActivity activity)
             throws UserManagementException {
-        return getAuthorizationService().isAuthorizedActivity(user, organization, activity);
+        try {
+            return getActivityManager().isAuthorizedActivity(user, organization, activity);
+        } catch (InvalidCredentialsException | OrganizationDoesNotExistException | UserDoesNotExistException e) {
+            throw new UserManagementException("Error connecting to the User Manager System", e);
+        }
     }
 
     @Override
@@ -199,4 +222,11 @@ public class SecurityService implements ISecurityService {
         this.authorizationService = authorizationService;
     }
 
+    public IActivityManager<Long, Long, Long> getActivityManager() {
+        return activityManager;
+    }
+
+    public void setActivityManager(IActivityManager<Long, Long, Long> activityManager) {
+        this.activityManager = activityManager;
+    }
 }
