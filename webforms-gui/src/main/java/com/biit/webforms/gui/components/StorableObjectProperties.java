@@ -84,7 +84,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 		try {
 			valueUpdatedBy = getInstance().getUpdatedBy() == null ? "" : webformsSecurityService.getUserById(getInstance().getUpdatedBy())
 					.getEmailAddress();
-		} catch (UserDoesNotExistException udne) {
+		} catch (UserDoesNotExistException | NullPointerException udne) {
 			valueUpdatedBy = getInstance().getUpdatedBy() + "";
 		}
 
