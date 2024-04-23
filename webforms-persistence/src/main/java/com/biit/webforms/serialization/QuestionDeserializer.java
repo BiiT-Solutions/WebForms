@@ -22,12 +22,12 @@ public class QuestionDeserializer extends TreeObjectDeserializer<Question> {
         super.deserialize(element, jsonObject, context);
 
         if (jsonObject.get("answerType") != null) {
-            element.setAnswerType(AnswerType.get(jsonObject.get("answerType").textValue()));
+            element.setAnswerType(AnswerType.from(jsonObject.get("answerType").textValue()));
         }
 
         if (jsonObject.get("answerFormat") != null) {
             try {
-                element.setAnswerFormat(AnswerFormat.get(jsonObject.get("answerFormat").textValue()));
+                element.setAnswerFormat(AnswerFormat.from(jsonObject.get("answerFormat").textValue()));
             } catch (InvalidAnswerFormatException e) {
                 throw new JsonGenerationException(e, null);
             }

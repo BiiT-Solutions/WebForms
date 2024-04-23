@@ -73,7 +73,7 @@ public enum AnswerType {
         return defaultValueEnabled;
     }
 
-    public static AnswerType get(String name) {
+    public static AnswerType from(String name) {
         for (AnswerType answerType : AnswerType.values()) {
             if (answerType.name().equalsIgnoreCase(name)) {
                 return answerType;

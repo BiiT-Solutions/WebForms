@@ -125,15 +125,13 @@ public class FormElementDeserializer<T extends Form> extends BaseFormDeserialize
     }
 
     private void update(Form form, Flow flow) {
-        flow.setOrigin((Question) form.getChild(flow.getOriginReferencePath()));
-        flow.setDestiny((Question) form.getChild(flow.getDestinyReferencePath()));
+        flow.setOrigin((BaseQuestion) form.getChild(flow.getOriginReferencePath()));
+        flow.setDestiny((BaseQuestion) form.getChild(flow.getDestinyReferencePath()));
         flow.setForm(form);
 
         //Update conditions
         if (flow.getCondition() != null) {
-            flow.getCondition().forEach(token -> {
-                updateTokenReferences(form, token);
-            });
+            flow.getCondition().forEach(token -> updateTokenReferences(form, token));
         }
     }
 

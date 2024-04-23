@@ -1,9 +1,16 @@
 package com.biit.webforms.webservices;
 
+import com.biit.webforms.serialization.WebserviceValidatedPortDeserializer;
+import com.biit.webforms.serialization.WebserviceValidatedPortSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@JsonDeserialize(using = WebserviceValidatedPortDeserializer.class)
+@JsonSerialize(using = WebserviceValidatedPortSerializer.class)
 public class WebserviceValidatedPort extends WebservicePort {
 
     private String validationXpath;
@@ -16,7 +23,7 @@ public class WebserviceValidatedPort extends WebservicePort {
     public WebserviceValidatedPort(String name, String xpath, String validationXpath, String... values) {
         super(name, xpath);
         setValidationXpath(validationXpath);
-        setErrorCodes(new ArrayList<String>());
+        setErrorCodes(new ArrayList<>());
         getErrorCodes().addAll(Arrays.asList(values));
     }
 

@@ -59,7 +59,7 @@ public enum AnswerFormat {
         return validTokenTypes;
     }
 
-    public static AnswerFormat get(String name) {
+    public static AnswerFormat from(String name) {
         for (AnswerFormat answerFormat : AnswerFormat.values()) {
             if (answerFormat.name().equalsIgnoreCase(name)) {
                 return answerFormat;

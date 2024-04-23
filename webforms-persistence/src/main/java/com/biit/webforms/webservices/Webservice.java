@@ -4,12 +4,18 @@ import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
+import com.biit.webforms.serialization.WebserviceDeserializer;
+import com.biit.webforms.serialization.WebserviceSerializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@JsonDeserialize(using = WebserviceDeserializer.class)
+@JsonSerialize(using = WebserviceSerializer.class)
 public class Webservice {
 
     private String name;
