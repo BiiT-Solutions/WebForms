@@ -22,7 +22,7 @@ public enum FormWorkStatus {
 		return level < newStatus.level;
 	}
 
-	public static FormWorkStatus getFromString(String name) {
+	public static FormWorkStatus from(String name) {
 		for (FormWorkStatus value : values()) {
 			if (value.toString().equals(name)) {
 				return value;

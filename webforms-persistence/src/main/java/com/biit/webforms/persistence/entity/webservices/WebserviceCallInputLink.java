@@ -2,20 +2,27 @@ package com.biit.webforms.persistence.entity.webservices;
 
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.serialization.WebserviceCallInputLinkSerializer;
+import com.biit.webforms.serialization.WebserviceCallOutputLinkDeserializer;
 import com.biit.webforms.webservices.WebserviceValidatedPort;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@JsonDeserialize(using = WebserviceCallOutputLinkDeserializer.class)
+@JsonSerialize(using = WebserviceCallInputLinkSerializer.class)
 @Table(name = "webservice_call_input_link")
 public class WebserviceCallInputLink extends WebserviceCallLink {
 	private static final long serialVersionUID = 8534588762014331498L;
-
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "webservice_call")
-	protected WebserviceCall webserviceCall;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "webserviceCallInputLink")
 	private final Set<WebserviceCallInputLinkErrors> errors;
@@ -84,23 +91,8 @@ public class WebserviceCallInputLink extends WebserviceCallLink {
 		return validErrors;
 	}
 
-	@Override
-	public void setWebserviceCall(WebserviceCall webserviceCall) {
-		this.webserviceCall = webserviceCall;
-	}
 
-	@Override
-	public WebserviceCall getWebserviceCall() {
-		return webserviceCall;
-	}
 
-	@Override
-	public void remove() {
-		if (webserviceCall != null) {
-			webserviceCall.getInputLinks().remove(this);
-			setWebserviceCall(null);
-		}
-	}
 
 	public String getValidationXpath() {
 		return validationXpath;

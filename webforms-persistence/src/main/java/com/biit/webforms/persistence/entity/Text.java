@@ -1,7 +1,16 @@
 package com.biit.webforms.persistence.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.biit.form.entity.TreeObject;
+import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.persistence.entity.StorableObject;
+import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.serialization.TextDeserializer;
+import com.biit.webforms.serialization.TextSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -10,16 +19,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.biit.form.entity.TreeObject;
-import com.biit.form.exceptions.NotValidTreeObjectException;
-import com.biit.persistence.entity.StorableObject;
-import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
-import com.biit.webforms.enumerations.AnswerFormat;
-import com.biit.webforms.enumerations.AnswerSubformat;
-import com.biit.webforms.enumerations.AnswerType;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@JsonDeserialize(using = TextDeserializer.class)
+@JsonSerialize(using = TextSerializer.class)
 @Table(name = "tree_texts")
 @Cacheable(true)
 public class Text extends WebformsBaseQuestion implements ElementWithImage {

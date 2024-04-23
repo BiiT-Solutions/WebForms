@@ -4,27 +4,25 @@ import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.io.IOException;
 
 public class TokenComparationAnswerDeserializer extends TokenDeserializer<TokenComparationAnswer> {
 
 	private final Form form;
 	
 	public TokenComparationAnswerDeserializer(Form element) {
-		super(TokenComparationAnswer.class);
 		this.form = element;
 	}
-	
+
 	@Override
-	public void deserialize(JsonElement json,JsonDeserializationContext context, TokenComparationAnswer element){
-		JsonObject jobject = (JsonObject) json;
+	public void deserialize(TokenComparationAnswer element, JsonNode jsonObject, DeserializationContext context) throws IOException {
+		 super.deserialize(element, jsonObject, context);
 		
-		element.setQuestion((WebformsBaseQuestion) FormDeserializer.parseTreeObjectPath("question_id", form, jobject, context));
-		element.setAnswer((Answer) FormDeserializer.parseTreeObjectPath("answer_id", form, jobject, context));
-		
-		super.deserialize(json, context, element);
+		element.setQuestion((WebformsBaseQuestion) FormElementDeserializer.parseTreeObjectPath("question_id", form, jsonObject, context));
+		element.setAnswer((Answer) FormElementDeserializer.parseTreeObjectPath("answer_id", form, jsonObject, context));
 	}
 
 }

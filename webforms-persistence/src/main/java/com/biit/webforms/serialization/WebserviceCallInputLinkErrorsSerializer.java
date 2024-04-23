@@ -1,24 +1,19 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
+import com.biit.form.jackson.serialization.CustomSerializer;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
-import com.google.gson.JsonElement;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 
-public class WebserviceCallInputLinkErrorsSerializer implements JsonSerializer<WebserviceCallInputLinkErrors>  {
+import java.io.IOException;
 
-	@Override
-	public JsonElement serialize(WebserviceCallInputLinkErrors src, Type typeOfSrc,
-			JsonSerializationContext context) {
-		final JsonObject jsonObject = new JsonObject();
+public class WebserviceCallInputLinkErrorsSerializer extends CustomSerializer<WebserviceCallInputLinkErrors> {
 
-		jsonObject.add("errorCode", context.serialize(src.getErrorCode()));
-		jsonObject.add("errorMessage", context.serialize(src.getErrorMessage()));
+    @Override
+    public void serialize(WebserviceCallInputLinkErrors src, JsonGenerator jgen) throws IOException {
+        final JsonObject jsonObject = new JsonObject();
+        jgen.writeStringField("errorCode", src.getErrorCode());
+        jgen.writeStringField("errorMessage", src.getErrorMessage());
+    }
 
-		return jsonObject;
-	}
-	
 }

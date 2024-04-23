@@ -5,15 +5,28 @@ import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
+import com.biit.webforms.serialization.WebserviceCallDeserializer;
+import com.biit.webforms.serialization.WebserviceCallSerializer;
 import com.biit.webforms.webservices.Webservice;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@JsonDeserialize(using = WebserviceCallDeserializer.class)
+@JsonSerialize(using = WebserviceCallSerializer.class)
 @Table(name = "webservice_call")
 public class WebserviceCall extends StorableObject {
 	private static final long serialVersionUID = -8130775804790464077L;

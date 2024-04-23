@@ -1,32 +1,25 @@
 package com.biit.webforms.serialization;
 
-import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.DatePeriodUnit;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.io.IOException;
 
 public class TokenBetweenDeserializer extends TokenDeserializer<TokenBetween> {
 
-	private final Form form;
-	
-	public TokenBetweenDeserializer(Form element) {
-		super(TokenBetween.class);
-		this.form = element;
-	}
-	
-	@Override
-	public void deserialize(JsonElement json,JsonDeserializationContext context, TokenBetween element){
-		JsonObject jobject = (JsonObject) json;
-		
-		element.setQuestion((WebformsBaseQuestion) FormDeserializer.parseTreeObjectPath("question_id", form, jobject, context));
-		element.setSubformat(QuestionDeserializer.parseAnswerSubformat("subformat", jobject, context));
-		element.setDatePeriodUnit(parseDatePeriodUnit("datePeriodUnit", jobject, context));
-		element.setValueStart(parseString("valueStart", jobject, context));
-		element.setValueEnd(parseString("valueEnd", jobject, context));
+    @Override
+    public void deserialize(TokenBetween element, JsonNode jsonObject, DeserializationContext context) throws IOException {
+        element.setQuestion((WebformsBaseQuestion) FormElementDeserializer.parseTreeObjectPath("question_id", context));
+        element.setSubformat(AnswerSubformat.from(parseString("subformat", jsonObject)));
+        element.setDatePeriodUnit(DatePeriodUnit.from(parseString("datePeriodUnit", jsonObject)));
+        element.setValueStart(parseString("valueStart", jsonObject));
+        element.setValueEnd(parseString("valueEnd", jsonObject));
 
-		super.deserialize(json, context, element);
-	}
+        super.deserialize(element, jsonObject, context);
+    }
 
 }

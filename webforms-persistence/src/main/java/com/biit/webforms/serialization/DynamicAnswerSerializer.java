@@ -1,22 +1,23 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
-import com.biit.form.json.serialization.TreeObjectSerializer;
+import com.biit.form.jackson.serialization.TreeObjectSerializer;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
 
-public class DynamicAnswerSerializer extends TreeObjectSerializer<DynamicAnswer>{
+import java.io.IOException;
 
-	@Override
-	public JsonElement serialize(DynamicAnswer src, Type typeOfSrc,	JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
-		
-		jsonObject.add("reference", context.serialize(src.getReference().getPath()));
+public class DynamicAnswerSerializer extends TreeObjectSerializer<DynamicAnswer> {
 
-		return jsonObject;
-	}
-	
+    @Override
+    public void serialize(DynamicAnswer src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
+
+        jgen.writeFieldName("reference");
+        jgen.writeStartArray("reference");
+        for (String reference : src.getReference().getPath()) {
+            jgen.writeString(reference);
+        }
+        jgen.writeEndArray();
+    }
+
 }

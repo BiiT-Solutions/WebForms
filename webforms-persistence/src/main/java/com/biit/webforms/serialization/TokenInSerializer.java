@@ -1,23 +1,28 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
 import com.biit.webforms.persistence.entity.condition.TokenIn;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
 
-public class TokenInSerializer extends TokenSerializer<TokenIn>{
+import java.io.IOException;
 
-	@Override
-	public JsonElement serialize(TokenIn src, Type typeOfSrc,
-			JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
-		
-		jsonObject.add("question_id", context.serialize(src.getQuestion().getPath()));
-		jsonObject.add("values", context.serialize(src.getValues()));
+public class TokenInSerializer extends TokenSerializer<TokenIn> {
 
-		return jsonObject;
-	}
+    @Override
+    public void serialize(TokenIn src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
+
+        if (src != null && src.getQuestion() != null) {
+            jgen.writeFieldName("question_id");
+            jgen.writeStartArray("question_id");
+            for (String reference : src.getQuestion().getPath()) {
+                jgen.writeString(reference);
+            }
+            jgen.writeEndArray();
+        }
+
+        if (src != null) {
+            jgen.writeObjectField("values", src.getValues());
+        }
+    }
 
 }

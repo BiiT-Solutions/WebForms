@@ -1,17 +1,20 @@
 package com.biit.webforms.serialization;
 
 import com.biit.form.entity.BaseQuestion;
-import com.biit.form.json.serialization.StorableObjectDeserializer;
+import com.biit.form.jackson.serialization.StorableObjectDeserializer;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,16 +28,16 @@ public class WebserviceCallDeserializer extends StorableObjectDeserializer<Webse
 	}
 
 	@Override
-	public void deserialize(JsonElement json, JsonDeserializationContext context, WebserviceCall element) {
-		JsonObject jobject = (JsonObject) json;
+	public void deserialize(WebserviceCall element, JsonNode jsonObject, DeserializationContext context) throws IOException {
+		 super.deserialize(element, jsonObject, context);
 
-		element.setName(parseString("name", jobject, context));
-		element.setWebserviceName(parseString("webserviceName", jobject, context));
+		element.setName(parseString("name", jsonObject, context));
+		element.setWebserviceName(parseString("webserviceName", jsonObject, context));
 
-		element.setFormElementTrigger((BaseQuestion) FormDeserializer.parseTreeObjectPath("formElementTrigger_id", form, jobject, context));
+		element.setFormElementTrigger((BaseQuestion) FormElementDeserializer.parseTreeObjectPath("formElementTrigger_id", form, jsonObject, context));
 
-		element.setInputLinks(parseInputLinks("inputLinks", jobject, context));
-		element.setOutputLinks(parseOutputLinks("outputLinks", jobject, context));
+		element.setInputLinks(parseInputLinks("inputLinks", jsonObject, context));
+		element.setOutputLinks(parseOutputLinks("outputLinks", jsonObject, context));
 
 		super.deserialize(json, context, element);
 	}
@@ -47,10 +50,10 @@ public class WebserviceCallDeserializer extends StorableObjectDeserializer<Webse
 		return instance;
 	}
 
-	private Set<WebserviceCallOutputLink> parseOutputLinks(String name, JsonObject jobject, JsonDeserializationContext context) {
+	private Set<WebserviceCallOutputLink> parseOutputLinks(String name, JsonObject jsonObject, JsonDeserializationContext context) {
 		HashSet<WebserviceCallOutputLink> outputLinks = new HashSet<>();
 
-		JsonElement valuesJson = jobject.get(name);
+		JsonElement valuesJson = jsonObject.get(name);
 		if (valuesJson != null) {
 			Type listType = new TypeToken<Set<WebserviceCallOutputLink>>() {
 			}.getType();
@@ -66,10 +69,10 @@ public class WebserviceCallDeserializer extends StorableObjectDeserializer<Webse
 		return outputLinks;
 	}
 
-	private Set<WebserviceCallInputLink> parseInputLinks(String name, JsonObject jobject, JsonDeserializationContext context) {
+	private Set<WebserviceCallInputLink> parseInputLinks(String name, JsonObject jsonObject, JsonDeserializationContext context) {
 		HashSet<WebserviceCallInputLink> inputLinks = new HashSet<>();
 
-		JsonElement valuesJson = jobject.get(name);
+		JsonElement valuesJson = jsonObject.get(name);
 		if (valuesJson != null) {
 			Type listType = new TypeToken<Set<WebserviceCallInputLink>>() {
 			}.getType();

@@ -1,12 +1,5 @@
 package com.biit.webforms.persistence.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
@@ -16,8 +9,20 @@ import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.serialization.SystemFieldDeserializer;
+import com.biit.webforms.serialization.SystemFieldSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import javax.persistence.Cacheable;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@JsonDeserialize(using = SystemFieldDeserializer.class)
+@JsonSerialize(using = SystemFieldSerializer.class)
 @Table(name = "tree_system_fields")
 @Cacheable(true)
 public class SystemField extends WebformsBaseQuestion {

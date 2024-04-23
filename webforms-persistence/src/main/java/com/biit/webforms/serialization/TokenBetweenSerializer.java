@@ -1,35 +1,38 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
 import com.biit.webforms.persistence.entity.condition.TokenBetween;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
+
+import java.io.IOException;
 
 public class TokenBetweenSerializer extends TokenSerializer<TokenBetween> {
 
-	@Override
-	public JsonElement serialize(TokenBetween src, Type typeOfSrc, JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
+    @Override
+    public void serialize(TokenBetween src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
 
-		if (src != null && src.getQuestion() != null) {
-			jsonObject.add("question_id", context.serialize(src.getQuestion().getPath()));
-		}
-		if (src != null) {
-			jsonObject.add("subformat", context.serialize(src.getSubformat()));
-		}
-		if (src != null) {
-			jsonObject.add("datePeriodUnit", context.serialize(src.getDatePeriodUnit()));
-		}
-		if (src != null) {
-			jsonObject.add("valueStart", context.serialize(src.getValueStart()));
-		}
-		if (src != null) {
-			jsonObject.add("valueEnd", context.serialize(src.getValueEnd()));
-		}
+        if (src != null && src.getQuestion() != null) {
+            jgen.writeFieldName("question_id");
+            jgen.writeStartArray("question_id");
+            for (String reference : src.getQuestion().getPath()) {
+                jgen.writeString(reference);
+            }
+            jgen.writeEndArray();
+        }
 
-		return jsonObject;
-	}
+
+        if (src != null && src.getSubformat() != null) {
+            jgen.writeStringField("subformat", src.getSubformat().name());
+        }
+        if (src != null && src.getDatePeriodUnit() != null) {
+            jgen.writeStringField("datePeriodUnit", src.getDatePeriodUnit().name());
+        }
+        if (src != null) {
+            jgen.writeStringField("valueStart", src.getValueStart());
+        }
+        if (src != null) {
+            jgen.writeStringField("valueEnd", src.getValueEnd());
+        }
+    }
 
 }

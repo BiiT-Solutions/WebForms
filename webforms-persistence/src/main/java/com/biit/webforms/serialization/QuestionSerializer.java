@@ -1,41 +1,42 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
-import com.biit.form.json.serialization.TreeObjectSerializer;
+import com.biit.form.jackson.serialization.CustomDeserializer;
+import com.biit.form.jackson.serialization.TreeObjectSerializer;
 import com.biit.webforms.persistence.entity.Question;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
+
+import java.io.IOException;
 
 public class QuestionSerializer extends TreeObjectSerializer<Question> {
 
-	@Override
-	public JsonElement serialize(Question src, Type typeOfSrc, JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
+    @Override
+    public void serialize(Question src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
 
-		jsonObject.add("abbreviation", context.serialize(src.getAbbreviation()));
-		jsonObject.add("alias", context.serialize(src.getAlias()));
-		jsonObject.add("answerType", context.serialize(src.getAnswerType()));
-		jsonObject.add("answerFormat", context.serialize(src.getAnswerFormat()));
-		jsonObject.add("answerSubformat", context.serialize(src.getAnswerSubformat()));
-		jsonObject.add("mandatory", context.serialize(src.isMandatory()));
-		jsonObject.add("horizontal", context.serialize(src.isHorizontal()));
-		jsonObject.add("description", context.serialize(src.getDescription()));
-		jsonObject.add("defaultValueString", context.serialize(src.getDefaultValueString()));
-		if (src.getDefaultValueAnswer() != null) {
-			jsonObject.add("defaultValueAnswer", context.serialize(src.getDefaultValueAnswer().getValue()));
-		} else {
-			jsonObject.add("defaultValueAnswer", context.serialize(null));
-		}
-		jsonObject.add("defaultValueTime", context.serialize(src.getDefaultValueTime()));
-		if (src.getImage() != null) {
-			jsonObject.add("image", context.serialize(src.getImage()));
-		} else {
-			jsonObject.add("image", context.serialize(null));
-		}
-
-		return jsonObject;
-	}
+        jgen.writeStringField("abbreviation", src.getAbbreviation());
+        jgen.writeStringField("alias", src.getAlias());
+        if (src.getAnswerType() != null) {
+            jgen.writeStringField("answerType", src.getAnswerType().name());
+        }
+        if (src.getAnswerFormat() != null) {
+            jgen.writeStringField("answerFormat", src.getAnswerFormat().name());
+        }
+        if (src.getAnswerSubformat() != null) {
+            jgen.writeStringField("answerSubformat", src.getAnswerSubformat().name());
+        }
+        jgen.writeBooleanField("mandatory", src.isMandatory());
+        jgen.writeBooleanField("horizontal", src.isHorizontal());
+        jgen.writeStringField("description", src.getDescription());
+        jgen.writeStringField("defaultValueString", src.getDefaultValueString());
+        if (src.getDefaultValueAnswer() != null) {
+            jgen.writeStringField("defaultValueAnswer", src.getDefaultValueAnswer().getValue());
+        }
+        if (src.getUpdateTime() != null) {
+            jgen.writeStringField("defaultValueTime", CustomDeserializer.TIMESTAMP_FORMATTER.format(src.getDefaultValueTime().toLocalDateTime()));
+        }
+        if (src.getImage() != null) {
+            jgen.writeObjectField("image", src.getImage());
+        }
+    }
 
 }
