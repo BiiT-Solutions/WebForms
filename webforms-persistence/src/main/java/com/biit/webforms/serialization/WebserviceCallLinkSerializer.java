@@ -22,8 +22,6 @@ public class WebserviceCallLinkSerializer<T extends WebserviceCallLink> extends 
             }
             jgen.writeEndArray();
         }
-
-        jgen.writeObjectField("webserviceCall", src.getWebserviceCall());
     }
 
 }

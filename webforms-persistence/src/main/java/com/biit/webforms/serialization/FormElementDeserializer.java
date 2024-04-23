@@ -1,10 +1,12 @@
 package com.biit.webforms.serialization;
 
+import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.jackson.serialization.BaseFormDeserializer;
 import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
@@ -12,15 +14,14 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
+import com.biit.webforms.persistence.entity.condition.TokenIn;
+import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
@@ -51,7 +52,7 @@ public class FormElementDeserializer<T extends Form> extends BaseFormDeserialize
             element.setLabel(parseString("label", jsonObject));
             element.setDescription(parseString("description", jsonObject));
         } catch (FieldTooLongException e) {
-            throw new JsonParseException(e);
+            throw new JsonGenerationException(e, null);
         }
 
         if ((jsonObject.get("image") != null)) {
@@ -94,27 +95,29 @@ public class FormElementDeserializer<T extends Form> extends BaseFormDeserialize
             flows.forEach(flow -> update(element, flow));
         }
 
-
-        Type flowListType = new TypeToken<HashSet<Flow>>() {
-        }.getType();
-        JsonElement flowsJson = jsonObject.get("flows");
-
-        if (flowsJson != null) {
-            Set<Flow> flows = gson.fromJson(flowsJson, flowListType);
-            element.addFlows(flows);
-        }
-
         // Deserializes Webservice calls
-        Type callListType = new TypeToken<HashSet<WebserviceCall>>() {
-        }.getType();
-        JsonElement callsJson = jsonObject.get("webserviceCalls");
-
-        if (callsJson != null) {
-            Set<WebserviceCall> calls = gson.fromJson(callsJson, callListType);
-            element.addWebserviceCalls(calls);
+        if ((jsonObject.get("webserviceCalls") != null)) {
+            final Set<WebserviceCall> webserviceCalls = new HashSet<>(Arrays.asList(ObjectMapperFactory.getObjectMapper()
+                    .readValue(jsonObject.get("webserviceCalls").toString(), WebserviceCall[].class)));
+            element.addWebserviceCalls(webserviceCalls);
+            //Fixing token references.
+            webserviceCalls.forEach(webserviceCall -> update(element, webserviceCall));
         }
+    }
 
-
+    private void update(Form form, WebserviceCall webserviceCall) {
+        webserviceCall.setFormElementTrigger((BaseQuestion) form.getChild(webserviceCall.getFormElementTriggerPath()));
+        webserviceCall.getInputLinks().forEach(webserviceCallInputLink -> {
+            webserviceCallInputLink.setFormElement((BaseQuestion) form.getChild(webserviceCallInputLink.getFormElementPath()));
+            webserviceCallInputLink.setWebserviceCall(webserviceCall);
+            webserviceCallInputLink.getErrors().forEach(webserviceCallInputLinkErrors -> {
+                webserviceCallInputLinkErrors.setWebserviceCallInputLink(webserviceCallInputLink);
+            });
+        });
+        webserviceCall.getOutputLinks().forEach(webserviceCallOutputLink -> {
+            webserviceCallOutputLink.setFormElement((BaseQuestion) form.getChild(webserviceCallOutputLink.getFormElementPath()));
+            webserviceCallOutputLink.setWebserviceCall(webserviceCall);
+        });
     }
 
     private void update(Form form, DynamicAnswer dynamicAnswer) {
@@ -129,14 +132,21 @@ public class FormElementDeserializer<T extends Form> extends BaseFormDeserialize
         //Update conditions
         if (flow.getCondition() != null) {
             flow.getCondition().forEach(token -> {
-                updateTokenComparationAnswer(form, token);
+                updateTokenReferences(form, token);
             });
         }
     }
 
-    private void updateTokenComparationAnswer(Form form, Token token) {
+    private void updateTokenReferences(Form form, Token token) {
+        if (token instanceof TokenWithQuestion) {
+            ((TokenWithQuestion) token).setQuestion((Question) form.getChild(((TokenWithQuestion) token).getQuestionReferencePath()));
+        }
         if (token instanceof TokenComparationAnswer) {
-
+            ((TokenComparationAnswer) token).setAnswer((Answer) form.getChild(((TokenComparationAnswer) token).getAnswerReferencePath()));
+        }
+        if (token instanceof TokenIn) {
+            ((TokenIn) token).getValues().forEach(tokenInValue ->
+                    tokenInValue.setAnswerValue((Answer) form.getChild((tokenInValue.getAnswerReferencePath()))));
         }
     }
 

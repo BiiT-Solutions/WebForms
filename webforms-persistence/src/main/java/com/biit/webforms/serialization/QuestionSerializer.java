@@ -31,7 +31,7 @@ public class QuestionSerializer extends TreeObjectSerializer<Question> {
         if (src.getDefaultValueAnswer() != null) {
             jgen.writeStringField("defaultValueAnswer", src.getDefaultValueAnswer().getValue());
         }
-        if (src.getUpdateTime() != null) {
+        if (src.getDefaultValueTime() != null) {
             jgen.writeStringField("defaultValueTime", CustomDeserializer.TIMESTAMP_FORMATTER.format(src.getDefaultValueTime().toLocalDateTime()));
         }
         if (src.getImage() != null) {

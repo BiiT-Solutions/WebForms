@@ -12,7 +12,7 @@ import com.biit.form.exceptions.ChildrenNotFoundException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
-import com.biit.form.json.serialization.hibernate.HibernateProxyTypeAdapter;
+import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -21,52 +21,15 @@ import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.condition.Token;
-import com.biit.webforms.persistence.entity.condition.TokenBetween;
-import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
-import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
-import com.biit.webforms.persistence.entity.condition.TokenEmpty;
-import com.biit.webforms.persistence.entity.condition.TokenIn;
-import com.biit.webforms.persistence.entity.condition.TokenInValue;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToFormException;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
-import com.biit.webforms.serialization.AnswerSerializer;
-import com.biit.webforms.serialization.AttachedFilesSerializer;
-import com.biit.webforms.serialization.BlockReferenceSerializer;
-import com.biit.webforms.serialization.BlockSerializer;
-import com.biit.webforms.serialization.CategorySerializer;
-import com.biit.webforms.serialization.DynamicAnswerSerializer;
-import com.biit.webforms.serialization.FlowSerializer;
 import com.biit.webforms.serialization.FormDeserializer;
-import com.biit.webforms.serialization.FormElementDeserializer;
 import com.biit.webforms.serialization.FormSerializer;
-import com.biit.webforms.serialization.GroupSerializer;
-import com.biit.webforms.serialization.QuestionSerializer;
-import com.biit.webforms.serialization.SystemFieldSerializer;
-import com.biit.webforms.serialization.TextSerializer;
-import com.biit.webforms.serialization.TokenBetweenSerializer;
-import com.biit.webforms.serialization.TokenComparationAnswerSerializer;
-import com.biit.webforms.serialization.TokenComparationValueSerializer;
-import com.biit.webforms.serialization.TokenEmptySerializer;
-import com.biit.webforms.serialization.TokenInSerializer;
-import com.biit.webforms.serialization.TokenInValueSerializer;
-import com.biit.webforms.serialization.TokenSerializer;
-import com.biit.webforms.serialization.TreeObjectImageDeserializer;
-import com.biit.webforms.serialization.TreeObjectImageSerializer;
-import com.biit.webforms.serialization.WebserviceCallInputLinkErrorsSerializer;
-import com.biit.webforms.serialization.WebserviceCallInputLinkSerializer;
-import com.biit.webforms.serialization.WebserviceCallOutputLinkSerializer;
-import com.biit.webforms.serialization.WebserviceCallSerializer;
 import com.biit.webforms.webservices.Webservice;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Cacheable;
@@ -802,37 +765,11 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     }
 
     public String toJson() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.addSerializationExclusionStrategy(GsonUtils.getStrategyToAvoidAnnotation());
-        gsonBuilder.setPrettyPrinting();
-        gsonBuilder.registerTypeAdapterFactory(HibernateProxyTypeAdapter.FACTORY);
-        gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
-        gsonBuilder.registerTypeAdapter(Block.class, new BlockSerializer());
-        gsonBuilder.registerTypeAdapter(BlockReference.class, new BlockReferenceSerializer());
-        gsonBuilder.registerTypeAdapter(Category.class, new CategorySerializer());
-        gsonBuilder.registerTypeAdapter(Group.class, new GroupSerializer());
-        gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
-        gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
-        gsonBuilder.registerTypeAdapter(AttachedFiles.class, new AttachedFilesSerializer());
-        gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldSerializer());
-        gsonBuilder.registerTypeAdapter(Answer.class, new AnswerSerializer());
-        gsonBuilder.registerTypeAdapter(DynamicAnswer.class, new DynamicAnswerSerializer());
-        gsonBuilder.registerTypeAdapter(Flow.class, new FlowSerializer());
-        gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<>());
-        gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenSerializer());
-        gsonBuilder.registerTypeAdapter(TokenEmpty.class, new TokenEmptySerializer());
-        gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerSerializer());
-        gsonBuilder.registerTypeAdapter(TokenComparationValue.class, new TokenComparationValueSerializer());
-        gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInSerializer());
-        gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCall.class, new WebserviceCallSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputLinkSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class, new WebserviceCallInputLinkErrorsSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkSerializer());
-        gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageSerializer());
-        Gson gson = gsonBuilder.create();
-
-        return gson.toJson(this);
+        try {
+            return ObjectMapperFactory.getObjectMapper().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void updateRuleReferences() {
@@ -893,13 +830,8 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         }
     }
 
-    public static Form fromJson(String jsonString) throws JsonParseException {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Form.class, new FormElementDeserializer());
-        gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageDeserializer());
-        Gson gson = gsonBuilder.create();
-
-        return gson.fromJson(jsonString, Form.class);
+    public static Form fromJson(String jsonString) throws JsonProcessingException {
+        return ObjectMapperFactory.getObjectMapper().readValue(jsonString, Form.class);
     }
 
     /**

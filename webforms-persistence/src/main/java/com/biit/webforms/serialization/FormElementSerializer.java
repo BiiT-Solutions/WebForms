@@ -16,15 +16,21 @@ public class FormElementSerializer<T extends Form> extends BaseFormSerializer<T>
         super.serialize(src, jgen);
 
         jgen.writeStringField("description", src.getDescription());
-        jgen.writeObjectField("flows", src.getFlows());
+        if (src.getFlows() != null) {
+            jgen.writeObjectField("flows", src.getFlows());
+        }
         jgen.writeObjectField("webserviceCalls", src.getWebserviceCalls());
         if (src.getStatus() != null) {
             jgen.writeStringField("status", src.getStatus().name());
         }
         jgen.writeStringField("linkedFormLabel", src.getLinkedFormLabel());
         jgen.writeObjectField("linkedFormVersions", src.getLinkedFormVersions());
-        jgen.writeNumberField("linkedFormOrganizationId", src.getLinkedFormOrganizationId());
-        jgen.writeNumberField("formReferenceId", src.getFormReferenceId());
+        if (src.getLinkedFormOrganizationId() != null) {
+            jgen.writeNumberField("linkedFormOrganizationId", src.getLinkedFormOrganizationId());
+        }
+        if (src.getFormReferenceId() != null) {
+            jgen.writeNumberField("formReferenceId", src.getFormReferenceId());
+        }
         jgen.writeObjectField("elementsToHide", src.getElementsToHide().stream()
                 .map(BaseStorableObject::getId).collect(Collectors.toSet()));
         if (src.getImage() != null) {

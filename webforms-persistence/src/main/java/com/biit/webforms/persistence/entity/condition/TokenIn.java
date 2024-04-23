@@ -39,7 +39,7 @@ public class TokenIn extends TokenComplex implements ITokenQuestion {
     private List<TokenInValue> values;
 
     public TokenIn() {
-        values = new ArrayList<TokenInValue>();
+        values = new ArrayList<>();
     }
 
     @Override

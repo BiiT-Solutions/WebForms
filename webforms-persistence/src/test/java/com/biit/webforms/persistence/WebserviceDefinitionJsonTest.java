@@ -1,7 +1,10 @@
 package com.biit.webforms.persistence;
 
-import java.util.Set;
-
+import com.biit.webforms.persistence.dao.IWebserviceDao;
+import com.biit.webforms.webservices.Webservice;
+import com.biit.webforms.webservices.WebservicePort;
+import com.biit.webforms.webservices.WebserviceValidatedPort;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
-import com.biit.webforms.persistence.dao.IWebserviceDao;
-import com.biit.webforms.webservices.Webservice;
-import com.biit.webforms.webservices.WebservicePort;
-import com.biit.webforms.webservices.WebserviceValidatedPort;
+import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContextTest.xml" })
@@ -42,7 +42,7 @@ public class WebserviceDefinitionJsonTest extends AbstractTransactionalTestNGSpr
 	private IWebserviceDao webserviceDao;
 
 	@Test
-	public void testGenerateJsonAndParseBack() {
+	public void testGenerateJsonAndParseBack() throws JsonProcessingException {
 		Webservice webservice = new Webservice();
 		webservice.setName(WEBSERVICE_NAME);
 		webservice.setDescription(WEBSERVICE_DESCRIPTION);
@@ -56,7 +56,7 @@ public class WebserviceDefinitionJsonTest extends AbstractTransactionalTestNGSpr
 		webservice.getOutputPorts().add(new WebservicePort(OUTPUT_PORT_3, OUTPUT_XPATH_3));
 
 		String jsonString = webservice.toJson();
-		Assert.assertTrue(jsonString != null);
+        Assert.assertNotNull(jsonString);
 		Assert.assertFalse(jsonString.isEmpty());
 
 		Webservice parsedJson = Webservice.fromJson(jsonString);
@@ -66,8 +66,8 @@ public class WebserviceDefinitionJsonTest extends AbstractTransactionalTestNGSpr
 		Assert.assertEquals(parsedJson.getPort(), WEBSERVICE_PORT);
 
 		for (WebserviceValidatedPort input : parsedJson.getInputPorts()) {
-			Assert.assertTrue(input.getName().equals(INPUT_PORT));
-			Assert.assertTrue(input.getXpath().equals(INPUT_XPATH));
+            Assert.assertEquals(INPUT_PORT, input.getName());
+            Assert.assertEquals(INPUT_XPATH, input.getXpath());
 			Assert.assertTrue(input.getErrorCodes().contains(NOT_FOUND));
 			Assert.assertTrue(input.getErrorCodes().contains(INVALID_BSN));
 		}

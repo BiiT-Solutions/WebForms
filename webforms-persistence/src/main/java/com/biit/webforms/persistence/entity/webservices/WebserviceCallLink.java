@@ -16,8 +16,10 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,6 +37,10 @@ public abstract class WebserviceCallLink extends StorableObject {
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "form_element")
     private BaseQuestion formElement;
+
+    //Only for json serialization.
+    @Transient
+    private transient List<String> formElementPath;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "webservice_call")
@@ -116,4 +122,11 @@ public abstract class WebserviceCallLink extends StorableObject {
         }
     }
 
+    public List<String> getFormElementPath() {
+        return formElementPath;
+    }
+
+    public void setFormElementPath(List<String> formElementPath) {
+        this.formElementPath = formElementPath;
+    }
 }

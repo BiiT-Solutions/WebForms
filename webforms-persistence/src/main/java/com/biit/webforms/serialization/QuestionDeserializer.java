@@ -9,9 +9,9 @@ import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.JsonParseException;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ public class QuestionDeserializer extends TreeObjectDeserializer<Question> {
             try {
                 element.setAnswerFormat(AnswerFormat.get(jsonObject.get("answerFormat").textValue()));
             } catch (InvalidAnswerFormatException e) {
-                throw new JsonParseException(e);
+                throw new JsonGenerationException(e, null);
             }
         }
 
@@ -37,7 +37,7 @@ public class QuestionDeserializer extends TreeObjectDeserializer<Question> {
             try {
                 element.setAnswerSubformat(AnswerSubformat.from(jsonObject.get("answerSubformat").textValue()));
             } catch (InvalidAnswerSubformatException e) {
-                throw new JsonParseException(e);
+                throw new JsonGenerationException(e, null);
             }
         }
 

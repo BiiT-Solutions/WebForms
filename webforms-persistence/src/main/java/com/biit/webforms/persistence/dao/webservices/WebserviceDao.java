@@ -1,5 +1,13 @@
 package com.biit.webforms.persistence.dao.webservices;
 
+import com.biit.utils.file.FileReader;
+import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.persistence.dao.IWebserviceDao;
+import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
+import com.biit.webforms.webservices.Webservice;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.stereotype.Repository;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -8,15 +16,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.springframework.stereotype.Repository;
-
-import com.biit.utils.file.FileReader;
-import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.dao.IWebserviceDao;
-import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
-import com.biit.webforms.webservices.Webservice;
-import com.google.gson.JsonSyntaxException;
 
 @Repository
 public class WebserviceDao implements IWebserviceDao {
@@ -37,7 +36,7 @@ public class WebserviceDao implements IWebserviceDao {
 					if (fileContent != null && !fileContent.isEmpty()) {
 						try {
 							webservices.add(Webservice.fromJson(fileContent));
-						} catch (JsonSyntaxException e) {
+						} catch (JsonProcessingException e) {
 							WebformsLogger.errorMessage(this.getClass().getName(), "Error parsing json file '" + file.getAbsolutePath()
 									+ "' cause '" + e.getMessage() + "'");
 						}
@@ -60,7 +59,7 @@ public class WebserviceDao implements IWebserviceDao {
 					if (fileContent != null && !fileContent.isEmpty()) {
 						try {
 							webservices.add(Webservice.fromJson(fileContent));
-						} catch (JsonSyntaxException e) {
+						} catch (JsonProcessingException e) {
 							WebformsLogger.errorMessage(this.getClass().getName(), "Error parsing json file '" + file.getAbsolutePath()
 									+ "' cause '" + e.getMessage() + "'");
 						}

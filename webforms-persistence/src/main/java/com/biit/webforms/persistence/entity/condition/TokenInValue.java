@@ -15,8 +15,10 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,6 +38,10 @@ public class TokenInValue extends StorableObject {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "answer_value")
     private Answer answerValue;
+
+    //Only for json serialization.
+    @Transient
+    private transient List<String> answerReferencePath;
 
     public Answer getAnswerValue() {
         return answerValue;
@@ -85,9 +91,14 @@ public class TokenInValue extends StorableObject {
     }
 
     public boolean isContentEqual(TokenInValue tokenInValue) {
-        if (answerValue.isContentEqual(tokenInValue.answerValue)) {
-            return true;
-        }
-        return false;
+        return answerValue.isContentEqual(tokenInValue.answerValue);
+    }
+
+    public List<String> getAnswerReferencePath() {
+        return answerReferencePath;
+    }
+
+    public void setAnswerReferencePath(List<String> answerReferencePath) {
+        this.answerReferencePath = answerReferencePath;
     }
 }

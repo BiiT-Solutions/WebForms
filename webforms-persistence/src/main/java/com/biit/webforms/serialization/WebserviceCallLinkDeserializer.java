@@ -1,14 +1,13 @@
 package com.biit.webforms.serialization;
 
-import com.biit.form.entity.BaseQuestion;
 import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.form.jackson.serialization.StorableObjectDeserializer;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallLink;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class WebserviceCallLinkDeserializer<T extends WebserviceCallLink> extends StorableObjectDeserializer<T> {
 
@@ -17,9 +16,9 @@ public class WebserviceCallLinkDeserializer<T extends WebserviceCallLink> extend
         super.deserialize(element, jsonObject, context);
 
         element.setWebservicePort(parseString("webservicePort", jsonObject));
-        element.setFormElement((BaseQuestion) FormElementDeserializer.parseTreeObjectPath("formElement_id", form, jsonObject, context));
-        if ((jsonObject.get("webserviceCall") != null)) {
-            element.setWebserviceCall(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("webserviceCall").toString(), WebserviceCall.class));
+
+        if (jsonObject.get("formElement_id") != null) {
+            element.setFormElementPath(Arrays.asList(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("formElement_id").toString(), String[].class)));
         }
     }
 
