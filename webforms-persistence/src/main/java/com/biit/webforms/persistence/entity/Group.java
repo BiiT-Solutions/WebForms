@@ -4,6 +4,10 @@ import com.biit.form.entity.BaseRepeatableGroup;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.serialization.GroupDeserializer;
+import com.biit.webforms.serialization.GroupSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -11,6 +15,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
+@JsonDeserialize(using = GroupDeserializer.class)
+@JsonSerialize(using = GroupSerializer.class)
 @Table(name = "tree_groups")
 @Cacheable(true)
 public class Group extends BaseRepeatableGroup {

@@ -9,8 +9,18 @@ import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.FlowConditionScript;
+import com.biit.webforms.serialization.AnswerDeserializer;
+import com.biit.webforms.serialization.AnswerSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import javax.persistence.*;
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +39,8 @@ import java.util.List;
  * 
  */
 @Entity
+@JsonDeserialize(using = AnswerDeserializer.class)
+@JsonSerialize(using = AnswerSerializer.class)
 @Table(name = "tree_answers")
 @Cacheable()
 public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithImage {

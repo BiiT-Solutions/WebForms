@@ -1,8 +1,14 @@
 package com.biit.webforms.webservice.rest.client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.biit.abcd.persistence.entity.Form;
+import com.biit.abcd.persistence.entity.SimpleFormView;
+import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.logger.WebformsLogger;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import org.glassfish.jersey.SslConfigurator;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.InternalServerErrorException;
@@ -10,16 +16,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-
-import org.glassfish.jersey.SslConfigurator;
-import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-
-import com.biit.abcd.persistence.entity.Form;
-import com.biit.abcd.persistence.entity.SimpleFormView;
-import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.logger.WebformsLogger;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class AbcdRestClient {
 
@@ -98,7 +97,7 @@ public class AbcdRestClient {
 			if (simpleFormsJson != null) {
 				try {
 					return Form.fromJson(simpleFormsJson);
-				} catch (JsonSyntaxException e) {
+				} catch (JsonProcessingException e) {
 					WebformsLogger.errorMessage(AbcdRestClient.class.getName(), e);
 					return null;
 				}
@@ -117,7 +116,7 @@ public class AbcdRestClient {
 			if (simpleFormsJson != null) {
 				try {
 					return Arrays.asList(Form.fromJsonList(simpleFormsJson));
-				} catch (JsonSyntaxException e) {
+				} catch (JsonProcessingException e) {
 					WebformsLogger.errorMessage(AbcdRestClient.class.getName(), e);
 					return null;
 				}

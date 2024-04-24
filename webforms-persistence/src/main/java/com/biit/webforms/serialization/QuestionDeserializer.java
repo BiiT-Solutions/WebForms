@@ -1,73 +1,63 @@
 package com.biit.webforms.serialization;
 
 import com.biit.form.exceptions.InvalidAnswerFormatException;
-import com.biit.form.json.serialization.TreeObjectDeserializer;
+import com.biit.form.jackson.serialization.ObjectMapperFactory;
+import com.biit.form.jackson.serialization.TreeObjectDeserializer;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.io.IOException;
 
 public class QuestionDeserializer extends TreeObjectDeserializer<Question> {
 
-	public QuestionDeserializer() {
-		super(Question.class);
-	}
+    @Override
+    public void deserialize(Question element, JsonNode jsonObject, DeserializationContext context) throws IOException {
+        super.deserialize(element, jsonObject, context);
 
-	@Override
-	public void deserialize(JsonElement json, JsonDeserializationContext context, Question element) {
-		JsonObject jobject = (JsonObject) json;
+        if (jsonObject.get("answerType") != null) {
+            element.setAnswerType(AnswerType.from(jsonObject.get("answerType").textValue()));
+        }
 
-		try {
-			element.setAnswerType(parseAnswerType("answerType", jobject, context));
-			element.setAnswerFormat(parseAnswerFormat("answerFormat", jobject, context));
-			element.setAnswerSubformat(parseAnswerSubformat("answerSubformat", jobject, context));
-		} catch (InvalidAnswerFormatException | InvalidAnswerSubformatException e) {
-			throw new JsonParseException(e);
-		}
-		element.setAbbreviation(parseString("abbreviation", jobject, context));
-		element.setAlias(parseString("alias", jobject, context));
-		element.setMandatory(parseBoolean("mandatory", jobject, context));
-		element.setHorizontal(parseBoolean("horizontal", jobject, context));
-		element.setDescription(parseString("description", jobject, context));
+        if (jsonObject.get("answerFormat") != null) {
+            try {
+                element.setAnswerFormat(AnswerFormat.from(jsonObject.get("answerFormat").textValue()));
+            } catch (InvalidAnswerFormatException e) {
+                throw new JsonGenerationException(e, null);
+            }
+        }
 
-		element.setImage((TreeObjectImage) context.deserialize(jobject.get("image"), TreeObjectImage.class));
+        if (jsonObject.get("answerSubformat") != null) {
+            try {
+                element.setAnswerSubformat(AnswerSubformat.from(jsonObject.get("answerSubformat").textValue()));
+            } catch (InvalidAnswerSubformatException e) {
+                throw new JsonGenerationException(e, null);
+            }
+        }
 
-		element.setDefaultValueString(parseString("defaultValueString", jobject, context));
-		element.setDefaultValueTime(parseTimestamp("defaultValueTime", jobject, context));
-		String answerValue = parseString("defaultValueAnswer", jobject, context);
+        element.setAbbreviation(parseString("abbreviation", jsonObject));
+        element.setAlias(parseString("alias", jsonObject));
+        element.setMandatory(parseBoolean("mandatory", jsonObject));
+        element.setHorizontal(parseBoolean("horizontal", jsonObject));
+        element.setDescription(parseString("description", jsonObject));
 
-		super.deserialize(json, context, element);
+        if ((jsonObject.get("image") != null)) {
+            element.setImage(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("image").toString(), TreeObjectImage.class));
+        }
 
-		if (answerValue != null && !answerValue.isEmpty()) {
-			element.setDefaultValueAnswer(element.getAnswer(answerValue));
-		}
-	}
+        element.setDefaultValueString(parseString("defaultValueString", jsonObject));
+        element.setDefaultValueTime(parseTimestamp("defaultValueTime", jsonObject));
+        String answerValue = parseString("defaultValueAnswer", jsonObject);
 
-	public static AnswerType parseAnswerType(String name, JsonObject jobject, JsonDeserializationContext context) {
-		if (jobject.get(name) != null) {
-			return (AnswerType) context.deserialize(jobject.get(name), AnswerType.class);
-		}
-		return null;
-	}
-
-	public static AnswerFormat parseAnswerFormat(String name, JsonObject jobject, JsonDeserializationContext context) {
-		if (jobject.get(name) != null) {
-			return (AnswerFormat) context.deserialize(jobject.get(name), AnswerFormat.class);
-		}
-		return null;
-	}
-
-	public static AnswerSubformat parseAnswerSubformat(String name, JsonObject jobject, JsonDeserializationContext context) {
-		if (jobject.get(name) != null) {
-			return (AnswerSubformat) context.deserialize(jobject.get(name), AnswerSubformat.class);
-		}
-		return null;
-	}
+        if (answerValue != null && !answerValue.isEmpty()) {
+            element.setDefaultValueAnswer(element.getAnswer(answerValue));
+        }
+    }
 
 }

@@ -1,14 +1,5 @@
 package com.biit.webforms.persistence.entity.condition;
 
-import java.util.HashMap;
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
@@ -18,13 +9,28 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.exceptions.NotValidTokenType;
+import com.biit.webforms.serialization.TokenComparationAnswerDeserializer;
+import com.biit.webforms.serialization.TokenComparationAnswerSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.HashMap;
+import java.util.List;
 
 @Entity
+@JsonDeserialize(using = TokenComparationAnswerDeserializer.class)
+@JsonSerialize(using = TokenComparationAnswerSerializer.class)
 @Table(name = "token_comparation_answer")
 public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQuestion {
 	private static final long serialVersionUID = 2099093205161281219L;
 
-	private static final TokenTypes TOKEN_TYPES[] = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE };
+	private static final TokenTypes[] TOKEN_TYPES = new TokenTypes[] { TokenTypes.EQ, TokenTypes.NE };
 
 	// Evaluation value is false by default
 	private transient Boolean evaluationValue = null;
@@ -32,6 +38,10 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "answer")
 	private Answer answer;
+
+	//Only for json serialization.
+	@Transient
+	private transient List<String> answerReferencePath;
 
 	public TokenComparationAnswer() {
 		super();
@@ -188,5 +198,13 @@ public class TokenComparationAnswer extends TokenWithQuestion implements ITokenQ
 				return;
 			}
 		}
+	}
+
+	public List<String> getAnswerReferencePath() {
+		return answerReferencePath;
+	}
+
+	public void setAnswerReferencePath(List<String> answerReferencePath) {
+		this.answerReferencePath = answerReferencePath;
 	}
 }

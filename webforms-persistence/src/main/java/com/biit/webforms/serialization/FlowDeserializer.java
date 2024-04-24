@@ -1,77 +1,53 @@
 package com.biit.webforms.serialization;
 
-import com.biit.form.entity.BaseQuestion;
-import com.biit.form.json.serialization.StorableObjectDeserializer;
-import com.biit.persistence.entity.StorableObject;
+import com.biit.form.jackson.serialization.ObjectMapperFactory;
+import com.biit.form.jackson.serialization.StorableObjectDeserializer;
 import com.biit.webforms.enumerations.FlowType;
+import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Flow;
-import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.condition.Token;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FlowDeserializer extends StorableObjectDeserializer<Flow> {
 
-	private final Form form;
+    @Override
+    public void deserialize(Flow element, JsonNode jsonObject, DeserializationContext context) throws IOException {
+        super.deserialize(element, jsonObject, context);
 
-	@Override
-	public void deserialize(JsonElement json, JsonDeserializationContext context, Flow element) {
-		JsonObject jobject = (JsonObject) json;
+        if (jsonObject.get("originId") != null) {
+            element.setOriginReferencePath(Arrays.asList(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("originId").toString(), String[].class)));
+        }
+        if (jsonObject.get("destinyId") != null) {
+            element.setDestinyReferencePath(Arrays.asList(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("destinyId").toString(), String[].class)));
+        }
+        element.setFlowType(FlowType.from(parseString("flowType", jsonObject)));
+        element.setOthers(parseBoolean("others", jsonObject));
 
-		element.setOrigin((BaseQuestion) FormDeserializer.parseTreeObjectPath("originId", form, jobject, context));
-		element.setFlowType(parseFlowType("flowType", jobject, context));
-		element.setDestiny((BaseQuestion) FormDeserializer.parseTreeObjectPath("destinyId", form, jobject, context));
-		element.setOthers(parseBoolean("others", jobject, context));
-
-		if (!element.isOthers()) {
-			element.setCondition(parseCondition("condition", jobject, context));
-		}
-
-		super.deserialize(json, context, element);
-	}
-
-	protected List<Token> parseCondition(String name, JsonObject jobject, JsonDeserializationContext context) {
-		List<Token> condition = new ArrayList<>();
-
-		JsonElement valuesJson = jobject.get(name);
-		if (valuesJson != null) {
-			Type listType = new TypeToken<List<StorableObject>>() {
-			}.getType();
-			@SuppressWarnings("unchecked")
-			List<StorableObject> tokens = context.deserialize(valuesJson, listType);
-			if (tokens != null) {
-				for (StorableObject token : tokens) {
-					condition.add((Token) token);
-				}
-			}
-		}
-
-		return condition;
-	}
-
-	public static FlowType parseFlowType(String name, JsonObject jobject, JsonDeserializationContext context) {
-		if (jobject.get(name) != null) {
-			return context.deserialize(jobject.get(name), FlowType.class);
-		}
-		return null;
-	}
-
-	public FlowDeserializer(Form element) {
-		this.form = element;
-	}
-
-	@Override
-	public Flow deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-			throws JsonParseException {
-		Flow instance = new Flow();
-		deserialize(json, context, instance);
-		return instance;
-	}
+        if (!element.isOthers()) {
+            final JsonNode tokenObjects = jsonObject.get("condition");
+            if (tokenObjects != null) {
+                //Handle children one by one.
+                if (tokenObjects.isArray()) {
+                    List<Token> condition = new ArrayList<>();
+                    for (JsonNode childNode : tokenObjects) {
+                        try {
+                            final Class<? extends Token> classType = (Class<? extends Token>) Class.forName(childNode.get("class").asText());
+                            condition.add(ObjectMapperFactory.getObjectMapper().readValue(childNode.toPrettyString(), classType));
+                        } catch (ClassNotFoundException | NullPointerException e) {
+                            WebformsLogger.severe(this.getClass().getName(), "Invalid condition on flow:\n" + jsonObject.toPrettyString());
+                            WebformsLogger.errorMessage(this.getClass().getName(), e);
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    element.setCondition(condition);
+                }
+            }
+        }
+    }
 }

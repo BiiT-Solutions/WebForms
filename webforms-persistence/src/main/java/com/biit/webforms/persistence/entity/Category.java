@@ -1,16 +1,5 @@
 package com.biit.webforms.persistence.entity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import com.biit.form.entity.BaseCategory;
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.BaseRepeatableGroup;
@@ -20,8 +9,24 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
+import com.biit.webforms.serialization.CategoryDeserializer;
+import com.biit.webforms.serialization.CategorySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
+@JsonDeserialize(using = CategoryDeserializer.class)
+@JsonSerialize(using = CategorySerializer.class)
 @Table(name = "tree_categories")
 @Cacheable(true)
 public class Category extends BaseCategory implements ElementWithImage {

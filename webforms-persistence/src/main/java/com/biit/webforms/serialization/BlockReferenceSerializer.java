@@ -1,20 +1,19 @@
 package com.biit.webforms.serialization;
 
-import com.biit.form.json.serialization.TreeObjectSerializer;
+import com.biit.form.jackson.serialization.TreeObjectSerializer;
 import com.biit.webforms.persistence.entity.BlockReference;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 
 public class BlockReferenceSerializer extends TreeObjectSerializer<BlockReference> {
 
     @Override
-    public JsonElement serialize(BlockReference src, Type typeOfSrc, JsonSerializationContext context) {
-        final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
-        jsonObject.add("blockReferencedId", context.serialize(src.getReference().getId()));
-        return jsonObject;
+    public void serialize(BlockReference src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
+        if (src.getReference() != null) {
+            jgen.writeObjectField("blockReferencedId", src.getReference().getId());
+        }
     }
 
 }
