@@ -12,6 +12,7 @@ import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
@@ -47,6 +48,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
     private transient Map<Block, Block> copiedBlocks;
 
     public CompleteFormView() {
+        setForm(new Form());
         copiedBlocks = new HashMap<>();
     }
 
@@ -68,6 +70,11 @@ public class CompleteFormView extends Form implements IWebformsFormView {
         if (form != null) {
             form.resetIds();
         }
+    }
+
+    @Override
+    public void setChildren(List<TreeObject> newChildren) throws NotValidChildException {
+        form.setChildren(newChildren);
     }
 
     /**
@@ -124,6 +131,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
         return children;
     }
 
+
     /**
      * Returns all children, replacing the block reference for the elements of
      * the block and skipping the hidden elements.
@@ -138,6 +146,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
         }
         return children;
     }
+
 
     /**
      * Set the elements selected by the user in a Block Reference and its
@@ -230,6 +239,10 @@ public class CompleteFormView extends Form implements IWebformsFormView {
             return null;
         }
         return form.getStatus();
+    }
+
+    public void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
+        form.setLinkedFormVersions(linkedFormVersions);
     }
 
     @Override
@@ -337,16 +350,21 @@ public class CompleteFormView extends Form implements IWebformsFormView {
      */
     @Override
     public void addFlow(Flow rule) throws FlowNotAllowedException {
+        BlockReference blockReferenceOfSource = getBlockReference(rule.getOrigin());
+        BlockReference blockReferenceOfDestination = getBlockReference(rule.getDestiny());
+
+        // Flows in the same linked block are not allowed.
+        if (blockReferenceOfSource != null && blockReferenceOfSource.equals(blockReferenceOfDestination)) {
+            throw new FlowNotAllowedException("Flows in the same linked block are not allowed.");
+        }
+
+        form.addFlow(rule);
+    }
+
+    @Override
+    public void addFlows(Set<Flow> rules) {
         if (form != null) {
-            BlockReference blockReferenceOfSource = getBlockReference(rule.getOrigin());
-            BlockReference blockReferenceOfDestination = getBlockReference(rule.getDestiny());
-
-            // Flows in the same linked block are not allowed.
-            if (blockReferenceOfSource != null && blockReferenceOfSource.equals(blockReferenceOfDestination)) {
-                throw new FlowNotAllowedException("Flows in the same linked block are not allowed.");
-            }
-
-            form.addFlow(rule);
+            form.addFlows(rules);
         }
     }
 
@@ -394,11 +412,24 @@ public class CompleteFormView extends Form implements IWebformsFormView {
     }
 
     @Override
+    public synchronized void setComparationId(String comparationId) {
+        form.setComparationId(comparationId);
+    }
+
+
+    @Override
     public String getComparationId() {
         if (form != null) {
             return form.getComparationId();
         }
         return null;
+    }
+
+    @Override
+    public void setOrganizationId(Long organizationId) {
+        if (form != null) {
+            form.setOrganizationId(organizationId);
+        }
     }
 
     @Override
@@ -445,12 +476,25 @@ public class CompleteFormView extends Form implements IWebformsFormView {
     }
 
     @Override
+    public synchronized void setLabel(String label) throws FieldTooLongException {
+        if (form != null) {
+            form.setLabel(label);
+        }
+    }
+
+    @Override
     public String getLabel() {
         if (form != null) {
             return form.getLabel();
         }
         return getDefaultLabel();
     }
+
+    @Override
+    public void setVersion(Integer version) {
+        this.form.setVersion(version);
+    }
+
 
     @Override
     public Integer getVersion() {
@@ -466,6 +510,13 @@ public class CompleteFormView extends Form implements IWebformsFormView {
             return form.getId();
         }
         return null;
+    }
+
+    @Override
+    public void setDescription(String description) throws FieldTooLongException {
+        if (form != null) {
+            form.setDescription(description);
+        }
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.biit.webforms.serialization;
 
-import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.webforms.persistence.entity.CompleteFormView;
-import com.biit.webforms.persistence.entity.Form;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -13,9 +11,14 @@ public class CompleteFormViewDeserializer extends FormElementDeserializer<Comple
     @Override
     public void deserialize(CompleteFormView element, JsonNode jsonObject, DeserializationContext context) throws IOException {
         super.deserialize(element, jsonObject, context);
-        if ((jsonObject.get("form") != null)) {
-            element.setForm(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("form").toString(), Form.class));
-        }
-
     }
+
+//    @Override
+//    public CompleteFormView deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+//        final JsonNode jsonObject = jsonParser.getCodec().readTree(jsonParser);
+//
+//        final CompleteFormView completeFormView = new CompleteFormView();
+//        completeFormView.setForm(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.toString(), Form.class));
+//        return completeFormView;
+//    }
 }

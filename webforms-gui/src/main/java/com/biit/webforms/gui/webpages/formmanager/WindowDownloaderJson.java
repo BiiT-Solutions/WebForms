@@ -3,7 +3,6 @@ package com.biit.webforms.gui.webpages.formmanager;
 import com.biit.webforms.gui.common.components.WindowDownloader;
 import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
 import com.biit.webforms.persistence.entity.CompleteFormView;
-import com.biit.webforms.persistence.entity.Form;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -25,7 +24,7 @@ public class WindowDownloaderJson extends WindowDownloader {
         showCentered();
     }
 
-    public WindowDownloaderJson(final Form form, String filename) {
+    public WindowDownloaderJson(final com.biit.abcd.persistence.entity.Form form, String filename) {
         super(new WindowDownloaderProcess() {
 
             @Override
