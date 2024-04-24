@@ -84,7 +84,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
             }
 
             if (row[12] != null) {
-                formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
+                formView.setStatus(FormWorkStatus.from((String) row[12]));
             }
 
             if (row[13] != null) {
@@ -134,7 +134,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
         }
 
         if (row[12] != null) {
-            formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
+            formView.setStatus(FormWorkStatus.from((String) row[12]));
         }
 
         if (row[13] != null) {
@@ -200,7 +200,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
             }
 
             if (row[12] != null) {
-                formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
+                formView.setStatus(FormWorkStatus.from((String) row[12]));
             }
 
             formView.setLastVersion(row[13].equals(row[3]));

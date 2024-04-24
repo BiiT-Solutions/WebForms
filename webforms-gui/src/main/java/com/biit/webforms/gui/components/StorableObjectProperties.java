@@ -28,8 +28,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 
 	/**
 	 * This method needs to be overwritten
-	 * 
-	 * @param element
+	 *
 	 */
 	protected void initElement() {
 		createCommonProperties();
@@ -58,8 +57,7 @@ public abstract class StorableObjectProperties<T extends StorableObject> extends
 
 	/**
 	 * This method needs to be overwritten
-	 * 
-	 * @param element
+	 *
 	 */
 	protected void initValues() {
 		initCommonValues();

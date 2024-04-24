@@ -3,7 +3,12 @@ package com.biit.webforms.gui;
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.form.entity.TreeObject;
-import com.biit.form.exceptions.*;
+import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ChildrenNotFoundException;
+import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.ElementIsReadOnly;
+import com.biit.form.exceptions.InvalidAnswerFormatException;
+import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
@@ -17,23 +22,66 @@ import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.enumerations.*;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.enumerations.DatePeriodUnit;
+import com.biit.webforms.enumerations.FlowType;
+import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
-import com.biit.webforms.gui.exceptions.*;
+import com.biit.webforms.gui.exceptions.BadAbcdLink;
+import com.biit.webforms.gui.exceptions.CategoryWithSameNameAlreadyExistsInForm;
+import com.biit.webforms.gui.exceptions.DestinyIsContainedAtOrigin;
+import com.biit.webforms.gui.exceptions.EmptyBlockCannotBeInserted;
+import com.biit.webforms.gui.exceptions.FormWithSameNameException;
+import com.biit.webforms.gui.exceptions.LinkCanOnlyBePerformedOnWholeBlock;
+import com.biit.webforms.gui.exceptions.NewVersionWithoutFinalDesignException;
+import com.biit.webforms.gui.exceptions.NotEnoughRightsToChangeStatusException;
+import com.biit.webforms.gui.exceptions.NotValidAbcdForm;
+import com.biit.webforms.gui.exceptions.SameOriginAndDestinationException;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.gui.webpages.formmanager.WindowLoginKnowledgeManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.dao.*;
+import com.biit.webforms.persistence.dao.IBlockDao;
+import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
+import com.biit.webforms.persistence.dao.IUserTokenDao;
+import com.biit.webforms.persistence.dao.IWebserviceDao;
 import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
-import com.biit.webforms.persistence.entity.*;
+import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.AttachedFiles;
+import com.biit.webforms.persistence.entity.Block;
+import com.biit.webforms.persistence.entity.BlockReference;
+import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.CompleteFormView;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
+import com.biit.webforms.persistence.entity.Flow;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.IWebformsBlockView;
+import com.biit.webforms.persistence.entity.IWebformsFormView;
+import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SimpleFormView;
+import com.biit.webforms.persistence.entity.SystemField;
+import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.TreeObjectImage;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
-import com.biit.webforms.persistence.entity.exceptions.*;
+import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
+import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
+import com.biit.webforms.persistence.entity.exceptions.FormIsUsedAsReferenceException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
@@ -46,6 +94,7 @@ import com.biit.webforms.webservice.rest.client.AbcdRestClient;
 import com.biit.webforms.webservice.rest.client.KnowledgeManagerService;
 import com.biit.webforms.webservices.Webservice;
 import com.biit.webforms.webservices.WebserviceValidatedPort;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.JsonParseException;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
@@ -54,7 +103,13 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * User Session data handler.
@@ -1586,28 +1641,32 @@ public class ApplicationController {
             String jsonCode = formDao.getJson(formView.getId());
             if (jsonCode != null) {
                 WebformsLogger.debug(this.getClass().getName(), "Obtaining form with id '{}' using json code", formView.getId());
-                Form form = Form.fromJson(jsonCode);
-                //BlockReferences are not stored on json. Must be reloaded.
-                for (TreeObject children : form.getChildren()) {
-                    if (children instanceof BlockReference) {
-                        BlockReference blockReference = (BlockReference) children;
-                        blockReference.setReference(blockDao.get(blockReference.getBlockReferencedId()));
+                try {
+                    Form form = Form.fromJson(jsonCode);
+                    //BlockReferences are not stored on json. Must be reloaded.
+                    for (TreeObject children : form.getChildren()) {
+                        if (children instanceof BlockReference) {
+                            BlockReference blockReference = (BlockReference) children;
+                            blockReference.setReference(blockDao.get(blockReference.getBlockReferencedId()));
+                        }
                     }
+                    //Form reference.
+                    if (form.getFormReferenceId() != null) {
+                        form.setFormReference(loadForm(simpleFormViewDao.get(form.getFormReferenceId())));
+                    }
+                    //Elements to hide.
+                    if (form.getElementsToHideId() != null && !form.getElementsToHideId().isEmpty()) {
+                        Set<TreeObject> elementsToHide = new HashSet<>();
+                        form.getElementsToHideId().forEach(id -> {
+                            Optional<TreeObject> element = form.getChildren().stream().filter(treeObject -> Objects.equals(treeObject.getId(), id)).findAny();
+                            element.ifPresent(elementsToHide::add);
+                        });
+                        form.setElementsToHide(elementsToHide);
+                    }
+                    return form;
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
                 }
-                //Form reference.
-                if (form.getFormReferenceId() != null) {
-                    form.setFormReference(loadForm(simpleFormViewDao.get(form.getFormReferenceId())));
-                }
-                //Elements to hide.
-                if (form.getElementsToHideId() != null && !form.getElementsToHideId().isEmpty()) {
-                    Set<TreeObject> elementsToHide = new HashSet<>();
-                    form.getElementsToHideId().forEach(id -> {
-                        Optional<TreeObject> element = form.getChildren().stream().filter(treeObject -> Objects.equals(treeObject.getId(), id)).findAny();
-                        element.ifPresent(elementsToHide::add);
-                    });
-                    form.setElementsToHide(elementsToHide);
-                }
-                return form;
             }
         }
         return formDao.get(formView.getId());

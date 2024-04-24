@@ -6,10 +6,19 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.utils.image.ImageTools;
 import com.biit.utils.image.exceptions.InvalidRemoteImageDefinition;
 import com.biit.webforms.logger.WebformsLogger;
+import com.biit.webforms.serialization.TreeObjectImageDeserializer;
+import com.biit.webforms.serialization.TreeObjectImageSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.util.Base64Utils;
 
 import javax.imageio.ImageIO;
-import javax.persistence.*;
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,6 +29,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@JsonDeserialize(using = TreeObjectImageDeserializer.class)
+@JsonSerialize(using = TreeObjectImageSerializer.class)
 @Table(name = "images")
 @Cacheable(true)
 public class TreeObjectImage extends StorableObject {

@@ -1,28 +1,31 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
-import com.biit.form.json.serialization.StorableObjectSerializer;
+import com.biit.form.jackson.serialization.StorableObjectSerializer;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
+
+import java.io.IOException;
 
 public class WebserviceCallSerializer extends StorableObjectSerializer<WebserviceCall> {
 
-	@Override
-	public JsonElement serialize(WebserviceCall src, Type typeOfSrc, JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
+    @Override
+    public void serialize(WebserviceCall src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
 
-		jsonObject.add("name", context.serialize(src.getName()));
-		jsonObject.add("webserviceName", context.serialize(src.getWebserviceName()));
-		if (src.getFormElementTrigger() != null) {
-			jsonObject.add("formElementTrigger_id", context.serialize(src.getFormElementTrigger().getPath()));
-		}
-		jsonObject.add("inputLinks", context.serialize(src.getInputLinks()));
-		jsonObject.add("outputLinks", context.serialize(src.getOutputLinks()));
+        jgen.writeStringField("name", src.getName());
+        jgen.writeStringField("webserviceName", src.getWebserviceName());
 
-		return jsonObject;
-	}
+        if (src.getFormElementTrigger() != null) {
+            jgen.writeFieldName("formElementTrigger_id");
+            jgen.writeStartArray("formElementTrigger_id");
+            for (String reference : src.getFormElementTrigger().getPath()) {
+                jgen.writeString(reference);
+            }
+            jgen.writeEndArray();
+        }
+
+        jgen.writeObjectField("inputLinks", src.getInputLinks());
+        jgen.writeObjectField("outputLinks", src.getOutputLinks());
+    }
 
 }

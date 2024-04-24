@@ -1,26 +1,24 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
 
-public class TokenComparationAnswerSerializer extends TokenSerializer<TokenComparationAnswer> {
+import java.io.IOException;
 
-	@Override
-	public JsonElement serialize(TokenComparationAnswer src, Type typeOfSrc, JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
+public class TokenComparationAnswerSerializer extends TokenWithQuestionSerializer<TokenComparationAnswer> {
 
-		if (src != null && src.getQuestion() != null) {
-			jsonObject.add("question_id", context.serialize(src.getQuestion().getPath()));
-		}
-		if (src != null && src.getAnswer() != null) {
-			jsonObject.add("answer_id", context.serialize(src.getAnswer().getPath()));
-		}
+    @Override
+    public void serialize(TokenComparationAnswer src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
 
-		return jsonObject;
-	}
+        if (src != null && src.getAnswer() != null) {
+            jgen.writeFieldName("answer_id");
+            jgen.writeStartArray("answer_id");
+            for (String reference : src.getAnswer().getPath()) {
+                jgen.writeString(reference);
+            }
+            jgen.writeEndArray();
+        }
+    }
 
 }

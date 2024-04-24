@@ -2,30 +2,44 @@ package com.biit.webforms.persistence.entity;
 
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
-import com.biit.form.exceptions.*;
-import com.biit.form.json.serialization.hibernate.HibernateProxyTypeAdapter;
+import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ChildrenNotFoundException;
+import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.ElementIsReadOnly;
+import com.biit.form.exceptions.NotValidChildException;
+import com.biit.form.exceptions.NotValidParentException;
+import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
+import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.condition.*;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
-import com.biit.webforms.serialization.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.biit.webforms.serialization.CompleteFormViewDeserializer;
+import com.biit.webforms.serialization.CompleteFormViewSerializer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * This class is a wrapper of a Form class that translates any block reference
  * to a list of its elements.
  */
+@JsonDeserialize(using = CompleteFormViewDeserializer.class)
+@JsonSerialize(using = CompleteFormViewSerializer.class)
 public class CompleteFormView extends Form implements IWebformsFormView {
     private static final long serialVersionUID = -426480388117580446L;
     private Form form;
@@ -34,6 +48,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
     private transient Map<Block, Block> copiedBlocks;
 
     public CompleteFormView() {
+        setForm(new Form());
         copiedBlocks = new HashMap<>();
     }
 
@@ -55,6 +70,11 @@ public class CompleteFormView extends Form implements IWebformsFormView {
         if (form != null) {
             form.resetIds();
         }
+    }
+
+    @Override
+    public void setChildren(List<TreeObject> newChildren) throws NotValidChildException {
+        form.setChildren(newChildren);
     }
 
     /**
@@ -111,6 +131,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
         return children;
     }
 
+
     /**
      * Returns all children, replacing the block reference for the elements of
      * the block and skipping the hidden elements.
@@ -125,6 +146,7 @@ public class CompleteFormView extends Form implements IWebformsFormView {
         }
         return children;
     }
+
 
     /**
      * Set the elements selected by the user in a Block Reference and its
@@ -217,6 +239,10 @@ public class CompleteFormView extends Form implements IWebformsFormView {
             return null;
         }
         return form.getStatus();
+    }
+
+    public void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
+        form.setLinkedFormVersions(linkedFormVersions);
     }
 
     @Override
@@ -324,16 +350,21 @@ public class CompleteFormView extends Form implements IWebformsFormView {
      */
     @Override
     public void addFlow(Flow rule) throws FlowNotAllowedException {
+        BlockReference blockReferenceOfSource = getBlockReference(rule.getOrigin());
+        BlockReference blockReferenceOfDestination = getBlockReference(rule.getDestiny());
+
+        // Flows in the same linked block are not allowed.
+        if (blockReferenceOfSource != null && blockReferenceOfSource.equals(blockReferenceOfDestination)) {
+            throw new FlowNotAllowedException("Flows in the same linked block are not allowed.");
+        }
+
+        form.addFlow(rule);
+    }
+
+    @Override
+    public void addFlows(Set<Flow> rules) {
         if (form != null) {
-            BlockReference blockReferenceOfSource = getBlockReference(rule.getOrigin());
-            BlockReference blockReferenceOfDestination = getBlockReference(rule.getDestiny());
-
-            // Flows in the same linked block are not allowed.
-            if (blockReferenceOfSource != null && blockReferenceOfSource.equals(blockReferenceOfDestination)) {
-                throw new FlowNotAllowedException("Flows in the same linked block are not allowed.");
-            }
-
-            form.addFlow(rule);
+            form.addFlows(rules);
         }
     }
 
@@ -381,11 +412,24 @@ public class CompleteFormView extends Form implements IWebformsFormView {
     }
 
     @Override
+    public synchronized void setComparationId(String comparationId) {
+        form.setComparationId(comparationId);
+    }
+
+
+    @Override
     public String getComparationId() {
         if (form != null) {
             return form.getComparationId();
         }
         return null;
+    }
+
+    @Override
+    public void setOrganizationId(Long organizationId) {
+        if (form != null) {
+            form.setOrganizationId(organizationId);
+        }
     }
 
     @Override
@@ -432,12 +476,25 @@ public class CompleteFormView extends Form implements IWebformsFormView {
     }
 
     @Override
+    public synchronized void setLabel(String label) throws FieldTooLongException {
+        if (form != null) {
+            form.setLabel(label);
+        }
+    }
+
+    @Override
     public String getLabel() {
         if (form != null) {
             return form.getLabel();
         }
         return getDefaultLabel();
     }
+
+    @Override
+    public void setVersion(Integer version) {
+        this.form.setVersion(version);
+    }
+
 
     @Override
     public Integer getVersion() {
@@ -453,6 +510,13 @@ public class CompleteFormView extends Form implements IWebformsFormView {
             return form.getId();
         }
         return null;
+    }
+
+    @Override
+    public void setDescription(String description) throws FieldTooLongException {
+        if (form != null) {
+            form.setDescription(description);
+        }
     }
 
     @Override
@@ -521,43 +585,11 @@ public class CompleteFormView extends Form implements IWebformsFormView {
 
     @Override
     public String toJson() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setPrettyPrinting();
-        gsonBuilder.registerTypeAdapterFactory(HibernateProxyTypeAdapter.FACTORY);
-        gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
-        gsonBuilder.registerTypeAdapter(CompleteFormView.class, new FormSerializer());
-        gsonBuilder.registerTypeAdapter(Category.class, new CategorySerializer());
-        gsonBuilder.registerTypeAdapter(Group.class, new GroupSerializer());
-        gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
-        gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
-        gsonBuilder.registerTypeAdapter(AttachedFiles.class, new AttachedFilesSerializer());
-        gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldSerializer());
-        gsonBuilder.registerTypeAdapter(Answer.class, new AnswerSerializer());
-        gsonBuilder.registerTypeAdapter(DynamicAnswer.class, new DynamicAnswerSerializer());
-        gsonBuilder.registerTypeAdapter(Flow.class, new FlowSerializer());
-        gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<Token>());
-        gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenSerializer());
-        gsonBuilder.registerTypeAdapter(TokenEmpty.class, new TokenEmptySerializer());
-        gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerSerializer());
-        gsonBuilder.registerTypeAdapter(TokenComparationValue.class, new TokenComparationValueSerializer());
-        gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInSerializer());
-        gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCall.class, new WebserviceCallSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputLinkSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class,
-                new WebserviceCallInputLinkErrorsSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkSerializer());
-        gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageSerializer());
-        Gson gson = gsonBuilder.create();
-
-        CompleteFormView form = new CompleteFormView();
         try {
-            form.copyData(this);
-        } catch (NotValidStorableObjectException e) {
-            WebformsLogger.errorMessage(this.getClass().getName(), e);
+            return ObjectMapperFactory.getObjectMapper().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
-
-        return gson.toJson(this);
     }
 
     @Override

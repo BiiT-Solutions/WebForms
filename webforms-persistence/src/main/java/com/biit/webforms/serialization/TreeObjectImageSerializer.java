@@ -1,26 +1,21 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
-import com.biit.form.json.serialization.StorableObjectSerializer;
+import com.biit.form.jackson.serialization.StorableObjectSerializer;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
+
+import java.io.IOException;
 
 public class TreeObjectImageSerializer extends StorableObjectSerializer<TreeObjectImage> {
 
-	@Override
-	public JsonElement serialize(TreeObjectImage src, Type typeOfSrc, JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
+    @Override
+    public void serialize(TreeObjectImage src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
 
-		jsonObject.add("fileName", context.serialize(src.getFileName()));
-		jsonObject.add("width", context.serialize(src.getWidth()));
-		jsonObject.add("height", context.serialize(src.getHeight()));
-		jsonObject.add("data", context.serialize(src.toBase64()));
-		jsonObject.add("imageUrl", context.serialize(src.getUrl()));
-
-		return jsonObject;
-
-	}
+        jgen.writeStringField("fileName", src.getFileName());
+        jgen.writeNumberField("width", src.getWidth());
+        jgen.writeNumberField("height", src.getHeight());
+        jgen.writeStringField("data", src.toBase64());
+        jgen.writeStringField("imageUrl", src.getUrl());
+    }
 }
