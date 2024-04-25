@@ -1,7 +1,5 @@
 package com.biit.webforms.exporters.xforms;
 
-import java.util.HashMap;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
@@ -10,8 +8,10 @@ import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.condition.Token;
 
+import java.util.HashMap;
+
 /**
- * Used for representing that a previous question must be answered. As string-length('previous-question')>0 This token
+ * Used for representing that a previous question must be answered. As string-length('previous-question') &gt; 0 This token
  * must not been stored in database.
  */
 public class TokenAnswerNeeded extends Token {

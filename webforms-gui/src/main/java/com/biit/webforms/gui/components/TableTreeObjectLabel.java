@@ -65,8 +65,7 @@ public class TableTreeObjectLabel extends TableTreeObject {
 
 	/**
 	 * Expands the tree until treeObject
-	 * 
-	 * @param whereToMove
+	 *
 	 */
 	public void expand(TreeObject treeObject) {
 		if (treeObject == null) {

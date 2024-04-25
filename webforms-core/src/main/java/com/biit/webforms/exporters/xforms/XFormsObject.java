@@ -1,16 +1,5 @@
 package com.biit.webforms.exporters.xforms;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.BaseRepeatableGroup;
 import com.biit.form.entity.TreeObject;
@@ -41,6 +30,17 @@ import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 public abstract class XFormsObject<T extends TreeObject> {
 	protected static final String RANGE_TOKEN = "between";
@@ -172,10 +172,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Defines the structure of the element in the body part of the XForms.
-	 * 
-	 * @param treeObject
-	 * @return
-	 * @throws InvalidFlowInForm
+	 * ¡
+	 * @return¡
 	 */
 	protected String getBodyStructure(String structure, boolean html) {
 		String text = "<xf:" + structure + " ref=\"instance('fr-form-resources')/resource/" + getPath() + "/" + structure + "\"";
@@ -425,7 +423,6 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * Convert a token into a string that can be processed by orbeon.
 	 * 
 	 * @param token
-	 * @return
 	 * @throws InvalidDateException
 	 */
 	protected void convertTokenToXForms(StringBuilder visibility, Token token) throws InvalidDateException {
@@ -909,8 +906,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 	}
 
 	/**
-	 * Returns the opposite value used in Orbeon. Note: <= the opposite is >=.
-	 * The equals is maintained.
+	 * Returns the opposite value used in Orbeon. Note: &lt;= the opposite is &gt;=.
+	 * The equals are maintained.
 	 * 
 	 * @return
 	 */

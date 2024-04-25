@@ -1,8 +1,5 @@
 package com.biit.webforms.exporters.xforms;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.exporters.xforms.exceptions.InvalidDateException;
@@ -12,6 +9,9 @@ import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Question;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class XFormsAnswer extends XFormsObject<Answer> {
 	private final static String PARENT_ANSWER_CSS_CLASS = "subanswer-parent";
@@ -146,10 +146,7 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	/**
 	 * Defines the structure of the element in the body part of the XForms. For
 	 * answers with subanswers, add the needed CSS class.
-	 * 
-	 * @param treeObject
-	 * @return
-	 * @throws InvalidFlowInForm
+	 *
 	 */
 	@Override
 	protected String getBodyStructure(String structure, boolean html) {
@@ -164,8 +161,7 @@ public class XFormsAnswer extends XFormsObject<Answer> {
 	/**
 	 * Some elements needs to insert HTML text. Adds the tags to allow html code
 	 * in the element.
-	 * 
-	 * @param element
+	 *
 	 * @return
 	 */
 	protected String isHtmlText() {

@@ -101,8 +101,7 @@ public class Category extends BaseCategory implements ElementWithImage {
 
 	/**
 	 * This function checks if the content of two category elements is the same.
-	 * 
-	 * @param category
+	 *
 	 * @return
 	 */
 

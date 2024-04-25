@@ -50,8 +50,7 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 
 	/**
 	 * This method needs to be overwritten
-	 * 
-	 * @param element
+	 *
 	 */
 	@Override
 	protected void initElement() {

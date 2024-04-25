@@ -144,7 +144,7 @@ public class ApplicationController {
 
     /**
      * User action to create a form on memory no persistence is done. Needs a
-     * unique name where name.length() < 190 characters.
+     * unique name where name.length()  &lt; 190 characters.
      *
      * @param formLabel
      * @return
@@ -266,7 +266,7 @@ public class ApplicationController {
     }
 
     /**
-     * User action to create a form. Needs a unique name where name.length() <
+     * User action to create a form. Needs a unique name where name.length() &lt;
      * 190 characters.
      *
      * @param formLabel

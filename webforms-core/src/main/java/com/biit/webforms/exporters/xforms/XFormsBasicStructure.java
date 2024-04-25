@@ -1,11 +1,5 @@
 package com.biit.webforms.exporters.xforms;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -19,6 +13,12 @@ import com.biit.webforms.exporters.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.Form;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public abstract class XFormsBasicStructure {
 	public final static String APP_NAME = "WebForms";
@@ -57,8 +57,7 @@ public abstract class XFormsBasicStructure {
 
 	/**
 	 * Needed tags for attach files to the form (pdf, images, ...).
-	 * 
-	 * @param form
+	 *
 	 * @return
 	 */
 	protected static String getAttachments() {
@@ -75,9 +74,7 @@ public abstract class XFormsBasicStructure {
 	 * Contains instance data associated with the model element. It is used to
 	 * supply initial values for forms controls, or to provide additional data
 	 * to be submitted with the form.
-	 * 
-	 * @return
-	 * @throws InvalidFlowInForm
+	 *
 	 */
 	protected static String getInstances() {
 		StringBuilder instances = new StringBuilder("<xf:instance id=\"fr-service-request-instance\" xxf:exclude-result-prefixes=\"#all\">");
@@ -155,11 +152,9 @@ public abstract class XFormsBasicStructure {
 
 	/**
 	 * Starts the creation of the header part in a XForm.
-	 * 
-	 * @param form
+	 *
 	 * @return
 	 * @throws NotExistingDynamicFieldException
-	 * @throws InvalidFlowInForm
 	 * @throws StringRuleSyntaxError
 	 * @throws PostCodeRuleSyntaxError
 	 * @throws DateRuleSyntaxError
@@ -197,10 +192,8 @@ public abstract class XFormsBasicStructure {
 
 	/**
 	 * Creates the model section of XForms.
-	 * 
-	 * @param form
+	 *
 	 * @return
-	 * @throws InvalidFlowInForm
 	 */
 	protected String getModelInstance() {
 		StringBuilder text = new StringBuilder("<xf:instance id=\"fr-form-instance\">");
@@ -314,19 +307,14 @@ public abstract class XFormsBasicStructure {
 
 	/**
 	 * Creates the body section of the XForm.
-	 * 
-	 * @param form
-	 * @return
-	 * @throws InvalidFlowInForm
+	 *
 	 */
 	protected abstract String getBody(XFormsObject<?> xformsObject);
 
 	/**
 	 * Shows the sections defined in the header.
-	 * 
-	 * @param form
+	 *
 	 * @return
-	 * @throws InvalidFlowInForm
 	 */
 	protected abstract String getBodySection(XFormsObject<?> xformsObject);
 
