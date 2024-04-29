@@ -37,7 +37,7 @@ public class WebserviceCallInputLinkErrors implements Serializable, Comparable<W
     @Column(name = "error_message")
     private String errorMessage;
 
-    protected WebserviceCallInputLinkErrors() {
+    public WebserviceCallInputLinkErrors() {
         super();
     }
 

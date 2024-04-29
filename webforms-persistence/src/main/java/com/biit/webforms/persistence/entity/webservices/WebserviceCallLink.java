@@ -46,7 +46,7 @@ public abstract class WebserviceCallLink extends StorableObject {
     @JoinColumn(name = "webservice_call")
     private WebserviceCall webserviceCall;
 
-    protected WebserviceCallLink() {
+    public WebserviceCallLink() {
         super();
         setWebservicePort("");
     }
