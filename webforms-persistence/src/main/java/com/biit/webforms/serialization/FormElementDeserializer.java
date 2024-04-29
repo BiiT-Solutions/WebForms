@@ -12,6 +12,7 @@ import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
@@ -137,7 +138,7 @@ public class FormElementDeserializer<T extends Form> extends BaseFormDeserialize
 
     private void updateTokenReferences(Form form, Token token) {
         if (token instanceof TokenWithQuestion) {
-            ((TokenWithQuestion) token).setQuestion((Question) form.getChild(((TokenWithQuestion) token).getQuestionReferencePath()));
+            ((TokenWithQuestion) token).setQuestion((WebformsBaseQuestion) form.getChild(((TokenWithQuestion) token).getQuestionReferencePath()));
         }
         if (token instanceof TokenComparationAnswer) {
             ((TokenComparationAnswer) token).setAnswer((Answer) form.getChild(((TokenComparationAnswer) token).getAnswerReferencePath()));
