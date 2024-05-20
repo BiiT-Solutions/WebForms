@@ -82,6 +82,7 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyExcepti
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.FormIsUsedAsReferenceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidValue;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
@@ -95,7 +96,6 @@ import com.biit.webforms.webservice.rest.client.KnowledgeManagerService;
 import com.biit.webforms.webservices.Webservice;
 import com.biit.webforms.webservices.WebserviceValidatedPort;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.JsonParseException;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -189,15 +189,15 @@ public class ApplicationController {
      * @throws FieldTooLongException
      * @throws ElementCannotBePersistedException
      */
-    public Form importFormFromJson(String json, String formLabel, Long organizationId) throws JsonParseException, FormWithSameNameException,
+    public Form importFormFromJson(String json, String formLabel, Long organizationId) throws InvalidValue, FormWithSameNameException,
             UnexpectedDatabaseException, FieldTooLongException, ElementCannotBePersistedException {
 
 
         if (json == null || json.isEmpty() || json.length() < 10) {
-            throw new JsonParseException("Invalid provided json:\n" + json);
+            throw new InvalidValue("Invalid provided json:\n" + json);
         }
 
-        // Check if database contains a form with the same name.
+        // Check if the database contains a form with the same name.
         if (formDao.exists(formLabel, organizationId)) {
             FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel + " already exists");
             WebformsUiLogger.severe(ApplicationController.class.getName(), "createForm " + ex.getMessage());
@@ -208,7 +208,7 @@ public class ApplicationController {
         try {
             newForm = Form.fromJson(json);
         } catch (Exception e) {
-            throw new JsonParseException("Invalid provided json:\n" + json);
+            throw new InvalidValue("Invalid provided json:\n" + json);
         }
         //Remove any id if exists.
         newForm.setOrganizationId(organizationId);
@@ -1779,7 +1779,7 @@ public class ApplicationController {
         for (Flow flow : flows) {
             // Flow uses the element.
             if (flow.getOrigin().equals(elementOfReferencedBlock)) {
-                // Flow cames from the element and goes outside of the block.
+                // Flow cames from the element and goes outside the block.
                 if (flow.getDestiny() != null && blockReference.getReference() != null) {
                     boolean outsideOfBlock = true;
                     for (StorableObject object : blockReference.getReference().getAllInnerStorableObjects()) {
@@ -1792,7 +1792,7 @@ public class ApplicationController {
                     }
                 }
             } else if (flow.getDestiny().equals(elementOfReferencedBlock)) {
-                // Flow cames from the element and comes from outside of the
+                // Flow comes from the element and comes from outside the
                 // block.
                 if (flow.getOrigin() != null && blockReference.getReference() != null) {
                     boolean outsideOfBlock = true;

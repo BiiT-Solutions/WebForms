@@ -26,8 +26,12 @@ import com.biit.webforms.exporters.xls.exceptions.InvalidXlsElementException;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
-import com.biit.webforms.gui.common.components.*;
+import com.biit.webforms.gui.common.components.SecuredWebPage;
+import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
+import com.biit.webforms.gui.common.components.WindowDownloader;
+import com.biit.webforms.gui.common.components.WindowDownloaderProcess;
+import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
@@ -38,7 +42,17 @@ import com.biit.webforms.gui.exceptions.BadAbcdLink;
 import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.gui.exceptions.NewVersionWithoutFinalDesignException;
 import com.biit.webforms.gui.exceptions.NotValidAbcdForm;
-import com.biit.webforms.gui.webpages.formmanager.*;
+import com.biit.webforms.gui.webpages.formmanager.IconProviderFormLinked;
+import com.biit.webforms.gui.webpages.formmanager.TreeTableFormVersion;
+import com.biit.webforms.gui.webpages.formmanager.UpperMenuProjectManager;
+import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderBaseFormMetadataJson;
+import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderJson;
+import com.biit.webforms.gui.webpages.formmanager.WindowDownloaderXsd;
+import com.biit.webforms.gui.webpages.formmanager.WindowGenerateXml;
+import com.biit.webforms.gui.webpages.formmanager.WindowImpactAnalysis;
+import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
+import com.biit.webforms.gui.webpages.formmanager.WindowImportJson;
+import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
 import com.biit.webforms.gui.xforms.FormRunnerPreviewFrame;
 import com.biit.webforms.gui.xforms.FormRunnerUtils;
 import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
@@ -62,7 +76,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 import java.io.ByteArrayInputStream;
@@ -127,207 +140,50 @@ public class FormManager extends SecuredWebPage {
 
 	private UpperMenuProjectManager createUpperMenu() {
 		upperMenu = new UpperMenuProjectManager();
-		upperMenu.addNewFormListener(new ClickListener() {
-			private static final long serialVersionUID = 8958665495299558548L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				openNewFormWindow();
-			}
-		});
-		upperMenu.addNewFormVersionListener(new ClickListener() {
-			private static final long serialVersionUID = 2014729211949601816L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				newFormVersion();
-			}
-		});
-		upperMenu.addWebformReferenceListener(new ClickListener() {
-			private static final long serialVersionUID = -7767871226211072684L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				linkWebformsForm();
-			}
-		});
-		upperMenu.addImportAbcdForm(new ClickListener() {
-			private static final long serialVersionUID = -2591404148252216954L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				importAbcdForm();
-			}
-		});
-		upperMenu.addImportJsonForm(new ClickListener() {
-			private static final long serialVersionUID = -2591404148252216954L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				importJsonForm();
-			}
-		});
-		upperMenu.addLinkAbcdForm(new ClickListener() {
-			private static final long serialVersionUID = 2864457152577148777L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				linkAbcdForm();
-			}
-		});
-		upperMenu.addExportPdf(new ClickListener() {
-			private static final long serialVersionUID = -3028644296823936596L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				exportPdf();
-			}
-		});
-		upperMenu.addExportFlowPdfListener(new ClickListener() {
-			private static final long serialVersionUID = -1790801212813909643L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				exportFlowPdf();
-			}
-		});
-		upperMenu.addExportXFormsListener(new ClickListener() {
-			private static final long serialVersionUID = -8790434440652432643L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
-						getSelectedForm().getOrganizationId());
-				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
-						XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
-				upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_NAME_TAG, getSelectedForm().getLabel());
-				upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_ORGANIZATION_PARAMETER_TAG, organization.getUniqueName());
-				upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_VERSION_PARAMETER_TAG,
-						getSelectedForm().getVersion().toString());
-			}
-		});
-		upperMenu.addExportXmlListener(new ClickListener() {
-			private static final long serialVersionUID = -4167515599696676260L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				exportXmlListener();
-			}
-		});
-		upperMenu.addExportScorecardXlsListener(new ClickListener() {
-			private static final long serialVersionUID = 8831217333785785818L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				exportXlsScorecard();
-			}
-		});
+		upperMenu.addNewFormListener((ClickListener) event -> openNewFormWindow());
+		upperMenu.addNewFormVersionListener((ClickListener) event -> newFormVersion());
+		upperMenu.addWebformReferenceListener((ClickListener) event -> linkWebformsForm());
+		upperMenu.addImportAbcdForm((ClickListener) event -> importAbcdForm());
+		upperMenu.addImportJsonForm((ClickListener) event -> importJsonForm());
+		upperMenu.addLinkAbcdForm((ClickListener) event -> linkAbcdForm());
+		upperMenu.addExportPdf((ClickListener) event -> exportPdf());
+		upperMenu.addExportFlowPdfListener((ClickListener) event -> exportFlowPdf());
+		upperMenu.addExportXFormsListener((ClickListener) event -> {
+            IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
+                    getSelectedForm().getOrganizationId());
+            upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
+                    XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
+            upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_NAME_TAG, getSelectedForm().getLabel());
+            upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_ORGANIZATION_PARAMETER_TAG, organization.getUniqueName());
+            upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_VERSION_PARAMETER_TAG,
+                    getSelectedForm().getVersion().toString());
+        });
+		upperMenu.addExportXmlListener((ClickListener) event -> exportXmlListener());
+		upperMenu.addExportScorecardXlsListener((ClickListener) event -> exportXlsScorecard());
 		// Add browser window opener to the button.
-		upperMenu.addPreviewXFormsListener(new ClickListener() {
-			private static final long serialVersionUID = -8790434440652432643L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				previewXForms();
-			}
-		});
-		upperMenu.addPublishXFormsListener(new ClickListener() {
-			private static final long serialVersionUID = -4167515599696676260L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				publishXForms();
-			}
-		});
-		upperMenu.addDownloadXFormsListener(new ClickListener() {
-			private static final long serialVersionUID = -2359606371849802798L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				downloadXForms();
-			}
-		});
+		upperMenu.addPreviewXFormsListener((ClickListener) event -> previewXForms());
+		upperMenu.addPublishXFormsListener((ClickListener) event -> publishXForms());
+		upperMenu.addDownloadXFormsListener((ClickListener) event -> downloadXForms());
 		if (upperMenu != null) {
-			upperMenu.addDownloadXFormsMultipleListener(new ClickListener() {
-				private static final long serialVersionUID = 7112180518114190965L;
-
-				@Override
-				public void buttonClick(ClickEvent event) {
-					downloadXFormsMultiple();
-				}
-			});
+			upperMenu.addDownloadXFormsMultipleListener((ClickListener) event -> downloadXFormsMultiple());
 		}
-		upperMenu.addExportXsdListener(new ClickListener() {
-			private static final long serialVersionUID = -2359606371849802798L;
+		upperMenu.addExportXsdListener((ClickListener) event -> exportXsd());
+		upperMenu.addCompareContent((ClickListener) event -> ApplicationUi.navigateTo(WebMap.COMPARE_CONTENT));
+		upperMenu.addImpactAnalysisListener((ClickListener) event -> impactAnalysis());
+		upperMenu.addExportJsonListener((ClickListener) event -> exportJson());
+		upperMenu.addExportAbcdListener((ClickListener) event -> exportAbcdJson());
+		upperMenu.addExportBaseFormMetadataJsonListener((ClickListener) event -> exportBaseFormMetadataJson());
+		upperMenu.addRemoveFormListener((ClickListener) event -> {
+            if (formTable.getValue() != null) {
+                new WindowProceedAction(LanguageCodes.WARNING_REMOVE_ELEMENT, window -> {
+                    removeSelectedForm();
+                    window.close();
+                });
+            }
+        });
 
-			@Override
-			public void buttonClick(ClickEvent event) {
-				exportXsd();
-			}
-		});
-		upperMenu.addCompareContent(new ClickListener() {
-			private static final long serialVersionUID = 1044352586328012252L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				ApplicationUi.navigateTo(WebMap.COMPARE_CONTENT);
-			}
-		});
-		upperMenu.addImpactAnalysisListener(new ClickListener() {
-			private static final long serialVersionUID = 8831217333785785818L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				impactAnalysis();
-			}
-		});
-		upperMenu.addExportJsonListener(new ClickListener() {
-			private static final long serialVersionUID = 2815280910647730087L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				exportJson();
-			}
-		});
-		upperMenu.addExportAbcdListener(new ClickListener() {
-			private static final long serialVersionUID = 2815280910647730087L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				exportAbcdJson();
-			}
-		});
-		upperMenu.addExportBaseFormMetadataJsonListener(new ClickListener() {
-			private static final long serialVersionUID = -2359606371849802798L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				exportBaseFormMetadataJson();
-			}
-		});
-		upperMenu.addRemoveFormListener(new ClickListener() {
-			private static final long serialVersionUID = -3264661636078442579L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				if (formTable.getValue() != null) {
-					new WindowProceedAction(LanguageCodes.WARNING_REMOVE_ELEMENT, new AcceptActionListener() {
-						@Override
-						public void acceptAction(WindowAcceptCancel window) {
-							removeSelectedForm();
-							window.close();
-						}
-					});
-				}
-			}
-		});
-
-		upperMenu.addPublishToKmListener(new ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				ApplicationUi.getController().publishToKnowledgeManager(loadCompleteForm(getSelectedForm()).toJson());
-			}
-		});
+		upperMenu.addPublishToKmListener((ClickListener) event ->
+				ApplicationUi.getController().publishToKnowledgeManager(loadCompleteForm(getSelectedForm()).toJson()));
 
 		return upperMenu;
 	}
@@ -350,14 +206,10 @@ public class FormManager extends SecuredWebPage {
 	private void importJsonForm() {
 		WindowImportJson window = new WindowImportJson();
 		window.showCentered();
-		window.addAcceptActionListener(new AcceptActionListener() {
-
-			@Override
-			public void acceptAction(WindowAcceptCancel window) {
-				window.close();
-				formTable.refreshTableData();
-			}
-		});
+		window.addAcceptActionListener(window1 -> {
+            window1.close();
+            formTable.refreshTableData();
+        });
 	}
 
 	private void exportXmlListener() {

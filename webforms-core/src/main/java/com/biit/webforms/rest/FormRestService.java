@@ -1,11 +1,12 @@
 package com.biit.webforms.rest;
 
+import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
 import com.biit.webforms.persistence.entity.Form;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidValue;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +43,7 @@ public class FormRestService {
             String json = form.toJson();
             WebformsLogger.debug(FormRestService.class.getName(), "Form retrieved successfully:\n{} ", json);
             return Response.ok(json, MediaType.APPLICATION_JSON).build();
-        } catch (JsonSyntaxException ex) {
+        } catch (JsonProcessingException | InvalidValue ex) {
             WebformsLogger.errorMessage(this.getClass().getName(), ex);
             return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\":\"Json syntax error\"}").build();
         } catch (MultiplesFormsFoundException e) {
@@ -54,11 +55,11 @@ public class FormRestService {
 
     }
 
-    private FormDescription parsePetition(String petition) throws JsonSyntaxException {
-        if (petition == null || petition.length() == 0) {
-            throw new JsonSyntaxException("Empty parameter not allowed.");
+    private FormDescription parsePetition(String petition) throws JsonProcessingException, InvalidValue {
+        if (petition == null || petition.isEmpty()) {
+            throw new InvalidValue("Empty parameter not allowed.");
         }
-        return new Gson().fromJson(petition, FormDescription.class);
+        return ObjectMapperFactory.getObjectMapper().readValue(petition, FormDescription.class);
     }
 
     static class FormDescription {
