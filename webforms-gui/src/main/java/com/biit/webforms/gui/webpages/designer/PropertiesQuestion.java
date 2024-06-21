@@ -13,15 +13,22 @@ import com.biit.webforms.language.AnswerTypeUi;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Question;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.*;
+import com.vaadin.data.validator.RegexpValidator;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Question> {
     private static final long serialVersionUID = 7572463216386081265L;
     private static final String WIDTH = "200px";
+    private static final int MAX_ANSWERS_SELECTED = 2;
 
     private TextField name;
     private TextArea label;
@@ -35,6 +42,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
     private ComboBox defaultValueAnswer;
 
     private CheckBox mandatory;
+    private TextField maxAnswersSelected;
 
     private ComboBox answerType;
 
@@ -93,51 +101,47 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
             answerType.setItemCaption(type.getAnswerType(), type.getLanguageCode().translation());
         }
         answerType.setNullSelectionAllowed(false);
-        answerType.addValueChangeListener(new ValueChangeListener() {
-            private static final long serialVersionUID = -7743742253650945202L;
+        answerType.addValueChangeListener((ValueChangeListener) event -> {
+            AnswerType selectedType = (AnswerType) answerType.getValue();
+            // No Input fields must put the format to null or input fields
+            // that has not any format already selected
+            if (selectedType.getDefaultAnswerFormat() == null || getInstance().getAnswerFormat() == null) {
+                answerFormat.setValue(selectedType.getDefaultAnswerFormat());
+                answerFormat.setEnabled(selectedType.isAnswerFormatEnabled() && !getInstance().isReadOnly());
+            }
+            if (!selectedType.getDefaultHorizontal()) {
+                horizontal.setValue(selectedType.getDefaultHorizontal());
+                horizontal.setEnabled(selectedType.isHorizontalEnabled());
+            }
+            if (!selectedType.isMandatoryEnabled()) {
+                mandatory.setValue(selectedType.getDefaultMandatory());
+                mandatory.setEnabled(selectedType.isMandatoryEnabled());
+            }
+            maxAnswersSelected.setVisible(selectedType.isMaxAnswersSelectedEnabled());
 
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                AnswerType selectedType = (AnswerType) answerType.getValue();
-                // No Input fields must put the format to null or input fields
-                // that has not any format already selected
-                if (selectedType.getDefaultAnswerFormat() == null || getInstance().getAnswerFormat() == null) {
-                    answerFormat.setValue(selectedType.getDefaultAnswerFormat());
-                    answerFormat.setEnabled(selectedType.isAnswerFormatEnabled() && !getInstance().isReadOnly());
-                }
-                if (!selectedType.getDefaultHorizontal()) {
-                    horizontal.setValue(selectedType.getDefaultHorizontal());
-                    horizontal.setEnabled(selectedType.isHorizontalEnabled());
-                }
-                if (!selectedType.isMandatoryEnabled()) {
-                    mandatory.setValue(selectedType.getDefaultMandatory());
-                    mandatory.setEnabled(selectedType.isMandatoryEnabled());
-                }
-
-                switch (selectedType) {
-                    case INPUT:
-                        defaultValueAnswer.setVisible(false);
-                        defaultValueAnswer.setValue(null);
-                        break;
-                    case TEXT_AREA:
-                        defaultValueString.setVisible(true);
-                        defaultValueDate.setVisible(false);
-                        defaultValueDate.setValue(null);
-                        defaultValueAnswer.setVisible(false);
-                        defaultValueAnswer.setValue(null);
-                        break;
-                    case SINGLE_SELECTION_LIST:
-                    case SINGLE_SELECTION_RADIO:
-                    case SINGLE_SELECTION_SLIDER:
-                    case MULTIPLE_SELECTION:
-                        defaultValueString.setVisible(false);
-                        defaultValueString.setValue("");
-                        defaultValueDate.setVisible(false);
-                        defaultValueDate.setValue(null);
-                        refreshDefaultValueAnswerValues();
-                        defaultValueAnswer.setVisible(true);
-                        break;
-                }
+            switch (selectedType) {
+                case INPUT:
+                    defaultValueAnswer.setVisible(false);
+                    defaultValueAnswer.setValue(null);
+                    break;
+                case TEXT_AREA:
+                    defaultValueString.setVisible(true);
+                    defaultValueDate.setVisible(false);
+                    defaultValueDate.setValue(null);
+                    defaultValueAnswer.setVisible(false);
+                    defaultValueAnswer.setValue(null);
+                    break;
+                case SINGLE_SELECTION_LIST:
+                case SINGLE_SELECTION_RADIO:
+                case SINGLE_SELECTION_SLIDER:
+                case MULTIPLE_SELECTION:
+                    defaultValueString.setVisible(false);
+                    defaultValueString.setValue("");
+                    defaultValueDate.setVisible(false);
+                    defaultValueDate.setValue(null);
+                    refreshDefaultValueAnswerValues();
+                    defaultValueAnswer.setVisible(true);
+                    break;
             }
         });
 
@@ -148,28 +152,20 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
             answerFormat.setItemCaption(format.getAnswerFormat(), format.getLanguageCode().translation());
         }
         answerFormat.setNullSelectionAllowed(false);
-        answerFormat.addValueChangeListener(new ValueChangeListener() {
-            private static final long serialVersionUID = -1366771633100053513L;
-
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                if (answerFormat.getValue() != null) {
-                    AnswerFormat selectedFormat = (AnswerFormat) answerFormat.getValue();
-                    switch (selectedFormat) {
-                        case DATE:
-                            defaultValueString.setVisible(false);
-                            defaultValueString.setValue("");
-                            defaultValueDate.setVisible(true);
-                            break;
-                        default:
-                            defaultValueString.setVisible(true);
-                            defaultValueDate.setVisible(false);
-                            defaultValueDate.setValue(null);
-                            break;
-                    }
+        answerFormat.addValueChangeListener((ValueChangeListener) event -> {
+            if (answerFormat.getValue() != null) {
+                AnswerFormat selectedFormat = (AnswerFormat) answerFormat.getValue();
+                if (Objects.requireNonNull(selectedFormat) == AnswerFormat.DATE) {
+                    defaultValueString.setVisible(false);
+                    defaultValueString.setValue("");
+                    defaultValueDate.setVisible(true);
+                } else {
+                    defaultValueString.setVisible(true);
+                    defaultValueDate.setVisible(false);
+                    defaultValueDate.setValue(null);
                 }
-                refreshAnswerSubformatOptions();
             }
+            refreshAnswerSubformatOptions();
         });
         answerFormat.setImmediate(true);
 
@@ -181,6 +177,12 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         horizontal = new CheckBox(LanguageCodes.CAPTION_HORIZONTAL.translation());
 
         mandatory = new CheckBox(LanguageCodes.CAPTION_MANDATORY.translation());
+
+        maxAnswersSelected = new TextField(LanguageCodes.CAPTION_MAX_ANSWERS_SELECTED.translation());
+        maxAnswersSelected.setWidth(WIDTH);
+        maxAnswersSelected.addValidator(new RegexpValidator("[-]?[0-9]*\\.?,?[0-9]+"
+                , "This is not a number!"));
+        maxAnswersSelected.setMaxLength(MAX_ANSWERS_SELECTED);
 
         disableEdition = new CheckBox(LanguageCodes.CAPTION_DISABLE_EDITION.translation());
         disableEdition.setDescription(LanguageCodes.CAPTION_DISABLE_EDITION_TOOLTIP.translation());
@@ -201,6 +203,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         commonProperties.addComponent(defaultValueAnswer);
         commonProperties.addComponent(horizontal);
         commonProperties.addComponent(mandatory);
+        commonProperties.addComponent(maxAnswersSelected);
         commonProperties.addComponent(disableEdition);
 
         boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
@@ -304,7 +307,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
     }
 
     private boolean isAnswerSubformatEnabled() {
-        return !getInstance().isReadOnly() && ((AnswerType) answerType.getValue() == AnswerType.INPUT);
+        return !getInstance().isReadOnly() && answerType.getValue() == AnswerType.INPUT;
     }
 
     @Override

@@ -1,18 +1,18 @@
 package com.biit.webforms.enumerations;
 
 public enum AnswerType {
-    SINGLE_SELECTION_RADIO(null, true, true, false, true, false),
+    SINGLE_SELECTION_RADIO(null, true, true, false, true, false, false),
 
-    SINGLE_SELECTION_LIST(null, true, false, null, true, false),
+    SINGLE_SELECTION_LIST(null, true, false, null, true, false, false),
 
-    SINGLE_SELECTION_SLIDER(null, true, false, false, true, false),
+    SINGLE_SELECTION_SLIDER(null, true, false, false, true, false, false),
 
-    MULTIPLE_SELECTION(null, true, true, null, true, false),
+    MULTIPLE_SELECTION(null, true, true, null, true, false, false),
 
     // Uses answer format.
-    INPUT(AnswerFormat.TEXT, false, false, null, true, true),
+    INPUT(AnswerFormat.TEXT, false, false, null, true, true, false),
 
-    TEXT_AREA(null, false, false, null, false, true);
+    TEXT_AREA(null, false, false, null, false, true, false);
 
     private final AnswerFormat defaultAnswerFormat;
     private final boolean childrenAllowed;
@@ -20,15 +20,17 @@ public enum AnswerType {
     private final Boolean defaultHorizontal;
     private final Boolean defaultMandatory;
     private final boolean defaultValueEnabled;
+    private final boolean maxAnswersSelectedEnabled;
 
     private AnswerType(AnswerFormat defaultAnswerType, boolean childrenAllowed, boolean subchildrenAllowed, Boolean defaultHorizontal, Boolean defaultMandatory,
-                       boolean defaultValueEnabled) {
+                       boolean defaultValueEnabled, boolean maxAnswersSelectedEnabled) {
         this.defaultAnswerFormat = defaultAnswerType;
         this.childrenAllowed = childrenAllowed;
         this.defaultHorizontal = defaultHorizontal;
         this.defaultMandatory = defaultMandatory;
         this.subChildrenAllowed = subchildrenAllowed;
         this.defaultValueEnabled = defaultValueEnabled;
+        this.maxAnswersSelectedEnabled = maxAnswersSelectedEnabled;
     }
 
     public boolean isAnswerFormatEnabled() {
@@ -80,5 +82,9 @@ public enum AnswerType {
             }
         }
         return null;
+    }
+
+    public boolean isMaxAnswersSelectedEnabled() {
+        return maxAnswersSelectedEnabled;
     }
 }

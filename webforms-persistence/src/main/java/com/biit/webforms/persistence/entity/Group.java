@@ -29,6 +29,9 @@ public class Group extends BaseRepeatableGroup {
     @Column(name = "number_of_column", nullable = false, columnDefinition = "int default 1")
     private int numberOfColumns = 1;
 
+    @Column(name = "total_answers_value")
+    private Integer totalAnswersValue;
+
     public Group() {
         super();
         setRepeatable(DEFAULT_REPEATABLE);
@@ -94,5 +97,21 @@ public class Group extends BaseRepeatableGroup {
 
     public void setNumberOfColumns(int numberOfColumns) {
         this.numberOfColumns = Math.max(numberOfColumns, 1);
+    }
+
+    public boolean isShowAsTable() {
+        return showAsTable;
+    }
+
+    public void setShowAsTable(boolean showAsTable) {
+        this.showAsTable = showAsTable;
+    }
+
+    public Integer getTotalAnswersValue() {
+        return totalAnswersValue;
+    }
+
+    public void setTotalAnswersValue(Integer totalAnsersValue) {
+        this.totalAnswersValue = totalAnsersValue;
     }
 }

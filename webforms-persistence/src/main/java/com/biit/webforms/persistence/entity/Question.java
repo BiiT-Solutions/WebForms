@@ -55,6 +55,8 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
     public static final int MAX_ABBREVIATURE_LENGTH = 100;
     public static final int MAX_ALIAS_LENGTH = 100;
 
+    @Column(name = "max_answers")
+    private Integer maxAnswersSelected;
     private boolean mandatory;
     private boolean horizontal;
 
@@ -101,7 +103,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
         super();
         mandatory = DEFAULT_MANDATORY;
         horizontal = DEFAULT_HORIZONTAL;
-        description = new String();
+        description = "";
         answerType = AnswerType.INPUT;
         answerFormat = AnswerFormat.TEXT;
         answerSubformat = AnswerSubformat.TEXT;
@@ -276,6 +278,14 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
     public void setMandatory(boolean mandatory) {
         this.mandatory = mandatory;
+    }
+
+    public Integer getMaxAnswersSelected() {
+        return maxAnswersSelected;
+    }
+
+    public void setMaxAnswersSelected(Integer maxAnswersSelected) {
+        this.maxAnswersSelected = maxAnswersSelected;
     }
 
     public boolean isHorizontal() {
@@ -550,7 +560,8 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
                 answer.setDescription(lowerValueRange.toString());
                 addChild(answer);
                 answers.add(answer);
-            } catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException | ElementIsReadOnly e) {
+            } catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException |
+                     ElementIsReadOnly e) {
                 WebformsLogger.errorMessage(this.getClass().getName(), e);
             }
             lowerValueRange = lowerValueRange.add(increment);

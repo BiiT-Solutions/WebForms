@@ -14,5 +14,8 @@ public class GroupSerializer extends BaseRepeatableGroupSerializer<Group> {
         super.serialize(src, jgen);
         jgen.writeBooleanField("isTable", src.isShownAsTable());
         jgen.writeNumberField("numberOfColumn", src.getNumberOfColumns());
+        if (src.getTotalAnswersValue() != null) {
+            jgen.writeNumberField("totalAnswersValue", src.getTotalAnswersValue());
+        }
     }
 }

@@ -25,6 +25,9 @@ public class QuestionSerializer extends TreeObjectSerializer<Question> {
             jgen.writeStringField("answerSubformat", src.getAnswerSubformat().name());
         }
         jgen.writeBooleanField("mandatory", src.isMandatory());
+        if (src.getMaxAnswersSelected() != null) {
+            jgen.writeNumberField("maxAnswersSelected", src.getMaxAnswersSelected());
+        }
         jgen.writeBooleanField("horizontal", src.isHorizontal());
         jgen.writeStringField("description", src.getDescription());
         jgen.writeStringField("defaultValueString", src.getDefaultValueString());

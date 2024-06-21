@@ -13,6 +13,7 @@ public class GroupDeserializer extends BaseRepeatableGroupDeserializer<Group> {
     public void deserialize(Group element, JsonNode jsonObject, DeserializationContext context) throws IOException {
         super.deserialize(element, jsonObject, context);
         element.setShownAsTable(parseBoolean("isTable", jsonObject));
+        element.setTotalAnswersValue(parseInteger("totalAnswersValue", jsonObject));
         if (parseInteger("numberOfColumn", jsonObject) != null) {
             element.setNumberOfColumns(parseInteger("numberOfColumn", jsonObject));
         } else {

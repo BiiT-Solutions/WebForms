@@ -14,6 +14,7 @@ import com.vaadin.ui.TextField;
 public class PropertiesGroup extends StorableObjectProperties<Group> {
     private static final long serialVersionUID = 2409507883007287631L;
     private static final String WIDTH = "200px";
+    private static final int TOTAL_ANSWERS_SELECTED = 2;
 
     private TextField name;
     private TextArea label;
@@ -21,6 +22,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
     private CheckBox repeatable;
     private CheckBox isTable;
     private TextField numberOfColumns;
+    private TextField totalAnswersValue;
 
     public PropertiesGroup() {
         super(Group.class);
@@ -46,6 +48,10 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
         numberOfColumns.setRequired(true);
         numberOfColumns.setMaxLength(1);
 
+        totalAnswersValue = new TextField(LanguageCodes.CAPTION_TOTAL_ANSWERS_VALUES.translation());
+        totalAnswersValue.setWidth(WIDTH);
+        totalAnswersValue.setMaxLength(TOTAL_ANSWERS_SELECTED);
+
         FormLayout commonProperties = new FormLayout();
         commonProperties.setWidth(null);
         commonProperties.setHeight(null);
@@ -54,6 +60,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
         commonProperties.addComponent(repeatable);
         commonProperties.addComponent(isTable);
         commonProperties.addComponent(numberOfColumns);
+        commonProperties.addComponent(totalAnswersValue);
 
         boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
         commonProperties.setEnabled(canEdit);
