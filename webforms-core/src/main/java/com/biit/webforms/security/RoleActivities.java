@@ -142,7 +142,7 @@ public class RoleActivities implements IRoleActivities {
 
     @Override
     public Set<IActivity> getRoleActivities(String roleName) {
-        Set<IActivity> activities = new HashSet<IActivity>();
+        Set<IActivity> activities = new HashSet<>();
         WebformsRoles webFormRole = WebformsRoles.parseTag(roleName);
         switch (webFormRole) {
             case FORM_ADMIN:
