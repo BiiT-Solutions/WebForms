@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -87,12 +88,12 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
             }
 
             if (row[13] != null) {
-                formView.setFormReferenceId(((Number) row[13]).longValue());
+                formView.setFormReferenceId(((BigInteger) row[13]).longValue());
             }
 
             formView.setLastVersion(row[14].equals(row[3]));
 
-            formView.setHasJson(row[15] != null && ((Integer) row[15]) > 0);
+            formView.setHasJson(row[15] != null && ((Number) row[15]).intValue() > 0);
 
             formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 
