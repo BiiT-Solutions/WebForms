@@ -298,7 +298,7 @@
         repeatable bit not null,
         number_of_column int default 1 not null,
         is_table bit not null,
-        total_answers_value bigint,
+        total_answers_value int,
         primary key (id)
     ) engine=InnoDB;
 
@@ -326,7 +326,7 @@
         horizontal bit not null,
         mandatory bit not null,
         default_value_answer bigint,
-        max_answers bigint,
+        max_answers int,
         primary key (id)
     ) engine=InnoDB;
 
