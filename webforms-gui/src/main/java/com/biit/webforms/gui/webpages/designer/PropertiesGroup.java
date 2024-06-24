@@ -101,6 +101,9 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
         numberOfColumns.setValue(getInstance().getNumberOfColumns() + "");
         numberOfColumns.addValidator(new ValidatorInteger());
         numberOfColumns.setEnabled(!getInstance().isReadOnly());
+
+        totalAnswersValue.setValue(String.valueOf(getInstance().getTotalAnswersValue()));
+        totalAnswersValue.addValidator(new ValidatorInteger());
     }
 
     @Override

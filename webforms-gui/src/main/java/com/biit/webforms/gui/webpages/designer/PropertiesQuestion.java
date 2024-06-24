@@ -14,7 +14,6 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Question;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
@@ -180,8 +179,6 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 
         maxAnswersSelected = new TextField(LanguageCodes.CAPTION_MAX_ANSWERS_SELECTED.translation());
         maxAnswersSelected.setWidth(WIDTH);
-        maxAnswersSelected.addValidator(new RegexpValidator("[-]?[0-9]*\\.?,?[0-9]+"
-                , "This is not a number!"));
         maxAnswersSelected.setMaxLength(MAX_ANSWERS_SELECTED);
 
         disableEdition = new CheckBox(LanguageCodes.CAPTION_DISABLE_EDITION.translation());
@@ -270,10 +267,13 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         mandatory.setValue(getInstance().isMandatory());
         mandatory.setEnabled(!getInstance().isReadOnly());
 
+        maxAnswersSelected.setValue(String.valueOf(getInstance().getMaxAnswersSelected()));
+        maxAnswersSelected.addValidator(new ValidatorInteger());
+
         answerType.setValue(getInstance().getAnswerType());
         answerType.setEnabled(!getInstance().isReadOnly());
 
-        // AnswerFormat enabled is controlled in other part of the code.
+        // AnswerFormat enabled is controlled in another part of the code.
         answerFormat.setValue(getInstance().getAnswerFormat());
         answerSubformat.setValue(getInstance().getAnswerSubformat());
         answerSubformat.setEnabled(isAnswerSubformatEnabled());
