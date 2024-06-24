@@ -7,7 +7,7 @@ public enum AnswerType {
 
     SINGLE_SELECTION_SLIDER(null, true, false, false, true, false, false),
 
-    MULTIPLE_SELECTION(null, true, true, null, true, false, false),
+    MULTIPLE_SELECTION(null, true, true, null, true, false, true),
 
     // Uses answer format.
     INPUT(AnswerFormat.TEXT, false, false, null, true, true, false),
