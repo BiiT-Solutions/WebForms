@@ -23,7 +23,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
     private CheckBox repeatable;
     private CheckBox isTable;
     private TextField numberOfColumns;
-    private TextField totalAnswersValue;
+    private TextField totalAnswers;
 
     public PropertiesGroup() {
         super(Group.class);
@@ -49,11 +49,11 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
         numberOfColumns.setRequired(true);
         numberOfColumns.setMaxLength(1);
 
-        totalAnswersValue = new TextField(LanguageCodes.CAPTION_TOTAL_ANSWERS_VALUES.translation());
-        totalAnswersValue.setWidth(WIDTH);
-        totalAnswersValue.addValidator(new RegexpValidator("[-]?[0-9]*\\.?,?[0-9]+"
+        totalAnswers = new TextField(LanguageCodes.CAPTION_TOTAL_ANSWERS_VALUES.translation());
+        totalAnswers.setWidth(WIDTH);
+        totalAnswers.addValidator(new RegexpValidator("[-]?[0-9]*\\.?,?[0-9]+"
                 , "This is not a number!"));
-        totalAnswersValue.setMaxLength(TOTAL_ANSWERS_SELECTED);
+        totalAnswers.setMaxLength(TOTAL_ANSWERS_SELECTED);
 
         FormLayout commonProperties = new FormLayout();
         commonProperties.setWidth(null);
@@ -63,7 +63,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
         commonProperties.addComponent(repeatable);
         commonProperties.addComponent(isTable);
         commonProperties.addComponent(numberOfColumns);
-        commonProperties.addComponent(totalAnswersValue);
+        commonProperties.addComponent(totalAnswers);
 
         boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
         commonProperties.setEnabled(canEdit);
@@ -102,8 +102,10 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
         numberOfColumns.addValidator(new ValidatorInteger());
         numberOfColumns.setEnabled(!getInstance().isReadOnly());
 
-        totalAnswersValue.setValue(String.valueOf(getInstance().getTotalAnswersValue()));
-        totalAnswersValue.addValidator(new ValidatorInteger());
+        if (getInstance().getTotalAnswersValue() != null) {
+            totalAnswers.setValue(String.valueOf(getInstance().getTotalAnswersValue()));
+        }
+        totalAnswers.addValidator(new ValidatorInteger());
     }
 
     @Override
@@ -124,8 +126,15 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
             numberOfColumnsValue = 1;
         }
 
+        Integer totalAnswersValue;
+        try {
+            totalAnswersValue = Integer.parseInt(totalAnswers.getValue());
+        } catch (Exception e) {
+            totalAnswersValue = null;
+        }
+
         ApplicationUi.getController().updateGroup(getInstance(), tempName, tempLabel, repeatable.getValue(),
-                isTable.getValue(), numberOfColumnsValue);
+                isTable.getValue(), numberOfColumnsValue, totalAnswersValue);
 
         super.updateElement();
     }

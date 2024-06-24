@@ -267,7 +267,9 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         mandatory.setValue(getInstance().isMandatory());
         mandatory.setEnabled(!getInstance().isReadOnly());
 
-        maxAnswersSelected.setValue(String.valueOf(getInstance().getMaxAnswersSelected()));
+        if (getInstance().getMaxAnswersSelected() != null) {
+            maxAnswersSelected.setValue(String.valueOf(getInstance().getMaxAnswersSelected()));
+        }
         maxAnswersSelected.addValidator(new ValidatorInteger());
 
         answerType.setValue(getInstance().getAnswerType());
@@ -331,9 +333,17 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
             tempDefaultValue = defaultValueAnswer.getValue();
         }
 
+        Integer maxAnswersSelectedValue;
+        try {
+            maxAnswersSelectedValue = Integer.parseInt(maxAnswersSelected.getValue());
+        } catch (Exception e) {
+            maxAnswersSelectedValue = null;
+        }
+
         ApplicationUi.getController().updateQuestion(getInstance(), tempName, tempLabel, abbreviature.getValue(), alias.getValue(),
                 description.getValue(), mandatory.getValue(), (AnswerType) answerType.getValue(), (AnswerFormat) answerFormat.getValue(),
-                (AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue, disableEdition.getValue(), getImage());
+                (AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue, disableEdition.getValue(),
+                maxAnswersSelectedValue, getImage());
 
         super.updateElement();
     }

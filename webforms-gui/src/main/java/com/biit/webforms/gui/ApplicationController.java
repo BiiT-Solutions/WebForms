@@ -1020,10 +1020,10 @@ public class ApplicationController {
      * @param label
      * @param repeatable
      */
-    public void updateGroup(Group group, String name, String label, boolean repeatable, boolean isTable, int numberOfColumns) {
+    public void updateGroup(Group group, String name, String label, boolean repeatable, boolean isTable, int numberOfColumns, Integer totalAnswers) {
         try {
             if (!Objects.equals(group.getName(), name) || !Objects.equals(group.getLabel(), label) || group.isRepeatable() != repeatable
-                    || group.isShownAsTable() != isTable || group.getNumberOfColumns() != numberOfColumns) {
+                    || group.isShownAsTable() != isTable || group.getNumberOfColumns() != numberOfColumns || !Objects.equals(group.getTotalAnswersValue(), totalAnswers)) {
                 setUnsavedFormChanges(true);
                 group.setName(name);
                 group.setLabel(label);
@@ -1032,6 +1032,7 @@ public class ApplicationController {
                 group.setNumberOfColumns(numberOfColumns);
                 group.setUpdatedBy(UserSession.getUser());
                 group.setUpdateTime();
+                group.setTotalAnswersValue(totalAnswers);
                 logInfoStart("updateGroup", group, name, label, repeatable, isTable);
             }
         } catch (FieldTooLongException | CharacterNotAllowedException e) {
@@ -1054,7 +1055,8 @@ public class ApplicationController {
      * @param defaultValue
      */
     public void updateQuestion(Question question, String name, String label, String abbreviature, String alias, String description, boolean mandatory, AnswerType answerType,
-                               AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled, TreeObjectImage image) {
+                               AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled,
+                               Integer maxAnswersSelected, TreeObjectImage image) {
         try {
             if (!Objects.equals(question.getLabel(), label) || !Objects.equals(question.getDescription(), description)
                     || !Objects.equals(question.getName(), name) || question.isMandatory() != mandatory
@@ -1063,9 +1065,10 @@ public class ApplicationController {
                     || (question.getAnswerType() != null && !question.getAnswerType().equals(answerType))
                     || (question.getAnswerFormat() != null && !Objects.equals(question.getAnswerFormat(), answerFormat))
                     || (question.getAnswerSubformat() != null && !Objects.equals(question.getAnswerSubformat(), answerSubformat))
-                    || question.isHorizontal() != horizontal || (defaultValue == null && question.getDefaultValue() != "")
+                    || question.isHorizontal() != horizontal || (defaultValue == null && !Objects.equals(question.getDefaultValue(), ""))
                     || (defaultValue != null && !Objects.equals(question.getDefaultValue(), defaultValue.toString()))
-                    || (question.isEditionDisabled() != editionDisabled) || !Objects.equals(question.getImage(), image)) {
+                    || (question.isEditionDisabled() != editionDisabled) || !Objects.equals(question.getImage(), image)
+                    || !Objects.equals(question.getMaxAnswersSelected(), maxAnswersSelected)) {
                 setUnsavedFormChanges(true);
                 question.setName(name);
                 question.setLabel(label);
@@ -1081,6 +1084,7 @@ public class ApplicationController {
                 question.setUpdateTime();
                 question.setDefaultValue(defaultValue);
                 question.setEditionDisabled(editionDisabled);
+                question.setMaxAnswersSelected(maxAnswersSelected);
                 question.setImage(image);
                 logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat, answerSubformat, horizontal,
                         image != null ? image.getFileName() : null);
