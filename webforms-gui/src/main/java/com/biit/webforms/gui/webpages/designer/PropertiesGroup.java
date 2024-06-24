@@ -6,6 +6,7 @@ import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Group;
+import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
@@ -14,7 +15,7 @@ import com.vaadin.ui.TextField;
 public class PropertiesGroup extends StorableObjectProperties<Group> {
     private static final long serialVersionUID = 2409507883007287631L;
     private static final String WIDTH = "200px";
-    private static final int TOTAL_ANSWERS_SELECTED = 2;
+    private static final int TOTAL_ANSWERS_SELECTED = 10;
 
     private TextField name;
     private TextArea label;
@@ -50,6 +51,8 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 
         totalAnswersValue = new TextField(LanguageCodes.CAPTION_TOTAL_ANSWERS_VALUES.translation());
         totalAnswersValue.setWidth(WIDTH);
+        totalAnswersValue.addValidator(new RegexpValidator("[-]?[0-9]*\\.?,?[0-9]+"
+                , "This is not a number!"));
         totalAnswersValue.setMaxLength(TOTAL_ANSWERS_SELECTED);
 
         FormLayout commonProperties = new FormLayout();
