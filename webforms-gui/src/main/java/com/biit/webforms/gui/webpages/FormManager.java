@@ -374,15 +374,9 @@ public class FormManager extends SecuredWebPage {
 	private void previewXForms() {
 		Form form = loadAndValidateForm();
 		if (form != null) {
-			// Orbeon fails if a form has no categories.
 			if (!form.getChildren().isEmpty()) {
-				IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
+				final IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
 						form.getOrganizationId());
-				// String formName = form.getName();
-				// if (!FormRunnerUtils.saveFormInFormRunner(new CompleteFormView(form),
-				// organization, true, true)) {
-				// if (!OrbeonUtils.saveFormInOrbeon(new CompleteFormView(form), organization,
-				// true, true)) {
 				if (!FormRunnerUtils.saveFormInFormRunner(form, organization, true, true)) {
 					// If xforms is not generated, close the popup.
 					// ((OrbeonPreviewFrame)
@@ -419,8 +413,8 @@ public class FormManager extends SecuredWebPage {
 		CompleteFormView completeFormView = loadCompleteForm(getSelectedForm());
 
 		com.biit.abcd.persistence.entity.Form abcdForm = new com.biit.abcd.persistence.entity.Form();
-		ConversorFormToAbcdForm conversor = new ConversorFormToAbcdForm();
-		com.biit.abcd.persistence.entity.Form abcdConvertedForm = conversor.convert(completeFormView);
+		ConversorFormToAbcdForm converter = new ConversorFormToAbcdForm();
+		com.biit.abcd.persistence.entity.Form abcdConvertedForm = converter.convert(completeFormView);
 		try {
 			abcdForm.addChildren(abcdConvertedForm.getChildren());
 		} catch (NotValidChildException | ElementIsReadOnly e) {
