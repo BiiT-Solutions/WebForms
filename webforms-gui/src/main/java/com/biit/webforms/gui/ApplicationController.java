@@ -49,9 +49,11 @@ import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IBlockDao;
 import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.dao.IPublishedFormDao;
 import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.dao.IUserTokenDao;
 import com.biit.webforms.persistence.dao.IWebserviceDao;
+import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
 import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.AttachedFiles;
@@ -65,6 +67,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
 import com.biit.webforms.persistence.entity.IWebformsBlockView;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
+import com.biit.webforms.persistence.entity.PublishedForm;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
@@ -117,6 +120,7 @@ import java.util.Set;
 public class ApplicationController {
     private final IFormDao formDao;
     private final IBlockDao blockDao;
+    private final IPublishedFormDao publishedFormDao;
     private final ISimpleFormViewDao simpleFormViewDao;
     private final IWebserviceDao webserviceDao;
     private final IUserTokenDao userTokenDao;
@@ -135,6 +139,7 @@ public class ApplicationController {
         SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
         formDao = (IFormDao) helper.getBean("webformsFormDao");
         blockDao = (IBlockDao) helper.getBean("blockDao");
+        publishedFormDao = (IPublishedFormDao) helper.getBean("publishedFormDao");
         simpleFormViewDao = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms"));
         webserviceDao = (IWebserviceDao) helper.getBean("webserviceDao");
         webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
@@ -1674,6 +1679,16 @@ public class ApplicationController {
             }
         }
         return formDao.get(formView.getId());
+    }
+
+    public PublishedForm publishForm(Form form) throws MultiplesFormsFoundException {
+        PublishedForm publishedForm = publishedFormDao.get(form.getLabel(), form.getVersion(), form.getOrganizationId());
+        if (publishedForm != null) {
+            publishedForm.setJsonCode(form.toJson());
+            return publishedFormDao.merge(publishedForm);
+        } else {
+            return publishedFormDao.makePersistent(new PublishedForm(form));
+        }
     }
 
     public Block loadBlock(IWebformsBlockView blockView) {

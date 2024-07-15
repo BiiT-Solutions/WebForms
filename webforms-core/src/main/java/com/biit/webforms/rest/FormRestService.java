@@ -29,7 +29,7 @@ public class FormRestService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/json")
+    @Path("/forms/json")
     public Response getForm(String petition) {
         FormDescription parsedPetition;
         WebformsLogger.info(FormRestService.class.getName(), "Requesting Form using endpoint 'POST /forms/json' with payload '{}'.", petition);
@@ -58,7 +58,7 @@ public class FormRestService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{formName}/versions/{formVersion}/organizations/{organizationId}")
+    @Path("/forms/{formName}/versions/{formVersion}/organizations/{organizationId}")
     public Response getForm(@PathParam("formName") String formName, @PathParam("formVersion") int formVersion, @PathParam("organizationId") long organizationId) {
         FormDescription parsedPetition;
         WebformsLogger.info(FormRestService.class.getName(), "Requesting Form using endpoint 'GET /forms' with formName '{}', formVersion '{}' and organization '{}'.",
