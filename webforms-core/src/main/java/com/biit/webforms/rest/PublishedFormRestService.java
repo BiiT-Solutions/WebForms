@@ -6,7 +6,6 @@ import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException
 import com.biit.webforms.persistence.entity.PublishedForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -16,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Component
-@RequestMapping(value = "/published-forms")
+@Path(value = "/published-forms")
 public class PublishedFormRestService {
 
     @Autowired
@@ -25,7 +24,7 @@ public class PublishedFormRestService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/published-forms/{formLabel}/versions/{formVersion}/organizations/{organizationId}")
+    @Path("/labels/{formLabel}/versions/{formVersion}/organizations/{organizationId}")
     public Response getForm(@PathParam("formLabel") String formLabel, @PathParam("formVersion") int formVersion, @PathParam("organizationId") Long organizationId) {
         WebformsLogger.info(PublishedFormRestService.class.getName(), "Requesting Published Form using endpoint 'GET /forms' with formLabel '{}', formVersion '{}' and organization '{}'.",
                 formLabel, formVersion, organizationId);
