@@ -24,7 +24,7 @@ public class PublishedFormRestService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/labels/{formLabel}/versions/{formVersion}/organizations/{organizationId}")
+    @Path("/{formLabel}/versions/{formVersion}/organizations/{organizationId}")
     public Response getForm(@PathParam("formLabel") String formLabel, @PathParam("formVersion") int formVersion, @PathParam("organizationId") Long organizationId) {
         WebformsLogger.info(PublishedFormRestService.class.getName(), "Requesting Published Form using endpoint 'GET /forms' with formLabel '{}', formVersion '{}' and organization '{}'.",
                 formLabel, formVersion, organizationId);
