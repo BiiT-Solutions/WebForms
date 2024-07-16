@@ -20,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +34,7 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
     private static final long serialVersionUID = -4300039254232003868L;
 
     public static final String DEFAULT_TECHNICAL_NAME = "block_reference";
-    private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>();
+    private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = Collections.singletonList(Category.class);
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "reference")

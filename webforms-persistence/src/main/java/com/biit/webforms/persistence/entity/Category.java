@@ -31,7 +31,7 @@ import java.util.List;
 @Cacheable(true)
 public class Category extends BaseCategory implements ElementWithImage {
 	private static final long serialVersionUID = 7418748035993485582L;
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<Class<? extends TreeObject>>(Arrays.asList(BaseQuestion.class,
+	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDS = new ArrayList<>(Arrays.asList(BaseQuestion.class,
 			BaseRepeatableGroup.class));
 
 	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
