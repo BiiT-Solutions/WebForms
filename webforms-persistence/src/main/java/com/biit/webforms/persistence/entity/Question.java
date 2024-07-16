@@ -57,6 +57,10 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
     @Column(name = "max_answers")
     private Integer maxAnswersSelected;
+
+    @Column(name = "consecutive_answers", nullable = false, columnDefinition = "bit default 1")
+    private boolean consecutiveAnswers = false;
+
     private boolean mandatory;
     private boolean horizontal;
 
@@ -286,6 +290,14 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
     public void setMaxAnswersSelected(Integer maxAnswersSelected) {
         this.maxAnswersSelected = maxAnswersSelected;
+    }
+
+    public boolean isConsecutiveAnswers() {
+        return consecutiveAnswers;
+    }
+
+    public void setConsecutiveAnswers(boolean consecutiveAnswers) {
+        this.consecutiveAnswers = consecutiveAnswers;
     }
 
     public boolean isHorizontal() {

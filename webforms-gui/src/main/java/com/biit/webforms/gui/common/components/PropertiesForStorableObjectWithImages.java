@@ -91,9 +91,9 @@ public abstract class PropertiesForStorableObjectWithImages<T extends StorableOb
 
 		imageFile = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_FILE));
 		imageFile.setEnabled(false);
-		imageWidth = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_WIDTH));
+		imageWidth = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_WIDTH));
 		imageWidth.addValidator(new ValidatorInteger());
-		imageHeight = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERITES_IMAGE_HEIGHT));
+		imageHeight = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_HEIGHT));
 		imageWidth.addValidator(new ValidatorInteger());
 
 		FormLayout imageProperties = new FormLayout();

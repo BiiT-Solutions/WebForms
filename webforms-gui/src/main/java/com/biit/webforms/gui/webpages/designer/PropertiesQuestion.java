@@ -32,7 +32,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
     private TextField name;
     private TextArea label;
     private TextField alias;
-    private TextField abbreviature;
+    private TextField abbreviation;
 
     private TextArea description;
 
@@ -42,6 +42,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 
     private CheckBox mandatory;
     private TextField maxAnswersSelected;
+    private CheckBox consecutiveAnswers;
 
     private ComboBox answerType;
 
@@ -70,9 +71,9 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         alias.setWidth(WIDTH);
         alias.setMaxLength(Question.MAX_ALIAS_LENGTH);
 
-        abbreviature = new TextField(LanguageCodes.CAPTION_ABBREVIATURE_NAME.translation());
-        abbreviature.setWidth(WIDTH);
-        abbreviature.setMaxLength(Question.MAX_ABBREVIATURE_LENGTH);
+        abbreviation = new TextField(LanguageCodes.CAPTION_ABBREVIATURE_NAME.translation());
+        abbreviation.setWidth(WIDTH);
+        abbreviation.setMaxLength(Question.MAX_ABBREVIATURE_LENGTH);
 
         label = new TextArea(LanguageCodes.CAPTION_LABEL.translation());
         label.setWidth(WIDTH);
@@ -117,6 +118,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
                 mandatory.setEnabled(selectedType.isMandatoryEnabled());
             }
             maxAnswersSelected.setVisible(selectedType.isMaxAnswersSelectedEnabled());
+            consecutiveAnswers.setVisible(selectedType.isMaxAnswersSelectedEnabled());
 
             switch (selectedType) {
                 case INPUT:
@@ -181,6 +183,9 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         maxAnswersSelected.setWidth(WIDTH);
         maxAnswersSelected.setMaxLength(MAX_ANSWERS_SELECTED);
 
+        consecutiveAnswers = new CheckBox(LanguageCodes.CAPTION_CONSECUTIVE_ANSWERS.translation());
+        consecutiveAnswers.setDescription(LanguageCodes.CAPTION_CONSECUTIVE_ANSWERS_TOOLTIP.translation());
+
         disableEdition = new CheckBox(LanguageCodes.CAPTION_DISABLE_EDITION.translation());
         disableEdition.setDescription(LanguageCodes.CAPTION_DISABLE_EDITION_TOOLTIP.translation());
 
@@ -189,7 +194,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         commonProperties.setHeight(null);
         commonProperties.addComponent(name);
         commonProperties.addComponent(label);
-        commonProperties.addComponent(abbreviature);
+        commonProperties.addComponent(abbreviation);
         commonProperties.addComponent(alias);
         commonProperties.addComponent(description);
         commonProperties.addComponent(answerType);
@@ -201,6 +206,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         commonProperties.addComponent(horizontal);
         commonProperties.addComponent(mandatory);
         commonProperties.addComponent(maxAnswersSelected);
+        commonProperties.addComponent(consecutiveAnswers);
         commonProperties.addComponent(disableEdition);
 
         boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
@@ -254,8 +260,8 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         alias.setValue(getInstance().getAlias() != null ? getInstance().getAlias() : "");
         alias.setEnabled(!getInstance().isReadOnly());
 
-        abbreviature.setValue(getInstance().getAbbreviation() != null ? getInstance().getAbbreviation() : "");
-        abbreviature.setEnabled(!getInstance().isReadOnly());
+        abbreviation.setValue(getInstance().getAbbreviation() != null ? getInstance().getAbbreviation() : "");
+        abbreviation.setEnabled(!getInstance().isReadOnly());
 
         label.setValue(getInstance().getLabel());
         label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
@@ -271,6 +277,8 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
             maxAnswersSelected.setValue(String.valueOf(getInstance().getMaxAnswersSelected()));
         }
         maxAnswersSelected.addValidator(new ValidatorInteger());
+
+        consecutiveAnswers.setValue(getInstance().isConsecutiveAnswers());
 
         answerType.setValue(getInstance().getAnswerType());
         answerType.setEnabled(!getInstance().isReadOnly());
@@ -340,10 +348,11 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
             maxAnswersSelectedValue = null;
         }
 
-        ApplicationUi.getController().updateQuestion(getInstance(), tempName, tempLabel, abbreviature.getValue(), alias.getValue(),
+
+        ApplicationUi.getController().updateQuestion(getInstance(), tempName, tempLabel, abbreviation.getValue(), alias.getValue(),
                 description.getValue(), mandatory.getValue(), (AnswerType) answerType.getValue(), (AnswerFormat) answerFormat.getValue(),
                 (AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue, disableEdition.getValue(),
-                maxAnswersSelectedValue, getImage());
+                maxAnswersSelectedValue, consecutiveAnswers.getValue(), getImage());
 
         super.updateElement();
     }

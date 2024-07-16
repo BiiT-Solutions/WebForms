@@ -21,6 +21,7 @@ import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.serialization.CompleteFormViewDeserializer;
 import com.biit.webforms.serialization.CompleteFormViewSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -42,6 +43,8 @@ import java.util.Set;
 @JsonSerialize(using = CompleteFormViewSerializer.class)
 public class CompleteFormView extends Form implements IWebformsFormView {
     private static final long serialVersionUID = -426480388117580446L;
+
+    @JsonIgnore
     private Form form;
 
     // Original block -> copied block
