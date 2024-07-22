@@ -1,6 +1,8 @@
 package com.biit.webforms.gui.xforms;
 
 import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinRequest;
@@ -23,17 +25,23 @@ public class FormRunnerPreviewFrame extends UI {
         final String formName = request.getParameter(FORM_PARAMETER_TAG) != null ? request.getParameter(FORM_PARAMETER_TAG).trim() : null;
         final String formVersion = request.getParameter(FORM_VERSION_PARAMETER_TAG);
         final String organization = request.getParameter(FORM_ORGANIZATION_PARAMETER_TAG);
-        final String requestUrl = "preview?form=" + formName + "&version=" + formVersion + "&organization=" + organization;
 
-        String url = WebformsConfigurationReader.getInstance().getFormRunnerUrl();
+        if (formName == null || formVersion == null || organization == null) {
+            MessageManager.showWarning(LanguageCodes.WARNING_FORM_VALIDATION, LanguageCodes.WARNING_FORM_VALIDATION_BODY);
+            this.close();
+        } else {
+            final String requestUrl = "preview?form=" + formName + "&version=" + formVersion + "&organization=" + organization;
 
-        WebformsLogger.debug(this.getClass().getName(), "Opening URL: " + url + "/" + requestUrl);
-        BrowserFrame browser = new BrowserFrame(null, new ExternalResource(url + "/" + requestUrl));
+            String url = WebformsConfigurationReader.getInstance().getFormRunnerUrl();
 
-        browser.setImmediate(true);
-        browser.setSizeFull();
+            WebformsLogger.debug(this.getClass().getName(), "Opening URL: " + url + "/" + requestUrl);
+            BrowserFrame browser = new BrowserFrame(null, new ExternalResource(url + "/" + requestUrl));
 
-        setContent(browser);
+            browser.setImmediate(true);
+            browser.setSizeFull();
+
+            setContent(browser);
+        }
     }
 
 }

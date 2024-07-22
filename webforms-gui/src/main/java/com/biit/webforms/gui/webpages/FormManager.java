@@ -234,7 +234,7 @@ public class FormManager extends SecuredWebPage {
      * @return
      */
     private CompleteFormView loadAndValidateForm() {
-        CompleteFormView form = (CompleteFormView) loadCompleteForm(getSelectedForm());
+        CompleteFormView form = loadCompleteForm(getSelectedForm());
 
         // Xforms only can use valid forms.
         ValidateFormComplete validator = new ValidateFormComplete(ApplicationUi.getController().getAllWebservices());
