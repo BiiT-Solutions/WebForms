@@ -4,6 +4,7 @@ import com.biit.form.entity.TreeObject;
 import com.biit.utils.validation.SimpleValidator;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
+import com.biit.webforms.validators.reports.OnlyNumbersInSliderAllowed;
 
 import java.util.Objects;
 
@@ -24,7 +25,7 @@ public class ValidateSliders extends SimpleValidator<TreeObject> {
                     try {
                         Integer.parseInt(child.getName());
                     } catch (NumberFormatException e) {
-                        //assertTrue(false, new OnlyNumbersInSliderAllowed((WebformsBaseQuestion) element, child));
+                        assertTrue(false, new OnlyNumbersInSliderAllowed((WebformsBaseQuestion) element, child));
                     }
                 }
             }
