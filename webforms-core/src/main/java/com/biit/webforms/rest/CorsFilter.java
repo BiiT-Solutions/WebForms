@@ -1,26 +1,41 @@
 package com.biit.webforms.rest;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Provider
-public class CorsFilter implements ContainerResponseFilter {
+public class CorsFilter implements Filter {
 
     @Override
-    public void filter(final ContainerRequestContext requestContext,
-                       final ContainerResponseContext cres) throws IOException {
-        if (requestContext.getMethod().equalsIgnoreCase("OPTIONS")) {
-            requestContext.abortWith(Response.ok().build());
-        }
-        cres.getHeaders().add("Access-Control-Allow-Origin", "*");
-        cres.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
-        cres.getHeaders().add("Access-Control-Allow-Credentials", "true");
-        cres.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-        cres.getHeaders().add("Access-Control-Max-Age", "1209600");
+    public void init(FilterConfig filterConfig) throws ServletException {
     }
 
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+
+        if (request instanceof HttpServletRequest) {
+            if (((HttpServletRequest) request).getMethod().equalsIgnoreCase("OPTIONS")) {
+                if (response instanceof HttpServletResponse) {
+                    ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_OK);
+                }
+            }
+        }
+
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        httpResponse.addHeader("Access-Control-Allow-Origin", "*");
+        httpResponse.addHeader("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS");
+        httpResponse.addHeader("Access-Control-Allow-Headers", "X-Requested-With, X-Auth-Token");
+        chain.doFilter(request, response);
+    }
+
+    @Override
+    public void destroy() {
+
+    }
 }
