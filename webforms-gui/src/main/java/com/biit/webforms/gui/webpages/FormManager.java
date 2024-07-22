@@ -54,8 +54,6 @@ import com.biit.webforms.gui.webpages.formmanager.WindowImportAbcdForms;
 import com.biit.webforms.gui.webpages.formmanager.WindowImportJson;
 import com.biit.webforms.gui.webpages.formmanager.WindowLinkAbcdForm;
 import com.biit.webforms.gui.xforms.FormRunnerPreviewFrame;
-import com.biit.webforms.gui.xforms.FormRunnerUtils;
-import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.pdfgenerator.FormGeneratorPdf;
 import com.biit.webforms.pdfgenerator.FormPdfGenerator;
@@ -64,7 +62,6 @@ import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.IWebformsFormView;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.exceptions.FormIsUsedAsReferenceException;
-import com.biit.webforms.persistence.xforms.XFormsPersistence;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.utils.GraphvizApp;
 import com.biit.webforms.utils.GraphvizApp.ImgType;
@@ -148,20 +145,10 @@ public class FormManager extends SecuredWebPage {
         upperMenu.addLinkAbcdForm((ClickListener) event -> linkAbcdForm());
         upperMenu.addExportPdf((ClickListener) event -> exportPdf());
         upperMenu.addExportFlowPdfListener((ClickListener) event -> exportFlowPdf());
-        upperMenu.addExportXFormsListener((ClickListener) event -> {
-            IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
-                    getSelectedForm().getOrganizationId());
-            upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_PARAMETER_TAG,
-                    XFormsPersistence.formatFormName(getSelectedForm(), organization, true));
-            upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_NAME_TAG, getSelectedForm().getLabel());
-            upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_ORGANIZATION_PARAMETER_TAG, organization.getUniqueName());
-            upperMenu.getOpener().setParameter(OrbeonPreviewFrame.FORM_VERSION_PARAMETER_TAG,
-                    getSelectedForm().getVersion().toString());
-        });
+        //Configure preview selected form, before the preview button is clicked.
+        upperMenu.addExportXFormsListener((ClickListener) event -> configurePreviewXForms());
         upperMenu.addExportXmlListener((ClickListener) event -> exportXmlListener());
         upperMenu.addExportScorecardXlsListener((ClickListener) event -> exportXlsScorecard());
-        // Add browser window opener to the button.
-        upperMenu.addPreviewXFormsListener((ClickListener) event -> previewXForms());
         upperMenu.addPublishXFormsListener((ClickListener) event -> publishXForms());
         upperMenu.addDownloadXFormsListener((ClickListener) event -> downloadXForms());
         if (upperMenu != null) {
@@ -352,8 +339,6 @@ public class FormManager extends SecuredWebPage {
         if (form != null) {
             // Orbeon fails if a form has no categories.
             if (!form.getChildren().isEmpty()) {
-                IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
-                        form.getOrganizationId());
                 try {
                     if (ApplicationUi.getController().publishForm(form) != null) {
                         MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
@@ -370,20 +355,16 @@ public class FormManager extends SecuredWebPage {
         }
     }
 
-    private void previewXForms() {
+    private void configurePreviewXForms() {
+        //As the opener is executed with the button click, we need to configure it before clicking the preview button. We configure when clicking on the XForms button.
         Form form = loadAndValidateForm();
         if (form != null) {
             if (!form.getChildren().isEmpty()) {
-                final IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
-                        form.getOrganizationId());
-                if (!FormRunnerUtils.saveFormInFormRunner(form, organization, true, true)) {
-                    // If xforms is not generated, close the popup.
-                    // ((OrbeonPreviewFrame)
-                    // upperMenu.getOpener().getUI()).closePopUp();
-                }
-            } else {
-                MessageManager.showError(LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS,
-                        LanguageCodes.ERROR_INVALID_FORM_FOR_XFORMS_DESCRIPTION);
+                IGroup<Long> organization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
+                        getSelectedForm().getOrganizationId());
+                upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_PARAMETER_TAG, getSelectedForm().getLabel());
+                upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_ORGANIZATION_PARAMETER_TAG, String.valueOf(organization.getUniqueId()));
+                upperMenu.getOpener().setParameter(FormRunnerPreviewFrame.FORM_VERSION_PARAMETER_TAG, String.valueOf(getSelectedForm().getVersion()));
             }
         }
     }

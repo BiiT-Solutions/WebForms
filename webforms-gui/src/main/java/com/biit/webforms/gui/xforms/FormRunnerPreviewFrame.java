@@ -11,59 +11,29 @@ import com.vaadin.ui.UI;
  * Frame to open a preview of a FormRunner form in a new window.
  */
 public class FormRunnerPreviewFrame extends UI {
-	public final static String FORM_PARAMETER_TAG = "form_param";
-	public final static String FORM_NAME_TAG = "form_name";
-	public final static String APPLICATION_PARAMETER_TAG = "application_param";
-	public final static String FORM_VERSION_PARAMETER_TAG = "form_version_param";
-	public final static String FORM_ORGANIZATION_PARAMETER_TAG = "form_organization_param";
-	private static final long serialVersionUID = -4957704029911500631L;
-	private String form;
-	private String application;
-	@SuppressWarnings("unused")
-	private String version;
+	public final static String FORM_PARAMETER_TAG = "form";
+	public final static String FORM_VERSION_PARAMETER_TAG = "version";
+	public final static String FORM_ORGANIZATION_PARAMETER_TAG = "organization";
+	private static final long serialVersionUID = -4957704029911591631L;
 
-	public String getApplication() {
-		return application;
-	}
-
-	public String getForm() {
-		return form;
-	}
 
 	@Override
 	protected void init(VaadinRequest request) {
 		getPage().setTitle("Preview");
-		String form_name = request.getParameter(FORM_NAME_TAG).trim();
-		
-		//String parsedFormName = form_name;
-		String form_version = request.getParameter(FORM_VERSION_PARAMETER_TAG);
-		String organization = request.getParameter(FORM_ORGANIZATION_PARAMETER_TAG);
-		this.form = "?preview=" + form_name + "&version=" + form_version + "&organization=" + organization;
-		// this.application = request.getParameter(APPLICATION_PARAMETER_TAG);
-		this.application = "formrunner";
-		// this.version = request.getParameter(FORM_VERSION_PARAMETER_TAG);
-		String url = WebformsConfigurationReader.getInstance().getFormrunnerClientUrl();
+		final String formName = request.getParameter(FORM_PARAMETER_TAG).trim();
+		final String formVersion = request.getParameter(FORM_VERSION_PARAMETER_TAG);
+		final String organization = request.getParameter(FORM_ORGANIZATION_PARAMETER_TAG);
+        final String requestUrl = "preview?form=" + formName + "&version=" + formVersion + "&organization=" + organization;
 
-		WebformsLogger.debug(this.getClass().getName(), "Opening URL: " + url + "/" + form);
-		BrowserFrame browser = new BrowserFrame(null, new ExternalResource(url + "/" + form));
+		String url = WebformsConfigurationReader.getInstance().getFormRunnerUrl();
+
+		WebformsLogger.debug(this.getClass().getName(), "Opening URL: " + url + "/" + requestUrl);
+		BrowserFrame browser = new BrowserFrame(null, new ExternalResource(url + "/" + requestUrl));
 
 		browser.setImmediate(true);
 		browser.setSizeFull();
 
 		setContent(browser);
-	}
-
-	@SuppressWarnings("unused")
-	private String parseName(String formName) {
-		String[] splittedName = formName.split(" ");
-		String parsedName = "";
-		for (int i = 0; i < splittedName.length; i++) {
-			parsedName = parsedName + splittedName[i];
-			if (i < splittedName.length - 1) {
-				parsedName = parsedName + "_";
-			}
-		}
-		return parsedName;
 	}
 
 }

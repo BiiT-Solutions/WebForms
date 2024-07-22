@@ -81,7 +81,6 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_XFORMS_AVAILABLE_LANGUAGES = "en";
 	
 	// FormrunnerJS
-	private static final String FORMRUNNER_REST_URL = "formrunner.rest.url";
 	private static final String FORMRUNNER_URL = "formrunner.url"; // One for the docker and the other one for the client
 	private static final String DEFAULT_FORMRUNNERJS_REST_SERVICE = "http://127.0.0.1:8080/formrunner";
 
@@ -159,7 +158,6 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 				DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORM_PATH_BY_LABEL_ORGANIZATION_VERSION);
 		addProperty(ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION, DEFAULT_ABCD_REST_SERVICE_COMPLETE_FORMS_PATH_BY_ORGANIZATION);
 		addProperty(FORMRUNNER_URL, DEFAULT_FORMRUNNERJS_REST_SERVICE);
-		addProperty(FORMRUNNER_REST_URL, DEFAULT_FORMRUNNERJS_REST_SERVICE);
 		addProperty(KNOWLEDGE_MANAGER_SERVICE_LOGIN_URL, DEFAULT_KNOWLEDGE_MANAGER_SERVICE_LOGIN_URL);
 		addProperty(KNOWLEDGE_MANAGER_SERVICE_PUBLISH_URL, DEFAULT_KNOWLEDGE_MANAGER_SERVICE_PUBLISH_URL);
 
@@ -349,12 +347,8 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		return languages.replace(" ", "").split(",");
 	}
 	
-	public String getFormrunnerClientUrl() {
+	public String getFormRunnerUrl() {
 		return getPropertyLogException(FORMRUNNER_URL);
-	}
-
-	public String getFormrunnerRestUrl() {
-		return getPropertyLogException(FORMRUNNER_REST_URL);
 	}
 
 	public boolean isImagesEnabled() {

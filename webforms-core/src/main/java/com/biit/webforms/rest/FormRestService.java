@@ -60,7 +60,6 @@ public class FormRestService {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{formName}/versions/{formVersion}/organizations/{organizationId}")
     public Response getForm(@PathParam("formName") String formName, @PathParam("formVersion") int formVersion, @PathParam("organizationId") long organizationId) {
-        FormDescription parsedPetition;
         WebformsLogger.info(FormRestService.class.getName(), "Requesting Form using endpoint 'GET /forms' with formName '{}', formVersion '{}' and organization '{}'.",
                 formName, formVersion, organizationId);
         try {
