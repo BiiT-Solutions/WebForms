@@ -36,7 +36,6 @@ import java.util.List;
  * <p>
  * -description
  * <p>
- * 
  */
 @Entity
 @JsonDeserialize(using = AnswerDeserializer.class)
@@ -44,157 +43,164 @@ import java.util.List;
 @Table(name = "tree_answers")
 @Cacheable()
 public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithImage {
-	private static final long serialVersionUID = 7614678800982506178L;
-	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>(Collections.singletonList(Answer.class));
-	public static final int MAX_DESCRIPTION_LENGTH = 10000;
+    private static final long serialVersionUID = 7614678800982506178L;
+    private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>(Collections.singletonList(Answer.class));
+    public static final int MAX_DESCRIPTION_LENGTH = 10000;
 
-	@Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
-	private String description;
+    @Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
+    private String description;
 
-	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-	private TreeObjectImage image;
+    @Column(name = "description_always_visible", nullable = false, columnDefinition = "bit default 1")
+    private boolean isDescriptionAlwaysVisible = false;
 
-	public Answer() {
-		super();
-		description = "";
-	}
+    @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private TreeObjectImage image;
 
-	public Answer(String name) throws FieldTooLongException, CharacterNotAllowedException {
-		super(name);
-		setValue(name);
-		description = "";
-	}
+    public Answer() {
+        super();
+        description = "";
+    }
 
-	@Override
-	public void resetIds() {
-		super.resetIds();
-		if (image != null) {
-			image.resetIds();
-		}
-	}
+    public Answer(String name) throws FieldTooLongException, CharacterNotAllowedException {
+        super(name);
+        setValue(name);
+        description = "";
+    }
 
-	@Override
-	protected void resetDatabaseIds() {
-		super.resetDatabaseIds();
-		if (image != null) {
-			image.resetDatabaseIds();
-		}
-	}
+    @Override
+    public void resetIds() {
+        super.resetIds();
+        if (image != null) {
+            image.resetIds();
+        }
+    }
 
-	@Override
-	protected List<Class<? extends TreeObject>> getAllowedChildren() {
-		return ALLOWED_CHILDREN;
-	}
+    @Override
+    protected void resetDatabaseIds() {
+        super.resetDatabaseIds();
+        if (image != null) {
+            image.resetDatabaseIds();
+        }
+    }
 
-	@Override
-	public void copyData(StorableObject object) throws NotValidStorableObjectException {
-		if (object instanceof Answer) {
-			copyBasicInfo(object);
-			if (((Answer) object).getDescription() != null) {
-				description = ((Answer) object).getDescription();
-			}
-		} else {
-			throw new NotValidTreeObjectException("Copy data for Answer only supports the same type copy");
-		}
-	}
+    @Override
+    protected List<Class<? extends TreeObject>> getAllowedChildren() {
+        return ALLOWED_CHILDREN;
+    }
 
-	/**
-	 * Set value is an alias for {@link Answer#setLabel(String)}
-	 *
-	 */
-	public void setValue(String value) throws FieldTooLongException, CharacterNotAllowedException {
-		setName(value);
-	}
+    @Override
+    public void copyData(StorableObject object) throws NotValidStorableObjectException {
+        if (object instanceof Answer) {
+            copyBasicInfo(object);
+            if (((Answer) object).getDescription() != null) {
+                description = ((Answer) object).getDescription();
+            }
+        } else {
+            throw new NotValidTreeObjectException("Copy data for Answer only supports the same type copy");
+        }
+    }
 
-	/**
-	 * Get Value is an alias for {@link Answer#getName()}
-	 *
-	 */
-	public String getValue() {
-		return getName();
-	}
+    /**
+     * Set value is an alias for {@link Answer#setLabel(String)}
+     */
+    public void setValue(String value) throws FieldTooLongException, CharacterNotAllowedException {
+        setName(value);
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    /**
+     * Get Value is an alias for {@link Answer#getName()}
+     */
+    public String getValue() {
+        return getName();
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	@Override
-	public String getScriptRepresentation() {
-		return getScriptValueRepresentation(getName());
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public static String getScriptValueRepresentation(String value) {
-		return "'" + value + "'";
-	}
+    @Override
+    public String getScriptRepresentation() {
+        return getScriptValueRepresentation(getName());
+    }
 
-	/**
-	 * Checks if this answer is a subanswer by looking if it has a parent and if
-	 * it has it, if is an answer.
-	 *
-	 */
-	public boolean isSubanswer() {
-		return getParent() != null && getParent() instanceof Answer;
-	}
+    public static String getScriptValueRepresentation(String value) {
+        return "'" + value + "'";
+    }
 
-	public String getPathAnswerValue() {
-		if (getParent() == null || !(getParent() instanceof Answer)) {
-			return getValue();
-		} else {
-			return getParent().getPathName() + TreeObject.DEFAULT_PATH_SEPARATOR + getValue();
-		}
-	}
+    /**
+     * Checks if this answer is a subanswer by looking if it has a parent and if
+     * it has it, if is an answer.
+     */
+    public boolean isSubanswer() {
+        return getParent() != null && getParent() instanceof Answer;
+    }
 
-	@Override
-	public String toString() {
-		return getValue();
-	}
+    public String getPathAnswerValue() {
+        if (getParent() == null || !(getParent() instanceof Answer)) {
+            return getValue();
+        } else {
+            return getParent().getPathName() + TreeObject.DEFAULT_PATH_SEPARATOR + getValue();
+        }
+    }
 
-	/**
-	 * A final answer is an answer that doesn't contain children
-	 *
-	 */
-	public boolean isFinalAnswer() {
-		return getChildren().isEmpty();
-	}
+    public boolean isDescriptionAlwaysVisible() {
+        return isDescriptionAlwaysVisible;
+    }
 
-	public int exportToJavaCode(StringBuilder sb, int counter) {
-		String idName = "el_" + counter;
+    public void setDescriptionAlwaysVisible(boolean descriptionAlwaysVisible) {
+        isDescriptionAlwaysVisible = descriptionAlwaysVisible;
+    }
 
-		sb.append("Answer ").append(idName).append("  = new Answer();").append(System.lineSeparator());
-		sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
-		sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
+    @Override
+    public String toString() {
+        return getValue();
+    }
 
-		return counter;
-	}
+    /**
+     * A final answer is an answer that doesn't contain children
+     */
+    public boolean isFinalAnswer() {
+        return getChildren().isEmpty();
+    }
 
-	@Override
-	public void checkDependencies() throws DependencyExistException {
-		Form form = (Form) this.getAncestor(Form.class);
-		if (form == null) {
-			return;
-		}
+    public int exportToJavaCode(StringBuilder sb, int counter) {
+        String idName = "el_" + counter;
 
-		for (Flow flow : form.getFlows()) {
-			if (flow.isDependent(this)) {
-				throw new DependencyExistException("Flow '" + flow + "' depends of element '" + this + "'");
-			}
-		}
-	}
+        sb.append("Answer ").append(idName).append("  = new Answer();").append(System.lineSeparator());
+        sb.append(idName).append(".setName(\"").append(this.getName()).append("\");").append(System.lineSeparator());
+        sb.append(idName).append(".setLabel(\"").append(this.getLabel()).append("\");").append(System.lineSeparator());
 
-	@Override
-	public void setImage(TreeObjectImage image) {
-		this.image = image;
-		if (image != null) {
-			image.setElement(this);
-		}
-	}
+        return counter;
+    }
 
-	@Override
-	public TreeObjectImage getImage() {
-		return image;
-	}
+    @Override
+    public void checkDependencies() throws DependencyExistException {
+        Form form = (Form) this.getAncestor(Form.class);
+        if (form == null) {
+            return;
+        }
+
+        for (Flow flow : form.getFlows()) {
+            if (flow.isDependent(this)) {
+                throw new DependencyExistException("Flow '" + flow + "' depends of element '" + this + "'");
+            }
+        }
+    }
+
+    @Override
+    public void setImage(TreeObjectImage image) {
+        this.image = image;
+        if (image != null) {
+            image.setElement(this);
+        }
+    }
+
+    @Override
+    public TreeObjectImage getImage() {
+        return image;
+    }
 }

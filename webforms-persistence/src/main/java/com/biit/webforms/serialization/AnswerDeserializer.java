@@ -15,6 +15,7 @@ public class AnswerDeserializer extends TreeObjectDeserializer<Answer> {
     public void deserialize(Answer element, JsonNode jsonObject, DeserializationContext context) throws IOException {
         super.deserialize(element, jsonObject, context);
         element.setDescription(parseString("description", jsonObject));
+        element.setDescriptionAlwaysVisible(parseBoolean("description_always_visible", jsonObject));
         if (jsonObject.get("image") != null) {
             element.setImage(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("image").toString(), TreeObjectImage.class));
         }

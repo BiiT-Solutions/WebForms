@@ -976,10 +976,11 @@ public class ApplicationController {
      * @param label
      * @param description
      */
-    public void updateAnswer(Answer answer, String value, String label, String description, TreeObjectImage image) {
+    public void updateAnswer(Answer answer, String value, String label, String description, Boolean descriptionAlwaysVisible, TreeObjectImage image) {
         try {
             if (!Objects.equals(answer.getLabel(), label) || !Objects.equals(answer.getDescription(), description) || !Objects.equals(answer.getValue(), value)
-                    || !Objects.equals(answer.getImage(), image)) {
+                    || !Objects.equals(answer.getImage(), image)
+                    || !Objects.equals(answer.isDescriptionAlwaysVisible(), descriptionAlwaysVisible)) {
                 setUnsavedFormChanges(true);
                 answer.setValue(value);
                 answer.setLabel(label);
@@ -987,6 +988,7 @@ public class ApplicationController {
                 answer.setUpdatedBy(UserSession.getUser());
                 answer.setUpdateTime();
                 answer.setImage(image);
+                answer.setDescriptionAlwaysVisible(descriptionAlwaysVisible != null ? descriptionAlwaysVisible : false);
                 logInfoStart("updateAnswer", answer, value, label, description, image != null ? image.getFileName() : null);
             }
         } catch (FieldTooLongException | CharacterNotAllowedException e) {
