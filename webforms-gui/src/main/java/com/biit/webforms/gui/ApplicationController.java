@@ -690,7 +690,11 @@ public class ApplicationController {
      */
     public Answer addNewAnswer(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
         setUnsavedFormChanges(true);
-        return (Answer) insertTreeObject(Answer.class, parent, "answer");
+        final Answer answer = (Answer) insertTreeObject(Answer.class, parent, "answer");
+        if (parent instanceof Question) {
+            answer.setDescriptionAlwaysVisible(((Question) parent).isDescriptionAlwaysVisible());
+        }
+        return answer;
     }
 
     /**

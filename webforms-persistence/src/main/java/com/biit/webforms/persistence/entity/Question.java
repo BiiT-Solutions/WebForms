@@ -578,9 +578,10 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
             try {
                 Answer answer = new Answer();
                 answer.setValue(lowerValueRange.toString());
-                answer.setName("" + lowerValueRange.toString());
-                answer.setLabel("" + lowerValueRange.toString());
+                answer.setName(lowerValueRange.toString());
+                answer.setLabel(lowerValueRange.toString());
                 answer.setDescription(lowerValueRange.toString());
+                answer.setDescriptionAlwaysVisible(isDescriptionAlwaysVisible);
                 addChild(answer);
                 answers.add(answer);
             } catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException |
