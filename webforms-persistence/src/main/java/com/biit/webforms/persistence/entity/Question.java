@@ -67,6 +67,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
     @Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
     private String description = "";
 
+    @Column(name = "description_always_visible", nullable = false, columnDefinition = "bit default 1")
+    private boolean isDescriptionAlwaysVisible = false;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "answer_type")
     private AnswerType answerType;
@@ -547,6 +550,14 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
         if (image != null) {
             image.setElement(this);
         }
+    }
+
+    public boolean isDescriptionAlwaysVisible() {
+        return isDescriptionAlwaysVisible;
+    }
+
+    public void setDescriptionAlwaysVisible(boolean descriptionAlwaysVisible) {
+        isDescriptionAlwaysVisible = descriptionAlwaysVisible;
     }
 
     @Override

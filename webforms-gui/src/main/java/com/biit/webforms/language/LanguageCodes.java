@@ -234,6 +234,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_FIELD("caption.field"),
 	CAPTION_DESCRIPTION("caption.description"),
 	CAPTION_MANDATORY("caption.mandatory"),
+	CAPTION_DESCRIPTION_ALWAYS_VISIBLE("caption.description.always.visible"),
 	CAPTION_MAX_ANSWERS_SELECTED("caption.max.answers.selected"),
 	CAPTION_ANSWER_TYPE("caption.answer.type"),
 	CAPTION_ANSWER_FORMAT("caption.answer.format"),

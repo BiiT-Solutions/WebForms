@@ -45,6 +45,7 @@ public class QuestionDeserializer extends TreeObjectDeserializer<Question> {
         element.setAlias(parseString("alias", jsonObject));
         element.setMandatory(parseBoolean("mandatory", jsonObject));
         element.setHorizontal(parseBoolean("horizontal", jsonObject));
+        element.setDescriptionAlwaysVisible(parseBoolean("description_always_visible", jsonObject));
         element.setDescription(parseString("description", jsonObject));
         element.setMaxAnswersSelected(parseInteger("maxAnswersSelected", jsonObject));
         element.setConsecutiveAnswers(parseBoolean("consecutiveAnswers", jsonObject));

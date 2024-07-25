@@ -5,7 +5,7 @@ public enum AnswerType {
 
     SINGLE_SELECTION_LIST(null, true, false, null, true, false, false),
 
-    SINGLE_SELECTION_SLIDER(null, true, false, false, true, false, false),
+    SINGLE_SELECTION_SLIDER(null, true, false, true, true, false, false),
 
     MULTIPLE_SELECTION(null, true, true, null, true, false, true),
 
