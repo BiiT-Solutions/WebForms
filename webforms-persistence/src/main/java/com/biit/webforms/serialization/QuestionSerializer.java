@@ -31,7 +31,7 @@ public class QuestionSerializer extends TreeObjectSerializer<Question> {
         jgen.writeBooleanField("consecutiveAnswers", src.isConsecutiveAnswers());
         jgen.writeBooleanField("horizontal", src.isHorizontal());
         jgen.writeBooleanField("inverseAnswerOrder", src.isInverseAnswerOrder());
-        jgen.writeBooleanField("description_always_visible", src.isDescriptionAlwaysVisible());
+        jgen.writeBooleanField("descriptionAlwaysVisible", src.isDescriptionAlwaysVisible());
         jgen.writeStringField("description", src.getDescription());
         jgen.writeStringField("defaultValueString", src.getDefaultValueString());
         if (src.getDefaultValueAnswer() != null) {
