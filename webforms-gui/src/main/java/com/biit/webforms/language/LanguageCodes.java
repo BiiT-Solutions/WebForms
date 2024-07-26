@@ -240,6 +240,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_ANSWER_FORMAT("caption.answer.format"),
 	CAPTION_ANSWER_SUBFORMAT("caption.answer.subformat"),
 	CAPTION_HORIZONTAL("caption.horizontal"),
+	CAPTION_INVERSE_ANSWERS_ORDER("caption.inverse.answers.order"),
 	CAPTION_DISABLE_EDITION("caption.disable.edition"),
 	CAPTION_DISABLE_EDITION_TOOLTIP("caption.disable.edition.tooltip"),
 	CAPTION_CONSECUTIVE_ANSWERS("caption.consecutive.answers"),

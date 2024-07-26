@@ -70,6 +70,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
     @Column(name = "description_always_visible", nullable = false, columnDefinition = "bit default 1")
     private boolean isDescriptionAlwaysVisible = false;
 
+    @Column(name = "inverse_answer_order", nullable = false, columnDefinition = "bit default 1")
+    private boolean inverseAnswerOrder = false;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "answer_type")
     private AnswerType answerType;
@@ -593,6 +596,13 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
         return answers;
     }
 
+    public boolean isInverseAnswerOrder() {
+        return inverseAnswerOrder;
+    }
+
+    public void setInverseAnswerOrder(boolean inverseAnswerOrder) {
+        this.inverseAnswerOrder = inverseAnswerOrder;
+    }
 
     public String getAlias() {
         return alias;

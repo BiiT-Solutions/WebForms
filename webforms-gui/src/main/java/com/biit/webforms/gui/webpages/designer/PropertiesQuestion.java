@@ -52,6 +52,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
     private ComboBox answerSubformat;
 
     private CheckBox horizontal;
+    private CheckBox inverseAnswerOrder;
 
     // Disable the field if orbeon is in edition mode.
     private CheckBox disableEdition;
@@ -120,6 +121,11 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
                 mandatory.setValue(selectedType.getDefaultMandatory());
                 mandatory.setEnabled(selectedType.isMandatoryEnabled());
             }
+
+            inverseAnswerOrder.setValue(false);
+            inverseAnswerOrder.setEnabled(selectedType.isInverseAnswerOrder());
+            inverseAnswerOrder.setVisible(selectedType.isInverseAnswerOrder());
+
             maxAnswersSelected.setVisible(selectedType.isMaxAnswersSelectedEnabled());
 
             switch (selectedType) {
@@ -178,6 +184,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         refreshAnswerSubformatOptions();
 
         horizontal = new CheckBox(LanguageCodes.CAPTION_HORIZONTAL.translation());
+        inverseAnswerOrder = new CheckBox(LanguageCodes.CAPTION_INVERSE_ANSWERS_ORDER.translation());
 
         mandatory = new CheckBox(LanguageCodes.CAPTION_MANDATORY.translation());
 
@@ -206,10 +213,11 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         commonProperties.addComponent(defaultValueString);
         commonProperties.addComponent(defaultValueDate);
         commonProperties.addComponent(defaultValueAnswer);
-        commonProperties.addComponent(horizontal);
         commonProperties.addComponent(mandatory);
         commonProperties.addComponent(maxAnswersSelected);
-        commonProperties.addComponent(consecutiveAnswers);
+        commonProperties.addComponent(inverseAnswerOrder);
+        commonProperties.addComponent(horizontal);
+        //commonProperties.addComponent(consecutiveAnswers);
         commonProperties.addComponent(disableEdition);
 
         boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
@@ -297,6 +305,9 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         horizontal.setValue(getInstance().isHorizontal());
         horizontal.setEnabled(getInstance().getAnswerType().isHorizontalEnabled() && !getInstance().isReadOnly());
 
+        inverseAnswerOrder.setValue(getInstance().isInverseAnswerOrder());
+        inverseAnswerOrder.setEnabled(getInstance().getAnswerType().isInverseAnswerOrder() && !getInstance().isReadOnly());
+
         if (getInstance().getDefaultValueString() != null) {
             defaultValueString.setValue(getInstance().getDefaultValueString());
         } else {
@@ -358,7 +369,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         ApplicationUi.getController().updateQuestion(getInstance(), tempName, tempLabel, abbreviation.getValue(), alias.getValue(),
                 description.getValue(), mandatory.getValue(), (AnswerType) answerType.getValue(), (AnswerFormat) answerFormat.getValue(),
                 (AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue, disableEdition.getValue(),
-                maxAnswersSelectedValue, consecutiveAnswers.getValue(), descriptionAlwaysVisible.getValue(), getImage());
+                maxAnswersSelectedValue, consecutiveAnswers.getValue(), descriptionAlwaysVisible.getValue(), inverseAnswerOrder.getValue(), getImage());
 
         super.updateElement();
     }
