@@ -12,7 +12,6 @@ public class AnswerSerializer extends TreeObjectSerializer<Answer> {
     public void serialize(Answer src, JsonGenerator jgen) throws IOException {
         super.serialize(src, jgen);
         jgen.writeStringField("description", src.getDescription());
-        jgen.writeBooleanField("descriptionAlwaysVisible", src.isDescriptionAlwaysVisible());
         if (src.getImage() != null) {
             jgen.writeObjectField("image", src.getImage());
         }

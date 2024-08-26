@@ -6,7 +6,6 @@ import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -18,8 +17,6 @@ public class PropertiesAnswer extends PropertiesForStorableObjectWithImages<Answ
     private TextField value, label;
 
     private TextArea description;
-
-    private CheckBox descriptionAlwaysVisible;
 
     public PropertiesAnswer() {
         super(Answer.class);
@@ -41,15 +38,12 @@ public class PropertiesAnswer extends PropertiesForStorableObjectWithImages<Answ
         description.setWidth(WIDTH);
         description.setMaxLength(Answer.MAX_DESCRIPTION_LENGTH);
 
-        descriptionAlwaysVisible = new CheckBox(LanguageCodes.CAPTION_DESCRIPTION_ALWAYS_VISIBLE.translation());
-
         FormLayout commonProperties = new FormLayout();
         commonProperties.setWidth(null);
         commonProperties.setHeight(null);
         commonProperties.addComponent(value);
         commonProperties.addComponent(label);
         commonProperties.addComponent(description);
-        commonProperties.addComponent(descriptionAlwaysVisible);
 
         boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(),
                 UserSession.getUser());
@@ -76,9 +70,6 @@ public class PropertiesAnswer extends PropertiesForStorableObjectWithImages<Answ
 
         description.setValue(getInstance().getDescription());
         description.setEnabled(!getInstance().isReadOnly());
-
-        descriptionAlwaysVisible.setValue(getInstance().isDescriptionAlwaysVisible());
-        descriptionAlwaysVisible.setEnabled(!getInstance().isReadOnly());
     }
 
     @Override
@@ -92,7 +83,7 @@ public class PropertiesAnswer extends PropertiesForStorableObjectWithImages<Answ
             tempLabel = label.getValue();
         }
         ApplicationUi.getController().updateAnswer(getInstance(), tempValue, tempLabel, description.getValue(),
-                descriptionAlwaysVisible.getValue(), getImage());
+                getImage());
 
         super.updateElement();
     }

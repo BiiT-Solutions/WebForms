@@ -70,6 +70,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
     @Column(name = "description_always_visible", nullable = false, columnDefinition = "bit default 1")
     private boolean isDescriptionAlwaysVisible = false;
 
+    @Column(name = "answers_description_always_visible", nullable = false, columnDefinition = "bit default 1")
+    private boolean isAnswersDescriptionAlwaysVisible = false;
+
     @Column(name = "inverse_answer_order", nullable = false, columnDefinition = "bit default 1")
     private boolean inverseAnswerOrder = false;
 
@@ -563,6 +566,14 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
         isDescriptionAlwaysVisible = descriptionAlwaysVisible;
     }
 
+    public boolean isAnswersDescriptionAlwaysVisible() {
+        return isAnswersDescriptionAlwaysVisible;
+    }
+
+    public void setAnswersDescriptionAlwaysVisible(boolean answersDescriptionAlwaysVisible) {
+        isAnswersDescriptionAlwaysVisible = answersDescriptionAlwaysVisible;
+    }
+
     @Override
     public TreeObjectImage getImage() {
         return image;
@@ -584,7 +595,6 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
                 answer.setName(lowerValueRange.toString());
                 answer.setLabel(lowerValueRange.toString());
                 answer.setDescription(lowerValueRange.toString());
-                answer.setDescriptionAlwaysVisible(isDescriptionAlwaysVisible);
                 addChild(answer);
                 answers.add(answer);
             } catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException |

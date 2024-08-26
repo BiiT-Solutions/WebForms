@@ -50,9 +50,6 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
     @Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "varchar(" + MAX_DESCRIPTION_LENGTH + ")")
     private String description;
 
-    @Column(name = "description_always_visible", nullable = false, columnDefinition = "bit default 1")
-    private boolean isDescriptionAlwaysVisible = false;
-
     @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private TreeObjectImage image;
 
@@ -145,14 +142,6 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
         } else {
             return getParent().getPathName() + TreeObject.DEFAULT_PATH_SEPARATOR + getValue();
         }
-    }
-
-    public boolean isDescriptionAlwaysVisible() {
-        return isDescriptionAlwaysVisible;
-    }
-
-    public void setDescriptionAlwaysVisible(boolean descriptionAlwaysVisible) {
-        isDescriptionAlwaysVisible = descriptionAlwaysVisible;
     }
 
     @Override

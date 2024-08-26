@@ -690,11 +690,7 @@ public class ApplicationController {
      */
     public Answer addNewAnswer(TreeObject parent) throws NotValidChildException, ElementIsReadOnly {
         setUnsavedFormChanges(true);
-        final Answer answer = (Answer) insertTreeObject(Answer.class, parent, "answer");
-        if (parent instanceof Question) {
-            answer.setDescriptionAlwaysVisible(((Question) parent).isDescriptionAlwaysVisible());
-        }
-        return answer;
+        return (Answer) insertTreeObject(Answer.class, parent, "answer");
     }
 
     /**
@@ -980,11 +976,10 @@ public class ApplicationController {
      * @param label
      * @param description
      */
-    public void updateAnswer(Answer answer, String value, String label, String description, Boolean descriptionAlwaysVisible, TreeObjectImage image) {
+    public void updateAnswer(Answer answer, String value, String label, String description, TreeObjectImage image) {
         try {
             if (!Objects.equals(answer.getLabel(), label) || !Objects.equals(answer.getDescription(), description) || !Objects.equals(answer.getValue(), value)
-                    || !Objects.equals(answer.getImage(), image)
-                    || !Objects.equals(answer.isDescriptionAlwaysVisible(), descriptionAlwaysVisible)) {
+                    || !Objects.equals(answer.getImage(), image)) {
                 setUnsavedFormChanges(true);
                 answer.setValue(value);
                 answer.setLabel(label);
@@ -992,7 +987,6 @@ public class ApplicationController {
                 answer.setUpdatedBy(UserSession.getUser());
                 answer.setUpdateTime();
                 answer.setImage(image);
-                answer.setDescriptionAlwaysVisible(descriptionAlwaysVisible != null ? descriptionAlwaysVisible : false);
                 logInfoStart("updateAnswer", answer, value, label, description, image != null ? image.getFileName() : null);
             }
         } catch (FieldTooLongException | CharacterNotAllowedException e) {
@@ -1067,7 +1061,8 @@ public class ApplicationController {
      */
     public void updateQuestion(Question question, String name, String label, String abbreviature, String alias, String description, boolean mandatory, AnswerType answerType,
                                AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled,
-                               Integer maxAnswersSelected, Boolean consecutiveAnswers, Boolean descriptionAlwaysVisible, boolean inverseAnswersOrder,
+                               Integer maxAnswersSelected, Boolean consecutiveAnswers, Boolean descriptionAlwaysVisible, Boolean answersDescriptionAlwaysVisible,
+                               boolean inverseAnswersOrder,
                                TreeObjectImage image) {
         try {
             if (!Objects.equals(question.getLabel(), label) || !Objects.equals(question.getDescription(), description)
@@ -1083,7 +1078,8 @@ public class ApplicationController {
                     || !Objects.equals(question.getMaxAnswersSelected(), maxAnswersSelected)
                     || !Objects.equals(question.isConsecutiveAnswers(), consecutiveAnswers)
                     || !Objects.equals(question.isInverseAnswerOrder(), inverseAnswersOrder)
-                    || !Objects.equals(question.isDescriptionAlwaysVisible(), descriptionAlwaysVisible)) {
+                    || !Objects.equals(question.isDescriptionAlwaysVisible(), descriptionAlwaysVisible)
+                    || !Objects.equals(question.isAnswersDescriptionAlwaysVisible(), answersDescriptionAlwaysVisible)) {
                 setUnsavedFormChanges(true);
                 question.setName(name);
                 question.setLabel(label);
@@ -1103,6 +1099,7 @@ public class ApplicationController {
                 question.setInverseAnswerOrder(inverseAnswersOrder);
                 question.setConsecutiveAnswers(consecutiveAnswers != null ? consecutiveAnswers : false);
                 question.setDescriptionAlwaysVisible(descriptionAlwaysVisible != null ? descriptionAlwaysVisible : false);
+                question.setAnswersDescriptionAlwaysVisible(answersDescriptionAlwaysVisible != null ? answersDescriptionAlwaysVisible : false);
                 question.setImage(image);
                 logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat, answerSubformat, horizontal,
                         image != null ? image.getFileName() : null);

@@ -36,6 +36,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 
     private TextArea description;
     private CheckBox descriptionAlwaysVisible;
+    private CheckBox answersDescriptionAlwaysVisible;
 
     private TextArea defaultValueString;
     private DateField defaultValueDate;
@@ -87,6 +88,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         description.setMaxLength(Question.MAX_DESCRIPTION_LENGTH);
 
         descriptionAlwaysVisible = new CheckBox(LanguageCodes.CAPTION_DESCRIPTION_ALWAYS_VISIBLE.translation());
+        answersDescriptionAlwaysVisible = new CheckBox(LanguageCodes.CAPTION_ANSWERS_DESCRIPTION_ALWAYS_VISIBLE.translation());
 
         defaultValueString = new TextArea(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
         defaultValueString.setWidth(WIDTH);
@@ -207,6 +209,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         commonProperties.addComponent(alias);
         commonProperties.addComponent(description);
         commonProperties.addComponent(descriptionAlwaysVisible);
+        commonProperties.addComponent(answersDescriptionAlwaysVisible);
         commonProperties.addComponent(answerType);
         commonProperties.addComponent(answerFormat);
         commonProperties.addComponent(answerSubformat);
@@ -283,6 +286,9 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
 
         descriptionAlwaysVisible.setValue(getInstance().isDescriptionAlwaysVisible());
         descriptionAlwaysVisible.setEnabled(!getInstance().isReadOnly());
+
+        answersDescriptionAlwaysVisible.setValue(getInstance().isAnswersDescriptionAlwaysVisible());
+        answersDescriptionAlwaysVisible.setEnabled(!getInstance().isReadOnly());
 
         mandatory.setValue(getInstance().isMandatory());
         mandatory.setEnabled(!getInstance().isReadOnly());
@@ -369,7 +375,8 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
         ApplicationUi.getController().updateQuestion(getInstance(), tempName, tempLabel, abbreviation.getValue(), alias.getValue(),
                 description.getValue(), mandatory.getValue(), (AnswerType) answerType.getValue(), (AnswerFormat) answerFormat.getValue(),
                 (AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue, disableEdition.getValue(),
-                maxAnswersSelectedValue, consecutiveAnswers.getValue(), descriptionAlwaysVisible.getValue(), inverseAnswerOrder.getValue(), getImage());
+                maxAnswersSelectedValue, consecutiveAnswers.getValue(), descriptionAlwaysVisible.getValue(), answersDescriptionAlwaysVisible.getValue(),
+                inverseAnswerOrder.getValue(), getImage());
 
         super.updateElement();
     }
