@@ -37,7 +37,7 @@ public class PublishedForm extends BaseStorableObject {
     private Long organizationId;
 
     @Lob
-    @Column(name = "json", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "json", nullable = false, length = Form.MAX_JSON_LENGTH)
     private String jsonCode;
 
     public PublishedForm() {
