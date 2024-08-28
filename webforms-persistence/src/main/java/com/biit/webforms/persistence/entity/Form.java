@@ -69,7 +69,7 @@ import java.util.Set;
 @Cacheable()
 public class Form extends BaseForm implements IWebformsFormView, ElementWithImage {
     private static final long serialVersionUID = 5220239269341014315L;
-    public static final int MAX_JSON_LENGTH = 1000000;
+    public static final int MAX_JSON_LENGTH = 5242880;  //5MB
 
     private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>(Arrays.asList(BaseCategory.class,
             BlockReference.class));
