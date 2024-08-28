@@ -35,7 +35,7 @@ public class PublishedFormRestService {
                 return Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"Unknown Published Form with label '" + formLabel +
                         "' and version '" + formVersion + "' in organization '" + organizationId + "'.\"}").build();
             }
-            final String json = publishedForm.toJson();
+            final String json = publishedForm.getJsonCode();
             WebformsLogger.debug(PublishedFormRestService.class.getName(), "Form retrieved successfully:\n{} ", json);
             return Response.ok(json, MediaType.APPLICATION_JSON).build();
         } catch (MultiplesFormsFoundException e) {
