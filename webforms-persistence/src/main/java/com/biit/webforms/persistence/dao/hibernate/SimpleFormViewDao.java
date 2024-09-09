@@ -62,7 +62,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
         List<SimpleFormView> formViews = new ArrayList<>();
         for (Object[] row : rows) {
             SimpleFormView formView = new SimpleFormView();
-            formView.setId(((BigInteger) row[0]).longValue());
+            formView.setId(((Number) row[0]).longValue());
             formView.setName((String) row[1]);
             formView.setLabel((String) row[2]);
             formView.setVersion((Integer) row[3]);
@@ -80,11 +80,11 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
                 formView.setLinkedFormLabel((String) row[10]);
             }
             if (row[11] != null) {
-                formView.setLinkedFormOrganizationId(((BigInteger) row[11]).longValue());
+                formView.setLinkedFormOrganizationId(((Number) row[11]).longValue());
             }
 
             if (row[12] != null) {
-                formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
+                formView.setStatus(FormWorkStatus.from((String) row[12]));
             }
 
             if (row[13] != null) {
@@ -93,7 +93,7 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
 
             formView.setLastVersion(row[14].equals(row[3]));
 
-            formView.setHasJson(row[15] != null && ((Integer) row[15]) > 0);
+            formView.setHasJson(row[15] != null && ((Number) row[15]).intValue() > 0);
 
             formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 
@@ -118,30 +118,30 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
         formView.setVersion((Integer) row[3]);
         formView.setCreationTime((Timestamp) row[4]);
         if (row[5] != null) {
-            formView.setCreatedBy(((Double) row[5]).longValue());
+            formView.setCreatedBy(((Number) row[5]).longValue());
         }
         formView.setUpdateTime((Timestamp) row[6]);
         if (row[7] != null) {
-            formView.setUpdatedBy(((Double) row[7]).longValue());
+            formView.setUpdatedBy(((Number) row[7]).longValue());
         }
         formView.setComparationId((String) row[8]);
-        formView.setOrganizationId(((Double) row[9]).longValue());
+        formView.setOrganizationId(((Number) row[9]).longValue());
         if (row[10] != null) {
             formView.setLinkedFormLabel((String) row[10]);
         }
         if (row[11] != null) {
-            formView.setLinkedFormOrganizationId(((BigInteger) row[11]).longValue());
+            formView.setLinkedFormOrganizationId(((Number) row[11]).longValue());
         }
 
         if (row[12] != null) {
-            formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
+            formView.setStatus(FormWorkStatus.from((String) row[12]));
         }
 
         if (row[13] != null) {
-            formView.setFormReferenceId(((BigInteger) row[13]).longValue());
+            formView.setFormReferenceId(((Number) row[13]).longValue());
         }
 
-        formView.setHasJson(row[14] != null && ((BigInteger) row[14]).intValue() > 0);
+        formView.setHasJson(row[14] != null && ((Number) row[14]).intValue() > 0);
 
         formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 
@@ -178,29 +178,29 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
         List<SimpleFormView> formViews = new ArrayList<>();
         for (Object[] row : rows) {
             SimpleFormView formView = new SimpleFormView();
-            formView.setId(((BigInteger) row[0]).longValue());
+            formView.setId(((Number) row[0]).longValue());
             formView.setName((String) row[1]);
             formView.setLabel((String) row[2]);
             formView.setVersion((Integer) row[3]);
             formView.setCreationTime((Timestamp) row[4]);
             if (row[4] != null) {
-                formView.setCreatedBy(((Double) row[5]).longValue());
+                formView.setCreatedBy(((Number) row[5]).longValue());
             }
             formView.setUpdateTime((Timestamp) row[6]);
             if (row[6] != null) {
                 formView.setUpdatedBy(((Double) row[7]).longValue());
             }
             formView.setComparationId((String) row[8]);
-            formView.setOrganizationId(((Double) row[9]).longValue());
+            formView.setOrganizationId(((Number) row[9]).longValue());
             if (row[10] != null) {
                 formView.setLinkedFormLabel((String) row[10]);
             }
             if (row[11] != null) {
-                formView.setLinkedFormOrganizationId(((BigInteger) row[11]).longValue());
+                formView.setLinkedFormOrganizationId(((Number) row[11]).longValue());
             }
 
             if (row[12] != null) {
-                formView.setStatus(FormWorkStatus.getFromString((String) row[12]));
+                formView.setStatus(FormWorkStatus.from((String) row[12]));
             }
 
             formView.setLastVersion(row[13].equals(row[3]));

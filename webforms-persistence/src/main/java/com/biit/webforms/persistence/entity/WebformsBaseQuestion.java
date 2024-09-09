@@ -1,12 +1,5 @@
 package com.biit.webforms.persistence.entity;
 
-import java.util.Objects;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
@@ -19,6 +12,11 @@ import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerEx
 import com.biit.webforms.persistence.entity.exceptions.FlowDependencyExistException;
 import com.biit.webforms.persistence.entity.exceptions.WebserviceDependencyExistException;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
+
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -34,8 +32,7 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
     }
 
     @Override
-    public void checkDependencies() throws DependencyExistException, DependencyDynamicAnswerExistException, FlowDependencyExistException,
-            WebserviceDependencyExistException {
+    public void checkDependencies() throws DependencyExistException {
         Form form = (Form) this.getAncestor(Form.class);
         if (form == null) {
             return;

@@ -1,13 +1,5 @@
 package com.biit.webforms.json;
 
-import java.io.FileNotFoundException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import com.biit.form.entity.IBaseFormView;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
@@ -31,6 +23,13 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceExceptio
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.utils.FormUtils;
 import com.biit.webforms.utils.conversor.abcd.exporter.ConversorFormToAbcdForm;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
 
 @Test(groups = { "jsonForms" })
 public class JsonExporterTests {
@@ -45,7 +44,7 @@ public class JsonExporterTests {
 
 	private Form createSimpleStaticForm() throws FieldTooLongException, CharacterNotAllowedException, NotValidChildException, ElementIsReadOnly {
 		Form form = new Form();
-		form.setOrganizationId(0l);
+		form.setOrganizationId(0L);
 		form.setVersion(1);
 		form.setLabel(DUMMY_FORM);
 		Category category = new Category();

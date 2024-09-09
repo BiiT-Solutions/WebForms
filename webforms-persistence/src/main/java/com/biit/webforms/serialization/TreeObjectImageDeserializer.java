@@ -1,40 +1,21 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-
-import com.biit.form.json.serialization.StorableObjectDeserializer;
+import com.biit.form.jackson.serialization.StorableObjectDeserializer;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.io.IOException;
 
 public class TreeObjectImageDeserializer extends StorableObjectDeserializer<TreeObjectImage> {
 
-	@Override
-	public void deserialize(JsonElement json, JsonDeserializationContext context, TreeObjectImage element) {
-		JsonObject jobject = (JsonObject) json;
+    @Override
+    public void deserialize(TreeObjectImage element, JsonNode jsonObject, DeserializationContext context) throws IOException {
+        super.deserialize(element, jsonObject, context);
 
-		element.setFileName(parseString("fileName", jobject, context));
-		element.setWidth(parseInteger("width", jobject, context));
-		element.setHeight(parseInteger("height", jobject, context));
-		element.fromBase64(parseString("data", jobject, context));
-
-		super.deserialize(json, context, element);
-	}
-
-	@Override
-	public TreeObjectImage deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-			throws JsonParseException {
-		TreeObjectImage instance;
-		try {
-			instance = TreeObjectImage.class.getDeclaredConstructor().newInstance();
-			deserialize(json, context, instance);
-			return instance;
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
-			throw new JsonParseException(e);
-		}
-	}
+        element.setFileName(parseString("fileName", jsonObject));
+        element.setWidth(parseInteger("width", jsonObject));
+        element.setHeight(parseInteger("height", jsonObject));
+        element.fromBase64(parseString("data", jsonObject));
+    }
 }

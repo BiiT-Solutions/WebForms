@@ -62,7 +62,6 @@ public class WebformsUiLogger {
 	 * administrator to alert of the error.
 	 * 
 	 * @param className
-	 * @param throwable
 	 */
 	public static void errorMessage(String className, String message) {
 		WebformsLogger.errorMessage(className, formatMessage(message));

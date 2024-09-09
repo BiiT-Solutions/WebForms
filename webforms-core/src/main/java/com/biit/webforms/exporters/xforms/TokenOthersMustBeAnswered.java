@@ -12,7 +12,7 @@ import com.biit.webforms.persistence.entity.condition.Token;
 
 /**
  * This dummy token indicates that the "OTHERS" rule must be answered. This token is translated to Orbeon as
- * string-lenght()>0.
+ * string-lenght()&gt;0.
  */
 public class TokenOthersMustBeAnswered extends Token {
 	private static final long serialVersionUID = -5314559285041409174L;

@@ -4,6 +4,10 @@ import com.biit.form.entity.BaseRepeatableGroup;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
+import com.biit.webforms.serialization.GroupDeserializer;
+import com.biit.webforms.serialization.GroupSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -11,6 +15,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
+@JsonDeserialize(using = GroupDeserializer.class)
+@JsonSerialize(using = GroupSerializer.class)
 @Table(name = "tree_groups")
 @Cacheable(true)
 public class Group extends BaseRepeatableGroup {
@@ -22,6 +28,9 @@ public class Group extends BaseRepeatableGroup {
 
     @Column(name = "number_of_column", nullable = false, columnDefinition = "int default 1")
     private int numberOfColumns = 1;
+
+    @Column(name = "total_answers_value")
+    private Integer totalAnswersValue;
 
     public Group() {
         super();
@@ -88,5 +97,21 @@ public class Group extends BaseRepeatableGroup {
 
     public void setNumberOfColumns(int numberOfColumns) {
         this.numberOfColumns = Math.max(numberOfColumns, 1);
+    }
+
+    public boolean isShowAsTable() {
+        return showAsTable;
+    }
+
+    public void setShowAsTable(boolean showAsTable) {
+        this.showAsTable = showAsTable;
+    }
+
+    public Integer getTotalAnswersValue() {
+        return totalAnswersValue;
+    }
+
+    public void setTotalAnswersValue(Integer totalAnsersValue) {
+        this.totalAnswersValue = totalAnsersValue;
     }
 }

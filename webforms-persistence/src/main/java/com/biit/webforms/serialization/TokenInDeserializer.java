@@ -1,48 +1,19 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.biit.webforms.persistence.entity.Form;
-import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
+import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.webforms.persistence.entity.condition.TokenIn;
 import com.biit.webforms.persistence.entity.condition.TokenInValue;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
 
-public class TokenInDeserializer extends TokenDeserializer<TokenIn> {
+import java.io.IOException;
+import java.util.Arrays;
 
-	private final Form form;
-	
-	public TokenInDeserializer(Form element) {
-		super(TokenIn.class);
-		this.form = element;
-	}
-	
-	@Override
-	public void deserialize(JsonElement json,JsonDeserializationContext context, TokenIn element){
-		JsonObject jobject = (JsonObject) json;
-		
-		element.setQuestion((WebformsBaseQuestion) FormDeserializer.parseTreeObjectPath("question_id", form, jobject, context));
-		element.setValues(parseTokenInValues("values", jobject, context));
-		
-		super.deserialize(json, context, element);
-	}
+public class TokenInDeserializer extends TokenWithQuestionDeserializer<TokenIn> {
 
-	@SuppressWarnings("unchecked")
-	private List<TokenInValue> parseTokenInValues(String name,JsonObject jobject, JsonDeserializationContext context) {
-		List<TokenInValue> values = new ArrayList<TokenInValue>();
-		
-		JsonElement valuesJson = jobject.get(name);
-		if(valuesJson!=null){
-			Type listType = new TypeToken<List<TokenInValue>>() {}.getType();
-			values.addAll((List<TokenInValue>)context.deserialize(valuesJson, listType));
-		}
-		
-		return values;
-	}
-
+    @Override
+    public void deserialize(TokenIn element, JsonNode jsonObject, DeserializationContext context) throws IOException {
+        super.deserialize(element, jsonObject, context);
+        element.setValues(Arrays.asList(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("values").toString(), TokenInValue[].class)));
+    }
 }

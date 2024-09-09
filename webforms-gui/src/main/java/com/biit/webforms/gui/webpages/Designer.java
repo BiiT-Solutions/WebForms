@@ -17,7 +17,6 @@ import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
-import com.biit.webforms.gui.common.components.PropertieUpdateListener;
 import com.biit.webforms.gui.common.components.SecuredWebPage;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -28,18 +27,39 @@ import com.biit.webforms.gui.components.FormEditBottomMenu;
 import com.biit.webforms.gui.components.TableTreeObjectLabel;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.WindowTreeObject;
-import com.biit.webforms.gui.exceptions.*;
-import com.biit.webforms.gui.webpages.designer.*;
+import com.biit.webforms.gui.exceptions.CategoryWithSameNameAlreadyExistsInForm;
+import com.biit.webforms.gui.exceptions.DestinyIsContainedAtOrigin;
+import com.biit.webforms.gui.exceptions.EmptyBlockCannotBeInserted;
+import com.biit.webforms.gui.exceptions.FormWithSameNameException;
+import com.biit.webforms.gui.exceptions.LinkCanOnlyBePerformedOnWholeBlock;
+import com.biit.webforms.gui.exceptions.SameOriginAndDestinationException;
+import com.biit.webforms.gui.webpages.designer.DesignerPropertiesComponent;
+import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectExtraInformation;
+import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectImage;
+import com.biit.webforms.gui.webpages.designer.IconProviderTreeObjectWebforms;
+import com.biit.webforms.gui.webpages.designer.UpperMenuDesigner;
+import com.biit.webforms.gui.webpages.designer.WindowBlocks;
+import com.biit.webforms.gui.webpages.designer.WindowCreateAnswerRanges;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
-import com.biit.webforms.persistence.entity.*;
+import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.AttachedFiles;
+import com.biit.webforms.persistence.entity.Block;
+import com.biit.webforms.persistence.entity.BlockReference;
+import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.CompleteFormView;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SimpleFormView;
+import com.biit.webforms.persistence.entity.SystemField;
+import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidRangeException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidValue;
-import com.biit.webforms.persistence.entity.exceptions.WebserviceDependencyExistException;
 import com.biit.webforms.security.WebformsActivity;
 import com.vaadin.data.Property.ReadOnlyException;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button.ClickEvent;
@@ -51,7 +71,11 @@ import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Designer extends SecuredWebPage {
     private static final long serialVersionUID = 9161313025929535348L;
@@ -121,26 +145,17 @@ public class Designer extends SecuredWebPage {
         retrieveCollapsedTableState();
         saveCollapsedTableState();
         table.setValue(null);
-        table.addValueChangeListener(new ValueChangeListener() {
-            private static final long serialVersionUID = -1169897738297107301L;
-
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                updateUpperMenu();
-                updateProperties();
-            }
+        table.addValueChangeListener((ValueChangeListener) event -> {
+            updateUpperMenu();
+            updateProperties();
         });
 
         properties = new DesignerPropertiesComponent();
         properties.setHeight(FULL);
         properties.setWidth(PROPERTIES_MIN_WIDTH);
-        properties.addPropertyUpdateListener(new PropertieUpdateListener() {
-
-            @Override
-            public void propertyUpdate(Object element) {
-                table.updateRow((TreeObject) element);
-                updateUpperMenu();
-            }
+        properties.addPropertyUpdateListener(element -> {
+            table.updateRow((TreeObject) element);
+            updateUpperMenu();
         });
 
         HorizontalLayout rootLayout = new HorizontalLayout();
@@ -170,7 +185,6 @@ public class Designer extends SecuredWebPage {
     private UpperMenuDesigner createUpperMenu() {
         final UpperMenuDesigner upperMenu = new UpperMenuDesigner();
         upperMenu.addSaveButtonListener(new ClickListener() {
-            private static final long serialVersionUID = 1679355377155929573L;
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -192,47 +206,20 @@ public class Designer extends SecuredWebPage {
                 }
             }
         });
-        upperMenu.addSaveAsBlockButtonListener(new ClickListener() {
-            private static final long serialVersionUID = -352984475178007L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                openNewBlockWindow();
-            }
-        });
-        upperMenu.addInsertBlockButtonListener(new ClickListener() {
-            private static final long serialVersionUID = 3375617501902829858L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                openInsertBlock();
-            }
-        });
-        upperMenu.addLinkBlockButtonListener(new ClickListener() {
-            private static final long serialVersionUID = -4308973502774054307L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                openLinkBlock();
-            }
-        });
-        upperMenu.addNewCategoryButtonListener(new ClickListener() {
-            private static final long serialVersionUID = 742624238392918737L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                try {
-                    Category newCategory = ApplicationUi.getController().addNewCategory();
-                    table.addRow(newCategory, newCategory.getParent());
-                } catch (NotValidChildException e) {
-                    MessageManager.showError(LanguageCodes.ERROR_CATEGORY_NOT_INSERTED_IN_BLOCK);
-                } catch (ElementIsReadOnly e) {
-                    MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
-                }
+        upperMenu.addSaveAsBlockButtonListener((ClickListener) event -> openNewBlockWindow());
+        upperMenu.addInsertBlockButtonListener((ClickListener) event -> openInsertBlock());
+        upperMenu.addLinkBlockButtonListener((ClickListener) event -> openLinkBlock());
+        upperMenu.addNewCategoryButtonListener((ClickListener) event -> {
+            try {
+                Category newCategory = ApplicationUi.getController().addNewCategory();
+                table.addRow(newCategory, newCategory.getParent());
+            } catch (NotValidChildException e) {
+                MessageManager.showError(LanguageCodes.ERROR_CATEGORY_NOT_INSERTED_IN_BLOCK);
+            } catch (ElementIsReadOnly e) {
+                MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
             }
         });
         upperMenu.addNewGroupButtonListener(new ClickListener() {
-            private static final long serialVersionUID = 9107418811326944058L;
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -248,42 +235,31 @@ public class Designer extends SecuredWebPage {
                 }
             }
         });
-        upperMenu.addNewQuestionButtonListener(new ClickListener() {
-            private static final long serialVersionUID = 9107418811326944058L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                try {
-                    TreeObject selectedRow = table.getSelectedRow();
-                    Question newQuestion;
-                    newQuestion = ApplicationUi.getController().addNewQuestion(selectedRow.getAncestorThatAccepts(Question.class));
-                    table.addRow(newQuestion, newQuestion.getParent());
-                } catch (NotValidChildException e) {
-                    MessageManager.showError(LanguageCodes.ERROR_QUESTION_NOT_INSERTED);
-                } catch (ElementIsReadOnly e) {
-                    MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
-                }
+        upperMenu.addNewQuestionButtonListener((ClickListener) event -> {
+            try {
+                TreeObject selectedRow = table.getSelectedRow();
+                Question newQuestion;
+                newQuestion = ApplicationUi.getController().addNewQuestion(selectedRow.getAncestorThatAccepts(Question.class));
+                table.addRow(newQuestion, newQuestion.getParent());
+            } catch (NotValidChildException e) {
+                MessageManager.showError(LanguageCodes.ERROR_QUESTION_NOT_INSERTED);
+            } catch (ElementIsReadOnly e) {
+                MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
             }
         });
-        upperMenu.addNewSystemFieldButtonListener(new ClickListener() {
-            private static final long serialVersionUID = -6530079827949983018L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                try {
-                    TreeObject selectedRow = table.getSelectedRow();
-                    SystemField newField;
-                    newField = ApplicationUi.getController().addNewSystemField(selectedRow.getAncestorThatAccepts(SystemField.class));
-                    table.addRow(newField, newField.getParent());
-                } catch (NotValidChildException e) {
-                    MessageManager.showError(LanguageCodes.ERROR_SYSTEM_FIELD_NOT_INSERTED);
-                } catch (ElementIsReadOnly e) {
-                    MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
-                }
+        upperMenu.addNewSystemFieldButtonListener((ClickListener) event -> {
+            try {
+                TreeObject selectedRow = table.getSelectedRow();
+                SystemField newField;
+                newField = ApplicationUi.getController().addNewSystemField(selectedRow.getAncestorThatAccepts(SystemField.class));
+                table.addRow(newField, newField.getParent());
+            } catch (NotValidChildException e) {
+                MessageManager.showError(LanguageCodes.ERROR_SYSTEM_FIELD_NOT_INSERTED);
+            } catch (ElementIsReadOnly e) {
+                MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
             }
         });
         upperMenu.addNewTextButtonListener(new ClickListener() {
-            private static final long serialVersionUID = 7251023427405784803L;
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -298,37 +274,45 @@ public class Designer extends SecuredWebPage {
                 }
             }
         });
-        upperMenu.addNewAttachFileButtonListener(new ClickListener() {
-            private static final long serialVersionUID = -1675448045103359337L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                try {
-                    TreeObject selectedRow = table.getSelectedRow();
-                    AttachedFiles attachedFiles = ApplicationUi.getController().addNewAttachedFiles(selectedRow.getAncestorThatAccepts(AttachedFiles.class));
-                    table.addRow(attachedFiles, attachedFiles.getParent());
-                } catch (NotValidChildException e) {
-                    MessageManager.showError(LanguageCodes.ERROR_TEXT_NOT_INSERTED);
-                } catch (ElementIsReadOnly e) {
-                    MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
-                }
+        upperMenu.addNewAttachFileButtonListener((ClickListener) event -> {
+            try {
+                TreeObject selectedRow = table.getSelectedRow();
+                AttachedFiles attachedFiles = ApplicationUi.getController().addNewAttachedFiles(selectedRow.getAncestorThatAccepts(AttachedFiles.class));
+                table.addRow(attachedFiles, attachedFiles.getParent());
+            } catch (NotValidChildException e) {
+                MessageManager.showError(LanguageCodes.ERROR_TEXT_NOT_INSERTED);
+            } catch (ElementIsReadOnly e) {
+                MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
             }
         });
-        upperMenu.addNewAnswerButtonListener(new ClickListener() {
-            private static final long serialVersionUID = 2104161068489369224L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
+        upperMenu.addNewAnswerButtonListener((ClickListener) event -> {
+            try {
+                TreeObject selectedRow = table.getSelectedRow();
+                Answer newAnswer;
+                if (selectedRow instanceof BaseAnswer) {
+                    Question parentQuestion = (Question) selectedRow.getAncestor(Question.class);
+                    newAnswer = ApplicationUi.getController().addNewAnswer(parentQuestion);
+                } else {
+                    // If Parent is selected then we just add it as a new
+                    // child
+                    newAnswer = ApplicationUi.getController().addNewAnswer(selectedRow);
+                }
+                table.addRow(newAnswer, newAnswer.getParent());
+            } catch (NotValidChildException e) {
+                MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
+            } catch (ElementIsReadOnly e) {
+                MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
+            }
+        });
+        upperMenu.addNewSubanswerButtonListener((ClickListener) event -> {
+            TreeObject selectedRow = table.getSelectedRow();
+            if (selectedRow instanceof BaseAnswer) {
                 try {
-                    TreeObject selectedRow = table.getSelectedRow();
                     Answer newAnswer;
-                    if (selectedRow instanceof BaseAnswer) {
-                        Question parentQuestion = (Question) selectedRow.getAncestor(Question.class);
-                        newAnswer = ApplicationUi.getController().addNewAnswer(parentQuestion);
-                    } else {
-                        // If Parent is selected then we just add it as a new
-                        // child
+                    if (!((Answer) selectedRow).isSubanswer()) {
                         newAnswer = ApplicationUi.getController().addNewAnswer(selectedRow);
+                    } else {
+                        newAnswer = ApplicationUi.getController().addNewAnswer(selectedRow.getParent());
                     }
                     table.addRow(newAnswer, newAnswer.getParent());
                 } catch (NotValidChildException e) {
@@ -338,31 +322,7 @@ public class Designer extends SecuredWebPage {
                 }
             }
         });
-        upperMenu.addNewSubanswerButtonListener(new ClickListener() {
-            private static final long serialVersionUID = -4159824066373029540L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                TreeObject selectedRow = table.getSelectedRow();
-                if (selectedRow instanceof BaseAnswer) {
-                    try {
-                        Answer newAnswer;
-                        if (!((Answer) selectedRow).isSubanswer()) {
-                            newAnswer = ApplicationUi.getController().addNewAnswer(selectedRow);
-                        } else {
-                            newAnswer = ApplicationUi.getController().addNewAnswer(selectedRow.getParent());
-                        }
-                        table.addRow(newAnswer, newAnswer.getParent());
-                    } catch (NotValidChildException e) {
-                        MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
-                    } catch (ElementIsReadOnly e) {
-                        MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
-                    }
-                }
-            }
-        });
         upperMenu.addDeleteButtonListener(new ClickListener() {
-            private static final long serialVersionUID = 9107418811326944058L;
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -408,93 +368,56 @@ public class Designer extends SecuredWebPage {
             }
         });
 
-        upperMenu.addHideButtonListener(new ClickListener() {
-            private static final long serialVersionUID = 7737086452985900469L;
+        upperMenu.addHideButtonListener((ClickListener) event -> showOrHideElement(table.getSelectedRow()));
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                showOrHideElement(table.getSelectedRow());
+        upperMenu.addUpButtonListener((ClickListener) event -> {
+            TreeObject row = table.getSelectedRow();
+            try {
+                ApplicationUi.getController().moveUp(row);
+                // Remove collapse state listeners, redraw row and recover
+                // the original collapse state and
+                // listeners.
+                removeCollapseStateListeners();
+                table.redrawRow(table.getParentRowItem(row));
+                retrieveCollapsedTableState();
+                table.setValue(row);
+            } catch (ElementIsReadOnly e) {
+                MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
             }
         });
 
-        upperMenu.addUpButtonListener(new ClickListener() {
-            private static final long serialVersionUID = -5060918501257565052L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                TreeObject row = table.getSelectedRow();
-                try {
-                    ApplicationUi.getController().moveUp(row);
-                    // Remove collapse state listeners, redraw row and recover
-                    // the original collapse state and
-                    // listeners.
-                    removeCollapseStateListeners();
-                    table.redrawRow(table.getParentRowItem(row));
-                    retrieveCollapsedTableState();
-                    table.setValue(row);
-                } catch (ElementIsReadOnly e) {
-                    MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
-                }
+        upperMenu.addDownButtonListener((ClickListener) event -> {
+            TreeObject row = table.getSelectedRow();
+            try {
+                ApplicationUi.getController().moveDown(row);
+                // Remove collapse state listeners, redraw row and recover
+                // the original collapse state and
+                // listeners.
+                removeCollapseStateListeners();
+                table.redrawRow(table.getParentRowItem(row));
+                retrieveCollapsedTableState();
+                table.setValue(row);
+            } catch (ElementIsReadOnly e) {
+                MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
             }
         });
 
-        upperMenu.addDownButtonListener(new ClickListener() {
-            private static final long serialVersionUID = 1343167938156284153L;
+        upperMenu.addMoveButtonListener((ClickListener) event -> openMoveWindow());
+        upperMenu.addFinishListener((ClickListener) event -> finishForm());
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                TreeObject row = table.getSelectedRow();
-                try {
-                    ApplicationUi.getController().moveDown(row);
-                    // Remove collapse state listeners, redraw row and recover
-                    // the original collapse state and
-                    // listeners.
-                    removeCollapseStateListeners();
-                    table.redrawRow(table.getParentRowItem(row));
-                    retrieveCollapsedTableState();
-                    table.setValue(row);
-                } catch (ElementIsReadOnly e) {
-                    MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
-                }
-            }
-        });
-
-        upperMenu.addMoveButtonListener(new ClickListener() {
-            private static final long serialVersionUID = 808060310562321887L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                openMoveWindow();
-            }
-        });
-        upperMenu.addFinishListener(new ClickListener() {
-            private static final long serialVersionUID = 8869180038869702710L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                finishForm();
-            }
-        });
-
-        upperMenu.addNewDynamicAnswerListener(new ClickListener() {
-            private static final long serialVersionUID = 6905174400430714888L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                try {
-                    TreeObject selectedRow = table.getSelectedRow();
-                    DynamicAnswer newDynamicQuestion = ApplicationUi.getController().addNewDynamicQuestion(
-                            selectedRow.getAncestorThatAccepts(DynamicAnswer.class));
-                    table.addRow(newDynamicQuestion, newDynamicQuestion.getParent());
-                } catch (NotValidChildException e) {
-                    MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
-                } catch (ElementIsReadOnly e) {
-                    MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
-                }
+        upperMenu.addNewDynamicAnswerListener((ClickListener) event -> {
+            try {
+                TreeObject selectedRow = table.getSelectedRow();
+                DynamicAnswer newDynamicQuestion = ApplicationUi.getController().addNewDynamicQuestion(
+                        selectedRow.getAncestorThatAccepts(DynamicAnswer.class));
+                table.addRow(newDynamicQuestion, newDynamicQuestion.getParent());
+            } catch (NotValidChildException e) {
+                MessageManager.showError(LanguageCodes.ERROR_ANSWER_NOT_INSERTED);
+            } catch (ElementIsReadOnly e) {
+                MessageManager.showError(LanguageCodes.ERROR_READ_ONLY_ELEMENT);
             }
         });
         upperMenu.addNewAnswerRangeListener(new ClickListener() {
-            private static final long serialVersionUID = -2843480387625002041L;
 
             @Override
             public void buttonClick(ClickEvent event) {

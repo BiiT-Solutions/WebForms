@@ -1,17 +1,21 @@
 package com.biit.webforms.rest;
 
+import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
+import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidValue;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -29,7 +33,7 @@ public class FormRestService {
     @Path("/json")
     public Response getForm(String petition) {
         FormDescription parsedPetition;
-        WebformsLogger.info(FormRestService.class.getName(), "Requesting Form using endpoint '/forms/json' with payload '{}'.", petition);
+        WebformsLogger.info(FormRestService.class.getName(), "Requesting Form using endpoint 'POST /forms/json' with payload '{}'.", petition);
         try {
             parsedPetition = parsePetition(petition);
             WebformsLogger.debug(FormRestService.class.getName(), "Payload obtained '{}'.", parsedPetition);
@@ -42,7 +46,7 @@ public class FormRestService {
             String json = form.toJson();
             WebformsLogger.debug(FormRestService.class.getName(), "Form retrieved successfully:\n{} ", json);
             return Response.ok(json, MediaType.APPLICATION_JSON).build();
-        } catch (JsonSyntaxException ex) {
+        } catch (JsonProcessingException | InvalidValue ex) {
             WebformsLogger.errorMessage(this.getClass().getName(), ex);
             return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\":\"Json syntax error\"}").build();
         } catch (MultiplesFormsFoundException e) {
@@ -50,15 +54,38 @@ public class FormRestService {
             return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\":\"Multiples forms match the search criteria. " +
                     "Please define some extra parameters\"}").build();
         }
-
-
     }
 
-    private FormDescription parsePetition(String petition) throws JsonSyntaxException {
-        if (petition == null || petition.length() == 0) {
-            throw new JsonSyntaxException("Empty parameter not allowed.");
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{formName}/versions/{formVersion}/organizations/{organizationId}")
+    public Response getForm(@PathParam("formName") String formName, @PathParam("formVersion") int formVersion, @PathParam("organizationId") long organizationId) {
+        WebformsLogger.info(FormRestService.class.getName(), "Requesting Form using endpoint 'GET /forms' with formName '{}', formVersion '{}' and organization '{}'.",
+                formName, formVersion, organizationId);
+        try {
+            Form form = formDao.get(formName, formVersion, organizationId);
+            WebformsLogger.debug(FormRestService.class.getName(), "Form obtained '{}'.", form);
+            if (form == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"Unknown form with name '" + formName +
+                        "' and version '" + formVersion + "' in organization '" + organizationId + "'.\"}").build();
+            }
+            final String json = new CompleteFormView(form).toJson();
+            WebformsLogger.debug(FormRestService.class.getName(), "Form retrieved successfully:\n{} ", json);
+            return Response.ok(json, MediaType.APPLICATION_JSON).build();
+        } catch (MultiplesFormsFoundException e) {
+            WebformsLogger.errorMessage(this.getClass().getName(), e);
+            return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\":\"Multiples forms match the search criteria. " +
+                    "Please define some extra parameters\"}").build();
         }
-        return new Gson().fromJson(petition, FormDescription.class);
+    }
+
+
+    private FormDescription parsePetition(String petition) throws JsonProcessingException, InvalidValue {
+        if (petition == null || petition.isEmpty()) {
+            throw new InvalidValue("Empty parameter not allowed.");
+        }
+        return ObjectMapperFactory.getObjectMapper().readValue(petition, FormDescription.class);
     }
 
     static class FormDescription {
@@ -66,7 +93,12 @@ public class FormRestService {
         private Integer version;
         private Long organizationId;
 
+        public FormDescription() {
+            super();
+        }
+
         public FormDescription(String formName, Integer version, Long organizationId) {
+            this();
             this.formName = formName;
             this.version = version;
             this.organizationId = organizationId;

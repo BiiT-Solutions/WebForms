@@ -11,85 +11,86 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
 public class PropertiesAnswer extends PropertiesForStorableObjectWithImages<Answer> {
-	private static final long serialVersionUID = 8035711998129559199L;
-	private static final String WIDTH = "200px";
+    private static final long serialVersionUID = 8035711998129559199L;
+    private static final String WIDTH = "200px";
 
-	private TextField value, label;
+    private TextField value, label;
 
-	private TextArea description;
+    private TextArea description;
 
-	public PropertiesAnswer() {
-		super(Answer.class);
-	}
+    public PropertiesAnswer() {
+        super(Answer.class);
+    }
 
-	@Override
-	protected void initElement() {
+    @Override
+    protected void initElement() {
 
-		value = new TextField(LanguageCodes.CAPTION_VALUE.translation());
-		value.setWidth(WIDTH);
-		value.setRequired(true);
-		value.setMaxLength(TreeObject.MAX_UNIQUE_COLUMN_LENGTH);
+        value = new TextField(LanguageCodes.CAPTION_VALUE.translation());
+        value.setWidth(WIDTH);
+        value.setRequired(true);
+        value.setMaxLength(TreeObject.MAX_UNIQUE_COLUMN_LENGTH);
 
-		label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
-		label.setWidth(WIDTH);
-		label.setMaxLength(TreeObject.MAX_LABEL_LENGTH);
+        label = new TextField(LanguageCodes.CAPTION_LABEL.translation());
+        label.setWidth(WIDTH);
+        label.setMaxLength(TreeObject.MAX_LABEL_LENGTH);
 
-		description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
-		description.setWidth(WIDTH);
-		description.setMaxLength(Answer.MAX_DESCRIPTION_LENGTH);
+        description = new TextArea(LanguageCodes.CAPTION_DESCRIPTION.translation());
+        description.setWidth(WIDTH);
+        description.setMaxLength(Answer.MAX_DESCRIPTION_LENGTH);
 
-		FormLayout commonProperties = new FormLayout();
-		commonProperties.setWidth(null);
-		commonProperties.setHeight(null);
-		commonProperties.addComponent(value);
-		commonProperties.addComponent(label);
-		commonProperties.addComponent(description);
+        FormLayout commonProperties = new FormLayout();
+        commonProperties.setWidth(null);
+        commonProperties.setHeight(null);
+        commonProperties.addComponent(value);
+        commonProperties.addComponent(label);
+        commonProperties.addComponent(description);
 
-		boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(),
-				UserSession.getUser());
-		commonProperties.setEnabled(canEdit);
+        boolean canEdit = getWebformsSecurityService().isElementEditable(ApplicationUi.getController().getFormInUse(),
+                UserSession.getUser());
+        commonProperties.setEnabled(canEdit);
 
-		addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_ANSWER.translation(), true);
+        addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_ANSWER.translation(), true);
 
-		super.initElement();
-	}
+        super.initElement();
+    }
 
-	@Override
-	protected void initValues() {
-		super.initValues();
+    @Override
+    protected void initValues() {
+        super.initValues();
 
-		value.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
-		value.addValidator(new ValidatorTreeObjectNameLength());
-		value.addValidator(new ValidatorDuplicateValueAnswer(getInstance()));
-		value.setValue(getInstance().getValue());
-		value.setEnabled(!getInstance().isReadOnly());
+        value.addValidator(new ValidatorTreeObjectName(getInstance().getNameAllowedPattern()));
+        value.addValidator(new ValidatorTreeObjectNameLength());
+        value.addValidator(new ValidatorDuplicateValueAnswer(getInstance()));
+        value.setValue(getInstance().getValue());
+        value.setEnabled(!getInstance().isReadOnly());
 
-		label.setValue(getInstance().getLabel());
-		label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
-		label.setEnabled(!getInstance().isReadOnly());
+        label.setValue(getInstance().getLabel());
+        label.addValidator(new LengthValidator(getInstance().getMaxLabelLength()));
+        label.setEnabled(!getInstance().isReadOnly());
 
-		description.setValue(getInstance().getDescription());
-		description.setEnabled(!getInstance().isReadOnly());
-	}
+        description.setValue(getInstance().getDescription());
+        description.setEnabled(!getInstance().isReadOnly());
+    }
 
-	@Override
-	public void updateElement() {
-		String tempValue = getInstance().getValue();
-		String tempLabel = getInstance().getLabel();
-		if (value.isValid()) {
-			tempValue = value.getValue();
-		}
-		if (label.isValid()) {
-			tempLabel = label.getValue();
-		}
-		ApplicationUi.getController().updateAnswer(getInstance(), tempValue, tempLabel, description.getValue(), getImage());
+    @Override
+    public void updateElement() {
+        String tempValue = getInstance().getValue();
+        String tempLabel = getInstance().getLabel();
+        if (value.isValid()) {
+            tempValue = value.getValue();
+        }
+        if (label.isValid()) {
+            tempLabel = label.getValue();
+        }
+        ApplicationUi.getController().updateAnswer(getInstance(), tempValue, tempLabel, description.getValue(),
+                getImage());
 
-		super.updateElement();
-	}
+        super.updateElement();
+    }
 
-	@Override
-	protected void firePropertyUpdateOnExitListener() {
-		updateElement();
-	}
+    @Override
+    protected void firePropertyUpdateOnExitListener() {
+        updateElement();
+    }
 
 }

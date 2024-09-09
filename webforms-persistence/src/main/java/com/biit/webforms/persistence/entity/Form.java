@@ -1,8 +1,18 @@
 package com.biit.webforms.persistence.entity;
 
-import com.biit.form.entity.*;
-import com.biit.form.exceptions.*;
-import com.biit.form.json.serialization.hibernate.HibernateProxyTypeAdapter;
+import com.biit.form.entity.BaseCategory;
+import com.biit.form.entity.BaseForm;
+import com.biit.form.entity.BaseFormMetadata;
+import com.biit.form.entity.BaseGroup;
+import com.biit.form.entity.BaseQuestion;
+import com.biit.form.entity.IBaseFormView;
+import com.biit.form.entity.TreeObject;
+import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ChildrenNotFoundException;
+import com.biit.form.exceptions.ElementIsReadOnly;
+import com.biit.form.exceptions.NotValidChildException;
+import com.biit.form.exceptions.NotValidTreeObjectException;
+import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.ElementCannotBeRemovedException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -11,30 +21,55 @@ import com.biit.usermanager.entity.IUser;
 import com.biit.webforms.computed.ComputedFlowView;
 import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.entity.condition.*;
 import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
 import com.biit.webforms.persistence.entity.exceptions.ReferenceNotPertainsToFormException;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
-import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
-import com.biit.webforms.serialization.*;
+import com.biit.webforms.serialization.FormDeserializer;
+import com.biit.webforms.serialization.FormSerializer;
 import com.biit.webforms.webservices.Webservice;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
+@JsonDeserialize(using = FormDeserializer.class)
+@JsonSerialize(using = FormSerializer.class)
 @Table(name = "tree_forms", uniqueConstraints = {@UniqueConstraint(columnNames = {"label", "version", "organization_id"})})
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
         + StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
 @Cacheable()
 public class Form extends BaseForm implements IWebformsFormView, ElementWithImage {
     private static final long serialVersionUID = 5220239269341014315L;
-    private static final int MAX_JSON_LENGTH = 1000000;
+    public static final int MAX_JSON_LENGTH = 5242880;  //5MB
 
     private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>(Arrays.asList(BaseCategory.class,
             BlockReference.class));
@@ -88,7 +123,6 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     @Column(name = "edition_disabled", nullable = false, columnDefinition = "bit default 0")
     private boolean editionDisabled = false;
 
-    @ExcludeFromJson
     @Lob
     @Column(name = "json", length = MAX_JSON_LENGTH)
     private String jsonCode;
@@ -731,37 +765,11 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
     }
 
     public String toJson() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.addSerializationExclusionStrategy(GsonUtils.getStrategyToAvoidAnnotation());
-        gsonBuilder.setPrettyPrinting();
-        gsonBuilder.registerTypeAdapterFactory(HibernateProxyTypeAdapter.FACTORY);
-        gsonBuilder.registerTypeAdapter(Form.class, new FormSerializer());
-        gsonBuilder.registerTypeAdapter(Block.class, new BlockSerializer());
-        gsonBuilder.registerTypeAdapter(BlockReference.class, new BlockReferenceSerializer());
-        gsonBuilder.registerTypeAdapter(Category.class, new CategorySerializer());
-        gsonBuilder.registerTypeAdapter(Group.class, new GroupSerializer());
-        gsonBuilder.registerTypeAdapter(Question.class, new QuestionSerializer());
-        gsonBuilder.registerTypeAdapter(Text.class, new TextSerializer());
-        gsonBuilder.registerTypeAdapter(AttachedFiles.class, new AttachedFilesSerializer());
-        gsonBuilder.registerTypeAdapter(SystemField.class, new SystemFieldSerializer());
-        gsonBuilder.registerTypeAdapter(Answer.class, new AnswerSerializer());
-        gsonBuilder.registerTypeAdapter(DynamicAnswer.class, new DynamicAnswerSerializer());
-        gsonBuilder.registerTypeAdapter(Flow.class, new FlowSerializer());
-        gsonBuilder.registerTypeAdapter(Token.class, new TokenSerializer<>());
-        gsonBuilder.registerTypeAdapter(TokenBetween.class, new TokenBetweenSerializer());
-        gsonBuilder.registerTypeAdapter(TokenEmpty.class, new TokenEmptySerializer());
-        gsonBuilder.registerTypeAdapter(TokenComparationAnswer.class, new TokenComparationAnswerSerializer());
-        gsonBuilder.registerTypeAdapter(TokenComparationValue.class, new TokenComparationValueSerializer());
-        gsonBuilder.registerTypeAdapter(TokenIn.class, new TokenInSerializer());
-        gsonBuilder.registerTypeAdapter(TokenInValue.class, new TokenInValueSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCall.class, new WebserviceCallSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCallInputLink.class, new WebserviceCallInputLinkSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCallInputLinkErrors.class, new WebserviceCallInputLinkErrorsSerializer());
-        gsonBuilder.registerTypeAdapter(WebserviceCallOutputLink.class, new WebserviceCallOutputLinkSerializer());
-        gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageSerializer());
-        Gson gson = gsonBuilder.create();
-
-        return gson.toJson(this);
+        try {
+            return ObjectMapperFactory.getObjectMapper().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void updateRuleReferences() {
@@ -822,13 +830,8 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         }
     }
 
-    public static Form fromJson(String jsonString) throws JsonParseException {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Form.class, new FormDeserializer());
-        gsonBuilder.registerTypeAdapter(TreeObjectImage.class, new TreeObjectImageDeserializer());
-        Gson gson = gsonBuilder.create();
-
-        return gson.fromJson(jsonString, Form.class);
+    public static Form fromJson(String jsonString) throws JsonProcessingException {
+        return ObjectMapperFactory.getObjectMapper().readValue(jsonString, Form.class);
     }
 
     /**

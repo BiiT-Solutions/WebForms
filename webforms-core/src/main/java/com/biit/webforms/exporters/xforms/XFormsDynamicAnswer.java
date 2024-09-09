@@ -1,8 +1,5 @@
 package com.biit.webforms.exporters.xforms;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.webforms.enumerations.AnswerType;
@@ -13,6 +10,9 @@ import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Question;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 	private static final String CSS_CLASS_ANSWER = "webforms-answer";
@@ -127,10 +127,8 @@ public class XFormsDynamicAnswer extends XFormsObject<DynamicAnswer> {
 	/**
 	 * Defines the structure of the element in the body part of the XForms. For
 	 * answers with subanswers, add the needed CSS class.
-	 * 
-	 * @param treeObject
+	 *
 	 * @return
-	 * @throws InvalidFlowInForm
 	 */
 	@Override
 	protected String getBodyStructure(String structure, boolean html) {

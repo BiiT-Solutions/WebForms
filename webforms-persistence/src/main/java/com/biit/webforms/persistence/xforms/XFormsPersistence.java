@@ -95,8 +95,6 @@ public class XFormsPersistence {
      * @param user     user database.
      * @param database schema.
      * @param server   server IP
-     * @return true if the connection is ok.
-     * @throws AccessNotAllowed
      */
     public void connect(String password, String user, String database, String server) throws SQLException, AccessNotAllowed {
 
