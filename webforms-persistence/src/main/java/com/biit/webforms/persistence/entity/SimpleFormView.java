@@ -185,7 +185,7 @@ public class SimpleFormView implements IWebformsFormView {
 	}
 
 	public static SimpleFormView getSimpleFormView(IWebformsFormView form) {
-		SimpleFormView view = new SimpleFormView();
+		final SimpleFormView view = new SimpleFormView();
 		view.name = form.getName();
 		view.label = form.getLabel();
 		view.version = form.getVersion();
@@ -200,6 +200,7 @@ public class SimpleFormView implements IWebformsFormView {
 		view.linkedFormVersions = new HashSet<Integer>(form.getLinkedFormVersions());
 		view.linkedFormOrganizationId = form.getLinkedFormOrganizationId();
 		view.status = form.getStatus();
+		view.setHasJson(form.hasJson());
 
 		return view;
 	}

@@ -1675,7 +1675,7 @@ public class ApplicationController {
                     }
                     //Elements to hide.
                     if (form.getElementsToHideId() != null && !form.getElementsToHideId().isEmpty()) {
-                        Set<TreeObject> elementsToHide = new HashSet<>();
+                        final Set<TreeObject> elementsToHide = new HashSet<>();
                         form.getElementsToHideId().forEach(id -> {
                             Optional<TreeObject> element = form.getChildren().stream().filter(treeObject -> Objects.equals(treeObject.getId(), id)).findAny();
                             element.ifPresent(elementsToHide::add);

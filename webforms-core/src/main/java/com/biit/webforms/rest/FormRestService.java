@@ -43,7 +43,12 @@ public class FormRestService {
                 return Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"Unknown form with name '" + parsedPetition.getFormName() +
                         "' and version '" + parsedPetition.getVersion() + "' in organization '" + parsedPetition.getOrganizationId() + "'.\"}").build();
             }
-            String json = form.toJson();
+            final String json;
+            if (form.getJsonCode() != null) {
+                json = form.getJsonCode();
+            } else {
+                json = form.toJson();
+            }
             WebformsLogger.debug(FormRestService.class.getName(), "Form retrieved successfully:\n{} ", json);
             return Response.ok(json, MediaType.APPLICATION_JSON).build();
         } catch (JsonProcessingException | InvalidValue ex) {

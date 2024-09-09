@@ -72,7 +72,7 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
             ((BlockReference) entity).setReference(initializeAndUnproxy(((BlockReference) entity).getReference()));
         } else if (!entity.getChildren().isEmpty()) {
             List<TreeObject> children = new ArrayList<>();
-            for (TreeObject child : new ArrayList<>(entity.getChildren())) {
+            for (TreeObject child : entity.getChildren()) {
                 children.add(initializeAndUnproxy(child));
             }
             try {
