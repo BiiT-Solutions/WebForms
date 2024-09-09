@@ -1,11 +1,5 @@
 package com.biit.webforms.exporters.xforms;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
@@ -24,6 +18,12 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	private final static int MAX_YEARS_BIRTHDAY = 120;
@@ -184,8 +184,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 	/**
 	 * Get all the constraints.
-	 * 
-	 * @return
+	 *
 	 */
 	protected void getConstraints(StringBuilder constraints) {
 		if (hasSubtypeConstraint()) {
@@ -363,9 +362,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 	/**
 	 * Translate the element type of DHszw forms to XForms.
-	 * 
-	 * @param element
-	 * @return
+	 *
 	 */
 	protected void getXFormsType(StringBuilder type) {
 		if (((Question) getSource()).getAnswerFormat() != null) {
@@ -460,8 +457,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	/**
 	 * XForms has input, output and selectable elements. This method translates
 	 * an element to the correct one.
-	 * 
-	 * @param element
+	 *
 	 * @return
 	 */
 	protected String getElementFormDefinition() {
@@ -485,8 +481,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	/**
 	 * XForms has input, output and selectable elements. This method translates
 	 * an element to the correct one.
-	 * 
-	 * @param element
+	 *
 	 * @return
 	 */
 	protected String getApparence() {
@@ -513,9 +508,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 	/**
 	 * Elements with answers need to add information of the answers in the body.
-	 * 
-	 * @param element
-	 * @return
+	 *
 	 */
 	protected void createElementAnswersItems(StringBuilder row) {
 		if (!getChildren().isEmpty()) {
@@ -535,10 +528,9 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	}
 
 	/**
-	 * Some elements needs to insert HTML text. Adds the tags to allow html code
+	 * Some elements need to insert HTML text. Adds the tags to allow html code
 	 * in the element.
-	 * 
-	 * @param element
+	 *
 	 * @return
 	 */
 	protected String isHtmlText() {
@@ -579,8 +571,7 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 
 	/**
 	 * Some elements have extra classes to fit some javascripts.
-	 * 
-	 * @param element
+	 *
 	 * @return
 	 */
 	@Override

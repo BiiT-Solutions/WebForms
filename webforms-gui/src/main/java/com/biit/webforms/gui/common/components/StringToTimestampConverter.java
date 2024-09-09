@@ -17,7 +17,6 @@ public class StringToTimestampConverter implements Converter<String, Timestamp> 
 
 	/**
 	 * Returns the format used by
-	 * {@link #convertToPresentation(Date, Class,Locale)} and
 	 * {@link #convertToModel(String, Class, Locale)}.
 	 * 
 	 * @param locale

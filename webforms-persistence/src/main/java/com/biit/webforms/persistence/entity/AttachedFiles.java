@@ -1,13 +1,5 @@
 package com.biit.webforms.persistence.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.persistence.entity.StorableObject;
@@ -15,8 +7,21 @@ import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.serialization.AttachedFilesDeserializer;
+import com.biit.webforms.serialization.AttachedFilesSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@JsonDeserialize(using = AttachedFilesDeserializer.class)
+@JsonSerialize(using = AttachedFilesSerializer.class)
 @Table(name = "tree_attached_files")
 @Cacheable(true)
 public class AttachedFiles extends WebformsBaseQuestion implements ElementWithDescription {

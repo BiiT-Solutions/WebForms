@@ -26,6 +26,7 @@
 			<class name="com.biit.webforms.persistence.FormReference" />
 			<class name="com.biit.webforms.persistence.WebserviceDefinitionJsonTest" />
 			<class name="com.biit.webforms.persistence.FormToJsonTests" />
+			<class name="com.biit.webforms.persistence.JsonToFormTests" />
 		</classes>
 	</test>
 </suite>

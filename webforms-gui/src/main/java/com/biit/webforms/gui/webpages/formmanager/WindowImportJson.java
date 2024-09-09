@@ -17,129 +17,134 @@ import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
-import com.google.gson.JsonParseException;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 import java.util.Iterator;
 import java.util.Set;
 
 public class WindowImportJson extends WindowAcceptCancel {
-	private static final long serialVersionUID = 8945502504922675754L;
-	private static final String WINDOW_WIDTH = "800px";
-	private static final String WINDOW_HEIGHT = "600px";
-	private TextField textField;
-	private ComboBox organizationField;
-	private TextArea textArea;
+    private static final long serialVersionUID = 8945502504922675754L;
+    private static final String WINDOW_WIDTH = "800px";
+    private static final String WINDOW_HEIGHT = "600px";
+    private TextField textField;
+    private ComboBox organizationField;
+    private TextArea textArea;
 
-	private IWebformsSecurityService webformsSecurityService;
+    private IWebformsSecurityService webformsSecurityService;
 
-	public WindowImportJson() {
-		super();
-		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
-		configure();
-		setContent(generate());
-	}
+    public WindowImportJson() {
+        super();
+        SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+        webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
+        configure();
+        setContent(generate());
+    }
 
-	private Component generate() {
-		VerticalLayout rootLayout = new VerticalLayout();
-		rootLayout.setSpacing(true);
-		rootLayout.setSizeFull();
+    private Component generate() {
+        VerticalLayout rootLayout = new VerticalLayout();
+        rootLayout.setSpacing(true);
+        rootLayout.setSizeFull();
 
-		textArea = new TextArea();
-		textArea.setSizeFull();
+        textArea = new TextArea();
+        textArea.setSizeFull();
 
-		Component component = nameOrganization(LanguageCodes.COMMON_CAPTION_NAME.translation(), LanguageCodes.COMMON_CAPTION_GROUP.translation());
+        Component component = nameOrganization(LanguageCodes.COMMON_CAPTION_NAME.translation(), LanguageCodes.COMMON_CAPTION_GROUP.translation());
 
-		rootLayout.addComponent(textArea);
-		rootLayout.addComponent(component);
+        rootLayout.addComponent(textArea);
+        rootLayout.addComponent(component);
 
-		rootLayout.setExpandRatio(textArea, 1.0f);
-		return rootLayout;
-	}
+        rootLayout.setExpandRatio(textArea, 1.0f);
+        return rootLayout;
+    }
 
-	private Component nameOrganization(String inputFieldCaption, String groupCaption) {
-		textField = new TextField(inputFieldCaption);
-		textField.focus();
-		textField.setWidth("100%");
+    private Component nameOrganization(String inputFieldCaption, String groupCaption) {
+        textField = new TextField(inputFieldCaption);
+        textField.focus();
+        textField.setWidth("100%");
 
-		organizationField = new ComboBox(groupCaption);
-		organizationField.setNullSelectionAllowed(false);
-		organizationField.setWidth("100%");
+        organizationField = new ComboBox(groupCaption);
+        organizationField.setNullSelectionAllowed(false);
+        organizationField.setWidth("100%");
 
-		IActivity[] exclusivePermissionFilter = new IActivity[] { WebformsActivity.FORM_EDITING };
-		try {
-			Set<IGroup<Long>> organizations = webformsSecurityService.getUserOrganizations(UserSession.getUser());
-			Iterator<IGroup<Long>> itr = organizations.iterator();
-			while (itr.hasNext()) {
-				IGroup<Long> organization = itr.next();
-				for (IActivity activity : exclusivePermissionFilter) {
-					// If the user doesn't comply to all activities in the
-					// filter in the group, then exit
-					if (!webformsSecurityService.isAuthorizedActivity(UserSession.getUser(), organization, activity)) {
-						itr.remove();
-						break;
-					}
-				}
-			}
-			for (IGroup<Long> organization : organizations) {
-				organizationField.addItem(organization);
-				organizationField.setItemCaption(organization, organization.getUniqueName());
-			}
-			if (!organizations.isEmpty()) {
-				Iterator<IGroup<Long>> organizationsIterator = organizations.iterator();
-				organizationField.setValue(organizationsIterator.next());
-			}
-			if (organizations.size() <= 1) {
-				organizationField.setEnabled(false);
-			}
-		} catch (UserManagementException e) {
-			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
-			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-		}
+        IActivity[] exclusivePermissionFilter = new IActivity[]{WebformsActivity.FORM_EDITING};
+        try {
+            Set<IGroup<Long>> organizations = webformsSecurityService.getUserOrganizations(UserSession.getUser());
+            Iterator<IGroup<Long>> itr = organizations.iterator();
+            while (itr.hasNext()) {
+                IGroup<Long> organization = itr.next();
+                for (IActivity activity : exclusivePermissionFilter) {
+                    // If the user doesn't comply to all activities in the
+                    // filter in the group, then exit
+                    if (!webformsSecurityService.isAuthorizedActivity(UserSession.getUser(), organization, activity)) {
+                        itr.remove();
+                        break;
+                    }
+                }
+            }
+            for (IGroup<Long> organization : organizations) {
+                organizationField.addItem(organization);
+                organizationField.setItemCaption(organization, organization.getUniqueName());
+            }
+            if (!organizations.isEmpty()) {
+                Iterator<IGroup<Long>> organizationsIterator = organizations.iterator();
+                organizationField.setValue(organizationsIterator.next());
+            }
+            if (organizations.size() <= 1) {
+                organizationField.setEnabled(false);
+            }
+        } catch (UserManagementException e) {
+            WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+            MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+        }
 
-		HorizontalLayout rootLayout = new HorizontalLayout();
-		rootLayout.setSpacing(true);
-		rootLayout.setWidth("100%");
-		rootLayout.setHeight(null);
+        HorizontalLayout rootLayout = new HorizontalLayout();
+        rootLayout.setSpacing(true);
+        rootLayout.setWidth("100%");
+        rootLayout.setHeight(null);
 
-		rootLayout.addComponent(textField);
-		rootLayout.addComponent(organizationField);
-		rootLayout.setComponentAlignment(textField, Alignment.MIDDLE_CENTER);
-		rootLayout.setComponentAlignment(organizationField, Alignment.MIDDLE_CENTER);
-		rootLayout.setExpandRatio(textField, 0.6f);
-		rootLayout.setExpandRatio(organizationField, 0.4f);
-		return rootLayout;
-	}
+        rootLayout.addComponent(textField);
+        rootLayout.addComponent(organizationField);
+        rootLayout.setComponentAlignment(textField, Alignment.MIDDLE_CENTER);
+        rootLayout.setComponentAlignment(organizationField, Alignment.MIDDLE_CENTER);
+        rootLayout.setExpandRatio(textField, 0.6f);
+        rootLayout.setExpandRatio(organizationField, 0.4f);
+        return rootLayout;
+    }
 
-	private void configure() {
-		setDraggable(true);
-		setResizable(false);
-		setModal(true);
-		setWidth(WINDOW_WIDTH);
-		setHeight(WINDOW_HEIGHT);
-	}
+    private void configure() {
+        setDraggable(true);
+        setResizable(false);
+        setModal(true);
+        setWidth(WINDOW_WIDTH);
+        setHeight(WINDOW_HEIGHT);
+    }
 
-	@SuppressWarnings("unchecked")
-	protected boolean acceptAction() {
-		try {
-			ApplicationUi.getController().importFormFromJson(textArea.getValue(), textField.getValue(),
-					((IGroup<Long>) organizationField.getValue()).getUniqueId());
-			return true;
-		} catch (UnexpectedDatabaseException e) {
-			MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
-		} catch (FormWithSameNameException e) {
-			MessageManager.showError(LanguageCodes.ERROR_FORM_ALREADY_EXISTS);
-		} catch (FieldTooLongException e) {
-			MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
-		} catch (ElementCannotBePersistedException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
-			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
-		} catch (JsonParseException jpe) {
-			WebformsUiLogger.errorMessage(ApplicationController.class.getName(), jpe);
-			MessageManager.showError(LanguageCodes.INVALID_JSON_CODE);
-		}
-		return false;
-	}
+    @SuppressWarnings("unchecked")
+    protected boolean acceptAction() {
+        try {
+            ApplicationUi.getController().importFormFromJson(textArea.getValue(), textField.getValue(),
+                    ((IGroup<Long>) organizationField.getValue()).getUniqueId());
+            return true;
+        } catch (UnexpectedDatabaseException e) {
+            MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
+        } catch (FormWithSameNameException e) {
+            MessageManager.showError(LanguageCodes.ERROR_FORM_ALREADY_EXISTS);
+        } catch (FieldTooLongException e) {
+            MessageManager.showError(LanguageCodes.COMMON_ERROR_FIELD_TOO_LONG);
+        } catch (ElementCannotBePersistedException e) {
+            MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+            WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+        } catch (Exception jpe) {
+            WebformsUiLogger.errorMessage(ApplicationController.class.getName(), jpe);
+            MessageManager.showError(LanguageCodes.INVALID_JSON_CODE);
+        }
+        return false;
+    }
 }

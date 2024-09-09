@@ -3,7 +3,12 @@ package com.biit.webforms.gui;
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.IBaseFormView;
 import com.biit.form.entity.TreeObject;
-import com.biit.form.exceptions.*;
+import com.biit.form.exceptions.CharacterNotAllowedException;
+import com.biit.form.exceptions.ChildrenNotFoundException;
+import com.biit.form.exceptions.DependencyExistException;
+import com.biit.form.exceptions.ElementIsReadOnly;
+import com.biit.form.exceptions.InvalidAnswerFormatException;
+import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.validators.ValidateBaseForm;
 import com.biit.persistence.dao.exceptions.ElementCannotBePersistedException;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
@@ -17,23 +22,70 @@ import com.biit.usermanager.security.IActivity;
 import com.biit.usermanager.security.exceptions.UserManagementException;
 import com.biit.utils.validation.ValidateReport;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.enumerations.*;
+import com.biit.webforms.enumerations.AnswerFormat;
+import com.biit.webforms.enumerations.AnswerSubformat;
+import com.biit.webforms.enumerations.AnswerType;
+import com.biit.webforms.enumerations.DatePeriodUnit;
+import com.biit.webforms.enumerations.FlowType;
+import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
-import com.biit.webforms.gui.exceptions.*;
+import com.biit.webforms.gui.exceptions.BadAbcdLink;
+import com.biit.webforms.gui.exceptions.CategoryWithSameNameAlreadyExistsInForm;
+import com.biit.webforms.gui.exceptions.DestinyIsContainedAtOrigin;
+import com.biit.webforms.gui.exceptions.EmptyBlockCannotBeInserted;
+import com.biit.webforms.gui.exceptions.FormWithSameNameException;
+import com.biit.webforms.gui.exceptions.LinkCanOnlyBePerformedOnWholeBlock;
+import com.biit.webforms.gui.exceptions.NewVersionWithoutFinalDesignException;
+import com.biit.webforms.gui.exceptions.NotEnoughRightsToChangeStatusException;
+import com.biit.webforms.gui.exceptions.NotValidAbcdForm;
+import com.biit.webforms.gui.exceptions.SameOriginAndDestinationException;
 import com.biit.webforms.gui.webpages.floweditor.WindowFlow;
 import com.biit.webforms.gui.webpages.formmanager.WindowLoginKnowledgeManager;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.dao.*;
+import com.biit.webforms.persistence.dao.IBlockDao;
+import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.persistence.dao.IPublishedFormDao;
+import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
+import com.biit.webforms.persistence.dao.IUserTokenDao;
+import com.biit.webforms.persistence.dao.IWebserviceDao;
+import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
 import com.biit.webforms.persistence.dao.exceptions.WebserviceNotFoundException;
-import com.biit.webforms.persistence.entity.*;
+import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.AttachedFiles;
+import com.biit.webforms.persistence.entity.Block;
+import com.biit.webforms.persistence.entity.BlockReference;
+import com.biit.webforms.persistence.entity.Category;
+import com.biit.webforms.persistence.entity.CompleteFormView;
+import com.biit.webforms.persistence.entity.DynamicAnswer;
+import com.biit.webforms.persistence.entity.Flow;
+import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.persistence.entity.Group;
+import com.biit.webforms.persistence.entity.IWebformsBlockView;
+import com.biit.webforms.persistence.entity.IWebformsFormView;
+import com.biit.webforms.persistence.entity.PublishedForm;
+import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.SimpleFormView;
+import com.biit.webforms.persistence.entity.SystemField;
+import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.TreeObjectImage;
+import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
 import com.biit.webforms.persistence.entity.condition.TokenWithQuestion;
-import com.biit.webforms.persistence.entity.exceptions.*;
+import com.biit.webforms.persistence.entity.exceptions.BadFlowContentException;
+import com.biit.webforms.persistence.entity.exceptions.FlowDestinyIsBeforeOriginException;
+import com.biit.webforms.persistence.entity.exceptions.FlowNotAllowedException;
+import com.biit.webforms.persistence.entity.exceptions.FlowSameOriginAndDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyException;
+import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
+import com.biit.webforms.persistence.entity.exceptions.FormIsUsedAsReferenceException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
+import com.biit.webforms.persistence.entity.exceptions.InvalidValue;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
@@ -46,7 +98,7 @@ import com.biit.webforms.webservice.rest.client.AbcdRestClient;
 import com.biit.webforms.webservice.rest.client.KnowledgeManagerService;
 import com.biit.webforms.webservices.Webservice;
 import com.biit.webforms.webservices.WebserviceValidatedPort;
-import com.google.gson.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -54,7 +106,13 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * User Session data handler.
@@ -62,6 +120,7 @@ import java.util.*;
 public class ApplicationController {
     private final IFormDao formDao;
     private final IBlockDao blockDao;
+    private final IPublishedFormDao publishedFormDao;
     private final ISimpleFormViewDao simpleFormViewDao;
     private final IWebserviceDao webserviceDao;
     private final IUserTokenDao userTokenDao;
@@ -80,6 +139,7 @@ public class ApplicationController {
         SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
         formDao = (IFormDao) helper.getBean("webformsFormDao");
         blockDao = (IBlockDao) helper.getBean("blockDao");
+        publishedFormDao = (IPublishedFormDao) helper.getBean("publishedFormDao");
         simpleFormViewDao = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms"));
         webserviceDao = (IWebserviceDao) helper.getBean("webserviceDao");
         webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
@@ -89,7 +149,7 @@ public class ApplicationController {
 
     /**
      * User action to create a form on memory no persistence is done. Needs a
-     * unique name where name.length() < 190 characters.
+     * unique name where name.length()  &lt; 190 characters.
      *
      * @param formLabel
      * @return
@@ -134,15 +194,15 @@ public class ApplicationController {
      * @throws FieldTooLongException
      * @throws ElementCannotBePersistedException
      */
-    public Form importFormFromJson(String json, String formLabel, Long organizationId) throws JsonParseException, FormWithSameNameException,
+    public Form importFormFromJson(String json, String formLabel, Long organizationId) throws InvalidValue, FormWithSameNameException,
             UnexpectedDatabaseException, FieldTooLongException, ElementCannotBePersistedException {
 
 
         if (json == null || json.isEmpty() || json.length() < 10) {
-            throw new JsonParseException("Invalid provided json:\n" + json);
+            throw new InvalidValue("Invalid provided json:\n" + json);
         }
 
-        // Check if database contains a form with the same name.
+        // Check if the database contains a form with the same name.
         if (formDao.exists(formLabel, organizationId)) {
             FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel + " already exists");
             WebformsUiLogger.severe(ApplicationController.class.getName(), "createForm " + ex.getMessage());
@@ -153,7 +213,7 @@ public class ApplicationController {
         try {
             newForm = Form.fromJson(json);
         } catch (Exception e) {
-            throw new JsonParseException("Invalid provided json:\n" + json);
+            throw new InvalidValue("Invalid provided json:\n" + json);
         }
         //Remove any id if exists.
         newForm.setOrganizationId(organizationId);
@@ -211,7 +271,7 @@ public class ApplicationController {
     }
 
     /**
-     * User action to create a form. Needs a unique name where name.length() <
+     * User action to create a form. Needs a unique name where name.length() &lt;
      * 190 characters.
      *
      * @param formLabel
@@ -965,10 +1025,10 @@ public class ApplicationController {
      * @param label
      * @param repeatable
      */
-    public void updateGroup(Group group, String name, String label, boolean repeatable, boolean isTable, int numberOfColumns) {
+    public void updateGroup(Group group, String name, String label, boolean repeatable, boolean isTable, int numberOfColumns, Integer totalAnswers) {
         try {
             if (!Objects.equals(group.getName(), name) || !Objects.equals(group.getLabel(), label) || group.isRepeatable() != repeatable
-                    || group.isShownAsTable() != isTable || group.getNumberOfColumns() != numberOfColumns) {
+                    || group.isShownAsTable() != isTable || group.getNumberOfColumns() != numberOfColumns || !Objects.equals(group.getTotalAnswersValue(), totalAnswers)) {
                 setUnsavedFormChanges(true);
                 group.setName(name);
                 group.setLabel(label);
@@ -977,6 +1037,7 @@ public class ApplicationController {
                 group.setNumberOfColumns(numberOfColumns);
                 group.setUpdatedBy(UserSession.getUser());
                 group.setUpdateTime();
+                group.setTotalAnswersValue(totalAnswers);
                 logInfoStart("updateGroup", group, name, label, repeatable, isTable);
             }
         } catch (FieldTooLongException | CharacterNotAllowedException e) {
@@ -999,7 +1060,10 @@ public class ApplicationController {
      * @param defaultValue
      */
     public void updateQuestion(Question question, String name, String label, String abbreviature, String alias, String description, boolean mandatory, AnswerType answerType,
-                               AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled, TreeObjectImage image) {
+                               AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled,
+                               Integer maxAnswersSelected, Boolean consecutiveAnswers, Boolean descriptionAlwaysVisible, Boolean answersDescriptionAlwaysVisible,
+                               boolean inverseAnswersOrder,
+                               TreeObjectImage image) {
         try {
             if (!Objects.equals(question.getLabel(), label) || !Objects.equals(question.getDescription(), description)
                     || !Objects.equals(question.getName(), name) || question.isMandatory() != mandatory
@@ -1008,9 +1072,14 @@ public class ApplicationController {
                     || (question.getAnswerType() != null && !question.getAnswerType().equals(answerType))
                     || (question.getAnswerFormat() != null && !Objects.equals(question.getAnswerFormat(), answerFormat))
                     || (question.getAnswerSubformat() != null && !Objects.equals(question.getAnswerSubformat(), answerSubformat))
-                    || question.isHorizontal() != horizontal || (defaultValue == null && question.getDefaultValue() != "")
+                    || question.isHorizontal() != horizontal || (defaultValue == null && !Objects.equals(question.getDefaultValue(), ""))
                     || (defaultValue != null && !Objects.equals(question.getDefaultValue(), defaultValue.toString()))
-                    || (question.isEditionDisabled() != editionDisabled) || !Objects.equals(question.getImage(), image)) {
+                    || (question.isEditionDisabled() != editionDisabled) || !Objects.equals(question.getImage(), image)
+                    || !Objects.equals(question.getMaxAnswersSelected(), maxAnswersSelected)
+                    || !Objects.equals(question.isConsecutiveAnswers(), consecutiveAnswers)
+                    || !Objects.equals(question.isInverseAnswerOrder(), inverseAnswersOrder)
+                    || !Objects.equals(question.isDescriptionAlwaysVisible(), descriptionAlwaysVisible)
+                    || !Objects.equals(question.isAnswersDescriptionAlwaysVisible(), answersDescriptionAlwaysVisible)) {
                 setUnsavedFormChanges(true);
                 question.setName(name);
                 question.setLabel(label);
@@ -1026,6 +1095,11 @@ public class ApplicationController {
                 question.setUpdateTime();
                 question.setDefaultValue(defaultValue);
                 question.setEditionDisabled(editionDisabled);
+                question.setMaxAnswersSelected(maxAnswersSelected);
+                question.setInverseAnswerOrder(inverseAnswersOrder);
+                question.setConsecutiveAnswers(consecutiveAnswers != null ? consecutiveAnswers : false);
+                question.setDescriptionAlwaysVisible(descriptionAlwaysVisible != null ? descriptionAlwaysVisible : false);
+                question.setAnswersDescriptionAlwaysVisible(answersDescriptionAlwaysVisible != null ? answersDescriptionAlwaysVisible : false);
                 question.setImage(image);
                 logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat, answerSubformat, horizontal,
                         image != null ? image.getFileName() : null);
@@ -1586,31 +1660,45 @@ public class ApplicationController {
             String jsonCode = formDao.getJson(formView.getId());
             if (jsonCode != null) {
                 WebformsLogger.debug(this.getClass().getName(), "Obtaining form with id '{}' using json code", formView.getId());
-                Form form = Form.fromJson(jsonCode);
-                //BlockReferences are not stored on json. Must be reloaded.
-                for (TreeObject children : form.getChildren()) {
-                    if (children instanceof BlockReference) {
-                        BlockReference blockReference = (BlockReference) children;
-                        blockReference.setReference(blockDao.get(blockReference.getBlockReferencedId()));
+                try {
+                    Form form = Form.fromJson(jsonCode);
+                    //BlockReferences are not stored on json. Must be reloaded.
+                    for (TreeObject children : form.getChildren()) {
+                        if (children instanceof BlockReference) {
+                            BlockReference blockReference = (BlockReference) children;
+                            blockReference.setReference(blockDao.get(blockReference.getBlockReferencedId()));
+                        }
                     }
+                    //Form reference.
+                    if (form.getFormReferenceId() != null) {
+                        form.setFormReference(loadForm(simpleFormViewDao.get(form.getFormReferenceId())));
+                    }
+                    //Elements to hide.
+                    if (form.getElementsToHideId() != null && !form.getElementsToHideId().isEmpty()) {
+                        Set<TreeObject> elementsToHide = new HashSet<>();
+                        form.getElementsToHideId().forEach(id -> {
+                            Optional<TreeObject> element = form.getChildren().stream().filter(treeObject -> Objects.equals(treeObject.getId(), id)).findAny();
+                            element.ifPresent(elementsToHide::add);
+                        });
+                        form.setElementsToHide(elementsToHide);
+                    }
+                    return form;
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
                 }
-                //Form reference.
-                if (form.getFormReferenceId() != null) {
-                    form.setFormReference(loadForm(simpleFormViewDao.get(form.getFormReferenceId())));
-                }
-                //Elements to hide.
-                if (form.getElementsToHideId() != null && !form.getElementsToHideId().isEmpty()) {
-                    Set<TreeObject> elementsToHide = new HashSet<>();
-                    form.getElementsToHideId().forEach(id -> {
-                        Optional<TreeObject> element = form.getChildren().stream().filter(treeObject -> Objects.equals(treeObject.getId(), id)).findAny();
-                        element.ifPresent(elementsToHide::add);
-                    });
-                    form.setElementsToHide(elementsToHide);
-                }
-                return form;
             }
         }
         return formDao.get(formView.getId());
+    }
+
+    public PublishedForm publishForm(Form form) throws MultiplesFormsFoundException {
+        PublishedForm publishedForm = publishedFormDao.get(form.getLabel(), form.getVersion(), form.getOrganizationId());
+        if (publishedForm != null) {
+            publishedForm.setJsonCode(new CompleteFormView(form).toJson());
+            return publishedFormDao.merge(publishedForm);
+        } else {
+            return publishedFormDao.makePersistent(new PublishedForm(form));
+        }
     }
 
     public Block loadBlock(IWebformsBlockView blockView) {
@@ -1720,7 +1808,7 @@ public class ApplicationController {
         for (Flow flow : flows) {
             // Flow uses the element.
             if (flow.getOrigin().equals(elementOfReferencedBlock)) {
-                // Flow cames from the element and goes outside of the block.
+                // Flow cames from the element and goes outside the block.
                 if (flow.getDestiny() != null && blockReference.getReference() != null) {
                     boolean outsideOfBlock = true;
                     for (StorableObject object : blockReference.getReference().getAllInnerStorableObjects()) {
@@ -1733,7 +1821,7 @@ public class ApplicationController {
                     }
                 }
             } else if (flow.getDestiny().equals(elementOfReferencedBlock)) {
-                // Flow cames from the element and comes from outside of the
+                // Flow comes from the element and comes from outside the
                 // block.
                 if (flow.getOrigin() != null && blockReference.getReference() != null) {
                     boolean outsideOfBlock = true;

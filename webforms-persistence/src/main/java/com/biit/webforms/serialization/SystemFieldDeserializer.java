@@ -1,29 +1,24 @@
 package com.biit.webforms.serialization;
 
-import com.biit.form.json.serialization.TreeObjectDeserializer;
+import com.biit.form.jackson.serialization.TreeObjectDeserializer;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.webforms.persistence.entity.SystemField;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.io.IOException;
 
 public class SystemFieldDeserializer extends TreeObjectDeserializer<SystemField> {
 
-	public SystemFieldDeserializer() {
-		super(SystemField.class);
-	}
+    @Override
+    public void deserialize(SystemField element, JsonNode jsonObject, DeserializationContext context) throws IOException {
+        super.deserialize(element, jsonObject, context);
 
-	@Override
-	public void deserialize(JsonElement json, JsonDeserializationContext context, SystemField element) {
-		JsonObject jobject = (JsonObject) json;
-
-		try {
-			element.setFieldName(parseString("fieldName", jobject, context));
-		} catch (FieldTooLongException e) {
-			throw new JsonParseException(e);
-		}
-
-		super.deserialize(json, context, element);
-	}
+        try {
+            element.setFieldName(parseString("fieldName", jsonObject));
+        } catch (FieldTooLongException e) {
+            throw new JsonGenerationException(e, null);
+        }
+    }
 }

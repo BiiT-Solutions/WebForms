@@ -1,17 +1,15 @@
 package com.biit.webforms.utils.math.domain;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.TokenComparationAnswer;
-import com.biit.webforms.utils.math.domain.exceptions.DifferentDomainQuestionOperationException;
-import com.biit.webforms.utils.math.domain.exceptions.IncompatibleDomainException;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Domain for questions with answers. The complete domain is formed by all the
@@ -134,8 +132,6 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	 * 
 	 * @param domain
 	 * @return
-	 * @throws IncompatibleDomainException
-	 * @throws DifferentDomainQuestionOperationException
 	 */
 	@Override
 	public IDomain union(IDomain domain) {
@@ -171,8 +167,6 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	 * 
 	 * @param domain
 	 * @return
-	 * @throws DifferentDomainQuestionOperationException
-	 * @throws IncompatibleDomainException
 	 */
 	public IDomain intersect(IDomain domain) {
 		if (domain instanceof IDomainQuestion) {

@@ -1,22 +1,17 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
-import com.biit.form.json.serialization.TreeObjectSerializer;
+import com.biit.form.jackson.serialization.TreeObjectSerializer;
 import com.biit.webforms.persistence.entity.SystemField;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
+
+import java.io.IOException;
 
 public class SystemFieldSerializer extends TreeObjectSerializer<SystemField> {
 
-	@Override
-	public JsonElement serialize(SystemField src, Type typeOfSrc, JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
-
-		jsonObject.add("fieldName", context.serialize(src.getFieldName()));
-
-		return jsonObject;
-	}
+    @Override
+    public void serialize(SystemField src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
+        jgen.writeStringField("fieldName", src.getFieldName());
+    }
 
 }

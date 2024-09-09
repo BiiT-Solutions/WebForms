@@ -2,14 +2,12 @@ package com.biit.webforms.gui.webpages.formmanager;
 
 import com.biit.usermanager.security.exceptions.AuthenticationRequired;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
-import com.biit.webforms.exporters.xforms.XFormsSimpleFormExporter;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.IconButton;
 import com.biit.webforms.gui.common.components.IconSize;
 import com.biit.webforms.gui.components.UpperMenuWebforms;
 import com.biit.webforms.gui.xforms.FormRunnerPreviewFrame;
-import com.biit.webforms.gui.xforms.OrbeonPreviewFrame;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.theme.ThemeIcons;
@@ -17,7 +15,6 @@ import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button.ClickListener;
 
-import javax.swing.*;
 import java.io.IOException;
 
 /**
@@ -37,8 +34,8 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 	private final IconButton publishToKnowledgeManager;
 
 	private final IconButton impactAnalysis, compareContent;
-	private BrowserWindowOpener opener;
-	// Neede due to the existence of a second 'Flow' button at the same time in
+	private final BrowserWindowOpener opener;
+	// Need due to the existence of a second 'Flow' button at the same time in
 	// the interface
 	private static final String FLOW_BUTTON_ID = "exportFlowButton";
 
@@ -110,7 +107,6 @@ public class UpperMenuProjectManager extends UpperMenuWebforms {
 
 		// opener = new BrowserWindowOpener(FormRunnerPreviewFrame.class);
 		opener = new BrowserWindowOpener(FormRunnerPreviewFrame.class);
-		opener.setParameter(OrbeonPreviewFrame.APPLICATION_PARAMETER_TAG, XFormsSimpleFormExporter.APP_NAME);
 		opener.setFeatures("target=_new");
 		previewXForms = new IconButton(LanguageCodes.CAPTION_PREVIEW_XFORMS, ThemeIcons.PREVIEW_XFORMS,
 				LanguageCodes.TOOLTIP_PREVIEW_XFORMS, IconSize.BIG);

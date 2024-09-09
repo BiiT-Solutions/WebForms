@@ -1,25 +1,5 @@
 package com.biit.webforms.persistence.entity;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
@@ -36,8 +16,33 @@ import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidRangeException;
+import com.biit.webforms.serialization.QuestionDeserializer;
+import com.biit.webforms.serialization.QuestionSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
+@JsonDeserialize(using = QuestionDeserializer.class)
+@JsonSerialize(using = QuestionSerializer.class)
 @Table(name = "tree_questions")
 @Cacheable(true)
 public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithImage,
@@ -50,11 +55,26 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
     public static final int MAX_ABBREVIATURE_LENGTH = 100;
     public static final int MAX_ALIAS_LENGTH = 100;
 
+    @Column(name = "max_answers")
+    private Integer maxAnswersSelected;
+
+    @Column(name = "consecutive_answers", nullable = false, columnDefinition = "bit default 1")
+    private boolean consecutiveAnswers = false;
+
     private boolean mandatory;
     private boolean horizontal;
 
     @Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
     private String description = "";
+
+    @Column(name = "description_always_visible", nullable = false, columnDefinition = "bit default 1")
+    private boolean isDescriptionAlwaysVisible = false;
+
+    @Column(name = "answers_description_always_visible", nullable = false, columnDefinition = "bit default 1")
+    private boolean isAnswersDescriptionAlwaysVisible = false;
+
+    @Column(name = "inverse_answer_order", nullable = false, columnDefinition = "bit default 1")
+    private boolean inverseAnswerOrder = false;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "answer_type")
@@ -96,7 +116,7 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
         super();
         mandatory = DEFAULT_MANDATORY;
         horizontal = DEFAULT_HORIZONTAL;
-        description = new String();
+        description = "";
         answerType = AnswerType.INPUT;
         answerFormat = AnswerFormat.TEXT;
         answerSubformat = AnswerSubformat.TEXT;
@@ -271,6 +291,22 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
     public void setMandatory(boolean mandatory) {
         this.mandatory = mandatory;
+    }
+
+    public Integer getMaxAnswersSelected() {
+        return maxAnswersSelected;
+    }
+
+    public void setMaxAnswersSelected(Integer maxAnswersSelected) {
+        this.maxAnswersSelected = maxAnswersSelected;
+    }
+
+    public boolean isConsecutiveAnswers() {
+        return consecutiveAnswers;
+    }
+
+    public void setConsecutiveAnswers(boolean consecutiveAnswers) {
+        this.consecutiveAnswers = consecutiveAnswers;
     }
 
     public boolean isHorizontal() {
@@ -522,6 +558,22 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
         }
     }
 
+    public boolean isDescriptionAlwaysVisible() {
+        return isDescriptionAlwaysVisible;
+    }
+
+    public void setDescriptionAlwaysVisible(boolean descriptionAlwaysVisible) {
+        isDescriptionAlwaysVisible = descriptionAlwaysVisible;
+    }
+
+    public boolean isAnswersDescriptionAlwaysVisible() {
+        return isAnswersDescriptionAlwaysVisible;
+    }
+
+    public void setAnswersDescriptionAlwaysVisible(boolean answersDescriptionAlwaysVisible) {
+        isAnswersDescriptionAlwaysVisible = answersDescriptionAlwaysVisible;
+    }
+
     @Override
     public TreeObjectImage getImage() {
         return image;
@@ -540,12 +592,13 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
             try {
                 Answer answer = new Answer();
                 answer.setValue(lowerValueRange.toString());
-                answer.setName("" + lowerValueRange.toString());
-                answer.setLabel("" + lowerValueRange.toString());
+                answer.setName(lowerValueRange.toString());
+                answer.setLabel(lowerValueRange.toString());
                 answer.setDescription(lowerValueRange.toString());
                 addChild(answer);
                 answers.add(answer);
-            } catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException | ElementIsReadOnly e) {
+            } catch (FieldTooLongException | CharacterNotAllowedException | NotValidChildException |
+                     ElementIsReadOnly e) {
                 WebformsLogger.errorMessage(this.getClass().getName(), e);
             }
             lowerValueRange = lowerValueRange.add(increment);
@@ -553,6 +606,13 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
         return answers;
     }
 
+    public boolean isInverseAnswerOrder() {
+        return inverseAnswerOrder;
+    }
+
+    public void setInverseAnswerOrder(boolean inverseAnswerOrder) {
+        this.inverseAnswerOrder = inverseAnswerOrder;
+    }
 
     public String getAlias() {
         return alias;

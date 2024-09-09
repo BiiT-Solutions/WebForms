@@ -7,6 +7,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
 import com.biit.webforms.persistence.entity.BlockReference;
+import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
@@ -20,7 +21,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import java.util.ArrayList;
@@ -117,7 +122,12 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
         if (form.getCreationTime() == null) {
             form.setCreationTime();
         }
-        Form formDB = super.makePersistent(form);
+        Form formDB;
+        if (form instanceof CompleteFormView) {
+            formDB = super.makePersistent(((CompleteFormView) form).getForm());
+        } else {
+            formDB = super.makePersistent(form);
+        }
         //Store it again as we need the obtained IDs to be on JSON code.
         formDB.setJsonCode(formDB.toJson());
         setJson(formDB.getId(), formDB.getJsonCode());

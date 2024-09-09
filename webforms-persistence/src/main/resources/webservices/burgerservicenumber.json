@@ -1,4 +1,5 @@
 {
+  "class": "com.biit.webforms.webservices.Webservice",
   "name": "validate_bsn",
   "protocol": "https",
   "host": "localhost",
@@ -6,20 +7,24 @@
   "path": "rest/checkBsn",
   "inputPorts": [
     {
+      "class": "com.biit.webforms.webservices.WebserviceValidatedPort",
       "name": "bsn",
       "xpath": ""
     }
   ],
   "outputPorts": [
     {
+      "class": "com.biit.webforms.webservices.WebservicePort",
       "name": "adress",
       "xpath": "/adress"
     },
     {
+      "class": "com.biit.webforms.webservices.WebservicePort",
       "name": "name",
       "xpath": "/name"
     },
     {
+      "class": "com.biit.webforms.webservices.WebservicePort",
       "name": "surname",
       "xpath": "/surname"
     }

@@ -1,27 +1,20 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
-import com.biit.form.json.serialization.TreeObjectSerializer;
+import com.biit.form.jackson.serialization.TreeObjectSerializer;
 import com.biit.webforms.persistence.entity.Answer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
+
+import java.io.IOException;
 
 public class AnswerSerializer extends TreeObjectSerializer<Answer> {
 
-	@Override
-	public JsonElement serialize(Answer src, Type typeOfSrc, JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
-
-		jsonObject.add("description", context.serialize(src.getDescription()));
-		if (src.getImage() != null) {
-			jsonObject.add("image", context.serialize(src.getImage()));
-		} else {
-			jsonObject.add("image", context.serialize(null));
-		}
-
-		return jsonObject;
-	}
+    @Override
+    public void serialize(Answer src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
+        jgen.writeStringField("description", src.getDescription());
+        if (src.getImage() != null) {
+            jgen.writeObjectField("image", src.getImage());
+        }
+    }
 
 }

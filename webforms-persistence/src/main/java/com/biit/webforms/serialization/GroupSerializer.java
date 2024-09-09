@@ -1,22 +1,21 @@
 package com.biit.webforms.serialization;
 
-import com.biit.form.json.serialization.BaseRepeatableGroupSerializer;
-import com.biit.webforms.persistence.entity.Group;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
 
-import java.lang.reflect.Type;
+import com.biit.form.jackson.serialization.BaseRepeatableGroupSerializer;
+import com.biit.webforms.persistence.entity.Group;
+import com.fasterxml.jackson.core.JsonGenerator;
+
+import java.io.IOException;
 
 public class GroupSerializer extends BaseRepeatableGroupSerializer<Group> {
 
-	@Override
-	public JsonElement serialize(Group src, Type typeOfSrc, JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
-
-		jsonObject.add("isTable", context.serialize(src.isShownAsTable()));
-		jsonObject.add("numberOfColumn", context.serialize(src.getNumberOfColumns()));
-
-		return jsonObject;
-	}
+    @Override
+    public void serialize(Group src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
+        jgen.writeBooleanField("isTable", src.isShownAsTable());
+        jgen.writeNumberField("numberOfColumn", src.getNumberOfColumns());
+        if (src.getTotalAnswersValue() != null) {
+            jgen.writeNumberField("totalAnswersValue", src.getTotalAnswersValue());
+        }
+    }
 }

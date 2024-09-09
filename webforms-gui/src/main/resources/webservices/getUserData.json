@@ -1,4 +1,5 @@
 {
+  "class": "com.biit.webforms.webservices.Webservice",
   "name": "getUserData",
   "description": "Gets currently logged in user data",
   "protocol": "http",
@@ -11,6 +12,7 @@
         "not exist",
         "not valid"
       ],
+      "class": "com.biit.webforms.webservices.WebserviceValidatedPort",
       "name": "bsn",
       "xpath": "/bsn",
       "validationXpath": "/valid",
@@ -21,6 +23,7 @@
   ],
   "outputPorts": [
     {
+      "class": "com.biit.webforms.webservices.WebservicePort",
       "name": "name",
       "xpath": "/PersonalInfo/name",
       "type": "INPUT",
@@ -28,6 +31,7 @@
       "subformat": "TEXT"
     },
     {
+      "class": "com.biit.webforms.webservices.WebservicePort",
       "name": "surname",
       "xpath": "/PersonalInfo/surname",
       "type": "INPUT",
@@ -35,6 +39,7 @@
       "subformat": "TEXT"
     },
      {
+       "class": "com.biit.webforms.webservices.WebservicePort",
       "name": "street",
       "xpath": "/PersonalInfo/Street",
       "type": "INPUT",
@@ -42,6 +47,7 @@
       "subformat": "TEXT"
     },
     {
+      "class": "com.biit.webforms.webservices.WebservicePort",
       "name": "streetNumber",
       "xpath": "/PersonalInfo/StreetNumber",
       "type": "INPUT",
@@ -49,6 +55,7 @@
       "subformat": "NUMBER"
     },
     {
+      "class": "com.biit.webforms.webservices.WebservicePort",
       "name": "postCode",
       "xpath": "/PersonalInfo/PostalCode",
       "type": "INPUT",

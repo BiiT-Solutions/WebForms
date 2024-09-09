@@ -1,26 +1,16 @@
 package com.biit.webforms.serialization;
 
-import java.lang.reflect.Type;
-
-import com.biit.form.json.serialization.StorableObjectSerializer;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
 
-public class WebserviceCallOutputLinkSerializer extends StorableObjectSerializer<WebserviceCallOutputLink> {
+import java.io.IOException;
 
-	@Override
-	public JsonElement serialize(WebserviceCallOutputLink src, Type typeOfSrc, JsonSerializationContext context) {
-		final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
+public class WebserviceCallOutputLinkSerializer extends WebserviceCallLinkSerializer<WebserviceCallOutputLink> {
 
-		jsonObject.add("webservicePort", context.serialize(src.getWebservicePort()));
-		if (src.getFormElement() != null) {
-			jsonObject.add("formElement_id", context.serialize(src.getFormElement().getPath()));
-		}
-		jsonObject.add("isEditable", context.serialize(src.isEditable()));
-
-		return jsonObject;
-	}
+    @Override
+    public void serialize(WebserviceCallOutputLink src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
+        jgen.writeBooleanField("isEditable", src.isEditable());
+    }
 
 }

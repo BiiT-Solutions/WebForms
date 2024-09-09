@@ -71,7 +71,7 @@ public class ComputedFlowView {
 	}
 
 	/**
-	 * Creates a new computed go to next element Flow. Type normal, condition = '' -> true
+	 * Creates a new computed go to next element Flow. Type normal, condition = '' then true
 	 *
 	 */
 	public void addNewNextElementFlow(BaseQuestion origin, BaseQuestion destiny) {

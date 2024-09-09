@@ -238,8 +238,7 @@ public class TokenDisplay extends CustomComponent {
 	 * returns null. If no token is selected it gets the first element or the
 	 * last depending on the numPosition defined. Else we get the sum of
 	 * currentPosition + numPosition and do the module to get the new position.
-	 * 
-	 * @param position
+	 *
 	 */
 	public TokenComponent getElementAhead(int numPosition) {
 		if (focusedComponent == null) {

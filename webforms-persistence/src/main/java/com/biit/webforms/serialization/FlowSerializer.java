@@ -1,42 +1,48 @@
 package com.biit.webforms.serialization;
 
-import com.biit.form.json.serialization.StorableObjectSerializer;
+import com.biit.form.jackson.serialization.StorableObjectSerializer;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.entity.Flow;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.fasterxml.jackson.core.JsonGenerator;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 
 public class FlowSerializer extends StorableObjectSerializer<Flow> {
 
     @Override
-    public JsonElement serialize(Flow src, Type typeOfSrc,
-                                 JsonSerializationContext context) {
-        final JsonObject jsonObject = (JsonObject) super.serialize(src, typeOfSrc, context);
+    public void serialize(Flow src, JsonGenerator jgen) throws IOException {
+        super.serialize(src, jgen);
         if (src != null) {
             if (src.getOrigin() != null) {
-                jsonObject.add("originId", context.serialize(src.getOrigin().getPath()));
-            } else {
-                WebformsLogger.errorMessage(this.getClass().getName(), "Flow without originId!");
+                jgen.writeFieldName("originId");
+                jgen.writeStartArray("originId");
+                for (String reference : src.getOrigin().getPath()) {
+                    jgen.writeString(reference);
+                }
+                jgen.writeEndArray();
             }
-            if (src.getOrigin() != null) {
-                jsonObject.add("flowType", context.serialize(src.getFlowType()));
+
+            if (src.getDestiny() != null) {
+                jgen.writeFieldName("destinyId");
+                jgen.writeStartArray("destinyId");
+                for (String reference : src.getDestiny().getPath()) {
+                    jgen.writeString(reference);
+                }
+                jgen.writeEndArray();
+            }
+
+            if (src.getFlowType() != null) {
+                jgen.writeStringField("flowType", src.getFlowType().name());
             } else {
                 WebformsLogger.errorMessage(this.getClass().getName(), "Flow without flowtype!");
             }
-            if (src.getDestiny() != null) {
-                jsonObject.add("destinyId", context.serialize(src.getDestiny().getPath()));
-            }
-            jsonObject.add("others", context.serialize(src.isOthers()));
+            jgen.writeBooleanField("others", src.isOthers());
             //If is an others flow, getCondition returns the negation of the sum of all other conditions.
             //While the condition inner value is null.
             if (!src.isOthers()) {
-                jsonObject.add("condition", context.serialize(src.getComputedCondition()));
+                jgen.writeObjectField("condition", src.getComputedCondition());
             }
         }
-        return jsonObject;
     }
 
 }

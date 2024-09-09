@@ -53,14 +53,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	/**
 	 * Creates all XForms tags needed to deploy a form in a Orbeon server.
-	 * 
-	 * @param form
-	 * @return
-	 * @throws NotExistingDynamicFieldException
-	 * @throws InvalidFlowInForm
-	 * @throws StringRuleSyntaxError
-	 * @throws PostCodeRuleSyntaxError
-	 * @throws DateRuleSyntaxError
+	 *
 	 */
 	public InputStream generateXFormsLanguage() throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError,
 			UnsupportedEncodingException {
@@ -105,7 +98,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 			file = new File(System.getProperty("java.io.tmpdir") + File.separator + "xforms.txt");
 			fop = new FileOutputStream(file);
 
-			// if file doesnt exists, then create it
+			// if file doesn't exist, then create it
 			if (!file.exists()) {
 				file.createNewFile();
 			}
@@ -537,14 +530,11 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	/**
 	 * Creates the model section of XForms. But also adds the webservice
 	 * validation members
-	 * 
-	 * @param form
+	 *
 	 * @return
-	 * @throws InvalidFlowInForm
 	 */
 	@Override
 	protected String getModelInstance() {
-		StringBuilder text = new StringBuilder(super.getModelInstance());
-		return text.toString();
+		return super.getModelInstance();
 	}
 }

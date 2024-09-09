@@ -1,8 +1,5 @@
 package com.biit.webforms.exporters.xforms;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.usermanager.entity.IGroup;
@@ -12,6 +9,9 @@ import com.biit.webforms.exporters.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.xml.XmlUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Export the form in XForms language using each category as an independent file
@@ -122,10 +122,8 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 
 	/**
 	 * Model is empty. Already created in initial-instance.xml
-	 * 
-	 * @param form
+	 *
 	 * @return
-	 * @throws InvalidFlowInForm
 	 */
 	@Override
 	protected String getModelInstance() {

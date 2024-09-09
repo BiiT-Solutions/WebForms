@@ -8,21 +8,33 @@ import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.persistence.utils.IdGenerator;
 import com.biit.webforms.enumerations.FormWorkStatus;
+import com.biit.webforms.serialization.BlockReferenceDeserializer;
+import com.biit.webforms.serialization.BlockReferenceSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import javax.persistence.*;
+import javax.persistence.Cacheable;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
+@JsonDeserialize(using = BlockReferenceDeserializer.class)
+@JsonSerialize(using = BlockReferenceSerializer.class)
 @Table(name = "tree_blocks_references")
 @Cacheable()
 public class BlockReference extends TreeObject implements IWebformsBlockView {
     private static final long serialVersionUID = -4300039254232003868L;
 
     public static final String DEFAULT_TECHNICAL_NAME = "block_reference";
-    private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>();
+    private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = Collections.singletonList(Category.class);
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "reference")
