@@ -69,6 +69,7 @@ public class FormRestService {
         WebformsLogger.info(FormRestService.class.getName(), "Requesting Form using endpoint 'GET /forms' with formName '{}', formVersion '{}' and organization '{}'.",
                 formName, formVersion, organizationId);
         try {
+            //String jsonCode = formDao.getJson(formView.getId());
             Form form = formDao.get(formName, formVersion, organizationId);
             WebformsLogger.debug(FormRestService.class.getName(), "Form obtained '{}'.", form);
             if (form == null) {

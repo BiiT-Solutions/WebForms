@@ -38,15 +38,20 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
         super(Form.class);
     }
 
+    public Form prepareForm(Form form) {
+        if (form != null) {
+            form.initializeSets();
+            initializeAndUnproxy(form);
+        }
+        return form;
+    }
+
     @Override
     @Cacheable(value = "webformsforms", key = "#id")
     @Transactional(value = "webformsTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true)
     public Form get(Long id) {
         Form form = super.get(id);
-        if (form != null) {
-            form.initializeSets();
-            initializeAndUnproxy(form);
-        }
+        prepareForm(form);
         return form;
     }
 
@@ -184,7 +189,7 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
             } else if (resultForms.isEmpty()) {
                 return null;
             }
-            return resultForms.get(0);
+            return prepareForm(resultForms.get(0));
         } catch (NoResultException e) {
             return null;
         }
