@@ -1694,7 +1694,7 @@ public class ApplicationController {
     public PublishedForm publishForm(Form form) throws MultiplesFormsFoundException {
         PublishedForm publishedForm = publishedFormDao.get(form.getLabel(), form.getVersion(), form.getOrganizationId());
         if (publishedForm != null) {
-            publishedForm.setJsonCode(form.toJson());
+            publishedForm.setJsonCode(new CompleteFormView(form).toJson());
             return publishedFormDao.merge(publishedForm);
         } else {
             return publishedFormDao.makePersistent(new PublishedForm(form));

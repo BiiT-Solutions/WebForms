@@ -4,6 +4,7 @@ import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
+import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.exceptions.InvalidValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -69,7 +70,7 @@ public class FormRestService {
                 return Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"Unknown form with name '" + formName +
                         "' and version '" + formVersion + "' in organization '" + organizationId + "'.\"}").build();
             }
-            final String json = form.toJson();
+            final String json = new CompleteFormView(form).toJson();
             WebformsLogger.debug(FormRestService.class.getName(), "Form retrieved successfully:\n{} ", json);
             return Response.ok(json, MediaType.APPLICATION_JSON).build();
         } catch (MultiplesFormsFoundException e) {
