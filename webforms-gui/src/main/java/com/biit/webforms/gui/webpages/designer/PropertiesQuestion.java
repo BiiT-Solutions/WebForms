@@ -6,7 +6,7 @@ import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
-import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
+import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithMedia;
 import com.biit.webforms.language.AnswerFormatUi;
 import com.biit.webforms.language.AnswerSubformatUi;
 import com.biit.webforms.language.AnswerTypeUi;
@@ -24,7 +24,7 @@ import com.vaadin.ui.TextField;
 import java.util.Date;
 import java.util.Objects;
 
-public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Question> {
+public class PropertiesQuestion extends PropertiesForStorableObjectWithMedia<Question> {
     private static final long serialVersionUID = 7572463216386081265L;
     private static final String WIDTH = "200px";
     private static final int MAX_ANSWERS_SELECTED = 2;
@@ -376,7 +376,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithImages<Qu
                 description.getValue(), mandatory.getValue(), (AnswerType) answerType.getValue(), (AnswerFormat) answerFormat.getValue(),
                 (AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue, disableEdition.getValue(),
                 maxAnswersSelectedValue, consecutiveAnswers.getValue(), descriptionAlwaysVisible.getValue(), answersDescriptionAlwaysVisible.getValue(),
-                inverseAnswerOrder.getValue(), getImage());
+                inverseAnswerOrder.getValue(), getImage(), getVideo(), getAudio());
 
         super.updateElement();
     }

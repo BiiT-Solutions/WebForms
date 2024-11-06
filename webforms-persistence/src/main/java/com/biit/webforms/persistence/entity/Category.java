@@ -29,13 +29,19 @@ import java.util.List;
 @JsonSerialize(using = CategorySerializer.class)
 @Table(name = "tree_categories")
 @Cacheable()
-public class Category extends BaseCategory implements ElementWithImage {
+public class Category extends BaseCategory implements ElementWithMedia {
 	private static final long serialVersionUID = 7418748035993485582L;
 	private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>(Arrays.asList(BaseQuestion.class,
 			BaseRepeatableGroup.class));
 
 	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private TreeObjectImage image;
+
+	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectVideo video;
+
+	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectAudio audio;
 
 	public Category() {
 		super();
@@ -124,5 +130,32 @@ public class Category extends BaseCategory implements ElementWithImage {
 	@Override
 	public TreeObjectImage getImage() {
 		return image;
+	}
+
+
+	@Override
+	public void setVideo(TreeObjectVideo video) {
+		this.video = video;
+		if (video != null) {
+			video.setElement(this);
+		}
+	}
+
+	@Override
+	public TreeObjectVideo getVideo() {
+		return video;
+	}
+
+	@Override
+	public void setAudio(TreeObjectAudio audio) {
+		this.audio = audio;
+		if (audio != null) {
+			audio.setElement(this);
+		}
+	}
+
+	@Override
+	public TreeObjectAudio getAudio() {
+		return audio;
 	}
 }

@@ -10,7 +10,7 @@ import com.biit.webforms.exporters.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.exporters.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.exporters.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
-import com.biit.webforms.persistence.entity.ElementWithImage;
+import com.biit.webforms.persistence.entity.ElementWithMedia;
 import com.biit.webforms.persistence.entity.Form;
 
 /**
@@ -35,8 +35,8 @@ public class XFormsCategory extends XFormsGroup {
 
 		section.append("<" + getName() + ">");
 		// Add element's image
-		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(), getXFormsHelper(),
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithMedia && ((ElementWithMedia) getSource()).getImage() != null) {
+			section.append(XFormsImage.getDefinition(((ElementWithMedia) getSource()).getImage(), getXFormsHelper(),
 					(Form) getSource().getAncestor(Form.class), getXFormsHelper().getOrganization(), getXFormsHelper().isPreviewMode()));
 		}
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
@@ -69,8 +69,8 @@ public class XFormsCategory extends XFormsGroup {
 		binding.append(" ref=\"").append(getXPath()).append("\" >");
 
 		// Add form image binding
-		if (getXFormsHelper().isImagesEnabled() && ((ElementWithImage) getSource()).getImage() != null) {
-			XFormsImage.getBinding(this, ((ElementWithImage) getSource()).getImage(), binding, getRelevantStructure(), getXFormsHelper(), getSource());
+		if (getXFormsHelper().isImagesEnabled() && ((ElementWithMedia) getSource()).getImage() != null) {
+			XFormsImage.getBinding(this, ((ElementWithMedia) getSource()).getImage(), binding, getRelevantStructure(), getXFormsHelper(), getSource());
 		}
 
 		// Add also children.
@@ -95,8 +95,8 @@ public class XFormsCategory extends XFormsGroup {
 		resource.append(getHelp(language));
 
 		// Add element's image.
-		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			resource.append(XFormsImage.getResources(((ElementWithImage) getSource()).getImage(), language, getXFormsHelper()));
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithMedia && ((ElementWithMedia) getSource()).getImage() != null) {
+			resource.append(XFormsImage.getResources(((ElementWithMedia) getSource()).getImage(), language, getXFormsHelper()));
 		}
 
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {
@@ -124,8 +124,8 @@ public class XFormsCategory extends XFormsGroup {
 		body.append(getBodyHelp());
 
 		// Add element's image.
-		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			XFormsImage.getBody(this, ((ElementWithImage) getSource()).getImage(), body, getXFormsHelper());
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithMedia && ((ElementWithMedia) getSource()).getImage() != null) {
+			XFormsImage.getBody(this, ((ElementWithMedia) getSource()).getImage(), body, getXFormsHelper());
 		}
 
 		for (XFormsObject<? extends TreeObject> child : getChildren()) {

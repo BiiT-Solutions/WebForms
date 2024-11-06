@@ -11,7 +11,7 @@ import com.biit.webforms.exporters.xforms.exceptions.InvalidDateException;
 import com.biit.webforms.exporters.xforms.exceptions.NotExistingDynamicFieldException;
 import com.biit.webforms.exporters.xforms.exceptions.PostCodeRuleSyntaxError;
 import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
-import com.biit.webforms.persistence.entity.ElementWithImage;
+import com.biit.webforms.persistence.entity.ElementWithMedia;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Question;
@@ -50,8 +50,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		StringBuilder section = new StringBuilder();
 
 		// Add element's image
-		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(), getXFormsHelper(),
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithMedia && ((ElementWithMedia) getSource()).getImage() != null) {
+			section.append(XFormsImage.getDefinition(((ElementWithMedia) getSource()).getImage(), getXFormsHelper(),
 					(Form) getSource().getAncestor(Form.class), getXFormsHelper().getOrganization(), getXFormsHelper().isPreviewMode()));
 		}
 
@@ -80,8 +80,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 	@Override
 	public void getBinding(StringBuilder binding) throws NotExistingDynamicFieldException, InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError {
 		// Add form image binding
-		if (getXFormsHelper().isImagesEnabled() && (getSource() instanceof ElementWithImage) && ((ElementWithImage) getSource()).getImage() != null) {
-			XFormsImage.getBinding(this.getParent(), ((ElementWithImage) getSource()).getImage(), binding, getRelevantStructure(), getXFormsHelper(),
+		if (getXFormsHelper().isImagesEnabled() && (getSource() instanceof ElementWithMedia) && ((ElementWithMedia) getSource()).getImage() != null) {
+			XFormsImage.getBinding(this.getParent(), ((ElementWithMedia) getSource()).getImage(), binding, getRelevantStructure(), getXFormsHelper(),
 					getSource());
 		}
 
@@ -424,8 +424,8 @@ public class XFormsQuestion extends XFormsObject<BaseQuestion> {
 		StringBuilder section = new StringBuilder();
 
 		// Add element's image.
-		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			XFormsImage.getBody(this.getParent(), ((ElementWithImage) getSource()).getImage(), section, getXFormsHelper());
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithMedia && ((ElementWithMedia) getSource()).getImage() != null) {
+			XFormsImage.getBody(this.getParent(), ((ElementWithMedia) getSource()).getImage(), section, getXFormsHelper());
 		}
 
 		section.append("<xf:" + getElementFormDefinition() + " " + getApparence() + " id=\"" + getSectionControlName() + "\" class=\"" + getCssClass()

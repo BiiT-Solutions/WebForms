@@ -67,7 +67,7 @@ import java.util.Set;
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
         + StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
 @Cacheable()
-public class Form extends BaseForm implements IWebformsFormView, ElementWithImage {
+public class Form extends BaseForm implements IWebformsFormView, ElementWithMedia {
     private static final long serialVersionUID = 5220239269341014315L;
     public static final int MAX_JSON_LENGTH = 5242880;  //5MB
 
@@ -117,6 +117,12 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
 
     @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private TreeObjectImage image;
+
+    @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private TreeObjectVideo video;
+
+    @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private TreeObjectAudio audio;
 
     // Disables in orbeon the edition of this field. Means that when creating a
     // new form in orbeon is enabled, but when editing is disabled.
@@ -694,6 +700,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         if (image != null) {
             image.resetIds();
         }
+        if (video != null) {
+            video.resetIds();
+        }
     }
 
     @Override
@@ -701,6 +710,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         super.resetDatabaseIds();
         if (image != null) {
             image.resetDatabaseIds();
+        }
+        if (video != null) {
+            video.resetDatabaseIds();
         }
     }
 
@@ -1001,6 +1013,33 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
         return image;
     }
 
+
+    @Override
+    public void setVideo(TreeObjectVideo video) {
+        this.video = video;
+        if (video != null) {
+            video.setElement(this);
+        }
+    }
+
+    @Override
+    public TreeObjectVideo getVideo() {
+        return video;
+    }
+
+    @Override
+    public void setAudio(TreeObjectAudio audio) {
+        this.audio = audio;
+        if (audio != null) {
+            audio.setElement(this);
+        }
+    }
+
+    @Override
+    public TreeObjectAudio getAudio() {
+        return audio;
+    }
+
     @Override
     public Set<TreeObjectImage> getAllImages() {
         Set<TreeObjectImage> images = new HashSet<>();
@@ -1008,9 +1047,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithImag
             images.add(this.getImage());
         }
         for (StorableObject children : getAllInnerStorableObjects()) {
-            if (children instanceof ElementWithImage) {
-                if (((ElementWithImage) children).getImage() != null) {
-                    images.add(((ElementWithImage) children).getImage());
+            if (children instanceof ElementWithMedia) {
+                if (((ElementWithMedia) children).getImage() != null) {
+                    images.add(((ElementWithMedia) children).getImage());
                 }
             }
         }

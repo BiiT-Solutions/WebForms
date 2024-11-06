@@ -4,7 +4,7 @@ import com.biit.form.entity.BaseForm;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
-import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
+import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithMedia;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Form;
 import com.vaadin.ui.CheckBox;
@@ -12,7 +12,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForStorableObjectWithImages<T> {
+public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForStorableObjectWithMedia<T> {
 	private static final long serialVersionUID = -7053263006728113569L;
 	private static final String WIDTH = "200px";
 

@@ -12,39 +12,39 @@ import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.server.VaadinServlet;
 
 public class PropertiesForm extends PropertiesBaseForm<Form> {
-	private static final long serialVersionUID = -1665998885081665306L;
+    private static final long serialVersionUID = -1665998885081665306L;
 
-	private IFormDao formDao;
+    private IFormDao formDao;
 
-	public PropertiesForm() {
-		super(Form.class);
-		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-		formDao = (IFormDao) helper.getBean("webformsFormDao");
-	}
+    public PropertiesForm() {
+        super(Form.class);
+        SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
+        formDao = (IFormDao) helper.getBean("webformsFormDao");
+    }
 
-	@Override
-	public void updateElement() {
-		if (getLabelTextField().isValid() && getLabelTextField().getValue() != null && getLabelTextField().getValue().length() > 0) {
-			try {
-				// Checks if already exists a form with this label and its
-				// version.
-				if (!formDao.exists(getLabelTextField().getValue(), ((BaseForm) getInstance()).getVersion(),
-						((BaseForm) getInstance()).getOrganizationId(), getInstance().getId())) {
-					ApplicationUi.getController().updateForm((Form) getInstance(), getLabelTextField().getValue(),
-							getDescriptionTextArea().getValue(), getImage(), getDisableEdition().getValue());
-				} else {
-					getLabelTextField().setValue(((BaseForm) getInstance()).getLabel());
-					MessageManager.showWarning(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE,
-							LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE_DESCRIPTION);
-					ApplicationUi.getController().updateForm((Form) getInstance(), ((BaseForm) getInstance()).getLabel(),
-							getDescriptionTextArea().getValue(), getImage(), getDisableEdition().getValue());
-				}
-			} catch (ReadOnlyException e) {
-				MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE);
-				WebformsUiLogger.errorMessage(this.getClass().getName(), e);
-			}
-			super.updateElement();
-		}
-	}
+    @Override
+    public void updateElement() {
+        if (getLabelTextField().isValid() && getLabelTextField().getValue() != null && getLabelTextField().getValue().length() > 0) {
+            try {
+                // Checks if already exists a form with this label and its
+                // version.
+                if (!formDao.exists(getLabelTextField().getValue(), (getInstance()).getVersion(),
+                        ((BaseForm) getInstance()).getOrganizationId(), getInstance().getId())) {
+                    ApplicationUi.getController().updateForm(getInstance(), getLabelTextField().getValue(),
+                            getDescriptionTextArea().getValue(), getImage(), getVideo(), getAudio(), getDisableEdition().getValue());
+                } else {
+                    getLabelTextField().setValue((getInstance()).getLabel());
+                    MessageManager.showWarning(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE,
+                            LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE_DESCRIPTION);
+                    ApplicationUi.getController().updateForm(getInstance(), (getInstance()).getLabel(),
+                            getDescriptionTextArea().getValue(), getImage(), getVideo(), getAudio(), getDisableEdition().getValue());
+                }
+            } catch (ReadOnlyException e) {
+                MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE);
+                WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+            }
+            super.updateElement();
+        }
+    }
 
 }

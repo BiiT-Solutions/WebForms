@@ -45,7 +45,7 @@ import java.util.Objects;
 @JsonSerialize(using = QuestionSerializer.class)
 @Table(name = "tree_questions")
 @Cacheable(true)
-public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithImage,
+public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithMedia,
         ElementWithDescription {
     private static final long serialVersionUID = -7243001035969348318L;
     public static final int MAX_DESCRIPTION_LENGTH = 10000;
@@ -105,6 +105,12 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
     @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private TreeObjectImage image;
+
+    @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private TreeObjectVideo video;
+
+    @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private TreeObjectAudio audio;
 
     @Column(length = MAX_ALIAS_LENGTH, columnDefinition = "varchar(" + MAX_ALIAS_LENGTH + ")")
     private String alias;
@@ -628,5 +634,32 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+
+    @Override
+    public void setVideo(TreeObjectVideo video) {
+        this.video = video;
+        if (video != null) {
+            video.setElement(this);
+        }
+    }
+
+    @Override
+    public TreeObjectVideo getVideo() {
+        return video;
+    }
+
+    @Override
+    public void setAudio(TreeObjectAudio audio) {
+        this.audio = audio;
+        if (audio != null) {
+            audio.setElement(this);
+        }
+    }
+
+    @Override
+    public TreeObjectAudio getAudio() {
+        return audio;
     }
 }

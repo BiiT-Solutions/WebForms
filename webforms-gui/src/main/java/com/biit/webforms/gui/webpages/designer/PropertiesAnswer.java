@@ -3,14 +3,14 @@ package com.biit.webforms.gui.webpages.designer;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
-import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithImages;
+import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithMedia;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-public class PropertiesAnswer extends PropertiesForStorableObjectWithImages<Answer> {
+public class PropertiesAnswer extends PropertiesForStorableObjectWithMedia<Answer> {
     private static final long serialVersionUID = 8035711998129559199L;
     private static final String WIDTH = "200px";
 
@@ -83,7 +83,7 @@ public class PropertiesAnswer extends PropertiesForStorableObjectWithImages<Answ
             tempLabel = label.getValue();
         }
         ApplicationUi.getController().updateAnswer(getInstance(), tempValue, tempLabel, description.getValue(),
-                getImage());
+                getImage(), getVideo(), getAudio());
 
         super.updateElement();
     }

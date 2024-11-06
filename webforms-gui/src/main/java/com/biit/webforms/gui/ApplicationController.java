@@ -72,7 +72,9 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
+import com.biit.webforms.persistence.entity.TreeObjectAudio;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
+import com.biit.webforms.persistence.entity.TreeObjectVideo;
 import com.biit.webforms.persistence.entity.WebformsBaseQuestion;
 import com.biit.webforms.persistence.entity.condition.Token;
 import com.biit.webforms.persistence.entity.condition.TokenComparationValue;
@@ -950,9 +952,11 @@ public class ApplicationController {
      * @param label
      * @param description
      */
-    public void updateForm(Form form, String label, String description, TreeObjectImage image, boolean editionDisabled) {
+    public void updateForm(Form form, String label, String description, TreeObjectImage image, TreeObjectVideo video,
+                           TreeObjectAudio audio, boolean editionDisabled) {
         try {
             if (!Objects.equals(form.getLabel(), label) || !Objects.equals(form.getDescription(), description) || !Objects.equals(form.getImage(), image)
+                    || !Objects.equals(form.getVideo(), video) || !Objects.equals(form.getAudio(), audio)
                     || (form.isEditionDisabled() != editionDisabled)) {
                 setUnsavedFormChanges(true);
                 form.setDescription(description);
@@ -960,6 +964,8 @@ public class ApplicationController {
                 form.setUpdatedBy(UserSession.getUser());
                 form.setUpdateTime();
                 form.setImage(image);
+                form.setVideo(video);
+                form.setAudio(audio);
                 form.setEditionDisabled(editionDisabled);
                 logInfoStart("updateForm", form, label, description, image != null ? image.getFileName() : null, editionDisabled);
             }
@@ -976,10 +982,11 @@ public class ApplicationController {
      * @param label
      * @param description
      */
-    public void updateAnswer(Answer answer, String value, String label, String description, TreeObjectImage image) {
+    public void updateAnswer(Answer answer, String value, String label, String description, TreeObjectImage image, TreeObjectVideo video,
+                             TreeObjectAudio audio) {
         try {
             if (!Objects.equals(answer.getLabel(), label) || !Objects.equals(answer.getDescription(), description) || !Objects.equals(answer.getValue(), value)
-                    || !Objects.equals(answer.getImage(), image)) {
+                    || !Objects.equals(answer.getImage(), image) || !Objects.equals(answer.getVideo(), video) || !Objects.equals(answer.getAudio(), audio)) {
                 setUnsavedFormChanges(true);
                 answer.setValue(value);
                 answer.setLabel(label);
@@ -987,6 +994,8 @@ public class ApplicationController {
                 answer.setUpdatedBy(UserSession.getUser());
                 answer.setUpdateTime();
                 answer.setImage(image);
+                answer.setVideo(video);
+                answer.setAudio(audio);
                 logInfoStart("updateAnswer", answer, value, label, description, image != null ? image.getFileName() : null);
             }
         } catch (FieldTooLongException | CharacterNotAllowedException e) {
@@ -1001,15 +1010,18 @@ public class ApplicationController {
      * @param name
      * @param label
      */
-    public void updateCategory(Category category, String name, String label, TreeObjectImage image) {
+    public void updateCategory(Category category, String name, String label, TreeObjectImage image, TreeObjectVideo video, TreeObjectAudio audio) {
         try {
-            if (!Objects.equals(category.getName(), name) || !Objects.equals(category.getLabel(), label) || !Objects.equals(category.getImage(), image)) {
+            if (!Objects.equals(category.getName(), name) || !Objects.equals(category.getLabel(), label)
+                    || !Objects.equals(category.getImage(), image) || !Objects.equals(category.getVideo(), video) || !Objects.equals(category.getAudio(), audio)) {
                 setUnsavedFormChanges(true);
                 category.setName(name);
                 category.setLabel(label);
                 category.setUpdatedBy(UserSession.getUser());
                 category.setUpdateTime();
                 category.setImage(image);
+                category.setVideo(video);
+                category.setAudio(audio);
                 logInfoStart("updateCategory", category, name, label, image != null ? image.getFileName() : null);
             }
         } catch (FieldTooLongException | CharacterNotAllowedException e) {
@@ -1063,7 +1075,7 @@ public class ApplicationController {
                                AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled,
                                Integer maxAnswersSelected, Boolean consecutiveAnswers, Boolean descriptionAlwaysVisible, Boolean answersDescriptionAlwaysVisible,
                                boolean inverseAnswersOrder,
-                               TreeObjectImage image) {
+                               TreeObjectImage image, TreeObjectVideo video, TreeObjectAudio audio) {
         try {
             if (!Objects.equals(question.getLabel(), label) || !Objects.equals(question.getDescription(), description)
                     || !Objects.equals(question.getName(), name) || question.isMandatory() != mandatory
@@ -1075,6 +1087,7 @@ public class ApplicationController {
                     || question.isHorizontal() != horizontal || (defaultValue == null && !Objects.equals(question.getDefaultValue(), ""))
                     || (defaultValue != null && !Objects.equals(question.getDefaultValue(), defaultValue.toString()))
                     || (question.isEditionDisabled() != editionDisabled) || !Objects.equals(question.getImage(), image)
+                    || !Objects.equals(question.getVideo(), video) || !Objects.equals(question.getAudio(), audio)
                     || !Objects.equals(question.getMaxAnswersSelected(), maxAnswersSelected)
                     || !Objects.equals(question.isConsecutiveAnswers(), consecutiveAnswers)
                     || !Objects.equals(question.isInverseAnswerOrder(), inverseAnswersOrder)
@@ -1101,6 +1114,8 @@ public class ApplicationController {
                 question.setDescriptionAlwaysVisible(descriptionAlwaysVisible != null ? descriptionAlwaysVisible : false);
                 question.setAnswersDescriptionAlwaysVisible(answersDescriptionAlwaysVisible != null ? answersDescriptionAlwaysVisible : false);
                 question.setImage(image);
+                question.setVideo(video);
+                question.setAudio(audio);
                 logInfoStart("updateQuestion", question, name, label, description, mandatory, answerType, answerFormat, answerSubformat, horizontal,
                         image != null ? image.getFileName() : null);
             }

@@ -215,9 +215,9 @@ public class BlockReference extends TreeObject implements IWebformsBlockView {
     public Set<TreeObjectImage> getAllImages() {
         Set<TreeObjectImage> images = new HashSet<>();
         for (StorableObject children : getAllInnerStorableObjects()) {
-            if (children instanceof ElementWithImage) {
-                if (((ElementWithImage) children).getImage() != null) {
-                    images.add(((ElementWithImage) children).getImage());
+            if (children instanceof ElementWithMedia) {
+                if (((ElementWithMedia) children).getImage() != null) {
+                    images.add(((ElementWithMedia) children).getImage());
                 }
             }
         }

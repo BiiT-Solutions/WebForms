@@ -42,7 +42,7 @@ import java.util.List;
 @JsonSerialize(using = AnswerSerializer.class)
 @Table(name = "tree_answers")
 @Cacheable()
-public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithImage {
+public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithMedia {
     private static final long serialVersionUID = 7614678800982506178L;
     private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>(Collections.singletonList(Answer.class));
     public static final int MAX_DESCRIPTION_LENGTH = 10000;
@@ -52,6 +52,12 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
 
     @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private TreeObjectImage image;
+
+    @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private TreeObjectVideo video;
+
+    @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private TreeObjectAudio audio;
 
     public Answer() {
         super();
@@ -70,6 +76,12 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
         if (image != null) {
             image.resetIds();
         }
+        if (video != null) {
+            video.resetIds();
+        }
+        if (audio != null) {
+            audio.resetIds();
+        }
     }
 
     @Override
@@ -77,6 +89,12 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
         super.resetDatabaseIds();
         if (image != null) {
             image.resetDatabaseIds();
+        }
+        if (video != null) {
+            video.resetDatabaseIds();
+        }
+        if (audio != null) {
+            audio.resetDatabaseIds();
         }
     }
 
@@ -191,5 +209,31 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
     @Override
     public TreeObjectImage getImage() {
         return image;
+    }
+
+    @Override
+    public void setVideo(TreeObjectVideo video) {
+        this.video = video;
+        if (video != null) {
+            video.setElement(this);
+        }
+    }
+
+    @Override
+    public TreeObjectVideo getVideo() {
+        return video;
+    }
+
+    @Override
+    public void setAudio(TreeObjectAudio audio) {
+        this.audio = audio;
+        if (audio != null) {
+            audio.setElement(this);
+        }
+    }
+
+    @Override
+    public TreeObjectAudio getAudio() {
+        return audio;
     }
 }

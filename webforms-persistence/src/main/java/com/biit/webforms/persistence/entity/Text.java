@@ -27,7 +27,7 @@ import java.util.List;
 @JsonSerialize(using = TextSerializer.class)
 @Table(name = "tree_texts")
 @Cacheable(true)
-public class Text extends WebformsBaseQuestion implements ElementWithImage {
+public class Text extends WebformsBaseQuestion implements ElementWithMedia {
 	private static final long serialVersionUID = 4558033285332354062L;
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
 	public static final int MAX_DESCRIPTION_LABEL = 30;
@@ -40,6 +40,12 @@ public class Text extends WebformsBaseQuestion implements ElementWithImage {
 
 	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private TreeObjectImage image;
+
+	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectVideo video;
+
+	@OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private TreeObjectAudio audio;
 
 	public Text() {
 		super();
@@ -163,5 +169,32 @@ public class Text extends WebformsBaseQuestion implements ElementWithImage {
 	@Override
 	public TreeObjectImage getImage() {
 		return image;
+	}
+
+
+	@Override
+	public void setVideo(TreeObjectVideo video) {
+		this.video = video;
+		if (video != null) {
+			video.setElement(this);
+		}
+	}
+
+	@Override
+	public TreeObjectVideo getVideo() {
+		return video;
+	}
+
+	@Override
+	public void setAudio(TreeObjectAudio audio) {
+		this.audio = audio;
+		if (audio != null) {
+			audio.setElement(this);
+		}
+	}
+
+	@Override
+	public TreeObjectAudio getAudio() {
+		return audio;
 	}
 }

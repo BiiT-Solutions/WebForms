@@ -18,7 +18,7 @@ import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Category;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
-import com.biit.webforms.persistence.entity.ElementWithImage;
+import com.biit.webforms.persistence.entity.ElementWithMedia;
 import com.biit.webforms.persistence.entity.Flow;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.Group;
@@ -325,8 +325,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 		StringBuilder resource = new StringBuilder();
 
 		// Add element's image.
-		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			resource.append(XFormsImage.getResources(((ElementWithImage) getSource()).getImage(), language, getXFormsHelper()));
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithMedia && ((ElementWithMedia) getSource()).getImage() != null) {
+			resource.append(XFormsImage.getResources(((ElementWithMedia) getSource()).getImage(), language, getXFormsHelper()));
 		}
 
 		resource.append("<" + getName() + ">");
@@ -356,8 +356,8 @@ public abstract class XFormsObject<T extends TreeObject> {
 		StringBuilder section = new StringBuilder();
 
 		// Add element's image
-		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithImage && ((ElementWithImage) getSource()).getImage() != null) {
-			section.append(XFormsImage.getDefinition(((ElementWithImage) getSource()).getImage(), getXFormsHelper(),
+		if (getXFormsHelper().isImagesEnabled() && getSource() instanceof ElementWithMedia && ((ElementWithMedia) getSource()).getImage() != null) {
+			section.append(XFormsImage.getDefinition(((ElementWithMedia) getSource()).getImage(), getXFormsHelper(),
 					(Form) getSource().getAncestor(Form.class), getXFormsHelper().getOrganization(), getXFormsHelper().isPreviewMode()));
 		}
 
