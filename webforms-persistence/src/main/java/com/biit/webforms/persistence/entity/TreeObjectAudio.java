@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -62,26 +63,17 @@ public class TreeObjectAudio extends StorableObject {
     }
 
     @Override
-    public int hashCode() {
-        return url.hashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TreeObjectAudio)) return false;
+        if (!super.equals(o)) return false;
+        TreeObjectAudio that = (TreeObjectAudio) o;
+        return Objects.equals(url, that.url);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        TreeObjectAudio other = (TreeObjectAudio) obj;
-        if (url == null) {
-            return other.url == null;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), url);
     }
 
     public TreeObject getElement() {

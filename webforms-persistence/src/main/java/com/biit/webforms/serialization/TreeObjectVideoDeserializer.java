@@ -14,5 +14,7 @@ public class TreeObjectVideoDeserializer extends StorableObjectDeserializer<Tree
         super.deserialize(element, jsonObject, context);
 
         element.setUrl(parseString("videoUrl", jsonObject));
+        element.setWidth(parseInteger("width", jsonObject));
+        element.setHeight(parseInteger("height", jsonObject));
     }
 }

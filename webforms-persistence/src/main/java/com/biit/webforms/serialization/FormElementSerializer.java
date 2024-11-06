@@ -36,6 +36,12 @@ public class FormElementSerializer<T extends Form> extends BaseFormSerializer<T>
         if (src.getImage() != null) {
             jgen.writeObjectField("image", src.getImage());
         }
+        if (src.getVideo() != null) {
+            jgen.writeObjectField("video", src.getVideo());
+        }
+        if (src.getAudio() != null) {
+            jgen.writeObjectField("audio", src.getAudio());
+        }
     }
 
 }

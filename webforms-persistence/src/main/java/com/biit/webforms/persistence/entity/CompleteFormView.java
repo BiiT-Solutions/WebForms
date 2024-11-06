@@ -696,6 +696,36 @@ public class CompleteFormView extends Form implements IWebformsFormView {
     }
 
     @Override
+    public TreeObjectVideo getVideo() {
+        if (form == null) {
+            return null;
+        }
+        return form.getVideo();
+    }
+
+    @Override
+    public void setVideo(TreeObjectVideo video) {
+        if (form != null) {
+            form.setVideo(video);
+        }
+    }
+
+    @Override
+    public TreeObjectAudio getAudio() {
+        if (form == null) {
+            return null;
+        }
+        return form.getAudio();
+    }
+
+    @Override
+    public void setAudio(TreeObjectAudio audio) {
+        if (form != null) {
+            form.setAudio(audio);
+        }
+    }
+
+    @Override
     public Set<TreeObjectImage> getAllImages() {
         if (form == null) {
             return new HashSet<>();

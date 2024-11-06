@@ -7,7 +7,9 @@ import com.biit.webforms.enumerations.AnswerFormat;
 import com.biit.webforms.enumerations.AnswerSubformat;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.persistence.entity.Question;
+import com.biit.webforms.persistence.entity.TreeObjectAudio;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
+import com.biit.webforms.persistence.entity.TreeObjectVideo;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -54,6 +56,12 @@ public class QuestionDeserializer extends TreeObjectDeserializer<Question> {
 
         if ((jsonObject.get("image") != null)) {
             element.setImage(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("image").toString(), TreeObjectImage.class));
+        }
+        if (jsonObject.get("video") != null) {
+            element.setVideo(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("video").toString(), TreeObjectVideo.class));
+        }
+        if (jsonObject.get("audio") != null) {
+            element.setAudio(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("audio").toString(), TreeObjectAudio.class));
         }
 
         element.setDefaultValueString(parseString("defaultValueString", jsonObject));

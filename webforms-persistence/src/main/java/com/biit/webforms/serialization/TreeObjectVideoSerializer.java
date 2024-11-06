@@ -13,5 +13,7 @@ public class TreeObjectVideoSerializer extends StorableObjectSerializer<TreeObje
         super.serialize(src, jgen);
 
         jgen.writeStringField("videoUrl", src.getUrl());
+        jgen.writeNumberField("width", src.getWidth());
+        jgen.writeNumberField("height", src.getHeight());
     }
 }

@@ -60,7 +60,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
     // Put upload in this memory buffer that grows automatically
     private ByteArrayOutputStream imageMemoryOutputStream;
 
-    private TextField videoUrl;
+    private TextField videoUrl, videoWidth, videoHeight;;
     private TextField audioUrl;
 
     private Label status;
@@ -86,7 +86,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         super.initValues();
         initImageValues();
         initVideoValues();
-        initVideoValues();
+        initAudioValues();
     }
 
     private void initImageValues() {
@@ -113,6 +113,8 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         TreeObjectVideo video = getInstance().getVideo();
         if (video != null) {
             videoUrl.setValue(video.getUrl());
+            videoWidth.setValue(video.getWidth() + "");
+            videoHeight.setValue(video.getHeight() + "");
         }
     }
 
@@ -166,10 +168,16 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
 
     private void createVideoProperties() {
         videoUrl = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_VIDEO_URL));
+        videoWidth = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_WIDTH));
+        videoWidth.addValidator(new ValidatorInteger());
+        videoHeight = new TextField(ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_IMAGE_HEIGHT));
+        videoHeight.addValidator(new ValidatorInteger());
         FormLayout videoProperties = new FormLayout();
         videoProperties.setWidth(null);
         videoProperties.setHeight(null);
         videoProperties.addComponent(videoUrl);
+        videoProperties.addComponent(videoWidth);
+        videoProperties.addComponent(videoHeight);
         if (WebformsConfigurationReader.getInstance().isImagesEnabled()) {
             addTab(videoProperties, ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_VIDEO_TITLE), false);
         }
@@ -446,6 +454,17 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
     public TreeObjectVideo getVideo() {
         final TreeObjectVideo video = new TreeObjectVideo();
         video.setUrl(videoUrl.getValue());
+
+        video.setCreatedBy(UserSession.getUser().getUniqueId());
+        try {
+            video.setWidth(Integer.parseInt(videoWidth.getValue()));
+        } catch (NumberFormatException e) {
+        }
+        try {
+            video.setHeight(Integer.parseInt(videoHeight.getValue()));
+        } catch (NumberFormatException e) {
+        }
+
         return video;
     }
 

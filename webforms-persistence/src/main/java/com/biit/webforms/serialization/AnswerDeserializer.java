@@ -3,7 +3,9 @@ package com.biit.webforms.serialization;
 import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.form.jackson.serialization.TreeObjectDeserializer;
 import com.biit.webforms.persistence.entity.Answer;
+import com.biit.webforms.persistence.entity.TreeObjectAudio;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
+import com.biit.webforms.persistence.entity.TreeObjectVideo;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -17,6 +19,12 @@ public class AnswerDeserializer extends TreeObjectDeserializer<Answer> {
         element.setDescription(parseString("description", jsonObject));
         if (jsonObject.get("image") != null) {
             element.setImage(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("image").toString(), TreeObjectImage.class));
+        }
+        if (jsonObject.get("video") != null) {
+            element.setVideo(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("video").toString(), TreeObjectVideo.class));
+        }
+        if (jsonObject.get("audio") != null) {
+            element.setAudio(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("audio").toString(), TreeObjectAudio.class));
         }
     }
 

@@ -49,7 +49,7 @@ public class ServerTranslate {
 		if (code == null) {
 			return null;
 		}
-		return translate(code, null);
+		return translate(code.trim(), null);
 	}
 
 	public static String translate(ILanguageCode code, Object[] args) {

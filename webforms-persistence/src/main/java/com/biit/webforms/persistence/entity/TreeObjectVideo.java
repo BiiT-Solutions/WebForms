@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -30,6 +31,11 @@ public class TreeObjectVideo extends StorableObject {
 
     @Column(columnDefinition = "TEXT")
     private String url;
+
+    private int width;
+
+    private int height;
+
 
     public TreeObjectVideo() {
 
@@ -62,26 +68,17 @@ public class TreeObjectVideo extends StorableObject {
     }
 
     @Override
-    public int hashCode() {
-        return url.hashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TreeObjectVideo)) return false;
+        if (!super.equals(o)) return false;
+        TreeObjectVideo that = (TreeObjectVideo) o;
+        return Objects.equals(url, that.url);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        TreeObjectVideo other = (TreeObjectVideo) obj;
-        if (url == null) {
-            return other.url == null;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), url);
     }
 
     public TreeObject getElement() {
@@ -100,4 +97,19 @@ public class TreeObjectVideo extends StorableObject {
         this.url = url;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
 }
