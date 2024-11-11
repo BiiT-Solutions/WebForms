@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.biit</groupId>
         <artifactId>webforms</artifactId>
-        <version>2.13.95</version>
+        <version>2.13.96-SNAPSHOT</version>
     </parent>
 
     <properties>
