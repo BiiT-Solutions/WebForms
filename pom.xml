@@ -5,7 +5,7 @@
     <groupId>com.biit</groupId>
     <artifactId>webforms</artifactId>
     <packaging>pom</packaging>
-    <version>2.13.99-SNAPSHOT</version>
+    <version>2.13.99</version>
     <name>Pilot Agile Testing for WebForms</name>
     <description>Form Designer</description>
 
@@ -42,7 +42,7 @@
     <scm>
         <connection>scm:git:git.biit-solutions.com:Java/WebForms.git</connection>
         <developerConnection>scm:git:git.biit-solutions.com:Java/WebForms.git</developerConnection>
-        <tag>webforms</tag>
+        <tag>webforms-2.13.99</tag>
     </scm>
 
     <dependencies>
