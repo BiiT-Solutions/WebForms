@@ -166,6 +166,9 @@
 		<property name="fallbackToSystemLocale" value="false"></property>
 	</bean>
 
+	<!-- PROVIDERS -->
+	<bean name="formProvider" class="com.biit.webforms.providers.FormProvider" />
+
 	<!-- DAOS -->
 	<bean name="webformsFormDao" class="com.biit.webforms.persistence.dao.hibernate.FormDao" />
 	<bean name="simpleFormDaoWebforms"

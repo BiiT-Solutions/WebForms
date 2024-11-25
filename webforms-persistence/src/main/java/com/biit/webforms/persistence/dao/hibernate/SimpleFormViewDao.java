@@ -4,6 +4,7 @@ import com.biit.webforms.enumerations.FormWorkStatus;
 import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.entity.Block;
 import com.biit.webforms.persistence.entity.SimpleFormView;
+import com.biit.webforms.persistence.entity.SimpleFormViewWithContent;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -104,14 +105,14 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
     }
 
     @Override
-    public SimpleFormView get(Long id) {
+    public SimpleFormViewWithContent get(Long id) {
         Query query = entityManager
-                .createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, tf.linked_form_label, tf.linked_form_organization_id, tf.status, tf.form_reference, json is not null "
+                .createNativeQuery("SELECT tf.id, tf.name, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id, tf.linked_form_label, tf.linked_form_organization_id, tf.status, tf.form_reference, tf.json "
                         + "FROM tree_forms tf WHERE tf.id='" + id + "'");
 
         Object[] row = (Object[]) query.getSingleResult();
 
-        SimpleFormView formView = new SimpleFormView();
+        SimpleFormViewWithContent formView = new SimpleFormViewWithContent();
         formView.setId(id);
         formView.setName((String) row[1]);
         formView.setLabel((String) row[2]);
@@ -141,7 +142,8 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
             formView.setFormReferenceId(((Number) row[13]).longValue());
         }
 
-        formView.setHasJson(row[14] != null && ((Number) row[14]).intValue() > 0);
+        formView.setHasJson(row[14] != null);
+        formView.setJson((String)  row[14]);
 
         formView.setLinkedFormVersions(getLinkedFormVersions(formView.getId()));
 

@@ -14,20 +14,24 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.dao.IFormDao;
+import com.biit.webforms.providers.FormProvider;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 public class WindowSettings extends Window {
 	private static final long serialVersionUID = -3387583340066127391L;
 
 	private static final String width = "300px";
 
-	private IFormDao formDao;
+	private FormProvider formProvider;
 
 	private IWebformsSecurityService webformsSecurityService;
 
@@ -43,7 +47,7 @@ public class WindowSettings extends Window {
 		setCaption(LanguageCodes.CAPTION_SETTINGS_TITLE.translation());
 
 		SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-		formDao = (IFormDao) helper.getBean("webformsFormDao");
+		formProvider = (FormProvider) helper.getBean("formProvider");
 		webformsSecurityService = (IWebformsSecurityService) helper.getBean("webformsSecurityService");
 	}
 
@@ -78,7 +82,7 @@ public class WindowSettings extends Window {
 									@Override
 									public void acceptAction(WindowAcceptCancel window) {
 										// Remove database cache.
-										formDao.evictAllCache();
+										formProvider.evictAllCache();
 										// Reset Liferay Users pool.
 										webformsSecurityService.reset();
 										ApplicationUi.navigateTo(WebMap.FORM_MANAGER);

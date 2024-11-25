@@ -6,29 +6,29 @@ import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.CompleteFormView;
+import com.biit.webforms.providers.FormProvider;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.server.VaadinServlet;
 
 public class PropertiesCompleteFormView extends PropertiesBaseForm<CompleteFormView> {
     private static final long serialVersionUID = -478559896636685508L;
 
-    private IFormDao formDao;
+    private FormProvider formProvider;
 
     public PropertiesCompleteFormView() {
         super(CompleteFormView.class);
         SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-        formDao = (IFormDao) helper.getBean("webformsFormDao");
+        formProvider = (FormProvider) helper.getBean("formProvider");
     }
 
     @Override
     public void updateElement() {
-        if (getLabelTextField().isValid() && getLabelTextField().getValue() != null && getLabelTextField().getValue().length() > 0) {
+        if (getLabelTextField().isValid() && getLabelTextField().getValue() != null && !getLabelTextField().getValue().isEmpty()) {
             try {
                 // Checks if already exists a form with this label and its
                 // version.
-                if (!formDao.exists(getLabelTextField().getValue(), ((BaseForm) getInstance()).getVersion(),
+                if (!formProvider.exists(getLabelTextField().getValue(), getInstance().getVersion(),
                         ((BaseForm) getInstance()).getOrganizationId(), getInstance().getId())) {
                     ApplicationUi.getController().updateForm(getInstance().getForm(), getLabelTextField().getValue(),
                             getDescriptionTextArea().getValue(), getImage(), getVideo(), getAudio(), getDisableEdition().getValue());
@@ -36,7 +36,7 @@ public class PropertiesCompleteFormView extends PropertiesBaseForm<CompleteFormV
                     getLabelTextField().setValue(((BaseForm) getInstance()).getLabel());
                     MessageManager.showWarning(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE,
                             LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE_DESCRIPTION);
-                    ApplicationUi.getController().updateForm(getInstance().getForm(), ((BaseForm) getInstance()).getLabel(),
+                    ApplicationUi.getController().updateForm(getInstance().getForm(), getInstance().getLabel(),
                             getDescriptionTextArea().getValue(), getImage(), getVideo(), getAudio(), getDisableEdition().getValue());
                 }
             } catch (ReadOnlyException e) {

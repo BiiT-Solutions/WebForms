@@ -6,29 +6,29 @@ import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.language.LanguageCodes;
-import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.entity.Form;
+import com.biit.webforms.providers.FormProvider;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.server.VaadinServlet;
 
 public class PropertiesForm extends PropertiesBaseForm<Form> {
     private static final long serialVersionUID = -1665998885081665306L;
 
-    private IFormDao formDao;
+    private final FormProvider formProvider;
 
     public PropertiesForm() {
         super(Form.class);
         SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
-        formDao = (IFormDao) helper.getBean("webformsFormDao");
+        formProvider = (FormProvider) helper.getBean("formProvider");
     }
 
     @Override
     public void updateElement() {
-        if (getLabelTextField().isValid() && getLabelTextField().getValue() != null && getLabelTextField().getValue().length() > 0) {
+        if (getLabelTextField().isValid() && getLabelTextField().getValue() != null && !getLabelTextField().getValue().isEmpty()) {
             try {
                 // Checks if already exists a form with this label and its
                 // version.
-                if (!formDao.exists(getLabelTextField().getValue(), (getInstance()).getVersion(),
+                if (!formProvider.exists(getLabelTextField().getValue(), (getInstance()).getVersion(),
                         ((BaseForm) getInstance()).getOrganizationId(), getInstance().getId())) {
                     ApplicationUi.getController().updateForm(getInstance(), getLabelTextField().getValue(),
                             getDescriptionTextArea().getValue(), getImage(), getVideo(), getAudio(), getDisableEdition().getValue());

@@ -2,11 +2,11 @@ package com.biit.webforms.rest;
 
 import com.biit.form.jackson.serialization.ObjectMapperFactory;
 import com.biit.webforms.logger.WebformsLogger;
-import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
 import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.exceptions.InvalidValue;
+import com.biit.webforms.providers.FormProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ import javax.ws.rs.core.Response;
 public class FormRestService {
 
     @Autowired
-    private IFormDao formDao;
+    private FormProvider formProvider;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -37,7 +37,7 @@ public class FormRestService {
         try {
             parsedPetition = parsePetition(petition);
             WebformsLogger.debug(FormRestService.class.getName(), "Payload obtained '{}'.", parsedPetition);
-            Form form = formDao.get(parsedPetition.formName, parsedPetition.getVersion(), parsedPetition.getOrganizationId());
+            Form form = formProvider.get(parsedPetition.formName, parsedPetition.getVersion(), parsedPetition.getOrganizationId());
             WebformsLogger.debug(FormRestService.class.getName(), "Form obtained '{}'.", form);
             if (form == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"Unknown form with name '" + parsedPetition.getFormName() +
@@ -70,7 +70,7 @@ public class FormRestService {
                 formName, formVersion, organizationId);
         try {
             //String jsonCode = formDao.getJson(formView.getId());
-            Form form = formDao.get(formName, formVersion, organizationId);
+            Form form = formProvider.get(formName, formVersion, organizationId);
             WebformsLogger.debug(FormRestService.class.getName(), "Form obtained '{}'.", form);
             if (form == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("{\"error\":\"Unknown form with name '" + formName +

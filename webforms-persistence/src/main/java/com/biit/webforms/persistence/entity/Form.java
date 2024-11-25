@@ -202,6 +202,19 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithMedi
         }
     }
 
+    public Form copy(Long userId, String label) throws CharacterNotAllowedException, NotValidStorableObjectException,
+            FieldTooLongException {
+        Form copiedForm = (Form) generateCopy(false, true);
+        copiedForm.setLabel(label);
+        copiedForm.resetIds();
+        copiedForm.setVersion(this.getVersion() != null ? this.getVersion() : 1);
+        copiedForm.setCreatedBy(userId);
+        copiedForm.setUpdatedBy(userId);
+        copiedForm.setCreationTime();
+        copiedForm.setUpdateTime();
+        return copiedForm;
+    }
+
     /**
      * Returns all elements that the user has selected to hide.
      */

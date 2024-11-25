@@ -92,6 +92,7 @@ import com.biit.webforms.persistence.entity.webservices.WebserviceCall;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLink;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallInputLinkErrors;
 import com.biit.webforms.persistence.entity.webservices.WebserviceCallOutputLink;
+import com.biit.webforms.providers.FormProvider;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
 import com.biit.webforms.utils.conversor.abcd.importer.ConversorAbcdFormToForm;
@@ -120,6 +121,7 @@ import java.util.Set;
  * User Session data handler.
  */
 public class ApplicationController {
+    private final FormProvider formProvider;
     private final IFormDao formDao;
     private final IBlockDao blockDao;
     private final IPublishedFormDao publishedFormDao;
@@ -140,6 +142,7 @@ public class ApplicationController {
         super();
         SpringContextHelper helper = new SpringContextHelper(VaadinServlet.getCurrent().getServletContext());
         formDao = (IFormDao) helper.getBean("webformsFormDao");
+        formProvider = (FormProvider) helper.getBean("formProvider");
         blockDao = (IBlockDao) helper.getBean("blockDao");
         publishedFormDao = (IPublishedFormDao) helper.getBean("publishedFormDao");
         simpleFormViewDao = ((ISimpleFormViewDao) helper.getBean("simpleFormDaoWebforms"));
@@ -173,7 +176,7 @@ public class ApplicationController {
         }
 
         // Check if database contains a form with the same name.
-        if (formDao.exists(formLabel, organizationId)) {
+        if (formProvider.exists(formLabel, organizationId)) {
             FormWithSameNameException ex = new FormWithSameNameException("Form with name '" + formLabel + "' already exists.");
             WebformsUiLogger.severe(ApplicationController.class.getName(), "createForm " + ex.getMessage());
             throw ex;
@@ -205,7 +208,7 @@ public class ApplicationController {
         }
 
         // Check if the database contains a form with the same name.
-        if (formDao.exists(formLabel, organizationId)) {
+        if (formProvider.exists(formLabel, organizationId)) {
             FormWithSameNameException ex = new FormWithSameNameException("Form with name: " + formLabel + " already exists");
             WebformsUiLogger.severe(ApplicationController.class.getName(), "createForm " + ex.getMessage());
             throw ex;
@@ -235,7 +238,7 @@ public class ApplicationController {
         // Reset ids before persisting but after removing incorrect
         // webservices.
         newForm.resetIds();
-        newForm = formDao.makePersistent(newForm);
+        newForm = formProvider.saveForm(newForm);
         if (!webservicesToRemove.isEmpty()) {
             MessageManager.showWarning(LanguageCodes.WARNING_WRONG_WEBSERVICE_CONFIGURATION);
         }
@@ -293,7 +296,7 @@ public class ApplicationController {
 
         // Persist form.
         try {
-            formDao.makePersistent(newform);
+            formProvider.saveForm(newform);
         } catch (ConstraintViolationException cve) {
             WebformsUiLogger.errorMessage(ApplicationController.class.getName(), cve);
             throw cve;
@@ -392,7 +395,7 @@ public class ApplicationController {
         webformsForm.setLinkedForms(linkedForms);
 
         // Store on the database
-        formDao.makePersistent(webformsForm);
+        formProvider.saveForm(webformsForm);
 
         return webformsForm;
     }
@@ -465,7 +468,7 @@ public class ApplicationController {
         newForm.setLinkedFormOrganizationId(form.getLinkedFormOrganizationId());
         newForm.setLinkedFormVersions(form.getLinkedFormVersions());
         try {
-            formDao.makePersistent(newForm);
+            formProvider.saveForm(newForm);
         } catch (ConstraintViolationException cve) {
             WebformsUiLogger.errorMessage(ApplicationController.class.getName(), cve);
             throw cve;
@@ -504,7 +507,7 @@ public class ApplicationController {
         }
 
         try {
-            formDao.makePersistent(newFormVersion);
+            formProvider.saveForm(newFormVersion);
         } catch (ConstraintViolationException cve) {
             WebformsUiLogger.errorMessage(ApplicationController.class.getName(), cve);
             throw cve;
@@ -525,7 +528,7 @@ public class ApplicationController {
         WebformsUiLogger.info(ApplicationController.class.getName(), "changeFormDescription " + form + " " + text);
         try {
             form.setDescription(text);
-            formDao.makePersistent(form);
+            formProvider.saveForm(form);
         } catch (FieldTooLongException e) {
             WebformsUiLogger.info(ApplicationController.class.getName(), "changeFormDescription " + e.getMessage());
             throw e;
@@ -860,7 +863,7 @@ public class ApplicationController {
                 blockDao.makePersistent((Block) mergedForm);
             }
             // Empty form cache to update changes in linked building blocks.
-            formDao.evictAllCache();
+            formProvider.evictAllCache();
         } else {
             if (!formDao.getEntityManager().contains(form)) {
                 mergedForm = formDao.merge(form);
@@ -1484,14 +1487,6 @@ public class ApplicationController {
         UserSession.logout();
     }
 
-    public IFormDao getWebformsFormDao() {
-        return formDao;
-    }
-
-    public IBlockDao getWebformsBlockDao() {
-        return blockDao;
-    }
-
     /**
      * Get table data provider to fill manager table data (Abcd form).
      *
@@ -1672,7 +1667,7 @@ public class ApplicationController {
 
     public Form loadForm(IWebformsFormView formView) {
         if (formView.hasJson()) {
-            String jsonCode = formDao.getJson(formView.getId());
+            String jsonCode = formProvider.getJson(formView.getId());
             if (jsonCode != null) {
                 WebformsLogger.debug(this.getClass().getName(), "Obtaining form with id '{}' using json code", formView.getId());
                 try {
@@ -1703,7 +1698,7 @@ public class ApplicationController {
                 }
             }
         }
-        return formDao.get(formView.getId());
+        return formProvider.get(formView.getId());
     }
 
     public PublishedForm publishForm(Form form) throws MultiplesFormsFoundException {
@@ -1770,7 +1765,7 @@ public class ApplicationController {
     }
 
     public void evictAllCache() {
-        formDao.evictAllCache();
+        formProvider.evictAllCache();
         blockDao.evictAllCache();
         clearParameters();
     }
@@ -1925,10 +1920,10 @@ public class ApplicationController {
         if (formId != null) {
             // Checks is other form is using the selected one as a reference.
             if (getFormsUsesAsReference(formId).isEmpty()) {
-                selectedForm = formDao.get(formId);
+                selectedForm = formProvider.get(formId);
                 if (selectedForm != null) {
                     // Remove the form.
-                    formDao.makeTransient(selectedForm);
+                    formProvider.deleteForm(selectedForm);
                     WebformsUiLogger.info(this.getClass().getName(),
                             "User '" + UserSession.getUser().getEmailAddress() + "' has removed form '" + selectedForm.getLabel() + "' (version "
                                     + selectedForm.getVersion() + ").");

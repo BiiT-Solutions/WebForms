@@ -8,261 +8,284 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SimpleFormView implements IWebformsFormView {
-	private String name;
-	private String label;
-	private Integer version;
-	private Long id;
-	private Timestamp creationTime;
-	private Long createdBy;
-	private Timestamp updateTime;
-	private Long updatedBy;
-	private String comparationId;
-	private Long organizationId;
-	private String linkedFormLabel;
-	private Set<Integer> linkedFormVersions;
-	private Long linkedFormOrganizationId;
-	private FormWorkStatus status;
-	private boolean isLastVersion;
-	private Long formReferenceId;
+    private String name;
+    private String label;
+    private Integer version;
+    private Long id;
+    private Timestamp creationTime;
+    private Long createdBy;
+    private Timestamp updateTime;
+    private Long updatedBy;
+    private String comparationId;
+    private Long organizationId;
+    private String linkedFormLabel;
+    private Set<Integer> linkedFormVersions;
+    private Long linkedFormOrganizationId;
+    private FormWorkStatus status;
+    private boolean isLastVersion;
+    private Long formReferenceId;
 
-	private boolean hasJson;
+    private boolean hasJson;
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    public SimpleFormView() {
 
-	@Override
-	public String getLabel() {
-		return label;
-	}
+    }
 
-	@Override
-	public Integer getVersion() {
-		return version;
-	}
+    public SimpleFormView(Form form) {
+        setName(form.getName());
+        setLabel(form.getLabel());
+        setVersion(form.getVersion());
+        setId(form.getId());
+        setCreationTime(form.getCreationTime());
+        setCreatedBy(form.getCreatedBy());
+        setUpdateTime(form.getUpdateTime());
+        setUpdatedBy(form.getUpdatedBy());
+        setComparationId(form.getComparationId());
+        setOrganizationId(form.getOrganizationId());
+        setLinkedFormLabel(form.getLinkedFormLabel());
+        setLinkedFormVersions(form.getLinkedFormVersions());
+        setLinkedFormOrganizationId(form.getLinkedFormOrganizationId());
+        setStatus(form.getStatus());
+        setLastVersion(form.isLastVersion());
+        setFormReferenceId(form.getFormReferenceId());
+    }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public Timestamp getCreationTime() {
-		return creationTime;
-	}
+    @Override
+    public String getLabel() {
+        return label;
+    }
 
-	@Override
-	public Long getCreatedBy() {
-		return createdBy;
-	}
+    @Override
+    public Integer getVersion() {
+        return version;
+    }
 
-	@Override
-	public Timestamp getUpdateTime() {
-		return updateTime;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
 
-	@Override
-	public Long getUpdatedBy() {
-		return updatedBy;
-	}
+    @Override
+    public Timestamp getCreationTime() {
+        return creationTime;
+    }
 
-	@Override
-	public String getComparationId() {
-		return comparationId;
-	}
+    @Override
+    public Long getCreatedBy() {
+        return createdBy;
+    }
 
-	@Override
-	public Long getOrganizationId() {
-		return organizationId;
-	}
+    @Override
+    public Timestamp getUpdateTime() {
+        return updateTime;
+    }
 
-	@Override
-	public String getLinkedFormLabel() {
-		return linkedFormLabel;
-	}
+    @Override
+    public Long getUpdatedBy() {
+        return updatedBy;
+    }
 
-	@Override
-	public Set<Integer> getLinkedFormVersions() {
-		return linkedFormVersions;
-	}
+    @Override
+    public String getComparationId() {
+        return comparationId;
+    }
 
-	@Override
-	public Long getLinkedFormOrganizationId() {
-		return linkedFormOrganizationId;
-	}
+    @Override
+    public Long getOrganizationId() {
+        return organizationId;
+    }
 
-	@Override
-	public FormWorkStatus getStatus() {
-		return status;
-	}
+    @Override
+    public String getLinkedFormLabel() {
+        return linkedFormLabel;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Override
+    public Set<Integer> getLinkedFormVersions() {
+        return linkedFormVersions;
+    }
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    @Override
+    public Long getLinkedFormOrganizationId() {
+        return linkedFormOrganizationId;
+    }
 
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
+    @Override
+    public FormWorkStatus getStatus() {
+        return status;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setCreationTime(Timestamp creationTime) {
-		this.creationTime = creationTime;
-	}
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-	public void setCreatedBy(Long createdBy) {
-		this.createdBy = createdBy;
-	}
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
-	public void setUpdateTime(Timestamp updateTime) {
-		this.updateTime = updateTime;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setUpdatedBy(Long updatedBy) {
-		this.updatedBy = updatedBy;
-	}
+    public void setCreationTime(Timestamp creationTime) {
+        this.creationTime = creationTime;
+    }
 
-	public void setComparationId(String comparationId) {
-		this.comparationId = comparationId;
-	}
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public void setOrganizationId(long organizationId) {
-		this.organizationId = organizationId;
-	}
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
 
-	public void setLinkedFormLabel(String linkedFormLabel) {
-		this.linkedFormLabel = linkedFormLabel;
-	}
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 
-	public void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
-		this.linkedFormVersions = linkedFormVersions;
-	}
+    public void setComparationId(String comparationId) {
+        this.comparationId = comparationId;
+    }
 
-	public void setLinkedFormOrganizationId(long linkedFormOrganizationId) {
-		this.linkedFormOrganizationId = linkedFormOrganizationId;
-	}
+    public void setOrganizationId(long organizationId) {
+        this.organizationId = organizationId;
+    }
 
-	@Override
-	public void setStatus(FormWorkStatus status) {
-		this.status = status;
-	}
+    public void setLinkedFormLabel(String linkedFormLabel) {
+        this.linkedFormLabel = linkedFormLabel;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((comparationId == null) ? 0 : comparationId.hashCode());
-		return result;
-	}
+    public void setLinkedFormVersions(Set<Integer> linkedFormVersions) {
+        this.linkedFormVersions = linkedFormVersions;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		SimpleFormView other = (SimpleFormView) obj;
-		if (comparationId == null) {
-			if (other.comparationId != null) {
-				return false;
-			}
-		} else if (!comparationId.equals(other.comparationId)) {
-			return false;
-		}
-		return true;
-	}
+    public void setLinkedFormOrganizationId(long linkedFormOrganizationId) {
+        this.linkedFormOrganizationId = linkedFormOrganizationId;
+    }
 
-	public static SimpleFormView getSimpleFormView(IWebformsFormView form) {
-		final SimpleFormView view = new SimpleFormView();
-		view.name = form.getName();
-		view.label = form.getLabel();
-		view.version = form.getVersion();
-		view.id = form.getId();
-		view.creationTime = form.getCreationTime();
-		view.createdBy = form.getCreatedBy();
-		view.updateTime = form.getUpdateTime();
-		view.updatedBy = form.getUpdatedBy();
-		view.comparationId = form.getComparationId();
-		view.organizationId = form.getOrganizationId();
-		view.linkedFormLabel = form.getLinkedFormLabel();
-		view.linkedFormVersions = new HashSet<Integer>(form.getLinkedFormVersions());
-		view.linkedFormOrganizationId = form.getLinkedFormOrganizationId();
-		view.status = form.getStatus();
-		view.setHasJson(form.hasJson());
+    @Override
+    public void setStatus(FormWorkStatus status) {
+        this.status = status;
+    }
 
-		return view;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = (prime * result) + ((comparationId == null) ? 0 : comparationId.hashCode());
+        return result;
+    }
 
-	public static SimpleFormView getSimpleFormView(IWebformsBlockView form) {
-		SimpleFormView view = new SimpleFormView();
-		view.name = form.getName();
-		view.label = form.getLabel();
-		view.version = form.getVersion();
-		view.id = form.getId();
-		view.creationTime = form.getCreationTime();
-		view.createdBy = form.getCreatedBy();
-		view.updateTime = form.getUpdateTime();
-		view.updatedBy = form.getUpdatedBy();
-		view.comparationId = form.getComparationId();
-		view.organizationId = form.getOrganizationId();
-		view.linkedFormLabel = form.getLinkedFormLabel();
-		view.linkedFormVersions = new HashSet<Integer>(form.getLinkedFormVersions());
-		view.linkedFormOrganizationId = form.getLinkedFormOrganizationId();
-		view.status = form.getStatus();
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SimpleFormView other = (SimpleFormView) obj;
+        if (comparationId == null) {
+            if (other.comparationId != null) {
+                return false;
+            }
+        } else if (!comparationId.equals(other.comparationId)) {
+            return false;
+        }
+        return true;
+    }
 
-		return view;
-	}
+    public static SimpleFormView getSimpleFormView(IWebformsFormView form) {
+        final SimpleFormView view = new SimpleFormView();
+        view.name = form.getName();
+        view.label = form.getLabel();
+        view.version = form.getVersion();
+        view.id = form.getId();
+        view.creationTime = form.getCreationTime();
+        view.createdBy = form.getCreatedBy();
+        view.updateTime = form.getUpdateTime();
+        view.updatedBy = form.getUpdatedBy();
+        view.comparationId = form.getComparationId();
+        view.organizationId = form.getOrganizationId();
+        view.linkedFormLabel = form.getLinkedFormLabel();
+        view.linkedFormVersions = new HashSet<Integer>(form.getLinkedFormVersions());
+        view.linkedFormOrganizationId = form.getLinkedFormOrganizationId();
+        view.status = form.getStatus();
+        view.setHasJson(form.hasJson());
 
-	@Override
-	public String toString() {
-		return name + " " + label + " " + version;
-	}
+        return view;
+    }
 
-	@Override
-	public boolean isLastVersion() {
-		return isLastVersion;
-	}
+    public static SimpleFormView getSimpleFormView(IWebformsBlockView form) {
+        SimpleFormView view = new SimpleFormView();
+        view.name = form.getName();
+        view.label = form.getLabel();
+        view.version = form.getVersion();
+        view.id = form.getId();
+        view.creationTime = form.getCreationTime();
+        view.createdBy = form.getCreatedBy();
+        view.updateTime = form.getUpdateTime();
+        view.updatedBy = form.getUpdatedBy();
+        view.comparationId = form.getComparationId();
+        view.organizationId = form.getOrganizationId();
+        view.linkedFormLabel = form.getLinkedFormLabel();
+        view.linkedFormVersions = new HashSet<Integer>(form.getLinkedFormVersions());
+        view.linkedFormOrganizationId = form.getLinkedFormOrganizationId();
+        view.status = form.getStatus();
 
-	public void setLastVersion(boolean isLastVersion) {
-		this.isLastVersion = isLastVersion;
-	}
+        return view;
+    }
 
-	public IBaseFormView generateCopy(boolean copyParentHierarchy, boolean copyChildren) {
-		return SimpleFormView.getSimpleFormView(this);
-	}
+    @Override
+    public String toString() {
+        return name + " " + label + " " + version;
+    }
 
-	public Long getFormReferenceId() {
-		return formReferenceId;
-	}
+    @Override
+    public boolean isLastVersion() {
+        return isLastVersion;
+    }
 
-	public void setFormReferenceId(Long formReferenceId) {
-		this.formReferenceId = formReferenceId;
-	}
+    public void setLastVersion(boolean isLastVersion) {
+        this.isLastVersion = isLastVersion;
+    }
 
-	@Override
-	public Set<TreeObjectImage> getAllImages() {
-		return new HashSet<>();
-	}
+    public IBaseFormView generateCopy(boolean copyParentHierarchy, boolean copyChildren) {
+        return SimpleFormView.getSimpleFormView(this);
+    }
 
-	@Override
-	public boolean hasJson() {
-		return hasJson;
-	}
+    public Long getFormReferenceId() {
+        return formReferenceId;
+    }
 
-	@Override
-	public void setHasJson(boolean hasJson) {
-		this.hasJson = hasJson;
-	}
+    public void setFormReferenceId(Long formReferenceId) {
+        this.formReferenceId = formReferenceId;
+    }
+
+    @Override
+    public Set<TreeObjectImage> getAllImages() {
+        return new HashSet<>();
+    }
+
+    @Override
+    public boolean hasJson() {
+        return hasJson;
+    }
+
+    @Override
+    public void setHasJson(boolean hasJson) {
+        this.hasJson = hasJson;
+    }
 }
