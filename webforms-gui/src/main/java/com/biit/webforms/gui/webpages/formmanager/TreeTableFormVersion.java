@@ -28,201 +28,203 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 
 public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
-	private static final long serialVersionUID = -7776688515497328826L;
+    private static final long serialVersionUID = -7776688515497328826L;
 
-	enum TreeTableFormVersionProperties {
-		ACCESS, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
-	};
+    enum TreeTableFormVersionProperties {
+        ACCESS, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
+    }
 
-	public TreeTableFormVersion(TreeTableProvider<SimpleFormView> formProvider, IconProviderFormLinked iconProviderFormLinked) {
-		super(formProvider, iconProviderFormLinked);
-		configureContainerProperties();
-		setImmediate(true);
-	}
+    ;
 
-	@Override
-	protected void configureContainerProperties() {
-		super.configureContainerProperties();
+    public TreeTableFormVersion(TreeTableProvider<SimpleFormView> formProvider, IconProviderFormLinked iconProviderFormLinked) {
+        super(formProvider, iconProviderFormLinked);
+        configureContainerProperties();
+        setImmediate(true);
+    }
 
-		addContainerProperty(TreeTableFormVersionProperties.ACCESS, String.class, "",
-				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ACCESS), null, Align.CENTER);
+    @Override
+    protected void configureContainerProperties() {
+        super.configureContainerProperties();
 
-		addContainerProperty(TreeTableFormVersionProperties.USED_BY, String.class, "",
-				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_USEDBY), null, Align.CENTER);
+        addContainerProperty(TreeTableFormVersionProperties.ACCESS, String.class, "",
+                ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ACCESS), null, Align.CENTER);
 
-		addContainerProperty(TreeTableFormVersionProperties.STATUS, ComboBox.class, "",
-				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_STATUS), null, Align.CENTER);
+        addContainerProperty(TreeTableFormVersionProperties.USED_BY, String.class, "",
+                ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_USEDBY), null, Align.CENTER);
 
-		addContainerProperty(TreeTableFormVersionProperties.LINKED_FORM, String.class, "",
-				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_LINKED_FORM), null, Align.CENTER);
+        addContainerProperty(TreeTableFormVersionProperties.STATUS, ComboBox.class, "",
+                ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_STATUS), null, Align.CENTER);
 
-		addContainerProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION, String.class, "",
-				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_LINKED_ORGANIZATION), null, Align.CENTER);
+        addContainerProperty(TreeTableFormVersionProperties.LINKED_FORM, String.class, "",
+                ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_LINKED_FORM), null, Align.CENTER);
 
-		addContainerProperty(TreeTableFormVersionProperties.LINKED_VERSIONS, String.class, "",
-				ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_LINKED_VERSIONS), null, Align.CENTER);
+        addContainerProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION, String.class, "",
+                ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_LINKED_ORGANIZATION), null, Align.CENTER);
 
-		setColumnCollapsible(TreeTableFormVersionProperties.ACCESS, true);
-		setColumnCollapsible(TreeTableFormVersionProperties.USED_BY, true);
-		setColumnCollapsible(TreeTableFormVersionProperties.STATUS, true);
-		setColumnCollapsible(TreeTableFormVersionProperties.LINKED_FORM, true);
-		setColumnCollapsible(TreeTableFormVersionProperties.LINKED_ORGANIZATION, true);
-		setColumnCollapsible(TreeTableFormVersionProperties.LINKED_VERSIONS, true);
+        addContainerProperty(TreeTableFormVersionProperties.LINKED_VERSIONS, String.class, "",
+                ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_LINKED_VERSIONS), null, Align.CENTER);
 
-		setColumnExpandRatio(TreeTableFormVersionProperties.ACCESS, 1);
-		setColumnExpandRatio(TreeTableFormVersionProperties.USED_BY, 1);
-		setColumnExpandRatio(TreeTableFormVersionProperties.STATUS, 1.2f);
-		setColumnExpandRatio(TreeTableFormVersionProperties.LINKED_FORM, 1.2f);
-		setColumnExpandRatio(TreeTableFormVersionProperties.LINKED_VERSIONS, 1.0f);
+        setColumnCollapsible(TreeTableFormVersionProperties.ACCESS, true);
+        setColumnCollapsible(TreeTableFormVersionProperties.USED_BY, true);
+        setColumnCollapsible(TreeTableFormVersionProperties.STATUS, true);
+        setColumnCollapsible(TreeTableFormVersionProperties.LINKED_FORM, true);
+        setColumnCollapsible(TreeTableFormVersionProperties.LINKED_ORGANIZATION, true);
+        setColumnCollapsible(TreeTableFormVersionProperties.LINKED_VERSIONS, true);
 
-		setColumnCollapsed(TreeTableFormVersionProperties.LINKED_ORGANIZATION, true);
+        setColumnExpandRatio(TreeTableFormVersionProperties.ACCESS, 1);
+        setColumnExpandRatio(TreeTableFormVersionProperties.USED_BY, 1);
+        setColumnExpandRatio(TreeTableFormVersionProperties.STATUS, 1.2f);
+        setColumnExpandRatio(TreeTableFormVersionProperties.LINKED_FORM, 1.2f);
+        setColumnExpandRatio(TreeTableFormVersionProperties.LINKED_VERSIONS, 1.0f);
 
-		// Set new visibility order
-		setVisibleColumns(new Object[] { TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION,
-				TreeTableFormVersionProperties.ACCESS, TreeTableFormVersionProperties.USED_BY, TreeTableFormVersionProperties.STATUS,
-				TreeTableBaseFormProperties.ORGANIZATION, TreeTableFormVersionProperties.LINKED_FORM,
-				TreeTableFormVersionProperties.LINKED_ORGANIZATION, TreeTableFormVersionProperties.LINKED_VERSIONS,
-				TreeTableBaseFormProperties.CREATED_BY, TreeTableBaseFormProperties.CREATION_DATE, TreeTableBaseFormProperties.MODIFIED_BY,
-				TreeTableBaseFormProperties.MODIFICATION_DATE });
-	}
+        setColumnCollapsed(TreeTableFormVersionProperties.LINKED_ORGANIZATION, true);
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Item updateRow(IBaseFormView form) {
-		Item item = super.updateRow(form);
-		item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag((SimpleFormView) form));
+        // Set new visibility order
+        setVisibleColumns(new Object[]{TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION,
+                TreeTableFormVersionProperties.ACCESS, TreeTableFormVersionProperties.USED_BY, TreeTableFormVersionProperties.STATUS,
+                TreeTableBaseFormProperties.ORGANIZATION, TreeTableFormVersionProperties.LINKED_FORM,
+                TreeTableFormVersionProperties.LINKED_ORGANIZATION, TreeTableFormVersionProperties.LINKED_VERSIONS,
+                TreeTableBaseFormProperties.CREATED_BY, TreeTableBaseFormProperties.CREATION_DATE, TreeTableBaseFormProperties.MODIFIED_BY,
+                TreeTableBaseFormProperties.MODIFICATION_DATE});
+    }
 
-		IUser<Long> userOfForm = UiAccesser.getUserUsingForm((IWebformsFormView) form);
-		if (userOfForm != null) {
-			item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue(userOfForm.getEmailAddress());
-		} else {
-			item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue("");
-		}
+    @SuppressWarnings("unchecked")
+    @Override
+    public Item updateRow(IBaseFormView form) {
+        Item item = super.updateRow(form);
+        item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag((SimpleFormView) form));
 
-		// Status
-		item.getItemProperty(TreeTableFormVersionProperties.STATUS).setValue(generateStatusComboBox((IWebformsFormView) form));
+        IUser<Long> userOfForm = UiAccesser.getUserUsingForm((IWebformsFormView) form);
+        if (userOfForm != null) {
+            item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue(userOfForm.getEmailAddress());
+        } else {
+            item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue("");
+        }
 
-		// Linked parameters
-		item.getItemProperty(TreeTableFormVersionProperties.LINKED_FORM).setValue(((IWebformsFormView) form).getLinkedFormLabel());
+        // Status
+        item.getItemProperty(TreeTableFormVersionProperties.STATUS).setValue(generateStatusComboBox((IWebformsFormView) form));
 
-		if (((IWebformsFormView) form).getLinkedFormOrganizationId() != null) {
-			IGroup<Long> linkedOrganization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
-					((IWebformsFormView) form).getLinkedFormOrganizationId());
-			if (linkedOrganization != null) {
-				item.getItemProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION).setValue(linkedOrganization.getUniqueName());
-			}
-		}
+        // Linked parameters
+        item.getItemProperty(TreeTableFormVersionProperties.LINKED_FORM).setValue(((IWebformsFormView) form).getLinkedFormLabel());
 
-		item.getItemProperty(TreeTableFormVersionProperties.LINKED_VERSIONS).setValue(
-				((IWebformsFormView) form).getLinkedFormVersions().toString().replace("[", "").replace("]", ""));
+        if (((IWebformsFormView) form).getLinkedFormOrganizationId() != null) {
+            IGroup<Long> linkedOrganization = getWebformsSecurityService().getOrganization(UserSession.getUser(),
+                    ((IWebformsFormView) form).getLinkedFormOrganizationId());
+            if (linkedOrganization != null) {
+                item.getItemProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION).setValue(linkedOrganization.getUniqueName());
+            }
+        }
 
-		return item;
-	}
+        item.getItemProperty(TreeTableFormVersionProperties.LINKED_VERSIONS).setValue(
+                ((IWebformsFormView) form).getLinkedFormVersions().toString().replace("[", "").replace("]", ""));
 
-	private Component generateStatusComboBox(final IWebformsFormView form) {
-		final ComboBox statusComboBox = new ComboBox();
-		statusComboBox.setNullSelectionAllowed(false);
-		for (FormWorkStatusUi formStatus : FormWorkStatusUi.values()) {
-			statusComboBox.addItem(formStatus.getFormWorkStatus());
-			statusComboBox.setItemCaption(formStatus.getFormWorkStatus(), formStatus.getLanguageCode().translation());
-		}
-		statusComboBox.setValue(form.getStatus());
-		statusComboBox.setWidth("100%");
-		statusComboBox.setImmediate(true);
+        return item;
+    }
 
-		boolean userCanUpgradeStatus = getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), form,
-				WebformsActivity.FORM_STATUS_DOWNGRADE);
+    private Component generateStatusComboBox(final IWebformsFormView form) {
+        final ComboBox statusComboBox = new ComboBox();
+        statusComboBox.setNullSelectionAllowed(false);
+        for (FormWorkStatusUi formStatus : FormWorkStatusUi.values()) {
+            statusComboBox.addItem(formStatus.getFormWorkStatus());
+            statusComboBox.setItemCaption(formStatus.getFormWorkStatus(), formStatus.getLanguageCode().translation());
+        }
+        statusComboBox.setValue(form.getStatus());
+        statusComboBox.setWidth("100%");
+        statusComboBox.setImmediate(true);
 
-		statusComboBox.setEnabled(userCanUpgradeStatus);
-		statusComboBox.addValueChangeListener(new ValueChangeListener() {
-			private static final long serialVersionUID = 6270860285995563296L;
+        boolean userCanUpgradeStatus = getWebformsSecurityService().isAuthorizedActivity(UserSession.getUser(), form,
+                WebformsActivity.FORM_STATUS_DOWNGRADE);
 
-			@Override
-			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-				if (form.getStatus() != null && form.getStatus().equals(statusComboBox.getValue())) {
-					// It's the same status. Don't do anything.
-					return;
-				}
+        statusComboBox.setEnabled(userCanUpgradeStatus);
+        statusComboBox.addValueChangeListener(new ValueChangeListener() {
+            private static final long serialVersionUID = 6270860285995563296L;
 
-				new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_MODIFY_STATUS, new AcceptActionListener() {
+            @Override
+            public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+                if (form.getStatus() != null && form.getStatus().equals(statusComboBox.getValue())) {
+                    // It's the same status. Don't do anything.
+                    return;
+                }
 
-					@Override
-					public void acceptAction(WindowAcceptCancel window) {
-						changeStatus(form, statusComboBox, (FormWorkStatus) statusComboBox.getValue());
-						form.setStatus((FormWorkStatus) statusComboBox.getValue());
-						updateRow(form);
-					}
-				}, new CancelActionListener() {
+                new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_MODIFY_STATUS, new AcceptActionListener() {
 
-					@Override
-					public void cancelAction(WindowAcceptCancel window) {
-						statusComboBox.setValue(form.getStatus());
-					}
-				});
+                    @Override
+                    public void acceptAction(WindowAcceptCancel window) {
+                        changeStatus(form, statusComboBox, (FormWorkStatus) statusComboBox.getValue());
+                        form.setStatus((FormWorkStatus) statusComboBox.getValue());
+                        updateRow(form);
+                    }
+                }, new CancelActionListener() {
 
-			}
-		});
+                    @Override
+                    public void cancelAction(WindowAcceptCancel window) {
+                        statusComboBox.setValue(form.getStatus());
+                    }
+                });
 
-		return statusComboBox;
-	}
+            }
+        });
 
-	private void changeStatus(IWebformsFormView form, ComboBox statusComboBox, FormWorkStatus value) {
-		updateRow(form);
-		try {
-			ApplicationUi.getController().changeFormStatus(form, value);
-		} catch (NotEnoughRightsToChangeStatusException e) {
-			statusComboBox.setValue(form.getStatus());
-			MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED, LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
-		} catch (ElementCannotBePersistedException e) {
-			MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
-			WebformsUiLogger.errorMessage(this.getClass().getName(), e);
-		}
-	}
+        return statusComboBox;
+    }
 
-	/**
-	 * This function selects the last form used by the user or the first.
-	 */
-	public void selectLastUsedForm() {
-		try {
-			if (ApplicationUi.getController().getLastEditedForm() != null) {
-				// Update form with new object if the form has change.
-				selectForm(ApplicationUi.getController().getLastEditedForm());
-			} else {
-				// Select default one.
-				selectFirstRow();
-			}
-		} catch (Exception e) {
-			// Select default one.
-			selectFirstRow();
-		}
-	}
+    private void changeStatus(IWebformsFormView form, ComboBox statusComboBox, FormWorkStatus value) {
+        updateRow(form);
+        try {
+            ApplicationUi.getController().changeFormStatus(form, value);
+        } catch (NotEnoughRightsToChangeStatusException e) {
+            statusComboBox.setValue(form.getStatus());
+            MessageManager.showWarning(LanguageCodes.ERROR_CAPTION_NOT_ALLOWED, LanguageCodes.ERROR_DESCRIPTION_NOT_ENOUGH_RIGHTS);
+        } catch (ElementCannotBePersistedException e) {
+            MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+            WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+        }
+    }
 
-	/**
-	 * This function returns an string with read only if the form can't be
-	 * edited by the user
-	 *
-	 * @param form
-	 * @return
-	 */
-	private String getFormPermissionsTag(SimpleFormView form) {
-		if (UiAccesser.getUserUsingForm(form) != null && !UiAccesser.getUserUsingForm(form).equals(UserSession.getUser())) {
-			return LanguageCodes.CAPTION_IN_USE.translation();
-		}
+    /**
+     * This function selects the last form used by the user or the first.
+     */
+    public void selectLastUsedForm() {
+        try {
+            if (ApplicationUi.getController().getLastEditedForm() != null) {
+                // Update form with new object if the form has change.
+                selectForm(ApplicationUi.getController().getLastEditedForm());
+            } else {
+                // Select default one.
+                selectFirstRow();
+            }
+        } catch (Exception e) {
+            // Select default one.
+            selectFirstRow();
+        }
+    }
 
-		if (!getWebformsSecurityService().isAuthorizedToForm(form, UserSession.getUser()) && (form.getStatus() == null
+    /**
+     * This function returns an string with read only if the form can't be
+     * edited by the user
+     *
+     * @param form
+     * @return
+     */
+    private String getFormPermissionsTag(SimpleFormView form) {
+        if (UiAccesser.getUserUsingForm(form) != null && !UiAccesser.getUserUsingForm(form).equals(UserSession.getUser())) {
+            return LanguageCodes.CAPTION_IN_USE.translation();
+        }
+
+        if (!getWebformsSecurityService().isAuthorizedToForm(form, UserSession.getUser()) && (form.getStatus() == null
                 || form.getStatus().equals(FormWorkStatus.DESIGN))) {
-			return LanguageCodes.CAPTION_READ_ONLY.translation();
-		}
-		return "";
-	}
+            return LanguageCodes.CAPTION_READ_ONLY.translation();
+        }
+        return "";
+    }
 
-	public void selectForm(IBaseFormView form) {
-		if (form == null || form.getName() == null) {
-			setValue(null);
-		} else {
-			SimpleFormView simpleFormView = SimpleFormView.getSimpleFormView((IWebformsFormView) form);
-			setValue(simpleFormView);
-		}
-	}
+    public void selectForm(IBaseFormView form) {
+        if (form == null || form.getName() == null) {
+            setValue(null);
+        } else {
+            SimpleFormView simpleFormView = SimpleFormView.getSimpleFormView((IWebformsFormView) form);
+            setValue(simpleFormView);
+        }
+    }
 
 }

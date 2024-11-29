@@ -198,13 +198,8 @@ public class SimpleFormView implements IWebformsFormView {
         }
         SimpleFormView other = (SimpleFormView) obj;
         if (comparationId == null) {
-            if (other.comparationId != null) {
-                return false;
-            }
-        } else if (!comparationId.equals(other.comparationId)) {
-            return false;
-        }
-        return true;
+            return other.comparationId == null;
+        } else return comparationId.equals(other.comparationId);
     }
 
     public static SimpleFormView getSimpleFormView(IWebformsFormView form) {
@@ -220,7 +215,7 @@ public class SimpleFormView implements IWebformsFormView {
         view.comparationId = form.getComparationId();
         view.organizationId = form.getOrganizationId();
         view.linkedFormLabel = form.getLinkedFormLabel();
-        view.linkedFormVersions = new HashSet<Integer>(form.getLinkedFormVersions());
+        view.linkedFormVersions = new HashSet<>(form.getLinkedFormVersions());
         view.linkedFormOrganizationId = form.getLinkedFormOrganizationId();
         view.status = form.getStatus();
         view.setHasJson(form.hasJson());
@@ -241,7 +236,7 @@ public class SimpleFormView implements IWebformsFormView {
         view.comparationId = form.getComparationId();
         view.organizationId = form.getOrganizationId();
         view.linkedFormLabel = form.getLinkedFormLabel();
-        view.linkedFormVersions = new HashSet<Integer>(form.getLinkedFormVersions());
+        view.linkedFormVersions = new HashSet<>(form.getLinkedFormVersions());
         view.linkedFormOrganizationId = form.getLinkedFormOrganizationId();
         view.status = form.getStatus();
 

@@ -35,7 +35,6 @@ import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.components.FormEditBottomMenu;
-import com.biit.webforms.gui.components.FormEditBottomMenu.LockFormListener;
 import com.biit.webforms.gui.components.WindowNameGroup;
 import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.gui.exceptions.BadAbcdLink;
@@ -69,7 +68,6 @@ import com.biit.webforms.utils.ZipTools;
 import com.biit.webforms.utils.conversor.abcd.exporter.ConversorFormToAbcdForm;
 import com.biit.webforms.validators.ValidateFormComplete;
 import com.lowagie.text.DocumentException;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
@@ -115,14 +113,7 @@ public class FormManager extends SecuredWebPage {
                 new IconProviderFormLinked());
         formTable.setImmediate(true);
         formTable.setSizeFull();
-        formTable.addValueChangeListener(new ValueChangeListener() {
-            private static final long serialVersionUID = -8544416078101328528L;
-
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                updateMenus();
-            }
-        });
+        formTable.addValueChangeListener((ValueChangeListener) event -> updateMenus());
         formTable.selectLastUsedForm();
         // If it was already null
         updateMenus();
@@ -570,13 +561,8 @@ public class FormManager extends SecuredWebPage {
 
     private FormEditBottomMenu createBottomMenu() {
         FormEditBottomMenu bottomMenu = new FormEditBottomMenu();
-        bottomMenu.addLockFormListener(new LockFormListener() {
-
-            @Override
-            public void lockForm() {
-                ApplicationUi.getController().setFormInUse(loadForm(getSelectedForm()));
-            }
-        });
+        bottomMenu.addLockFormListener(() ->
+                ApplicationUi.getController().setFormInUse(loadForm(getSelectedForm())));
         return bottomMenu;
     }
 

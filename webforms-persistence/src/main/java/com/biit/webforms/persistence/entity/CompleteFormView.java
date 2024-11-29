@@ -564,6 +564,9 @@ public class CompleteFormView extends Form implements IWebformsFormView {
     public void setForm(Form form) {
         this.form = form;
         createCopyOfBlocks();
+        if (form != null) {
+            setComparationId(form.getComparationId());
+        }
     }
 
     public void removeTreeObject(TreeObject element) throws DependencyExistException, ChildrenNotFoundException,

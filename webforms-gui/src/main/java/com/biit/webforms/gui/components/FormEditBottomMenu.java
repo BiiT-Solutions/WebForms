@@ -8,7 +8,6 @@ import com.biit.webforms.gui.webpages.WebMap;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.theme.ThemeIcons;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 import java.util.ArrayList;
@@ -34,51 +33,26 @@ public class FormEditBottomMenu extends BottomMenu {
 		compareStructure = new IconButton(LanguageCodes.CAPTION_COMPARE_STRUCTURE, ThemeIcons.COMPARE_STRUCTURE,
 				LanguageCodes.TOOLTIP_COMPARE_STRUCTURE, IconSize.BIG);
 
-		editFormButton.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 3789769131264938760L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				lockForm();
-				ApplicationUi.navigateTo(WebMap.DESIGNER_EDITOR);
-			}
-		});
-		editFlowButton.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = -6946343459263059630L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				lockForm();
-				ApplicationUi.navigateTo(WebMap.FLOW_EDITOR);
-			}
-		});
-		editWebserviceCall.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = -4309381087569767156L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				lockForm();
-				ApplicationUi.navigateTo(WebMap.WEBSERVICE_CALL_EDITOR);
-			}
-		});
-		validateForm.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = -4309381087569767156L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				lockForm();
-				ApplicationUi.navigateTo(WebMap.VALIDATION);
-			}
-		});
-		compareStructure.addClickListener(new ClickListener() {
-			private static final long serialVersionUID = 4927787198580829348L;
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				lockForm();
-				ApplicationUi.navigateTo(WebMap.COMPARE_STRUCTURE);
-			}
-		});
+		editFormButton.addClickListener((ClickListener) event -> {
+            lockForm();
+            ApplicationUi.navigateTo(WebMap.DESIGNER_EDITOR);
+        });
+		editFlowButton.addClickListener((ClickListener) event -> {
+            lockForm();
+            ApplicationUi.navigateTo(WebMap.FLOW_EDITOR);
+        });
+		editWebserviceCall.addClickListener((ClickListener) event -> {
+            lockForm();
+            ApplicationUi.navigateTo(WebMap.WEBSERVICE_CALL_EDITOR);
+        });
+		validateForm.addClickListener((ClickListener) event -> {
+            lockForm();
+            ApplicationUi.navigateTo(WebMap.VALIDATION);
+        });
+		compareStructure.addClickListener((ClickListener) event -> {
+            lockForm();
+            ApplicationUi.navigateTo(WebMap.COMPARE_STRUCTURE);
+        });
 
 		addIconButton(editFormButton);
 		addIconButton(editFlowButton);

@@ -108,15 +108,7 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
             form.setCreationTime();
         }
 
-        Form mergedForm = super.merge(form);
-        if (mergedForm != null) {
-            //Store the IDs on the JSON.
-            mergedForm.setJsonCode(mergedForm.toJson());
-            setJson(mergedForm.getId(), mergedForm.getJsonCode());
-
-            mergedForm.initializeSets();
-        }
-        return mergedForm;
+        return super.merge(form);
     }
 
     @Override
@@ -133,9 +125,6 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
         } else {
             formDB = super.makePersistent(form);
         }
-        //Store it again as we need the obtained IDs to be on JSON code.
-        formDB.setJsonCode(formDB.toJson());
-        setJson(formDB.getId(), formDB.getJsonCode());
         return formDB;
     }
 

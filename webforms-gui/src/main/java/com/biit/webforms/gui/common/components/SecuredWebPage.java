@@ -48,7 +48,7 @@ public abstract class SecuredWebPage extends WebPage {
 	protected abstract void initContent();
 
 	@Override
-	public final void enter(ViewChangeEvent event) {
+	public void enter(ViewChangeEvent event) {
 		// Check if the user is logged in. If not, redirect to main page.
 		try {
 			IUser<Long> user = UserSession.getUser();

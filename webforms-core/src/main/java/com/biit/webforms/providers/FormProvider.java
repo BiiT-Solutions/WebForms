@@ -8,6 +8,7 @@ import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.persistence.dao.IFormDao;
 import com.biit.webforms.persistence.dao.ISimpleFormViewDao;
 import com.biit.webforms.persistence.dao.exceptions.MultiplesFormsFoundException;
+import com.biit.webforms.persistence.entity.CompleteFormView;
 import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SimpleFormViewWithContent;
@@ -34,11 +35,19 @@ public class FormProvider {
     }
 
     public Form saveForm(Form form) {
+        form.updateChildrenSortSeqs();
+        if (form.getCreationTime() == null) {
+            form.setCreationTime();
+        }
         form.setJsonCode(form.toJson());
+        if (form instanceof CompleteFormView) {
+            form = ((CompleteFormView) form).getForm();
+        }
         //Save from json.
         try {
             Form mutilatedForm = form.copy(form.getCreatedBy(), form.getLabel());
             mutilatedForm.setId(form.getId());
+            mutilatedForm.setComparationId(form.getComparationId());
             mutilatedForm.setJsonCode(form.toJson());
             //Delete all children and rules from form to speed up save (as are stored as Json).
             mutilatedForm.getChildren().clear();
@@ -49,6 +58,7 @@ public class FormProvider {
             mutilatedForm.setImage(null);
             mutilatedForm.setVideo(null);
             mutilatedForm.setAudio(null);
+            mutilatedForm.setCreationTime(form.getCreationTime());
             if (mutilatedForm.getId() != null) {
                 formDao.merge(mutilatedForm);
                 return form;
