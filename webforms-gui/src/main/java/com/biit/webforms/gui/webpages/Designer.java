@@ -56,6 +56,7 @@ import com.biit.webforms.persistence.entity.SimpleFormView;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.biit.webforms.persistence.entity.exceptions.DependencyDynamicAnswerExistException;
+import com.biit.webforms.persistence.entity.exceptions.ElementIsUsedAsDefaultValueException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidRangeException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidValue;
 import com.biit.webforms.security.WebformsActivity;
@@ -348,8 +349,10 @@ public class Designer extends SecuredWebPage {
                                 table.setValue(row);
                                 if (e instanceof DependencyDynamicAnswerExistException) {
                                     MessageManager.showError(LanguageCodes.ERROR_DYNAMIC_ANSWER_DEPENDENCY);
+                                } else if (e instanceof ElementIsUsedAsDefaultValueException){
+
                                 } else if (e instanceof DependencyExistException) {
-                                    MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY);
+                                    MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY, e.getMessage());
                                 } else {
                                     MessageManager.showError(LanguageCodes.COMMON_ERROR_UNEXPECTED_ERROR);
                                     WebformsUiLogger.errorMessage(this.getClass().getName(), e);

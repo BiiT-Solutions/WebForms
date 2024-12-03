@@ -9,6 +9,7 @@ import com.biit.persistence.entity.StorableObject;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
 import com.biit.persistence.entity.exceptions.NotValidStorableObjectException;
 import com.biit.webforms.computed.FlowConditionScript;
+import com.biit.webforms.persistence.entity.exceptions.ElementIsUsedAsDefaultValueException;
 import com.biit.webforms.serialization.AnswerDeserializer;
 import com.biit.webforms.serialization.AnswerSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -24,6 +25,7 @@ import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Answer is a class that contains the information of a defined and possible
@@ -194,6 +196,14 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
         for (Flow flow : form.getFlows()) {
             if (flow.isDependent(this)) {
                 throw new DependencyExistException("Flow '" + flow + "' depends of element '" + this + "'");
+            }
+        }
+
+        //Check default answers.
+        if (getParent() != null && getParent() instanceof Question) {
+            final Question question = (Question) getParent();
+            if (question.getDefaultValueAnswer() != null && Objects.equals(question.getDefaultValueAnswer(), this)) {
+                throw new ElementIsUsedAsDefaultValueException("Question '" + question + "' has '" + this + "' as default value.");
             }
         }
     }

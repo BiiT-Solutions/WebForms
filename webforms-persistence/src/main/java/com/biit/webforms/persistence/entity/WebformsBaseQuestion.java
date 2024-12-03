@@ -1,7 +1,6 @@
 package com.biit.webforms.persistence.entity;
 
 import com.biit.form.entity.BaseQuestion;
-import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.DependencyExistException;
 import com.biit.persistence.entity.exceptions.FieldTooLongException;
@@ -38,10 +37,9 @@ public abstract class WebformsBaseQuestion extends BaseQuestion {
             return;
         }
 
-        for (TreeObject child : form.getAllChildrenInHierarchy(DynamicAnswer.class)) {
-            DynamicAnswer dynamicAnswer = (DynamicAnswer) child;
-            if (Objects.equals(dynamicAnswer.getReference(), this)) {
-                throw new DependencyDynamicAnswerExistException("Question '" + dynamicAnswer.getReference() + "' depends of element + '" + this + "'");
+        for (DynamicAnswer child : form.getAllChildrenInHierarchy(DynamicAnswer.class)) {
+            if (Objects.equals(child.getReference(), this)) {
+                throw new DependencyDynamicAnswerExistException("Question '" + child.getReference() + "' depends of element + '" + this + "'");
             }
         }
 
