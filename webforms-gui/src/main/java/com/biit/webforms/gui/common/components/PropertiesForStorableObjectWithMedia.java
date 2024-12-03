@@ -328,7 +328,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
 
         upload.addProgressListener((ProgressListener) (readBytes, contentLength) -> {
             // This method gets called several times during the update
-            progressIndicator.setValue(new Float(readBytes / (float) contentLength));
+            progressIndicator.setValue(readBytes / (float) contentLength);
         });
 
         upload.addSucceededListener((SucceededListener) event -> {

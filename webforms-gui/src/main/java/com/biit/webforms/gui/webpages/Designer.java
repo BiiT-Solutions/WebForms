@@ -350,7 +350,7 @@ public class Designer extends SecuredWebPage {
                                 if (e instanceof DependencyDynamicAnswerExistException) {
                                     MessageManager.showError(LanguageCodes.ERROR_DYNAMIC_ANSWER_DEPENDENCY);
                                 } else if (e instanceof ElementIsUsedAsDefaultValueException){
-
+                                    MessageManager.showError(LanguageCodes.ERROR_ANSWER_USED_AS_DEFAULT_DEPENDENCY, e.getMessage());
                                 } else if (e instanceof DependencyExistException) {
                                     MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY, e.getMessage());
                                 } else {

@@ -315,7 +315,8 @@ public enum LanguageCodes implements ILanguageCode {
 	ERROR_SYSTEM_FIELD_NOT_INSERTED("error.system.field.not.inserted"),
 	ERROR_FORM_NOT_VALID("error.form.not.valid"),
 	ERROR_TREE_OBJECT_FLOW_DEPENDENCY("error.tree.object.flow.dependency"),
-	
+	ERROR_ANSWER_USED_AS_DEFAULT_DEPENDENCY("error.answer.used.as.default"),
+
 	VALIDATE_FORM("validate.form"),
 	
 	INFO_MESSAGE_FORM_CAPTION_SAVE("info.message.form.caption.save"),
