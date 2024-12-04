@@ -28,6 +28,11 @@
             <artifactId>webforms-parser</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>webforms-persistence</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- Liferay Authentication -->
         <dependency>
             <groupId>com.biit.liferay</groupId>
