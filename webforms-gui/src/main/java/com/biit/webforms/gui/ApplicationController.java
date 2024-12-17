@@ -865,7 +865,12 @@ public class ApplicationController {
             // Empty form cache to update changes in linked building blocks.
             formProvider.evictAllCache();
         } else {
-            formProvider.saveForm(form);
+            //formProvider.saveForm(form);
+            if (!formDao.getEntityManager().contains(form)) {
+                mergedForm = formDao.merge(form);
+            } else {
+                formDao.makePersistent(mergedForm);
+            }
         }
         cleanFormReference(mergedForm.getId());
         setUnsavedFormChanges(false);
