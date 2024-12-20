@@ -1,6 +1,5 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.entity.BaseForm;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -29,7 +28,7 @@ public class PropertiesForm extends PropertiesBaseForm<Form> {
                 // Checks if already exists a form with this label and its
                 // version.
                 if (!formProvider.exists(getLabelTextField().getValue(), (getInstance()).getVersion(),
-                        ((BaseForm) getInstance()).getOrganizationId(), getInstance().getId())) {
+                        getInstance().getOrganizationId(), getInstance().getId())) {
                     ApplicationUi.getController().updateForm(getInstance(), getLabelTextField().getValue(),
                             getDescriptionTextArea().getValue(), getImage(), getVideo(), getAudio(), getDisableEdition().getValue());
                 } else {

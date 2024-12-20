@@ -60,7 +60,8 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
     // Put upload in this memory buffer that grows automatically
     private ByteArrayOutputStream imageMemoryOutputStream;
 
-    private TextField videoUrl, videoWidth, videoHeight;;
+    private TextField videoUrl, videoWidth, videoHeight;
+    ;
     private TextField audioUrl;
 
     private Label status;
@@ -452,6 +453,9 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
 
 
     public TreeObjectVideo getVideo() {
+        if (videoUrl.getValue() == null || videoUrl.getValue().trim().isEmpty()) {
+            return null;
+        }
         final TreeObjectVideo video = new TreeObjectVideo();
         video.setUrl(videoUrl.getValue());
 
@@ -469,6 +473,9 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
     }
 
     public TreeObjectAudio getAudio() {
+        if (audioUrl.getValue() == null || audioUrl.getValue().trim().isEmpty()) {
+            return null;
+        }
         final TreeObjectAudio audio = new TreeObjectAudio();
         audio.setUrl(audioUrl.getValue());
         return audio;
