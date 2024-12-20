@@ -65,7 +65,7 @@ public class FormProvider {
             } else {
                 mutilatedForm = formDao.makePersistent(mutilatedForm);
                 form.setId(mutilatedForm.getId());
-                //Store id on json
+                //Store form id on json
                 mutilatedForm.setJsonCode(form.toJson());
                 formDao.merge(mutilatedForm);
                 return form;
