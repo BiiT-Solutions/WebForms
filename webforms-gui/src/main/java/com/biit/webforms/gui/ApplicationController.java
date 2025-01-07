@@ -121,6 +121,9 @@ import java.util.Set;
  * User Session data handler.
  */
 public class ApplicationController {
+
+    private final static int MIN_JSON_LENGTH = 80;
+
     private final FormProvider formProvider;
     private final IFormDao formDao;
     private final IBlockDao blockDao;
@@ -833,11 +836,11 @@ public class ApplicationController {
         }
     }
 
+    @Transactional
     public void saveForm() throws UnexpectedDatabaseException, ElementCannotBePersistedException {
         formInUse.setUpdatedBy(UserSession.getUser());
         formInUse.setUpdateTime();
-        Form savedForm = saveForm(formInUse);
-        formInUse = savedForm;
+        formInUse = saveForm(formInUse);
         setLastEditedForm(formInUse);
         completeFormView = new CompleteFormView(getFormInUse());
 
@@ -854,27 +857,20 @@ public class ApplicationController {
      */
     @Transactional
     public Form saveForm(Form form) throws UnexpectedDatabaseException, ElementCannotBePersistedException {
-        Form mergedForm = form;
-
         if (form instanceof Block) {
             if (!blockDao.getEntityManager().contains(form)) {
-                mergedForm = blockDao.merge((Block) form);
+                form = blockDao.merge((Block) form);
             } else {
-                blockDao.makePersistent((Block) mergedForm);
+                blockDao.makePersistent((Block) form);
             }
             // Empty form cache to update changes in linked building blocks.
             formProvider.evictAllCache();
         } else {
-            //formProvider.saveForm(form);
-            if (!formDao.getEntityManager().contains(form)) {
-                mergedForm = formDao.merge(form);
-            } else {
-                formDao.makePersistent(mergedForm);
-            }
+            form = formProvider.saveForm(form);
         }
-        cleanFormReference(mergedForm.getId());
+        cleanFormReference(form.getId());
         setUnsavedFormChanges(false);
-        return mergedForm;
+        return form;
     }
 
     /**
@@ -1668,8 +1664,8 @@ public class ApplicationController {
 
     public Form loadForm(IWebformsFormView formView) {
         if (formView.hasJson()) {
-            String jsonCode = formProvider.getJson(formView.getId());
-            if (jsonCode != null) {
+            final String jsonCode = formProvider.getJson(formView.getId());
+            if (jsonCode != null && jsonCode.length() > MIN_JSON_LENGTH) {
                 WebformsLogger.debug(this.getClass().getName(), "Obtaining form with id '{}' using json code", formView.getId());
                 try {
                     Form form = Form.fromJson(jsonCode);

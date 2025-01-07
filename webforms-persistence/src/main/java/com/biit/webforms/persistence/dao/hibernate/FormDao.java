@@ -109,13 +109,13 @@ public class FormDao extends AnnotatedGenericDao<Form, Long> implements IFormDao
         }
 
         Form mergedForm = super.merge(form);
-        if (mergedForm != null) {
-            //Store the IDs on the JSON.
-            mergedForm.setJsonCode(mergedForm.toJson());
-            setJson(mergedForm.getId(), mergedForm.getJsonCode());
-
-            mergedForm.initializeSets();
-        }
+        //Store the IDs on the JSON. IF USING JSON FOR SAVING, THIS WILL ERASE THE JSON!!!
+//        if (mergedForm != null) {
+//            mergedForm.setJsonCode(mergedForm.toJson());
+//            setJson(mergedForm.getId(), mergedForm.getJsonCode());
+//
+//            mergedForm.initializeSets();
+//        }
         return mergedForm;
     }
 

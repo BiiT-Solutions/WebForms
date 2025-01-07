@@ -15,6 +15,7 @@ import com.biit.webforms.gui.common.utils.MessageManager;
 import com.biit.webforms.gui.common.utils.SpringContextHelper;
 import com.biit.webforms.gui.exceptions.FormWithSameNameException;
 import com.biit.webforms.language.LanguageCodes;
+import com.biit.webforms.persistence.entity.Form;
 import com.biit.webforms.security.IWebformsSecurityService;
 import com.biit.webforms.security.WebformsActivity;
 import com.vaadin.server.VaadinServlet;
@@ -36,6 +37,7 @@ public class WindowImportJson extends WindowAcceptCancel {
     private TextField textField;
     private ComboBox organizationField;
     private TextArea textArea;
+    private Form importedForm;
 
     private IWebformsSecurityService webformsSecurityService;
 
@@ -129,7 +131,7 @@ public class WindowImportJson extends WindowAcceptCancel {
     @SuppressWarnings("unchecked")
     protected boolean acceptAction() {
         try {
-            ApplicationUi.getController().importFormFromJson(textArea.getValue(), textField.getValue(),
+            importedForm = ApplicationUi.getController().importFormFromJson(textArea.getValue(), textField.getValue(),
                     ((IGroup<Long>) organizationField.getValue()).getUniqueId());
             return true;
         } catch (UnexpectedDatabaseException e) {
@@ -146,5 +148,9 @@ public class WindowImportJson extends WindowAcceptCancel {
             MessageManager.showError(LanguageCodes.INVALID_JSON_CODE);
         }
         return false;
+    }
+
+    public Form getImportedForm() {
+        return importedForm;
     }
 }

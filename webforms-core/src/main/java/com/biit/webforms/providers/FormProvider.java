@@ -64,13 +64,14 @@ public class FormProvider {
                 return form;
             } else {
                 mutilatedForm = formDao.makePersistent(mutilatedForm);
+                //Store form id on json. First update form from complete one.
+                form = Form.fromJson(mutilatedForm.getJsonCode());
                 form.setId(mutilatedForm.getId());
-                //Store id on json
                 mutilatedForm.setJsonCode(form.toJson());
                 formDao.merge(mutilatedForm);
                 return form;
             }
-        } catch (CharacterNotAllowedException | NotValidStorableObjectException | FieldTooLongException e) {
+        } catch (CharacterNotAllowedException | NotValidStorableObjectException | FieldTooLongException | JsonProcessingException e) {
             WebformsLogger.errorMessage(this.getClass().getName(), e);
         }
         //Save old way

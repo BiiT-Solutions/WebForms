@@ -182,11 +182,13 @@ public class FormManager extends SecuredWebPage {
     }
 
     private void importJsonForm() {
-        WindowImportJson window = new WindowImportJson();
-        window.showCentered();
-        window.addAcceptActionListener(window1 -> {
-            window1.close();
+        WindowImportJson windowImportJson = new WindowImportJson();
+        windowImportJson.showCentered();
+        windowImportJson.addAcceptActionListener(windowAcceptCancel -> {
+            final Form importedForm = windowImportJson.getImportedForm();
+            windowAcceptCancel.close();
             formTable.refreshTableData();
+            formTable.selectForm(importedForm);
         });
     }
 

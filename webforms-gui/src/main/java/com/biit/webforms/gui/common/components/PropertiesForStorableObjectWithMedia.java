@@ -61,7 +61,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
     private ByteArrayOutputStream imageMemoryOutputStream;
 
     private TextField videoUrl, videoWidth, videoHeight;
-    ;
+
     private TextField audioUrl;
 
     private Label status;
