@@ -510,7 +510,8 @@ public class ApplicationController {
         }
 
         try {
-            formProvider.saveForm(newFormVersion);
+            newFormVersion = formProvider.saveForm(newFormVersion);
+            formProvider.evictAllCache();
         } catch (ConstraintViolationException cve) {
             WebformsUiLogger.errorMessage(ApplicationController.class.getName(), cve);
             throw cve;
