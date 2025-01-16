@@ -1690,6 +1690,7 @@ public class ApplicationController {
                         });
                         form.setElementsToHide(elementsToHide);
                     }
+                    form.setJsonCode(form.toJson());
                     return form;
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
