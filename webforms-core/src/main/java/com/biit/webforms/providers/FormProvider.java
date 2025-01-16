@@ -71,7 +71,8 @@ public class FormProvider {
                 formDao.merge(mutilatedForm);
                 return form;
             }
-        } catch (CharacterNotAllowedException | NotValidStorableObjectException | FieldTooLongException | JsonProcessingException e) {
+        } catch (CharacterNotAllowedException | NotValidStorableObjectException | FieldTooLongException |
+                 JsonProcessingException e) {
             WebformsLogger.errorMessage(this.getClass().getName(), e);
         }
         //Save old way
@@ -121,6 +122,16 @@ public class FormProvider {
     }
 
     public Form get(String label, Integer version, Long organizationId) throws MultiplesFormsFoundException {
-        return formDao.get(label, version, organizationId);
+        final Form plainForm = formDao.get(label, version, organizationId);
+        if (plainForm.getJsonCode() != null && !plainForm.getJsonCode().isEmpty()) {
+            try {
+                WebformsLogger.debug(this.getClass().getName(), "Obtaining form '" + plainForm.getLabel() + "' from json structure.");
+                return Form.fromJson(plainForm.getJsonCode());
+            } catch (JsonProcessingException e) {
+                WebformsLogger.errorMessage(this.getClass().getName(), e);
+            }
+        }
+        return plainForm;
     }
+
 }
