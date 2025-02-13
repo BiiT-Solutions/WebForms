@@ -15,7 +15,7 @@ import com.vaadin.ui.UI;
 public class FormRunnerPreviewFrame extends UI {
     public final static String FORM_PARAMETER_TAG = "form";
     public final static String FORM_VERSION_PARAMETER_TAG = "version";
-    public final static String FORM_ORGANIZATION_PARAMETER_TAG = "organization";
+    public final static String FORM_ORGANIZATION_PARAMETER_TAG = "organizationId";
     private static final long serialVersionUID = -4957704029911591631L;
 
 
@@ -30,7 +30,7 @@ public class FormRunnerPreviewFrame extends UI {
             MessageManager.showWarning(LanguageCodes.WARNING_FORM_VALIDATION, LanguageCodes.WARNING_FORM_VALIDATION_BODY);
             this.close();
         } else {
-            final String requestUrl = "preview?form=" + formName + "&version=" + formVersion + "&organization=" + organization;
+            final String requestUrl = "preview?form=" + formName + "&version=" + formVersion + "&organizationId=" + organization;
 
             String url = WebformsConfigurationReader.getInstance().getFormRunnerUrl();
 
