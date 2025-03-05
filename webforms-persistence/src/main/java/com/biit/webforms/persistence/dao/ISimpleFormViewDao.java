@@ -12,6 +12,8 @@ public interface ISimpleFormViewDao {
 
 	List<SimpleFormView> getAll();
 
+	List<SimpleFormView> getAllPublished();
+
 	SimpleFormViewWithContent get(Long id);
 
 	List<SimpleFormView> getFormsThatUse(Block block);

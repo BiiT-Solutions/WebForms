@@ -186,6 +186,7 @@ public enum LanguageCodes implements ILanguageCode {
 	FORM_TABLE_COLUMN_INFO("caption.form.table.info"),
 	FORM_TABLE_COLUMN_ACCESS("caption.form.table.access"),
 	FORM_TABLE_COLUMN_USEDBY("caption.form.table.usedBy"),
+	FORM_TABLE_COLUMN_PUBLISHED("caption.form.table.published"),
 	FORM_TABLE_COLUMN_STATUS("caption.form.table.status"),
 	FORM_TABLE_COLUMN_CREATEDBY("caption.form.table.createdBy"),
 	FORM_TABLE_COLUMN_CREATIONDATE("caption.form.table.creationDate"),

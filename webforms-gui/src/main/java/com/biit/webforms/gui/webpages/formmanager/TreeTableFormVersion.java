@@ -31,7 +31,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
     private static final long serialVersionUID = -7776688515497328826L;
 
     enum TreeTableFormVersionProperties {
-        ACCESS, USED_BY, STATUS, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
+        ACCESS, USED_BY, STATUS, PUBLISHED, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
     }
 
     ;
@@ -49,14 +49,17 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
         addContainerProperty(TreeTableFormVersionProperties.ACCESS, String.class, "",
                 ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_ACCESS), null, Align.CENTER);
 
-        addContainerProperty(TreeTableFormVersionProperties.USED_BY, String.class, "",
-                ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_USEDBY), null, Align.CENTER);
-
         addContainerProperty(TreeTableFormVersionProperties.STATUS, ComboBox.class, "",
                 ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_STATUS), null, Align.CENTER);
 
         addContainerProperty(TreeTableFormVersionProperties.LINKED_FORM, String.class, "",
                 ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_LINKED_FORM), null, Align.CENTER);
+
+        addContainerProperty(TreeTableFormVersionProperties.USED_BY, String.class, "",
+                ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_USEDBY), null, Align.CENTER);
+
+        addContainerProperty(TreeTableFormVersionProperties.PUBLISHED, String.class, false,
+                ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_PUBLISHED), null, Align.CENTER);
 
         addContainerProperty(TreeTableFormVersionProperties.LINKED_ORGANIZATION, String.class, "",
                 ServerTranslate.translate(LanguageCodes.FORM_TABLE_COLUMN_LINKED_ORGANIZATION), null, Align.CENTER);
@@ -66,6 +69,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 
         setColumnCollapsible(TreeTableFormVersionProperties.ACCESS, true);
         setColumnCollapsible(TreeTableFormVersionProperties.USED_BY, true);
+        setColumnCollapsible(TreeTableFormVersionProperties.PUBLISHED, true);
         setColumnCollapsible(TreeTableFormVersionProperties.STATUS, true);
         setColumnCollapsible(TreeTableFormVersionProperties.LINKED_FORM, true);
         setColumnCollapsible(TreeTableFormVersionProperties.LINKED_ORGANIZATION, true);
@@ -73,6 +77,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
 
         setColumnExpandRatio(TreeTableFormVersionProperties.ACCESS, 1);
         setColumnExpandRatio(TreeTableFormVersionProperties.USED_BY, 1);
+        setColumnExpandRatio(TreeTableFormVersionProperties.PUBLISHED, 0.8f);
         setColumnExpandRatio(TreeTableFormVersionProperties.STATUS, 1.2f);
         setColumnExpandRatio(TreeTableFormVersionProperties.LINKED_FORM, 1.2f);
         setColumnExpandRatio(TreeTableFormVersionProperties.LINKED_VERSIONS, 1.0f);
@@ -80,12 +85,13 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
         setColumnCollapsed(TreeTableFormVersionProperties.LINKED_ORGANIZATION, true);
 
         // Set new visibility order
-        setVisibleColumns(new Object[]{TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION,
-                TreeTableFormVersionProperties.ACCESS, TreeTableFormVersionProperties.USED_BY, TreeTableFormVersionProperties.STATUS,
+        setVisibleColumns(TreeTableBaseFormProperties.FORM_LABEL, TreeTableBaseFormProperties.VERSION,
+                TreeTableFormVersionProperties.ACCESS, TreeTableFormVersionProperties.USED_BY,
+                TreeTableFormVersionProperties.PUBLISHED, TreeTableFormVersionProperties.STATUS,
                 TreeTableBaseFormProperties.ORGANIZATION, TreeTableFormVersionProperties.LINKED_FORM,
                 TreeTableFormVersionProperties.LINKED_ORGANIZATION, TreeTableFormVersionProperties.LINKED_VERSIONS,
                 TreeTableBaseFormProperties.CREATED_BY, TreeTableBaseFormProperties.CREATION_DATE, TreeTableBaseFormProperties.MODIFIED_BY,
-                TreeTableBaseFormProperties.MODIFICATION_DATE});
+                TreeTableBaseFormProperties.MODIFICATION_DATE);
     }
 
     @SuppressWarnings("unchecked")
@@ -94,12 +100,14 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
         Item item = super.updateRow(form);
         item.getItemProperty(TreeTableFormVersionProperties.ACCESS).setValue(getFormPermissionsTag((SimpleFormView) form));
 
-        IUser<Long> userOfForm = UiAccesser.getUserUsingForm((IWebformsFormView) form);
+        IUser<Long> userOfForm = UiAccesser.getUserUsingForm(form);
         if (userOfForm != null) {
             item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue(userOfForm.getEmailAddress());
         } else {
             item.getItemProperty(TreeTableFormVersionProperties.USED_BY).setValue("");
         }
+
+        item.getItemProperty(TreeTableFormVersionProperties.PUBLISHED).setValue(((SimpleFormView) form).isPublished() ? "✓" : "");
 
         // Status
         item.getItemProperty(TreeTableFormVersionProperties.STATUS).setValue(generateStatusComboBox((IWebformsFormView) form));

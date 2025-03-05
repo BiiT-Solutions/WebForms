@@ -1513,6 +1513,7 @@ public class ApplicationController {
             List<SimpleFormView> userForms = new ArrayList<>();
 
             List<SimpleFormView> simpleForms = simpleFormViewDao.getAll();
+            List<SimpleFormView> publishedForms = simpleFormViewDao.getAllPublished();
 
             Set<IGroup<Long>> userOrganizations = webformsSecurityService.getUserOrganizationsWhereIsAuthorized(UserSession.getUser(),
                     WebformsActivity.READ);
@@ -1520,6 +1521,9 @@ public class ApplicationController {
             for (SimpleFormView form : simpleForms) {
                 for (IGroup<Long> organization : userOrganizations) {
                     if (form.getOrganizationId().equals(organization.getUniqueId())) {
+                        if (publishedForms.contains(form)) {
+                            form.setPublished(true);
+                        }
                         userForms.add(form);
                     }
                 }

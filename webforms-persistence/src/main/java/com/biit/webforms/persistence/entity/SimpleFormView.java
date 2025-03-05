@@ -25,6 +25,7 @@ public class SimpleFormView implements IWebformsFormView {
     private boolean isLastVersion;
     private Long formReferenceId;
 
+    private boolean published;
     private boolean hasJson;
 
     public SimpleFormView() {
@@ -283,4 +284,13 @@ public class SimpleFormView implements IWebformsFormView {
     public void setHasJson(boolean hasJson) {
         this.hasJson = hasJson;
     }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
 }
+

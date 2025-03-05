@@ -104,6 +104,37 @@ public class SimpleFormViewDao implements ISimpleFormViewDao {
         return formViews;
     }
 
+
+    @Override
+    public List<SimpleFormView> getAllPublished() {
+        Query query = entityManager
+                .createNativeQuery("SELECT tf.id, tf.label, tf.version, tf.creation_time, tf.created_by, tf.update_time, tf.updated_by, tf.comparation_id, tf.organization_id "
+                        + "FROM tree_forms_published tf");
+
+        List<Object[]> rows = query.getResultList();
+
+        List<SimpleFormView> formViews = new ArrayList<>();
+        for (Object[] row : rows) {
+            SimpleFormView formView = new SimpleFormView();
+            formView.setId(((Number) row[0]).longValue());
+            formView.setLabel((String) row[1]);
+            formView.setVersion((Integer) row[2]);
+            formView.setCreationTime((Timestamp) row[3]);
+            if (row[4] != null) {
+                formView.setCreatedBy(((Double) row[4]).longValue());
+            }
+            formView.setUpdateTime((Timestamp) row[5]);
+            if (row[6] != null) {
+                formView.setUpdatedBy(((Double) row[6]).longValue());
+            }
+            formView.setComparationId((String) row[7]);
+            formView.setOrganizationId(((Double) row[8]).longValue());
+            formViews.add(formView);
+        }
+
+        return formViews;
+    }
+
     @Override
     public SimpleFormViewWithContent get(Long id) {
         Query query = entityManager
