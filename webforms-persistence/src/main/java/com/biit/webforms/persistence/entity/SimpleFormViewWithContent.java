@@ -32,13 +32,10 @@ public class SimpleFormViewWithContent extends SimpleFormView {
         }
         SimpleFormViewWithContent other = (SimpleFormViewWithContent) obj;
         if (getComparationId() == null) {
-            if (other.getComparationId() != null) {
-                return false;
-            }
-        } else if (!getComparationId().equals(other.getComparationId())) {
-            return false;
+            return other.getComparationId() == null;
+        } else {
+            return getComparationId().equals(other.getComparationId());
         }
-        return true;
     }
 
     public String getJson() {

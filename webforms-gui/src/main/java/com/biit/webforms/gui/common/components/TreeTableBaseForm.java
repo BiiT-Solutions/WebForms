@@ -20,8 +20,8 @@ import com.vaadin.ui.TreeTable;
 
 import javax.ws.rs.ProcessingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -166,12 +166,14 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void updateRow(RootForm form) {
+	public Item updateRow(RootForm form) {
 		if (form != null) {
 			Item item = getItem(form);
 			Object treeObjectIcon = createElementWithIcon(form);
 			item.getItemProperty(TreeTableBaseFormProperties.FORM_LABEL).setValue(treeObjectIcon);
+			return item;
 		}
+		return null;
 	}
 
 	/**
@@ -194,7 +196,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 
 	@Override
 	public Collection<?> getSortableContainerPropertyIds() {
-		return new ArrayList<>(Arrays.asList(TreeTableBaseFormProperties.FORM_LABEL));
+		return new ArrayList<>(Collections.singletonList(TreeTableBaseFormProperties.FORM_LABEL));
 	}
 
 	/**
@@ -205,10 +207,9 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 	}
 
 	private void init() {
-		List<IBaseFormView> forms = new ArrayList<>();
 
-		try {
-			forms.addAll(dataProvider.getAll());
+        try {
+            List<IBaseFormView> forms = new ArrayList<>(dataProvider.getAll());
 
 			for (IBaseFormView form : forms) {
 				addForm(form);

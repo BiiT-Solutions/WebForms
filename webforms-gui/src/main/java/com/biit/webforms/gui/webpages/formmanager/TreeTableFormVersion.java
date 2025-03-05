@@ -11,12 +11,10 @@ import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.TreeTableBaseForm;
 import com.biit.webforms.gui.common.components.TreeTableProvider;
-import com.biit.webforms.gui.common.components.WindowAcceptCancel;
-import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
-import com.biit.webforms.gui.common.components.WindowAcceptCancel.CancelActionListener;
 import com.biit.webforms.gui.common.components.WindowProceedAction;
 import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.common.utils.MessageManager;
+import com.biit.webforms.gui.components.utils.RootForm;
 import com.biit.webforms.gui.exceptions.NotEnoughRightsToChangeStatusException;
 import com.biit.webforms.language.FormWorkStatusUi;
 import com.biit.webforms.language.LanguageCodes;
@@ -33,8 +31,6 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
     enum TreeTableFormVersionProperties {
         ACCESS, USED_BY, STATUS, PUBLISHED, LINKED_FORM, LINKED_ORGANIZATION, LINKED_VERSIONS;
     }
-
-    ;
 
     public TreeTableFormVersion(TreeTableProvider<SimpleFormView> formProvider, IconProviderFormLinked iconProviderFormLinked) {
         super(formProvider, iconProviderFormLinked);
@@ -90,8 +86,8 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
                 TreeTableFormVersionProperties.PUBLISHED, TreeTableFormVersionProperties.STATUS,
                 TreeTableBaseFormProperties.ORGANIZATION, TreeTableFormVersionProperties.LINKED_FORM,
                 TreeTableFormVersionProperties.LINKED_ORGANIZATION, TreeTableFormVersionProperties.LINKED_VERSIONS,
-                TreeTableBaseFormProperties.CREATED_BY, TreeTableBaseFormProperties.CREATION_DATE, TreeTableBaseFormProperties.MODIFIED_BY,
-                TreeTableBaseFormProperties.MODIFICATION_DATE);
+                TreeTableBaseFormProperties.CREATED_BY, TreeTableBaseFormProperties.CREATION_DATE,
+                TreeTableBaseFormProperties.MODIFIED_BY, TreeTableBaseFormProperties.MODIFICATION_DATE);
     }
 
     @SuppressWarnings("unchecked")
@@ -144,33 +140,18 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
                 WebformsActivity.FORM_STATUS_DOWNGRADE);
 
         statusComboBox.setEnabled(userCanUpgradeStatus);
-        statusComboBox.addValueChangeListener(new ValueChangeListener() {
-            private static final long serialVersionUID = 6270860285995563296L;
-
-            @Override
-            public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-                if (form.getStatus() != null && form.getStatus().equals(statusComboBox.getValue())) {
-                    // It's the same status. Don't do anything.
-                    return;
-                }
-
-                new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_MODIFY_STATUS, new AcceptActionListener() {
-
-                    @Override
-                    public void acceptAction(WindowAcceptCancel window) {
-                        changeStatus(form, statusComboBox, (FormWorkStatus) statusComboBox.getValue());
-                        form.setStatus((FormWorkStatus) statusComboBox.getValue());
-                        updateRow(form);
-                    }
-                }, new CancelActionListener() {
-
-                    @Override
-                    public void cancelAction(WindowAcceptCancel window) {
-                        statusComboBox.setValue(form.getStatus());
-                    }
-                });
-
+        statusComboBox.addValueChangeListener((ValueChangeListener) event -> {
+            if (form.getStatus() != null && form.getStatus().equals(statusComboBox.getValue())) {
+                // It's the same status. Don't do anything.
+                return;
             }
+
+            new WindowProceedAction(LanguageCodes.CAPTION_PROCEED_MODIFY_STATUS, window -> {
+                changeStatus(form, statusComboBox, (FormWorkStatus) statusComboBox.getValue());
+                form.setStatus((FormWorkStatus) statusComboBox.getValue());
+                updateRow(form);
+            }, window -> statusComboBox.setValue(form.getStatus()));
+
         });
 
         return statusComboBox;
@@ -233,6 +214,16 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
             SimpleFormView simpleFormView = SimpleFormView.getSimpleFormView((IWebformsFormView) form);
             setValue(simpleFormView);
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Item updateRow(RootForm form) {
+        final Item item = super.updateRow(form);
+        if (item != null) {
+            item.getItemProperty(TreeTableFormVersionProperties.PUBLISHED).setValue("");
+        }
+        return item;
     }
 
 }

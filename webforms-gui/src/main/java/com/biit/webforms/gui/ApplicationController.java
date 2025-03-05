@@ -1519,11 +1519,13 @@ public class ApplicationController {
                     WebformsActivity.READ);
 
             for (SimpleFormView form : simpleForms) {
+                if (publishedForms.stream().anyMatch(f -> Objects.equals(f.getLabel(), form.getLabel())
+                        && Objects.equals(f.getVersion(), form.getVersion())
+                        && Objects.equals(f.getOrganizationId(), form.getOrganizationId()))) {
+                    form.setPublished(true);
+                }
                 for (IGroup<Long> organization : userOrganizations) {
                     if (form.getOrganizationId().equals(organization.getUniqueId())) {
-                        if (publishedForms.contains(form)) {
-                            form.setPublished(true);
-                        }
                         userForms.add(form);
                     }
                 }

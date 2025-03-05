@@ -13,7 +13,7 @@ public class RootForm extends Form {
 
 	public RootForm(String label, Long organizationId) {
 		this.label = label;
-		childForms = new ArrayList<IBaseFormView>();
+		childForms = new ArrayList<>();
 		setOrganizationId(organizationId);
 	}
 
