@@ -214,6 +214,7 @@ public class TreeTableFormVersion extends TreeTableBaseForm<SimpleFormView> {
             SimpleFormView simpleFormView = SimpleFormView.getSimpleFormView((IWebformsFormView) form);
             setValue(simpleFormView);
             select(simpleFormView);
+            setCurrentPageFirstItemId(simpleFormView);
         }
     }
 
