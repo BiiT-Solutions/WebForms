@@ -95,4 +95,13 @@ public class PublishedForm extends BaseStorableObject {
     public static PublishedForm fromJson(String jsonString) throws JsonProcessingException {
         return ObjectMapperFactory.getObjectMapper().readValue(jsonString, PublishedForm.class);
     }
+
+    @Override
+    public String toString() {
+        return "PublishedForm{"
+                + "label='" + label + '\''
+                + ", version=" + version
+                + ", organizationId=" + organizationId
+                + '}';
+    }
 }
