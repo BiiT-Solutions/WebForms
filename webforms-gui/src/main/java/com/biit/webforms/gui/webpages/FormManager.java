@@ -335,6 +335,8 @@ public class FormManager extends SecuredWebPage {
                 try {
                     if (ApplicationUi.getController().publishForm(form) != null) {
                         MessageManager.showInfo(LanguageCodes.XFORM_PUBLISHED);
+                        formTable.refreshTableData();
+                        formTable.selectForm(form);
                     }
                 } catch (Exception e) {
                     WebformsUiLogger.errorMessage(this.getClass().getName(), e);
