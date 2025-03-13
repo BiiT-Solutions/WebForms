@@ -388,15 +388,21 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
             // Display the image in the feedback component
             StreamSource source = () -> new ByteArrayInputStream(imageMemoryOutputStream.toByteArray());
             imagePreview.setStreamSource(source);
-            BufferedImage bimg;
+            final BufferedImage bufferedImage;
             try {
-                bimg = ImageIO.read(source.getStream());
-                if (bimg != null) {
+                bufferedImage = ImageIO.read(source.getStream());
+                if (bufferedImage != null) {
                     // Disable field to disable events to be launched.
                     imageWidth.setEnabled(false);
                     imageHeight.setEnabled(false);
-                    imageWidth.setValue(bimg.getWidth() + "");
-                    imageHeight.setValue(bimg.getHeight() + "");
+                    //No update width if it has been set by the user.
+                    if (imageWidth.getValue() == null || imageWidth.getValue().isEmpty()) {
+                        imageWidth.setValue(bufferedImage.getWidth() + "");
+                    }
+                    //No update height if it has been set by the user.
+                    if (imageHeight.getValue() == null || imageHeight.getValue().isEmpty()) {
+                        imageHeight.setValue(bufferedImage.getHeight() + "");
+                    }
                     imageWidth.setEnabled(true);
                     imageHeight.setEnabled(true);
                 }
@@ -462,11 +468,11 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         video.setCreatedBy(UserSession.getUser().getUniqueId());
         try {
             video.setWidth(Integer.parseInt(videoWidth.getValue()));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
         try {
             video.setHeight(Integer.parseInt(videoHeight.getValue()));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
 
         return video;

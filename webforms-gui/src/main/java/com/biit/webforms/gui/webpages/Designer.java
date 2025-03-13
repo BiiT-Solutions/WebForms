@@ -185,26 +185,22 @@ public class Designer extends SecuredWebPage {
 
     private UpperMenuDesigner createUpperMenu() {
         final UpperMenuDesigner upperMenu = new UpperMenuDesigner();
-        upperMenu.addSaveButtonListener(new ClickListener() {
+        upperMenu.addSaveButtonListener(clickEvent -> {
+            try {
+                ApplicationUi.getController().saveForm();
+                clearAndUpdateFormTable();
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                try {
-                    ApplicationUi.getController().saveForm();
-                    clearAndUpdateFormTable();
-
-                    if (ApplicationUi.getController().getFormInUse() instanceof Block) {
-                        MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
-                    } else {
-                        MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
-                    }
-                } catch (UnexpectedDatabaseException e) {
-                    MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
-                    WebformsUiLogger.errorMessage(this.getClass().getName(), e);
-                } catch (ElementCannotBePersistedException e) {
-                    MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
-                    WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+                if (ApplicationUi.getController().getFormInUse() instanceof Block) {
+                    MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_BLOCK_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_BLOCK_DESCRIPTION_SAVE);
+                } else {
+                    MessageManager.showInfo(LanguageCodes.INFO_MESSAGE_FORM_CAPTION_SAVE, LanguageCodes.INFO_MESSAGE_FORM_DESCRIPTION_SAVE);
                 }
+            } catch (UnexpectedDatabaseException e) {
+                MessageManager.showError(LanguageCodes.ERROR_ACCESSING_DATABASE, LanguageCodes.ERROR_ACCESSING_DATABASE_DESCRIPTION);
+                WebformsUiLogger.errorMessage(this.getClass().getName(), e);
+            } catch (ElementCannotBePersistedException e) {
+                MessageManager.showError(LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED, LanguageCodes.ERROR_ELEMENT_CANNOT_BE_SAVED_DESCRIPTION);
+                WebformsUiLogger.errorMessage(this.getClass().getName(), e);
             }
         });
         upperMenu.addSaveAsBlockButtonListener((ClickListener) event -> openNewBlockWindow());
@@ -349,7 +345,7 @@ public class Designer extends SecuredWebPage {
                                 table.setValue(row);
                                 if (e instanceof DependencyDynamicAnswerExistException) {
                                     MessageManager.showError(LanguageCodes.ERROR_DYNAMIC_ANSWER_DEPENDENCY);
-                                } else if (e instanceof ElementIsUsedAsDefaultValueException){
+                                } else if (e instanceof ElementIsUsedAsDefaultValueException) {
                                     MessageManager.showError(LanguageCodes.ERROR_ANSWER_USED_AS_DEFAULT_DEPENDENCY, e.getMessage());
                                 } else if (e instanceof DependencyExistException) {
                                     MessageManager.showError(LanguageCodes.ERROR_TREE_OBJECT_FLOW_DEPENDENCY, e.getMessage());
@@ -856,7 +852,7 @@ public class Designer extends SecuredWebPage {
         retrieveCollapsedTableState();
 
         if (currentSelection != null) {
-            if (currentSelection instanceof Form || currentSelection instanceof Block) {
+            if (currentSelection instanceof Form) {
                 table.setValue(getCurrentForm());
             } else {
                 table.setValue(getCurrentForm().findByComparationId(currentSelection.getComparationId()));
