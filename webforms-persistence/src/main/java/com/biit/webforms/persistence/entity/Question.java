@@ -73,6 +73,10 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
     @Column(name = "answers_description_always_visible", nullable = false, columnDefinition = "bit default 1")
     private boolean isAnswersDescriptionAlwaysVisible = false;
 
+    //Created for Sliders.
+    @Column(name = "answers_values_on_tooltip", nullable = false, columnDefinition = "bit default 0")
+    private boolean answersValuesOnTooltip = false;
+
     @Column(name = "inverse_answer_order", nullable = false, columnDefinition = "bit default 1")
     private boolean inverseAnswerOrder = false;
 
@@ -321,6 +325,14 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
 
     public void setHorizontal(boolean horizontal) {
         this.horizontal = horizontal;
+    }
+
+    public boolean isAnswersValuesOnTooltip() {
+        return answersValuesOnTooltip;
+    }
+
+    public void setAnswersValuesOnTooltip(boolean answersValuesOnTooltip) {
+        this.answersValuesOnTooltip = answersValuesOnTooltip;
     }
 
     @Override

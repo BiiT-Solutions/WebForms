@@ -1,18 +1,18 @@
 package com.biit.webforms.enumerations;
 
 public enum AnswerType {
-    SINGLE_SELECTION_RADIO(null, true, true, false, true, false, false, false),
+    SINGLE_SELECTION_RADIO(null, true, true, false, true, false, false, false, false),
 
-    SINGLE_SELECTION_LIST(null, true, false, null, true, false, false, false),
+    SINGLE_SELECTION_LIST(null, true, false, null, true, false, false, false, false),
 
-    SINGLE_SELECTION_SLIDER(null, true, false, true, true, false, false, true),
+    SINGLE_SELECTION_SLIDER(null, true, false, true, true, false, false, true, true),
 
-    MULTIPLE_SELECTION(null, true, true, null, true, false, true, false),
+    MULTIPLE_SELECTION(null, true, true, null, true, false, true, false, false),
 
     // Uses answer format.
-    INPUT(AnswerFormat.TEXT, false, false, null, true, true, false, false),
+    INPUT(AnswerFormat.TEXT, false, false, null, true, true, false, false, false),
 
-    TEXT_AREA(null, false, false, null, false, true, false, false);
+    TEXT_AREA(null, false, false, null, false, true, false, false, false);
 
     private final AnswerFormat defaultAnswerFormat;
     private final boolean childrenAllowed;
@@ -22,9 +22,10 @@ public enum AnswerType {
     private final boolean defaultValueEnabled;
     private final boolean maxAnswersSelectedEnabled;
     private final boolean inverseAnswerOrder;
+    private final boolean answersVisibleOnTooltip;
 
     private AnswerType(AnswerFormat defaultAnswerType, boolean childrenAllowed, boolean subchildrenAllowed, Boolean defaultHorizontal, Boolean defaultMandatory,
-                       boolean defaultValueEnabled, boolean maxAnswersSelectedEnabled, boolean inverseAnswerOrder) {
+                       boolean defaultValueEnabled, boolean maxAnswersSelectedEnabled, boolean inverseAnswerOrder, boolean answersVisibleOnTooltip) {
         this.defaultAnswerFormat = defaultAnswerType;
         this.childrenAllowed = childrenAllowed;
         this.defaultHorizontal = defaultHorizontal;
@@ -33,6 +34,7 @@ public enum AnswerType {
         this.defaultValueEnabled = defaultValueEnabled;
         this.maxAnswersSelectedEnabled = maxAnswersSelectedEnabled;
         this.inverseAnswerOrder = inverseAnswerOrder;
+        this.answersVisibleOnTooltip = answersVisibleOnTooltip;
     }
 
     public boolean isAnswerFormatEnabled() {
@@ -88,6 +90,10 @@ public enum AnswerType {
 
     public boolean isMaxAnswersSelectedEnabled() {
         return maxAnswersSelectedEnabled;
+    }
+
+    public boolean isAnswersValuesOnTooltipEnabled() {
+        return answersVisibleOnTooltip;
     }
 
     public boolean isInverseAnswerOrder() {

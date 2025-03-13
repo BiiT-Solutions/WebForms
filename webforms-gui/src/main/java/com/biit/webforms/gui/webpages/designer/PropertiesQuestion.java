@@ -55,6 +55,8 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithMedia<Que
     private CheckBox horizontal;
     private CheckBox inverseAnswerOrder;
 
+    private CheckBox answersVisibleOnTooltip;
+
     // Disable the field if orbeon is in edition mode.
     private CheckBox disableEdition;
 
@@ -89,6 +91,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithMedia<Que
 
         descriptionAlwaysVisible = new CheckBox(LanguageCodes.CAPTION_DESCRIPTION_ALWAYS_VISIBLE.translation());
         answersDescriptionAlwaysVisible = new CheckBox(LanguageCodes.CAPTION_ANSWERS_DESCRIPTION_ALWAYS_VISIBLE.translation());
+        answersVisibleOnTooltip = new CheckBox(LanguageCodes.CAPTION_ANSWERS_VALUES_ALWAYS_VISIBLE_ON_TOOLTIP.translation());
 
         defaultValueString = new TextArea(LanguageCodes.CAPTION_DEFAULT_VALUE.translation());
         defaultValueString.setWidth(WIDTH);
@@ -129,6 +132,8 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithMedia<Que
             inverseAnswerOrder.setVisible(selectedType.isInverseAnswerOrder());
 
             maxAnswersSelected.setVisible(selectedType.isMaxAnswersSelectedEnabled());
+
+            answersVisibleOnTooltip.setVisible(selectedType.isAnswersValuesOnTooltipEnabled());
 
             switch (selectedType) {
                 case INPUT:
@@ -209,10 +214,11 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithMedia<Que
         commonProperties.addComponent(alias);
         commonProperties.addComponent(description);
         commonProperties.addComponent(descriptionAlwaysVisible);
-        commonProperties.addComponent(answersDescriptionAlwaysVisible);
         commonProperties.addComponent(answerType);
         commonProperties.addComponent(answerFormat);
         commonProperties.addComponent(answerSubformat);
+        commonProperties.addComponent(answersDescriptionAlwaysVisible);
+        commonProperties.addComponent(answersVisibleOnTooltip);
         commonProperties.addComponent(defaultValueString);
         commonProperties.addComponent(defaultValueDate);
         commonProperties.addComponent(defaultValueAnswer);
@@ -289,6 +295,9 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithMedia<Que
 
         answersDescriptionAlwaysVisible.setValue(getInstance().isAnswersDescriptionAlwaysVisible());
         answersDescriptionAlwaysVisible.setEnabled(!getInstance().isReadOnly());
+
+        answersVisibleOnTooltip.setValue(getInstance().isAnswersValuesOnTooltip());
+        answersVisibleOnTooltip.setEnabled(!getInstance().isReadOnly());
 
         mandatory.setValue(getInstance().isMandatory());
         mandatory.setEnabled(!getInstance().isReadOnly());
@@ -376,6 +385,7 @@ public class PropertiesQuestion extends PropertiesForStorableObjectWithMedia<Que
                 description.getValue(), mandatory.getValue(), (AnswerType) answerType.getValue(), (AnswerFormat) answerFormat.getValue(),
                 (AnswerSubformat) answerSubformat.getValue(), horizontal.getValue(), tempDefaultValue, disableEdition.getValue(),
                 maxAnswersSelectedValue, consecutiveAnswers.getValue(), descriptionAlwaysVisible.getValue(), answersDescriptionAlwaysVisible.getValue(),
+                answersVisibleOnTooltip.getValue(),
                 inverseAnswerOrder.getValue(), getImage(), getVideo(), getAudio());
 
         super.updateElement();

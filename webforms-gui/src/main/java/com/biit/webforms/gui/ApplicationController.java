@@ -1075,6 +1075,7 @@ public class ApplicationController {
     public void updateQuestion(Question question, String name, String label, String abbreviature, String alias, String description, boolean mandatory, AnswerType answerType,
                                AnswerFormat answerFormat, AnswerSubformat answerSubformat, boolean horizontal, Object defaultValue, boolean editionDisabled,
                                Integer maxAnswersSelected, Boolean consecutiveAnswers, Boolean descriptionAlwaysVisible, Boolean answersDescriptionAlwaysVisible,
+                               Boolean answersValuesOnTooltip,
                                boolean inverseAnswersOrder,
                                TreeObjectImage image, TreeObjectVideo video, TreeObjectAudio audio) {
         try {
@@ -1093,6 +1094,7 @@ public class ApplicationController {
                     || !Objects.equals(question.isConsecutiveAnswers(), consecutiveAnswers)
                     || !Objects.equals(question.isInverseAnswerOrder(), inverseAnswersOrder)
                     || !Objects.equals(question.isDescriptionAlwaysVisible(), descriptionAlwaysVisible)
+                    || !Objects.equals(question.isAnswersValuesOnTooltip(), answersValuesOnTooltip)
                     || !Objects.equals(question.isAnswersDescriptionAlwaysVisible(), answersDescriptionAlwaysVisible)) {
                 setUnsavedFormChanges(true);
                 question.setName(name);
@@ -1114,6 +1116,7 @@ public class ApplicationController {
                 question.setConsecutiveAnswers(consecutiveAnswers != null ? consecutiveAnswers : false);
                 question.setDescriptionAlwaysVisible(descriptionAlwaysVisible != null ? descriptionAlwaysVisible : false);
                 question.setAnswersDescriptionAlwaysVisible(answersDescriptionAlwaysVisible != null ? answersDescriptionAlwaysVisible : false);
+                question.setAnswersValuesOnTooltip(answersValuesOnTooltip != null ? answersValuesOnTooltip : false);
                 question.setImage(image);
                 question.setVideo(video);
                 question.setAudio(audio);
