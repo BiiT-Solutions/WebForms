@@ -26,7 +26,7 @@ import java.util.List;
 @JsonDeserialize(using = TextDeserializer.class)
 @JsonSerialize(using = TextSerializer.class)
 @Table(name = "tree_texts")
-@Cacheable(true)
+@Cacheable
 public class Text extends WebformsBaseQuestion implements ElementWithMedia {
 	private static final long serialVersionUID = 4558033285332354062L;
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;

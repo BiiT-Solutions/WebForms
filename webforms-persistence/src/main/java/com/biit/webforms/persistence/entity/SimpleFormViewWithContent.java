@@ -5,7 +5,7 @@ import javax.persistence.Cacheable;
 /**
  * As Lazy is not correctly configured, we use this class to show basic form information in the Form Manager.
  */
-@Cacheable(true)
+@Cacheable
 public class SimpleFormViewWithContent extends SimpleFormView {
 
     private String json;

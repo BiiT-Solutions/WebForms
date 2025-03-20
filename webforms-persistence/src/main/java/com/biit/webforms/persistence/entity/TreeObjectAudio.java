@@ -21,7 +21,7 @@ import java.util.Set;
 @JsonDeserialize(using = TreeObjectAudioDeserializer.class)
 @JsonSerialize(using = TreeObjectAudioSerializer.class)
 @Table(name = "audios")
-@Cacheable(true)
+@Cacheable
 public class TreeObjectAudio extends StorableObject {
 
     private static final long serialVersionUID = 3999491361852197724L;

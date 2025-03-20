@@ -24,7 +24,7 @@ import java.util.List;
 @JsonDeserialize(using = SystemFieldDeserializer.class)
 @JsonSerialize(using = SystemFieldSerializer.class)
 @Table(name = "tree_system_fields")
-@Cacheable(true)
+@Cacheable
 public class SystemField extends WebformsBaseQuestion {
 	private static final long serialVersionUID = -5714738729351011443L;
 

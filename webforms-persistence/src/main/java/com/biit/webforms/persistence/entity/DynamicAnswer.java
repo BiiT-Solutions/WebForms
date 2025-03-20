@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 @JsonDeserialize(using = DynamicAnswerDeserializer.class)
 @JsonSerialize(using = DynamicAnswerSerializer.class)
 @Table(name = "tree_dynamic_answer")
-@Cacheable(true)
+@Cacheable
 public class DynamicAnswer extends BaseAnswer implements FlowConditionScript {
     private static final long serialVersionUID = -1233082747412521896L;
     public static final String ANSWER_TAG_ALLOWED_CHARS = ".*";

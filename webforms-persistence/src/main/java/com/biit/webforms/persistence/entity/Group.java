@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @JsonDeserialize(using = GroupDeserializer.class)
 @JsonSerialize(using = GroupSerializer.class)
 @Table(name = "tree_groups")
-@Cacheable(true)
+@Cacheable
 public class Group extends BaseRepeatableGroup {
     private static final long serialVersionUID = 5363295280240190378L;
     private static final boolean DEFAULT_REPEATABLE = false;

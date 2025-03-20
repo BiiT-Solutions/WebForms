@@ -21,7 +21,7 @@ import java.util.Set;
 @JsonDeserialize(using = TreeObjectVideoDeserializer.class)
 @JsonSerialize(using = TreeObjectVideoSerializer.class)
 @Table(name = "videos")
-@Cacheable(true)
+@Cacheable
 public class TreeObjectVideo extends StorableObject {
 
     private static final long serialVersionUID = -2626435917683856455L;

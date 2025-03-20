@@ -44,7 +44,7 @@ import java.util.Objects;
 @JsonDeserialize(using = QuestionDeserializer.class)
 @JsonSerialize(using = QuestionSerializer.class)
 @Table(name = "tree_questions")
-@Cacheable(true)
+@Cacheable
 public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithMedia,
         ElementWithDescription {
     private static final long serialVersionUID = -7243001035969348318L;

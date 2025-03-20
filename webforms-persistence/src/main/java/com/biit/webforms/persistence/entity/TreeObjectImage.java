@@ -32,7 +32,7 @@ import java.util.Set;
 @JsonDeserialize(using = TreeObjectImageDeserializer.class)
 @JsonSerialize(using = TreeObjectImageSerializer.class)
 @Table(name = "images")
-@Cacheable(true)
+@Cacheable
 public class TreeObjectImage extends StorableObject {
     private static final long serialVersionUID = 1072375747626406485L;
     public static final int MAX_IMAGE_LENGTH = 1024 * 1024 * 10;

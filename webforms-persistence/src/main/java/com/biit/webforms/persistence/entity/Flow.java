@@ -52,7 +52,7 @@ import java.util.Set;
 @JsonDeserialize(using = FlowDeserializer.class)
 @JsonSerialize(using = FlowSerializer.class)
 @Table(name = "flow")
-@Cacheable(true)
+@Cacheable
 public class Flow extends StorableObject {
     private static final long serialVersionUID = 2814442921737652036L;
 

@@ -23,7 +23,7 @@ import java.util.List;
 @JsonDeserialize(using = AttachedFilesDeserializer.class)
 @JsonSerialize(using = AttachedFilesSerializer.class)
 @Table(name = "tree_attached_files")
-@Cacheable(true)
+@Cacheable
 public class AttachedFiles extends WebformsBaseQuestion implements ElementWithDescription {
 	private static final long serialVersionUID = 275419152896656379L;
 	public static final int MAX_DESCRIPTION_LENGTH = 10000;
