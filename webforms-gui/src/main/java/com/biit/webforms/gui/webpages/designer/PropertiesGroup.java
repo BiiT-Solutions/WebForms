@@ -3,14 +3,20 @@ package com.biit.webforms.gui.webpages.designer;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
+import com.biit.webforms.gui.common.components.Languages;
+import com.biit.webforms.gui.common.language.ServerTranslate;
 import com.biit.webforms.gui.components.StorableObjectProperties;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.Group;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PropertiesGroup extends StorableObjectProperties<Group> {
     private static final long serialVersionUID = 2409507883007287631L;
@@ -24,6 +30,8 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
     private CheckBox isTable;
     private TextField numberOfColumns;
     private TextField totalAnswers;
+
+    private Map<String, TextArea> localizationLabel;
 
     public PropertiesGroup() {
         super(Group.class);
@@ -70,6 +78,8 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 
         addTab(commonProperties, LanguageCodes.CAPTION_PROPERTIES_GROUP.translation(), true);
 
+        createLocalizationProperties();
+
         super.initElement();
     }
 
@@ -106,6 +116,51 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
             totalAnswers.setValue(String.valueOf(getInstance().getTotalAnswersValue()));
         }
         totalAnswers.addValidator(new ValidatorInteger());
+
+        initLocalizationProperties();
+    }
+
+    private void initLocalizationProperties() {
+        for (String language : Languages.LANGUAGES) {
+            if (getInstance().getLabelTranslations() != null) {
+                final String translatedLabel = getInstance().getLabelTranslations().get(language);
+                localizationLabel.get(language).setValue(translatedLabel != null ? translatedLabel : "");
+            } else {
+                localizationLabel.get(language).setVisible(false);
+            }
+        }
+    }
+
+    private void createLocalizationProperties() {
+        final TabSheet tabSheet = new TabSheet();
+        tabSheet.setSizeFull();
+        localizationLabel = new HashMap<>();
+        for (String language : Languages.LANGUAGES) {
+            FormLayout localizationProperties = new FormLayout();
+            localizationProperties.setWidth(null);
+            localizationProperties.setHeight(null);
+            tabSheet.addTab(localizationProperties, language);
+
+            localizationLabel.put(language, new TextArea(ServerTranslate.translate(LanguageCodes.CAPTION_LABEL)));
+            localizationLabel.get(language).setWidth(WIDTH);
+            localizationLabel.get(language).setMaxLength(TreeObject.MAX_LABEL_LENGTH);
+            localizationLabel.get(language).setImmediate(true);
+            localizationProperties.addComponent(localizationLabel.get(language));
+
+            boolean canEdit = getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
+            localizationProperties.setEnabled(canEdit);
+            localizationProperties.setMargin(true);
+
+        }
+        addTab(tabSheet, ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_TRANSLATIONS_TITLE), false);
+    }
+
+    public Map<String, String> getLabelTranslations() {
+        Map<String, String> labelTranslations = new HashMap<>();
+        for (String language : Languages.LANGUAGES) {
+            labelTranslations.put(language, localizationLabel.get(language).getValue());
+        }
+        return labelTranslations;
     }
 
     @Override
@@ -135,6 +190,8 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 
         ApplicationUi.getController().updateGroup(getInstance(), tempName, tempLabel, repeatable.getValue(),
                 isTable.getValue(), numberOfColumnsValue, totalAnswersValue);
+
+        getInstance().setLabelTranslations(getLabelTranslations());
 
         super.updateElement();
     }

@@ -17,14 +17,19 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -44,7 +49,7 @@ import java.util.Objects;
 @JsonSerialize(using = AnswerSerializer.class)
 @Table(name = "tree_answers")
 @Cacheable()
-public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithMedia {
+public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithMedia, ElementWithTranslation {
     private static final long serialVersionUID = 7614678800982506178L;
     private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>(Collections.singletonList(Answer.class));
     public static final int MAX_DESCRIPTION_LENGTH = 10000;
@@ -61,15 +66,24 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
     @OneToOne(mappedBy = "element", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private TreeObjectAudio audio;
 
+    @SuppressWarnings("JpaAttributeTypeInspection")
+    @ElementCollection
+    @CollectionTable(name = "description_translations")
+    @MapKeyColumn(name = "language")
+    @Column(name = "translation")
+    private Map<String, String> descriptionTranslations;
+
     public Answer() {
         super();
         description = "";
+        descriptionTranslations = new HashMap<>();
     }
 
     public Answer(String name) throws FieldTooLongException, CharacterNotAllowedException {
         super(name);
         setValue(name);
         description = "";
+        descriptionTranslations = new HashMap<>();
     }
 
     @Override
@@ -111,6 +125,9 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
             copyBasicInfo(object);
             if (((Answer) object).getDescription() != null) {
                 description = ((Answer) object).getDescription();
+            }
+            if (((Answer) object).getDescriptionTranslations() != null) {
+                descriptionTranslations = new HashMap<>(((Answer) object).getDescriptionTranslations());
             }
         } else {
             throw new NotValidTreeObjectException("Copy data for Answer only supports the same type copy");
@@ -245,5 +262,15 @@ public class Answer extends BaseAnswer implements FlowConditionScript, ElementWi
     @Override
     public TreeObjectAudio getAudio() {
         return audio;
+    }
+
+    @Override
+    public Map<String, String> getDescriptionTranslations() {
+        return descriptionTranslations;
+    }
+
+    @Override
+    public void setDescriptionTranslations(Map<String, String> descriptionTranslations) {
+        this.descriptionTranslations = descriptionTranslations;
     }
 }

@@ -2,8 +2,7 @@ package com.biit.webforms.persistence.entity;
 
 public interface ElementWithDescription {
 
-	String getDescription();
+    String getDescription();
 
-	void setDescription(String description);
-
+    void setDescription(String description);
 }

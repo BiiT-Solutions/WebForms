@@ -12,7 +12,7 @@ public class CompleteFormViewSerializer extends FormElementSerializer<CompleteFo
     @Override
     public void serialize(CompleteFormView src, JsonGenerator jgen) throws IOException {
         super.serialize(src, jgen);
-        //jgen.writeObjectField("form", src.getForm());
+        serializeMap("descriptionTranslations", src.getDescriptionTranslations(), jgen);
     }
 
 }

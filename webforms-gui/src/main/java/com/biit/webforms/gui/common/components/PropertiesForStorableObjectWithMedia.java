@@ -1,9 +1,11 @@
 package com.biit.webforms.gui.common.components;
 
+import com.biit.form.entity.TreeObject;
 import com.biit.persistence.entity.StorableObject;
 import com.biit.utils.image.ImageTools;
 import com.biit.utils.image.exceptions.InvalidRemoteImageDefinition;
 import com.biit.webforms.configuration.WebformsConfigurationReader;
+import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.components.WindowAcceptCancel.AcceptActionListener;
@@ -15,18 +17,20 @@ import com.biit.webforms.gui.webpages.designer.ValidatorInteger;
 import com.biit.webforms.gui.webpages.designer.WindowSetUrl;
 import com.biit.webforms.language.LanguageCodes;
 import com.biit.webforms.persistence.entity.ElementWithMedia;
+import com.biit.webforms.persistence.entity.ElementWithTranslation;
 import com.biit.webforms.persistence.entity.TreeObjectAudio;
 import com.biit.webforms.persistence.entity.TreeObjectImage;
 import com.biit.webforms.persistence.entity.TreeObjectVideo;
 import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedListener;
@@ -44,27 +48,35 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObject & ElementWithMedia> extends
+public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObject & ElementWithMedia & ElementWithTranslation> extends
         StorableObjectProperties<T> {
     private static final long serialVersionUID = 894265579530046205L;
     private static final List<String> allowedMimeTypes = Arrays.asList("image/jpeg", "image/png", "image/bmp", "image/gif");
     private static final int MAX_DISPLAY_FILE_NAME_LENGTH = 12;
     private static final String STATUS_STYLE = "status_field";
-    private TextField imageFile, imageWidth, imageHeight;
+    protected static final String WIDTH = "200px";
+    private TextField imageFile;
+    private TextField imageWidth;
+    private TextField imageHeight;
     private ImagePreview imagePreview;
-    private Button deleteImageButton, urlButton;
-    // Image uploader
-    private Upload upload;
+    private Button deleteImageButton;
     // Put upload in this memory buffer that grows automatically
     private ByteArrayOutputStream imageMemoryOutputStream;
 
-    private TextField videoUrl, videoWidth, videoHeight;
+    private TextField videoUrl;
+    private TextField videoWidth;
+    private TextField videoHeight;
 
     private TextField audioUrl;
 
     private Label status;
+
+    private Map<String, TextArea> localizationLabel;
+    private Map<String, TextArea> localizationDescription;
 
     protected PropertiesForStorableObjectWithMedia(Class<? extends T> type) {
         super(type);
@@ -76,6 +88,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
     @Override
     protected void initElement() {
         super.initElement();
+        createLocalizationProperties();
         createImageProperties();
         createVideoProperties();
         createAudioProperties();
@@ -85,9 +98,27 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
     @Override
     protected void initValues() {
         super.initValues();
+        initLocalizationProperties();
         initImageValues();
         initVideoValues();
         initAudioValues();
+    }
+
+    private void initLocalizationProperties() {
+        for (String language : Languages.LANGUAGES) {
+            if (getInstance().getLabelTranslations() != null) {
+                final String label = getInstance().getLabelTranslations().get(language);
+                localizationLabel.get(language).setValue(label != null ? label : "");
+            } else {
+                localizationLabel.get(language).setVisible(false);
+            }
+            if (getInstance().getDescriptionTranslations() != null) {
+                final String description = getInstance().getDescriptionTranslations().get(language);
+                localizationDescription.get(language).setValue(description != null ? description : "");
+            } else {
+                localizationDescription.get(language).setVisible(false);
+            }
+        }
     }
 
     private void initImageValues() {
@@ -126,6 +157,61 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         }
     }
 
+
+    private void createLocalizationProperties() {
+        final TabSheet tabSheet = new TabSheet();
+        tabSheet.setSizeFull();
+        localizationLabel = new HashMap<>();
+        localizationDescription = new HashMap<>();
+        for (String language : Languages.LANGUAGES) {
+            FormLayout localizationProperties = new FormLayout();
+            localizationProperties.setWidth(null);
+            localizationProperties.setHeight(null);
+            tabSheet.addTab(localizationProperties, language);
+
+            localizationLabel.put(language, new TextArea(ServerTranslate.translate(LanguageCodes.CAPTION_LABEL)));
+            localizationLabel.get(language).setWidth(WIDTH);
+            localizationLabel.get(language).setMaxLength(TreeObject.MAX_LABEL_LENGTH);
+            localizationLabel.get(language).setImmediate(true);
+            localizationProperties.addComponent(localizationLabel.get(language));
+
+            localizationDescription.put(language, new TextArea(ServerTranslate.translate(LanguageCodes.CAPTION_DESCRIPTION)));
+            localizationDescription.get(language).setWidth(WIDTH);
+            localizationDescription.get(language).setMaxLength(TreeObject.MAX_LABEL_LENGTH);
+            localizationDescription.get(language).setImmediate(true);
+            localizationProperties.addComponent(localizationDescription.get(language));
+
+            boolean canEdit = getWebformsSecurityService().isFormEditable(ApplicationUi.getController().getFormInUse(), UserSession.getUser());
+            localizationProperties.setEnabled(canEdit);
+            localizationProperties.setMargin(true);
+
+        }
+        addTab(tabSheet, ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_TRANSLATIONS_TITLE), false);
+    }
+
+
+    public Map<String, String> getLabelTranslations() {
+        Map<String, String> labelTranslations = new HashMap<>();
+        for (String language : Languages.LANGUAGES) {
+            if(localizationLabel.get(language).getValue()!=null && !localizationLabel.get(language).getValue().isEmpty()) {
+                labelTranslations.put(language, localizationLabel.get(language).getValue());
+            }
+        }
+        return labelTranslations;
+    }
+
+
+    public Map<String, String> getDescriptionTranslations() {
+        Map<String, String> descriptionTranslations = new HashMap<>();
+        for (String language : Languages.LANGUAGES) {
+            if(localizationDescription.get(language).getValue()!=null && !localizationDescription.get(language).getValue().isEmpty()) {
+                descriptionTranslations.put(language, localizationDescription.get(language).getValue());
+            }
+        }
+        return descriptionTranslations;
+    }
+
+
     private void createImageProperties() {
         status = new Label(LanguageCodes.FILE_UPLOAD_CAPTION.translation());
         ImageReceiver receiver = new ImageReceiver();
@@ -146,7 +232,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         imageProperties.addComponent(imageHeight);
 
         imagePreview = new ImagePreview(1f);
-        imagePreview.setWidth("200px");
+        imagePreview.setWidth(WIDTH);
         imagePreview.setVisible(false);
         imageProperties.addComponent(imagePreview);
         updatePreviewImagePanel();
@@ -157,7 +243,6 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         deleteImageButton.setVisible(false);
         deleteImageButton.addClickListener((ClickListener) event -> {
             cancelImage();
-            // updateImageValue();
             status.setValue(LanguageCodes.FILE_DELETED.translation());
             updateElement();
         });
@@ -208,7 +293,6 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         // Disable field to disable events to be launched.
         imageWidth.setEnabled(true);
         imageHeight.setEnabled(true);
-        // getInstance().setImage(null);
     }
 
     private void displayImage() {
@@ -222,7 +306,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         final ProgressBar progressIndicator = new ProgressBar();
         final HorizontalLayout progressLayout = new HorizontalLayout();
 
-        upload = new Upload(null, receiver);
+        final Upload upload = new Upload(null, receiver);
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
 
@@ -230,38 +314,32 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
 
         layout.addComponent(status);
 
-        urlButton = new Button(LanguageCodes.CAPTION_PROPERTIES_IMAGE_URL.translation());
+        final Button urlButton = new Button(LanguageCodes.CAPTION_PROPERTIES_IMAGE_URL.translation());
 
-        urlButton.addClickListener(new ClickListener() {
+        urlButton.addClickListener((ClickListener) event -> {
+            WindowSetUrl window = new WindowSetUrl();
+            window.addAcceptActionListener(new AcceptActionListener() {
 
-            private static final long serialVersionUID = 2404191435324077647L;
+                @Override
+                public void acceptAction(WindowAcceptCancel window) {
+                    imageFile.setValue(((WindowSetUrl) window).getUrl());
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                WindowSetUrl window = new WindowSetUrl();
-                window.addAcceptActionListener(new AcceptActionListener() {
-
-                    @Override
-                    public void acceptAction(WindowAcceptCancel window) {
-                        imageFile.setValue(((WindowSetUrl) window).getUrl());
-
-                        // Obtain image for preview.
-                        byte[] byteArray;
-                        try {
-                            byteArray = ImageTools.getImageFromUrl(((WindowSetUrl) window).getUrl());
-                            imageMemoryOutputStream = new ByteArrayOutputStream(byteArray.length);
-                            imageMemoryOutputStream.write(byteArray, 0, byteArray.length);
-                        } catch (InvalidRemoteImageDefinition e) {
-                            imageMemoryOutputStream = null;
-                            WebformsUiLogger.warning(this.getClass().getName(), e.getMessage());
-                        }
-
-                        displayImage();
-                        window.close();
+                    // Get image for preview.
+                    byte[] byteArray;
+                    try {
+                        byteArray = ImageTools.getImageFromUrl(((WindowSetUrl) window).getUrl());
+                        imageMemoryOutputStream = new ByteArrayOutputStream(byteArray.length);
+                        imageMemoryOutputStream.write(byteArray, 0, byteArray.length);
+                    } catch (InvalidRemoteImageDefinition e) {
+                        imageMemoryOutputStream = null;
+                        WebformsUiLogger.warning(this.getClass().getName(), e.getMessage());
                     }
-                });
-                window.showCentered();
-            }
+
+                    displayImage();
+                    window.close();
+                }
+            });
+            window.showCentered();
         });
 
         HorizontalLayout buttonsLayout = new HorizontalLayout();
@@ -286,7 +364,6 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
             upload.interruptUpload();
             imagePreview.setStreamSource(null);
         });
-        // cancelProcessing.setStyleName("small");
         progressLayout.addComponent(cancelProcessing);
 
         /**
@@ -327,10 +404,10 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
             }
         });
 
-        upload.addProgressListener((ProgressListener) (readBytes, contentLength) -> {
-            // This method gets called several times during the update
-            progressIndicator.setValue(readBytes / (float) contentLength);
-        });
+        upload.addProgressListener((ProgressListener) (readBytes, contentLength) ->
+                // This method gets called several times during the update
+                progressIndicator.setValue(readBytes / (float) contentLength)
+        );
 
         upload.addSucceededListener((SucceededListener) event -> {
             // This method gets called when the upload finished successfully
@@ -354,7 +431,6 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
             // either succeeding or failing
             progressLayout.setVisible(false);
             upload.setVisible(true);
-            // upload.setCaption("");
         });
 
         return layout;
@@ -418,6 +494,8 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
     public void updateElement() {
         getInstance().setUpdatedBy(UserSession.getUser());
         getInstance().setUpdateTime();
+        getInstance().setLabelTranslations(getLabelTranslations());
+        getInstance().setDescriptionTranslations(getDescriptionTranslations());
         firePropertyUpdateListener(getInstance());
     }
 
@@ -427,10 +505,12 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         try {
             width = Integer.parseInt(imageWidth.getValue());
         } catch (NumberFormatException e) {
+            //Ignored.
         }
         try {
             height = Integer.parseInt(imageHeight.getValue());
         } catch (NumberFormatException e) {
+            //Ignored.
         }
 
         if (width == null || height == null || width.equals(0) || height.equals(0)) {
@@ -441,10 +521,12 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         try {
             image.setWidth(Integer.parseInt(imageWidth.getValue()));
         } catch (NumberFormatException e) {
+            //Ignored.
         }
         try {
             image.setHeight(Integer.parseInt(imageHeight.getValue()));
         } catch (NumberFormatException e) {
+            //Ignored.
         }
 
         if (imageFile.getValue() != null && imageFile.getValue().startsWith("http")) {
@@ -469,10 +551,12 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         try {
             video.setWidth(Integer.parseInt(videoWidth.getValue()));
         } catch (NumberFormatException ignored) {
+            //Ignored
         }
         try {
             video.setHeight(Integer.parseInt(videoHeight.getValue()));
         } catch (NumberFormatException ignored) {
+            //Ignored
         }
 
         return video;

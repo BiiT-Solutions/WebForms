@@ -89,7 +89,7 @@ public class SystemField extends WebformsBaseQuestion {
 	
 	@Override
 	protected List<Class<? extends TreeObject>> getAllowedChildren() {
-		return new ArrayList<Class<? extends TreeObject>>();
+		return new ArrayList<>();
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public class PropertiesComponent extends CustomComponent implements Component.Fo
     public static final String CLASSNAME = "v-properties-container";
     private VerticalLayout rootLayout;
     private HashMap<Class<?>, PropertiesForClassComponent<?>> propertiesComponents;
-    private List<PropertieUpdateListener> propertyUpdateListeners;
+    private List<PropertyUpdateListener> propertyUpdateListeners;
     private List<ElementAddedListener> elementAddedListener;
     private boolean fireListeners;
 
@@ -61,18 +61,8 @@ public class PropertiesComponent extends CustomComponent implements Component.Fo
             try {
                 PropertiesForClassComponent<?> newInstance = baseObject.getClass().newInstance();
                 newInstance.setElement(value);
-                newInstance.addPropertyUpdateListener(new PropertieUpdateListener() {
-                    @Override
-                    public void propertyUpdate(Object element) {
-                        firePropertyUpdateListener(element);
-                    }
-                });
-                newInstance.addNewElementListener(new ElementAddedListener() {
-                    @Override
-                    public void elementAdded(Object newElement) {
-                        fireElementAddedListener(newElement);
-                    }
-                });
+                newInstance.addPropertyUpdateListener(this::firePropertyUpdateListener);
+                newInstance.addNewElementListener(this::fireElementAddedListener);
                 rootLayout.addComponent(newInstance);
 
                 rootLayout.markAsDirty();
@@ -84,7 +74,7 @@ public class PropertiesComponent extends CustomComponent implements Component.Fo
         }
     }
 
-    public void addPropertyUpdateListener(PropertieUpdateListener listener) {
+    public void addPropertyUpdateListener(PropertyUpdateListener listener) {
         propertyUpdateListeners.add(listener);
     }
 
@@ -92,7 +82,7 @@ public class PropertiesComponent extends CustomComponent implements Component.Fo
         elementAddedListener.add(listener);
     }
 
-    public void removePropertyUpdateListener(PropertieUpdateListener listener) {
+    public void removePropertyUpdateListener(PropertyUpdateListener listener) {
         propertyUpdateListeners.remove(listener);
     }
 
@@ -102,7 +92,7 @@ public class PropertiesComponent extends CustomComponent implements Component.Fo
 
     protected void firePropertyUpdateListener(Object element) {
         if (fireListeners && UI.getCurrent() != null) {
-            for (PropertieUpdateListener listener : propertyUpdateListeners) {
+            for (PropertyUpdateListener listener : propertyUpdateListeners) {
                 listener.propertyUpdate(element);
             }
         }

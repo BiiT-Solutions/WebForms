@@ -61,7 +61,7 @@ public class AccordionMultiple extends CustomComponent {
 		return tab;
 	}
 
-	private class AccordionTab extends CustomComponent implements LayoutClickListener {
+	private static class AccordionTab extends CustomComponent implements LayoutClickListener {
 		private static final long serialVersionUID = 3108983922974101784L;
 		private static final String CLASSNAME = "v-accordion-multiple-tab";
 		private static final String TAB_CLASSNAME = "v-tab-bar";

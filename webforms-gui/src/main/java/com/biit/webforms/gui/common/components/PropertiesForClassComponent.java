@@ -3,10 +3,13 @@ package com.biit.webforms.gui.common.components;
 import com.biit.webforms.gui.UserSession;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.*;
+import com.vaadin.ui.AbstractComponentContainer;
+import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.UI;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public abstract class PropertiesForClassComponent<T> extends CustomComponent {
@@ -14,9 +17,8 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 
 	private Class<?> type;
 	private AccordionMultiple rootAccordion;
-	private List<PropertieUpdateListener> propertyUpdateListeners;
+	private List<PropertyUpdateListener> propertyUpdateListeners;
 	private List<ElementAddedListener> newElementListeners;
-	protected TextField createdBy, creationTime, updatedBy, updateTime;
 
 	public PropertiesForClassComponent(Class<? extends T> type) {
 		this.type = type;
@@ -63,17 +65,15 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 	}
 
 	private void addValueChangeListenerToFieldsInContainer(AbstractComponentContainer container) {
-		Iterator<Component> itr = container.iterator();
-		while (itr.hasNext()) {
-			Component component = itr.next();
-			if (component instanceof AbstractComponentContainer) {
-				addValueChangeListenerToFieldsInContainer((AbstractComponentContainer) component);
-			} else {
-				if (component instanceof AbstractField<?>) {
-					addValueChangeListenerToField((AbstractField<?>) component);
-				}
-			}
-		}
+        for (Component component : container) {
+            if (component instanceof AbstractComponentContainer) {
+                addValueChangeListenerToFieldsInContainer((AbstractComponentContainer) component);
+            } else {
+                if (component instanceof AbstractField<?>) {
+                    addValueChangeListenerToField((AbstractField<?>) component);
+                }
+            }
+        }
 	}
 
 	private void addValueChangeListenerToField(AbstractField<?> component) {
@@ -102,7 +102,7 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 		}
 	}
 
-	public void addPropertyUpdateListener(PropertieUpdateListener listener) {
+	public void addPropertyUpdateListener(PropertyUpdateListener listener) {
 		propertyUpdateListeners.add(listener);
 	}
 
@@ -110,7 +110,7 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 		newElementListeners.add(listener);
 	}
 
-	public void removePropertyUpdateListener(PropertieUpdateListener listener) {
+	public void removePropertyUpdateListener(PropertyUpdateListener listener) {
 		propertyUpdateListeners.remove(listener);
 	}
 
@@ -119,7 +119,7 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 	}
 
 	protected void firePropertyUpdateListener(Object element) {
-		for (PropertieUpdateListener listener : propertyUpdateListeners) {
+		for (PropertyUpdateListener listener : propertyUpdateListeners) {
 			listener.propertyUpdate(element);
 		}
 	}
@@ -137,7 +137,7 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 	private class FieldValueChangeListener implements ValueChangeListener {
 		private static final long serialVersionUID = -5503553212373718399L;
 
-		private AbstractField<?> field;
+		private final AbstractField<?> field;
 		private Object value = null;
 
 		public FieldValueChangeListener(AbstractField<?> field) {
@@ -151,5 +151,5 @@ public abstract class PropertiesForClassComponent<T> extends CustomComponent {
 			}
 			value = field.getValue();
 		}
-	};
+	}
 }

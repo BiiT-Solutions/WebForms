@@ -275,6 +275,7 @@ public enum LanguageCodes implements ILanguageCode {
 	CAPTION_PROPERTIES_VIDEO_URL("caption.properties.video.url"),
 	CAPTION_PROPERTIES_AUDIO_TITLE("caption.properties.audio.title"),
 	CAPTION_PROPERTIES_AUDIO_URL("caption.properties.audio.url"),
+	CAPTION_PROPERTIES_TRANSLATIONS_TITLE("caption.properties.translation.title"),
 	CAPTION_SAVE_AS_BLOCK("caption.save.as.block"),
 	CAPTION_INSERT_NEW_BLOCK("caption.insert.new.block"),
 	CAPTION_LINK_BLOCK("caption.link.block"),

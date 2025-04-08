@@ -13,13 +13,15 @@ import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @JsonDeserialize(using = GroupDeserializer.class)
 @JsonSerialize(using = GroupSerializer.class)
 @Table(name = "tree_groups")
 @Cacheable
-public class Group extends BaseRepeatableGroup {
+public class Group extends BaseRepeatableGroup implements ElementWithTranslation {
     private static final long serialVersionUID = 5363295280240190378L;
     private static final boolean DEFAULT_REPEATABLE = false;
 
@@ -111,7 +113,17 @@ public class Group extends BaseRepeatableGroup {
         return totalAnswersValue;
     }
 
-    public void setTotalAnswersValue(Integer totalAnsersValue) {
-        this.totalAnswersValue = totalAnsersValue;
+    public void setTotalAnswersValue(Integer totalAnswersValue) {
+        this.totalAnswersValue = totalAnswersValue;
+    }
+
+    @Override
+    public Map<String, String> getDescriptionTranslations() {
+        return new HashMap<>();
+    }
+
+    @Override
+    public void setDescriptionTranslations(Map<String, String> descriptionTranslations) {
+        // No description.
     }
 }

@@ -46,6 +46,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -57,6 +58,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -67,7 +69,7 @@ import java.util.Set;
 @AttributeOverride(name = "label", column = @Column(length = StorableObject.MAX_UNIQUE_COLUMN_LENGTH, columnDefinition = "varchar("
         + StorableObject.MAX_UNIQUE_COLUMN_LENGTH + ")"))
 @Cacheable()
-public class Form extends BaseForm implements IWebformsFormView, ElementWithMedia {
+public class Form extends BaseForm implements IWebformsFormView, ElementWithMedia, ElementWithTranslation {
     private static final long serialVersionUID = 5220239269341014315L;
     public static final int MAX_JSON_LENGTH = 5242880;  //5MB
 
@@ -81,6 +83,13 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithMedi
 
     @Lob
     private String description;
+
+    @SuppressWarnings("JpaAttributeTypeInspection")
+    @ElementCollection
+    @CollectionTable(name = "description_translations")
+    @MapKeyColumn(name = "language")
+    @Column(name = "translation")
+    private Map<String, String> descriptionTranslations;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "form")
     private final Set<Flow> rules;
@@ -142,6 +151,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithMedi
         webserviceCalls = new HashSet<>();
         formReference = null;
         elementsToHide = new HashSet<>();
+        descriptionTranslations = new HashMap<>();
     }
 
     public Form(String label, IUser<Long> user, Long organizationId) throws FieldTooLongException, CharacterNotAllowedException {
@@ -156,6 +166,7 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithMedi
         setOrganizationId(organizationId);
         formReference = null;
         elementsToHide = new HashSet<>();
+        descriptionTranslations = new HashMap<>();
     }
 
     public void addFlow(Flow rule) throws FlowNotAllowedException {
@@ -197,6 +208,9 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithMedi
             linkedFormLabel = ((Form) object).getLinkedFormLabel();
             setLinkedFormVersions(((Form) object).getLinkedFormVersions());
             linkedFormOrganizationId = ((Form) object).getLinkedFormOrganizationId();
+            if (((Form) object).getDescriptionTranslations() != null) {
+                descriptionTranslations = new HashMap<>(((Form) object).getDescriptionTranslations());
+            }
         } else {
             throw new NotValidTreeObjectException("Copy data for Form only supports the same type copy");
         }
@@ -1102,5 +1116,15 @@ public class Form extends BaseForm implements IWebformsFormView, ElementWithMedi
             elementsToHide.addAll(child.getAllHiddenChildrenInHierarchy(null));
         }
         super.addChild(child);
+    }
+
+    @Override
+    public Map<String, String> getDescriptionTranslations() {
+        return descriptionTranslations;
+    }
+
+    @Override
+    public void setDescriptionTranslations(Map<String, String> descriptionTranslations) {
+        this.descriptionTranslations = descriptionTranslations;
     }
 }

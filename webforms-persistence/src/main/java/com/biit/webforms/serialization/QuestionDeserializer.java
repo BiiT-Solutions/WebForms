@@ -55,6 +55,8 @@ public class QuestionDeserializer extends TreeObjectDeserializer<Question> {
         element.setMaxAnswersSelected(parseInteger("maxAnswersSelected", jsonObject));
         element.setConsecutiveAnswers(parseBoolean("consecutiveAnswers", jsonObject));
 
+        element.setDescriptionTranslations(parseMap("descriptionTranslations", jsonObject));
+
         if ((jsonObject.get("image") != null)) {
             element.setImage(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("image").toString(), TreeObjectImage.class));
         }

@@ -9,6 +9,8 @@ import java.io.IOException;
 
 public class GroupSerializer extends BaseRepeatableGroupSerializer<Group> {
 
+    private static final long serialVersionUID = -6382690305218725067L;
+
     @Override
     public void serialize(Group src, JsonGenerator jgen) throws IOException {
         super.serialize(src, jgen);
@@ -17,5 +19,7 @@ public class GroupSerializer extends BaseRepeatableGroupSerializer<Group> {
         if (src.getTotalAnswersValue() != null) {
             jgen.writeNumberField("totalAnswersValue", src.getTotalAnswersValue());
         }
+
+        serializeMap("descriptionTranslations", src.getDescriptionTranslations(), jgen);
     }
 }

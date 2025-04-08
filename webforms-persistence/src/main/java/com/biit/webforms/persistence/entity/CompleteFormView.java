@@ -751,4 +751,39 @@ public class CompleteFormView extends Form implements IWebformsFormView {
         }
     }
 
+    @Override
+    public Map<String, String> getLabelTranslations() {
+        if (getForm() != null) {
+            return getForm().getLabelTranslations();
+
+        } else {
+            return new HashMap<>();
+        }
+    }
+
+    @Override
+    public void setLabelTranslations(Map<String, String> labelTranslations) {
+        if (getForm() != null) {
+            getForm().setLabelTranslations(labelTranslations);
+        }
+    }
+
+
+    @Override
+    public Map<String, String> getDescriptionTranslations() {
+        if (getForm() != null) {
+            return getForm().getDescriptionTranslations();
+
+        } else {
+            return new HashMap<>();
+        }
+    }
+
+    @Override
+    public void setDescriptionTranslations(Map<String, String> descriptionTranslations) {
+        if (getForm() != null) {
+            getForm().setDescriptionTranslations(descriptionTranslations);
+        }
+    }
+
 }

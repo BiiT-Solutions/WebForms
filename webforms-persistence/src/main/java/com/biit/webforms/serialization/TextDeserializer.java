@@ -13,6 +13,8 @@ import java.io.IOException;
 
 public class TextDeserializer extends TreeObjectDeserializer<Text> {
 
+    private static final long serialVersionUID = 9172438219562674834L;
+
     @Override
     public void deserialize(Text element, JsonNode jsonObject, DeserializationContext context) throws IOException {
         super.deserialize(element, jsonObject, context);
@@ -27,5 +29,7 @@ public class TextDeserializer extends TreeObjectDeserializer<Text> {
         if (jsonObject.get("audio") != null) {
             element.setAudio(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("audio").toString(), TreeObjectAudio.class));
         }
+
+        element.setDescriptionTranslations(parseMap("descriptionTranslations", jsonObject));
     }
 }

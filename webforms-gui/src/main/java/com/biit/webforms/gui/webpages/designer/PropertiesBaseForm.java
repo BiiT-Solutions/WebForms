@@ -1,7 +1,5 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.entity.BaseForm;
-import com.biit.form.entity.TreeObject;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.UserSession;
 import com.biit.webforms.gui.common.components.PropertiesForStorableObjectWithMedia;
@@ -37,9 +35,6 @@ public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForSt
 		label = new TextField(LanguageCodes.CAPTION_NAME.translation());
 		label.setWidth(WIDTH);
 		label.setEnabled(true);
-		// label.addValidator(new
-		// ValidatorTreeObjectName(BaseForm.NAME_ALLOWED));
-		// label.addValidator(new ValidatorTreeObjectNameLength());
 
 		version = new TextField(LanguageCodes.CAPTION_VERSION.translation());
 		version.setWidth(WIDTH);
@@ -84,27 +79,27 @@ public abstract class PropertiesBaseForm<T extends Form> extends PropertiesForSt
 	@Override
 	protected void initValues() {
 		super.initValues();
-		getLabelTextField().setValue(((BaseForm) getInstance()).getLabel());
-		getLabelTextField().setEnabled(!((TreeObject) getInstance()).isReadOnly());
+		getLabelTextField().setValue(( getInstance()).getLabel());
+		getLabelTextField().setEnabled(!(getInstance()).isReadOnly());
 
-		getVersionTextField().setValue("" + ((BaseForm) getInstance()).getVersion());
+		getVersionTextField().setValue("" + (getInstance()).getVersion());
 
-		getDescriptionTextArea().setValue(((Form) getInstance()).getDescription());
-		getDescriptionTextArea().setEnabled(!((TreeObject) getInstance()).isReadOnly());
+		getDescriptionTextArea().setValue((getInstance()).getDescription());
+		getDescriptionTextArea().setEnabled(!(getInstance()).isReadOnly());
 
-		if (getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null) {
+		if (getInstance() instanceof Form && (getInstance()).getFormReference() != null) {
 			referenceLabel.setVisible(true);
 			referenceVersion.setVisible(true);
 			getReferenceLabel().setValue(
-					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance())
+					getInstance() instanceof Form && (getInstance()).getFormReference() != null ? (getInstance())
 							.getFormReference().getLabel() : "");
 			getReferenceVersion().setValue(
-					getInstance() instanceof Form && ((Form) getInstance()).getFormReference() != null ? ((Form) getInstance())
+					getInstance() instanceof Form && (getInstance()).getFormReference() != null ? (getInstance())
 							.getFormReference().getVersion() + "" : "");
 		}
 
 		if (getInstance() instanceof Form) {
-			disableEdition.setValue(((Form) getInstance()).isEditionDisabled());
+			disableEdition.setValue((getInstance()).isEditionDisabled());
 		}
 	}
 

@@ -22,6 +22,8 @@ public class TextSerializer extends TreeObjectSerializer<Text> {
         if (src.getAudio() != null) {
             jgen.writeObjectField("audio", src.getAudio());
         }
+
+        serializeMap("descriptionTranslations", src.getDescriptionTranslations(), jgen);
     }
 
 }

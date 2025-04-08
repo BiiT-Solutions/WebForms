@@ -11,5 +11,7 @@ public class FormDeserializer extends FormElementDeserializer<Form> {
     @Override
     public void deserialize(Form element, JsonNode jsonObject, DeserializationContext context) throws IOException {
         super.deserialize(element, jsonObject, context);
+
+        element.setDescriptionTranslations(parseMap("descriptionTranslations", jsonObject));
     }
 }

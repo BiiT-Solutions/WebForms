@@ -34,6 +34,8 @@ import java.util.Set;
 public class FormElementDeserializer<T extends Form> extends BaseFormDeserializer<T> {
 
 
+    private static final long serialVersionUID = 764678975716483818L;
+
     @Override
     public void deserialize(T element, JsonNode jsonObject, DeserializationContext context) throws IOException {
         super.deserialize(element, jsonObject, context);

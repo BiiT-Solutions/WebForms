@@ -8,6 +8,8 @@ import java.io.IOException;
 
 public class CategorySerializer extends TreeObjectSerializer<Category> {
 
+    private static final long serialVersionUID = 1555005063841473064L;
+
     @Override
     public void serialize(Category src, JsonGenerator jgen) throws IOException {
         super.serialize(src, jgen);
@@ -20,5 +22,7 @@ public class CategorySerializer extends TreeObjectSerializer<Category> {
         if (src.getAudio() != null) {
             jgen.writeObjectField("audio", src.getAudio());
         }
+
+        serializeMap("descriptionTranslations", src.getDescriptionTranslations(), jgen);
     }
 }

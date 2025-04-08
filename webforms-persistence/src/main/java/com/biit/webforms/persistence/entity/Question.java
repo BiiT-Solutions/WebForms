@@ -23,21 +23,26 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -46,7 +51,7 @@ import java.util.Objects;
 @Table(name = "tree_questions")
 @Cacheable
 public class Question extends WebformsBaseQuestion implements FlowConditionScript, ElementWithMedia,
-        ElementWithDescription {
+        ElementWithDescription, ElementWithTranslation {
     private static final long serialVersionUID = -7243001035969348318L;
     public static final int MAX_DESCRIPTION_LENGTH = 10000;
     public static final int MAX_DEFAULT_VALUE = 10000;
@@ -65,7 +70,14 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
     private boolean horizontal;
 
     @Column(length = MAX_DESCRIPTION_LENGTH, columnDefinition = "TEXT")
-    private String description = "";
+    private String description;
+
+    @SuppressWarnings("JpaAttributeTypeInspection")
+    @ElementCollection
+    @CollectionTable(name = "description_translations")
+    @MapKeyColumn(name = "language")
+    @Column(name = "translation")
+    private Map<String, String> descriptionTranslations;
 
     @Column(name = "description_always_visible", nullable = false, columnDefinition = "bit default 1")
     private boolean isDescriptionAlwaysVisible = false;
@@ -130,16 +142,18 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
         answerType = AnswerType.INPUT;
         answerFormat = AnswerFormat.TEXT;
         answerSubformat = AnswerSubformat.TEXT;
+        descriptionTranslations = new HashMap<>();
     }
 
     public Question(String name) throws FieldTooLongException, CharacterNotAllowedException {
         super(name);
         mandatory = DEFAULT_MANDATORY;
         horizontal = DEFAULT_HORIZONTAL;
-        description = new String();
+        description = "";
         answerType = AnswerType.INPUT;
         answerFormat = AnswerFormat.TEXT;
         answerSubformat = AnswerSubformat.TEXT;
+        descriptionTranslations = new HashMap<>();
     }
 
     @Override
@@ -287,6 +301,9 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
             setDefaultValueTime(question.getDefaultValueTime());
             if (question.getDefaultValueAnswer() != null) {
                 setDefaultValueAnswer(getAnswer(question.getDefaultValueAnswer().getValue()));
+            }
+            if (((Question) object).getDescriptionTranslations() != null) {
+                descriptionTranslations = new HashMap<>(((Question) object).getDescriptionTranslations());
             }
         } else {
             throw new NotValidTreeObjectException("Copy data for Question only supports the same type copy. Type '"
@@ -673,5 +690,15 @@ public class Question extends WebformsBaseQuestion implements FlowConditionScrip
     @Override
     public TreeObjectAudio getAudio() {
         return audio;
+    }
+
+    @Override
+    public Map<String, String> getDescriptionTranslations() {
+        return descriptionTranslations;
+    }
+
+    @Override
+    public void setDescriptionTranslations(Map<String, String> descriptionTranslations) {
+        this.descriptionTranslations = descriptionTranslations;
     }
 }

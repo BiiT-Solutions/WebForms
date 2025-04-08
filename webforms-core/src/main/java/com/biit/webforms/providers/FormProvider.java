@@ -59,6 +59,7 @@ public class FormProvider {
             mutilatedForm.setVideo(null);
             mutilatedForm.setAudio(null);
             mutilatedForm.setCreationTime(form.getCreationTime());
+            mutilatedForm.setDescriptionTranslations(null);
             if (mutilatedForm.getId() != null) {
                 formDao.merge(mutilatedForm);
                 return form;

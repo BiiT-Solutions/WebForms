@@ -9,6 +9,8 @@ import java.io.IOException;
 
 public class GroupDeserializer extends BaseRepeatableGroupDeserializer<Group> {
 
+    private static final long serialVersionUID = -72886343605932274L;
+
     @Override
     public void deserialize(Group element, JsonNode jsonObject, DeserializationContext context) throws IOException {
         super.deserialize(element, jsonObject, context);
@@ -19,6 +21,8 @@ public class GroupDeserializer extends BaseRepeatableGroupDeserializer<Group> {
         } else {
             element.setNumberOfColumns(1);
         }
+
+        element.setDescriptionTranslations(parseMap("descriptionTranslations", jsonObject));
     }
 
 }

@@ -26,6 +26,8 @@ public class AnswerDeserializer extends TreeObjectDeserializer<Answer> {
         if (jsonObject.get("audio") != null) {
             element.setAudio(ObjectMapperFactory.getObjectMapper().readValue(jsonObject.get("audio").toString(), TreeObjectAudio.class));
         }
+
+        element.setDescriptionTranslations(parseMap("descriptionTranslations", jsonObject));
     }
 
 }

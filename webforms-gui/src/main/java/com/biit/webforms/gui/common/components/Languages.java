@@ -1,0 +1,14 @@
+package com.biit.webforms.gui.common.components;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public final class Languages {
+
+    public static final List<String> LANGUAGES = Collections.unmodifiableList(Arrays.asList("NL", "ES"));
+
+    private Languages() {
+
+    }
+}

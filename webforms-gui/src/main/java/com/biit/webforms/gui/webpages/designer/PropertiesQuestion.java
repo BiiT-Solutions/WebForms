@@ -26,7 +26,6 @@ import java.util.Objects;
 
 public class PropertiesQuestion extends PropertiesForStorableObjectWithMedia<Question> {
     private static final long serialVersionUID = 7572463216386081265L;
-    private static final String WIDTH = "200px";
     private static final int MAX_ANSWERS_SELECTED = 2;
 
     private TextField name;

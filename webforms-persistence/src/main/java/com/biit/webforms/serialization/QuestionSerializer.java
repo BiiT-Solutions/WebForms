@@ -35,6 +35,7 @@ public class QuestionSerializer extends TreeObjectSerializer<Question> {
         jgen.writeBooleanField("answerDescriptionAlwaysVisible", src.isAnswersDescriptionAlwaysVisible());
         jgen.writeBooleanField("answersValuesOnTooltip", src.isAnswersValuesOnTooltip());
         jgen.writeStringField("description", src.getDescription());
+        serializeMap("descriptionTranslations", src.getDescriptionTranslations(), jgen);
         jgen.writeStringField("defaultValueString", src.getDefaultValueString());
         if (src.getDefaultValueAnswer() != null) {
             jgen.writeStringField("defaultValueAnswer", src.getDefaultValueAnswer().getValue());

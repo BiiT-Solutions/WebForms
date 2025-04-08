@@ -1,6 +1,5 @@
 package com.biit.webforms.gui.webpages.designer;
 
-import com.biit.form.entity.BaseForm;
 import com.biit.webforms.gui.ApplicationUi;
 import com.biit.webforms.gui.WebformsUiLogger;
 import com.biit.webforms.gui.common.utils.MessageManager;
@@ -29,11 +28,11 @@ public class PropertiesCompleteFormView extends PropertiesBaseForm<CompleteFormV
                 // Checks if already exists a form with this label and its
                 // version.
                 if (!formProvider.exists(getLabelTextField().getValue(), getInstance().getVersion(),
-                        ((BaseForm) getInstance()).getOrganizationId(), getInstance().getId())) {
+                        (getInstance()).getOrganizationId(), getInstance().getId())) {
                     ApplicationUi.getController().updateForm(getInstance().getForm(), getLabelTextField().getValue(),
                             getDescriptionTextArea().getValue(), getImage(), getVideo(), getAudio(), getDisableEdition().getValue());
                 } else {
-                    getLabelTextField().setValue(((BaseForm) getInstance()).getLabel());
+                    getLabelTextField().setValue((getInstance()).getLabel());
                     MessageManager.showWarning(LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE,
                             LanguageCodes.COMMON_ERROR_NAME_IS_IN_USE_DESCRIPTION);
                     ApplicationUi.getController().updateForm(getInstance().getForm(), getInstance().getLabel(),

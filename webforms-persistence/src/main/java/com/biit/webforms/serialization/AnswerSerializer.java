@@ -22,6 +22,8 @@ public class AnswerSerializer extends TreeObjectSerializer<Answer> {
             jgen.writeObjectField("audio", src.getAudio());
         }
 
+        serializeMap("descriptionTranslations", src.getDescriptionTranslations(), jgen);
+
     }
 
 }
