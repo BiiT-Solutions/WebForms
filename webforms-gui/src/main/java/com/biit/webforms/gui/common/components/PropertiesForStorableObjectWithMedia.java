@@ -186,14 +186,16 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
             localizationProperties.setMargin(true);
 
         }
-        addTab(tabSheet, ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_TRANSLATIONS_TITLE), false);
+        if (WebformsConfigurationReader.getInstance().isLocalizationEnabled()) {
+            addTab(tabSheet, ServerTranslate.translate(LanguageCodes.CAPTION_PROPERTIES_TRANSLATIONS_TITLE), false);
+        }
     }
 
 
     public Map<String, String> getLabelTranslations() {
         Map<String, String> labelTranslations = new HashMap<>();
         for (String language : Languages.LANGUAGES) {
-            if(localizationLabel.get(language).getValue()!=null && !localizationLabel.get(language).getValue().isEmpty()) {
+            if (localizationLabel.get(language).getValue() != null && !localizationLabel.get(language).getValue().isEmpty()) {
                 labelTranslations.put(language, localizationLabel.get(language).getValue());
             }
         }
@@ -204,7 +206,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
     public Map<String, String> getDescriptionTranslations() {
         Map<String, String> descriptionTranslations = new HashMap<>();
         for (String language : Languages.LANGUAGES) {
-            if(localizationDescription.get(language).getValue()!=null && !localizationDescription.get(language).getValue().isEmpty()) {
+            if (localizationDescription.get(language).getValue() != null && !localizationDescription.get(language).getValue().isEmpty()) {
                 descriptionTranslations.put(language, localizationDescription.get(language).getValue());
             }
         }

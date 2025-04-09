@@ -38,6 +38,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String ID_XFORMS_MULTIPLE_FILES_VISIBLE = "button.xforms.multiple.visible";
 	private static final String ID_XFORMS_CUSTOM_WIZARD_BUTTON = "buttons.xforms.custom.wizard";
 	private static final String ID_IMAGES_ENABLED = "forms.with.images";
+	private static final String ID_LOCALIZATION_ENABLED = "localized.forms.enabled";
 
 	private static final String DEFAULT_REGEX_EMAIL = "[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]+(\\.[a-zA-Z!#$%&'*+\\-/=?^_`{|}~]|[a-zA-Z!#$%&'*+\\-/=?^_`{|}~])*@[a-zA-Z0-9](\\.[a-zA-Z0-9-]|[a-zA-Z0-9-])*[a-zA-Z0-9]";
 	private static final String DEFAULT_REGEX_AMOUNT = "[0-9]+\\.[0-9]*€";
@@ -64,6 +65,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 	private static final String DEFAULT_XFORMS_MULTIPLE_FILES_VISIBLE = "false";
 	private static final String DEFAULT_XFORMS_CUSTOM_WIZARD_BUTTON = "false";
 	private static final String DEFAULT_IMAGES_ENABLED = "true";
+	private static final String DEFAULT_LOCALIZATION_ENABLED = "true";
 
 	// XForms
 	private static final String ID_XFORMS_USER = "orbeon.user";
@@ -139,6 +141,7 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 		addProperty(ID_BUILDING_BLOCK_LINKS_VISIBLE, DEFAULT_BUILDING_BLOCK_LINKS_VISIBLE);
 		addProperty(ID_XFORMS_MULTIPLE_FILES_VISIBLE, DEFAULT_XFORMS_MULTIPLE_FILES_VISIBLE);
 		addProperty(ID_IMAGES_ENABLED, DEFAULT_IMAGES_ENABLED);
+		addProperty(ID_LOCALIZATION_ENABLED, DEFAULT_LOCALIZATION_ENABLED);
 
 		addProperty(ID_XFORMS_USER, DEFAULT_XFORMS_USER);
 		addProperty(ID_XFORMS_PASSWORD, DEFAULT_XFORMS_PASSWORD);
@@ -361,6 +364,10 @@ public class WebformsConfigurationReader extends ConfigurationReader {
 
 	public String getKnowledgeManagerServicePublishUrl() {
 		return getPropertyLogException(KNOWLEDGE_MANAGER_SERVICE_PUBLISH_URL);
+	}
+
+	public boolean isLocalizationEnabled() {
+		return Boolean.parseBoolean(getPropertyLogException(ID_LOCALIZATION_ENABLED));
 	}
 
 }
