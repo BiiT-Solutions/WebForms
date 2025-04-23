@@ -223,4 +223,9 @@ public class Text extends WebformsBaseQuestion implements ElementWithMedia, Elem
     public void setDescriptionTranslations(Map<String, String> descriptionTranslations) {
         this.descriptionTranslations = descriptionTranslations;
     }
+
+    @Override
+    public Map<String, String> getLabelTranslations() {
+        return null;
+    }
 }
