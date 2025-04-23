@@ -141,15 +141,11 @@ public class Text extends WebformsBaseQuestion implements ElementWithMedia, Elem
      * @param treeObject
      * @return
      */
+    @Override
     public boolean isContentEqual(TreeObject treeObject) {
-        if (treeObject instanceof Text) {
-            if (super.isContentEqual(treeObject)) {
-                Text text = (Text) treeObject;
-                if (this.getDescription() != null && !this.getDescription().equals(text.getDescription())) {
-                    return false;
-                }
-                return true;
-            }
+        if (treeObject instanceof Text && super.isContentEqual(treeObject)) {
+            Text text = (Text) treeObject;
+            return !(this.getDescription() != null && !this.getDescription().equals(text.getDescription()));
         }
         return false;
     }
