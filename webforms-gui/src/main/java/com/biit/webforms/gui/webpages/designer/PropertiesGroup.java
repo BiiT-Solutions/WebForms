@@ -121,7 +121,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
     }
 
     private void initLocalizationProperties() {
-        for (String language : Languages.LANGUAGES) {
+        for (String language : Languages.AVAILABLE_LANGUAGES) {
             if (getInstance().getLabelTranslations() != null) {
                 final String translatedLabel = getInstance().getLabelTranslations().get(language);
                 localizationLabel.get(language).setValue(translatedLabel != null ? translatedLabel : "");
@@ -135,7 +135,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
         final TabSheet tabSheet = new TabSheet();
         tabSheet.setSizeFull();
         localizationLabel = new HashMap<>();
-        for (String language : Languages.LANGUAGES) {
+        for (String language : Languages.AVAILABLE_LANGUAGES) {
             FormLayout localizationProperties = new FormLayout();
             localizationProperties.setWidth(null);
             localizationProperties.setHeight(null);
@@ -157,7 +157,7 @@ public class PropertiesGroup extends StorableObjectProperties<Group> {
 
     public Map<String, String> getLabelTranslations() {
         Map<String, String> labelTranslations = new HashMap<>();
-        for (String language : Languages.LANGUAGES) {
+        for (String language : Languages.AVAILABLE_LANGUAGES) {
             labelTranslations.put(language, localizationLabel.get(language).getValue());
         }
         return labelTranslations;

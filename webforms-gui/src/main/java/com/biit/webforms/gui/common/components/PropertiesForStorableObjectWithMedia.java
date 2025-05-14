@@ -105,7 +105,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
     }
 
     private void initLocalizationProperties() {
-        for (String language : Languages.LANGUAGES) {
+        for (String language : Languages.AVAILABLE_LANGUAGES) {
             if (getInstance().getLabelTranslations() != null) {
                 final String label = getInstance().getLabelTranslations().get(language);
                 localizationLabel.get(language).setValue(label != null ? label : "");
@@ -163,7 +163,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
         tabSheet.setSizeFull();
         localizationLabel = new HashMap<>();
         localizationDescription = new HashMap<>();
-        for (String language : Languages.LANGUAGES) {
+        for (String language : Languages.AVAILABLE_LANGUAGES) {
             FormLayout localizationProperties = new FormLayout();
             localizationProperties.setWidth(null);
             localizationProperties.setHeight(null);
@@ -194,7 +194,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
 
     public Map<String, String> getLabelTranslations() {
         Map<String, String> labelTranslations = new HashMap<>();
-        for (String language : Languages.LANGUAGES) {
+        for (String language : Languages.AVAILABLE_LANGUAGES) {
             if (localizationLabel.get(language).getValue() != null && !localizationLabel.get(language).getValue().isEmpty()) {
                 labelTranslations.put(language, localizationLabel.get(language).getValue());
             }
@@ -205,7 +205,7 @@ public abstract class PropertiesForStorableObjectWithMedia<T extends StorableObj
 
     public Map<String, String> getDescriptionTranslations() {
         Map<String, String> descriptionTranslations = new HashMap<>();
-        for (String language : Languages.LANGUAGES) {
+        for (String language : Languages.AVAILABLE_LANGUAGES) {
             if (localizationDescription.get(language).getValue() != null && !localizationDescription.get(language).getValue().isEmpty()) {
                 descriptionTranslations.put(language, localizationDescription.get(language).getValue());
             }
