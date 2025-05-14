@@ -6,7 +6,7 @@ import java.util.List;
 
 public final class Languages {
 
-    public static final List<String> LANGUAGES = Collections.unmodifiableList(Arrays.asList("NL", "ES", "GR", "FR"));
+    public static final List<String> LANGUAGES = Collections.unmodifiableList(Arrays.asList("NL", "ES", "DE", "FR"));
 
     private Languages() {
 
