@@ -89,19 +89,21 @@ public final class LocalizationContentGenerator {
         labelCell.setPaddingLeft(padding);
         row.addCell(labelCell);
         rows.add(row);
-        for (Map.Entry<String, String> translation : treeObject.getLabelTranslations().entrySet()) {
-            final PdfRow rowTranslation = new PdfRow(ROWS, COLUMNS);
-            final StringBuilder text = new StringBuilder("(" + translation.getKey() + ") " + translation.getValue());
-            if (treeObject instanceof ElementWithTranslation) {
-                final ElementWithTranslation elementWithTranslation = (ElementWithTranslation) treeObject;
-                if (elementWithTranslation.getDescriptionTranslations().get(translation.getKey()) != null) {
-                    text.append(" [").append(elementWithTranslation.getDescriptionTranslations().get(translation.getKey()).replace(CURLY_QUOTE, QUOTE)).append("] ");
+        if (treeObject.getLabelTranslations() != null) {
+            for (Map.Entry<String, String> translation : treeObject.getLabelTranslations().entrySet()) {
+                final PdfRow rowTranslation = new PdfRow(ROWS, COLUMNS);
+                final StringBuilder text = new StringBuilder("(" + translation.getKey() + ") " + translation.getValue());
+                if (treeObject instanceof ElementWithTranslation) {
+                    final ElementWithTranslation elementWithTranslation = (ElementWithTranslation) treeObject;
+                    if (elementWithTranslation.getDescriptionTranslations().get(translation.getKey()) != null) {
+                        text.append(" [").append(elementWithTranslation.getDescriptionTranslations().get(translation.getKey()).replace(CURLY_QUOTE, QUOTE)).append("] ");
+                    }
                 }
+                final PdfPCell translationCell = new PdfPCell(new Paragraph(text.toString(), PdfFont.SMALL_FONT.getFont()));
+                translationCell.setPaddingLeft(padding);
+                rowTranslation.addCell(translationCell);
+                rows.add(rowTranslation);
             }
-            final PdfPCell translationCell = new PdfPCell(new Paragraph(text.toString(), PdfFont.SMALL_FONT.getFont()));
-            translationCell.setPaddingLeft(padding);
-            rowTranslation.addCell(translationCell);
-            rows.add(rowTranslation);
         }
         return rows;
     }
