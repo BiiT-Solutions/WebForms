@@ -20,7 +20,7 @@ import java.util.Set;
 
 public class XFormsPersistence {
     private static final String PREVIEW_PREFIX = "Preview_";
-    public final static String APP_NAME = "WebForms";
+    public static final String APP_NAME = "WebForms";
     private Connection connection;
     private int port = 3306;
 

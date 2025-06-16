@@ -5,13 +5,13 @@ package com.biit.webforms.xsd;
  *
  */
 public class XsdSchema extends XsdNodeWithChilds {
-	private final static String XML_SCHEMA_TAG = "xs:schema";
-	private final static String XMLNS_XS = "xmlns:xs";
-	private final static String XMLNS_XS_VALUE = "http://www.w3.org/2001/XMLSchema";
-	private final static String XMLNS = "xmlns";
-	private final static String ELEMENT_FORM_DEFAULT = "elementFormDefault";
-	private final static String ELEMENT_FORM_DEFAULT_VALUE = "qualified";
-	private final static String TARGETED_NAMESPACE = "targetNamespace";
+	private static final String XML_SCHEMA_TAG = "xs:schema";
+	private static final String XMLNS_XS = "xmlns:xs";
+	private static final String XMLNS_XS_VALUE = "http://www.w3.org/2001/XMLSchema";
+	private static final String XMLNS = "xmlns";
+	private static final String ELEMENT_FORM_DEFAULT = "elementFormDefault";
+	private static final String ELEMENT_FORM_DEFAULT_VALUE = "qualified";
+	private static final String TARGETED_NAMESPACE = "targetNamespace";
 
 	public XsdSchema(String xmlns, String targetedNamespace) {
 		putParameter(XMLNS_XS, XMLNS_XS_VALUE);

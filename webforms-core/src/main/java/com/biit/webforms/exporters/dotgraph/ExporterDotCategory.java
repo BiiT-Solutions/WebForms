@@ -12,7 +12,7 @@ import com.biit.webforms.persistence.entity.Group;
  *
  */
 public class ExporterDotCategory extends ExporterDot<Category> {
-	private final static String BOX_STYLE = "bold";
+	private static final String BOX_STYLE = "bold";
 
 	@Override
 	public String export(Category structure) {

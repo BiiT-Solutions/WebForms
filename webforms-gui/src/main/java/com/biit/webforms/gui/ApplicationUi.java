@@ -34,8 +34,8 @@ import java.util.Objects;
 @Theme("webforms")
 @PreserveOnRefresh
 public class ApplicationUi extends UI {
-	public final static String USER_PARAMETER_TAG = "user";
-	public final static String PASSWORD_PARAMETER_TAG = "password";
+	public static final String USER_PARAMETER_TAG = "user";
+	public static final String PASSWORD_PARAMETER_TAG = "password";
 	private static final long serialVersionUID = -704009283476930001L;
 	private BiitNavigator navigator;
 	private View currentView;

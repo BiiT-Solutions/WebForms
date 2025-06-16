@@ -14,8 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class XFormsAnswer extends XFormsObject<Answer> {
-	private final static String PARENT_ANSWER_CSS_CLASS = "subanswer-parent";
-	private final static String SUBANSWER_CSS_CLASS = "subanswer-child";
+	private static final String PARENT_ANSWER_CSS_CLASS = "subanswer-parent";
+	private static final String SUBANSWER_CSS_CLASS = "subanswer-child";
 	private static final String CSS_CLASS_ANSWER = "webforms-answer";
 
 	public XFormsAnswer(XFormsHelper xFormsHelper, Answer answer) throws NotValidTreeObjectException, NotValidChildException {

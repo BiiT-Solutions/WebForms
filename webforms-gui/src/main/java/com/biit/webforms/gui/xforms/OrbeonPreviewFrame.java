@@ -11,9 +11,9 @@ import com.vaadin.ui.UI;
  * Frame to open a preview of an Orbeon form in a new window.
  */
 public class OrbeonPreviewFrame extends UI {
-	public final static String FORM_PARAMETER_TAG = "form_param";
-	public final static String APPLICATION_PARAMETER_TAG = "application_param";
-	public final static String FORM_VERSION_PARAMETER_TAG = "form_version_param";
+	public static final String FORM_PARAMETER_TAG = "form_param";
+	public static final String APPLICATION_PARAMETER_TAG = "application_param";
+	public static final String FORM_VERSION_PARAMETER_TAG = "form_version_param";
 	private static final long serialVersionUID = -4957704029911500631L;
 	private String form;
 	private String application;

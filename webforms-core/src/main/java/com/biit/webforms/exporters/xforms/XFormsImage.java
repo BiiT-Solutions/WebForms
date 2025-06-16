@@ -16,7 +16,7 @@ import com.biit.webforms.persistence.xforms.XFormsPersistence;
  *
  */
 public class XFormsImage {
-	private final static String BASIC_NAME = "image";
+	private static final String BASIC_NAME = "image";
 
 	public static String getName(TreeObjectImage image, XFormsHelper xFormsHelper) {
 		return xFormsHelper.getUniqueName(image.getElement()) + "-" + BASIC_NAME;

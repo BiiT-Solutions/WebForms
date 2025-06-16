@@ -21,8 +21,8 @@ import com.lowagie.text.Phrase;
  */
 public class ParagraphGenerator {
 
-	private final static float PADDING = 20;
-	private final static int MAX_INFO_TEXT_DESCRIPTION = 100;
+	private static final float PADDING = 20;
+	private static final int MAX_INFO_TEXT_DESCRIPTION = 100;
 
 	public static Paragraph generate(String content, PdfFont font, PdfAlign align, float spacing) throws DocumentException {
 		Paragraph annexTitle = new Paragraph(content, font.getFont());

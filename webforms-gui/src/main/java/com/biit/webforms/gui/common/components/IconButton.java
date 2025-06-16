@@ -7,7 +7,7 @@ import com.vaadin.ui.Button;
 
 public class IconButton extends Button {
 	private static final long serialVersionUID = -8287465276670542699L;
-	private final static IconSize defaultIconSize = IconSize.SMALL;
+	private static final IconSize defaultIconSize = IconSize.SMALL;
 
 	public IconButton(IThemeIcon icon, IconSize size, ILanguageCode tooltip) {
 		super("");

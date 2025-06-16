@@ -13,9 +13,9 @@ import com.vaadin.ui.UI;
  * Frame to open a preview of a FormRunner form in a new window.
  */
 public class FormRunnerPreviewFrame extends UI {
-    public final static String FORM_PARAMETER_TAG = "form";
-    public final static String FORM_VERSION_PARAMETER_TAG = "version";
-    public final static String FORM_ORGANIZATION_PARAMETER_TAG = "organizationId";
+    public static final String FORM_PARAMETER_TAG = "form";
+    public static final String FORM_VERSION_PARAMETER_TAG = "version";
+    public static final String FORM_ORGANIZATION_PARAMETER_TAG = "organizationId";
     private static final long serialVersionUID = -4957704029911591631L;
 
 

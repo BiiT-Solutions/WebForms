@@ -36,7 +36,7 @@ public class Login extends WebPageComponent {
 	private PasswordField passwordField;
 	private static final String NAME_LOGIN_FIELD_ID = "userNameLoginForm";
 	private static final String PASS_LOGIN_FIELD_ID = "userPassLoginForm";
-	private final static String USER_PASS_LOGIN_BUTTON_ID = "loginButton";
+	private static final String USER_PASS_LOGIN_BUTTON_ID = "loginButton";
 
 	public Login() {
 		rootLayout = new VerticalLayout();

@@ -14,8 +14,8 @@ import com.biit.webforms.exporters.xforms.exceptions.StringRuleSyntaxError;
  * 
  */
 public class XFormsRepeatableGroup extends XFormsGroup {
-	protected final static int MIN_REPEATS = 1;
-	protected final static int MAX_REPEATS = 100;
+	protected static final int MIN_REPEATS = 1;
+	protected static final int MAX_REPEATS = 100;
 
 	private static final String CSS_CLASS_REPEATABLE_GROUP = "webforms-repeatablegroup";
 

@@ -1,8 +1,5 @@
 package com.biit.webforms.pdfgenerator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.webforms.logger.WebformsLogger;
 import com.biit.webforms.pdfgenerator.exceptions.BadBlockException;
 import com.biit.webforms.persistence.entity.AttachedFiles;
@@ -16,16 +13,19 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Utility class to generate pdfptables depending on form elements.
  *
  */
 public class PdfTableGenerator {
 
-	private final static float[] textColumnRatios = { 1.0f };
-	private final static float[] formColumnRatios = { 0.5f, 0.5f };
-	private final static float[] annexFormColumnRatios = { 0.34f, 0.18f, 0.16f, 0.16f, 0.16f };
-	private final static int BORDER = Rectangle.NO_BORDER;
+	private static final float[] textColumnRatios = { 1.0f };
+	private static final float[] formColumnRatios = { 0.5f, 0.5f };
+	private static final float[] annexFormColumnRatios = { 0.34f, 0.18f, 0.16f, 0.16f, 0.16f };
+	private static final int BORDER = Rectangle.NO_BORDER;
 	private static final float QUESTION_TABLE_PADDING = 20;
 
 	public static PdfPTable generateTable(float relativeWidths[], List<PdfTableBlock> tableBlocks) throws BadBlockException {

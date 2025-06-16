@@ -122,7 +122,7 @@ import java.util.Set;
  */
 public class ApplicationController {
 
-    private final static int MIN_JSON_LENGTH = 80;
+    private static final int MIN_JSON_LENGTH = 80;
 
     private final FormProvider formProvider;
     private final IFormDao formDao;

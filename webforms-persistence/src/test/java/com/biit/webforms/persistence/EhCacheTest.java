@@ -21,7 +21,7 @@ import com.biit.webforms.persistence.entity.Form;
 @Test(groups = { "ehCache" })
 @DirtiesContext
 public class EhCacheTest extends AbstractTransactionalTestNGSpringContextTests {
-	private final static String DUMMY_FORM = "Dummy Form with cache";
+	private static final String DUMMY_FORM = "Dummy Form with cache";
 	private static final Long ORGANIZATION_ID = 0L;
 
 	@Autowired

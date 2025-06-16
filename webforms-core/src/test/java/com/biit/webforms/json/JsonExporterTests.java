@@ -34,13 +34,13 @@ import java.util.Set;
 @Test(groups = { "jsonForms" })
 public class JsonExporterTests {
 
-	private final static String DUMMY_FORM = "Dummy Form";
-	private final static String DUMMY_CATEGORY = "Dummy_Category";
-	private final static String DUMMY_CATEGORY_LABEL = "Dummy_Category Label";
-	private final static String DUMMY_QUESTION = "Dummy_Question";
-	private final static String DUMMY_QUESTION_LABEL = "Dummy_Question Label";
+	private static final String DUMMY_FORM = "Dummy Form";
+	private static final String DUMMY_CATEGORY = "Dummy_Category";
+	private static final String DUMMY_CATEGORY_LABEL = "Dummy_Category Label";
+	private static final String DUMMY_QUESTION = "Dummy_Question";
+	private static final String DUMMY_QUESTION_LABEL = "Dummy_Question Label";
 
-	private final static String METADATA_FILE_PATH = "jsonExporters/metadata.json";
+	private static final String METADATA_FILE_PATH = "jsonExporters/metadata.json";
 
 	private Form createSimpleStaticForm() throws FieldTooLongException, CharacterNotAllowedException, NotValidChildException, ElementIsReadOnly {
 		Form form = new Form();

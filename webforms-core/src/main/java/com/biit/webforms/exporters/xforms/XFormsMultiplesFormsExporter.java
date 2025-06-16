@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Deprecated
 public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
-	private final static String DEFAULT_SUBMISSION = "initial-instance.xml";
+	private static final String DEFAULT_SUBMISSION = "initial-instance.xml";
 
 	public XFormsMultiplesFormsExporter(Form form, IGroup<Long> organization) throws NotValidTreeObjectException, NotValidChildException {
 		super(form, organization);

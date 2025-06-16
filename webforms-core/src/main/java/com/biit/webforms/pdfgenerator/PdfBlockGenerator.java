@@ -1,8 +1,5 @@
 package com.biit.webforms.pdfgenerator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.form.entity.BaseAnswer;
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
@@ -15,6 +12,9 @@ import com.biit.webforms.persistence.entity.Question;
 import com.biit.webforms.persistence.entity.SystemField;
 import com.biit.webforms.persistence.entity.Text;
 import com.lowagie.text.pdf.PdfWriter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class generates PdfTableBlock from different kinds of elements in the
@@ -85,7 +85,7 @@ public class PdfBlockGenerator {
 	}
 
 	public static List<PdfTableBlock> generateAnnexFormTableBlocks(Form form) {
-		List<PdfTableBlock> blocks = new ArrayList<PdfTableBlock>();
+		List<PdfTableBlock> blocks = new ArrayList<>();
 
 		List<BaseQuestion> treeObjects = new ArrayList<>(form.getAll(BaseQuestion.class));
 
@@ -187,7 +187,7 @@ public class PdfBlockGenerator {
 
 	public static List<PdfTableBlock> generateFormQuestionTableBlocks(PdfWriter writer, Question question)
 			throws BadBlockException {
-		List<PdfTableBlock> tableBlocks = new ArrayList<PdfTableBlock>();
+		List<PdfTableBlock> tableBlocks = new ArrayList<>();
 
 		tableBlocks.add(generateFormQuestionElement(writer, question));
 

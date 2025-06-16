@@ -8,10 +8,10 @@ import org.openqa.selenium.NoSuchElementException;
 
 public class Login extends VaadinGuiWebpage {
 
-    private final static String LOGIN_URL = "http://localhost:9081";
-    private final static String USER_NAME_LOGIN_FORM = "userNameLoginForm";
-    private final static String USER_PASS_LOGIN_FORM = "userPassLoginForm";
-    private final static String USER_PASS_LOGIN_BUTTON_ID = "loginButton";
+    private static final String LOGIN_URL = "http://localhost:9081";
+    private static final String USER_NAME_LOGIN_FORM = "userNameLoginForm";
+    private static final String USER_PASS_LOGIN_FORM = "userPassLoginForm";
+    private static final String USER_PASS_LOGIN_BUTTON_ID = "loginButton";
 
     private TextFieldElement getUserNameLoginForm() {
         $(TextFieldElement.class).id(USER_NAME_LOGIN_FORM).waitForVaadin();

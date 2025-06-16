@@ -10,7 +10,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
 public class MessageManager {
-    private final static Integer MESSAGE_DURATION_MILISECONDS = 4000;
+    private static final Integer MESSAGE_DURATION_MILISECONDS = 4000;
 
     private static void showWarning(String caption, String description) {
         showMessage(caption, description, Notification.Type.WARNING_MESSAGE);

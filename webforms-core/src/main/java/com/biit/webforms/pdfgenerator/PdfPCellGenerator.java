@@ -15,7 +15,7 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class PdfPCellGenerator {
 
-	private final static int BORDER = Rectangle.NO_BORDER;
+	private static final int BORDER = Rectangle.NO_BORDER;
 
 	public static PdfPCell generateLabelCell(TreeObject object) {
 		return new PdfPCell(ParagraphGenerator.generateLabelParagraph(object));

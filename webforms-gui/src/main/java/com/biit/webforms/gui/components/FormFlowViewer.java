@@ -25,7 +25,7 @@ import java.util.Date;
  * the move through the image.
  */
 public class FormFlowViewer extends ImagePanel {
-	private final static long serialVersionUID = -4866123421361857895L;
+	private static final long serialVersionUID = -4866123421361857895L;
 	private static ByteArrayInputStream defaultImage = null;
 	private final ImgType imgType;
 	private TreeObject filter;

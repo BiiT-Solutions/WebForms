@@ -7,14 +7,14 @@ package com.biit.webforms.exporters.dotgraph;
  */
 public abstract class ExporterDot<T> {
 
-	private final static String GREY = "#808080";
-	private final static String LIGHT_GRAY = "#d3d3d3";
-	private final static String BLACK = "#000000";
-	private final static String RED3 = "#cd0000";
-	private final static String ROYALBLUE4 = "#27408b";
-	private final static String FORESTGREEN = "#228b22";
+	private static final String GREY = "#808080";
+	private static final String LIGHT_GRAY = "#d3d3d3";
+	private static final String BLACK = "#000000";
+	private static final String RED3 = "#cd0000";
+	private static final String ROYALBLUE4 = "#27408b";
+	private static final String FORESTGREEN = "#228b22";
 
-	private final static String READ_ONLY_ALPHA = "44";
+	private static final String READ_ONLY_ALPHA = "44";
 
 	protected static final String DEFAULT_FILL_COLOR = LIGHT_GRAY;
 	protected static final String DELETED_FILL_COLOR = LIGHT_GRAY;

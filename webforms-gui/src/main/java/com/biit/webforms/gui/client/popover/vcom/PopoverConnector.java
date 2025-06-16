@@ -81,7 +81,7 @@ public class PopoverConnector extends WindowConnector implements NativePreviewHa
 		return (PopoverState) super.getState();
 	}
 
-	private final static int ACCEPTEDEVENTS = Event.MOUSEEVENTS;
+	private static final int ACCEPTEDEVENTS = Event.MOUSEEVENTS;
 
 	@Override
 	public void onPreviewNativeEvent(NativePreviewEvent event) {

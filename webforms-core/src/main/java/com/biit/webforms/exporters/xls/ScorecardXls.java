@@ -18,19 +18,19 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class ScorecardXls {
-    private final static String[] COLUMNS_NAMES = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+    private static final String[] COLUMNS_NAMES = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
             "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-    private final static String[] TITLES_NAMES = {"", "xpath", "category", "question", "answer", "score"};
-    private final static int XPATH_COLUMN = 1;
-    private final static int CATEGORY_COLUMN = 2;
-    private final static int QUESTION_COLUMN = 3;
-    private final static int ANSWER_COLUMN = 4;
-    private final static int SCORE_COLUMN = 5;
-    private final static String LanguageLocalizationPrefix = "form.xls.";
-    private final static String SHEET_NAME = "Form";
-    private final static int LABEL_FONT_SIZE = 12;
-    private final static int TITLE_ROW = 1;
-    private final static int TITLE_FONT_SIZE = 14;
+    private static final String[] TITLES_NAMES = {"", "xpath", "category", "question", "answer", "score"};
+    private static final int XPATH_COLUMN = 1;
+    private static final int CATEGORY_COLUMN = 2;
+    private static final int QUESTION_COLUMN = 3;
+    private static final int ANSWER_COLUMN = 4;
+    private static final int SCORE_COLUMN = 5;
+    private static final String LanguageLocalizationPrefix = "form.xls.";
+    private static final String SHEET_NAME = "Form";
+    private static final int LABEL_FONT_SIZE = 12;
+    private static final int TITLE_ROW = 1;
+    private static final int TITLE_FONT_SIZE = 14;
 
     private HSSFSheet sheet;
     private HSSFCellStyle titleStyle = null;

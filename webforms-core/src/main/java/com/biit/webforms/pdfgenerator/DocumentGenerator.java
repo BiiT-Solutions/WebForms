@@ -1,12 +1,12 @@
 package com.biit.webforms.pdfgenerator;
 
-import java.io.ByteArrayOutputStream;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfPageEvent;
 import com.lowagie.text.pdf.PdfWriter;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * This class serves to generate a pdf document. Stores the default
@@ -14,15 +14,15 @@ import com.lowagie.text.pdf.PdfWriter;
  *
  */
 public abstract class DocumentGenerator {
-	private final static float MARGIN_LEFT = 50;
-	private final static float MARGIN_RIGHT = 50;
-	private final static float MARGIN_TOP = 75;
-	private final static float MARGIN_BOTTON = 50;
+	private static final float MARGIN_LEFT = 50;
+	private static final float MARGIN_RIGHT = 50;
+	private static final float MARGIN_TOP = 75;
+	private static final float MARGIN_BOTTON = 50;
 
-	private final static String DEFAULT_DOCUMENT_NAME = "Form document PDF";
-	private final static String DEFAULT_DOCUMENT_SUBJECT = "Form document PDF";
-	private final static String DOCUMENT_AUTHOR = "BiiT";
-	private final static String DOCUMENT_CREATOR = "BiiT";
+	private static final String DEFAULT_DOCUMENT_NAME = "Form document PDF";
+	private static final String DEFAULT_DOCUMENT_SUBJECT = "Form document PDF";
+	private static final String DOCUMENT_AUTHOR = "BiiT";
+	private static final String DOCUMENT_CREATOR = "BiiT";
 
 	private PdfPageEvent pageEvent;
 	private PdfWriter writer;

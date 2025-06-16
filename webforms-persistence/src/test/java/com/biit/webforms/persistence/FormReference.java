@@ -28,7 +28,7 @@ import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatExc
 @ContextConfiguration(locations = { "classpath:applicationContextTest.xml" })
 @Test(groups = { "formReference" })
 public class FormReference extends AbstractTransactionalTestNGSpringContextTests {
-	private final static String CATEGORY = "RealCategory";
+	private static final String CATEGORY = "RealCategory";
 
 	public void categoriesAdded() throws FieldTooLongException, NotValidChildException, CharacterNotAllowedException,
 			InvalidAnswerFormatException, InvalidAnswerSubformatException, BadFlowContentException,

@@ -10,8 +10,8 @@ import com.biit.webforms.persistence.entity.Group;
  *
  */
 public class ExporterDotGroup extends ExporterDot<Group> {
-	private final static String BOX_STYLE = "dashed";
-	private final static String LOOP_BOX_STYLE = "dotted";
+	private static final String BOX_STYLE = "dashed";
+	private static final String LOOP_BOX_STYLE = "dotted";
 
 	@Override
 	public String export(Group structure) {

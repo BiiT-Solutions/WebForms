@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Set;
 
 public class XFormsQuestion extends XFormsObject<BaseQuestion> {
-	private final static int MAX_YEARS_BIRTHDAY = 120;
-	private final static String CSS_CLASS_RADIO_BUTTON_HORIZONTAL = "fr-radio-horizontal";
+	private static final int MAX_YEARS_BIRTHDAY = 120;
+	private static final String CSS_CLASS_RADIO_BUTTON_HORIZONTAL = "fr-radio-horizontal";
 	private static final String CSS_CLASS_QUESTION = "webforms-question";
 	private static final String CSS_CLASS_QUESTION_HELP = "webforms-help";
 

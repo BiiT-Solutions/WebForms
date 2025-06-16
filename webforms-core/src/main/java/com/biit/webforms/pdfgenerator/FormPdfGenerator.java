@@ -18,108 +18,110 @@ import com.lowagie.text.pdf.PdfPTable;
 /**
  * iText pdf generator for the form design data. It contains all the functions
  * to generate the general sections of a form.
- * 
  */
 public class FormPdfGenerator extends DocumentGenerator {
 
-	private Form form;
+    private Form form;
 
-	public FormPdfGenerator(Form form) {
-		this.form = form;
+    public FormPdfGenerator(Form form) {
+        this.form = form;
 
-		FormPageEvent formPageEvent = new FormPageEvent();
-		formPageEvent.setHeader(form.getLabel());
+        FormPageEvent formPageEvent = new FormPageEvent();
+        formPageEvent.setHeader(form.getLabel());
 
-		setPageEvent(formPageEvent);
+        setPageEvent(formPageEvent);
 
-	}
+    }
 
-	@Override
-	protected void generateDocumentContent(Document document) throws DocumentException {
+    @Override
+    protected void generateDocumentContent(Document document) throws DocumentException {
+        ParagraphGenerator.generateAndAddFormTitle(document, form.getLabel(), PdfAlign.ALIGN_CENTER);
+        String updateDate = DateManager.convertDateToString(form.getUpdateTime());
+        ParagraphGenerator.generateAndAddSubtitle(document, "Version: " + form.getVersion() + " - " + updateDate, PdfAlign.ALIGN_CENTER);
 
-		ParagraphGenerator.generateAndAddFormTitle(document, form.getLabel(), PdfAlign.ALIGN_CENTER);
-		String updateDate = DateManager.convertDateToString(form.getUpdateTime());
-		ParagraphGenerator.generateAndAddSubtitle(document, "Version: " + form.getVersion() + " - " + updateDate, PdfAlign.ALIGN_CENTER);
+        for (TreeObject child : form.getChildren()) {
+            if (!child.isHiddenElement()) {
+                generateAndAddCategory(document, (Category) child);
+            }
+        }
 
-		for (TreeObject child : form.getChildren()) {
-			if (!child.isHiddenElement()) {
-				generateAndAddCategory(document, (Category) child);
-			}
-		}
+        document.newPage();
 
-		document.newPage();
+        // Annex page generation
+        AnnexGenerator.generateAndAdd(document, form);
 
-		// Annex page generation
-		AnnexGenerator.generateAndAdd(document, form);
+        document.newPage();
 
-	}
+        // Localization page generation
+        LocalizationContentGenerator.generateAndAdd(document, form);
+    }
 
-	private void generateAndAddTreeObject(Document document, TreeObject object) throws DocumentException {
-		// Determine the type of element anf generate with the appropiate class.
-		if (!object.isHiddenElement()) {
-			if (object instanceof Category) {
-				generateAndAddCategory(document, (Category) object);
-			} else if (object instanceof Group) {
-				generateAndAddGroup(document, (Group) object);
-			} else if (object instanceof Question) {
-				generateAndAddQuestion(document, (Question) object);
-			} else if (object instanceof Text) {
-				generateAndAddText(document, (Text) object);
-			} else if (object instanceof SystemField) {
-				// System fields are not added to PDF. Only in the annex table.
-			} else if (object instanceof AttachedFiles){
-				generateAndAddAttachedFiles(document, (AttachedFiles) object);
-			} else {
-				throw new DocumentException("Structure not recognized");
-			}
-		}
-	}
+    private void generateAndAddTreeObject(Document document, TreeObject object) throws DocumentException {
+        // Determine the type of element anf generate with the appropiate class.
+        if (!object.isHiddenElement()) {
+            if (object instanceof Category) {
+                generateAndAddCategory(document, (Category) object);
+            } else if (object instanceof Group) {
+                generateAndAddGroup(document, (Group) object);
+            } else if (object instanceof Question) {
+                generateAndAddQuestion(document, (Question) object);
+            } else if (object instanceof Text) {
+                generateAndAddText(document, (Text) object);
+            } else if (object instanceof SystemField) {
+                // System fields are not added to PDF. Only in the annex table.
+            } else if (object instanceof AttachedFiles) {
+                generateAndAddAttachedFiles(document, (AttachedFiles) object);
+            } else {
+                throw new DocumentException("Structure not recognized");
+            }
+        }
+    }
 
-	private void generateAndAddText(Document document, Text text) throws DocumentException {
-		PdfPTable questionTable;
-		try {
-			questionTable = PdfTableGenerator.generateTextTable(text);
-			document.add(questionTable);
-		} catch (BadBlockException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}
-	}
+    private void generateAndAddText(Document document, Text text) throws DocumentException {
+        PdfPTable questionTable;
+        try {
+            questionTable = PdfTableGenerator.generateTextTable(text);
+            document.add(questionTable);
+        } catch (BadBlockException e) {
+            WebformsLogger.errorMessage(this.getClass().getName(), e);
+        }
+    }
 
-	private void generateAndAddQuestion(Document document, Question question) throws DocumentException {
-		try {
-			PdfPTable questionTable = PdfTableGenerator.generateQuestionTable(getWriter(), question);
-			document.add(questionTable);
-		} catch (BadBlockException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}
-	}
-	
-	private void generateAndAddAttachedFiles(Document document, AttachedFiles attachedFiles) throws DocumentException {
-		try {
-			PdfPTable questionTable = PdfTableGenerator.generateAttachedFileTable(getWriter(), attachedFiles);
-			document.add(questionTable);
-		} catch (BadBlockException e) {
-			WebformsLogger.errorMessage(this.getClass().getName(), e);
-		}
-	}
+    private void generateAndAddQuestion(Document document, Question question) throws DocumentException {
+        try {
+            PdfPTable questionTable = PdfTableGenerator.generateQuestionTable(getWriter(), question);
+            document.add(questionTable);
+        } catch (BadBlockException e) {
+            WebformsLogger.errorMessage(this.getClass().getName(), e);
+        }
+    }
 
-	private void generateAndAddGroup(Document document, Group group) throws DocumentException {
-		ParagraphGenerator.generateAndAddSubtitle(document, group.getLabel(), PdfAlign.ALIGN_LEFT);
-		if (group.isRepeatable()) {
-			document.add(ParagraphGenerator.generateRepeatableParagraph());
-		}
+    private void generateAndAddAttachedFiles(Document document, AttachedFiles attachedFiles) throws DocumentException {
+        try {
+            PdfPTable questionTable = PdfTableGenerator.generateAttachedFileTable(getWriter(), attachedFiles);
+            document.add(questionTable);
+        } catch (BadBlockException e) {
+            WebformsLogger.errorMessage(this.getClass().getName(), e);
+        }
+    }
 
-		for (TreeObject element : group.getChildren()) {
-			generateAndAddTreeObject(document, element);
-		}
-	}
+    private void generateAndAddGroup(Document document, Group group) throws DocumentException {
+        ParagraphGenerator.generateAndAddSubtitle(document, group.getLabel(), PdfAlign.ALIGN_LEFT);
+        if (group.isRepeatable()) {
+            document.add(ParagraphGenerator.generateRepeatableParagraph());
+        }
 
-	private void generateAndAddCategory(Document document, Category category) throws DocumentException {
-		ParagraphGenerator.generateAndAddTitle(document, category.getLabel(), PdfAlign.ALIGN_LEFT);
+        for (TreeObject element : group.getChildren()) {
+            generateAndAddTreeObject(document, element);
+        }
+    }
 
-		for (TreeObject child : category.getChildren()) {
-			generateAndAddTreeObject(document, child);
-		}
-	}
+    private void generateAndAddCategory(Document document, Category category) throws DocumentException {
+        ParagraphGenerator.generateAndAddTitle(document, category.getLabel(), PdfAlign.ALIGN_LEFT);
+
+        for (TreeObject child : category.getChildren()) {
+            generateAndAddTreeObject(document, child);
+        }
+    }
 
 }

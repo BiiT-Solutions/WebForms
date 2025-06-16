@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class XFormsBasicStructure {
-	public final static String APP_NAME = "WebForms";
-	protected final static String CHARSET = "UTF-8";
+	public static final String APP_NAME = "WebForms";
+	protected static final String CHARSET = "UTF-8";
 	private List<XFormsCategory> xFormsCategories;
 	private Form form;
 	private XFormsHelper xFormsHelper;
