@@ -18,6 +18,8 @@ import java.util.Map;
 
 public final class LocalizationContentGenerator {
 
+    public static final String CURLY_QUOTE = "’";
+    public static final String QUOTE = "'";
     public static final int PADDING = 10;
     public static final int COLUMNS = 1;
     public static final int ROWS = 1;
@@ -76,9 +78,9 @@ public final class LocalizationContentGenerator {
     private static List<PdfRow> generateLocalizationRow(TreeObject treeObject, float padding) throws BadBlockException {
         final List<PdfRow> rows = new ArrayList<>();
         final PdfRow row = new PdfRow(-1, COLUMNS);
-        final StringBuilder title = new StringBuilder(treeObject.getLabel());
+        final StringBuilder title = new StringBuilder(treeObject.getLabel().replace(CURLY_QUOTE, QUOTE));
         if (treeObject instanceof ElementWithDescription) {
-            title.append(" [").append(((ElementWithDescription) treeObject).getDescription()).append("] ");
+            title.append(" [").append(((ElementWithDescription) treeObject).getDescription().replace(CURLY_QUOTE, QUOTE)).append("] ");
         }
         final PdfPCell labelCell = new PdfPCell(new Paragraph(title.toString(), PdfFont.SMALL_BOLD_FONT.getFont()));
         labelCell.setPaddingLeft(padding);
@@ -90,7 +92,7 @@ public final class LocalizationContentGenerator {
             if (treeObject instanceof ElementWithTranslation) {
                 final ElementWithTranslation elementWithTranslation = (ElementWithTranslation) treeObject;
                 if (elementWithTranslation.getDescriptionTranslations().get(translation.getKey()) != null) {
-                    text.append(" [").append(elementWithTranslation.getDescriptionTranslations().get(translation.getKey())).append("] ");
+                    text.append(" [").append(elementWithTranslation.getDescriptionTranslations().get(translation.getKey()).replace(CURLY_QUOTE, QUOTE)).append("] ");
                 }
             }
             final PdfPCell translationCell = new PdfPCell(new Paragraph(text.toString(), PdfFont.SMALL_FONT.getFont()));
