@@ -9,6 +9,7 @@ import com.biit.webforms.persistence.entity.Form;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 
 public final class LocalizationContentGenerator {
 
+    private static final int BORDER = Rectangle.NO_BORDER;
     public static final String CURLY_QUOTE = "’";
     public static final String QUOTE = "'";
     public static final int PADDING = 10;
@@ -40,6 +42,7 @@ public final class LocalizationContentGenerator {
             table.setSplitRows(false);
             table.setKeepTogether(true);
             for (PdfPCell cell : cells) {
+                cell.setBorder(BORDER);
                 table.addCell(cell);
             }
             document.add(table);
