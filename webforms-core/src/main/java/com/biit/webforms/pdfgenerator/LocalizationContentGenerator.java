@@ -83,7 +83,9 @@ public final class LocalizationContentGenerator {
         final PdfRow row = new PdfRow(-1, COLUMNS);
         final StringBuilder title = new StringBuilder(treeObject.getLabel().replace(CURLY_QUOTE, QUOTE));
         if (treeObject instanceof ElementWithDescription) {
-            title.append(" [").append(((ElementWithDescription) treeObject).getDescription().replace(CURLY_QUOTE, QUOTE)).append("] ");
+            if (((ElementWithDescription) treeObject).getDescription() != null && !((ElementWithDescription) treeObject).getDescription().trim().isEmpty()) {
+                title.append(" [").append(((ElementWithDescription) treeObject).getDescription().replace(CURLY_QUOTE, QUOTE)).append("] ");
+            }
         }
         final PdfPCell labelCell = new PdfPCell(new Paragraph(title.toString(), PdfFont.SMALL_BOLD_FONT.getFont()));
         labelCell.setPaddingLeft(padding);
@@ -95,7 +97,8 @@ public final class LocalizationContentGenerator {
                 final StringBuilder text = new StringBuilder("(" + translation.getKey() + ") " + translation.getValue());
                 if (treeObject instanceof ElementWithTranslation) {
                     final ElementWithTranslation elementWithTranslation = (ElementWithTranslation) treeObject;
-                    if (elementWithTranslation.getDescriptionTranslations().get(translation.getKey()) != null) {
+                    if (elementWithTranslation.getDescriptionTranslations().get(translation.getKey()) != null
+                            && !elementWithTranslation.getDescriptionTranslations().get(translation.getKey()).trim().isEmpty()) {
                         text.append(" [").append(elementWithTranslation.getDescriptionTranslations().get(translation.getKey()).replace(CURLY_QUOTE, QUOTE)).append("] ");
                     }
                 }

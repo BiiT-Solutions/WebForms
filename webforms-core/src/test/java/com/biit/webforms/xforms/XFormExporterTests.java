@@ -1,10 +1,5 @@
 package com.biit.webforms.xforms;
 
-import java.io.UnsupportedEncodingException;
-import java.util.HashSet;
-
-import org.testng.annotations.Test;
-
 import com.biit.form.exceptions.CharacterNotAllowedException;
 import com.biit.form.exceptions.ElementIsReadOnly;
 import com.biit.form.exceptions.InvalidAnswerFormatException;
@@ -26,7 +21,10 @@ import com.biit.webforms.persistence.entity.exceptions.FlowWithoutDestinyExcepti
 import com.biit.webforms.persistence.entity.exceptions.FlowWithoutSourceException;
 import com.biit.webforms.persistence.entity.exceptions.InvalidAnswerSubformatException;
 import com.biit.webforms.utils.FormUtils;
-import com.biit.webforms.webservices.Webservice;
+import org.testng.annotations.Test;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 
 @Test(groups = { "xforms" })
 public class XFormExporterTests {
@@ -37,6 +35,6 @@ public class XFormExporterTests {
 			FlowDestinyIsBeforeOriginException, FlowWithoutDestinyException, NotValidTokenType, NotValidTreeObjectException, NotExistingDynamicFieldException,
 			InvalidDateException, StringRuleSyntaxError, PostCodeRuleSyntaxError, ElementIsReadOnly, FlowNotAllowedException, UnsupportedEncodingException {
 		Form form = FormUtils.createCompleteForm();
-		new XFormsSimpleFormExporter(form, null, new HashSet<Webservice>(), false, false).generateXFormsLanguage();
+		new XFormsSimpleFormExporter(form, null, new HashSet<>(), false, false).generateXFormsLanguage();
 	}
 }
