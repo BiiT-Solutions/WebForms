@@ -50,8 +50,6 @@ public class FormPdfGenerator extends DocumentGenerator {
         // Annex page generation
         AnnexGenerator.generateAndAdd(document, form);
 
-        document.newPage();
-
         // Localization page generation
         LocalizationContentGenerator.generateAndAdd(document, form);
     }

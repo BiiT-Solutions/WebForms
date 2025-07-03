@@ -1,9 +1,5 @@
 package com.biit.webforms.pdfgenerator;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.DynamicAnswer;
@@ -14,6 +10,10 @@ import com.lowagie.text.pdf.PdfFormField;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.TextField;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Generator for combo box list.

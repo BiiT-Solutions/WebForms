@@ -92,7 +92,7 @@ public class PdfTableGenerator {
 
 	public static PdfPTable generateTextTable(Text text) throws BadBlockException {
 		PdfTableBlock block = PdfBlockGenerator.generateTextBlocks(text);
-		List<PdfTableBlock> blocks = new ArrayList<PdfTableBlock>();
+		List<PdfTableBlock> blocks = new ArrayList<>();
 		blocks.add(block);
 
 		PdfPTable questionTable = generateTable(textColumnRatios, blocks);

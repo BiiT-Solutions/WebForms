@@ -49,7 +49,7 @@ import java.util.Objects;
 @JsonSerialize(using = AnswerSerializer.class)
 @Table(name = "tree_answers")
 @Cacheable()
-public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithMedia, ElementWithTranslation {
+public class Answer extends BaseAnswer implements FlowConditionScript, ElementWithMedia, ElementWithDescription, ElementWithTranslation {
     private static final long serialVersionUID = 7614678800982506178L;
     private static final List<Class<? extends TreeObject>> ALLOWED_CHILDREN = new ArrayList<>(Collections.singletonList(Answer.class));
     public static final int MAX_DESCRIPTION_LENGTH = 10000;
