@@ -6,7 +6,7 @@
 	<name>Pilot Agile Testing for WebForms (Release)</name>
 
 	<parent>
-		<groupId>com.biit</groupId>
+		<groupId>com.biit-solutions</groupId>
 		<artifactId>webforms</artifactId>
 		<version>2.14.31-SNAPSHOT</version>
 	</parent> 

@@ -6,7 +6,7 @@
     <name>Pilot Agile Testing for WebForms (Test)</name>
 
     <parent>
-        <groupId>com.biit</groupId>
+        <groupId>com.biit-solutions</groupId>
         <artifactId>webforms</artifactId>
         <version>2.14.31-SNAPSHOT</version>
     </parent>
@@ -82,11 +82,11 @@
         </dependency>
         <!-- ABCD persistence -->
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>abcd-persistence</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>com.biit</groupId>
+                    <groupId>com.biit-solutions</groupId>
                     <artifactId>drools-engine-core</artifactId>
                 </exclusion>
             </exclusions>

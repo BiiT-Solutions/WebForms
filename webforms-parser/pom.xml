@@ -6,7 +6,7 @@
     <name>Pilot Agile Testing for WebForms (Expression parser)</name>
 
     <parent>
-        <groupId>com.biit</groupId>
+        <groupId>com.biit-solutions</groupId>
         <artifactId>webforms</artifactId>
         <version>2.14.31-SNAPSHOT</version>
     </parent>
@@ -19,12 +19,12 @@
         </dependency>
         <!-- Liferay Authentication -->
         <dependency>
-            <groupId>com.biit.liferay</groupId>
+            <groupId>com.biit-solutions.liferay</groupId>
             <artifactId>liferay-authentication-client</artifactId>
         </dependency>
         <!-- ABCD persistence -->
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>abcd-persistence</artifactId>
             <version>${abcd.version}</version>
         </dependency>

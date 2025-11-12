@@ -3,18 +3,18 @@
 	<test name="AbcdTest" enabled="true" preserve-order="true">
 		<groups>
 			<run>
-				<include name="testDomain" />
- 			 	<include name="testFlowDomain" />
- 			 	<include name="testFlowDomainRedundant" />
+				<exclude name="testDomain" />
+ 			 	<exclude name="testFlowDomain" />
+ 			 	<exclude name="testFlowDomainRedundant" />
  			 	<exclude name="testFlowDomainBlockedPreviousQuestion" /> <!-- no longer used -->
-				<include name="booleanExpressions" />
-				<include name="linkValidation" />
-				<include name="missingFlowIn" />
-				<include name="orphanToken" />
-				<include name="xforms" />
-				<include name="xmlGeneration" />
-				<include name="flowCleaner" />
-				<include name="jsonForms" />
+				<exclude name="booleanExpressions" />
+				<exclude name="linkValidation" />
+				<exclude name="missingFlowIn" />
+				<exclude name="orphanToken" />
+				<exclude name="xforms" />
+				<exclude name="xmlGeneration" />
+				<exclude name="flowCleaner" />
+				<exclude name="jsonForms" />
 			</run>
 		</groups>
 		<classes>

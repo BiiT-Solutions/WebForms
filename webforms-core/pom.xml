@@ -6,7 +6,7 @@
     <name>Pilot Agile Testing for WebForms (Core)</name>
 
     <parent>
-        <groupId>com.biit</groupId>
+        <groupId>com.biit-solutions</groupId>
         <artifactId>webforms</artifactId>
         <version>2.14.31-SNAPSHOT</version>
     </parent>
@@ -35,7 +35,7 @@
         </dependency>
         <!-- Liferay Authentication -->
         <dependency>
-            <groupId>com.biit.liferay</groupId>
+            <groupId>com.biit-solutions.liferay</groupId>
             <artifactId>liferay-authentication-client</artifactId>
         </dependency>
         <!-- For SpringContextHelper -->
@@ -74,7 +74,7 @@
         </dependency>
         <!-- Rest Authentication -->
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>rest-services-security</artifactId>
         </dependency>
     </dependencies>
