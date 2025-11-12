@@ -1,5 +1,26 @@
 package com.biit.webforms.utils.math.domain;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (Expression parser)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import java.util.List;
 import java.util.Set;
 
@@ -22,10 +43,10 @@ import com.biit.webforms.utils.parser.exceptions.ParseException;
 
 /**
  * Class to check if the domain of a question can be blocked by a previous question.
- * 
+ *
  * A domain can be blocked when the flow condition simple tokens only reference questions that can't be accessed from
  * current flow or won't be accessed in all the possible flows that arrive to current question
- * 
+ *
  *
  */
 public class FlowDomainBlockedByPreviousQuestion {
@@ -71,7 +92,7 @@ public class FlowDomainBlockedByPreviousQuestion {
 
 	/**
 	 * Check if all minterms (Tokens Q=A) are from
-	 * 
+	 *
 	 * @param element
 	 * @param condition
 	 * @return

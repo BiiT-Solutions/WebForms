@@ -1,5 +1,26 @@
 package com.biit.webforms.exporters.xforms;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (Core)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
@@ -36,7 +57,7 @@ public abstract class XFormsBasicStructure {
 
 	/**
 	 * Basic form information.
-	 * 
+	 *
 	 * @param form
 	 * @return
 	 */
@@ -47,7 +68,7 @@ public abstract class XFormsBasicStructure {
 
 	/**
 	 * Removes undesired characters.
-	 * 
+	 *
 	 * @param form
 	 * @return
 	 */
@@ -88,7 +109,7 @@ public abstract class XFormsBasicStructure {
 
 	/**
 	 * Creates the metadata information of the form.
-	 * 
+	 *
 	 * @param form
 	 * @return
 	 */
@@ -185,7 +206,7 @@ public abstract class XFormsBasicStructure {
 
 	/**
 	 * Sets the xforms tags for getting data for a different file.
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract String getInput();
@@ -204,7 +225,7 @@ public abstract class XFormsBasicStructure {
 
 	/**
 	 * Bind the model with the presentation of the form.
-	 * 
+	 *
 	 * @return
 	 * @throws NotExistingDynamicFieldException
 	 * @throws InvalidFlowInForm
@@ -231,7 +252,7 @@ public abstract class XFormsBasicStructure {
 	/**
 	 * Get the element biding from an element. If the element is null gets the
 	 * binding for all elements of the form.
-	 * 
+	 *
 	 * @param xformsObject
 	 * @return
 	 * @throws NotExistingDynamicFieldException
@@ -252,7 +273,7 @@ public abstract class XFormsBasicStructure {
 
 	/**
 	 * Creates all resources of the form (labels initial values, ...).
-	 * 
+	 *
 	 * @param xFormsCategory
 	 *            if not null, get resources for only this category
 	 * @return
@@ -298,7 +319,7 @@ public abstract class XFormsBasicStructure {
 
 	/**
 	 * Creates the hierarchy of the resources.
-	 * 
+	 *
 	 * @param xformsObject
 	 * @return
 	 * @throws NotExistingDynamicFieldException

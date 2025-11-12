@@ -1,5 +1,26 @@
 package com.biit.webforms.exporters.xforms;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (Core)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -171,7 +192,7 @@ class XFormsHelper {
 	 * The previous visibility is the answers of a questions needed to make this
 	 * element visible. It is analyzed by flow and not by question to allow
 	 * recursivity.
-	 * 
+	 *
 	 * @param flow
 	 *            the flow that goes to the element to analyze.
 	 * @return
@@ -214,7 +235,7 @@ class XFormsHelper {
 	/**
 	 * Return all the elements which answers has impact to a question
 	 * visibility.
-	 * 
+	 *
 	 * @param flow
 	 * @return
 	 */
@@ -295,7 +316,7 @@ class XFormsHelper {
 
 	/**
 	 * Checks that the controlName is unique.
-	 * 
+	 *
 	 * @param treeObject
 	 * @return
 	 */

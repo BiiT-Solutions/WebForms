@@ -1,5 +1,26 @@
 package com.biit.webforms.gui.common.components;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (GUI)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import com.biit.form.entity.IBaseFormView;
 import com.biit.persistence.dao.exceptions.UnexpectedDatabaseException;
 import com.biit.usermanager.entity.IGroup;
@@ -27,7 +48,7 @@ import java.util.List;
 /**
  * Base tree table. This generic table needs a dataProvider to initialize the
  * data.
- * 
+ *
  * @param <T>
  */
 public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
@@ -178,7 +199,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 
 	/**
 	 * Gets the Form Root of a form if exists.
-	 * 
+	 *
 	 * @param form
 	 * @return
 	 */
@@ -240,7 +261,7 @@ public class TreeTableBaseForm<T extends IBaseFormView> extends TreeTable {
 	/**
 	 * Add a new element to the table. If sort is true, the table is reordered
 	 * after inserting the value.
-	 * 
+	 *
 	 * @param form
 	 * @param sort
 	 */

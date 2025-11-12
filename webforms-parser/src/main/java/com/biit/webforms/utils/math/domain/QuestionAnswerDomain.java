@@ -1,5 +1,26 @@
 package com.biit.webforms.utils.math.domain;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (Expression parser)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.persistence.entity.Answer;
 import com.biit.webforms.persistence.entity.Question;
@@ -90,7 +111,7 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	/**
 	 * Returns a QuestionAnswerDomain with the inverse of the current domain
 	 * value.
-	 * 
+	 *
 	 * @return
 	 */
 	public QuestionAnswerDomain inverse() {
@@ -109,7 +130,7 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 
 	/**
 	 * Returns the true if current value set is equal to the whole dominion
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isComplete() {
@@ -118,7 +139,7 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 
 	/**
 	 * Returns true if the domain doesn't have value.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isEmpty() {
@@ -129,7 +150,7 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	 * Joins two QuestionAnswerDomains and returns a new QuestionAnswerDomain
 	 * with the result of the operation. If the domains are not compatible (Not
 	 * the same question) a null value is returned.
-	 * 
+	 *
 	 * @param domain
 	 * @return
 	 */
@@ -164,7 +185,7 @@ public class QuestionAnswerDomain implements IDomainQuestion {
 	 * Intersects two QuestionAnswerDomains and returs a new
 	 * QuestionAnswerDomain with the result of the operation. If the domains are
 	 * not compatible (Not the same question) a null value is returned.
-	 * 
+	 *
 	 * @param domain
 	 * @return
 	 */

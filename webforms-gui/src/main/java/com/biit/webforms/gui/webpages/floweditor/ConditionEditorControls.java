@@ -1,5 +1,26 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (GUI)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.AnswerType;
 import com.biit.webforms.enumerations.TokenTypes;
@@ -26,7 +47,7 @@ import java.util.List;
 
 /**
  * This class holds the right side controls in the Window Flow.
- * 
+ *
  */
 public class ConditionEditorControls extends TabSheet {
 	private static final long serialVersionUID = 105765485106857208L;
@@ -77,7 +98,7 @@ public class ConditionEditorControls extends TabSheet {
 
 	/**
 	 * Layout with treeobjectTable and button to insert reference.
-	 * 
+	 *
 	 * @return
 	 */
 	private Component generateTreeTableSearch() {
@@ -238,7 +259,7 @@ public class ConditionEditorControls extends TabSheet {
 
 	/**
 	 * Selects a treeObject element from the form tree object table.
-	 * 
+	 *
 	 * @param treeObject
 	 */
 	public void selectTreeObject(TreeObject treeObject) {

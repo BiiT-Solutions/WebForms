@@ -1,5 +1,26 @@
 package com.biit.webforms.exporters.xforms;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (Core)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import com.biit.form.exceptions.NotValidChildException;
 import com.biit.form.exceptions.NotValidTreeObjectException;
 import com.biit.usermanager.entity.IGroup;
@@ -32,7 +53,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 
 	/**
 	 * Return an string that represents the structure of the form.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getInitialInstancePage() {
@@ -41,7 +62,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 
 	/**
 	 * Return an string that represents the flow among the form's categories.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCategoriesFlowPage() {
@@ -68,7 +89,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 
 	/**
 	 * Returns the page for one category.
-	 * 
+	 *
 	 * @param xFormsCategory
 	 * @return
 	 * @throws PostCodeRuleSyntaxError
@@ -183,7 +204,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 
 	/**
 	 * Adds next and previous button at the end of the page.
-	 * 
+	 *
 	 * @param xformsObject
 	 * @return
 	 */
@@ -245,7 +266,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 
 	/**
 	 * Create events for next and previous buttons.
-	 * 
+	 *
 	 * @param events
 	 * @param xFormsObject
 	 */
@@ -292,7 +313,7 @@ public class XFormsMultiplesFormsExporter extends XFormsBasicStructure {
 
 	/**
 	 * If a page has no visible elements is skipped.
-	 * 
+	 *
 	 * @param events
 	 * @param xFormsObject
 	 */

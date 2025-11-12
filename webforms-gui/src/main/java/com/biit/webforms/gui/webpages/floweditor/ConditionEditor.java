@@ -1,5 +1,26 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (GUI)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.gui.WebformsUiLogger;
@@ -26,7 +47,7 @@ import java.util.List;
 /**
  * token conditions. Contains the right side controls and the current token
  * condition display.
- * 
+ *
  */
 public class ConditionEditor extends CustomComponent {
 	private static final long serialVersionUID = 8836808232493250676L;

@@ -1,5 +1,26 @@
 package com.biit.webforms.exporters.dotgraph.impact;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (Core)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -65,7 +86,7 @@ public class FormComparation {
 	/**
 	 * Search for categories, group and base question that are maintained in the
 	 * same hierarchy path between versions but their content has been changed
-	 * 
+	 *
 	 * @param oldForm
 	 * @param newForm
 	 */
@@ -109,7 +130,7 @@ public class FormComparation {
 	 * Search for categories, groups and base questions that are present on the
 	 * current form version but they don't exist with the same hierarchy
 	 * position in the old form version.
-	 * 
+	 *
 	 * @param oldForm
 	 * @param newForm
 	 */
@@ -144,7 +165,7 @@ public class FormComparation {
 	/**
 	 * Search for categories, groups and baseQuestions that don't appear on the
 	 * same hierarchy position as in the old version.
-	 * 
+	 *
 	 * @param oldForm
 	 * @param newForm
 	 */
@@ -179,7 +200,7 @@ public class FormComparation {
 	/**
 	 * Propagates the updated status to paren elements of updated elements
 	 * answer -> question -> group -> category
-	 * 
+	 *
 	 * @param element
 	 */
 	private void markParentsAsUpdated(TreeObject element) {

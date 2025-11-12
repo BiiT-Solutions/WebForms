@@ -1,5 +1,26 @@
 package com.biit.webforms.flow;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (Expression parser)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,9 +44,9 @@ public class FormWalker {
 
 	/**
 	 * Returns a set with all the paths from a origin node to a destiny node.
-	 * 
+	 *
 	 * If origin or destiny is null returns an empty list.
-	 * 
+	 *
 	 * @param form
 	 * @param origin
 	 * @param destiny
@@ -85,10 +106,10 @@ public class FormWalker {
 	/**
 	 * This function returns true if all paths form origin from destiny pass
 	 * through a determined question by @requiredQuestion
-	 * 
+	 *
 	 * This function requires to get all the paths between two nodes which makes
 	 * this function expensive.
-	 * 
+	 *
 	 * @param form
 	 * @param origin
 	 * @param destiny
@@ -113,10 +134,10 @@ public class FormWalker {
 	/**
 	 * This function returns true if any path doesn't pass through a determined
 	 * question by @questionToAvoid
-	 * 
+	 *
 	 * This function uses a lazy approach. When a path passes through the
 	 * question to avoid returns as false directly.
-	 * 
+	 *
 	 * @param form
 	 * @param origin
 	 * @param destiny
@@ -180,7 +201,7 @@ public class FormWalker {
 	 * uses a lazy approach. When a node reached outside the bounds of the
 	 * beginning-end is discarded and at the first occurrence of getting to the end
 	 * question the function is terminated with true.
-	 * 
+	 *
 	 * @param form
 	 * @param origin
 	 * @param destiny

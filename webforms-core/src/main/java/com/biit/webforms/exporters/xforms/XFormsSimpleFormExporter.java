@@ -1,5 +1,26 @@
 package com.biit.webforms.exporters.xforms;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (Core)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.form.exceptions.NotValidChildException;
@@ -125,9 +146,9 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	/**
 	 * Creates the body section of the XForm.
-	 * 
+	 *
 	 * @param xFormsObject
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -191,7 +212,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	/**
 	 * Defines the categories menu browser on top of the form
-	 * 
+	 *
 	 * @param body
 	 */
 	private void setCategoriesMenu(StringBuilder body) {
@@ -231,7 +252,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	/**
 	 * Get all elements resources structure.
-	 * 
+	 *
 	 * @param xformsObject
 	 *            is ignored.
 	 */
@@ -284,7 +305,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 
 	/**
 	 * Add webservice call action and webservice submission definition.
-	 * 
+	 *
 	 * @param events
 	 */
 	private void addWebserviceCallEvents(StringBuilder events) {
@@ -352,9 +373,9 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	/**
 	 * Adds webservice submission which holds the webservice configuration
 	 * values.
-	 * 
+	 *
 	 * @param call
-	 * 
+	 *
 	 * @param call
 	 * @param events
 	 */
@@ -369,9 +390,9 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	/**
 	 * Adds webservice instance which contains the empty xml structure that will
 	 * be sent to the webservice.
-	 * 
+	 *
 	 * @param call
-	 * 
+	 *
 	 * @param webservice
 	 * @param events
 	 */
@@ -395,7 +416,7 @@ public class XFormsSimpleFormExporter extends XFormsBasicStructure {
 	/**
 	 * Create the events needed to hide an element that depends on a previous
 	 * element visibility.
-	 * 
+	 *
 	 * @param events
 	 */
 	private void addVisibilityEvents(StringBuilder events) {

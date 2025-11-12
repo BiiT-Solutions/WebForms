@@ -1,5 +1,26 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (GUI)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import com.biit.webforms.condition.parser.WebformsParser;
 import com.biit.webforms.enumerations.TokenTypes;
 import com.biit.webforms.gui.WebformsUiLogger;
@@ -93,7 +114,7 @@ public class TokenDisplay extends CustomComponent {
 	/**
 	 * Adds a TokenComponent to the end of a specific line or after the current
 	 * selected element or adds the element as the last selected element.
-	 * 
+	 *
 	 * @param token
 	 * @param line
 	 */
@@ -130,7 +151,7 @@ public class TokenDisplay extends CustomComponent {
 	/**
 	 * Gets currently selected line for work. If a component is selected returns
 	 * its line, else returns the last line.
-	 * 
+	 *
 	 * @return
 	 */
 	private LineDisplay getCurrentLine() {
@@ -218,7 +239,7 @@ public class TokenDisplay extends CustomComponent {
 
 	/**
 	 * Removes all elements in line, then inserts in previous line.
-	 * 
+	 *
 	 * @param line
 	 */
 	private void remove(LineDisplay line) {

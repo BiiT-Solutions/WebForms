@@ -1,5 +1,26 @@
 package com.biit.webforms.exporters.xforms;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (Core)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.BaseRepeatableGroup;
 import com.biit.form.entity.TreeObject;
@@ -201,7 +222,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Return the complete path of the element.
-	 * 
+	 *
 	 * @return
 	 */
 	protected String getPath() {
@@ -217,7 +238,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Returns the name of the element.
-	 * 
+	 *
 	 * @return
 	 */
 	protected String getName() {
@@ -259,7 +280,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Simple flow rule representation for human reading.S
-	 * 
+	 *
 	 * @return
 	 */
 	private void getFlowRule(StringBuilder flowRule) {
@@ -281,7 +302,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * Calculate is used to clean up the value of the element if the previous
 	 * element value is changed. Then all relvant rules of next elements are
 	 * forced to recalculate.
-	 * 
+	 *
 	 * @param flow
 	 * @return
 	 */
@@ -289,7 +310,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Gets the visibility of an element depending on the flow rules.
-	 * 
+	 *
 	 * @return
 	 * @throws InvalidDateException
 	 * @throws StringRuleSyntaxError
@@ -313,7 +334,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * Is the default visibility of an element. For Categories is the visibility
 	 * of the first question, for questions, is the visibility of the previous
 	 * question and for the first question is always true.
-	 * 
+	 *
 	 * @return
 	 * @throws InvalidDateException
 	 * @throws StringRuleSyntaxError
@@ -371,7 +392,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Used for storing values of events related to visibility.
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract String getVisibilityStructure();
@@ -386,7 +407,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Only loops uses templates. Search in childs.
-	 * 
+	 *
 	 * @return
 	 */
 	protected String getTemplates() {
@@ -404,7 +425,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	/**
 	 * Returns a linkedHashSet with all the children in the current hierarchy
 	 * that are instance of the filter type in appearance order.
-	 * 
+	 *
 	 * @param filter
 	 * @return
 	 */
@@ -421,7 +442,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Convert a token into a string that can be processed by orbeon.
-	 * 
+	 *
 	 * @param token
 	 * @throws InvalidDateException
 	 */
@@ -465,7 +486,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	/**
 	 * Returns XPath expression except for repeatable groups that cause troubles
 	 * in Orbeon. In this case the Orbeon variable is returned.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -482,7 +503,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * divided by spaces. We need 'contains' XForms method to know if the answer
 	 * is selected or not. But a 'contains' can fail if an element is a
 	 * substring of other element, then we add space to delimiter substrings.
-	 * 
+	 *
 	 * @param token
 	 * @return
 	 */
@@ -509,7 +530,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * Visibility for a token that is a component that allows to select an
 	 * answer to the user. Selectable elements that are not a multicheckbox use
 	 * standard $control-name='answer' string.
-	 * 
+	 *
 	 * @param token
 	 * @return
 	 */
@@ -528,7 +549,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Translate token of an input field to orbeon relevant rules.
-	 * 
+	 *
 	 * @param token
 	 * @return
 	 * @throws ParseException
@@ -614,7 +635,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Obtains the relevant rule calculation obtained from a set of flows.
-	 * 
+	 *
 	 * @param flows
 	 * @return
 	 * @throws InvalidDateException
@@ -657,7 +678,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Obtain all flows of an element as tokens.
-	 * 
+	 *
 	 * @param flows
 	 * @return
 	 * @throws InvalidDateException
@@ -809,7 +830,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	 * Obtains the previous element visibility. Can be an event if the previous
 	 * element is a question, a copy of the relevant rule if the previous one is
 	 * a system field or if the element is inside a repeatable group.
-	 * 
+	 *
 	 * @param flow
 	 * @return
 	 */
@@ -861,7 +882,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	/**
 	 * Orbeon has some limitations in elements inside a repeatable group. We
 	 * need to detect them.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -878,7 +899,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	/**
 	 * Some extra fields are always hidden and must skip standard relevant
 	 * rules.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -891,7 +912,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Detects if exist a previous condition in a flow chain.
-	 * 
+	 *
 	 * @param flowChain
 	 * @return
 	 */
@@ -908,7 +929,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 	/**
 	 * Returns the opposite value used in Orbeon. Note: &lt;= the opposite is &gt;=.
 	 * The equals are maintained.
-	 * 
+	 *
 	 * @return
 	 */
 	public TokenTypes getOrbeonDatesOpposite(TokenTypes type) {
@@ -928,7 +949,7 @@ public abstract class XFormsObject<T extends TreeObject> {
 
 	/**
 	 * Get all flows that points to this element.
-	 * 
+	 *
 	 * @return
 	 */
 	public abstract Set<Flow> getFlowsTo();

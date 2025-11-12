@@ -1,5 +1,26 @@
 package com.biit.webforms.gui.webpages.floweditor;
 
+/*-
+ * #%L
+ * Pilot Agile Testing for WebForms (GUI)
+ * %%
+ * Copyright (C) 2014 - 2025 BiiT Sourcing Solutions S.L.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import com.biit.form.entity.BaseQuestion;
 import com.biit.form.entity.TreeObject;
 import com.biit.webforms.enumerations.FlowType;
@@ -24,13 +45,13 @@ import java.util.List;
 /**
  * Window to generate or edit a flow rule. This gui class can call the update
  * and insert of the rule by itself using the Application Controller.
- * 
+ *
  * It contains a "control" bar that permits the selection of origin, type and
  * destiny of rule. This window also has space to write the logic condition.
- * 
+ *
  * The window will enable and disable the areas to assign destiny or logic
  * condition depending of the rule type.
- * 
+ *
  */
 public class WindowFlow extends WindowAcceptCancel {
 	private static final long serialVersionUID = 5164868235165988674L;
